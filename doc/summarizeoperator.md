@@ -1,0 +1,221 @@
+# summarize operator
+
+Produces a table that aggregates the content of the input table. 
+
+<!-- csl -->
+```
+T | summarize count(), avg(price) by fruit, supplier
+```
+
+A table that shows the number and average price of each fruit from each supplier. There's a row in the output for each distinct combination of fruit and supplier. The output columns show the count, average price, fruit and supplier. All other input columns are ignored.
+
+<!-- csl -->
+```
+T | summarize count() by price_range=bin(price, 10.0)
+```
+
+A table that shows how many items have prices in each interval  [0,10.0], [10.0,20.0], and so on. This example has a column for the count and one for the price range. All other input columns are ignored.
+
+**Syntax**
+
+*T* `| summarize`
+      [[*Column* `=`] *Aggregation* [`,` ...]]
+    [`by`
+      [*Column* `=`] *GroupExpression* [`,` ...]]
+
+**Arguments**
+
+* *Column:* Optional name for a result column. Defaults to a name derived from the expression.
+* *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
+* *GroupExpression:* An expression over the columns, that provides a set of distinct values. Typically it's either a column name that already provides a restricted set of values, or `bin()` with a numeric or time column as argument. 
+
+    If you don't provide a *GroupExpression,* the whole table is summarized in a single output row.
+
+**Returns**
+
+The input rows are arranged into groups having the same values of the `by` expressions. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns and also at least one column for each computed aggregate. (Some aggregation functions return multiple columns.)
+
+The result has as many rows as there are distinct combinations of `by` values. If you want to summarize over ranges of numeric values, use `bin()` to reduce ranges to discrete values.
+
+**Notes**
+
+Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names, or apply `bin()` to a numeric column.
+
+The automatic hourly bins for datetime columns is no longer supported. Use explicit binning instead - for example `summarize by bin(timestamp, 1h)`.
+
+## List of aggregation functions
+
+|Function|Description|
+|--------|-----------|
+|[any()](any-aggfunction.md)|Returns random non-empty value for the group|
+|[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when argument is maximized|
+|[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when argument is minimized|
+|[avg()](avg-aggfunction.md)|Returns average value across the group|
+|[buildschema()](buildschema-aggfunction.md)|Returns the minimal schema that admits all values of the `dynamic` input|
+|[count()](count-aggfunction.md)|Returns count of the group|
+|[countif()](countif-aggfunction.md)|Returns count with the predicate of the group|
+|[dcount()](dcount-aggfunction.md)|Returns approximate distinct count of the group elements|
+|[make_bag()](make-bag-aggfunction.md)|Returns a property bag of dynamic values within the group|
+|[make_list()](makelist-aggfunction.md)|Returns a list of all the values within the group|
+|[make_set()](makeset-aggfunction.md)|Returns a set of distinct values within the group|
+|[max()](max-aggfunction.md)|Returns the maximum value across the group|
+|[min()](min-aggfunction.md)|Returns the minimum value across the group|
+|[percentiles()](percentiles-aggfunction.md)|Returns the percentile approximate of the group|
+|[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
+|[sum()](sum-aggfunction.md)|Returns the sum of the elements withing the group|
+|[variance()](variance-aggfunction.md)|Returns the variance across the group|
+
+## Aggregates default values
+
+The following table summarizes the default values of aggregations
+
+Operator       |Default value                         
+---------------|------------------------------------
+ `count()`, `countif()`, `dcount()`, `dcountif()`         |   0                            
+ `make_set()`, `make_list()`          |    empty dynamic array              ([])          
+ `any()`, `arg_max()`. `arg_min()`, `avg()`, `buildschema()`, `hll()`, `max()`, `min()`, `percentiles()`, `stdev()`, `sum()`, `sumif()`, `tdigest()`, `variance()`          |   null                           
+
+ In addition, when using these aggregates over entities which includes null values, the null values will be ignored and won't participate in the calculation (See examples below).
+
+## Examples
+
+![alt text](./Images/aggregations/01.png "01")
+
+**Example**
+
+Determine what unique combinations of
+`ActivityType` and `CompletionStatus` there are in a table. Note that
+there are no aggregation functions, just group-by keys. The output will just show the columns for those results:
+
+```
+Activities | summarize by ActivityType, completionStatus
+```
+
+|`ActivityType`|`completionStatus`
+|---|---
+|`dancing`|`started`
+|`singing`|`started`
+|`dancing`|`abandoned`
+|`singing`|`completed`
+
+**Example**
+
+Finds the minimum and maximum timestamp of all records in the Activities table. There is no group-by clause, so there is just one row in the output:
+
+```
+Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
+```
+
+|`Min`|`Max`
+|---|---
+|`1975-06-09 09:21:45` | `2015-12-24 23:45:00`
+
+**Example**
+
+Create a row for each continent, showing a count of the cities in which activities occur. Because there are few values for "continent", no grouping function is needed in the 'by' clause:
+
+    Activities | summarize cities=dcount(city) by continent
+
+|`cities`|`continent`
+|---:|---
+|`4290`|`Asia`|
+|`3267`|`Europe`|
+|`2673`|`North America`|
+
+
+**Example**
+
+The following example calculates a  histogram for each activity
+type. Because `Duration` has many values, we use `bin` to group its values into 10-minute intervals:
+
+```
+Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
+```
+
+|`count_`|`ActivityType`|`length`
+|---:|---|---
+|`354`| `dancing` | `0:00:00.000`
+|`23`|`singing` | `0:00:00.000`
+|`2717`|`dancing`|`0:10:00.000`
+|`341`|`singing`|`0:10:00.000`
+|`725`|`dancing`|`0:20:00.000`
+|`2876`|`singing`|`0:20:00.000`
+|...
+
+**Examples for the aggregates default values**
+
+When the input of summarize operator that has at least one group-by key is empty then it's result is empty too.
+
+When the input of summarize operator that doesn't have any group-by key is empty, then the result is the default values of the aggregates used in the summarize:
+
+<!-- csl -->
+```
+range x from 1 to 10 step 1
+| where 1 == 2
+| summarize any(x), arg_max(x, x), arg_min(x, x), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
+
+
+```
+
+|any_x|max_x|max_x_x|min_x|min_x_x|avg_x|schema_x|max_x1|min_x1|percentile_x_55|hll_x|stdev_x|sum_x|sumif_x|tdigest_x|variance_x|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|||||||||||||||||
+
+<!-- csl -->
+```
+range x from 1 to 10 step 1
+| where 1 == 2
+| summarize  count(x), countif(x > 0) , dcount(x), dcountif(x, x > 0)
+```
+
+|count_x|countif_|dcount_x|dcountif_x|
+|---|---|---|---|
+|0|0|0|0|
+
+<!-- csl -->
+```
+range x from 1 to 10 step 1
+| where 1 == 2
+| summarize  make_set(x), make_list(x)
+```
+
+|set_x|list_x|
+|---|---|
+|[]|[]|
+
+The aggregate avg sums all the non-nulls and counts only those which participated in the calculation (will not take nulls into account).
+
+<!-- csl -->
+```
+range x from 1 to 2 step 1
+| extend y = iff(x == 1, real(null), real(5))
+| summarize sum(y), avg(y)
+```
+
+|sum_y|avg_y|
+|---|---|
+|5|5|
+
+The regular count will count nulls: 
+
+<!-- csl -->
+```
+range x from 1 to 2 step 1
+| extend y = iff(x == 1, real(null), real(5))
+| summarize count(y)
+```
+
+|count_y|
+|---|
+|2|
+
+<!-- csl -->
+```
+range x from 1 to 2 step 1
+| extend y = iff(x == 1, real(null), real(5))
+| summarize make_set(y), make_set(y)
+```
+
+|set_y|set_y1|
+|---|---|
+|[5.0]|[5.0]|

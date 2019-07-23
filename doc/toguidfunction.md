@@ -1,0 +1,23 @@
+# toguid()
+
+Converts input to [`guid`](./scalar-data-types/guid.md) representation.
+
+<!-- csl -->
+```
+toguid("70fc66f7-8279-44fc-9092-d364d70fce44") == guid("70fc66f7-8279-44fc-9092-d364d70fce44")
+```
+
+**Syntax**
+
+`toguid(`*Expr*`)`
+
+**Arguments**
+
+* *Expr*: Expression that will be converted to [`guid`](./scalar-data-types/guid.md) scalar. 
+
+**Returns**
+
+If conversion is successful, result will be a [`guid`](./scalar-data-types/guid.md) scalar.
+If conversion is not successful, result will be `null`.
+
+*Note*: Prefer using [guid()](./scalar-data-types/guid.md) when possible.

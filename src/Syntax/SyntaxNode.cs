@@ -1,0 +1,190 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Kusto.Language.Editor;
+
+namespace Kusto.Language.Syntax
+{
+    using Utils;
+
+    /// <summary>
+    /// A non-terminal element in the syntax (contains one or more nodes/tokens/lists).
+    /// </summary>
+    public abstract partial class SyntaxNode : SyntaxElement
+    {
+        private int fullWidth;
+
+        protected SyntaxNode(IReadOnlyList<Diagnostic> diagnostics)
+            : base(diagnostics)
+        {
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            this.fullWidth = this.ComputeFullWidth();
+            //Ensure.AreEqual(this.fullWidth, this.ToString().Length);
+        }
+
+        public override int FullWidth => this.fullWidth;
+
+        /// <summary>
+        /// Creates a copy of this <see cref="SyntaxNode"/>
+        /// </summary>
+        public new SyntaxNode Clone() => (SyntaxNode)this.CloneCore();
+
+        public abstract void Visit(SyntaxVisitor visitor);
+
+        public abstract TResult Visit<TResult>(SyntaxVisitor<TResult> visitor);
+
+        public abstract TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context);
+    }
+
+    public partial class Expression
+    {
+        /// <summary>
+        /// True if the expression is a literal.
+        /// </summary>
+        public virtual bool IsLiteral => false;
+
+        /// <summary>
+        /// The value of the literal expression.
+        /// </summary>
+        public virtual object LiteralValue => null;
+
+        /// <summary>
+        /// True if the expression is the selector of a path or element expression.
+        /// </summary>
+        public bool IsSelector => this.IsPathSelector || this.IsElementSelector;
+
+        /// <summary>
+        /// True if the expression is the selector of a path expression (dotted path)
+        /// </summary>
+        public bool IsPathSelector =>
+                this.Parent is PathExpression pe && pe.Selector == this;
+
+        /// <summary>
+        /// True if the expression is the selector of an element expression
+        /// </summary>
+        public bool IsElementSelector =>
+                this.Parent is ElementExpression ee && ee.Selector == this;
+    }
+
+    public partial class LiteralExpression
+    {
+        public override bool IsLiteral => true;
+
+        public override object LiteralValue => this.Token.Value;
+    }
+
+    public partial class CompoundStringLiteralExpression
+    {
+        public override bool IsLiteral => true;
+
+        private string literalValue;
+
+        public override object LiteralValue
+        {
+            get
+            {
+                if (this.literalValue == null)
+                {
+                    this.literalValue = string.Concat(this.Tokens.Select(t => t.Value));
+                }
+
+                return this.literalValue;
+            }
+        }
+    }
+
+    public partial class DynamicExpression
+    {
+        public override bool IsLiteral => true;
+
+        public override object LiteralValue
+        {
+            get
+            {
+                if (this.Kind == SyntaxKind.NullLiteralExpression)
+                {
+                    return null;
+                }
+                else
+                {
+                    return this.Expression.ToString(IncludeTrivia.Minimal);
+                }
+            }
+        }
+    }
+
+    public partial class NameDeclaration
+    {
+        public string SimpleName => this.Name.SimpleName;
+
+        public NameDeclaration(SyntaxToken nameToken, IReadOnlyList<Diagnostic> diagnostics = null)
+            : this(new TokenName(nameToken), diagnostics)
+        {
+        }
+    }
+
+    public partial class NameReference
+    {
+        public string SimpleName => this.Name.SimpleName;
+
+        public NameReference(Name name, IReadOnlyList<Diagnostic> diagnostics = null)
+            : this(name, Symbols.SymbolMatch.Default, diagnostics)
+        {
+        }
+
+        public NameReference(SyntaxToken nameToken, IReadOnlyList<Diagnostic> diagnostics = null)
+            : this(new TokenName(nameToken), diagnostics)
+        {
+        }
+    }
+
+    public partial class Name
+    {
+        public abstract string SimpleName { get; }
+    }
+
+    public partial class TokenName
+    {
+        public override string SimpleName => this.Name.ValueText;
+    }
+
+    public partial class BrackettedName
+    {
+        public override string SimpleName => (this.Name.LiteralValue as string) ?? "";
+    }
+
+    public partial class BracedName
+    {
+        public override string SimpleName => this.Name.ValueText;
+    }
+
+    public partial class WildcardedName
+    {
+        public override string SimpleName => this.Pattern.ValueText;
+    }
+
+    public partial class NamedParameter
+    {
+        public override CompletionHint GetCompletionHint(int index)
+        {
+            if (index == 2)
+            {
+                return this.ExpressionHint;
+            }
+            else
+            {
+                return base.GetCompletionHint(index);
+            }
+        }
+    }
+
+    public partial class PartitionExpression
+    {
+        public bool IsSubquery => this.OpenParen.Kind == SyntaxKind.OpenParenToken;
+    }
+}
