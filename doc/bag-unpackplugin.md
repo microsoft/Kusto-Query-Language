@@ -1,3 +1,14 @@
+---
+title: bag_unpack plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes bag_unpack plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/07/2019
+---
 # bag_unpack plugin
 
 The `bag_unpack` plugin unpacks a single column of type `dynamic`
@@ -48,8 +59,7 @@ all the rules for a tabular schema. In particular:
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 datatable(d:dynamic)
 [
     dynamic({"Name": "John", "Age":20}),

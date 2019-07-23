@@ -1,3 +1,14 @@
+---
+title: strcat_array() - Azure Data Explorer | Microsoft Docs
+description: This article describes strcat_array() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # strcat_array()
 
 Creates a concatenated string of array values using specified delimiter.
@@ -17,8 +28,7 @@ Array values, concatenated to a single string.
 
 **Examples**
   
-<!-- csl -->
-```
+```kusto
 print str = strcat_array(dynamic([1, 2, 3]), "->")
 ```
 

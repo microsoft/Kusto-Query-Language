@@ -1,3 +1,14 @@
+---
+title: externaldata operator - Azure Data Explorer | Microsoft Docs
+description: This article describes externaldata operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 07/17/2019
+---
 # externaldata operator
 
 The `externaldata` operator returns a table whose schema is defined in the query itself, and whose data is read from an external raw file.
@@ -25,8 +36,7 @@ The `externaldata` operator returns a data table of the given schema, whose data
 
 The following example shows you how to find all the records in a table whose `UserID` column falls into a known set of IDs, held (one per line) in an external blob. Because the set is indirectly referenced by the query, it can be very large.
 
-<!-- csl -->
-```
+```kusto
 Users
 | where UserID in ((externaldata (UserID:string) [
     @"https://storageaccount.blob.core.windows.net/storagecontainer/users.txt"

@@ -1,3 +1,14 @@
+---
+title: extent_id() - Azure Data Explorer | Microsoft Docs
+description: This article describes extent_id() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # extent_id()
 
 Returns a unique identifier that identifies the data shard ("extent") that the current record resides in. 
@@ -21,8 +32,7 @@ column `ActivityId`. It demonstrates that some query operators (here,
 the `where` operator, but this is also true for `extend` and `project`)
 preserve the information about the data shard hosting the record.
 
-<!-- csl -->
-```
+```kusto
 T
 | where Timestamp > ago(1h)
 | where ActivityId == 'dd0595d4-183e-494e-b88e-54c52fe90e5a'

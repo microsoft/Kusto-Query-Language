@@ -1,3 +1,14 @@
+---
+title: series_fit_2lines() - Azure Data Explorer | Microsoft Docs
+description: This article describes series_fit_2lines() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_fit_2lines()
 
 Applies two segments linear regression on a series, returning multiple columns.  
@@ -39,8 +50,7 @@ extend (rs, si, v)=`series_fit_2lines(`*x*`)`
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print id=' ', x=range(bin(now(), 1h)-11h, bin(now(), 1h), 1h), y=dynamic([1,2.2, 2.5, 4.7, 5.0, 12, 10.3, 10.3, 9, 8.3, 6.2])
 | extend (Slope,Interception,RSquare,Variance,RVariance,LineFit)=series_fit_line(y), (RSquare2, SplitIdx, Variance2,RVariance2,LineFit2)=series_fit_2lines(y)
 | project id, x, y, LineFit, LineFit2

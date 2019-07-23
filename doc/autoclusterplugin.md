@@ -1,7 +1,17 @@
+---
+title: autocluster plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes autocluster plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 05/26/2019
+---
 # autocluster plugin
 
-<!-- csl -->
-```
+```kusto
 T | evaluate autocluster()
 ```
 
@@ -59,8 +69,7 @@ Available arguments:
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where monthofyear(StartTime) == 5
 | extend Damage = iff(DamageCrops + DamageProperty > 0 , "YES" , "NO")
@@ -74,8 +83,7 @@ StormEvents
 |2|898|15.3|TEXAS||
 
 **Example with custom wildcards**
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where monthofyear(StartTime) == 5
 | extend Damage = iff(DamageCrops + DamageProperty > 0 , "YES" , "NO")
@@ -97,4 +105,3 @@ StormEvents
 
 * AutoCluster is largely based on the Seed-Expand algorithm from the following paper: [Algorithms for Telemetry Data Mining using Discrete Attributes](https://www.scitepress.org/DigitalLibrary/PublicationsDetail.aspx?ID=d5kcrO+cpEU=&t=1). 
 
-<#ifdef MICROSOFT>If you have questions about autocluster or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

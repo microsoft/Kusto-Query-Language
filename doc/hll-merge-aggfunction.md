@@ -1,3 +1,14 @@
+---
+title: hll_merge() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes hll_merge() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/15/2019
+---
 # hll_merge() (aggregation function)
 
 Merges HLL results across the group into single HLL value.

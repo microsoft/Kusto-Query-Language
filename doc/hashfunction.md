@@ -1,3 +1,14 @@
+---
+title: hash() - Azure Data Explorer | Microsoft Docs
+description: This article describes hash() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # hash()
 
 Returns a hash value for the input value.
@@ -27,8 +38,7 @@ The hash value of the given scalar, modulo the given mod value (if specified).
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 hash("World")                   // 1846988464401551951
 hash("World", 100)              // 51 (1846988464401551951 % 100)
 hash(datetime("2015-01-01"))    // 1380966698541616202
@@ -37,8 +47,7 @@ hash(datetime("2015-01-01"))    // 1380966698541616202
 The following example uses the hash function to run a query on 10% of the data,
 It is helpful to use the hash function for sampling the data when assuming the value is uniformly distributed (In this example StartTime value)
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where hash(StartTime, 10) == 0
 | summarize StormCount = count(), TypeOfStorms = dcount(EventType) by State 

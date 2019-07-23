@@ -1,9 +1,19 @@
+---
+title: rolling_percentile plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes rolling_percentile plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # rolling_percentile plugin
 
 Returns an estimate for the specified percentile of the *ValueColumn* population in a rolling (sliding) *BinsPerWindow* size window per *BinSize*.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate rolling_percentile(ValueColumn, Percentile, IndexColumn, BinSize, BinsPerWindow)
 ```
 
@@ -39,8 +49,7 @@ Output table schema is:
 
 The next query calculates a 3-day median value in daily granularity. Each row in the output represents the median value for the last 3 bins (days), including the bin itself.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let T = 
 range idx from 0 to 24*10-1 step 1
 | project Timestamp = datetime(2018-01-01) + 1h*idx, val=idx+1
@@ -66,8 +75,7 @@ range idx from 0 to 24*10-1 step 1
 
 Same example from above, but now also calculates the rolling window partitioned for each value of the dimension.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let T = 
 range idx from 0 to 24*10-1 step 1
 | project Timestamp = datetime(2018-01-01) + 1h*idx, val=idx+1

@@ -1,9 +1,19 @@
+---
+title: where operator (has, contains, startswith, endswith, matches regex) - Azure Data Explorer | Microsoft Docs
+description: This article describes where operator (has, contains, startswith, endswith, matches regex) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/10/2019
+---
 # where operator (has, contains, startswith, endswith, matches regex)
 
 Filters a table to the subset of rows that satisfy a predicate.
 
-<!-- csl -->
-```
+```kusto
 T | where fruit=="apple"
 ```
 
@@ -46,8 +56,7 @@ For a summary of available numeric operators, see [Numerical operators](./numope
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 Traces
 | where Timestamp > ago(1h)
     and Source == "MyCluster"
@@ -61,8 +70,7 @@ Notice that we put the comparison between two columns last, as it can't utilize 
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 Traces | where * has "Kusto"
 ```
 

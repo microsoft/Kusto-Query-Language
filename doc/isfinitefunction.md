@@ -1,3 +1,14 @@
+---
+title: isfinite() - Azure Data Explorer | Microsoft Docs
+description: This article describes isfinite() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # isfinite()
 
 Returns whether input is a finite value (is neither infinite nor NaN).
@@ -22,8 +33,7 @@ A non-zero value (true) if x is finite; and zero (false) otherwise.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 range x from -1 to 1 step 1
 | extend y = 0.0
 | extend div = 1.0*x/y

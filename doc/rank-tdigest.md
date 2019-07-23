@@ -1,3 +1,14 @@
+---
+title: rank_tdigest() - Azure Data Explorer | Microsoft Docs
+description: This article describes rank_tdigest() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # rank_tdigest()
 
 Calculates the approximate rank of the value in a set. 
@@ -24,8 +35,7 @@ The rank foreach value in a data set.
 
 In a sorted list (1-1000), The rank of 685 is it's index:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 1000 step 1
 | summarize t_x=tdigest(x)
 | project rank_of_685=rank_tdigest(t_x, 685)
@@ -37,8 +47,7 @@ range x from 1 to 1000 step 1
 
 This query calculates the rank of value 4490$ over all damage properties costs :
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | summarize tdigestRes = tdigest(DamageProperty)
 | project rank_of_4490=rank_tdigest(tdigestRes, 4490) 
@@ -51,8 +60,7 @@ StormEvents
 
 Getting the estimated percentage of the rank (by dividing by the set size):
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | summarize tdigestRes = tdigest(DamageProperty), count()
 | project rank_tdigest(tdigestRes, 4490) * 100.0 / count_
@@ -66,8 +74,7 @@ StormEvents
 
 The percentile 85 of the damage properties costs is 4490$ :
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | summarize tdigestRes = tdigest(DamageProperty)
 | project percentile_tdigest(tdigestRes, 85, typeof(long))
@@ -77,6 +84,5 @@ StormEvents
 |`percentile_tdigest_tdigestRes`|
 |-------------------------------|
 |`4490`                         |
-
 
 

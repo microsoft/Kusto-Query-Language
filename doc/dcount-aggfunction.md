@@ -1,3 +1,14 @@
+---
+title: dcount() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes dcount() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/15/2019
+---
 # dcount() (aggregation function)
 
 The `dcount()` aggregation function returns an estimate for the number of
@@ -20,8 +31,7 @@ Returns an estimate of the number of distinct values of *Expr* in the group.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 PageViewLog | summarize countries=dcount(country) by continent
 ```
 
@@ -36,16 +46,14 @@ inputs may have an effect on its output).
 
 To get an accurate count of distinct values of `V` grouped by `G`:
 
-<!-- csl -->
-```
+```kusto
 T | summarize by V, G | summarize count() by G
 ```
 
 This calculation will require much internal memory since distinct values of `V` are multiplied by the number of distinct values of `G`;
 Therefore, it may result in memory errors or large execution times. `dcount()`provides a fast and reliable alternative:
 
-<!-- csl -->
-```
+```kusto
 T | summarize dcount(B) by G | count
 ```
 
@@ -79,4 +87,3 @@ The following depicts the probability distribution function of the relative
 estimation error (in percentages) for all supported accuracy settings:
 
 ![alt text](./images/aggregations/hll-error-distribution.png "hll-error-distribution")
-

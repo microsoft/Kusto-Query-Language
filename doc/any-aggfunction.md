@@ -1,3 +1,14 @@
+---
+title: any() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes any() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # any() (aggregation function)
 
 Returns random non-empty value from the specified expression values.
@@ -29,8 +40,7 @@ When used used with a single parameter (single column) - `any()` will return a n
 
 Show Random Continent:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(Continent)
 ```
 
@@ -39,8 +49,7 @@ Continents | summarize any(Continent)
 
 Show all the details for a random row:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(*) 
 ```
 
@@ -49,8 +58,7 @@ Continents | summarize any(*)
 
 Show all the details for each random continent:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(*) by Continent
 ```
 

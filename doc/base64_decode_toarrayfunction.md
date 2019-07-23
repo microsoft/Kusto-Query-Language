@@ -1,3 +1,14 @@
+---
+title: base64_decode_toarray() - Azure Data Explorer | Microsoft Docs
+description: This article describes base64_decode_toarray() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 06/22/2019
+---
 # base64_decode_toarray()
 
 Decodes a base64 string to an array of long values.
@@ -19,8 +30,7 @@ Returns array of long values ecoded from base64 string.
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print Quine=base64_decode_toarray("S3VzdG8=")  
 // 'K', 'u', 's', 't', 'o'
 ```
@@ -31,8 +41,7 @@ print Quine=base64_decode_toarray("S3VzdG8=")
 
 Trying to decode a base64 string which was generated from invalid UTF-8 encoding will return null:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print Empty=base64_decode_toarray("U3RyaW5n0KHR0tGA0L7Rh9C60LA=")
 ```
 

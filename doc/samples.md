@@ -1,3 +1,14 @@
+---
+title: Samples - Azure Data Explorer | Microsoft Docs
+description: This article describes Samples in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/28/2019
+---
 # Samples
 
 Below are a few common query needs and how the Kusto query language can be used
@@ -7,8 +18,7 @@ to meet them.
 
 Project two or more columns and use them as the x and y axis of a chart:
 
-<!-- csl: https://help.kusto.windows.net/Samples  -->
-``` 
+```kusto 
 StormEvents
 | where isnotempty(EndLocation) 
 | summarize event_count=count() by EndLocation
@@ -38,8 +48,7 @@ Let's suppose we have a log of events, in which some events mark the start or en
 
 Every event has an SessionId, so the problem is to match up the start and stop events with the same id.
 
-<!-- csl -->
-```
+```kusto
 let Events = MyLogTable | where ... ;
 
 Events
@@ -65,8 +74,7 @@ Use [`let`](./letstatement.md) to name a projection of the table that is pared d
 
 Now let's suppose that the start and stop events don't conveniently have a session id that we can match on. But we do have an IP address of the client where the session took place. Assuming each client address only conducts one session at a time, we can match each start event to the next stop event from the same IP address.
 
-<!-- csl -->
-```
+```kusto
 Events 
 | where Name == "Start" 
 | project City, ClientIp, StartTime = timestamp
@@ -107,8 +115,7 @@ Then we can add some code to count the durations in conveniently-sized bins. We'
 
 ### Real example
 
-<!-- csl -->
-```
+```kusto
 Logs  
 | filter ActivityId == "ActivityId with Blablabla" 
 | summarize max(Timestamp), min(Timestamp)  
@@ -192,8 +199,7 @@ We want a chart in 1-minute bins, so we want to create something that, at each 1
 
 Here's an intermediate result:
 
-<!-- csl -->
-```
+```kusto
 X | extend samples = range(bin(StartTime, 1m), Stop, 1m)
 ```
 
@@ -207,8 +213,7 @@ X | extend samples = range(bin(StartTime, 1m), Stop, 1m)
 
 But instead of keeping those arrays, we'll expand them using [mv-expand](./mvexpandoperator.md):
 
-<!-- csl -->
-```
+```kusto
 X | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 ```
 
@@ -226,8 +231,7 @@ X | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 
 We can now group these by sample time, counting the occurrences of each activity:
 
-<!-- csl -->
-```
+```kusto
 X
 | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 | summarize count(SessionId) by bin(todatetime(samples),1m)
@@ -253,8 +257,7 @@ When the `summarize` operator is applied over a group key that consists of a
 `datetime` column, one normally "bins" those values to fixed-width bins.
 For example:
 
-<!-- csl -->
-```
+```kusto
 let StartTime=ago(12h);
 let StopTime=now()
 T
@@ -271,8 +274,7 @@ no corresponding row in `T`.
 Often, it is desired to "pad" the table with those bins. Here's one way to do
 it:
 
-<!-- csl -->
-```
+```kusto
 let StartTime=ago(12h);
 let StopTime=now()
 T
@@ -307,8 +309,7 @@ There are many interesting use cases for leveraging machine learning algorithms 
 
 Our journey starts with looking for anomalies in the error rate of a specific Bing Inferences service. The Logs table has 65B records, and the simple query below filters 250K errors, and creates a time series data of errors count that utilizes anomaly detection function[series_decompose_anomalies](series-decompose-anomaliesfunction.md). The anomalies detected by the Kusto service, and are highlighted as red dots on the time series chart.
 
-<!-- csl -->
-```
+```kusto
 Logs
 | where Timestamp >= datetime(2015-08-22) and Timestamp < datetime(2015-08-23) 
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main" 
@@ -318,8 +319,7 @@ Logs
 
 The service identified few time buckets with suspicious error rate. I'm using Kusto to zoom into this time frame, running a query that aggregates on the ‘Message' column trying to look for the top errors. I've trimmed the relevant parts out of the entire stack trace of the message to better fit into the page. You can see that I had nice success with the top eight errors, but then reached a long tail of errors since the error message was created by a format string that contained changing data. 
 
-<!-- csl -->
-```
+```kusto
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main"
@@ -343,8 +343,7 @@ Logs
 
 This is where the new `reduce` operator comes to help. The `reduce` operator identified 63 different errors as originated by the same trace instrumentation point in the code, and helped me focus on additional meaningful error trace in that time window.
 
-<!-- csl -->
-```
+```kusto
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main"
@@ -366,8 +365,7 @@ Logs
 
 Now that I have a good view into the top errors that contributed to the detected anomalies, I want to understand the impact of these errors across my system. The 'Logs' table contains additional dimensional data such as 'Component', 'Cluster', etc... The new 'autocluster' plugin can help me derive that insight with a simple query. In this example below, I can clearly see that each of the top four errors are specific to a component, and while the top three errors are specific to DB4 cluster, the fourth one happens across all clusters.
 
-<!-- csl -->
-```
+```kusto
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main"
@@ -410,8 +408,7 @@ The two approaches below demonstrate how this can be achieved. 
 
 The approach below shows how the mapping can be achieved using a dynamic dictionary and dynamic accessors.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Data set definition
 let Source = datatable(DeviceModel:string, Count:long)
 [
@@ -447,8 +444,7 @@ The approach below shows how the mapping can be achieved using a persistent tabl
  
 Create the mapping table (just once):
 
-<!-- csl -->
-```
+```kusto
 .create table Devices (DeviceModel: string, FriendlyName: string) 
 
 .ingest inline into table Devices 
@@ -467,8 +463,7 @@ Content of Devices now:
 
 Same trick for creating test table Source:
 
-<!-- csl -->
-```
+```kusto
 .create table Source (DeviceModel: string, Count: int)
 
 .ingest inline into table Source ["iPhone5,1",32]["iPhone3,2",432]["iPhone7,2",55]["iPhone5,2",66]
@@ -477,8 +472,7 @@ Same trick for creating test table Source:
 
 Join and project:
 
-<!-- csl -->
-```
+```kusto
 Devices  
 | join (Source) on DeviceModel  
 | project FriendlyName, Count
@@ -500,8 +494,7 @@ In many cases one wants to join the results of a query with some ad-hoc dimensio
 table that is not stored in the database. It is possible to define an expression
 whose result is a table scoped to a single query by doing something like this:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 // Create a query-time dimension table using datatable
 let DimTable = datatable(EventType:string, Code:string)
   [
@@ -516,8 +509,7 @@ DimTable
 
 Here's a slightly more complex example:
 
-<!-- csl -->
-```
+```kusto
 // Create a query-time dimension table using datatable
 let TeamFoundationJobResult = datatable(Result:int, ResultString:string)
   [
@@ -547,8 +539,7 @@ column, where "latest" is defined as "having the highest value of `timestamp`".
 This can be done using the [top-nested operator](topnestedoperator.md).
 First we provide the query, and then we'll explain it:
 
-<!-- csl -->
-```
+```kusto
 datatable(id:string, timestamp:datetime, bla:string)           // (1)
   [
   "Barak",  datetime(2015-01-01), "1",
@@ -601,8 +592,7 @@ and then divide each value of this column by the total. It is possible to do
 so for arbitrary results by giving these results a name using the
 [as operator](asoperator.md):
 
-<!-- csl -->
-```
+```kusto
 // The following table literal represents a long calculation
 // that ends up with an anonymous tabular value:
 datatable (SomeInt:int, SomeSeries:string) [

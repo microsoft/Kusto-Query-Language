@@ -1,3 +1,14 @@
+---
+title: pack() - Azure Data Explorer | Microsoft Docs
+description: This article describes pack() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 01/10/2019
+---
 # pack()
 
 Creates a `dynamic` object (property bag) from a list of names and values.
@@ -17,8 +28,7 @@ Alias to `pack_dictionary()` function.
 
 The following example returns `{"Level":"Information","ProcessID":1234,"Data":{"url":"www.bing.com"}}`:
 
-<!-- csl -->
-```
+```kusto
 pack("Level", "Information", "ProcessID", 1234, "Data", pack("url", "www.bing.com"))
 ```
 
@@ -41,8 +51,7 @@ Table MmsMessages
 |555-555-1234 |555-555-1213 | 300 | png | Pic3
 
 The following query:
-<!-- csl -->
-```
+```kusto
 SmsMessages 
 | extend Packed=pack("CharsCount", CharsCount) 
 | union withsource=TableName kind=inner 

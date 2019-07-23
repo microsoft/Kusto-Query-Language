@@ -1,3 +1,14 @@
+---
+title: The string data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The string data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 11/25/2018
+---
 # The string data type
 
 The `string` data type represents a Unicode string. (Kusto strings are encoded in UTF-8 and by default are limited to 1MB.)
@@ -24,8 +35,7 @@ only by whitespace and comments, are automatically concatenated together to
 form a new string literal (until such substitution cannot be made).
 For example, the following expressions all yields `13`:
 
-<!-- csl -->
-```
+```kusto
 print strlen("Hello"', '@"world!"); // Nothing between them
 
 print strlen("Hello" ', ' @"world!"); // Separated by whitespace only
@@ -37,8 +47,7 @@ print strlen("Hello"
 
 ## Examples
 
-<!-- csl -->
-```
+```kusto
 // Simple string notation
 print s1 = 'some string', s2 = "some other string"
 
@@ -74,8 +83,7 @@ star (`*`) characters, so that they are not available for later analysis.
 An obfuscated string literal can be formed by taking a "regular" string literal,
 and prepending a `h` or a `H` character in front of it. For example:
 
-<!-- csl -->
-```
+```kusto
 h'hello'
 h@'world'
 h"hello"
@@ -86,8 +94,7 @@ h"hello"
 > useful in those cases to split the literal into a non-secret part and a secret
 > part, then only mark the secret part as obfuscated. For example:
 
-<!-- csl -->
-```
+```kusto
 print x="https://contoso.blob.core.windows.net/container/blob.txt?"
   h'sv=2012-02-12&se=2013-04-13T0...'
 ```

@@ -1,9 +1,19 @@
+---
+title: between operator - Azure Data Explorer | Microsoft Docs
+description: This article describes between operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # between operator
 
 Matches the input that is inside the inclusive range.
 
-<!--- csl --->
-```
+```kusto
 Table1 | where Num1 between (1 .. 10)
 Table1 | where Time between (datetime(2017-01-01) .. datetime(2017-01-01))
 ```
@@ -33,8 +43,7 @@ Rows in *T* for which the predicate of (*expr* >= *leftRange* and *expr* <= *rig
 
 **Filtering numeric values using 'between' operator**  
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 100 step 1
 | where x between (50 .. 55)
 ```
@@ -51,8 +60,7 @@ range x from 1 to 100 step 1
 **Filtering datetime using 'between' operator**  
 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. datetime(2007-07-30))
 | count 
@@ -63,8 +71,7 @@ StormEvents
 |476|
 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. 3d)
 | count 

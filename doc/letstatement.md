@@ -1,3 +1,14 @@
+---
+title: Let statement - Azure Data Explorer | Microsoft Docs
+description: This article describes Let statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Let statement
 
 Let statements bind names to expressions. For the rest of the scope in which
@@ -72,8 +83,7 @@ Lambda expressions have the following syntax:
 Multiple let statements can be used with `;` delimiter between them as shown in the following example.
 The last statement must be a valid query expression: 
 
-<!-- csl -->
-```
+```kusto
 let start = ago(5h); 
 let period = 2h; 
 T | where Time > start and Time < start + period | ...
@@ -82,8 +92,7 @@ T | where Time > start and Time < start + period | ...
 Nested let statements are allowed and can be used inside a lambda expression.
 Let statements and Arguments are visible in the current and inner scope of the Function body.
 
-<!-- csl -->
-```
+```kusto
 let start = ago(5h); 
 let period = 2h; 
 T | where Time > start and Time < start + period | ...
@@ -96,24 +105,21 @@ T | where Time > start and Time < start + period | ...
 The following example binds the name `x` to the scalar literal `1`,
 and then uses it in a tabular expression statement:
 
-<!-- csl -->
-```
+```kusto
 let x = 1;
 range y from x to x step x
 ```
 
 Same example, but in this case - the name of the let statement is given using `['name']` notion:
 
-<!-- csl -->
-```
+```kusto
 let ['x'] = 1;
 range y from x to x step x
 ```
 
 Yet another example that uses let for scalar values:
 
-<!-- csl -->
-```
+```kusto
 let n = 10;  // number
 let place = "Dallas";  // string
 let cutoff = ago(62d); // datetime
@@ -127,8 +133,7 @@ Events
 
 The following example defines two let statements where one statement (`foo2`) uses another (`foo1`).
 
-<!-- csl -->
-```
+```kusto
 let foo1 = (_start:long, _end:long, _step:long) { range x from _start to _end step _step};
 let foo2 = (_step:long) { foo1(1, 100, _step)};
 foo2(2) | count
@@ -139,8 +144,7 @@ foo2(2) | count
 
 [`materialize`](materializefunction.md) function allows caching sub-query results during the time of query execution. 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let totalPagesPerDay = PageViews
 | summarize by Page, Day = startofday(Timestamp)
 | summarize count() by Day;

@@ -1,3 +1,14 @@
+---
+title: array_split() - Azure Data Explorer | Microsoft Docs
+description: This article describes array_split() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/28/2018
+---
 # array_split()
 
 Splits an array to multiple arrays according to the split indices and packs the generated array in a dynamic array.
@@ -18,8 +29,7 @@ Dynamic array containing N+1 arrays with the values in the range [0..i1), [i1..i
 **Examples**
 
 1.
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print arr=dynamic([1,2,3,4,5]) 
 | extend arr_split=array_split(arr, 2)
 ```
@@ -30,8 +40,7 @@ print arr=dynamic([1,2,3,4,5])
 
 
 2.
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print arr=dynamic([1,2,3,4,5]) 
 | extend arr_split=array_split(arr, dynamic([1,3]))
 ```

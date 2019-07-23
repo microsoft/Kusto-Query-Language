@@ -1,9 +1,19 @@
+---
+title: todouble()/toreal() - Azure Data Explorer | Microsoft Docs
+description: This article describes todouble()/toreal() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # todouble()/toreal()
 
 Converts the input to a value of type `real`. (`todouble()` and `toreal()` are synonyms.)
 
-<!-- csl -->
-```
+```kusto
 toreal("123.4") == 123.4
 ```
 

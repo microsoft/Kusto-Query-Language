@@ -1,9 +1,19 @@
+---
+title: notbetween operator - Azure Data Explorer | Microsoft Docs
+description: This article describes notbetween operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # !between operator
 
 Matches the input that is outside the inclusive range.
 
-<!--- csl --->
-```
+```kusto
 Table1 | where Num1 !between (1 .. 10)
 Table1 | where Time !between (datetime(2017-01-01) .. datetime(2017-01-01))
 ```
@@ -33,8 +43,7 @@ Rows in *T* for which the predicate of (*expr* < *leftRange* or *expr* > *rightR
 
 **Filtering numeric values using '!between' operator**  
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 10 step 1
 | where x !between (5 .. 9)
 ```
@@ -50,8 +59,7 @@ range x from 1 to 10 step 1
 **Filtering datetime using 'between' operator**  
 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | where StartTime !between (datetime(2007-07-27) .. datetime(2007-07-30))
 | count 
@@ -62,8 +70,7 @@ StormEvents
 |58590|
 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | where StartTime !between (datetime(2007-07-27) .. 3d)
 | count 

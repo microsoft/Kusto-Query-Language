@@ -1,3 +1,14 @@
+---
+title: Set statement - Azure Data Explorer | Microsoft Docs
+description: This article describes Set statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Set statement
 
 The `set` statement is used to set a query option for the duration of the query.
@@ -18,8 +29,7 @@ statements that trail them in program order.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 set querytrace;
 Events | take 100
 ```

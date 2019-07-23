@@ -1,3 +1,14 @@
+---
+title: count operator - Azure Data Explorer | Microsoft Docs
+description: This article describes count operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # count operator
 
 Returns the number of records in the input record set.
@@ -17,7 +28,6 @@ This function returns a table with a single record and column of type
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents | count
 ```

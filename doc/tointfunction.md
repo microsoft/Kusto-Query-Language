@@ -1,9 +1,19 @@
+---
+title: toint() - Azure Data Explorer | Microsoft Docs
+description: This article describes toint() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # toint()
 
 Converts input to integer (signed 32-bit) number representation.
 
-<!-- csl -->
-```
+```kusto
 toint("123") == 123
 ```
 

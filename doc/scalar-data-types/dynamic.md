@@ -1,3 +1,14 @@
+---
+title: The dynamic data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The dynamic data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/18/2019
+---
 # The dynamic data type
 
 The `dynamic` data type is a scalar type that behaves somewhat like a JSON data
@@ -40,8 +51,7 @@ type. A value of this type can be:
 The external representation of a `dynamic` value is JSON. A literal of type `dynamic`
 wraps the actual JSON representation of the value by `dynamic(` and `)`:
 
-<!-- csl -->
-```
+```kusto
 print o=dynamic({"a":123, "b":"hello", "c":[1,2,3], "d":{}})
 | extend a=o.a, b=o.b, c=o.c, d=o.d
 ```
@@ -52,8 +62,7 @@ literals, etc.) This extension over JSON is not available when parsing strings
 (such as when using the `parse_json` function or when ingesting data), but it
 allows one to do this:
 
-<!-- csl -->
-```
+```kusto
 print d=dynamic({"a": datetime(1970-05-11)})
 ```
 
@@ -77,8 +86,7 @@ The following example shows how one might define a table that holds a `dynamic` 
 a `datetime` column) and then ingest into it a single record. it also demonstrates how one
 can encode JSON strings in CSV files:
 
-<!-- csl -->
-```
+```kusto
 // dynamic is just like any other type:
 .create table Logs (Timestamp:datetime, Trace:dynamic)
 

@@ -1,11 +1,21 @@
+---
+title: pivot plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes pivot plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # pivot plugin
 
 Rotates a table by turning the unique values from one column in the input table into multiple columns
 in the output table, and performs aggregations where they are required on any remaining column values 
 that are wanted in the final output.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate pivot(PivotColumn)
 ```
 
@@ -33,8 +43,7 @@ The output schema of the `pivot` plugin is based on the data and therefore query
 
 For each EventType and States starting with 'AL', count the number of events of this type in this state.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | project State, EventType 
 | where State startswith "AL" 
@@ -54,8 +63,7 @@ StormEvents
 
 For each EventType and States starting with 'AR', display the total number of direct deaths.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | project State, EventType, DeathsDirect 
@@ -77,8 +85,7 @@ StormEvents
 
 Result is identical to previous example.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | project State, EventType, DeathsDirect 
@@ -100,8 +107,7 @@ StormEvents
 
 For each event type, source and state, sum the number of direct deaths.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | where DeathsDirect > 0

@@ -1,7 +1,17 @@
+---
+title: narrow plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes narrow plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # narrow plugin
 
-<!-- csl -->
-```
+```kusto
 T | evaluate narrow()
 ```
 
@@ -19,8 +29,7 @@ tables to be displayed comfortably without the need of horizontal scrolling.
 The following example shows an easy way to read the output of the Kusto
 `.show diagnostics` control command.
 
-<!-- csl -->
-```
+```kusto
 .show diagnostics
  | evaluate narrow()
 ```

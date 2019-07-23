@@ -1,3 +1,14 @@
+---
+title: hll_merge() - Azure Data Explorer | Microsoft Docs
+description: This article describes hll_merge() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/15/2019
+---
 # hll_merge()
 
 Merges hll results (scalar version of the aggregate version [`hll_merge()`](hll-merge-aggfunction.md)).
@@ -18,8 +29,7 @@ The result for merging the columns `*Exrp1*`, `*Expr2*`, ... `*ExprN*` to one hl
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net:443/KustoMonitoringPersistentDatabase -->
-```
+```kusto
 range x from 1 to 10 step 1 
 | extend y = x + 10
 | summarize hll_x = hll(x), hll_y = hll(y)

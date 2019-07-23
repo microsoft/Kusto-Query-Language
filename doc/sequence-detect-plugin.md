@@ -1,9 +1,19 @@
+---
+title: sequence_detect plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes sequence_detect plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 05/23/2019
+---
 # sequence_detect plugin
 
 Detects sequence occurrences based on provided predicates.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
 ```
 
@@ -34,8 +44,7 @@ Returns a single table where each row in the table represents a single sequence 
 
 The following query looks on the table StormEvents (weather statistics for 2007) and shows cases where sequence of 'Excessive Heat' was followed by 'Wildfire' within 5 days.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents
 | evaluate sequence_detect(
         StartTime,

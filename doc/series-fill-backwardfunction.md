@@ -1,3 +1,14 @@
+---
+title: series_fill_backward() - Azure Data Explorer | Microsoft Docs
+description: This article describes series_fill_backward() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_fill_backward()
 
 Performs backward fill interpolation of missing values in a series.
@@ -18,8 +29,7 @@ Takes an expression containing dynamic numerical array as input, replaces all in
 
 * In order to apply any interpolation functions after [make-series](make-seriesoperator.md) it is recommended to specify *null* as a default value: 
 
-<!-- csl -->
-```
+```kusto
 make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h), 1h) by Os, Browser
 ```
 
@@ -29,8 +39,7 @@ make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let data = datatable(arr: dynamic)
 [
     dynamic([111,null,36,41,null,null,16,61,33,null,null])   

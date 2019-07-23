@@ -1,16 +1,25 @@
+---
+title: summarize operator - Azure Data Explorer | Microsoft Docs
+description: This article describes summarize operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/28/2019
+---
 # summarize operator
 
 Produces a table that aggregates the content of the input table. 
 
-<!-- csl -->
-```
+```kusto
 T | summarize count(), avg(price) by fruit, supplier
 ```
 
 A table that shows the number and average price of each fruit from each supplier. There's a row in the output for each distinct combination of fruit and supplier. The output columns show the count, average price, fruit and supplier. All other input columns are ignored.
 
-<!-- csl -->
-```
+```kusto
 T | summarize count() by price_range=bin(price, 10.0)
 ```
 
@@ -148,8 +157,7 @@ When the input of summarize operator that has at least one group-by key is empty
 
 When the input of summarize operator that doesn't have any group-by key is empty, then the result is the default values of the aggregates used in the summarize:
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 10 step 1
 | where 1 == 2
 | summarize any(x), arg_max(x, x), arg_min(x, x), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
@@ -161,8 +169,7 @@ range x from 1 to 10 step 1
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 |||||||||||||||||
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 10 step 1
 | where 1 == 2
 | summarize  count(x), countif(x > 0) , dcount(x), dcountif(x, x > 0)
@@ -172,8 +179,7 @@ range x from 1 to 10 step 1
 |---|---|---|---|
 |0|0|0|0|
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 10 step 1
 | where 1 == 2
 | summarize  make_set(x), make_list(x)
@@ -185,8 +191,7 @@ range x from 1 to 10 step 1
 
 The aggregate avg sums all the non-nulls and counts only those which participated in the calculation (will not take nulls into account).
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 2 step 1
 | extend y = iff(x == 1, real(null), real(5))
 | summarize sum(y), avg(y)
@@ -198,8 +203,7 @@ range x from 1 to 2 step 1
 
 The regular count will count nulls: 
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 2 step 1
 | extend y = iff(x == 1, real(null), real(5))
 | summarize count(y)
@@ -209,8 +213,7 @@ range x from 1 to 2 step 1
 |---|
 |2|
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 2 step 1
 | extend y = iff(x == 1, real(null), real(5))
 | summarize make_set(y), make_set(y)

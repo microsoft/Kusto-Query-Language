@@ -1,3 +1,14 @@
+---
+title: mv-apply operator - Azure Data Explorer | Microsoft Docs
+description: This article describes mv-apply operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 07/17/2019
+---
 # mv-apply operator
 
 The mv-apply operator expands each record in its input table into a sub-table,
@@ -9,8 +20,7 @@ whose values are arrays of `real` numbers. The following query will locate the
 two biggest values in each `Metric` value, and return the records corresponding
 to these values.
 
-<!-- csl -->
-```
+```kusto
 T | mv-apply Metric to typeof(real) on (top 2 by Metric desc)
 ```
 
@@ -107,8 +117,7 @@ and *SubQuery* has the same syntax of any query statement.
 
 ## Getting the largest element from the array
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let _data =
 range x from 1 to 8 step 1
 | summarize l=make_list(x) by xMod2 = x % 2;
@@ -126,8 +135,7 @@ _data
 
 ## Calculating sum of largest two elments in an array
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let _data =
 range x from 1 to 8 step 1
 | summarize l=make_list(x) by xMod2 = x % 2;
@@ -147,8 +155,7 @@ _data
 
 ## Using `with_itemindex` for working with subset of the array
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let _data =
 range x from 1 to 10 step 1
 | summarize l=make_list(x) by xMod2 = x % 2;
@@ -170,8 +177,7 @@ _data
 
 ## Using `mv-apply` operator to sort the output of `makelist` aggregate by some key
 
-<!-- csl: https://demo12.westus.kusto.windows.net/Datasets -->
-```
+```kusto
 datatable(command:string, command_time:datetime, user_id:string)
 [
 	'chmod',		datetime(2019-07-15),	"user1",

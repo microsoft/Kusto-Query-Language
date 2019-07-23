@@ -1,3 +1,14 @@
+---
+title: Overview - Azure Data Explorer | Microsoft Docs
+description: This article describes Overview in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/07/2019
+---
 # Overview
 
 A Kusto query is a read-only request to process data and return results.
@@ -25,8 +36,7 @@ of the connection information). The data (rows) for that table are then filtered
 by the value of the `StartTime` column, and then filtered by the value of the
 `State` column. The query then returns the count of "surviving" rows.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where StartTime >= datetime(2007-11-01) and StartTime < datetime(2007-12-01)
 | where State == "FLORIDA"  

@@ -1,11 +1,21 @@
+---
+title: activity_engagement plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes activity_engagement plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/20/2019
+---
 # activity_engagement plugin
 
 Calculates activity engagement ratio based on ID column over a sliding timeline window.
 
 activity_engagement plugin can be used for calculating DAU/WAU/MAU (daily/weekly/monthly activities).
 
-<!-- csl -->
-```
+```kusto
 T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 ```
 
@@ -41,8 +51,7 @@ Output table schema is:
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-01-31);
@@ -63,8 +72,7 @@ range _day from _start to _end  step 1d
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-05-31);
@@ -85,8 +93,7 @@ range _day from _start to _end  step 1d
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data with additional dimension (`mod3`).
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-05-31);

@@ -1,3 +1,14 @@
+---
+title: sliding_window_counts plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes sliding_window_counts plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 05/21/2019
+---
 # sliding_window_counts plugin
 
 Calculates counts and distinct count of values in a sliding window over a lookback period, 
@@ -5,8 +16,7 @@ using the technique described [here](samples.md#performing-aggregations-over-a-s
 
 For instance, for each *day*, calculate count and distinct count of users in previous *week*. 
 
-<!-- csl -->
-```
+```kusto
 T | evaluate sliding_window_counts(id, datetime_column, startofday(ago(30d)), startofday(now()), 7d, 1d, dim1, dim2, dim3)
 ```
 
@@ -40,8 +50,7 @@ Output table schema is:
 
 Calculate counts and dcounts for users in past week, for every day in the analysis period. 
 
-<!-- csl -->
-```
+```kusto
 let start = datetime(2017 - 08 - 01);
 let end = datetime(2017 - 08 - 07); 
 let lookbackWindow = 3d;  

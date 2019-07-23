@@ -1,9 +1,19 @@
+---
+title: beta_inv() - Azure Data Explorer | Microsoft Docs
+description: This article describes beta_inv() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # beta_inv()
 
 Returns the inverse of the beta cumulative probability beta density function.
 
-<!-- csl -->
-```
+```kusto
 beta_inv(0.1, 10.0, 50.0)
 ```
 
@@ -37,8 +47,7 @@ Given a value for probability, beta_inv() seeks that value x such that beta_cdf(
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(p:double, alpha:double, beta:double, comment:string)
 [
     0.1, 10.0, 20.0, "Valid input",

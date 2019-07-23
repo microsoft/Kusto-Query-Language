@@ -1,3 +1,14 @@
+---
+title: Queries - Azure Data Explorer | Microsoft Docs
+description: This article describes Queries in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Queries
 
 A query is a read-only operation against a Kusto Engine cluster's
@@ -19,8 +30,7 @@ to delimit operators.
 
 For example:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State == 'FLORIDA' and StartTime > datetime(2000-01-01)
 | count

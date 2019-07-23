@@ -1,3 +1,14 @@
+---
+title: column_ifexists() - Azure Data Explorer | Microsoft Docs
+description: This article describes column_ifexists() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 05/14/2019
+---
 # column_ifexists()
 
 Takes a column name as a string and a default value. Returns a reference to the column if it exists, 
@@ -19,8 +30,7 @@ If *columnName* exists, then the column it refers to. Otherwise - *defaultValue*
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 .create function with (docstring = "Wraps a table query that allows querying the table even if columnName doesn't exist ", folder="My Functions")
 ColumnOrDefault(tableName:string, columnName:string)
 {

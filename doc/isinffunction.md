@@ -1,3 +1,14 @@
+---
+title: isinf() - Azure Data Explorer | Microsoft Docs
+description: This article describes isinf() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # isinf()
 
 Returns whether input is an infinite (positive or negative) value.  
@@ -22,8 +33,7 @@ A non-zero value (true) if x is a positive or negative infinite; and zero (false
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 range x from -1 to 1 step 1
 | extend y = 0.0
 | extend div = 1.0*x/y
@@ -35,4 +45,3 @@ range x from -1 to 1 step 1
 |-1|0|-∞|1|
 |0|0|NaN|0|
 |1|0|∞|1|
-

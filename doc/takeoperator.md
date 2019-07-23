@@ -1,9 +1,19 @@
+---
+title: take operator - Azure Data Explorer | Microsoft Docs
+description: This article describes take operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # take operator
 
 Return up to the specified number of rows.
 
-<!-- csl -->
-```
+```kusto
 T | take 5
 ```
 

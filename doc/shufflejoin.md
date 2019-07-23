@@ -1,3 +1,14 @@
+---
+title: Shuffle Join - Azure Data Explorer | Microsoft Docs
+description: This article describes Shuffle Join in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Shuffle Join
 
 Shuffle join is a semantic-preserving transformation for join that depending on the actual data can yield considerably better performance.
@@ -6,8 +17,7 @@ Shuffle join is a semantic-preserving transformation for join that depending on 
 
 Shuffle join strategy can be set by the query parameter `hint.strategy = shuffle`:
 
-<!-- csl -->
-```
+```kusto
 T | where Event=="Start" | project ActivityId, Started=Timestamp
 | join hint.strategy = shuffle (T | where Event=="End" | project ActivityId, Ended=Timestamp)
   on ActivityId
@@ -20,8 +30,7 @@ It is useful to use the shuffle join strategy when the join key's cardinality is
 
 In addition, it is possible to choose the shuffle keys that will be used by the query parameter `hint.shufflekey = key` :
 
-<!-- csl -->
-```
+```kusto
 customer
 | join kind=leftouter 
 (
@@ -48,8 +57,7 @@ The left table has 15M records where the cardinality of the join key is ~14M, Th
 
 Running the regular strategy of the join, the query ends after ~28 seconds and the memory usage peak is 1.43GB :
 
-<!-- csl-->
-```
+```kusto
 customer
 | join
     orders
@@ -60,8 +68,7 @@ on $left.c_custkey == $right.o_custkey
 
 While using shuffle join strategy, the query ends after ~4 seconds and the memory usage peak is 0.3GB :
 
-<!-- csl-->
-```
+```kusto
 customer
 | join
     hint.strategy = shuffle orders
@@ -86,8 +93,7 @@ The following example shows the improvement on a cluster which has 2 cluster nod
 
 Running the query without the hint will use only 2 partitions (as cluster nodes number) and the following query will take ~1:10 mins :
 
-<!-- csl -->
-```
+```kusto
 lineitem
 | summarize dcount(l_comment), dcount(l_shipdate) by l_partkey
 | join
@@ -99,8 +105,7 @@ on $left.l_partkey == $right.p_partkey
 
 setting partitions number to 10, the query will end after 23 seconds: 
 
-<!-- csl -->
-```
+```kusto
 lineitem
 | summarize dcount(l_comment), dcount(l_shipdate) by l_partkey
 | join

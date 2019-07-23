@@ -1,3 +1,14 @@
+---
+title: series_fit_line() - Azure Data Explorer | Microsoft Docs
+description: This article describes series_fit_line() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_fit_line()
 
 Applies linear regression on a series, returning multiple columns.  
@@ -23,8 +34,7 @@ Takes an expression containing dynamic numerical array as input and performs [li
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print id=' ', x=range(bin(now(), 1h)-11h, bin(now(), 1h), 1h), y=dynamic([2,5,6,8,11,15,17,18,25,26,30,30])
 | extend (RSquare,Slope,Variance,RVariance,Interception,LineFit)=series_fit_line(y)
 | render timechart

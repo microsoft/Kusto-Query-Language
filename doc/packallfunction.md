@@ -1,3 +1,14 @@
+---
+title: pack_all() - Azure Data Explorer | Microsoft Docs
+description: This article describes pack_all() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # pack_all()
 
 Creates a `dynamic` object (property bag) from all the columns of the tabular expression.
@@ -17,8 +28,7 @@ Given a table SmsMessages
 |555-555-1212 |555-555-1234 | 32 
 
 The following query:
-<!-- csl -->
-```
+```kusto
 SmsMessages | extend Packed=pack_all()
 ``` 
 

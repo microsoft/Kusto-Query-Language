@@ -1,3 +1,14 @@
+---
+title: Shuffle summarize - Azure Data Explorer | Microsoft Docs
+description: This article describes Shuffle summarize in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 01/20/2019
+---
 # Shuffle summarize
 
 Shuffle summarize is a semantic-preserving transformation for summarize that depending on the actual data can sometimes yield considerably better performance.
@@ -6,8 +17,7 @@ Shuffle summarize is a semantic-preserving transformation for summarize that dep
 
 Shuffle summarize strategy can be set by the query parameter `hint.strategy = shuffle`:
 
-<!-- csl -->
-```
+```kusto
 T
 | summarize hint.strategy = shuffle count(), avg(price) by supplier
 ```
@@ -18,8 +28,7 @@ Shuffle summarize strategy can provide significant performance benefit when the 
 
 In addition, it is possible to choose the shuffle keys that will be used by the query parameter `hint.shufflekey = key` :
 
-<!-- csl -->
-```
+```kusto
 T
 | summarize sum(price) by supplier, order
 | where sum_price > 100
@@ -28,8 +37,7 @@ T
 
 It is also possible to use more than one shuffle key as in the following example:
 
-<!-- csl -->
-```
+```kusto
 T
 | summarize sum(price) by supplier, order, location
 | where sum_price > 100
@@ -49,8 +57,7 @@ The source table has 150M records and the cardinality of the group by key is 10M
 Running the regular summarize strategy, the query ends after 1:08 and the memory usage peak is ~3GB:
 
 
-<!-- csl -->
-```
+```kusto
 orders
 | summarize arg_max(o_orderdate, o_totalprice) by o_custkey 
 | where o_totalprice < 1000
@@ -64,8 +71,7 @@ orders
 
 While using shuffle summarize strategy, the query ends after ~7 seconds and the memory usage peak is 0.43GB:
 
-<!-- csl -->
-```
+```kusto
 orders
 | summarize hint.strategy = shuffle arg_max(o_orderdate, o_totalprice) by o_custkey 
 | where o_totalprice < 1000
@@ -87,8 +93,7 @@ The following example shows the improvement on a cluster which has 2 cluster nod
 
 Running the query without the hint will use only 2 partitions (as cluster nodes number) and the following query will take ~1:10 mins :
 
-<!-- csl -->
-```
+```kusto
 lineitem	
 | summarize hint.strategy = shuffle dcount(l_comment), dcount(l_shipdate) by l_partkey 
 | consume
@@ -96,8 +101,7 @@ lineitem
 
 setting partitions number to 10, the query will end after 23 seconds: 
 
-<!-- csl -->
-```
+```kusto
 lineitem	
 | summarize hint.strategy = shuffle hint.num_partitions = 10 dcount(l_comment), dcount(l_shipdate) by l_partkey 
 | consume

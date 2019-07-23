@@ -1,9 +1,19 @@
+---
+title: top-hitters operator - Azure Data Explorer | Microsoft Docs
+description: This article describes top-hitters operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 01/02/2019
+---
 # top-hitters operator
 
 Returns an approximation of the first *N* results (assuming skewed distribution of the input).
 
-<!-- csl -->
-```
+```kusto
 T | top-hitters 25 of Page by Views 
 ```
 

@@ -1,3 +1,14 @@
+---
+title: Partitioning and composing intermediate results of aggregations - Azure Data Explorer | Microsoft Docs
+description: This article describes Partitioning and composing intermediate results of aggregations in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/20/2019
+---
 # Partitioning and composing intermediate results of aggregations
 
 Suppose that you want to calculate the count of distinct users over the last seven days every day. One way to do it would be to run "summarize dcount(user)" once a day with a span filtered to the last seven days. This is inefficient, because each time the calculation is run there's a six-days overlap with the previous calculation. Another option is to calculate some aggregate for each day, and then combine these aggregates in an efficient way. This option requires you to "remember" the last six results, but is much more efficient.

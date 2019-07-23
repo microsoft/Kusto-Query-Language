@@ -1,3 +1,14 @@
+---
+title: isnan() - Azure Data Explorer | Microsoft Docs
+description: This article describes isnan() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # isnan()
 
 Returns whether input is Not-a-Number (NaN) value.  
@@ -22,8 +33,7 @@ A non-zero value (true) if x is NaN; and zero (false) otherwise.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 range x from -1 to 1 step 1
 | extend y = (-1*x) 
 | extend div = 1.0*x/y

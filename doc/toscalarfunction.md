@@ -1,3 +1,14 @@
+---
+title: toscalar() - Azure Data Explorer | Microsoft Docs
+description: This article describes toscalar() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # toscalar()
 
 Returns a scalar constant value of the evaluated expression. 
@@ -32,8 +43,7 @@ In other words, `toscalar()` function cannot be applied on row-level of (for-eac
 The following query evaluates `Start`, `End` and `Step` as scalar constants - and
 use it for `range` evaluation. 
 
-<!-- csl-->
-```
+```kusto
 let Start = toscalar(print x=1);
 let End = toscalar(range x from 1 to 9 step 1 | count);
 let Step = toscalar(2);

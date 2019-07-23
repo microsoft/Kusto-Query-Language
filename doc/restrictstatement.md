@@ -1,3 +1,14 @@
+---
+title: Restrict statement - Azure Data Explorer | Microsoft Docs
+description: This article describes Restrict statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/19/2019
+---
 # Restrict statement
 
 The restrict statement limits the set of table/view entities which are
@@ -37,8 +48,7 @@ The restrict statement can get one or more parameters that define the permissive
 The entity can be:
 - [let statement](./letstatement.md) appearing before `restrict` statement. 
 
-<!-- csl -->
-```
+```kusto
 // Limit access to 'Test' let statement only
 let Test = () { print x=1 };
 restrict access to (Test);
@@ -46,8 +56,7 @@ restrict access to (Test);
 
 - [Tables](../management/tables.md) or [functions](../management/functions.md) that are defined in the database metadata.
 
-<!-- csl -->
-```
+```kusto
 // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata, 
 // and other database 'DB2' has Table2 defined in the metadata
  
@@ -56,8 +65,7 @@ restrict access to (database().Table1, database().Func1, database('DB2').Table2)
 
 - Wildcard patterns that can match multiples of [let statements](./letstatement.md) or tables/functions  
 
-<!-- csl -->
-```
+```kusto
 let Test1 = () { print x=1 };
 let Test2 = () { print y=1 };
 restrict access to (*);
@@ -80,8 +88,7 @@ restricts access to (database('DB2').*);
 The following example shows how a middle-tier application can prepend a user's query
 with a logical model that prevents the user from querying any other user's data.
 
-<!-- csl -->
-```
+```kusto
 // Assume the database has a single table, UserData,
 // with a column called UserID and other columns that hold
 // per-user private information.
@@ -97,8 +104,7 @@ restrict access to (RestrictedData);
 RestrictedData | summarize IrsLovesMe=sum(Salary) by Year, Month
 ```
 
-<!-- csl -->
-```
+```kusto
 // Restricting access to Table1 in the current database (database() called without parameters)
 restrict access to (database().Table1);
 Table1 | count

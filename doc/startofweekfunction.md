@@ -1,3 +1,14 @@
+---
+title: startofweek() - Azure Data Explorer | Microsoft Docs
+description: This article describes startofweek() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # startofweek()
 
 Returns the start of the week containing the date, shifted by an offset, if provided.
@@ -19,8 +30,7 @@ A datetime representing the start of the week for the given *date* value, with t
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
   range offset from -1 to 1 step 1
  | project weekStart = startofweek(datetime(2017-01-01 10:10:17), offset) 
 ```

@@ -1,9 +1,19 @@
+---
+title: format_timespan() - Azure Data Explorer | Microsoft Docs
+description: This article describes format_timespan() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # format_timespan()
 
 Formats a timespan parameter based on the format pattern parameter.
 
-<!-- csl -->
-```
+```kusto
 format_timespan(time(14.02:03:04.12345), 'h:m:s.fffffff') == "2:3:4.1234500"
 ```
 
@@ -55,8 +65,7 @@ The string with the format result.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 format_timespan(time(29.09:00:05.12345), 'dd.hh:mm:ss [FF]')  //'29.09:00:05 [12]'
 format_timespan(time(29.09:00:05.12345), 'ddd.h:mm:ss [fff]') //'029.9:00:05 [123]'
 ```

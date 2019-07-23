@@ -1,3 +1,14 @@
+---
+title: Tables - Azure Data Explorer | Microsoft Docs
+description: This article describes Tables in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/25/2018
+---
 # Tables
 
 Tables are named entities that hold data. A table has an ordered set
@@ -20,8 +31,7 @@ The simplest way to reference a table is by using its name. This can be done
 for all tables that are in the database in context. So, for example, the following
 query counts the records of the current database's `StormEvents` table:
 
-<!-- csl:https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents
 | count
 ```
@@ -29,8 +39,7 @@ StormEvents
 Note that an equivalent way to write the query above is by escaping the table
 name:
 
-<!-- csl:https://help.kusto.windows.net/Samples -->
-```
+```kusto
 ["StormEvents"]
 | count
 ```
@@ -41,8 +50,7 @@ multiple databases and clusters. For example, the following query will work
 with any database in context, as long as the caller has access to the target
 database:
 
-<!-- csl:https://help.kusto.windows.net/Samples -->
-```
+```kusto
 cluster("https://help.kusto.windows.net").database("Samples").StormEvents
 | count
 ```
@@ -50,8 +58,7 @@ cluster("https://help.kusto.windows.net").database("Samples").StormEvents
 It is also possible to reference a table by using the [table() special function](../tablefunction.md),
 as long as the argument to that function evaluates to a constant. For example:
 
-<!-- csl:https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let counter=(TableName:string) { table(TableName) | count };
 counter("StormEvents")
 ```

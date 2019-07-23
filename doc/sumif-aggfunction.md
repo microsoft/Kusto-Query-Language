@@ -1,3 +1,14 @@
+---
+title: sumif() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes sumif() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # sumif() (aggregation function)
 
 Returns a sum of *Expr* for which *Predicate* evaluates to `true`.

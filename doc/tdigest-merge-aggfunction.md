@@ -1,3 +1,14 @@
+---
+title: tdigest_merge() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes tdigest_merge() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # tdigest_merge() (aggregation function)
 
 Merges tdigest results across the group. 

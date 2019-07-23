@@ -1,3 +1,14 @@
+---
+title: hll() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes hll() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/15/2019
+---
 # hll() (aggregation function)
 
 Calculates the Intermediate results of [dcount](dcount-aggfunction.md) across the group. 
@@ -32,8 +43,7 @@ The Intermediate results of distinct count of *Expr* across the group.
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | summarize hll(DamageProperty) by bin(StartTime,10m)
 

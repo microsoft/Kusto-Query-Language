@@ -1,3 +1,14 @@
+---
+title: base64_encode_tostring() - Azure Data Explorer | Microsoft Docs
+description: This article describes base64_encode_tostring() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 06/22/2019
+---
 # base64_encode_tostring()
 
 Encodes a string as base64 string
@@ -20,12 +31,10 @@ Returns the string encoded as base64 string.
 
 **Example**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print Quine=base64_encode_tostring("Kusto")
 ```
 
 |Quine   |
 |--------|
 |S3VzdG8=|
-

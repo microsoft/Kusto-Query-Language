@@ -1,3 +1,14 @@
+---
+title: Entity references - Azure Data Explorer | Microsoft Docs
+description: This article describes Entity references in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Entity references
 
 Named Kusto schema entities (databases, tables, columns, and stored functions,
@@ -25,14 +36,12 @@ In some contexts, one may use a wildcard (`*`) to match all or part of an entity
 name. For example, the following query references all tables in the current database,
 as well as all tables in database `DB` whose name starts with a `T`:
 
-<!-- csl -->
-```
+```kusto
 union *, database("DB1").T*
 ```
 
 Note: Wildcard matching does not match entity names that start with a dollar sign (`$`).
 Such names are system-reserved.
-
 
 
 

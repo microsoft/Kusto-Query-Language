@@ -1,3 +1,14 @@
+---
+title: arg_min() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes arg_min() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/12/2019
+---
 # arg_min() (aggregation function)
 
 Finds a row in the group that minimizes *ExprToMinimize*, and returns the value of *ExprToReturn* (or `*` to return the entire row).
@@ -24,22 +35,19 @@ Finds a row in the group that minimizes *ExprToMinimize*, and returns the value 
 
 Show cheapest supplier of each product:
 
-<!--- csl --->
-```
+```kusto
 Supplies | summarize arg_min(Price, Supplier) by Product
 ```
 
 Show all the details, not just the supplier name:
 
-<!--- csl --->
-```
+```kusto
 Supplies | summarize arg_min(Price, *) by Product
 ```
 
 Find the southernmost city in each continent, with its country:
 
-<!--- csl --->
-```
+```kusto
 PageViewLog 
 | summarize (latitude, min_lat_City, min_lat_country)=arg_min(latitude, City, country) 
     by continent

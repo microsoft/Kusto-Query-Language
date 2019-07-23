@@ -1,3 +1,14 @@
+---
+title: parse_json() - Azure Data Explorer | Microsoft Docs
+description: This article describes parse_json() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 01/10/2019
+---
 # parse_json()
 
 Interprets a `string` as a JSON value and returns the value as `dynamic`. 
@@ -41,8 +52,7 @@ then the following CSL Fragment retrieves the value of the `duration` slot
 in the object, and from that it retrieves two slots, `duration.value` and
  `duration.min` (`118.0` and `110.0`, respectively).
 
-<!-- csl -->
-```
+```kusto
 T
 | extend d=parse_json(context_custom_metrics) 
 | extend duration_value=d.duration.value, duration_min=d["duration"]["min"]
@@ -53,9 +63,7 @@ T
 It is somewhat common to have a JSON string describing a property bag in which
 one of the "slots" is another JSON string. For example:
 
-<!-- csl -->
-
-```
+```kusto
 let d='{"a":123, "b":"{\\"c\\":456}"}';
 print d
 ```
@@ -65,9 +73,7 @@ to make sure that in the second call, `tostring` will be used. Otherwise, the
 second call to `parse_json` will simply pass-on the input to the output as-is,
 because its declared type is `dynamic`:
 
-<!-- csl -->
-
-```
+```kusto
 let d='{"a":123, "b":"{\\"c\\":456}"}';
 print d_b_c=parse_json(tostring(parse_json(d).b)).c
 ```

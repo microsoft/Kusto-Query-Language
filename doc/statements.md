@@ -1,3 +1,14 @@
+---
+title: Query statements - Azure Data Explorer | Microsoft Docs
+description: This article describes Query statements in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2019
+---
 # Query statements
 
 A query consists of one or more **query statements**, delimited by a semicolon (`;`),

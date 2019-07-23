@@ -1,9 +1,19 @@
+---
+title: tolong() - Azure Data Explorer | Microsoft Docs
+description: This article describes tolong() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # tolong()
 
 Converts input to long (signed 64-bit) number representation.
 
-<!-- csl -->
-```
+```kusto
 tolong("123") == 123
 ```
 

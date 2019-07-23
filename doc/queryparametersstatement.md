@@ -1,3 +1,14 @@
+---
+title: Query parameters declaration statement - Azure Data Explorer | Microsoft Docs
+description: This article describes Query parameters declaration statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Query parameters declaration statement
 
 Queries sent to Kusto may include, in addition to the query text itself,
@@ -75,14 +86,12 @@ value according to its normal parsing rules for that type.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 declare query_parameters (UserName:string, Password:string);
 print n=UserName, p=hash(Password)
 ```
 
-<!-- csl -->
-```
+```kusto
 declare query_parameters(amount:long);
 T | where amountColumn == amount
 ```

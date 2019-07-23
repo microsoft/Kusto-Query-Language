@@ -1,9 +1,19 @@
+---
+title: external_table() - Azure Data Explorer | Microsoft Docs
+description: This article describes external_table() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 07/17/2019
+---
 # external_table()
 
 References an external table by name.
 
-<!--- csl --->
-```
+```kusto
 external_table('StormEvent')
 ```
 

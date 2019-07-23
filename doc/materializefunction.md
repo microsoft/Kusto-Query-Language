@@ -1,3 +1,14 @@
+---
+title: materialize() - Azure Data Explorer | Microsoft Docs
+description: This article describes materialize() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/21/2019
+---
 # materialize()
 
 Allows caching a sub-query result during the time of query execution in a way that other subqueries can reference the partial result.
@@ -30,8 +41,7 @@ Assuming that we want to generate a random set of values and we are interested i
 
 This can be done using [batches](batches.md) and materialize :
 
- <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+ ```kusto
 let randomSet = materialize(range x from 1 to 30000000 step 1
 | project value = rand(10000000));
 randomSet

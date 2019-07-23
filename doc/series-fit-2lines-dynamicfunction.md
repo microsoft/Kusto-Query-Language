@@ -1,3 +1,14 @@
+---
+title: series_fit_2lines_dynamic() - Azure Data Explorer | Microsoft Docs
+description: This article describes series_fit_2lines_dynamic() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_fit_2lines_dynamic()
 
 Applies two segments linear regression on a series, returning dynamic object.  
@@ -34,8 +45,7 @@ This operator is similar to [series_fit_2lines](series-fit-2linesfunction.md), b
 
 **Examples**
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print id=' ', x=range(bin(now(), 1h)-11h, bin(now(), 1h), 1h), y=dynamic([1,2.2, 2.5, 4.7, 5.0, 12, 10.3, 10.3, 9, 8.3, 6.2])
 | extend LineFit=series_fit_line_dynamic(y).line_fit, LineFit2=series_fit_2lines_dynamic(y).line_fit
 | project id, x, y, LineFit, LineFit2

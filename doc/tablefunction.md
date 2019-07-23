@@ -1,9 +1,19 @@
+---
+title: table() (scope function) - Azure Data Explorer | Microsoft Docs
+description: This article describes table() (scope function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # table() (scope function)
 
 References specific table using an query-time evaluated string-expression. 
 
-<!--- csl --->
-```
+```kusto
 table('StormEvent')
 ```
 
@@ -24,8 +34,7 @@ table('StormEvent')
 
 ### Use table() to access table of the current database. 
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 table('StormEvent') | count
 ```
 
@@ -38,8 +47,7 @@ table('StormEvent') | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `tableName` - which is passed into the table() function.
 
-<!-- csl:  https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let foo = (tableName:string)
 {
     table(tableName) | count
@@ -56,8 +64,7 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `tableName` - which is passed into the table() function.
 
-<!-- csl -->
-```
+```kusto
 .create function foo(tableName:string)
 {
     table(tableName) | count
@@ -72,8 +79,7 @@ A parameter, which is not scalar constant string can't be passed as parameter to
 
 Below, given an example of workaround for such case.
 
-<!-- csl -->
-```
+```kusto
 let T1 = print x=1;
 let T2 = print x=2;
 let _choose = (_selector:string)

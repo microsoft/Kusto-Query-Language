@@ -1,3 +1,14 @@
+---
+title: Entities - Azure Data Explorer | Microsoft Docs
+description: This article describes Entities in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # Entities
 
 Kusto queries execute in the context of some Kusto database that is attached

@@ -1,3 +1,14 @@
+---
+title: series_decompose_anomalies() - Azure Data Explorer | Microsoft Docs
+description: This article describes series_decompose_anomalies() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 06/23/2019
+---
 # series_decompose_anomalies()
 
 Anomaly Detection based on series decomposition (refer to [series_decompose()](series-decomposefunction.md)) 
@@ -48,8 +59,7 @@ This function follows these steps:
 
 In the following example we generate a series with weekly seasonality, we then add some outliers to it. `series_decompose_anomalies` auto-detects the seasonality and generates a baseline which captures the repetitive pattern. The outliers we added can be clearly spotted in the ad_score component.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 10.0, 15.0) - (((t%24)/10)*((t%24)/10)) // generate a series with weekly seasonality
@@ -66,8 +76,7 @@ ts
 
 In this example we add a trend to the series from the previous example. First, we run `series_decompose_anomalies` with the default parameters in which the trend `avg` default value only takes the average and doesn't compute the trend, we can see that the generated baseline doesn't contain the trend and is less accurate comparing to the previous example, consequently, some of the outliers we inserted in the data are not detected due to the higher variance.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and ongoing trend
@@ -84,8 +93,7 @@ series_multiply(10, series_decompose_anomalies_y_ad_flag) // multiply by 10 for 
 
 Next, we run the same example but since we are expecting a trend in the series, we specify `linefit` in the trend parameter. We can see that the baseline is much closer to the input series. All the outliers we inserted are detected, as well as some false positives (see next example on tuning the threshold).
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and ongoing trend
@@ -104,8 +112,7 @@ series_multiply(10, series_decompose_anomalies_y_ad_flag) // multiply by 10 for 
 
 In the previous example a few noisy points were detected as anomalies, in this example we increase the anomaly detection threshold from a default of 1.5 to 2.5 the interpercentile range so that only stronger anomalies are detected. We can see that now only the outliers we inserted in the data are detected.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and onlgoing trend

@@ -1,9 +1,19 @@
+---
+title: invoke operator - Azure Data Explorer | Microsoft Docs
+description: This article describes invoke operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # invoke operator
 
 Invokes lambda that receives the source of `invoke` as tabular parameter argument.
 
-<!-- csl -->
-```
+```kusto
 T | invoke foo(param1, param2)
 ```
 
@@ -29,8 +39,7 @@ See [let statements](./letstatement.md) for more details how to declare lambda e
 
 The following example shows how to use `invoke` operator to call lambda expression:
 
-<!-- csl: https://help.kusto.windows.net:443/KustoMonitoringPersistentDatabase -->
-```
+```kusto
 // clipped_average(): calculates percentiles limits, and then makes another 
 //                    pass over the data to calculate average with values inside the percentiles
 let clipped_average = (T:(x: long), lowPercentile:double, upPercentile:double)
@@ -48,4 +57,3 @@ range x from 1 to 100 step 1
 |avg_x|
 |---|
 |52|
-

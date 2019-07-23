@@ -1,3 +1,14 @@
+---
+title: indexof_regex() - Azure Data Explorer | Microsoft Docs
+description: This article describes indexof_regex() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mblythe
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 07/07/2019
+---
 # indexof_regex()
 
 Function reports the zero-based index of the first occurrence of a specified string within input string. Plain string matches do not overlap. 
@@ -25,8 +36,7 @@ In case of irrelevant (less than 0) *start_index*, *occurrence* or (less than -1
 
 
 **Examples**
-<!-- csl -->
-```
+```kusto
 print
  idx1 = indexof_regex("abcabc", "a.c") // lookup found in input string
  , idx2 = indexof_regex("abcabcdefg", "a.c", 0, 9, 2)  // lookup found in input string
