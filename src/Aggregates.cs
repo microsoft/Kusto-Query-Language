@@ -97,6 +97,17 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("min");
 
+        public static readonly FunctionSymbol MinIf =
+            new FunctionSymbol("minif",
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("value", ParameterTypeKind.Summable),
+                    new Parameter("predicate", ScalarTypes.Bool)),
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("value", ScalarTypes.String),
+                    new Parameter("predicate", ScalarTypes.Bool)))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("minif");
+
         public static readonly FunctionSymbol Max =
             new FunctionSymbol("max",
                 new Signature(ReturnTypeKind.Parameter0,
@@ -105,6 +116,17 @@ namespace Kusto.Language
                     new Parameter("value", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("max");
+
+        public static readonly FunctionSymbol MaxIf =
+            new FunctionSymbol("maxif",
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("value", ParameterTypeKind.Summable),
+                    new Parameter("predicate", ScalarTypes.Bool)),
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("value", ScalarTypes.String),
+                    new Parameter("predicate", ScalarTypes.Bool)))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("maxif");
 
         public static readonly FunctionSymbol Avg =
             new FunctionSymbol("avg",
@@ -502,7 +524,9 @@ namespace Kusto.Language
             Hll,
             HllMerge,
             Min,
+            MinIf,
             Max,
+            MaxIf,
             Avg,
             AvgIf,
             MakeList_Depricated,
