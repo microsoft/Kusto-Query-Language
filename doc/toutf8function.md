@@ -1,14 +1,3 @@
----
-title: to_utf8() - Azure Data Explorer | Microsoft Docs
-description: This article describes to_utf8() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/10/2019
----
 # to_utf8()
 
 Returns a dynamic array of the unicode characters of an input string (the inverse operation of make_string).
@@ -28,7 +17,8 @@ See [`make_string()`](makestringfunction.md))
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 print arr = to_utf8("⒦⒰⒮⒯⒪")
 ```
 
@@ -36,7 +26,8 @@ print arr = to_utf8("⒦⒰⒮⒯⒪")
 |---|
 |[9382, 9392, 9390, 9391, 9386]|
 
-```kusto
+<!-- csl -->
+```
 print arr = to_utf8("קוסטו - Kusto")
 ```
 
@@ -44,10 +35,12 @@ print arr = to_utf8("קוסטו - Kusto")
 |---|
 |[1511, 1493, 1505, 1496, 1493, 32, 45, 32, 75, 117, 115, 116, 111]|
 
-```kusto
+<!-- csl -->
+```
 print str = make_string(to_utf8("Kusto"))
 ```
 
 |str|
 |---|
 |Kusto|
+

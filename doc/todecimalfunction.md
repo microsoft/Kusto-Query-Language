@@ -1,19 +1,9 @@
----
-title: todecimal() - Azure Data Explorer | Microsoft Docs
-description: This article describes todecimal() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # todecimal()
 
 Converts input to decimal number representation.
 
-```kusto
+<!-- csl -->
+```
 todecimal("123.45678") == decimal(123.45678)
 ```
 

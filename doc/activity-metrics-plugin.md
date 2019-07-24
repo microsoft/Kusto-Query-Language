@@ -1,20 +1,10 @@
----
-title: activity_metrics plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes activity_metrics plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 05/21/2019
----
 # activity_metrics plugin
 
 Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) based on the current period window vs. previous period window 
 (unlike [activity_counts_metrics plugin](activity-counts-metrics-plugin.md) in which every time window is compared to *all* previous time windows).
 
-```kusto
+<!-- csl -->
+```
 T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
@@ -92,7 +82,8 @@ Derived from the definition of `Churn Rate` and `Retention Rate`, the following 
 
 The next query calculates retention and churn rate for week-over-week window.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
 let _end = datetime(2017-05-31);
@@ -141,7 +132,8 @@ range _day from _start to _end  step 1d
 The next query calculates distinct values and 'new' values (ids that didn't appear in previous time window) for week-over-week window.
 
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
 let _end = datetime(2017-05-31);

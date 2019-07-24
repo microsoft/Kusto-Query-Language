@@ -1,14 +1,3 @@
----
-title: series_equals() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_equals() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/15/2019
----
 # series_equals()
 
 Calculates the element-wise equals (`==`) logic operation of two numeric series inputs.
@@ -27,7 +16,8 @@ Dynamic array of booleans containing the calculated element-wise equal logic ope
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print s1 = dynamic([1,2,4]), s2 = dynamic([4,2,1])
 | extend s1_equals_s2 = series_equals(s1, s2)
 ```

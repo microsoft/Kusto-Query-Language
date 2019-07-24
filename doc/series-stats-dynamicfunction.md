@@ -1,14 +1,3 @@
----
-title: series_stats_dynamic() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_stats_dynamic() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # series_stats_dynamic()
 
 Returns statistics for a series in dynamic object.  
@@ -32,7 +21,8 @@ The `series_stats_dynamic()` function takes a column containing dynamic numerica
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
 | project stats=series_stats_dynamic(x)
 

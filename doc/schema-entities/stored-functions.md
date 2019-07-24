@@ -1,14 +1,3 @@
----
-title: Stored functions - Azure Data Explorer | Microsoft Docs
-description: This article describes Stored functions in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # Stored functions
 
 **Functions** are reusable queries or query parts. Functions can be stored as database

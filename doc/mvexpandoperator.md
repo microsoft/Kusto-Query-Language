@@ -1,14 +1,3 @@
----
-title: mv-expand operator - Azure Data Explorer | Microsoft Docs
-description: This article describes mv-expand operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/24/2019
----
 # mv-expand operator
 
 Expands multi-value array or property bag.
@@ -51,7 +40,8 @@ Two modes of property-bag expansions are supported:
 **Examples**
 
 A simple expansion of a single column:
- ```kusto
+ <!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 datatable (a:int, b:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"})]
 | mv-expand b 
 ```
@@ -64,7 +54,8 @@ datatable (a:int, b:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"})]
 
 Expanding two columns will first 'zip' the applicable columns and then expand them:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), dynamic([5])]
 | mv-expand b, c 
 ```
@@ -75,7 +66,8 @@ datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), d
 |1|{"prop2":"b"}||
 
 If you want to get a Cartesian product of expanding two columns, expand one after the other:
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), dynamic([5])]
 | mv-expand b 
 | mv-expand c
@@ -88,7 +80,8 @@ datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), d
 
 
 Expansion of an array with `with_itemindex`:
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range x from 1 to 4 step 1 
 | summarize x = make_list(x) 
 | mv-expand with_itemindex=Index  x 

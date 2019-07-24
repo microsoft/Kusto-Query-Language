@@ -1,14 +1,3 @@
----
-title: prev() - Azure Data Explorer | Microsoft Docs
-description: This article describes prev() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # prev()
 
 Returns the value of a column in a row that it at some offset prior to the
@@ -32,7 +21,8 @@ current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
 
 **Examples**
-```kusto
+<!-- csl -->
+```
 Table | serialize | extend prevA = prev(A,1)
 | extend diff = A - prevA
 | where diff > 1

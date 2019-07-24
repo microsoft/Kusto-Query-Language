@@ -1,14 +1,3 @@
----
-title: Query best practices  - Azure Data Explorer | Microsoft Docs
-description: This article describes Query best practices  in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 07/23/2019
----
 # Query best practices 
 
 ## General
@@ -54,7 +43,8 @@ In such cases, it is possible to extract the required values by using a regex.
 -	When using the [materialize() function](./materializefunction.md), try to push all possible operators that will reduce the materialized data set and still keeps the semantics of the query. e.g: filters, project only required columns, etc.
     in this example:
 
-    ```kusto
+    <!--csl-->
+    ```
     let materializedData = materialize(Table
     | where Timestamp > ago(1d));
     union (materializedData
@@ -67,7 +57,8 @@ In such cases, it is possible to extract the required values by using a regex.
 -	The filter on Text is mutual and can be pushed to the materialize expression.
     In addition, the query needs only these columns `Timestamp`, `Text`, `Resource1` and `Resource2` columns so it is recommended to project these columns inside the materialized expression.
     
-    ```kusto
+    <!--csl-->
+    ```
     let materializedData = materialize(Table
     | where Timestamp > ago(1d)
     | where Text !has "somestring"
@@ -79,7 +70,8 @@ In such cases, it is possible to extract the required values by using a regex.
     
 -	if the filters are not identical like in this query:  
 
-    ```kusto
+    <!--csl-->
+    ```
     let materializedData = materialize(Table
     | where Timestamp > ago(1d));
     union (materializedData
@@ -90,7 +82,8 @@ In such cases, it is possible to extract the required values by using a regex.
     ```
 -	It might be worthy (when the combined filter reduces the materialized result drastically) to combine both filters on the materialized result by a logical `or` expression as in this query below but we should keep the filters in each union leg to preserve the semantics of the query:
      
-    ```kusto
+    <!--csl-->
+    ```
     let materializedData = materialize(Table
     | where Timestamp > ago(1d)
     | where Text has "String1" or Text has "String2"

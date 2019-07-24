@@ -1,14 +1,3 @@
----
-title: series_fir() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_fir() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/19/2019
----
 # series_fir()
 
 Applies a Finite Impulse Response filter on a series.  
@@ -31,7 +20,8 @@ Normalization is a convenient way to make sure that the sum of the coefficients 
 
 * Calculating a moving average of 5 points can be performed by setting *filter*=[1,1,1,1,1] and *normalize*=`true` (default). Note the effect of *center*=`false` (default) vs. `true`:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range t from bin(now(), 1h)-23h to bin(now(), 1h) step 1h
 | summarize t=make_list(t)
 | project id='TS', val=dynamic([0,0,0,0,0,0,0,0,0,10,20,40,100,40,20,10,0,0,0,0,0,0,0,0]), t
@@ -48,7 +38,8 @@ This query returns:
 
 * Calculating the difference between a point and its preceding one can be performed by setting *filter*=[1,-1]:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range t from bin(now(), 1h)-11h to bin(now(), 1h) step 1h
 | summarize t=make_list(t)
 | project id='TS',t,value=dynamic([0,0,0,0,2,2,2,2,3,3,3,3])

@@ -1,14 +1,3 @@
----
-title: array_iif() - Azure Data Explorer | Microsoft Docs
-description: This article describes array_iif() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 04/28/2019
----
 # array_iif()
 
 Element-wise iif function on dynamic arrays.
@@ -45,3 +34,4 @@ print condition=dynamic([true,false,true]), l=dynamic([1,2,3]), r=dynamic([4,5,6
 |condition|l|r|res|
 |---|---|---|---|
 |[true, false, true]|[1, 2, 3]|[4, 5, 6]|[1, 5, 3]|
+

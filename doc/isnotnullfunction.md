@@ -1,14 +1,3 @@
----
-title: isnotnull() - Azure Data Explorer | Microsoft Docs
-description: This article describes isnotnull() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # isnotnull()
 
 Returns `true` if the argument is not null.
@@ -21,12 +10,14 @@ Returns `true` if the argument is not null.
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 T | where isnotnull(PossiblyNull) | count
 ```
 
 Notice that there are other ways of achieving this effect:
 
-```kusto
+<!-- csl -->
+```
 T | summarize count(PossiblyNull)
 ```

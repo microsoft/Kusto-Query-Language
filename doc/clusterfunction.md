@@ -1,19 +1,9 @@
----
-title: cluster() (scope function) - Azure Data Explorer | Microsoft Docs
-description: This article describes cluster() (scope function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # cluster() (scope function)
 
 Changes the reference of the query to a remote cluster. 
 
-```kusto
+<!--- csl --->
+```
 cluster('help').database('Sample').SomeTable
 ```
 
@@ -38,7 +28,8 @@ i.e. cannot come from sub-query evaluation.
 
 The next query can be run on any of the Kusto clusters.
 
-```kusto
+<!-- csl -->
+```
 cluster('help').database('Samples').StormEvents | count
 
 cluster('help.kusto.windows.net').database('Samples').StormEvents | count  
@@ -53,7 +44,8 @@ cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
-```kusto
+<!-- csl -->
+```
 let foo = (clusterName:string)
 {
     cluster(clusterName).database('Samples').StormEvents | count
@@ -70,7 +62,8 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
-```kusto
+<!-- csl -->
+```
 .create function foo(clusterName:string)
 {
     cluster(clusterName).database('Samples').StormEvents | count

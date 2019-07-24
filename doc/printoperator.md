@@ -1,19 +1,9 @@
----
-title: print operator - Azure Data Explorer | Microsoft Docs
-description: This article describes print operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 03/16/2019
----
 # print operator
 
 Outputs single-row with one or more scalar expressions.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print x=1, s=strcat("Hello", ", ", "World!")
 ```
 
@@ -36,10 +26,12 @@ The `print` operator is useful as a quick way to evaluate one or more
 scalar expressions and make a single-row table out of the resulting values.
 For example:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print 0 + 1 + 2 + 3 + 4 + 5, x = "Wow!"
 ```
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print banner=strcat("Hello", ", ", "World!")
 ```

@@ -1,19 +1,9 @@
----
-title: in and notin operators - Azure Data Explorer | Microsoft Docs
-description: This article describes in and notin operators in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 03/18/2019
----
 # in and !in operators
 
 Filters a recordset based on the provided set of values.
 
-```kusto
+<!--- csl --->
+```
 Table1 | where col in ('value1', 'value2')
 ```
 
@@ -57,7 +47,8 @@ Rows in *T* for which the predicate is `true`
 
 **A simple usage of 'in' operator:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where State in ("FLORIDA", "GEORGIA", "NEW YORK") 
 | count
@@ -70,7 +61,8 @@ StormEvents
 
 **A simple usage of 'in~' operator:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where State in~ ("Florida", "Georgia", "New York") 
 | count
@@ -82,7 +74,8 @@ StormEvents
 
 **A simple usage of '!in' operator:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where State !in ("FLORIDA", "GEORGIA", "NEW YORK") 
 | count
@@ -94,7 +87,8 @@ StormEvents
 
 
 **Using dynamic array:**
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let states = dynamic(['FLORIDA', 'ATLANTIC SOUTH', 'GEORGIA']);
 StormEvents 
 | where State in (states)
@@ -108,7 +102,8 @@ StormEvents
 
 **A subquery example:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Using subquery
 let Top_5_States = 
 StormEvents
@@ -121,7 +116,8 @@ StormEvents
 
 The same query can be written as:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Inline subquery 
 StormEvents 
 | where State in (
@@ -138,7 +134,8 @@ StormEvents
 
 **Top with other example:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let Lightning_By_State = materialize(StormEvents | summarize lightning_events = countif(EventType == 'Lightning') by State);
 let Top_5_States = Lightning_By_State | top 5 by lightning_events | project State; 
 Lightning_By_State
@@ -157,7 +154,8 @@ Lightning_By_State
 
 **Using a static list returned by a function:**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents | where State in (InterestingStates()) | count
 
 ```
@@ -169,10 +167,12 @@ StormEvents | where State in (InterestingStates()) | count
 
 Here is the function definition:  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 .show function InterestingStates
 ```
 
 |Name|Parameters|Body|Folder|DocString|
 |---|---|---|---|---|
 |InterestingStates|()|{ dynamic(["WASHINGTON", "FLORIDA", "GEORGIA", "NEW YORK"]) }
+

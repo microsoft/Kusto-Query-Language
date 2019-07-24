@@ -1,14 +1,3 @@
----
-title: hash_sha256() - Azure Data Explorer | Microsoft Docs
-description: This article describes hash_sha256() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # hash_sha256()
 
 Returns a sha256 hash value for the input value.
@@ -35,14 +24,16 @@ and 255).
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 hash_sha256("World")                   // 78ae647dc5544d227130a0682a51e30bc7777fbb6d8a8f17007463a3ecd1d524
 hash_sha256(datetime("2015-01-01"))    // e7ef5635e188f5a36fafd3557d382bbd00f699bd22c671c3dea6d071eb59fbf8
 ```
 
 The following example uses the hash_sha256 function to run a query on StartTime column of the data
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where hash_sha256(StartTime) == 0
 | summarize StormCount = count(), TypeOfStorms = dcount(EventType) by State 

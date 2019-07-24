@@ -1,19 +1,9 @@
----
-title: database() (scope function) - Azure Data Explorer | Microsoft Docs
-description: This article describes database() (scope function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # database() (scope function)
 
 Changes the reference of the query to a specific database within the cluster scope. 
 
-```kusto
+<!--- csl --->
+```
 database('Sample').StormEvents
 cluster('help').database('Sample').StormEvents
 ```
@@ -35,7 +25,8 @@ cluster('help').database('Sample').StormEvents
 
 ### Use database() to access table of other database. 
 
-```kusto
+<!-- csl -->
+```
 database('Samples').StormEvents | count
 ```
 
@@ -48,7 +39,8 @@ database('Samples').StormEvents | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-```kusto
+<!-- csl -->
+```
 let foo = (dbName:string)
 {
     database(dbName).StormEvents | count
@@ -65,7 +57,8 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-```kusto
+<!-- csl -->
+```
 .create function foo(dbName:string)
 {
     database(dbName).StormEvents | count

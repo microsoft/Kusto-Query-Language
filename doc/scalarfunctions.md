@@ -1,14 +1,3 @@
----
-title: Scalar Functions - Azure Data Explorer | Microsoft Docs
-description: This article describes Scalar Functions in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 07/05/2019
----
 # Scalar Functions
 
 ## Binary Functions
@@ -271,3 +260,11 @@ ms.date: 07/05/2019
 |[rank_tdigest()](rank-tdigest.md)|Calculates relative rank of a value in a set.|
 |[tdigest_merge()](tdigest-mergefunction.md)|Merges tdigest results (scalar version of the aggregate version tdigest-merge()).|
 
+<#ifdef MICROSOFT>
+## Spatial functions
+
+|Function Name     |Description                                          |
+|-------------------------|--------------------------------------------------------|
+|[point()](pointfunction.md)|Returns a dynamic array representation of a point.|
+|[distance()](distancefunction.md)|Returns the distance between two points in meters.|
+<#endif>

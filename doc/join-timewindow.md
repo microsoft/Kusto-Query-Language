@@ -1,14 +1,3 @@
----
-title: Joining within time window - Azure Data Explorer | Microsoft Docs
-description: This article describes Joining within time window in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # Joining within time window
 
 It is often useful to join between two large data sets on some high-cardinality key
@@ -32,7 +21,8 @@ schema:
 - `Timestamp`: A column of type `datetime` indicating when the event described
   by the record happened.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let T = datatable(SessionId:string, EventType:string, Timestamp:datetime)
 [
     '0', 'A', datetime(2017-10-01 00:00:00),
@@ -66,7 +56,8 @@ We want our query to answer the following question:
 
 Semantically, the following query answers this question, albeit inefficiently:
 
-```kusto
+<!-- csl -->
+```
 T 
 | where EventType == 'A'
 | project SessionId, Start=Timestamp
@@ -94,7 +85,8 @@ The idea is to rewrite the query so that the `datetime` values are
 "discretized" into buckets whose size is half the size of the time window.
 We can then use Kusto's equi-join to compare those bucket IDs.
 
-```kusto
+<!-- csl -->
+```
 let lookupWindow = 1min;
 let lookupBin = lookupWindow / 2.0; // lookup bin = equal to 1/2 of the lookup window
 T 
@@ -126,7 +118,8 @@ T
 
 **Runnable query reference (with table inlined)**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let T = datatable(SessionId:string, EventType:string, Timestamp:datetime)
 [
     '0', 'A', datetime(2017-10-01 00:00:00),
@@ -164,7 +157,8 @@ T
 
 The next query emulates data set of 50M records and ~10M IDs and runs the query with the technique described above.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let T = range x from 1 to 50000000 step 1
 | extend SessionId = rand(10000000), EventType = rand(3), Time=datetime(2017-01-01)+(x * 10ms)
 | extend EventType = case(EventType <= 1, "A",

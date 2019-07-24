@@ -1,21 +1,11 @@
----
-title: find operator - Azure Data Explorer | Microsoft Docs
-description: This article describes find operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 11/29/2018
----
 # find operator
 
 Finds rows that match a predicate across a set of tables.
 
 The scope of the `find` can also be cross-database or cross-cluster.
 
-```kusto
+<!-- csl -->
+```
 find in (Table1, Table2, Table3) where Fruit=="apple"
 
 find in (database('*').*) where Fruit == "apple"
@@ -99,7 +89,8 @@ find operator supports an alternative syntax for `* has` *term* , and using just
 The next query finds all rows from all tables in the current database in which any column includes the word `Kusto`. 
 The resulting records are transformed according to the [output schema](#output-schema). 
 
-```kusto
+<!-- csl -->
+```
 find "Kusto"
 ```
 
@@ -108,7 +99,8 @@ find "Kusto"
 The next query finds all rows from all tables in the current database whose name starts with `K`, and in which any column includes the word `Kusto`.
 The resulting records are transformed according to the [output schema](#output-schema). 
 
-```kusto
+<!-- csl -->
+```
 find in (K*) where * has "Kusto"
 ```
 
@@ -118,7 +110,8 @@ The next query finds all rows from all tables in all databases in which any colu
 This is a [cross database query](./cross-cluster-or-database-queries.md) query. 
 The resulting records are transformed according to the [output schema](#output-schema). 
 
-```kusto
+<!-- csl -->
+```
 find in (database('*').*) "Kusto"
 ```
 
@@ -128,7 +121,8 @@ The next query finds all rows from all tables whose name starts with `K` in all 
 in which any column includes the word `Kusto`. 
 The resulting records are transformed according to the [output schema](#output-schema). 
 
-```kusto
+<!-- csl -->
+```
 find in (database("B*").K*) where * has "Kusto"
 ```
 
@@ -139,7 +133,8 @@ The next query finds all rows from all tables whose name starts with `K` in all 
 in which any column includes the word `Kusto`. 
 The resulting records are transformed according to the [output schema](#output-schema). 
 
-```kusto
+<!-- csl -->
+```
 find in (cluster("cluster1").database("B*").K*, cluster("cluster2").database("C*".*))
 where * has "Kusto"
 ```
@@ -170,7 +165,8 @@ Assume we have next content of these two tables:
 
 ### Search in common columns, project common and uncommon columns and pack the rest  
 
-```kusto
+<!-- csl -->
+```
 find in (EventsTable1, EventsTable2) 
      where Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' and Level == 'Error' 
      project EventText, Version, EventName, pack(*)
@@ -184,7 +180,8 @@ find in (EventsTable1, EventsTable2)
 
 ### Search in common and uncommon columns
 
-```kusto
+<!-- csl -->
+```
 find Version == 'v1.0.0' or EventName == 'Event1' project Session_Id, EventText, Version, EventName
 ```
 
@@ -198,7 +195,8 @@ Note: in practice, *EventsTable1* rows will be filtered with ```Version == 'v1.0
 
 ### Use abbreviated notation to search across all tables in the current database
 
-```kusto
+<!-- csl -->
+```
 find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
 ```
 
@@ -212,7 +210,8 @@ find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
 
 ### Return the results from each row as a property bag
 
-```kusto
+<!-- csl -->
+```
 find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' project pack(*)
 ```
 
@@ -228,7 +227,8 @@ find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' project pack(*)
 
 ### Using a non tabular expression as find operand
 
-```kusto
+<!-- csl -->
+```
 let PartialEventsTable1 = view() { EventsTable1 | where Level == 'Error' };
 find in (PartialEventsTable1, EventsTable2) 
      where Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
@@ -238,21 +238,24 @@ find in (PartialEventsTable1, EventsTable2)
 
 Assume we have created two tables by running: 
 
-```kusto
+<!-- csl -->
+```
 .create tables 
   Table1 (Level:string, Timestamp:datetime, ProcessId:string),
   Table2 (Level:string, Timestamp:datetime, ProcessId:int64)
 ```
 
 * The following query will be executed as `union`:
-```kusto
+<!-- csl -->
+```
 find in (Table1, Table2) where ProcessId == 1001
 ```
 
 And the output result schema will be __(Level:string, Timestamp, ProcessId_string, ProcessId_int)__
 
 * The following query will, as well, be executed as `union` but will produce a different result schema:
-```kusto
+<!-- csl -->
+```
 find in (Table1, Table2) where ProcessId == 1001 project Level, Timestamp, ProcessId:string 
 ```
 

@@ -1,14 +1,3 @@
----
-title: series_fill_linear() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_fill_linear() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # series_fill_linear()
 
 Performs linear interpolation of missing values in a series.
@@ -32,7 +21,8 @@ Takes an expression containing dynamic numerical array as input, performs linear
 
 * In order to apply any interpolation functions after [make-series](make-seriesoperator.md) it is recommended to specify *null* as a default value: 
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h), 1h) by Os, Browser
 ```
 
@@ -42,7 +32,8 @@ make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let data = datatable(arr: dynamic)
 [
     dynamic([null, 111.0, null, 36.0, 41.0, null, null, 16.0, 61.0, 33.0, null, null]), // Array of double    

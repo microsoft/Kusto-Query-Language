@@ -1,14 +1,3 @@
----
-title: set_difference() - Azure Data Explorer | Microsoft Docs
-description: This article describes set_difference() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 06/02/2019
----
 # set_difference()
 
 Returns a `dynamic` (JSON) array of the set of all distinct values that are in the first array but aren't in other arrays - (((arr1 \ arr2) \ arr3) \ ...).
@@ -27,7 +16,8 @@ Returns a dynamic array of the set of all distinct values that are in arr1 but a
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range x from 1 to 3 step 1
 | extend y = x * 2
 | extend z = y * 2
@@ -42,7 +32,8 @@ range x from 1 to 3 step 1
 |[8]|
 |[12]|
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print arr = set_difference(dynamic([1,2,3]), dynamic([1,2,3]))
 ```
 

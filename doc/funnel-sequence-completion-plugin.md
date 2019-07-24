@@ -1,19 +1,9 @@
----
-title: funnel_sequence_completion plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes funnel_sequence_completion plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/28/2019
----
 # funnel_sequence_completion plugin
 
 Calculates funnel of completed sequence steps within comparing different time periods.
 
-```kusto
+<!-- csl -->
+```
 T | evaluate funnel_sequence_completion(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, state_column, dynamic(['S1', 'S2', 'S3']), dynamic([10m, 30min, 1h]))
 ```
 
@@ -49,7 +39,8 @@ Returns a single table useful for constructing a funnel diagram for the analyzed
 The following query checks the completion funnel of the sequence: `Hail` -> `Tornado` -> `Thunderstorm Wind`
 in "overall" time of 1hour, 4hours, 1day. 
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let _start = datetime(2007-01-01);
 let _end =  datetime(2008-01-01);
 let _windowSize = 365d;
@@ -74,3 +65,4 @@ StormEvents
 Understanding the results:  
 The outcome it 3 funnels (for periods: 1 hour, 4 hours, and 1 day), while for each funnel step a number 
 of distinct count of EpisodeId is shown. You can see that the more time is given to complete the whole sequence of `Hail` -> `Tornado` -> `Thunderstorm Wind` the higher `dcount` value (meaning more occurrences of the sequence reaching the step of the funnel).
+

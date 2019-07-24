@@ -1,14 +1,3 @@
----
-title: strlen() - Azure Data Explorer | Microsoft Docs
-description: This article describes strlen() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # strlen()
 
 Returns the length, in characters, of the input string.
@@ -33,7 +22,8 @@ Each Unicode character in the string is equal to `1`, including surrogates.
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 print length = strlen("hello")
 ```
 
@@ -41,7 +31,8 @@ print length = strlen("hello")
 |---|
 |5|
 
-```kusto
+<!-- csl -->
+```
 print length = strlen("⒦⒰⒮⒯⒪")
 ```
 

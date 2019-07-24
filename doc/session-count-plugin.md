@@ -1,19 +1,9 @@
----
-title: session_count plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes session_count plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # session_count plugin
 
 Calculates sessions count based on ID column over a timeline.
 
-```kusto
+<!-- csl -->
+```
 T | evaluate session_count(id, datetime_column, startofday(ago(30d)), startofday(now()), 1min, 30min, dim1, dim2, dim3)
 ```
 
@@ -56,7 +46,8 @@ This means that event with `Id==1` will appear at any `Timeline` slot, event wit
 
 Here are few 20 lines of the data:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 let _data = range Timeline from 1 to 10000 step 1
 | extend __key = 1
 | join kind=inner (range Id from 1 to 50 step 1 | extend __key=1) on __key
@@ -95,7 +86,8 @@ Let's define a session in next terms: session considered to be active as long as
 
 The next query shows the count of active sessions according to the definition above.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 let _data = range Timeline from 1 to 9999 step 1
 | extend __key = 1
 | join kind=inner (range Id from 1 to 50 step 1 | extend __key=1) on __key

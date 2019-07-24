@@ -1,14 +1,3 @@
----
-title: strcat_delim() - Azure Data Explorer | Microsoft Docs
-description: This article describes strcat_delim() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # strcat_delim()
 
 Concatenates between 2 and 64 arguments, with delimiter, provided as first argument.
@@ -30,7 +19,8 @@ Arguments, concatenated to a single string with *delimiter*.
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 print st = strcat_delim('-', 1, '2', 'A', 1s)
 
 ```

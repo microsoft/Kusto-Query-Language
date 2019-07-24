@@ -1,19 +1,9 @@
----
-title: max_of() - Azure Data Explorer | Microsoft Docs
-description: This article describes max_of() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # max_of()
 
 Returns the maximum value of several evaluated numeric expressions.
 
-```kusto
+<!-- csl -->
+```
 max_of(10, 1, -3, 17) == 17
 ```
 
@@ -34,7 +24,8 @@ The maximum value of all argument expressions.
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples  -->
+```
 print result = max_of(10, 1, -3, 17) 
 ```
 

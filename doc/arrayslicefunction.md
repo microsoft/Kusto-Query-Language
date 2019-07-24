@@ -1,14 +1,3 @@
----
-title: array_slice() - Azure Data Explorer | Microsoft Docs
-description: This article describes array_slice() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 12/03/2018
----
 # array_slice()
 
 Extracts a slice of a dynamic array.
@@ -32,7 +21,8 @@ Dynamic array of the values in the range [start..end] from arr.
 **Examples**
 
 1.
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print arr=dynamic([1,2,3]) 
 | extend sliced=array_slice(arr, 1, 2)
 ```
@@ -42,7 +32,8 @@ print arr=dynamic([1,2,3])
 
 
 2.
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print arr=dynamic([1,2,3,4,5]) 
 | extend sliced=array_slice(arr, 2, -1)
 ```
@@ -52,7 +43,8 @@ print arr=dynamic([1,2,3,4,5])
 
 
 3.
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print arr=dynamic([1,2,3,4,5]) 
 | extend sliced=array_slice(arr, -3, -2)
 ```

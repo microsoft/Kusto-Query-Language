@@ -1,14 +1,3 @@
----
-title: range() - Azure Data Explorer | Microsoft Docs
-description: This article describes range() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # range()
 
 Generates a dynamic array holding a series of equally-spaced values.
@@ -31,14 +20,16 @@ The default value for *step* is `1` for numeric and `1h` for `timespan` or `date
 
 The following example returns `[1, 4, 7]`:
 
-```kusto
+<!-- csl -->
+```
 T | extend r = range(1, 8, 3)
 ```
 
 The following example returns an array holding all days
 in the year 2015:
 
-```kusto
+<!-- csl -->
+```
 T | extend r = range(datetime(2015-01-01), datetime(2015-12-31), 1d)
 ```
 

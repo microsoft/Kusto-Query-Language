@@ -1,14 +1,3 @@
----
-title: case() - Azure Data Explorer | Microsoft Docs
-description: This article describes case() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # case()
 
 Evaluates a list of predicates and returns the first result expression whose predicate is satisfied.
@@ -36,7 +25,8 @@ The value of the first *then_i* whose *predicate_i* evaluates to `true`, or the 
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range Size from 1 to 15 step 2
 | extend bucket = case(Size <= 3, "Small", 
                        Size <= 10, "Medium", 
@@ -53,3 +43,4 @@ range Size from 1 to 15 step 2
 |11|Large|
 |13|Large|
 |15|Large|
+

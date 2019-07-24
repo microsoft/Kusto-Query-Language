@@ -1,14 +1,3 @@
----
-title: series_outliers() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_outliers() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # series_outliers()
 
 Scores anomaly points in a series.
@@ -42,7 +31,8 @@ The following table describes differences between `"tukey"` and `"ctukey"`:
 
 Suppose you have a time series with some noise that creates outliers and you would like to replace those outliers (noise) with the average value, you could use series_outliers() to detect the outliers then replace them:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range x from 1 to 100 step 1 
 | extend y=iff(x==20 or x==80, 10*rand()+10+(50-x)/2, 10*rand()+10) // generate a sample series with outliers at x=20 and x=80
 | summarize x=make_list(x),series=make_list(y)

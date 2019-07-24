@@ -1,14 +1,3 @@
----
-title: percentile(), percentiles() - Azure Data Explorer | Microsoft Docs
-description: This article describes percentile(), percentiles() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # percentile(), percentiles()
 
 Returns an estimate for the specified [nearest-rank percentile](#nearest-rank-percentile) of the population defined by *Expr*. 
@@ -59,13 +48,15 @@ Returns an estimate for *Expr* of the specified percentiles in the group.
 
 The value of `Duration` that is larger than 95% of the sample set and smaller than 5% of the sample set:
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords | summarize percentile(Duration, 95) by continent
 ```
 
 Simultaneously calculate 5, 50 (median) and 95:
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords 
 | summarize percentiles(Duration, 5, 50, 95) by continent
 ```
@@ -76,7 +67,8 @@ The results show that in Europe, 5% of calls are shorter than 11.55s, 50% of cal
 
 Calculate multiple statistics:
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords 
 | summarize percentiles(Duration, 5, 50, 95), avg(Duration)
 ```
@@ -92,7 +84,7 @@ You can use `summarize percentilesw(Duration, BucketSize, ...)` to calculates th
 percentiles in a "weighted" way - treating each value of Duration as if it was repeated
 BucketSize times in the input, without actually needing to materialize those records.
 
-Consider the following following example.
+Consider the following following example<#ifdef MICROSOFT> (taken from [StackOverflow](https://stackoverflow/questions/8106/kusto-percentiles-on-aggregated-data))<#endif>.
 A customer has a set of latency values in milliseconds:
 `{ 1, 1, 2, 2, 2, 5, 7, 7, 12, 12, 15, 15, 15, 18, 21, 22, 26, 35 }`.
 
@@ -113,7 +105,8 @@ number of events in each bucket. In order to compute percentiles from this data,
 we can use the `percentilesw()` function. For example, for the 50,
 75 and 99.9 percentiles, we'll use the following query: 
 
-```kusto
+<!-- csl -->
+```
 Table
 | summarize percentilesw(LatencyBucket, ReqCount, 50, 75, 99.9) 
 ```
@@ -130,7 +123,8 @@ Notice, that the above query corresponds to the function
 ## Getting multiple percentiles in an array
 Multiple percentiles percentiles can be obtained as an array in a single dynamic column instead of multiple columns: 
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords 
 | summarize percentiles_array(Duration, 5, 25, 50, 75, 95), avg(Duration)
 ```
@@ -141,12 +135,14 @@ Similarily weighted percentiles can be returned as a dynamic array using `percen
 
 Percentiles for `percentiles_array` and `percentilesw_array` can be specified in a dynamic array of integer or floating-point numbers. The array must be constant but does not have to be literal.
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords 
 | summarize percentiles_array(Duration, dynamic([5, 25, 50, 75, 95])), avg(Duration)
 ```
 
-```kusto
+<!-- csl -->
+```
 CallDetailRecords 
 | summarize percentiles_array(Duration, range(0, 100, 5)), avg(Duration)
 ```

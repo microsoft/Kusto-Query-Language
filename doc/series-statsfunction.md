@@ -1,14 +1,3 @@
----
-title: series_stats() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_stats() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # series_stats()
 
 Returns statistics for a series in multiple columns.  
@@ -38,7 +27,8 @@ project (m, mi)=`series_stats(`*x*`)` or extend (m, mi)=`series_stats(`*x*`)`
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
 | project series_stats(x)
 
@@ -47,3 +37,4 @@ print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29])
 |series_stats_x_min|series_stats_x_min_idx|series_stats_x_max|series_stats_x_max_idx|series_stats_x_avg|series_stats_x_stdev|series_stats_x_variance|
 |---|---|---|---|---|---|---|
 |2|8|87|3|32.8|28.5036338535483|812.457142857143|
+

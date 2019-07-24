@@ -1,14 +1,3 @@
----
-title: Null Values - Azure Data Explorer | Microsoft Docs
-description: This article describes Null Values in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # Null Values
 
 All scalar data types in Kusto have a special value that represents a missing value.
@@ -19,7 +8,8 @@ This value is called the **null value**, or simply **null**.
 The null value of a scalar type `T` is represented in the query language by the null literal `T(null)`.
 Thus, the following returns a single row full of nulls:
 
-```kusto
+<!-- csl -->
+```
 print bool(null), datetime(null), dynamic(null), guid(null), int(null), long(null), real(null), double(null), time(null)
 ```
 
@@ -46,7 +36,8 @@ in the corresponding table cell. An exception to that are columns of type
 `string` and CSV-like ingestion, where a missing value produces an empty string.
 So, for example, if we have: 
 
-```kusto
+<!-- csl -->
+```
 .create table T [a:string, b:int]
 
 .ingest inline into table T

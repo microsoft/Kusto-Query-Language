@@ -1,19 +1,9 @@
----
-title: join operator - Azure Data Explorer | Microsoft Docs
-description: This article describes join operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 05/11/2019
----
 # join operator
 
 Merge the rows of two tables to form a new table by matching values of the specified column(s) from each table.
 
-```kusto
+<!-- csl -->
+```
 Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 ```
 
@@ -95,7 +85,8 @@ For best performance:
 
 Get extended activities from a log in which some entries mark the start and end of an activity. 
 
-```kusto
+<!-- csl -->
+```
 let Events = MyLogTable | where type=="Event" ;
 Events
 | where Name == "Start"
@@ -107,7 +98,8 @@ Events
 | project City, ActivityId, StartTime, StopTime, Duration = StopTime - StartTime
 ```
 
-```kusto
+<!-- csl -->
+```
 let Events = MyLogTable | where type=="Event" ;
 Events
 | where Name == "Start"
@@ -143,7 +135,8 @@ supports the following flavors of the join operator:
 -	When using **inner join flavor**, there will be a row in the output for every combination of matching rows from left and right without left keys deduplications. The output will be a cartesian product of left and right keys.
 	Example of **inner join**:
 
-```kusto
+<!-- csl-->
+```
 let t1 = datatable(key:long, value:string)  
 [
 1, "val1.1",  
@@ -171,7 +164,8 @@ on key
 	Example of **innerunique join** for the same datasets used above, Please note that **innerunique flavor** for this case may yield two possible outputs and both are correct.
 	In the first output, the join operator randomly picked the first key which appears in t1 with the value "val1.1" and matched it with t2 keys while in the second one, the join operator randomly picked the second key appears in t1 which has the value "val1.2" and matched it with t2 keys:
 
-```kusto
+<!-- csl-->
+```
 let t1 = datatable(key:long, value:string)  
 [
 1, "val1.1",  
@@ -193,7 +187,8 @@ on key
 |1|val1.1|1|val1.3|
 |1|val1.1|1|val1.4|
 
-```kusto
+<!-- csl-->
+```
 let t1 = datatable(key:long, value:string)  
 [
 1, "val1.1",  
@@ -220,7 +215,8 @@ on key
 	Sometimes, when the flavor used is **innerunique** and the filter can be propagated to the left side of the join, then it will be propagated automatically and the keys which applies to that filter will always appear in the output.
 	for example, using the example above and adding filter ` where value == "val1.2" ` will always give the second result and will never give the first result for the used datasets :
 
-```kusto
+<!-- csl-->
+```
 let t1 = datatable(key:long, value:string)  
 [
 1, "val1.1",  
@@ -283,7 +279,8 @@ the effective left side of the join (table X after de-duplication) would be:
 
 and the result of the join would be: 
 
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -316,7 +313,8 @@ X | join Y on Key
 
 This is the standard inner join as known from the SQL world. Output record is produced whenever a record on the left side has the same join key as the record on the right side. 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -347,7 +345,8 @@ Note that (b,10) coming from the right side was joined twice: with both (b,2) an
 
 The result of a left outer join for tables X and Y always contains all records of the left table (X), even if the join condition does not find any matching record in the right table (Y). 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -378,7 +377,8 @@ X | join kind=leftouter Y on Key
 
 Resembles the left outer join, but the treatment of the tables is reversed. 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -409,7 +409,8 @@ X | join kind=rightouter Y on Key
 
 Conceptually, a full outer join combines the effect of applying both left and right outer joins. Where records in the joined tables do not match, the result set will have NULL values for every column of the table that lacks a matching row. For those records that do match, a single row will be produced in the result set (containing fields populated from both tables). 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -441,7 +442,8 @@ X | join kind=fullouter Y on Key
 
 Left anti join returns all records from the left side that do not match any record from the right side. 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -469,7 +471,8 @@ Anti-join models the "NOT IN" query.
 
 Right anti join returns all records from the right side that do not match any record from the left side. 
  
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -497,7 +500,8 @@ Anti-join models the "NOT IN" query.
 
 Left semi join returns all records from the left side that match a record from the right side. Only columns from the left side are returned. 
 
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,
@@ -525,7 +529,8 @@ X | join kind=leftsemi Y on Key
 
 Right semi join returns all records from the right side that match a record from the left side. Only columns from the right side are returned. 
 
-```kusto
+<!-- csl -->
+```
 let X = datatable(Key:string, Value1:long)
 [
     'a',1,

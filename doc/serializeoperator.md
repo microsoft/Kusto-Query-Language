@@ -1,21 +1,11 @@
----
-title: serialize operator - Azure Data Explorer | Microsoft Docs
-description: This article describes serialize operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # serialize operator
 
 Marks that order of the input row set is safe for window functions usage.
 
 Operator has declarative meaning, and it marks input row set as serialized (ordered) so [window functions](./windowsfunctions.md) could be applied to it.
 
-```kusto
+<!-- csl -->
+```
 T | serialize rn=row_number()
 ```
 
@@ -27,7 +17,8 @@ T | serialize rn=row_number()
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 Traces
 | where ActivityId == "479671d99b7b"
 | serialize

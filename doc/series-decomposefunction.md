@@ -1,14 +1,3 @@
----
-title: series_decompose() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_decompose() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 07/21/2019
----
 # series_decompose()
 
 Applies a decomposition transformation on a series.  
@@ -65,7 +54,8 @@ This method is usually applied to time series of metrics expected to manifest pe
 
 In the following example we generate a series with weekly seasonality and without trend, we then add some outliers to it. `series_decompose` finds auto-detects the seasonality and generates a baseline which is almost identical to the the seasonal component. The outliers we added can be clearly seen in the residuals component.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 10.0, 15.0) - (((t%24)/10)*((t%24)/10)) // generate a series with weekly seasonality
@@ -82,7 +72,8 @@ ts
 
 In this example we add a trend to the series from the previous example. First, we run `series_decompose` with the default parameters in which the trend `avg` default value only takes the average and doesn't compute the trend, we can see that the generated baseline doesn't contain the trend and is less accurate comparing to the previous example, it is most apparent when observing the trend in the residuals.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and ongoing trend
@@ -97,7 +88,8 @@ ts
 
 Next, we run the same example but since we are expecting a trend in the series, we specify `linefit` in the trend parameter. We can see that the positive trend is detected and the baseline is much closer to the input series. The residuals are close to zero with only the outliers standing out. We can see all the components on the series in the chart.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let ts=range t from 1 to 24*7*5 step 1 
 | extend Timestamp = datetime(2018-03-01 05:00) + 1h * t 
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and ongoing trend

@@ -1,14 +1,3 @@
----
-title: evaluate plugin operator - Azure Data Explorer | Microsoft Docs
-description: This article describes evaluate plugin operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 11/11/2018
----
 # evaluate plugin operator
 
 Invokes a service-side query extension (plugin).

@@ -1,19 +1,9 @@
----
-title: sample operator - Azure Data Explorer | Microsoft Docs
-description: This article describes sample operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 12/07/2018
----
 # sample operator
 
 Returns up to the specified number of random rows from the input table.
 
-```kusto
+<!-- csl -->
+```
 T | sample 5
 ```
 
@@ -28,7 +18,8 @@ T | sample 5
 
 `sample` is a non-deterministic operator, and will return different result set each time it is evaluated during the query. For example, the following query yields two different rows (even if one would expect to return the same row twice).
 
-```kusto
+<!-- csl:https://help.kusto.windows.net:443/Samples -->
+```
 let _data = range x from 1 to 100 step 1;
 let _sample = _data | sample 1;
 union (_sample), (_sample)
@@ -41,7 +32,8 @@ union (_sample), (_sample)
 
 In order to ensure that in example above `_sample` is calculated once, one can use [materialize()](./materializefunction.md) function:
 
-```kusto
+<!-- csl:https://help.kusto.windows.net:443/Samples -->
+```
 let _data = range x from 1 to 100 step 1;
 let _sample = materialize(_data | sample 1);
 union (_sample), (_sample)
@@ -56,7 +48,8 @@ union (_sample), (_sample)
 
 * if you want to sample a certain percentage of your data (rather than a specified number of rows), you can use 
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents | where rand() < 0.1
 ```
 
@@ -64,7 +57,8 @@ StormEvents | where rand() < 0.1
 
 **Examples**  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let sampleEpisodes = StormEvents | sample-distinct 10 of EpisodeId;
 StormEvents
 | where EpisodeId in (sampleEpisodes)

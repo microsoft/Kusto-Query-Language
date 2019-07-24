@@ -1,14 +1,3 @@
----
-title: as operator - Azure Data Explorer | Microsoft Docs
-description: This article describes as operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/10/2019
----
 # as operator
 
 Binds a name to the operator's input tabular expression, thus allowing the query
@@ -39,7 +28,9 @@ the query and binding a name through the [let statement](letstatement.md).
 
 **Examples**
 
-```kusto
+<!-- csl -->
+
+```
 // 1. In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'
 range x from 1 to 10 step 1 
 | as T1 

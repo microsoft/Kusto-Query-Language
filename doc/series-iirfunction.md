@@ -1,14 +1,3 @@
----
-title: series_iir() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_iir() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # series_iir()
 
 Applies a Infinite Impulse Response filter on a series.  
@@ -43,7 +32,8 @@ Y<sub>i</sub> = a<sub>0</sub><sup>-1</sup>(b<sub>0</sub>X<sub>i</sub>
 
 Calculating cumulative sum can be performed by iir filter with coefficients *a*=[1,-1] and *b*=[1]:  
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let x = range(1.0, 10, 1);
 print x=x, y = series_iir(x, dynamic([1]), dynamic([1,-1]))
 | mv-expand x, y
@@ -58,7 +48,8 @@ print x=x, y = series_iir(x, dynamic([1]), dynamic([1,-1]))
 
 Here's how to wrap it in a function:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 let vector_sum=(x:dynamic)
 {
   let y=array_length(x) - 1;

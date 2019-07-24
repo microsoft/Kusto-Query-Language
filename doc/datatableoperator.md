@@ -1,14 +1,3 @@
----
-title: datatable operator - Azure Data Explorer | Microsoft Docs
-description: This article describes datatable operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # datatable operator
 
 Returns a table whose schema and values are defined in the query itself.
@@ -34,7 +23,8 @@ This operator returns a data table of the given schema and data.
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 datatable (Date:datetime, Event:string)
     [datetime(1910-06-11), "Born",
      datetime(1930-01-01), "Enters Ecole Navale",

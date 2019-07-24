@@ -1,14 +1,3 @@
----
-title: make_set() (aggregation function) - Azure Data Explorer | Microsoft Docs
-description: This article describes make_set() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # make_set() (aggregation function)
 
 Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes in the group.
@@ -38,7 +27,8 @@ The array's sort order is undefined.
 
 **Example**
 
-```kusto
+<!--csl -->
+```
 PageViewLog 
 | summarize countries=make_set(country) by continent
 ```

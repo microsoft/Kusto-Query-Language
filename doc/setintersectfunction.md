@@ -1,14 +1,3 @@
----
-title: set_intersect() - Azure Data Explorer | Microsoft Docs
-description: This article describes set_intersect() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 06/02/2019
----
 # set_intersect()
 
 Returns a `dynamic` (JSON) array of the set of all distinct values that are in all arrays - (arr1 ∩ arr2 ∩ ...).
@@ -27,7 +16,8 @@ Returns a dynamic array of the set of all distinct values that are in all arrays
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range x from 1 to 3 step 1
 | extend y = x * 2
 | extend z = y * 2
@@ -42,7 +32,8 @@ range x from 1 to 3 step 1
 |[2]|
 |[3]|
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print arr = set_intersect(dynamic([1, 2, 3]), dynamic([4,5]))
 ```
 

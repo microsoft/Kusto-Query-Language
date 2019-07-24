@@ -1,14 +1,3 @@
----
-title: url_decode() - Azure Data Explorer | Microsoft Docs
-description: This article describes url_decode() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # url_decode()
 
 The function converts encoded URL into a to regular URL representation. 
@@ -29,7 +18,8 @@ URL (string) in a regular representation.
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 let url = @'https%3a%2f%2fwww.bing.com%2f';
 print original = url, decoded = url_decode(url)
 ```

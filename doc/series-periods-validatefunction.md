@@ -1,14 +1,3 @@
----
-title: series_periods_validate() - Azure Data Explorer | Microsoft Docs
-description: This article describes series_periods_validate() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/19/2019
----
 # series_periods_validate()
 
 Checks whether a time series contains periodic patterns of given lengths.  
@@ -42,7 +31,8 @@ The function outputs 2 columns:
 
 The following query embeds a snapshot of a month of an application’s traffic, aggregated twice a day (i.e. the bin size is 12 hours).
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77,61,50,54,47,133,72,152,94,148,105,162,101,160,87,63,53,55,54,151,103,189,108,183,113,175,113,178,90,71,62,62,65,165,109,181,115,182,121,178,114,170])
 | project x=range(1, array_length(y), 1), y  
 | render linechart 
@@ -52,7 +42,8 @@ print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77
 
 Running `series_periods_validate()` on this series to validate a weekly period (14 points long) results in a high score,  and with a **0** score  when validating a five days period (10 points long).
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77,61,50,54,47,133,72,152,94,148,105,162,101,160,87,63,53,55,54,151,103,189,108,183,113,175,113,178,90,71,62,62,65,165,109,181,115,182,121,178,114,170])
 | project x=range(1, array_length(y), 1), y  
 | project series_periods_validate(y, 14.0, 10.0)

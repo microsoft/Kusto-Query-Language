@@ -1,14 +1,3 @@
----
-title: Batches - Azure Data Explorer | Microsoft Docs
-description: This article describes Batches in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/29/2018
----
 # Batches
 
 A query can include multiple tabular expression statements, as long as they
@@ -20,7 +9,8 @@ For example, the following query produces two tabular results. User agent tools
 can then display those results with the appropriate name associated with each
 (`Count of events in Florida` and `Count of events in Guam`, respectively).
 
-```kusto
+<!-- csl -->
+```
 StormEvents | where State == "FLORIDA" | count | as ['Count of events in Florida'];
 StormEvents | where State == "GUAM" | count | as ['Count of events in Guam']
 ```
@@ -30,7 +20,8 @@ that is shared by multiple sub-queries, such as for dashboards. If the common
 calculation is complex, it is recommended that one construct the query so that
 it'll be executed only once, using the [materialize() function](./materializefunction.md):
 
-```kusto
+<!-- csl -->
+```
 let m = materialize(StormEvents | summarize n=count() by State);
 m | where n > 2000;
 m | where n < 10

@@ -1,19 +1,9 @@
----
-title: union operator - Azure Data Explorer | Microsoft Docs
-description: This article describes union operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 11/29/2018
----
 # union operator
 
 Takes two or more tables and returns the rows of all of them. 
 
-```kusto
+<!-- csl -->
+```
 Table1 | union Table2, Table3
 ```
 
@@ -57,7 +47,8 @@ with [view keyword](./letstatement.md)
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 union K* | where * has "Kusto"
 ```
 
@@ -65,7 +56,8 @@ Rows from all tables in the database whose name starts with `K`, and in which an
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 union withsource=SourceTable kind=outer Query, Command
 | where Timestamp > ago(1d)
 | summarize dcount(UserId)
@@ -74,7 +66,8 @@ union withsource=SourceTable kind=outer Query, Command
 The number of distinct users that have produced
 either a `Query` event or a `Command` event over the past day. In the result, the 'SourceTable' column will indicate either "Query" or "Command".
 
-```kusto
+<!-- csl -->
+```
 Query
 | where Timestamp > ago(1d)
 | union withsource=SourceTable kind=outer 
@@ -86,7 +79,8 @@ This more efficient version produces the same result. It filters each table befo
 
 **Example: Using `isfuzzy=true`**
  
-```kusto     
+<!-- csl -->
+```     
 // Using union isfuzzy=true to access non-existing view:                                     
 let View_1 = view () { print x=1 };
 let View_2 = view () { print x=1 };
@@ -105,7 +99,8 @@ union isfuzzy=true
 Observing Query Status - the following warning returned:
 `Failed to resolve entity 'View_3'`
 
-```kusto
+<!-- csl -->
+```
 // Using union isfuzzy=true and wildcard access:
 let View_1 = view () { print x=1 };
 let View_2 = view () { print x=1 };
@@ -123,7 +118,8 @@ Observing Query Status - the following warning returned:
 
 **Example: source columns types mismatch**
  
-```kusto     
+<!-- csl -->
+```     
 let View_1 = view () { print x=1 };
 let View_2 = view () { print x=toint(2) };
 union withsource=TableName View_1, View_2
@@ -134,7 +130,8 @@ union withsource=TableName View_1, View_2
 |View_1   |1     |     |
 |View_2   |      |2    |
 
-```kusto     
+<!-- csl -->
+```     
 let View_1 = view () { print x=1 };
 let View_2 = view () { print x=toint(2) };
 let View_3 = view () { print x_long=3 };

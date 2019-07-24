@@ -1,17 +1,7 @@
----
-title: basket plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes basket plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 05/26/2019
----
 # basket plugin
 
-```kusto
+<!-- csl -->
+```
 T | evaluate basket()
 ```
 
@@ -64,7 +54,8 @@ Available arguments:
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where monthofyear(StartTime) == 5
 | extend Damage = iff(DamageCrops + DamageProperty > 0 , "YES" , "NO")
@@ -83,7 +74,8 @@ StormEvents
 |7|1291|21.9||Thunderstorm Wind||
 
 **Example with custom wildcards**
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where monthofyear(StartTime) == 5
 | extend Damage = iff(DamageCrops + DamageProperty > 0 , "YES" , "NO")
@@ -101,3 +93,4 @@ StormEvents
 |6|1310|22.3|\*|\*|YES|-1
 |7|1291|21.9|\*|Thunderstorm Wind|\*|-1
 
+<#ifdef MICROSOFT>If you have questions about basket or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

@@ -1,19 +1,9 @@
----
-title: isempty() - Azure Data Explorer | Microsoft Docs
-description: This article describes isempty() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # isempty()
 
 Returns `true` if the argument is an empty string or is null.
     
-```kusto
+<!-- csl -->
+```
 isempty("") == true
 ```
 
@@ -35,7 +25,8 @@ Indicates whether the argument is an empty string or isnull.
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 T
 | where isempty(fieldName)
 | count

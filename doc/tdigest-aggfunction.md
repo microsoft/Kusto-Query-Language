@@ -1,14 +1,3 @@
----
-title: tdigest() (aggregation function) - Azure Data Explorer | Microsoft Docs
-description: This article describes tdigest() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # tdigest() (aggregation function)
 
 Calculates the Intermediate results of [`percentiles()`](percentiles-aggfunction.md) across the group. 
@@ -40,7 +29,8 @@ The Intermediate results of weighted percentiles of *Expr* across the group.
 
 **Examples**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents
 | summarize tdigest(DamageProperty) by State
 ```

@@ -1,14 +1,3 @@
----
-title: bin() - Azure Data Explorer | Microsoft Docs
-description: This article describes bin() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/20/2019
----
 # bin()
 
 Rounds values down to an integer multiple of a given bin size. 
@@ -33,7 +22,8 @@ Alias to `floor()` function.
 
 The nearest multiple of *roundTo* below *value*.  
  
-```kusto
+<!-- csl -->
+```
 (toint((value/roundTo))) * roundTo`
 ```
 
@@ -49,6 +39,7 @@ Expression | Result
 The following expression calculates a histogram of durations,
 with a bucket size of 1 second:
 
-```kusto
+<!-- csl -->
+```
 T | summarize Hits=count() by bin(Duration, 1s)
 ```

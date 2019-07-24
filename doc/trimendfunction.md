@@ -1,14 +1,3 @@
----
-title: trim_end() - Azure Data Explorer | Microsoft Docs
-description: This article describes trim_end() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # trim_end()
 
 Removes trailing match of the specified regular expression.
@@ -30,7 +19,8 @@ Removes trailing match of the specified regular expression.
 
 Statement bellow trims *substring*  from the end of *string_to_trim*:
 
-```kusto
+<!-- csl -->
+```
 let string_to_trim = @"bing.com";
 let substring = ".com";
 print string_to_trim = string_to_trim,trimmed_string = trim_end(substring,string_to_trim)
@@ -42,7 +32,8 @@ print string_to_trim = string_to_trim,trimmed_string = trim_end(substring,string
 
 Next statement trims all non-word characters from the end of the string:
 
-```kusto
+<!-- csl -->
+```
 print str = strcat("-  ","Te st",x,@"// $")
 | extend trimmed_str = trim_end(@"[^\w]+",str)
 ```

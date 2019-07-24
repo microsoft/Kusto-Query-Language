@@ -1,17 +1,7 @@
----
-title: diffpatterns plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes diffpatterns plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 05/26/2019
----
 # diffpatterns plugin
 
-```kusto
+<!-- csl -->
+```
 T | evaluate diffpatterns(splitColumn)
 ```
 
@@ -103,7 +93,8 @@ When you find an interesting row, you might want to drill into it further by add
 
 **Example**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents 
 | where monthofyear(StartTime) == 5
 | extend Damage = iff(DamageCrops + DamageProperty > 0 , 1 , 0)
@@ -122,3 +113,4 @@ StormEvents
 |7|150|117|3.28|8.93|5.65||Flood|||
 |8|362|176|7.91|13.44|5.52|||Emergency Manager||
 
+<#ifdef MICROSOFT>If you have questions about diffpatterns or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

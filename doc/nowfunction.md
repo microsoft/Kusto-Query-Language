@@ -1,20 +1,10 @@
----
-title: now() - Azure Data Explorer | Microsoft Docs
-description: This article describes now() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # now()
 
 Returns the current UTC clock time, optionally offset by a given timespan.
 This function can be used multiple times in a statement and the clock time being referenced will be the same for all instances.
 
-```kusto
+<!-- csl -->
+```
 now()
 now(-2d)
 ```
@@ -37,6 +27,7 @@ The current UTC clock time as a `datetime`.
 
 Determines the interval since the event identified by the predicate:
 
-```kusto
+<!-- csl -->
+```
 T | where ... | extend Elapsed=now() - Timestamp
 ```

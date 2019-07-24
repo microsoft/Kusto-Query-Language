@@ -1,19 +1,9 @@
----
-title: todatetime() - Azure Data Explorer | Microsoft Docs
-description: This article describes todatetime() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # todatetime()
 
 Converts input to [datetime](./scalar-data-types/datetime.md) scalar.
 
-```kusto
+<!-- csl -->
+```
 todatetime("2015-12-24") == datetime(2015-12-24)
 ```
 

@@ -1,19 +1,9 @@
----
-title: render operator - Azure Data Explorer | Microsoft Docs
-description: This article describes render operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 12/31/2018
----
 # render operator
 
 Instructs the user agent to render the results of the query in a particular way.
 
-```kusto
+<!-- csl -->
+```
 range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 ```
 
@@ -128,7 +118,8 @@ three kinds of columns:
 
 [Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
 
-```kusto
+<!-- csl -->
+```
 range x from -2 to 2 step 0.1
 | extend sin = sin(x), cos = cos(x)
 | extend x_sign = iif(x > 0, "x_pos", "x_neg")

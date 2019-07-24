@@ -1,19 +1,9 @@
----
-title: welch_test() - Azure Data Explorer | Microsoft Docs
-description: This article describes welch_test() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # welch_test()
 
 Computes the p_value of the [Welch-test function](https://en.wikipedia.org/wiki/Welch%27s_t-test)
 
-```kusto
+<!-- csl -->
+```
 // s1, s2 values are from https://en.wikipedia.org/wiki/Welch%27s_t-test
 print
     s1 = dynamic([27.5, 21.0, 19.0, 23.6, 17.0, 17.9, 16.9, 20.1, 21.9, 22.6, 23.1, 19.6, 19.0, 21.7, 21.4]),

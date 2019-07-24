@@ -1,14 +1,3 @@
----
-title: indexof() - Azure Data Explorer | Microsoft Docs
-description: This article describes indexof() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 07/07/2019
----
 # indexof()
 
 Function reports the zero-based index of the first occurrence of a specified string within input string.
@@ -38,7 +27,8 @@ Returns -1 if the string is not found in the input.
 In case of irrelevant (less than 0) *start_index*, *occurrence* or (less than -1) *length* parameter - returns *null*.
 
 **Examples**
-```kusto
+<!-- csl -->
+```
 print
  idx1 = indexof("abcdefg","cde")    // lookup found in input string
  , idx2 = indexof("abcdefg","cde",1,4) // lookup found in researched range 
@@ -54,3 +44,4 @@ print
 |idx1|idx2|idx3|idx4|idx5|idx6|idx7|idx8|idx9|
 |----|----|----|----|----|----|----|----|----|
 |2   |2   |-1  |-1  |    |4   |2   |9   |-1  |
+

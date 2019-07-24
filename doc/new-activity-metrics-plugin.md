@@ -1,21 +1,11 @@
----
-title: new_activity_metrics plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes new_activity_metrics plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 02/20/2019
----
 # new_activity_metrics plugin
 
 Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) for the cohort of `New Users`.
 
 Concept of this plugin is similar to [activity_metrics plugin](./activity-metrics-plugin.md), but focuses on `New Users`.
 
-```kusto
+<!-- csl -->
+```
 T | evaluate new_activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
@@ -60,7 +50,8 @@ For definitions of `Retention Rate` and `Churn Rate` - refer to **Notes** sectio
 The next query calculates a retention and churn rate for week-over-week window for `New Users` cohort
 (users that arrived on the first week).
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Generate random data of user activities
 let _start = datetime(2017-05-01);
 let _end = datetime(2017-05-31);
@@ -88,7 +79,8 @@ range Day from _start to _end  step 1d
 The next query calculates retention and churn rate for week-over-week window for `New Users` cohort. If the previous
 example calculated the statistics for a single week - the below produces NxN table for each from/to combination.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Generate random data of user activities
 let _start = datetime(2017-05-01);
 let _end = datetime(2017-05-31);
@@ -128,7 +120,8 @@ consideration `lookback` period: a tabular query with set of Ids that are used t
 the `New Users` cohort (all IDs that do not appear in this set are `New Users`). The 
 query examines the retention behavior of the `New Users` during the analysis period.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 // Generate random data of user activities
 let _lookback = datetime(2017-02-01);
 let _start = datetime(2017-05-01);
@@ -152,3 +145,4 @@ _data
 |2017-05-01 00:00:00.0000000|2017-05-15 00:00:00.0000000|0.257142857142857|
 |2017-05-01 00:00:00.0000000|2017-05-22 00:00:00.0000000|0.296326530612245|
 |2017-05-01 00:00:00.0000000|2017-05-29 00:00:00.0000000|0.0587755102040816|
+

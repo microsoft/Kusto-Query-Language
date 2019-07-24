@@ -1,14 +1,3 @@
----
-title: reverse() - Azure Data Explorer | Microsoft Docs
-description: This article describes reverse() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # reverse()
 
 Function makes reverse of input string.
@@ -29,7 +18,8 @@ The reverse order of a string value.
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 print str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 | extend rstr = reverse(str)
 ```
@@ -39,7 +29,8 @@ print str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 |ABCDEFGHIJKLMNOPQRSTUVWXYZ|ZYXWVUTSRQPONMLKJIHGFEDCBA|
 
 
-```kusto
+<!-- csl -->
+```
 print ['int'] = 12345, ['double'] = 123.45, 
 ['datetime'] = datetime(2017-10-15 12:00), ['timespan'] = 3h
 | project rint = reverse(['int']), rdouble = reverse(['double']), 

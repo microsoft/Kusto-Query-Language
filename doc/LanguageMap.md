@@ -135,6 +135,8 @@ eroperator.md) | Core |  |
 
 ### Special functions
 
+|**Name**|**Flavor**|**Comment**|
+|---|---|---|
 |  [cluster()](clusterfunction.md) | Out of scope |  |
 |  [database()](databasefunction.md) | Core |  |
 |  [materialize()](materializefunction.md) | Out of scope |  |

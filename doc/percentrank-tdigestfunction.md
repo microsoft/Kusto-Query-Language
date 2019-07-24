@@ -1,14 +1,3 @@
----
-title: percentrank_tdigest() - Azure Data Explorer | Microsoft Docs
-description: This article describes percentrank_tdigest() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # percentrank_tdigest()
 
 Calculates the approximate rank of the value in a set where rank is expressed as percentage of set's size. 
@@ -37,7 +26,8 @@ The percentage rank of value in a dataset.
 
 Getting the percentrank_tdigest() of the damage property that valued 4490$ is ~85%:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents
 | summarize tdigestRes = tdigest(DamageProperty)
 | project percentrank_tdigest(tdigestRes, 4490)
@@ -51,7 +41,8 @@ StormEvents
 
 Using percentile 85 over the damage property should give 4490$:
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 StormEvents
 | summarize tdigestRes = tdigest(DamageProperty)
 | project percentile_tdigest(tdigestRes, 85, typeof(long))

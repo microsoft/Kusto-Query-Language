@@ -1,21 +1,11 @@
----
-title: active_users_count plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes active_users_count plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/15/2019
----
 # active_users_count plugin
 
 Calculates distinct count of values, where each value has appeared in at least a minimum number of periods in a lookback period.
 
 Useful for calculating distinct counts of "fans" only,  while not including appearances of "non-fans". A user is counted as a "fan" only if it was active during the lookback period. 
 
-```kusto
+<!-- csl -->
+```
 T | evaluate active_users_count(id, datetime_column, startofday(ago(30d)), startofday(now()), 7d, 1d, 2, 7d, dim1, dim2, dim3)
 ```
 
@@ -51,7 +41,8 @@ Output table schema is:
 
 Calculate weekly amount of distinct users that appeared in at least on 3 different days over a period of prior 8 days. Period of analysis: July 2018.
 
-```kusto
+<!-- csl -->
+```
 let Start = datetime(2018-07-01);
 let End = datetime(2018-07-31);
 let LookbackWindow = 8d;

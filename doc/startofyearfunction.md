@@ -1,14 +1,3 @@
----
-title: startofyear() - Azure Data Explorer | Microsoft Docs
-description: This article describes startofyear() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # startofyear()
 
 Returns the start of the year containing the date, shifted by an offset, if provided.
@@ -28,7 +17,8 @@ A datetime representing the start of the year for the given *date* value, with t
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
   range offset from -1 to 1 step 1
  | project yearStart = startofyear(datetime(2017-01-01 10:10:17), offset) 
 ```

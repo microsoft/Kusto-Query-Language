@@ -1,14 +1,3 @@
----
-title: radians() - Azure Data Explorer | Microsoft Docs
-description: This article describes radians() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # radians()
 
 Converts angle value in degrees into value in radians, using formula `radians = (PI / 180 ) * angle_in_degrees`
@@ -27,7 +16,8 @@ Converts angle value in degrees into value in radians, using formula `radians = 
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 print radians0 = radians(90), radians1 = radians(180), radians2 = radians(360) 
 
 ```

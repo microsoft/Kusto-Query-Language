@@ -1,14 +1,3 @@
----
-title: cursor_current(), current_cursor() - Azure Data Explorer | Microsoft Docs
-description: This article describes cursor_current(), current_cursor() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # cursor_current(), current_cursor()
 
 Retrieves the current value of the cursor of the database in scope. (The names `cursor_current`

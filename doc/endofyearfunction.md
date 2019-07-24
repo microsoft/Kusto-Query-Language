@@ -1,14 +1,3 @@
----
-title: endofyear() - Azure Data Explorer | Microsoft Docs
-description: This article describes endofyear() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # endofyear()
 
 Returns the end of the year containing the date, shifted by an offset, if provided.
@@ -28,7 +17,8 @@ A datetime representing the end of the year for the given *date* value, with the
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
   range offset from -1 to 1 step 1
  | project yearEnd = endofyear(datetime(2017-01-01 10:10:17), offset) 
 ```

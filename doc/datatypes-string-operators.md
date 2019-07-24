@@ -1,14 +1,3 @@
----
-title: String operators - Azure Data Explorer | Microsoft Docs
-description: This article describes String operators in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 12/06/2018
----
 # String operators
 
 The following table summarizes operators on strings:
@@ -55,7 +44,8 @@ a symbol or an alphanumeric word bounded by non-alphanumeric characters or start
 `has` performs faster than `contains`, `startswith`, or `endswith`.
 The first of these queries runs faster:
 
-```kusto
+<!-- csl -->
+```
 EventLog | where continent has "North" | count;
 EventLog | where continent contains "nor" | count
 ```

@@ -1,19 +1,9 @@
----
-title: project-away operator - Azure Data Explorer | Microsoft Docs
-description: This article describes project-away operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 06/22/2019
----
 # project-away operator
 
 Select what columns in the input to exclude from the output
 
-```kusto
+<!-- csl -->
+```
 T | project-away price, quantity, zz*
 ```
 
@@ -44,7 +34,8 @@ A table with columns that were not named as arguments. Contains same number of r
 
 The input table `T` has three columns of type `long`: `A`, `B`, and `C`.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 datatable(A:long, B:long, C:long) [1, 2, 3]
 | project-away C    // Removes column C from the output
 ```
@@ -55,7 +46,8 @@ datatable(A:long, B:long, C:long) [1, 2, 3]
 
 Removing columns starting with 'a'.
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 print  a2='a2', b = 'b', a3='a3', a1='a1'
 |  project-away a* 
 ```
@@ -63,4 +55,5 @@ print  a2='a2', b = 'b', a3='a3', a1='a1'
 |b|
 |---|
 |b|
+
 

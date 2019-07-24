@@ -1,19 +1,9 @@
----
-title: format_datetime() - Azure Data Explorer | Microsoft Docs
-description: This article describes format_datetime() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # format_datetime()
 
 Formats a datetime parameter based on the format pattern parameter.
 
-```kusto
+<!-- csl -->
+```
 format_datetime(datetime(2015-12-14 02:03:04.12345), 'y-M-d h:m:s.fffffff') == "15-12-14 2:3:4.1234500"
 ```
 
@@ -71,7 +61,8 @@ The string with the format result.
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 format_datetime(datetime(2017-01-29 09:00:05), 'yy-MM-dd [HH:mm:ss]') //'17-01-29 [09:00:05]'
 format_datetime(datetime(2017-01-29 09:00:05), 'yyyy-M-dd [H:mm:ss]') //'2017-1-29 [9:00:05]'
 format_datetime(datetime(2017-01-29 09:00:05), 'yy-MM-dd [hh:mm:ss tt]') //'17-01-29 [09:00:05 AM]'

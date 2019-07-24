@@ -1,14 +1,3 @@
----
-title: parse_url() - Azure Data Explorer | Microsoft Docs
-description: This article describes parse_url() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/10/2019
----
 # parse_url()
 
 Parses an absolute URL `string` and returns a `dynamic` object contains URL parts.
@@ -28,7 +17,8 @@ An object of type [dynamic](./scalar-data-types/dynamic.md) that included the UR
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 T | extend Result = parse_url("scheme://username:password@host:1234/this/is/a/path?k1=v1&k2=v2#fragment")
 ```
 

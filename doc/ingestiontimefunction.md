@@ -1,14 +1,3 @@
----
-title: ingestion_time() - Azure Data Explorer | Microsoft Docs
-description: This article describes ingestion_time() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # ingestion_time()
 
 Retrieves the record's `$IngestionTime` hidden `datetime` column, or null.
@@ -31,7 +20,8 @@ A `datetime` value specifying the approximate time of ingestion into a table.
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 T 
 | extend ingestionTime = ingestion_time() | top 10 by ingestionTime
 ```

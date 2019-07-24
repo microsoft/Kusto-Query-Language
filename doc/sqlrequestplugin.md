@@ -1,14 +1,3 @@
----
-title: sql_request plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes sql_request plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 04/17/2019
----
 # sql_request plugin
 
   `evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)`
@@ -44,7 +33,8 @@ data in this manner. It's usually preferable that SQL queries will be constructe
 to return the smallest data set possible, as currently the Kusto optimizer
 does not attempt to optimize queries between Kusto and SQL.
 
-```kusto
+<!-- csl -->
+```
 evaluate sql_request(
   'Server=tcp:zivckusto2.database.windows.net,1433;'
     'Authentication="Active Directory Integrated";'
@@ -58,7 +48,8 @@ The following example is identical to the previous one, except that SQL
 authentication is done by username/password. Note that for confidentiality,
 we use obfuscated strings here.
 
-```kusto
+<!-- csl -->
+```
 evaluate sql_request(
   'Server=tcp:zivckusto2.database.windows.net,1433;'
     'Initial Catalog=zivckusto2;'
@@ -126,3 +117,6 @@ Where:
 > One cannot omit, for example, the prefix `tcp:` even though it is possible to
 > do so when using the SQL client libraries programmatically.
 
+<#ifdef MICROSOFT>**Restrictions**
+
+Kusto service controls allow sql-request plugin destinations by [Callout policy](../concepts/calloutpolicy.md)<#endif>

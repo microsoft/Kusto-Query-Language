@@ -1,14 +1,3 @@
----
-title: replace() - Azure Data Explorer | Microsoft Docs
-description: This article describes replace() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # replace()
 
 Replace all regex matches with another string.
@@ -31,7 +20,8 @@ Replace all regex matches with another string.
 
 This statement:
 
-```kusto
+<!-- csl-->
+```
 range x from 1 to 5 step 1
 | extend str=strcat('Number is ', tostring(x))
 | extend replaced=replace(@'is (\d+)', @'was: \1', str)

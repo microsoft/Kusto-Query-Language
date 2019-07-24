@@ -1,14 +1,3 @@
----
-title: make_bag() (aggregation function) - Azure Data Explorer | Microsoft Docs
-description: This article describes make_bag() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 06/18/2019
----
 # make_bag() (aggregation function)
 
 Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *Expr* in the group.
@@ -40,7 +29,8 @@ See [bag_unpack()](bag-unpackplugin.md) plugin for expanding dynamic JSON object
 
 **Examples**
 
-```kusto
+<!-- csl -->
+```
 let T = datatable(prop:string, value:string)
 [
     "prop01", "val_a",
@@ -59,7 +49,8 @@ T
 
 Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag() output into columns. 
 
-```kusto
+<!-- csl -->
+```
 let T = datatable(prop:string, value:string)
 [
     "prop01", "val_a",

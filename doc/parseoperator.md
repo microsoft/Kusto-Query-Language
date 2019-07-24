@@ -1,19 +1,9 @@
----
-title: parse operator - Azure Data Explorer | Microsoft Docs
-description: This article describes parse operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 01/18/2019
----
 # parse operator
 
 Evaluates a string expression and parses its value into one or more calculated columns.
 
-```kusto
+<!-- csl -->
+```
 T | parse Text with "ActivityName=" name ", ActivityType=" type
 ```
 
@@ -60,7 +50,8 @@ provided to the operator.
   are handled internally.
   So for example, this parse statement :
   
-	```kusto
+	<!-- csl -->
+	```
 	parse kind=regex Col with * <regex1> var1:string <regex2> var2:long
 	```
 
@@ -95,7 +86,8 @@ The operation below will extend the table with 6 columns: `resourceName` , `tota
 |Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=27, sliceNumber=22, lockTime=02/17/2016 08:41:01, releaseTime=02/17/2016 08:41:00, previousLockTime=02/17/2016 08:40:01)|
 |Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=27, sliceNumber=16, lockTime=02/17/2016 08:41:00, releaseTime=02/17/2016 08:41:00, previousLockTime=02/17/2016 08:40:00)|
 
-```kusto
+<!-- csl -->
+```
 Traces  
 | parse eventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previouLockTime:date ")" *  
 | project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previouLockTime
@@ -111,7 +103,8 @@ Traces
 
 for regex mode :
 
-```kusto
+<!-- csl -->
+```
 Traces  
 | parse kind = regex eventText with "(.*?)[a-zA-Z]*=" resourceName @", totalSlices=\s*\d+\s*.*?sliceNumber=" sliceNumber:long  ".*?(previous)?lockTime=" lockTime ".*?releaseTime=" releaseTime ".*?previousLockTime=" previouLockTime:date "\\)"  
 | project resourceName , sliceNumber , lockTime , releaseTime , previouLockTime
@@ -129,7 +122,8 @@ for regex mode using regex flags:
 
 if we are interested in getting the resourceName only and we use this query:
 
-```kusto
+<!-- csl-->
+```
 Traces
 | parse kind = regex  EventText with * "resourceName=" resourceName ',' *
 | project resourceName
@@ -149,7 +143,8 @@ or even if we had few records where the resourceName appears sometimes lower-cas
 get nulls for some values.
 in order to get the wanted result, we may run this one with the non-greedy (`U`) and disable case-sensitive (`i`) regex flags:
 
-```kusto
+<!-- csl-->
+```
 Traces
 | parse kind = regex flags = Ui EventText with * "RESOURCENAME=" resourceName ',' *
 | project resourceName
@@ -173,7 +168,8 @@ in this case, these two extended columns will get the value null while the other
 
 using kind = simple for the same query below gives null for all extended columns because it is strict on extended columns (that's the difference between relaxed and simple mode, in relaxed mode, extended columns can be matched partially).
 
-```kusto
+<!-- csl  -->
+```
 print x=1  
 | parse kind=relaxed "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=nonValidLongValue, sliceNumber=23, lockTime=02/17/2016 08:40:01, releaseTime=nonValidDateTime, previousLockTime=02/17/2016 08:39:01)"       with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previouLockTime:date ")" *
 | project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previouLockTime

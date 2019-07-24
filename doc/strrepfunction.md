@@ -1,14 +1,3 @@
----
-title: strrep() - Azure Data Explorer | Microsoft Docs
-description: This article describes strrep() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # strrep()
 
 Repeats given [string](./scalar-data-types/string.md) provided amount of times.
@@ -33,7 +22,8 @@ In case if *multiplier* is more than maximal allowed value (1024), input string 
  
 **Example**
 
-```kusto
+<!-- csl -->
+```
 print from_str = strrep('ABC', 2), from_int = strrep(123,3,'.'), from_time = strrep(3s,2,' ')
 ```
 

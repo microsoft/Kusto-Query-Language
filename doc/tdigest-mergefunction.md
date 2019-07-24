@@ -1,14 +1,3 @@
----
-title: tdigest_merge() - Azure Data Explorer | Microsoft Docs
-description: This article describes tdigest_merge() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # tdigest_merge()
 
 Merges tdigest results (scalar version of the aggregate version [`tdigest_merge()`](tdigest-merge-aggfunction.md)).
@@ -29,7 +18,8 @@ The result for merging the columns `*Expr1*`, `*Expr2*`, ... `*ExprN*` to one td
 
 **Examples**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net:443/Samples -->
+```
 range x from 1 to 10 step 1 
 | extend y = x + 10
 | summarize tdigestX = tdigest(x), tdigestY = tdigest(y)

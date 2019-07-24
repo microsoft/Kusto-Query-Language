@@ -1,19 +1,9 @@
----
-title: isnull() - Azure Data Explorer | Microsoft Docs
-description: This article describes isnull() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # isnull()
 
 Evaluates its sole argument and returns a `bool` value indicating if the argument evaluates to a null value.
 
-```kusto
+<!-- csl -->
+```
 isnull(parse_json("")) == true
 ```
 
@@ -40,6 +30,7 @@ True or false depending on the whether the value is null or not null.
 
 **Example**
 
-```kusto
+<!-- csl -->
+```
 T | where isnull(PossiblyNull) | count
 ```

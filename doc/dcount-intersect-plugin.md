@@ -1,14 +1,3 @@
----
-title: dcount_intersect plugin - Azure Data Explorer | Microsoft Docs
-description: This article describes dcount_intersect plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # dcount_intersect plugin
 
 Calculates intersection between N sets based on hll values (N in range of [2..16]), and returns N dcount values.
@@ -37,7 +26,8 @@ Column names are s0, s1, ... (till n-1).
 
 **Examples**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 // Generate numbers from 1 to 100
 range x from 1 to 100 step 1
 | extend isEven = (x % 2 == 0), isMod3 = (x % 3 == 0), isMod5 = (x % 5 == 0)

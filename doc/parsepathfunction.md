@@ -1,14 +1,3 @@
----
-title: parse_path() - Azure Data Explorer | Microsoft Docs
-description: This article describes parse_path() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # parse_path()
 
 Parses a file path `string` and returns a [`dynamic`](./scalar-data-types/dynamic.md) object that contains the following parts of the path: 
@@ -30,7 +19,8 @@ An object of type `dynamic` that inculded the path components as listed above.
 **Example**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```kusto
+<!-- csl: http://localhost:80/db1 -->
+```
 datatable(p:string) 
 [
     @"C:\temp\file.txt",
@@ -50,3 +40,4 @@ datatable(p:string)
 |file://C:/temp/file.txt:some.exe|{"Scheme":"file","RootPath":"C:","DirectoryPath":"C:/temp","DirectoryName":"temp","Filename":"file.txt","Extension":"txt","AlternateDataStreamName":"some.exe"}
 |\\shared\users\temp\file.txt.gz|{"Scheme":"","RootPath":"","DirectoryPath":"\\\\shared\\users\\temp","DirectoryName":"temp","Filename":"file.txt.gz","Extension":"gz","AlternateDataStreamName":""}
 |/usr/lib/temp/file.txt|{"Scheme":"","RootPath":"","DirectoryPath":"/usr/lib/temp","DirectoryName":"temp","Filename":"file.txt","Extension":"txt","AlternateDataStreamName":""}
+

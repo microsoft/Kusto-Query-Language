@@ -1,19 +1,9 @@
----
-title: parse_version() - Azure Data Explorer | Microsoft Docs
-description: This article describes parse_version() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # parse_version()
 
 Converts input string representation of version to a comparable decimal number.
 
-```kusto
+<!-- csl -->
+```
 parse_version("0.0.0.1")
 ```
 
@@ -40,7 +30,8 @@ In case, if amount of parts is less than 4, all the missing parts are considered
 
  
 **Example**
-```kusto
+<!-- csl -->
+```
 let dt = datatable(v:string)
 ["0.0.0.5","0.0.7.0","0.0.3","0.2","0.1.2.0","1.2.3.4","1","99999999.0.0.0"];
 dt | project v1=v, _key=1 
@@ -80,6 +71,7 @@ dt | project v1=v, _key=1
 |99999999.0.0.0|1.2.3.4|99999999.0.0.0|
 |1.2.3.4|1|1.2.3.4|
 |99999999.0.0.0|1|99999999.0.0.0|
+
 
 
 

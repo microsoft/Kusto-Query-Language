@@ -1,19 +1,9 @@
----
-title: beta_cdf() - Azure Data Explorer | Microsoft Docs
-description: This article describes beta_cdf() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: mblythe
-ms.service: data-explorer
-ms.topic: reference
-ms.date: 10/23/2018
----
 # beta_cdf()
 
 Returns the standard cumulative beta distribution function.
 
-```kusto
+<!-- csl -->
+```
 beta_cdf(0.2, 10.0, 50.0)
 ```
 
@@ -45,7 +35,8 @@ If alpha ≤ 0 or beta ≤ 0, beta_cdf() returns the NaN value.
 
 **Examples**
 
-```kusto
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
 datatable(x:double, alpha:double, beta:double, comment:string)
 [
     0.9, 10.0, 20.0, "Valid input",
