@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\BuildProcessTemplates\Kusto.props" />
   <PropertyGroup>
+    <KustoProps Condition="Exists('..\..\..\BuildProcessTemplates\Kusto.props')">true</KustoProps>
+  </PropertyGroup>
+  <Import Project="..\..\..\BuildProcessTemplates\Kusto.props" Condition="'$(KustoProps)' == 'true'" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="'$(KustoProps)' != 'true'" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{31238C2B-3226-4012-A3C9-5B9E77381566}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -9,9 +15,27 @@
     <AssemblyName>Kusto.Language</AssemblyName>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
+    <MinimalPlatformTarget Condition=" '$(MinimalPlatformTarget)' == '' ">4.6.2</MinimalPlatformTarget>
     <TargetFrameworkVersion>$(MinimalPlatformTarget)</TargetFrameworkVersion>
   </PropertyGroup>
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' and '$(KustoProps)' != 'true'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' and '$(KustoProps)' != 'true'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(KustoProps)' == 'true'">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\Kusto.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -191,5 +215,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="..\..\..\BuildProcessTemplates\Kusto.targets" />
+  <Import Project="..\..\..\BuildProcessTemplates\Kusto.targets" Condition="Exists('..\..\..\BuildProcessTemplates\Kusto.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\..\..\BuildProcessTemplates\Kusto.targets')" />
 </Project>
