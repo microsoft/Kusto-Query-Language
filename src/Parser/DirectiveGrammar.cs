@@ -10,6 +10,9 @@ namespace Kusto.Language.Parsing
     using static Parsers<LexicalToken>;
     using static SyntaxParsers;
 
+    /// <summary>
+    /// Parsers for the Kusto directive grammar.
+    /// </summary>
     public static class DirectiveGrammar
     {
         public static readonly Parser<LexicalToken, DirectiveBlock> DirectiveBlock =

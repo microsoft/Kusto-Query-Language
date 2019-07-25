@@ -16,6 +16,9 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public static class SyntaxParsers
     {
+        /// <summary>
+        /// Creates a missing <see cref="SyntaxToken"/> for a token that was expected to have the specified <see cref="SyntaxKind"/>.
+        /// </summary>
         public static SyntaxToken CreateMissingToken(SyntaxKind kind, Diagnostic diagnostic = null)
         {
             var dx = diagnostic ??
@@ -23,11 +26,17 @@ namespace Kusto.Language.Parsing
             return SyntaxToken.Missing("", kind, new[] { dx });
         }
 
+        /// <summary>
+        /// Creates a missing <see cref="SyntaxToken"/> for a token that was expected to have the specified <see cref="SyntaxKind"/>.
+        /// </summary>
         public static SyntaxToken CreateMissingToken(IReadOnlyList<SyntaxKind> kinds)
         {
             return SyntaxToken.Missing("", kinds[0], new[] { DiagnosticFacts.GetTokenExpected(kinds) });
         }
 
+        /// <summary>
+        /// Creates a missing <see cref="SyntaxToken"/> for a token that was expected to have the specified text.
+        /// </summary>
         public static SyntaxToken CreateMissingToken(string text, Diagnostic diagnostic = null)
         {
             if (!SyntaxFacts.TryGetKind(text, out var kind))
@@ -38,29 +47,35 @@ namespace Kusto.Language.Parsing
             return SyntaxToken.Missing("", kind, new[] { diagnostic ?? DiagnosticFacts.GetTokenExpected(new[] { text }) });
         }
 
+        /// <summary>
+        /// Creates a missing <see cref="SyntaxToken"/> for a token that was expected to have one of the specified texts.
+        /// </summary>
         public static SyntaxToken CreateMissingToken(IReadOnlyList<string> texts)
         {
             return SyntaxToken.Missing("", SyntaxKind.IdentifierToken, new[] { DiagnosticFacts.GetTokenExpected(texts) });
         }
 
         /// <summary>
-        /// Parses any token
+        /// A parser that consumes the next <see cref="LexicalToken"/>, producing the corresponding <see cref="SyntaxToken"/>.
         /// </summary>
         public static readonly Parser<LexicalToken, SyntaxToken> AnyToken =
             Match(t => true, t => SyntaxToken.From(t)).WithTag("<any>");
 
         /// <summary>
-        /// Parse any token but the <see cref="SyntaxKind.EndOfTextToken"/> token.
+        /// A parser that consumes the next <see cref="LexicalToken"/> as long as it does not have the kind <see cref="SyntaxKind.EndOfTextToken"/>, producing the corresponding <see cref="SyntaxToken"/>.
         /// </summary>
         public static readonly Parser<LexicalToken, SyntaxToken> AnyTokenButEnd =
             Match(t => t.Kind != SyntaxKind.EndOfTextToken, t => SyntaxToken.From(t)).WithTag("<any!end>");
 
 
-        private static string GetTag(string text)
+        /// <summary>
+        /// Gets the default tag to assign a token parser, based on the token's text.
+        /// </summary>
+        private static string GetDefaultTag(string text)
         {
             if (SyntaxFacts.TryGetKind(text, out var kind))
             {
-                return GetTag(kind);
+                return GetDefaultTag(kind);
             }
             else
             {
@@ -68,7 +83,10 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static string GetTag(SyntaxKind kind)
+        /// <summary>
+        /// Gets the default tag to assign a token parser, based on the token's kind.
+        /// </summary>
+        private static string GetDefaultTag(SyntaxKind kind)
         {
             return kind.GetCategory() == SyntaxCategory.Punctuation
                     ? $"'{kind.GetText()}'"
@@ -76,13 +94,13 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with the specified <see cref="SyntaxKind"/>.
+        /// A parser that consumes the next next <see cref="LexicalToken"/> if it has the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/>.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(SyntaxKind kind, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
-            var rule = Match(t => t.Kind == kind, lt => SyntaxToken.From(lt)).WithTag(GetTag(kind));
+            var rule = Match(t => t.Kind == kind, lt => SyntaxToken.From(lt)).WithTag(GetDefaultTag(kind));
 
-            var item = GetCompletionItem(kind, ckind, priority, ctext);
+            var item = GetDefaultCompletionItem(kind, ckind, priority, ctext);
             if (item != null)
             {
                 rule = rule.WithAnnotations(new[] { item });
@@ -108,14 +126,14 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with one of the specified <see cref="SyntaxKind"/>s.
+        /// A parser that consumes the next next <see cref="LexicalToken"/> if it has one of the specified <see cref="SyntaxKind"/>s, producing a corresponding <see cref="SyntaxToken"/>.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<SyntaxKind> kinds, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal)
         {
             Ensure.ArgumentNotNull(kinds, nameof(kinds));
             var set = new HashSet<SyntaxKind>(kinds);
 
-            var rule = Match(t => set.Contains(t.Kind), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", kinds.Select(k => GetTag(k))));
+            var rule = Match(t => set.Contains(t.Kind), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", kinds.Select(k => GetDefaultTag(k))));
 
             var items = GetCompletionItems(set, ckind, priority).ToList();
             if (items.Count > 0)
@@ -160,6 +178,9 @@ namespace Kusto.Language.Parsing
             return -(i + 1);
         }
 
+        /// <summary>
+        /// Create a <see cref="SyntaxToken"/> from one or more <see cref="LexicalToken"/>.
+        /// </summary>
         private static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text)
         {
             if (length == 1)
@@ -168,23 +189,27 @@ namespace Kusto.Language.Parsing
             }
             else
             {
+                // use the trivia form the first token and the text supplied (instead of concatenating the same text from the tokens)
                 return SyntaxToken.Identifier(source.Peek(start).Trivia, text);
             }
         }
 
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) that combined has the specified text, producing a single <see cref="SyntaxToken"/>.
+        /// </summary>
         private static Parser<LexicalToken, SyntaxToken> MatchText(string text) =>
             Match(
                 (source, start) => MatchesText(source, start, text), 
                 (source, start, length) => ProduceSyntaxToken(source, start, length, text));
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with the specified text value.
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
-            var rule = MatchText(text).WithTag(GetTag(text));
+            var rule = MatchText(text).WithTag(GetDefaultTag(text));
 
-            var item = GetCompletionItem(text, ckind, priority, ctext);
+            var item = GetDefaultCompletionItem(text, ckind, priority, ctext);
             if (item != null)
             {
                 rule = rule.WithAnnotations(new[] { item });
@@ -194,14 +219,14 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with one of the specified text values.
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<string> texts, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal)
         {
             Ensure.ArgumentNotNull(texts, nameof(texts));
             var set = new HashSet<string>(texts);
 
-            var rule = Match(t => set.Contains(t.Text), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", texts.Select(t => GetTag(t))));
+            var rule = Match(t => set.Contains(t.Text), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", texts.Select(t => GetDefaultTag(t))));
 
             var items = GetCompletionItems(texts, ckind, priority).ToList();
             if (items.Count > 0)
@@ -213,30 +238,33 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with the specified <see cref="SyntaxKind"/>, or produces the equivalent missing <see cref="SyntaxToken"/>.
+        /// A parser that consumes the next <see cref="LexicalToken"/> if it has the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(SyntaxKind kind, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null) =>
             Required(Token(kind, ckind, priority, ctext), () => CreateMissingToken(kind));
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with one of the specified <see cref="SyntaxKind"/>s, or produces the equivalent missing <see cref="SyntaxToken"/>.
+        /// A parser that consumes the next <see cref="LexicalToken"/> if it has one of the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(IReadOnlyList<SyntaxKind> kinds, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal) =>
             Required(Token(kinds, ckind, priority), () => CreateMissingToken(kinds));
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with one of the specified text values, or produces the equivalent missing <see cref="SyntaxToken"/>.
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(string text, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null) =>
             Required(Token(text, ckind, priority, ctext), () => CreateMissingToken(text));
 
         /// <summary>
-        /// A parser that parses the next <see cref="SyntaxToken"/> with one of the specified text values, or produces the equivalent missing <see cref="SyntaxToken"/>.
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(IReadOnlyList<string> texts, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal) =>
             Required(Token(texts, ckind, priority), () => CreateMissingToken(texts));
 
-        private static CompletionItem GetCompletionItem(SyntaxKind kind, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for a token with the specified <see cref="SyntaxKind"/>.
+        /// </summary>
+        private static CompletionItem GetDefaultCompletionItem(SyntaxKind kind, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
         {
             var text = SyntaxFacts.GetText(kind);
 
@@ -246,22 +274,28 @@ namespace Kusto.Language.Parsing
             switch (kind.GetCategory())
             {
                 case SyntaxCategory.Keyword:
-                    return GetCompletionItem(text, ckind ?? CompletionKind.Keyword, priority, ctext);
+                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Keyword, priority, ctext);
                 case SyntaxCategory.Operator:
-                    return GetCompletionItem(text, ckind ?? CompletionKind.ScalarInfix, priority, ctext);
+                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.ScalarInfix, priority, ctext);
                 case SyntaxCategory.Punctuation:
-                    return GetCompletionItem(text, ckind ?? CompletionKind.Punctuation, priority, ctext);
+                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Punctuation, priority, ctext);
                 default:
                     return null;
             }
         }
 
-        private static CompletionItem GetCompletionItem(string text, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
+        /// </summary>
+        private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
         {
-            return GetCompletionItem(text, ckind ?? CompletionKind.Syntax, priority, ctext);
+            return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Syntax, priority, ctext);
         }
 
-        private static CompletionItem GetCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
+        /// </summary>
+        private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
         {
             // hide any syntax that starts with _ from completion
             if (text.StartsWith("_"))
@@ -283,11 +317,17 @@ namespace Kusto.Language.Parsing
             return new CompletionItem(ckind, displayText: text, editText: editText, afterText: afterText, priority: priority);
         }
 
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for tokens with any of the specified <see cref="SyntaxKind"/>.
+        /// </summary>
         private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<SyntaxKind> kinds, CompletionKind? ckind, CompletionPriority priority) =>
-            kinds.Select(k => GetCompletionItem(k, ckind, priority)).Where(i => i != null);
+            kinds.Select(k => GetDefaultCompletionItem(k, ckind, priority)).Where(i => i != null);
 
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for tokens with any of the specified texts.
+        /// </summary>
         private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<string> texts, CompletionKind? ckind, CompletionPriority priority) =>
-            texts.Select(t => GetCompletionItem(t, ckind, priority)).Where(i => i != null);
+            texts.Select(t => GetDefaultCompletionItem(t, ckind, priority)).Where(i => i != null);
 
         /// <summary>
         /// A parser that parses a <see cref="SyntaxList"/> of elements.
@@ -306,7 +346,7 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement{TElement}"/>'s
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
             Parser<LexicalToken, TElement> primaryElementParser,
@@ -318,7 +358,7 @@ namespace Kusto.Language.Parsing
         {
             return SeparatedList(
                 primaryElementParser,
-                Tag("...", primaryElementParser),
+                primaryElementParser.WithTag("..."),
                 separatorKind,
                 missingElement,
                 oneOrMore,
@@ -349,12 +389,18 @@ namespace Kusto.Language.Parsing
                 MakeSeparatedList<TElement>);
         }
 
+        /// <summary>
+        /// Constructs a SyntaxList&lt;SeparatedElement&lt;TElement&gt;&gt; from a list of items and separators.
+        /// </summary>
         public static SyntaxList<SeparatedElement<TElement>> MakeSeparatedList<TElement>(params SyntaxElement[] elements)
             where TElement : SyntaxElement
         {
             return MakeSeparatedList<TElement>((IReadOnlyList<SyntaxElement>)elements);
         }
 
+        /// <summary>
+        /// Constructs a SyntaxList&lt;SeparatedElement&lt;TElement&gt;&gt; from a list of items and separators.
+        /// </summary>
         public static SyntaxList<SeparatedElement<TElement>> MakeSeparatedList<TElement>(IReadOnlyList<object> elements)
             where TElement : SyntaxElement
         {

@@ -234,19 +234,19 @@ namespace Kusto.Language.Parsing
             new OneOrMoreParser<TInput>(parser);
 
         /// <summary>
-        /// A parser that always succeeds, even if the specified parser fails.
+        /// A parser that produces the specified parser's result or nothing if the specified parser fails.
         /// </summary>
         public static Parser<TInput> Optional(Parser<TInput> parser) =>
             new ZeroOrMoreParser<TInput>(parser, zeroOrOne: true);
 
         /// <summary>
-        /// A parser that produces the specified parser's result or the default value.
+        /// A parser that produces the specified parser's result or the default value if the specified parser fails.
         /// </summary>
         public static Parser<TInput, TOutput> Optional<TOutput>(Parser<TInput, TOutput> parser) =>
             new OptionalParser<TInput, TOutput>(parser, () => default(TOutput));
 
         /// <summary>
-        /// A parser that produces the specified parser's result or the value from the producer function.
+        /// A parser that produces the specified parser's result or the value from the producer function if the specified parser fails.
         /// </summary>
         public static Parser<TInput, TOutput> Optional<TOutput>(Parser<TInput, TOutput> parser, Func<TOutput> producer) =>
             new OptionalParser<TInput, TOutput>(parser, producer);
@@ -1021,18 +1021,6 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<TInput> Sequence(params Parser<TInput>[] parsers) =>
             new SequenceParser<TInput>(parsers);
-
-        /// <summary>
-        /// Gives the parser a name.
-        /// </summary>
-        public static Parser<TInput, TOutput> Tag<TOutput>(string tag, Parser<TInput, TOutput> parser) =>
-            parser.WithTag(tag);
-
-        /// <summary>
-        /// Gives the parser a name.
-        /// </summary>
-        public static Parser<TInput> Tag(string tag, Parser<TInput> parser) =>
-            parser.WithTag(tag);
 
         /// <summary>
         /// A parser that converts all the successfully scanned input characters into a single output string.

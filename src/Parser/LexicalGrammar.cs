@@ -9,6 +9,9 @@ namespace Kusto.Language.Parsing
     using static CharScanners;
     using static Parsers<char>;
 
+    /// <summary>
+    /// Parsers for the Kusto lexical grammar (tokens)
+    /// </summary>
     public class LexicalGrammar
     {
         /// <summary>

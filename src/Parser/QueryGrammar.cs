@@ -11,6 +11,9 @@ namespace Kusto.Language.Parsing
     using static SyntaxParsers;
     using Utils;
 
+    /// <summary>
+    /// Parsers for the Kusto query grammar.
+    /// </summary>
     public class QueryGrammar
     {
         private QueryGrammar()
@@ -21,11 +24,11 @@ namespace Kusto.Language.Parsing
         private static QueryGrammar s_Instance;
 
         /// <summary>
-        /// Gets the <see cref="QueryGrammar"/> assoicated with the specified <see cref="GlobalState"/>.
+        /// Gets the <see cref="QueryGrammar"/> associated with the specified <see cref="GlobalState"/>.
         /// </summary>
         public static QueryGrammar From(GlobalState globals)
         {
-#if false
+#if false // TODO: when grammar is made dependent on globals
             if (!globals.Cache.TryGetValue<QueryGrammar2>(out var grammar))
             {
                 grammar = globals.Cache.GetOrCreate(() => new QueryGrammar2(globals));
@@ -63,7 +66,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SkippedTokens> SkippedTokens { get; private set; }
 
         /// <summary>
-        /// Initializes the grammar.
+        /// Constructs the grammar as a Parser
         /// </summary>
         private void Initialize()
         {
@@ -474,7 +477,7 @@ namespace Kusto.Language.Parsing
                     ClientParameterReference);
 
             var KeywordTokenLiteral =
-                Tag("<keyword>", AsTokenLiteral(KeywordAsIdentifier));
+                AsTokenLiteral(KeywordAsIdentifier).WithTag("<keyword>");
 
             var NullLiteralExpression =
                 Rule(
@@ -482,7 +485,7 @@ namespace Kusto.Language.Parsing
                     (token) => (Expression)new LiteralExpression(SyntaxKind.NullLiteralExpression, token));
 
             var JsonPair =
-                Tag("<json-pair>", First(
+                First(
                     Rule(Token(SyntaxKind.StringLiteralToken), RequiredToken(SyntaxKind.ColonToken), Required(JsonValue, MissingJsonValue),
                         (name, colon, value) =>
                             new JsonPair(name, colon, value)),
@@ -491,32 +494,36 @@ namespace Kusto.Language.Parsing
                             new JsonPair(CreateMissingToken(SyntaxKind.StringLiteralToken, DiagnosticFacts.GetMissingString()), colonToken, value)),
                     Rule(JsonValue.Hide(),
                         (value) =>
-                            new JsonPair(CreateMissingToken(SyntaxKind.StringLiteralToken, DiagnosticFacts.GetMissingString()), CreateMissingToken(SyntaxKind.ColonToken), value))));
+                            new JsonPair(CreateMissingToken(SyntaxKind.StringLiteralToken, DiagnosticFacts.GetMissingString()), CreateMissingToken(SyntaxKind.ColonToken), value)))
+                .WithTag("<json-pair>");
 
             var JsonObject =
-                Tag("<json-object>", Rule(
+                Rule(
                     Token(SyntaxKind.OpenBraceToken),
                     SeparatedList(JsonPair, SyntaxKind.CommaToken, missingElement: MissingJsonPairNode),
                     RequiredToken(SyntaxKind.CloseBraceToken),
                     (openBrace, list, closeBrace) =>
-                        (Expression)new JsonObjectExpression(openBrace, list, closeBrace)));
+                        (Expression)new JsonObjectExpression(openBrace, list, closeBrace))
+                .WithTag("<json-object>");
 
             var JsonArray =
-                Tag("<json-array>", Rule(
+                Rule(
                     Token(SyntaxKind.OpenBracketToken),
                     SeparatedList(JsonValue, SyntaxKind.CommaToken, missingElement: MissingJsonValueNode),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, values, closeBracket) =>
-                        (Expression)new JsonArrayExpression(openBracket, values, closeBracket)));
+                        (Expression)new JsonArrayExpression(openBracket, values, closeBracket))
+                .WithTag("<json-array>");
 
             var DynamicLiteral =
-                Tag("<dynamic>", Rule(
+                Rule(
                     Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarPrefix),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     Required(First(NullLiteralExpression, JsonValue), MissingJsonValue),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (dynamicKeyword, openParen, value, closeParen) =>
-                        (Expression)new DynamicExpression(dynamicKeyword, openParen, value, closeParen)));
+                        (Expression)new DynamicExpression(dynamicKeyword, openParen, value, closeParen))
+                .WithTag("<dynamic>");
 
             var JsonNumber =
                 First(
@@ -1743,14 +1750,15 @@ namespace Kusto.Language.Parsing
                     (keyword, expression) => new TopHittersByClause(keyword, expression));
 
             var TopHittersOperator =
-                Tag("<top-hitters>", Rule(
+                Rule(
                     Token(SyntaxKind.TopHittersKeyword, CompletionKind.QueryPrefix),
                     Required(NamedExpression.Examples(KustoFacts.TopExamples), MissingExpression),
                     RequiredToken(SyntaxKind.OfKeyword),
                     Required(NamedExpression, MissingExpression),
                     Optional(TopHittersByClause),
                     (keyword, expr, ofKeyword, ofExpr, byClause) =>
-                        (QueryOperator)new TopHittersOperator(keyword, expr, ofKeyword, ofExpr, byClause)));
+                        (QueryOperator)new TopHittersOperator(keyword, expr, ofKeyword, ofExpr, byClause))
+                .WithTag("<top-hitters>");
 
             var TopOperator =
                 Rule(

@@ -12,6 +12,9 @@ namespace Kusto.Language.Parsing
     using Q=QueryGrammar;
     using Utils;
 
+    /// <summary>
+    /// Parsers for the Kusto command grammar.
+    /// </summary>
     public class CommandGrammar
     {
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }

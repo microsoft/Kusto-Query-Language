@@ -198,11 +198,30 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public abstract ParseResult<TOutput> Parse(Source<TInput> input, int inputStart);
 
+        /// <summary>
+        /// Creates a copy of this <see cref="Parser{TInput}"/> with the tag specified.
+        /// </summary>
         public new Parser<TInput, TOutput> WithTag(string tag) => (Parser<TInput, TOutput>)base.WithTag(tag);
+
+        /// <summary>
+        /// Creates a copy of this <see cref="Parser{TInput}"/> with the annotations specified.
+        /// </summary>
         public new Parser<TInput, TOutput> WithAnnotations(IEnumerable<object> annotations) => (Parser<TInput, TOutput>)base.WithAnnotations(annotations);
+
+        /// <summary>
+        /// Creates a copy of this <see cref="Parser{TInput}"/> with the IsHidden property specified.
+        /// </summary>
         public new Parser<TInput, TOutput> WithIsHidden(bool isHidden) => (Parser<TInput, TOutput>)base.WithIsHidden(isHidden);
+
+        /// <summary>
+        /// Creates a copy of this <see cref="Parser{TInput}"/> with the IsHidden property set to true.
+        /// </summary>
         public new Parser<TInput, TOutput> Hide() => this.WithIsHidden(true);
 
+        /// <summary>
+        /// Creates a copy of this <see cref="Parser{TInput, TOutput}"/> that converts its output to the specified type.
+        /// </summary>
+        /// <typeparam name="TNewOutput">The type to convert the output to.</typeparam>
         public Parser<TInput, TNewOutput> Cast<TNewOutput>() =>
             Parsers<TInput>.Rule(this, o => (TNewOutput)(object)o).WithTag(this.Tag);
     }
@@ -212,6 +231,9 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public struct RightParser<TInput, TOutput>
     {
+        /// <summary>
+        /// The underlying parser that is on the right side of an Apply.
+        /// </summary>
         internal Parser<TInput, TOutput> Parser { get; }
 
         internal RightParser(Parser<TInput, TOutput> parser)
@@ -219,9 +241,24 @@ namespace Kusto.Language.Parsing
             this.Parser = parser;
         }
 
+        /// <summary>
+        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the tag specified.
+        /// </summary>
         public RightParser<TInput, TOutput> WithTag(string tag) => new RightParser<TInput, TOutput>(this.Parser.WithTag(tag));
+
+        /// <summary>
+        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the annotations specified.
+        /// </summary>
         public RightParser<TInput, TOutput> WithAnnotations(IEnumerable<object> annotations) => new RightParser<TInput, TOutput>(this.Parser.WithAnnotations(annotations));
+
+        /// <summary>
+        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the IsHidden property specified.
+        /// </summary>
         public RightParser<TInput, TOutput> WithIsHidden(bool isHidden) => new RightParser<TInput, TOutput>(this.Parser.WithIsHidden(isHidden));
+
+        /// <summary>
+        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the IsHidden property set to true.
+        /// </summary>
         public RightParser<TInput, TOutput> Hide() => this.WithIsHidden(true);
     }
 
@@ -260,9 +297,21 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public struct OffsetValue<TValue>
     {
+        /// <summary>
+        /// The text offset of the value in the source.
+        /// </summary>
         public readonly int Offset;
+
+        /// <summary>
+        /// The value located at the offset.
+        /// </summary>
         public readonly TValue Value;
 
+        /// <summary>
+        /// Constructs a new <see cref="OffsetValue{TValue}"/>
+        /// </summary>
+        /// <param name="offset">The text offset of the value in the source.</param>
+        /// <param name="value">The value located at the offset.</param>
         public OffsetValue(int offset, TValue value)
         {
             this.Offset = offset;
