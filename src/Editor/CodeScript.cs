@@ -19,13 +19,17 @@ namespace Kusto.Language.Editor
         public string Text { get; }
 
         /// <summary>
+        /// The factory used to construct a <see cref="CodeService"/> for each block.
+        /// </summary>
+        public CodeServiceFactory Factory { get; }
+
+        /// <summary>
         /// The collection of individual <see cref="CodeBlock"/>s.
         /// </summary>
         public IReadOnlyList<CodeBlock> Blocks => blocks;
 
         private readonly List<int> lineStarts;
         private readonly List<CodeBlock> blocks;
-        private readonly CodeServiceFactory factory;
 
         private CodeScript(
             string text, 
@@ -36,7 +40,7 @@ namespace Kusto.Language.Editor
             this.Text = text;
             this.lineStarts = lineStarts;
             this.blocks = blocks;
-            this.factory = factory;
+            this.Factory = factory;
         }
 
         /// <summary>
@@ -53,7 +57,7 @@ namespace Kusto.Language.Editor
         public CodeScript WithText(string newText)
         {
             // reuse any existing blocks and their queries that have not changed.
-            return CreateScript(newText ?? "", this.factory, this.Blocks);
+            return CreateScript(newText ?? "", this.Factory, this.Blocks);
         }
 
         /// <summary>
@@ -61,7 +65,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         public CodeScript WithFactory(CodeServiceFactory factory)
         {
-            if (factory != this.factory)
+            if (factory != this.Factory)
             {
                 return CreateScript(this.Text, factory, null);
             }
@@ -91,17 +95,17 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The <see cref="GlobalState"/> used by Kusto <see cref="CodeBlock"/>s.
         /// </summary>
-        public GlobalState Globals => this.factory.GetFactory<KustoCodeServiceFactory>()?.Globals;
+        public GlobalState Globals => this.Factory.GetFactory<KustoCodeServiceFactory>()?.Globals;
 
         /// <summary>
         /// Creates a new <see cref="CodeScript"/> with the kusto globals changed.
         /// </summary>
         public CodeScript WithGlobals(GlobalState newGlobals)
         {
-            var kustoFactory = this.factory.GetFactory<KustoCodeServiceFactory>();
+            var kustoFactory = this.Factory.GetFactory<KustoCodeServiceFactory>();
             if (kustoFactory != null)
             {
-                return WithFactory(this.factory.WithFactory(kustoFactory.WithGlobals(newGlobals)));
+                return WithFactory(this.Factory.WithFactory(kustoFactory.WithGlobals(newGlobals)));
             }
 
             return this;
