@@ -1,0 +1,14 @@
+{
+  "name": "@kusto/language-service-next",
+  "version": "0.0.29-rc.1",
+  "description": "Azure Data Explorer (a.k.a Kusto) language service for javascript",
+  "author": {
+    "name": "Microsoft"
+  },
+  "license": "MIT",  
+  "keywords": [
+    "Azure Data Explorer", "ADE", "kusto"
+  ],  
+  "main": "./Kusto.Language.Bridge.js",
+  "types": "./Kusto.Language.Bridge.d.ts"
+}
