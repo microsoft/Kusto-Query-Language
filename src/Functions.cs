@@ -215,6 +215,22 @@ namespace Kusto.Language
                 ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol DateTimeToLocaleString =
+            new FunctionSymbol("datetime_to_locale_string",
+                ScalarTypes.String,
+                new Parameter("date", ScalarTypes.DateTime),
+                new Parameter("culture", ScalarTypes.String),
+                new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+
+        public static readonly FunctionSymbol NumberToLocaleString =
+            new FunctionSymbol("number_to_locale_string",
+                ScalarTypes.String,
+                new Parameter("number", ParameterTypeKind.Number),
+                new Parameter("culture", ScalarTypes.String),
+                new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
         #endregion
 
         #region type conversion functions
@@ -1645,6 +1661,8 @@ namespace Kusto.Language
             CountOf,
             Translate,
             MakeString,
+            DateTimeToLocaleString,
+            NumberToLocaleString,
 #endregion
 
 #region type conversion functions
