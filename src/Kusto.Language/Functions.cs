@@ -222,7 +222,8 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime),
                 new Parameter("culture", ScalarTypes.String),
                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .Hide();
 
         public static readonly FunctionSymbol NumberToLocaleString =
             new FunctionSymbol("number_to_locale_string",
@@ -230,7 +231,8 @@ namespace Kusto.Language
                 new Parameter("number", ParameterTypeKind.Number),
                 new Parameter("culture", ScalarTypes.String),
                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .Hide();
         #endregion
 
         #region type conversion functions
