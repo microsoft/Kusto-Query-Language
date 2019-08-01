@@ -338,6 +338,15 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     new Parameter("expression", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
+        public static readonly FunctionSymbol AnyIf =
+            new FunctionSymbol("anyif",
+                new Signature(
+                    ReturnTypeKind.Parameter0,
+                    new Parameter("expression", ParameterTypeKind.Scalar),
+                    new Parameter("predicate", ScalarTypes.Bool)))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("anyif");
+
         public static TypeSymbol GetAnyResult(TableSymbol table, IReadOnlyList<Expression> args)
         {
             var columns = new List<ColumnSymbol>();
@@ -549,6 +558,7 @@ namespace Kusto.Language
             VarianceIf,
             Variancep,
             Any,
+            AnyIf,
             ArgMin,
             ArgMax,
             ArgMin_Depricated,
