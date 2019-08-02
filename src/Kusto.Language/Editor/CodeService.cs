@@ -28,12 +28,12 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the diagnostics for the code.
         /// </summary>
-        public abstract IReadOnlyList<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.
         /// </summary>
-        public abstract ClassificationInfo GetClassifications(int start, int length, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the ranges of the text that can be expanded or collapsed.

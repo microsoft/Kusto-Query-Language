@@ -29,9 +29,9 @@ namespace Kusto.Language.Editor
 
         public override string Text => _service.Text;
 
-        public override ClassificationInfo GetClassifications(int start, int length, CancellationToken cancellationToken = default(CancellationToken))
+        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis, CancellationToken cancellationToken)
         {
-            var result = _service.GetClassifications(start - _offset, length, cancellationToken);
+            var result = _service.GetClassifications(start - _offset, length, waitForAnalysis, cancellationToken);
             if (result.Classifications.Count > 0 && _offset > 0)
             {
                 return new ClassificationInfo(result.Classifications.Select(cr => new ClassifiedRange(cr.Kind, cr.Start + _offset, cr.Length)));
@@ -55,7 +55,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken)
         {
             var result = _service.GetClusterReferences(cancellationToken);
             if (result.Count > 0 && _offset > 0)
@@ -68,7 +68,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        public override CompletionInfo GetCompletionItems(int position, CompletionOptions options, CancellationToken cancellationToken)
         {
             var result = _service.GetCompletionItems(position - _offset, options, cancellationToken);
             if (_offset > 0)
@@ -81,7 +81,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken)
         {
             var result = _service.GetDatabaseReferences(cancellationToken);
             if (result.Count > 0 && _offset > 0)
@@ -94,9 +94,9 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override IReadOnlyList<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
         {
-            var result = _service.GetDiagnostics(cancellationToken);
+            var result = _service.GetDiagnostics(waitForAnalysis, cancellationToken);
             if (result.Count > 0 && _offset > 0)
             {
                 return result.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
@@ -107,7 +107,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
         {
             var result = _service.GetFormattedText(options, cursorPosition - _offset, cancellationToken);
             if (_offset > 0)
@@ -120,12 +120,12 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override string GetMinimalText(CancellationToken cancellationToken = default(CancellationToken))
+        public override string GetMinimalText(CancellationToken cancellationToken)
         {
             return _service.GetMinimalText(cancellationToken);
         }
 
-        public override OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken))
+        public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
         {
             var result = _service.GetOutlines(cancellationToken);
             if (result.Ranges.Count > 0 && _offset > 0)
@@ -138,17 +138,17 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken))
+        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken)
         {
             return _service.GetQuickInfo(position - _offset, cancellationToken);
         }
 
-        public override TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken))
+        public override TextRange GetElement(int position, CancellationToken cancellationToken)
         {
             return _service.GetElement(position);
         }
 
-        public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken))
+        public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options, CancellationToken cancellationToken)
         {
             var result = _service.GetRelatedElements(position - _offset, options, cancellationToken);
             if (result.Elements.Count > 0 && _offset > 0)
@@ -167,7 +167,7 @@ namespace Kusto.Language.Editor
             return _service.IsFeatureSupported(feature, position != -1 ? position - _offset : position);
         }
 
-        public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
+        public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken)
         {
             return _service.ShouldAutoComplete(position - _offset, key, cancellationToken);
         }

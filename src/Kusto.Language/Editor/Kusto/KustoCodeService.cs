@@ -49,9 +49,9 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the <see cref="KustoCode"/> for the text without waiting for semantic analysis.
         /// </summary>
-        private bool TryGetBoundOrUnboundCode(CancellationToken cancellationToken, out KustoCode code)
+        private bool TryGetBoundOrUnboundCode(CancellationToken cancellationToken, bool waitForAnalysis, out KustoCode code)
         {
-            if (this.lazyUnboundCode == null && this.codeException == null)
+            if (this.lazyUnboundCode == null && this.codeException == null && waitForAnalysis)
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -83,9 +83,9 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the <see cref="KustoCode"/> for the text with semantic analysis done.
         /// </summary>
-        private bool TryGetBoundCode(CancellationToken cancellationToken, out KustoCode code)
+        private bool TryGetBoundCode(CancellationToken cancellationToken, bool waitForAnalysis, out KustoCode code)
         {
-            if (this.lazyBoundCode == null && this.codeException == null)
+            if (this.lazyBoundCode == null && this.codeException == null && waitForAnalysis)
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -136,11 +136,11 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override IReadOnlyList<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.lazyDiagnostics == null)
             {
-                if (this.TryGetBoundCode(cancellationToken, out var code))
+                if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
                 {
                     // have try-catch to keep editor from crashing from parser bugs
                     try
@@ -162,9 +162,9 @@ namespace Kusto.Language.Editor
             return this.lazyDiagnostics;
         }
 
-        public override ClassificationInfo GetClassifications(int start, int length, CancellationToken cancellationToken = default(CancellationToken))
+        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -197,7 +197,7 @@ namespace Kusto.Language.Editor
         public override IReadOnlyList<ClientParameter> GetClientParameters()
         {
             var cps = base.GetClientParameters();
-            if (cps.Count > 0 && this.TryGetBoundOrUnboundCode(default(CancellationToken), out var code))
+            if (cps.Count > 0 && this.TryGetBoundOrUnboundCode(default(CancellationToken), true, out var code))
             {
                 var newCps = new List<ClientParameter>();
 
@@ -220,7 +220,7 @@ namespace Kusto.Language.Editor
 
         public override OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -240,7 +240,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            return base.GetOutlines();
+            return base.GetOutlines(cancellationToken);
         }
 
         private static string GetOutlineCollapsedText(KustoCode code)
@@ -273,7 +273,7 @@ namespace Kusto.Language.Editor
 
         public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -290,7 +290,7 @@ namespace Kusto.Language.Editor
 
         public override CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code) && code.HasSemantics)
+            if (this.TryGetBoundCode(cancellationToken, true, out var code) && code.HasSemantics)
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -308,7 +308,7 @@ namespace Kusto.Language.Editor
 
         public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -333,7 +333,7 @@ namespace Kusto.Language.Editor
 
         public override TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -350,7 +350,7 @@ namespace Kusto.Language.Editor
 
         public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -366,7 +366,7 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -446,7 +446,7 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 try
                 {
@@ -532,7 +532,7 @@ namespace Kusto.Language.Editor
 
         public override string GetMinimalText(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
                 return code.Syntax.ToString(IncludeTrivia.Minimal);
             }
@@ -542,7 +542,7 @@ namespace Kusto.Language.Editor
 
         public override FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
                 return KustoFormatter.GetFormattedText(code.Syntax, options, cursorPosition);
             }

@@ -29,12 +29,12 @@ namespace Kusto.Language.Editor
             return true;
         }
 
-        public override IReadOnlyList<Diagnostic> GetDiagnostics(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
         {
             return EmptyReadOnlyList<Diagnostic>.Instance;
         }
 
-        public override ClassificationInfo GetClassifications(int start, int length, CancellationToken cancellationToken = default(CancellationToken))
+        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis, CancellationToken cancellationToken)
         {
             // by default classify entire text as plain-text.
             var classifications = new[] { new ClassifiedRange(ClassificationKind.PlainText, start, length) };
@@ -195,7 +195,7 @@ namespace Kusto.Language.Editor
             return list;
         }
 
-        public override OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken))
+        public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
         {
             var firstToken = Parsing.LexicalGrammar.GetFirstToken(this.Text);
             if (firstToken != null && firstToken.Text.Length > 0)
@@ -218,50 +218,50 @@ namespace Kusto.Language.Editor
             return OutlineInfo.Empty;
         }
 
-        public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
+        public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken)
         {
             return false;
         }
 
-        public override CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        public override CompletionInfo GetCompletionItems(int position, CompletionOptions options, CancellationToken cancellationToken)
         {
             return CompletionInfo.Empty;
         }
 
-        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken))
+        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken)
         {
             return QuickInfo.Empty;
         }
 
         
-        public override TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken))
+        public override TextRange GetElement(int position, CancellationToken cancellationToken)
         {
             return new TextRange(0,0);
         }
 
-        public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken))
+        public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options, CancellationToken cancellationToken)
         {
             return RelatedInfo.Empty;
         }
 
-        public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken)
         {
             return EmptyReadOnlyList<ClusterReference>.Instance;
         }
 
-        public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken))
+        public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken)
         {
             return EmptyReadOnlyList<DatabaseReference>.Instance;
         }
 
-        public override string GetMinimalText(CancellationToken cancellationToken = default(CancellationToken))
+        public override string GetMinimalText(CancellationToken cancellationToken)
         {
             // use kusto lexer to identify tokens and trivia (as best guess)
             var list = new SyntaxList<SyntaxToken>(Parsing.LexicalGrammar.GetTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
             return list.ToString(IncludeTrivia.Minimal);
         }
 
-        public override FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
         {
             return new FormattedText(this.Text, cursorPosition);
         }
