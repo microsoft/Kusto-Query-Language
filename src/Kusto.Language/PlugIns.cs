@@ -386,6 +386,14 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("NumberOfRows", ParameterTypeKind.Integer));
 
+        public static readonly FunctionSymbol CSharp =
+             new FunctionSymbol("csharp",
+                 (table, args) => new TableSymbol().Open(), // TODO: can we parse the output schema argument?
+                 Tabularity.Tabular,
+                 new Parameter("OutputSchema", ScalarTypes.Type),
+                 new Parameter("Script", ScalarTypes.String),
+                 new Parameter("ScriptParameters", ScalarTypes.Dynamic, minOccurring: 0));
+
         public static readonly FunctionSymbol Python =
              new FunctionSymbol("python",
                  (table, args) => new TableSymbol().Open(), // TODO: can we parse the output schema argument?
