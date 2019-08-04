@@ -933,6 +933,20 @@ namespace Kusto.Language
                     new Parameter("indices", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol ArrayShiftLeft =
+            new FunctionSymbol("array_shift_left", ScalarTypes.Dynamic,
+                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("shift_count", ParameterTypeKind.Integer),
+                new Parameter("default_value", ParameterTypeKind.Scalar, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol ArrayShiftRight =
+            new FunctionSymbol("array_shift_right", ScalarTypes.Dynamic,
+                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("shift_count", ParameterTypeKind.Integer),
+                new Parameter("default_value", ParameterTypeKind.Scalar, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol BagKeys =
             new FunctionSymbol("bag_keys", ScalarTypes.Dynamic,
                 new Parameter("object", ScalarTypes.Dynamic))
@@ -1796,6 +1810,8 @@ namespace Kusto.Language
             ArrayIff,
             ArraySlice,
             ArraySplit,
+            ArrayShiftLeft,
+            ArrayShiftRight,
             BagKeys,
             Zip,
             Pack,
