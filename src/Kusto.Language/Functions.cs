@@ -297,6 +297,13 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
 
+        public static readonly FunctionSymbol ToTime=
+           new FunctionSymbol("totime", ScalarTypes.TimeSpan,
+               new Parameter("value", ParameterTypeKind.Scalar))
+           .Hide()
+           .ConstantFoldable()
+           .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+
         public static readonly FunctionSymbol ToBool =
             new FunctionSymbol("tobool", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
@@ -945,6 +952,18 @@ namespace Kusto.Language
                 new Parameter("array", ScalarTypes.Dynamic),
                 new Parameter("shift_count", ParameterTypeKind.Integer),
                 new Parameter("default_value", ParameterTypeKind.Scalar, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol ArrayRotateLeft =
+             new FunctionSymbol("array_rotate_left", ScalarTypes.Dynamic,
+                 new Parameter("array", ScalarTypes.Dynamic),
+                 new Parameter("rotate_count", ParameterTypeKind.Integer))
+             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol ArrayRotateRight =
+            new FunctionSymbol("array_rotate_right", ScalarTypes.Dynamic,
+                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("rotate_count", ParameterTypeKind.Integer))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol BagKeys =
@@ -1692,6 +1711,7 @@ namespace Kusto.Language
             ToDouble,
             ToDateTime,
             ToTimespan,
+            ToTime,
             ToBool,
             ToBoolean,
             ToDecimal,
@@ -1812,6 +1832,8 @@ namespace Kusto.Language
             ArraySplit,
             ArrayShiftLeft,
             ArrayShiftRight,
+            ArrayRotateLeft,
+            ArrayRotateRight,
             BagKeys,
             Zip,
             Pack,
