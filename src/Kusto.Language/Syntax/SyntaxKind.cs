@@ -575,6 +575,7 @@
         NotEndsWithCsExpression,
         MatchesRegexExpression,
         SearchExpression,
+        HasAnyExpression,
 
         // common command-related expressions & clauses
         TypedColumnReference,

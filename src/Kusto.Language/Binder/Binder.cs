@@ -1508,6 +1508,8 @@ namespace Kusto.Language.Binding
                     return OperatorKind.Or;
                 case SyntaxKind.SearchExpression:
                     return OperatorKind.Search;
+                case SyntaxKind.HasAnyExpression:
+                    return OperatorKind.HasAny;
                 default:
                     return OperatorKind.None;
             }
