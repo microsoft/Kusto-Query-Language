@@ -67,19 +67,14 @@ namespace Kusto.Language.Syntax
             return this.elements;
         }
 
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitList(this);
         }
 
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitList(this);
-        }
-
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitList(context, this);
         }
     }
 

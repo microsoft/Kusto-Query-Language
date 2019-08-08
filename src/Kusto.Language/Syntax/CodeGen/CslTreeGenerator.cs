@@ -325,7 +325,6 @@ namespace Kusto.Language.Generator
         {
             m_writer.WriteRegion("SyntaxVisitor", WriteVisitorImpl);
             m_writer.WriteRegion("SyntaxVisitor<TResult>", WriteVisitorTImpl);
-            m_writer.WriteRegion("SyntaxVisitor<TResult, TContext>", WriteVisitorTCImpl);
         }
 
         private void WriteVisitorImpl()
@@ -389,40 +388,9 @@ namespace Kusto.Language.Generator
                 }
             });
         }
+#endregion
 
-        private void WriteVisitorTCImpl()
-        {
-            m_writer.WriteScope($"public partial class SyntaxVisitor<TContext, TResult>", () =>
-            {
-                foreach (var c in m_classes)
-                {
-                    if (!c.Abstract)
-                    {
-                        m_writer.WriteLine($"public abstract TResult Visit{c.Name}(TContext context, {c.Name} node);");
-                    }
-                }
-            });
-
-            m_writer.WriteScope($"public partial class DefaultSyntaxVisitor<TContext, TResult> : SyntaxVisitor<TContext, TResult>", () =>
-            {
-                m_writer.WriteLine("protected abstract TResult DefaultVisit(TContext context, SyntaxNode node);");
-                m_writer.WriteEmptyLineIfNeeded();
-
-                foreach (var c in m_classes)
-                {
-                    if (!c.Abstract)
-                    {
-                        m_writer.WriteScope($"public override TResult Visit{c.Name}(TContext context, {c.Name} node)", () =>
-                        {
-                            m_writer.WriteLine($"return this.DefaultVisit(context, node);");
-                        });
-                    }
-                }
-            });
-        }
-        #endregion
-
-        #region WriteClassesImpl
+#region WriteClassesImpl
         private void WriteClassesImpl()
         {
             bool first = true;
@@ -610,20 +578,22 @@ namespace Kusto.Language.Generator
                         if (!c.Abstract)
                         {
                             m_writer.WriteEmptyLineIfNeeded();
-                            m_writer.WriteScope($"public override void Visit(SyntaxVisitor visitor)", () =>
+                            m_writer.WriteScope($"public override void Accept(SyntaxVisitor visitor)", () =>
                             {
                                 m_writer.WriteLine($"visitor.Visit{c.Name}(this);");
                             });
 
-                            m_writer.WriteScope($"public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)", () =>
+                            m_writer.WriteScope($"public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)", () =>
                             {
                                 m_writer.WriteLine($"return visitor.Visit{c.Name}(this);");
                             });
 
-                            m_writer.WriteScope($"public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)", () =>
+#if false
+                            m_writer.WriteScope($"public override TResult Accept<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)", () =>
                             {
                                 m_writer.WriteLine($"return visitor.Visit{c.Name}(context, this);");
                             });
+#endif
 
                             if (c.CloneOptions != CslTreeGeneratorCloneOptions.Custom && c.Properties != null /*&& c.Properties.Length > 0*/)
                             {
@@ -712,10 +682,10 @@ namespace Kusto.Language.Generator
             }
         }
 
-        #endregion
+#endregion
     }
-    #endregion
-    #endregion
+#endregion
+#endregion
 
 #if KUSTO_BUILD
 }

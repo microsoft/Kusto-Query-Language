@@ -241,7 +241,7 @@ namespace Kusto.Language.Binding
                     semanticInfoSetter: semanticInfoSetter,
                     cancellationToken: cancellationToken);
                 var treeBinder = new TreeBinder(binder);
-                root.Visit(treeBinder);
+                root.Accept(treeBinder);
             }
         }
 
@@ -275,7 +275,7 @@ namespace Kusto.Language.Binding
                 outer._cancellationToken);
             binder.SetContext(contextNode, locals: locals);
             var treeBinder = new TreeBinder(binder);
-            expansionRoot.Visit(treeBinder);
+            expansionRoot.Accept(treeBinder);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace Kusto.Language.Binding
             if (contextNode != null)
             {
                 var builder = new ContextBuilder(this, position >= 0 ? position : contextNode.TextStart);
-                contextNode.Visit(builder);
+                contextNode.Accept(builder);
             }
 
             if (locals != null)

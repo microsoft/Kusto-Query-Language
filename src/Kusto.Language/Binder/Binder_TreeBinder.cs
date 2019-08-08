@@ -47,7 +47,7 @@ namespace Kusto.Language.Binding
                         var child = node.GetChild(i) as SyntaxNode;
                         if (child != null)
                         {
-                            child.Visit(this);
+                            child.Accept(this);
                         }
                     }
                 }
@@ -58,7 +58,7 @@ namespace Kusto.Language.Binding
                 _binder._cancellationToken.ThrowIfCancellationRequested();
 
                 // use NodeBinder to determine semantic info for this node.
-                var info = node.Visit(_nodeBinder);
+                var info = node.Accept(_nodeBinder);
 
                 // remember semantic info
                 _binder.SetSemanticInfo(node, info);
@@ -66,14 +66,14 @@ namespace Kusto.Language.Binding
 
             public override void VisitPathExpression(PathExpression node)
             {
-                node.Expression.Visit(this);
+                node.Expression.Accept(this);
 
                 // result type of left-side expression is in scope after the dot.
                 var oldPathScope = _binder._pathScope;
                 _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
                 try
                 {
-                    node.Selector.Visit(this);
+                    node.Selector.Accept(this);
                 }
                 finally
                 {
@@ -85,14 +85,14 @@ namespace Kusto.Language.Binding
 
             public override void VisitElementExpression(ElementExpression node)
             {
-                node.Expression.Visit(this);
+                node.Expression.Accept(this);
 
                 // result type of left-side expression is in scope for the element expression inside the brackets.
                 var oldPathScope = _binder._pathScope;
                 _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
                 try
                 {
-                    node.Selector.Visit(this);
+                    node.Selector.Accept(this);
                 }
                 finally
                 {
@@ -104,14 +104,14 @@ namespace Kusto.Language.Binding
 
             public override void VisitPipeExpression(PipeExpression node)
             {
-                node.Expression.Visit(this); 
+                node.Expression.Accept(this); 
 
                 // result of left-side expression is in scope for right-side query operator
                 var oldRowScope = _binder._rowScope;
                 _binder._rowScope = _binder.GetResultType(node.Expression) as TableSymbol;
                 try
                 {
-                    node.Operator.Visit(this);
+                    node.Operator.Accept(this);
                 }
                 finally
                 {
@@ -123,14 +123,14 @@ namespace Kusto.Language.Binding
 
             public override void VisitLookupOperator(LookupOperator node)
             {
-                node.Parameters.Visit(this);
+                node.Parameters.Accept(this);
 
                 // table expression should not see row scope...
                 var oldRowScope = _binder._rowScope;
                 _binder._rowScope = null;
                 try
                 {
-                    node.Expression.Visit(this);
+                    node.Expression.Accept(this);
                 }
                 finally
                 {
@@ -142,7 +142,7 @@ namespace Kusto.Language.Binding
 
                 try
                 {
-                    node.LookupClause.Visit(this);
+                    node.LookupClause.Accept(this);
 
                     // allow right scope to stay for binding of lookup operator node too.
                     BindNode(node);
@@ -155,14 +155,14 @@ namespace Kusto.Language.Binding
 
             public override void VisitJoinOperator(JoinOperator node)
             {
-                node.Parameters.Visit(this);
+                node.Parameters.Accept(this);
 
                 // table expression should not see row scope...
                 var oldRowScope = _binder._rowScope;
                 _binder._rowScope = null;
                 try
                 {
-                    node.Expression.Visit(this);
+                    node.Expression.Accept(this);
                 }
                 finally
                 {
@@ -173,7 +173,7 @@ namespace Kusto.Language.Binding
                 _binder._rightRowScope = _binder.GetResultType(node.Expression) as TableSymbol;
                 try
                 {
-                    node.ConditionClause?.Visit(this);
+                    node.ConditionClause?.Accept(this);
 
                     // allow right scope to stay for binding of join operator node too.
                     BindNode(node);
@@ -200,11 +200,11 @@ namespace Kusto.Language.Binding
 
             public override void VisitSummarizeOperator(SummarizeOperator node)
             {
-                node.Parameters.Visit(this);
+                node.Parameters.Accept(this);
 
                 // visit by clause before aggregates so by expressions are already bound
                 // when resolving aggregate expression result types.
-                node.ByClause?.Visit(this);
+                node.ByClause?.Accept(this);
 
                 VisitInScope(node.Aggregates, ScopeKind.Aggregate);
 
@@ -213,11 +213,11 @@ namespace Kusto.Language.Binding
 
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)
             {
-                node.Parameters.Visit(this);
+                node.Parameters.Accept(this);
                 VisitInScope(node.Aggregates, ScopeKind.Aggregate);
-                node.OnClause?.Visit(this);
-                node.RangeClause?.Visit(this);
-                node.ByClause?.Visit(this);
+                node.OnClause?.Accept(this);
+                node.RangeClause?.Accept(this);
+                node.ByClause?.Accept(this);
 
                 BindNode(node);
             }
@@ -231,7 +231,7 @@ namespace Kusto.Language.Binding
                 _binder._scopeKind = kind;
                 try
                 {
-                    node.Visit(this);
+                    node.Accept(this);
                 }
                 finally
                 {
@@ -241,9 +241,9 @@ namespace Kusto.Language.Binding
 
             public override void VisitTopNestedClause(TopNestedClause node)
             {
-                node.Expression?.Visit(this);
-                node.OfExpression.Visit(this);
-                node.WithOthersClause?.Visit(this);
+                node.Expression?.Accept(this);
+                node.OfExpression.Accept(this);
+                node.WithOthersClause?.Accept(this);
                 VisitInScope(node.ByExpression, ScopeKind.Aggregate);
 
                 BindNode(node);
@@ -273,7 +273,7 @@ namespace Kusto.Language.Binding
                     foreach (var expr in node.Expressions)
                     {
                         _binder._rowScope = oldRowScope;
-                        expr.Visit(this);
+                        expr.Accept(this);
                     }
                 }
                 finally
@@ -302,7 +302,7 @@ namespace Kusto.Language.Binding
             public override void VisitFunctionCallExpression(FunctionCallExpression node)
             {
                 // first bind name to determine the function
-                node.Name.Visit(this);
+                node.Name.Accept(this);
 
                 // function call arguments should not see any existing path scope
                 var oldPathScope = _binder._pathScope;
@@ -375,7 +375,7 @@ namespace Kusto.Language.Binding
                 _binder._rowScope = null;
                 try
                 {
-                    node.Function.Visit(this);
+                    node.Function.Accept(this);
                 }
                 finally
                 {
@@ -529,9 +529,9 @@ namespace Kusto.Language.Binding
 
             public override void VisitFindOperator(FindOperator node)
             {
-                node.DataScope?.Visit(this);
-                node.Parameters?.Visit(this);
-                node.InClause?.Visit(this);
+                node.DataScope?.Accept(this);
+                node.Parameters?.Accept(this);
+                node.InClause?.Accept(this);
 
                 var oldRowScope = _binder._rowScope;
                 try
@@ -544,10 +544,10 @@ namespace Kusto.Language.Binding
                         this.predicateBinder = new SearchPredicateBinder(_binder, this);
                     }
 
-                    node.Condition.Visit(this.predicateBinder);
+                    node.Condition.Accept(this.predicateBinder);
 
-                    node.Project?.Visit(this);
-                    node.ProjectAway?.Visit(this);
+                    node.Project?.Accept(this);
+                    node.ProjectAway?.Accept(this);
                 }
                 finally
                 {
@@ -561,13 +561,13 @@ namespace Kusto.Language.Binding
 
             public override void VisitSearchOperator(SearchOperator node)
             {
-                node.Parameters?.Visit(this);
-                node.DataScope?.Visit(this);
+                node.Parameters?.Accept(this);
+                node.DataScope?.Accept(this);
 
                 var oldRowScope = _binder._rowScope;
                 _binder._rowScope = null;
 
-                node.InClause?.Visit(this);
+                node.InClause?.Accept(this);
 
                 var columns = s_columnListPool.AllocateFromPool();
                 try
@@ -580,7 +580,7 @@ namespace Kusto.Language.Binding
                         this.predicateBinder = new SearchPredicateBinder(_binder, this);
                     }
 
-                    node.Condition.Visit(this.predicateBinder);
+                    node.Condition.Accept(this.predicateBinder);
 
                     _binder._rowScope = oldRowScope;
                 }
@@ -594,11 +594,11 @@ namespace Kusto.Language.Binding
 
             public override void VisitMvApplyOperator(MvApplyOperator node)
             {
-                node.Expressions?.Visit(this);
-                node.RowLimitClause?.Visit(this);
-                node.ContextIdClause?.Visit(this);
+                node.Expressions?.Accept(this);
+                node.RowLimitClause?.Accept(this);
+                node.ContextIdClause?.Accept(this);
 
-                var info = node.Visit(_nodeBinder);
+                var info = node.Accept(_nodeBinder);
 
                 // now that we know the result schema (table) put it in scope and evaluate the subquery
                 var oldRowScope = _binder._rowScope;
@@ -606,7 +606,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder._rowScope = info.ResultType as TableSymbol;
-                    node.Subquery.Visit(this);
+                    node.Subquery.Accept(this);
 
                     // apply sub-query's semantic info back to overall apply operator
                     var subqueryInfo = _binder.GetSemanticInfo(node.Subquery);
@@ -660,7 +660,7 @@ namespace Kusto.Language.Binding
                 if (node.Statements.Count > 0)
                 {
                     var commandStatement = node.Statements[0].Element;
-                    commandStatement.Visit(this);
+                    commandStatement.Accept(this);
 
                     var command = commandStatement.GetFirstDescendant<Command>();
                     if (command != null)
@@ -672,7 +672,7 @@ namespace Kusto.Language.Binding
                     // all other statements
                     for (int i = 1; i < node.Statements.Count; i++)
                     {
-                        node.Statements[i].Element.Visit(this);
+                        node.Statements[i].Element.Accept(this);
                     }
                 }
             }

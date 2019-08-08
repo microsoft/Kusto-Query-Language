@@ -65,7 +65,6 @@ namespace Kusto.Language.Symbols
 
         public override SymbolKind Kind => SymbolKind.Table;
 
-
         public override IReadOnlyList<Symbol> Members => this.Columns;
 
         public override Tabularity Tabularity => Tabularity.Tabular;
@@ -244,6 +243,9 @@ namespace Kusto.Language.Symbols
             return new TableSymbol(ColumnSymbol.Combine(kind, tables.Select(t => t.Columns)));
         }
 
+        /// <summary>
+        /// Combine the columns of multiple tables into a new table.
+        /// </summary>
         public static TableSymbol Combine(CombineKind kind, params TableSymbol[] tables)
         {
             return Combine(kind, (IEnumerable<TableSymbol>)tables);

@@ -86,19 +86,14 @@ namespace Kusto.Language.Syntax
             return this.shape[index].IsOptional;
         }
 
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCustom(this);
         }
 
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCustom(this);
-        }
-
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCustom(context, this);
         }
 
         protected override SyntaxElement CloneCore()

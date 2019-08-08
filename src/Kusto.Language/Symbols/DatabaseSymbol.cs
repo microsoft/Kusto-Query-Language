@@ -14,10 +14,6 @@ namespace Kusto.Language.Symbols
     {
         private readonly IReadOnlyList<Symbol> members;
 
-        public override IReadOnlyList<Symbol> Members => this.members;
-
-        public override SymbolKind Kind => SymbolKind.Database;
-
         /// <summary>
         /// If true, then the definition of the database is not fully known.
         /// </summary>
@@ -28,6 +24,9 @@ namespace Kusto.Language.Symbols
         private IReadOnlyList<FunctionSymbol> functions;
         private HashSet<Symbol> symbolSet;
 
+        /// <summary>
+        /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
+        /// </summary>
         public DatabaseSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
             : base(name)
         {
@@ -35,16 +34,25 @@ namespace Kusto.Language.Symbols
             this.IsOpen = isOpen;
         }
 
+        /// <summary>
+        /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
+        /// </summary>
         public DatabaseSymbol(string name, params Symbol[] members)
             : this(name, (IEnumerable<Symbol>)members)
         {
         }
 
+        public override SymbolKind Kind => SymbolKind.Database;
+
         public override Tabularity Tabularity => Tabularity.Tabular;
 
+        /// <summary>
+        /// All the symbols contained by this symbol.
+        /// </summary>
+        public override IReadOnlyList<Symbol> Members => this.members;
 
         /// <summary>
-        /// The tables in the database.
+        /// The tables contained by the database.
         /// </summary>
         public IReadOnlyList<TableSymbol> Tables
         {
@@ -60,9 +68,9 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
-        /// The functions in the database.
+        /// The functions contained by the database.
         /// </summary>
-        private IReadOnlyList<FunctionSymbol> Functions
+        public IReadOnlyList<FunctionSymbol> Functions
         {
             get
             {
@@ -76,20 +84,38 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
-        /// Gets the symbol with the specified name or returns null.
+        /// Gets the member with the specified name or returns null.
         /// </summary>
-        public Symbol GetSymbol(string name)
+        public Symbol GetMember(string name)
         {
             return this.members.FirstOrDefault(m => m.Name == name);
         }
 
-        protected override string GetDisplay() =>
-            $"database({this.Name})";
+        /// <summary>
+        /// Gets the table with the specified name or returns null.
+        /// </summary>
+        public TableSymbol GetTable(string name)
+        {
+            return this.Tables.FirstOrDefault(t => t.Name == name);
+        }
+
+        /// <summary>
+        /// Gets the function with the specified name or returns null.
+        /// </summary>
+        public FunctionSymbol GetFunction(string name)
+        {
+            return this.Functions.FirstOrDefault(f => f.Name == name);
+        }
+
+        public DatabaseSymbol WithMembers(IEnumerable<Symbol> members)
+        {
+            return new DatabaseSymbol(this.Name, members, this.IsOpen);
+        }
 
         /// <summary>
         /// Creates a new database that includes the additional symbols (tables and functions).
         /// </summary>
-        public DatabaseSymbol AddSymbols(IEnumerable<Symbol> symbols)
+        public DatabaseSymbol AddMembers(IEnumerable<Symbol> symbols)
         {
             return new DatabaseSymbol(this.Name, this.Members.Concat(symbols), this.IsOpen);
         }
@@ -97,11 +123,14 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Creates a new database that includes the additional symbols (tables and functions).
         /// </summary>
-        public DatabaseSymbol AddSymbols(params Symbol[] symbols)
+        public DatabaseSymbol AddMembers(params Symbol[] symbols)
         {
-            return AddSymbols((IEnumerable<Symbol>)symbols);
+            return AddMembers((IEnumerable<Symbol>)symbols);
         }
 
+        /// <summary>
+        /// Returns true if the symbol is contained by the database.
+        /// </summary>
         public bool Contains(Symbol symbol)
         {
             if (this.symbolSet == null)
@@ -116,5 +145,8 @@ namespace Kusto.Language.Symbols
 
             return this.symbolSet.Contains(symbol);
         }
+
+        protected override string GetDisplay() =>
+            $"database({this.Name})";
     }
 }

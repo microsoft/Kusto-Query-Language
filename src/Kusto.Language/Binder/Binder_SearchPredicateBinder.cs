@@ -33,7 +33,7 @@ namespace Kusto.Language.Binding
             protected override void DefaultVisit(SyntaxNode node)
             {
                 // if we get here, fall back to normal expression binding.
-                node.Visit(_treeBinder);
+                node.Accept(_treeBinder);
             }
 
             public override void VisitStarExpression(StarExpression node)
@@ -51,14 +51,14 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    node.Visit(_treeBinder);
+                    node.Accept(_treeBinder);
                 }
             }
 
             public override void VisitParenthesizedExpression(ParenthesizedExpression node)
             {
                 // stay in special rules for parenthesized expression
-                node.Expression.Visit(this);
+                node.Expression.Accept(this);
                 _binder.SetSemanticInfo(node, new SemanticInfo(node.Expression.ResultType));
             }
 
@@ -70,15 +70,15 @@ namespace Kusto.Language.Binding
                     case OperatorKind.And:
                     case OperatorKind.Or:
                         // stay in special rules for and/or
-                        node.Left.Visit(this);
-                        node.Right.Visit(this);
+                        node.Left.Accept(this);
+                        node.Right.Accept(this);
                         var info = _binder.GetBinaryOperatorInfo(opKind, node.Left, node.Right, node.Operator);
                         _binder.SetSemanticInfo(node, info);
                         break;
 
                     default:
                         // drop back to normal expression binding for anything else
-                        node.Visit(_treeBinder);
+                        node.Accept(_treeBinder);
                         break;
                 }
             }

@@ -60,29 +60,4 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(separatedElement);
         }
     }
-
-    public abstract partial class SyntaxVisitor<TContext, TResult>
-    {
-        public abstract TResult VisitCustom(TContext context, CustomNode node);
-        public abstract TResult VisitList(TContext context, SyntaxList list);
-        public abstract TResult VisitSeparatedElement(TContext context, SeparatedElement separatedElement);
-    }
-
-    public abstract partial class DefaultSyntaxVisitor<TContext, TResult>
-    {
-        public override TResult VisitCustom(TContext context, CustomNode node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-
-        public override TResult VisitList(TContext context, SyntaxList list)
-        {
-            return this.DefaultVisit(context, list);
-        }
-
-        public override TResult VisitSeparatedElement(TContext context, SeparatedElement separatedElement)
-        {
-            return this.DefaultVisit(context, separatedElement);
-        }
-    }
 }

@@ -34,11 +34,9 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public new SyntaxNode Clone() => (SyntaxNode)this.CloneCore();
 
-        public abstract void Visit(SyntaxVisitor visitor);
+        public abstract void Accept(SyntaxVisitor visitor);
 
-        public abstract TResult Visit<TResult>(SyntaxVisitor<TResult> visitor);
-
-        public abstract TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context);
+        public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
     }
 
     public partial class Expression

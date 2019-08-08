@@ -11,14 +11,14 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class ScalarSymbol : TypeSymbol
     {
-        public override SymbolKind Kind => SymbolKind.Scalar;
-
-        public override Tabularity Tabularity => Tabularity.Scalar;
-
         public IReadOnlyList<string> Aliases { get; }
 
         public ScalarFlags Flags { get; }
 
+        /// <summary>
+        /// The set of scalar types that this type is considered wider than.
+        /// Narrower symbols can be implicitly converted to wider symbols.
+        /// </summary>
         public IReadOnlyList<ScalarSymbol> WiderThan { get; }
 
         public ScalarSymbol(string name, string[] aliases = null, ScalarFlags flags = ScalarFlags.None, ScalarSymbol[] widerThan = null)
@@ -29,6 +29,10 @@ namespace Kusto.Language.Symbols
             this.WiderThan = widerThan.ToReadOnly();
         }
 
+        public override SymbolKind Kind => SymbolKind.Scalar;
+
+        public override Tabularity Tabularity => Tabularity.Scalar;
+
         public bool IsInteger => (this.Flags & ScalarFlags.Integer) != 0;
 
         public bool IsNumeric => (this.Flags & ScalarFlags.Numeric) != 0;
@@ -37,6 +41,9 @@ namespace Kusto.Language.Symbols
 
         public bool IsSummable => (this.Flags & ScalarFlags.Summable) != 0;
 
+        /// <summary>
+        /// True if this symbol is wider than the specified symbol.
+        /// </summary>
         public bool IsWiderThan(ScalarSymbol scalar)
         {
             for (int i = 0; i < this.WiderThan.Count; i++)

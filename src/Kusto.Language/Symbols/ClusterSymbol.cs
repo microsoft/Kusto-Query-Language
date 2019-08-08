@@ -22,6 +22,9 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public bool IsOpen { get; }
 
+        /// <summary>
+        /// Creates a new instance of a <see cref="ClusterSymbol"/>.
+        /// </summary>
         public ClusterSymbol(string name, IEnumerable<DatabaseSymbol> databases, bool isOpen = false)
             : base(name)
         {
@@ -29,10 +32,15 @@ namespace Kusto.Language.Symbols
             this.IsOpen = isOpen;
         }
 
+        /// <summary>
+        /// Creates a new instance of a <see cref="ClusterSymbol"/>.
+        /// </summary>
         public ClusterSymbol(string name, params DatabaseSymbol[] databases)
             : this(name, databases, false)
         {
         }
+
+        public override Tabularity Tabularity => Tabularity.Tabular;
 
         /// <summary>
         /// Returns true if name matches this cluster's name.
@@ -42,6 +50,14 @@ namespace Kusto.Language.Symbols
             name = KustoFacts.GetHostName(name) ?? name;
             return KustoFacts.IsClusterHostName(name, this.Name)
                 || KustoFacts.IsClusterShortName(name, this.Name);
+        }
+
+        /// <summary>
+        /// Gets the database with the specified name or returns null.
+        /// </summary>
+        public DatabaseSymbol GetDatabase(string databaseName)
+        {
+            return this.Databases.FirstOrDefault(d => d.Name == databaseName);
         }
 
         /// <summary>
@@ -75,7 +91,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ClusterSymbol AddOrUpdateDatabase(DatabaseSymbol newDatabase)
         {
-            var existingDatabase = this.Databases.FirstOrDefault(d => d.Name == newDatabase.Name);
+            var existingDatabase = this.GetDatabase(newDatabase.Name);
             if (existingDatabase != null)
             {
                 return this.UpdateDatabase(existingDatabase, newDatabase);
@@ -85,8 +101,6 @@ namespace Kusto.Language.Symbols
                 return this.AddDatabase(newDatabase);
             }
         }
-
-        public override Tabularity Tabularity => Tabularity.Tabular;
 
         protected override string GetDisplay() =>
             $"cluster({this.Name})";

@@ -37,7 +37,7 @@ namespace Kusto.Language.Binding
                 {
                     if (parent is SyntaxNode parentNode)
                     {
-                        parentNode.Visit(this);
+                        parentNode.Accept(this);
                         break;  // okay, done now
                     }
                 }
@@ -45,7 +45,7 @@ namespace Kusto.Language.Binding
                 // reached the top?  Look for as-operators too
                 if (node.Parent == null)
                 {
-                    node.Visit(_asBuilder);
+                    node.Accept(_asBuilder);
                 }
             }
 
@@ -298,7 +298,7 @@ namespace Kusto.Language.Binding
                         var child = node.GetChild(i) as SyntaxNode;
                         if (child != null)
                         {
-                            child.Visit(this);
+                            child.Accept(this);
                         }
                     }
                 }

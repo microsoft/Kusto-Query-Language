@@ -9,8 +9,14 @@ namespace Kusto.Language.Symbols
     [System.Diagnostics.DebuggerDisplay("Symbol: {Kind} {Display}")]
     public abstract class Symbol
     {
+        /// <summary>
+        /// The name of the symbol.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The <see cref="SymbolKind"/> of the symbol.
+        /// </summary>
         public abstract SymbolKind Kind { get; }
 
         protected Symbol(string name)
@@ -23,10 +29,19 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public virtual bool IsHidden => this.Name.StartsWith("__"); // symbols that start with __ are internal only.
 
+        /// <summary>
+        /// True if the symbol is an error symbol.
+        /// </summary>
         public virtual bool IsError => false;
 
+        /// <summary>
+        /// Identifies whether the symbol is scalar or tabular.
+        /// </summary>
         public virtual Tabularity Tabularity => Tabularity.Unknown;
 
+        /// <summary>
+        /// True if the symbol is scalar or unknown.
+        /// </summary>
         public bool IsScalar
         {
             get
@@ -42,6 +57,9 @@ namespace Kusto.Language.Symbols
             }
         }
 
+        /// <summary>
+        /// True if the symbol is tabular or unknown.
+        /// </summary>
         public bool IsTabular
         {
             get
@@ -77,6 +95,9 @@ namespace Kusto.Language.Symbols
             }
         }
 
+        /// <summary>
+        /// All the symbols contained by this symbol.
+        /// </summary>
         public virtual IReadOnlyList<Symbol> Members => 
             EmptyReadOnlyList<Symbol>.Instance;
 
@@ -118,6 +139,9 @@ namespace Kusto.Language.Symbols
             return null;
         }
 
+        /// <summary>
+        /// Determines the result type of an expression that references the specified symbol
+        /// </summary>
         public static TypeSymbol GetExpressionResultType(Symbol symbol)
         {
             switch (symbol)

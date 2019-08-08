@@ -263,7 +263,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.NotHasSuffixCsKeyword, "!hassuffix_cs", opKind: OperatorKind.NotHasSuffixCs),
                 new SyntaxData(SyntaxKind.NotInKeyword, "!in", opKind: OperatorKind.NotIn),
                 new SyntaxData(SyntaxKind.NotInCsKeyword, "!in~", opKind: OperatorKind.NotInCs),
-                new SyntaxData(SyntaxKind.HasAnyKeyword, "has_any", opKind: OperatorKind.HasAny),
                 new SyntaxData(SyntaxKind.NotLikeKeyword, "notlike", opKind: OperatorKind.NotLike),
                 new SyntaxData(SyntaxKind.NotLikeCsKeyword, "notlikecs", opKind: OperatorKind.NotLikeCs),
                 new SyntaxData(SyntaxKind.NotStartsWithKeyword, "!startswith", opKind: OperatorKind.NotStartsWith),

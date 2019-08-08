@@ -89,17 +89,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDirectiveBlock(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDirectiveBlock(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDirectiveBlock(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -154,17 +150,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSkippedTokens(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSkippedTokens(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSkippedTokens(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -243,17 +235,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitQueryBlock(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitQueryBlock(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitQueryBlock(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -359,17 +347,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTypeOfLiteralExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTypeOfLiteralExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTypeOfLiteralExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -430,17 +414,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBadQueryOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBadQueryOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBadQueryOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -507,17 +487,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCompoundStringLiteralExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCompoundStringLiteralExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCompoundStringLiteralExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -584,17 +560,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTokenName(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTokenName(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTokenName(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -673,17 +645,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBrackettedName(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBrackettedName(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBrackettedName(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -742,17 +710,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBracedName(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBracedName(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBracedName(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -807,17 +771,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitWildcardedName(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitWildcardedName(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitWildcardedName(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -869,17 +829,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitNameDeclaration(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitNameDeclaration(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitNameDeclaration(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -934,17 +890,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitNameReference(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitNameReference(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitNameReference(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1007,17 +959,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitLiteralExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitLiteralExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitLiteralExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1078,17 +1026,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitStarExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitStarExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitStarExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1149,17 +1093,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitAtExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitAtExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitAtExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1253,17 +1193,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJsonPair(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJsonPair(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJsonPair(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1342,17 +1278,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJsonObjectExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJsonObjectExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJsonObjectExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1431,17 +1363,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJsonArrayExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJsonArrayExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJsonArrayExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1529,17 +1457,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDynamicExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDynamicExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDynamicExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1617,17 +1541,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitParenthesizedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitParenthesizedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitParenthesizedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1705,17 +1625,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExpressionList(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExpressionList(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExpressionList(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1812,17 +1728,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExpressionCouple(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExpressionCouple(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExpressionCouple(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1893,17 +1805,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPrefixUnaryExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPrefixUnaryExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPrefixUnaryExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -1982,17 +1890,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBinaryExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBinaryExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBinaryExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2071,17 +1975,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitInExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitInExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitInExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2160,17 +2060,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitHasAnyExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitHasAnyExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitHasAnyExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2249,17 +2145,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBetweenExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBetweenExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBetweenExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2329,17 +2221,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFunctionCallExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionCallExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFunctionCallExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2431,17 +2319,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitToScalarExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitToScalarExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitToScalarExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2533,17 +2417,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitToTableExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitToTableExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitToTableExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2636,17 +2516,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSimpleNamedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSimpleNamedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSimpleNamedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2725,17 +2601,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRenameList(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRenameList(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRenameList(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2814,17 +2686,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCompoundNamedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCompoundNamedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCompoundNamedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2891,17 +2759,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBrackettedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBrackettedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBrackettedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -2974,17 +2838,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitConditionedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitConditionedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitConditionedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3061,17 +2921,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPathExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPathExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPathExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3131,17 +2987,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitElementExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitElementExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitElementExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3208,17 +3060,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPipeExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPipeExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPipeExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3315,17 +3163,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRangeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRangeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRangeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3395,17 +3239,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitNamedParameter(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitNamedParameter(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitNamedParameter(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3466,17 +3306,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitConsumeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitConsumeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitConsumeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3548,17 +3384,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCountOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCountOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCountOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3619,17 +3451,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCountAsIdentifierClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCountAsIdentifierClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCountAsIdentifierClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3675,17 +3503,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExecuteAndCacheOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExecuteAndCacheOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExecuteAndCacheOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3746,17 +3570,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExtendOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExtendOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExtendOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3840,17 +3660,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFacetOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFacetOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFacetOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -3923,17 +3739,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFacetWithOperatorClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFacetWithOperatorClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFacetWithOperatorClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4006,17 +3818,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFacetWithExpressionClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFacetWithExpressionClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFacetWithExpressionClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4083,17 +3891,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFilterOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFilterOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFilterOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4148,17 +3952,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitGetSchemaOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitGetSchemaOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitGetSchemaOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4270,17 +4070,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFindOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFindOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFindOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4347,17 +4143,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDataScopeClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDataScopeClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDataScopeClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4424,17 +4216,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTypedColumnReference(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTypedColumnReference(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTypedColumnReference(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4507,17 +4295,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFindInClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFindInClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFindInClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4578,17 +4362,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFindProjectClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFindProjectClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFindProjectClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4661,17 +4441,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPackExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPackExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPackExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4738,17 +4514,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitNameAndTypeDeclaration(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitNameAndTypeDeclaration(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitNameAndTypeDeclaration(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4815,17 +4587,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPrimitiveTypeExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPrimitiveTypeExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPrimitiveTypeExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4916,17 +4684,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSearchOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSearchOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSearchOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -4987,17 +4751,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitForkOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitForkOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitForkOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5058,17 +4818,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitNameEqualsClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitNameEqualsClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitNameEqualsClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5152,17 +4908,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitForkExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitForkExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitForkExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5258,17 +5010,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5340,17 +5088,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5417,17 +5161,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDefaultExpressionClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDefaultExpressionClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDefaultExpressionClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5488,17 +5228,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesOnClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesOnClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesOnClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5577,17 +5313,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesInRangeClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesInRangeClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesInRangeClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5672,17 +5404,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesFromToStepClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesFromToStepClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesFromToStepClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5743,17 +5471,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMakeSeriesByClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMakeSeriesByClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMakeSeriesByClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5837,17 +5561,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvExpandOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvExpandOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvExpandOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5920,17 +5640,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvExpandExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvExpandExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvExpandExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -5991,17 +5707,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvExpandRowLimitClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvExpandRowLimitClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvExpandRowLimitClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6104,17 +5816,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvApplyOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvApplyOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvApplyOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6187,17 +5895,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvApplyExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvApplyExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvApplyExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6258,17 +5962,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvApplyRowLimitClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvApplyRowLimitClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvApplyRowLimitClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6329,17 +6029,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvApplyContextIdClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvApplyContextIdClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvApplyContextIdClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6406,17 +6102,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMvApplySubqueryExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMvApplySubqueryExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMvApplySubqueryExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6477,17 +6169,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitToTypeOfClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitToTypeOfClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitToTypeOfClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6554,17 +6242,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitEvaluateOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitEvaluateOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitEvaluateOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6643,17 +6327,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitParseOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitParseOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitParseOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6732,17 +6412,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPartitionOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPartitionOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPartitionOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6809,17 +6485,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPartitionExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPartitionExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPartitionExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6880,17 +6552,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitProjectOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitProjectOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitProjectOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -6951,17 +6619,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitProjectAwayOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitProjectAwayOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitProjectAwayOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7022,17 +6686,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitProjectRenameOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitProjectRenameOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitProjectRenameOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7093,17 +6753,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitProjectReorderOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitProjectReorderOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitProjectReorderOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7170,17 +6826,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSampleOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSampleOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSampleOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7259,17 +6911,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSampleDistinctOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSampleDistinctOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSampleDistinctOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7359,17 +7007,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitReduceByOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitReduceByOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitReduceByOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7430,17 +7074,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitReduceByWithClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitReduceByWithClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitReduceByWithClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7524,17 +7164,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSummarizeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSummarizeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSummarizeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7595,17 +7231,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSummarizeByClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSummarizeByClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSummarizeByClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7666,17 +7298,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDistinctOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDistinctOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDistinctOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7743,17 +7371,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTakeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTakeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTakeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7820,17 +7444,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSortOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSortOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSortOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7891,17 +7511,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitOrderedExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitOrderedExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitOrderedExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -7974,17 +7590,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitOrderingClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitOrderingClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitOrderingClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8045,17 +7657,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitOrderingNullsClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitOrderingNullsClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitOrderingNullsClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8145,17 +7753,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopHittersOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopHittersOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopHittersOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8216,17 +7820,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopHittersByClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopHittersByClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopHittersByClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8305,17 +7905,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8370,17 +7966,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopNestedOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopNestedOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopNestedOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8483,17 +8075,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopNestedClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopNestedClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopNestedClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8566,17 +8154,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitTopNestedWithOthersClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitTopNestedWithOthersClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitTopNestedWithOthersClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8643,17 +8227,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitUnionOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitUnionOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitUnionOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8720,17 +8300,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitAsOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitAsOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitAsOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8797,17 +8373,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSerializeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSerializeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSerializeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8868,17 +8440,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitInvokeOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitInvokeOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitInvokeOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -8957,17 +8525,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRenderOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRenderOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRenderOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9013,17 +8577,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRenderNameList(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRenderNameList(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRenderNameList(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9096,17 +8656,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRenderWithClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRenderWithClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRenderWithClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9167,17 +8723,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPrintOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPrintOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPrintOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9256,17 +8808,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitAliasStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitAliasStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitAliasStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9339,17 +8887,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitLetStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitLetStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitLetStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9427,17 +8971,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFunctionDeclaration(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionDeclaration(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFunctionDeclaration(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9504,17 +9044,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFunctionParameters(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionParameters(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFunctionParameters(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9585,17 +9121,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFunctionParameter(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionParameter(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFunctionParameter(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9655,17 +9187,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDefaultValueDeclaration(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDefaultValueDeclaration(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDefaultValueDeclaration(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9756,17 +9284,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitFunctionBody(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionBody(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitFunctionBody(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9833,17 +9357,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSchemaTypeExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSchemaTypeExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSchemaTypeExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9898,17 +9418,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExpressionStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExpressionStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExpressionStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -9981,17 +9497,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitMaterializeExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitMaterializeExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitMaterializeExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10069,17 +9581,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitSetOptionStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitSetOptionStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitSetOptionStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10140,17 +9648,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitOptionValueClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitOptionValueClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitOptionValueClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10229,17 +9733,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitQueryParametersStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitQueryParametersStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitQueryParametersStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10324,17 +9824,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitRestrictStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitRestrictStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitRestrictStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10418,17 +9914,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPatternStatement(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPatternStatement(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPatternStatement(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10536,17 +10028,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPatternDeclaration(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPatternDeclaration(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPatternDeclaration(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10613,17 +10101,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPatternPathParameter(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPatternPathParameter(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPatternPathParameter(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10713,17 +10197,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPatternMatch(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPatternMatch(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPatternMatch(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10796,17 +10276,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitPatternPathValue(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitPatternPathValue(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitPatternPathValue(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10866,17 +10342,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDataScopeExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDataScopeExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDataScopeExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -10955,17 +10427,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitDataTableExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitDataTableExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitDataTableExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11067,17 +10535,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExternalDataExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExternalDataExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExternalDataExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11149,17 +10613,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitExternalDataWithClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitExternalDataWithClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitExternalDataWithClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11243,17 +10703,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJoinOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJoinOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJoinOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11326,17 +10782,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitLookupOperator(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitLookupOperator(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitLookupOperator(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11409,17 +10861,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJoinOnClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJoinOnClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJoinOnClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11480,17 +10928,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitJoinWhereClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitJoinWhereClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitJoinWhereClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11574,17 +11018,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCommandWithValueClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCommandWithValueClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCommandWithValueClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11657,17 +11097,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCommandWithPropertyListClause(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCommandWithPropertyListClause(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCommandWithPropertyListClause(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11746,17 +11182,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCommandInputExpression(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCommandInputExpression(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCommandInputExpression(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11817,17 +11249,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitUnknownCommand(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitUnknownCommand(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitUnknownCommand(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11891,17 +11319,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCustomCommand(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCustomCommand(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCustomCommand(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -11956,17 +11380,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitBadCommand(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitBadCommand(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitBadCommand(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -12045,17 +11465,13 @@ namespace Kusto.Language.Syntax
             }
         }
         
-        public override void Visit(SyntaxVisitor visitor)
+        public override void Accept(SyntaxVisitor visitor)
         {
             visitor.VisitCommandBlock(this);
         }
-        public override TResult Visit<TResult>(SyntaxVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
             return visitor.VisitCommandBlock(this);
-        }
-        public override TResult Visit<TContext, TResult>(SyntaxVisitor<TContext, TResult> visitor, TContext context)
-        {
-            return visitor.VisitCommandBlock(context, this);
         }
         
         protected override SyntaxElement CloneCore()
@@ -13548,747 +12964,6 @@ namespace Kusto.Language.Syntax
         }
     }
     #endregion /* SyntaxVisitor<TResult> */
-    
-    #region SyntaxVisitor<TResult, TContext>
-    public partial class SyntaxVisitor<TContext, TResult>
-    {
-        public abstract TResult VisitDirectiveBlock(TContext context, DirectiveBlock node);
-        public abstract TResult VisitSkippedTokens(TContext context, SkippedTokens node);
-        public abstract TResult VisitQueryBlock(TContext context, QueryBlock node);
-        public abstract TResult VisitTypeOfLiteralExpression(TContext context, TypeOfLiteralExpression node);
-        public abstract TResult VisitBadQueryOperator(TContext context, BadQueryOperator node);
-        public abstract TResult VisitCompoundStringLiteralExpression(TContext context, CompoundStringLiteralExpression node);
-        public abstract TResult VisitTokenName(TContext context, TokenName node);
-        public abstract TResult VisitBrackettedName(TContext context, BrackettedName node);
-        public abstract TResult VisitBracedName(TContext context, BracedName node);
-        public abstract TResult VisitWildcardedName(TContext context, WildcardedName node);
-        public abstract TResult VisitNameDeclaration(TContext context, NameDeclaration node);
-        public abstract TResult VisitNameReference(TContext context, NameReference node);
-        public abstract TResult VisitLiteralExpression(TContext context, LiteralExpression node);
-        public abstract TResult VisitStarExpression(TContext context, StarExpression node);
-        public abstract TResult VisitAtExpression(TContext context, AtExpression node);
-        public abstract TResult VisitJsonPair(TContext context, JsonPair node);
-        public abstract TResult VisitJsonObjectExpression(TContext context, JsonObjectExpression node);
-        public abstract TResult VisitJsonArrayExpression(TContext context, JsonArrayExpression node);
-        public abstract TResult VisitDynamicExpression(TContext context, DynamicExpression node);
-        public abstract TResult VisitParenthesizedExpression(TContext context, ParenthesizedExpression node);
-        public abstract TResult VisitExpressionList(TContext context, ExpressionList node);
-        public abstract TResult VisitExpressionCouple(TContext context, ExpressionCouple node);
-        public abstract TResult VisitPrefixUnaryExpression(TContext context, PrefixUnaryExpression node);
-        public abstract TResult VisitBinaryExpression(TContext context, BinaryExpression node);
-        public abstract TResult VisitInExpression(TContext context, InExpression node);
-        public abstract TResult VisitHasAnyExpression(TContext context, HasAnyExpression node);
-        public abstract TResult VisitBetweenExpression(TContext context, BetweenExpression node);
-        public abstract TResult VisitFunctionCallExpression(TContext context, FunctionCallExpression node);
-        public abstract TResult VisitToScalarExpression(TContext context, ToScalarExpression node);
-        public abstract TResult VisitToTableExpression(TContext context, ToTableExpression node);
-        public abstract TResult VisitSimpleNamedExpression(TContext context, SimpleNamedExpression node);
-        public abstract TResult VisitRenameList(TContext context, RenameList node);
-        public abstract TResult VisitCompoundNamedExpression(TContext context, CompoundNamedExpression node);
-        public abstract TResult VisitBrackettedExpression(TContext context, BrackettedExpression node);
-        public abstract TResult VisitConditionedExpression(TContext context, ConditionedExpression node);
-        public abstract TResult VisitPathExpression(TContext context, PathExpression node);
-        public abstract TResult VisitElementExpression(TContext context, ElementExpression node);
-        public abstract TResult VisitPipeExpression(TContext context, PipeExpression node);
-        public abstract TResult VisitRangeOperator(TContext context, RangeOperator node);
-        public abstract TResult VisitNamedParameter(TContext context, NamedParameter node);
-        public abstract TResult VisitConsumeOperator(TContext context, ConsumeOperator node);
-        public abstract TResult VisitCountOperator(TContext context, CountOperator node);
-        public abstract TResult VisitCountAsIdentifierClause(TContext context, CountAsIdentifierClause node);
-        public abstract TResult VisitExecuteAndCacheOperator(TContext context, ExecuteAndCacheOperator node);
-        public abstract TResult VisitExtendOperator(TContext context, ExtendOperator node);
-        public abstract TResult VisitFacetOperator(TContext context, FacetOperator node);
-        public abstract TResult VisitFacetWithOperatorClause(TContext context, FacetWithOperatorClause node);
-        public abstract TResult VisitFacetWithExpressionClause(TContext context, FacetWithExpressionClause node);
-        public abstract TResult VisitFilterOperator(TContext context, FilterOperator node);
-        public abstract TResult VisitGetSchemaOperator(TContext context, GetSchemaOperator node);
-        public abstract TResult VisitFindOperator(TContext context, FindOperator node);
-        public abstract TResult VisitDataScopeClause(TContext context, DataScopeClause node);
-        public abstract TResult VisitTypedColumnReference(TContext context, TypedColumnReference node);
-        public abstract TResult VisitFindInClause(TContext context, FindInClause node);
-        public abstract TResult VisitFindProjectClause(TContext context, FindProjectClause node);
-        public abstract TResult VisitPackExpression(TContext context, PackExpression node);
-        public abstract TResult VisitNameAndTypeDeclaration(TContext context, NameAndTypeDeclaration node);
-        public abstract TResult VisitPrimitiveTypeExpression(TContext context, PrimitiveTypeExpression node);
-        public abstract TResult VisitSearchOperator(TContext context, SearchOperator node);
-        public abstract TResult VisitForkOperator(TContext context, ForkOperator node);
-        public abstract TResult VisitNameEqualsClause(TContext context, NameEqualsClause node);
-        public abstract TResult VisitForkExpression(TContext context, ForkExpression node);
-        public abstract TResult VisitMakeSeriesOperator(TContext context, MakeSeriesOperator node);
-        public abstract TResult VisitMakeSeriesExpression(TContext context, MakeSeriesExpression node);
-        public abstract TResult VisitDefaultExpressionClause(TContext context, DefaultExpressionClause node);
-        public abstract TResult VisitMakeSeriesOnClause(TContext context, MakeSeriesOnClause node);
-        public abstract TResult VisitMakeSeriesInRangeClause(TContext context, MakeSeriesInRangeClause node);
-        public abstract TResult VisitMakeSeriesFromToStepClause(TContext context, MakeSeriesFromToStepClause node);
-        public abstract TResult VisitMakeSeriesByClause(TContext context, MakeSeriesByClause node);
-        public abstract TResult VisitMvExpandOperator(TContext context, MvExpandOperator node);
-        public abstract TResult VisitMvExpandExpression(TContext context, MvExpandExpression node);
-        public abstract TResult VisitMvExpandRowLimitClause(TContext context, MvExpandRowLimitClause node);
-        public abstract TResult VisitMvApplyOperator(TContext context, MvApplyOperator node);
-        public abstract TResult VisitMvApplyExpression(TContext context, MvApplyExpression node);
-        public abstract TResult VisitMvApplyRowLimitClause(TContext context, MvApplyRowLimitClause node);
-        public abstract TResult VisitMvApplyContextIdClause(TContext context, MvApplyContextIdClause node);
-        public abstract TResult VisitMvApplySubqueryExpression(TContext context, MvApplySubqueryExpression node);
-        public abstract TResult VisitToTypeOfClause(TContext context, ToTypeOfClause node);
-        public abstract TResult VisitEvaluateOperator(TContext context, EvaluateOperator node);
-        public abstract TResult VisitParseOperator(TContext context, ParseOperator node);
-        public abstract TResult VisitPartitionOperator(TContext context, PartitionOperator node);
-        public abstract TResult VisitPartitionExpression(TContext context, PartitionExpression node);
-        public abstract TResult VisitProjectOperator(TContext context, ProjectOperator node);
-        public abstract TResult VisitProjectAwayOperator(TContext context, ProjectAwayOperator node);
-        public abstract TResult VisitProjectRenameOperator(TContext context, ProjectRenameOperator node);
-        public abstract TResult VisitProjectReorderOperator(TContext context, ProjectReorderOperator node);
-        public abstract TResult VisitSampleOperator(TContext context, SampleOperator node);
-        public abstract TResult VisitSampleDistinctOperator(TContext context, SampleDistinctOperator node);
-        public abstract TResult VisitReduceByOperator(TContext context, ReduceByOperator node);
-        public abstract TResult VisitReduceByWithClause(TContext context, ReduceByWithClause node);
-        public abstract TResult VisitSummarizeOperator(TContext context, SummarizeOperator node);
-        public abstract TResult VisitSummarizeByClause(TContext context, SummarizeByClause node);
-        public abstract TResult VisitDistinctOperator(TContext context, DistinctOperator node);
-        public abstract TResult VisitTakeOperator(TContext context, TakeOperator node);
-        public abstract TResult VisitSortOperator(TContext context, SortOperator node);
-        public abstract TResult VisitOrderedExpression(TContext context, OrderedExpression node);
-        public abstract TResult VisitOrderingClause(TContext context, OrderingClause node);
-        public abstract TResult VisitOrderingNullsClause(TContext context, OrderingNullsClause node);
-        public abstract TResult VisitTopHittersOperator(TContext context, TopHittersOperator node);
-        public abstract TResult VisitTopHittersByClause(TContext context, TopHittersByClause node);
-        public abstract TResult VisitTopOperator(TContext context, TopOperator node);
-        public abstract TResult VisitTopNestedOperator(TContext context, TopNestedOperator node);
-        public abstract TResult VisitTopNestedClause(TContext context, TopNestedClause node);
-        public abstract TResult VisitTopNestedWithOthersClause(TContext context, TopNestedWithOthersClause node);
-        public abstract TResult VisitUnionOperator(TContext context, UnionOperator node);
-        public abstract TResult VisitAsOperator(TContext context, AsOperator node);
-        public abstract TResult VisitSerializeOperator(TContext context, SerializeOperator node);
-        public abstract TResult VisitInvokeOperator(TContext context, InvokeOperator node);
-        public abstract TResult VisitRenderOperator(TContext context, RenderOperator node);
-        public abstract TResult VisitRenderNameList(TContext context, RenderNameList node);
-        public abstract TResult VisitRenderWithClause(TContext context, RenderWithClause node);
-        public abstract TResult VisitPrintOperator(TContext context, PrintOperator node);
-        public abstract TResult VisitAliasStatement(TContext context, AliasStatement node);
-        public abstract TResult VisitLetStatement(TContext context, LetStatement node);
-        public abstract TResult VisitFunctionDeclaration(TContext context, FunctionDeclaration node);
-        public abstract TResult VisitFunctionParameters(TContext context, FunctionParameters node);
-        public abstract TResult VisitFunctionParameter(TContext context, FunctionParameter node);
-        public abstract TResult VisitDefaultValueDeclaration(TContext context, DefaultValueDeclaration node);
-        public abstract TResult VisitFunctionBody(TContext context, FunctionBody node);
-        public abstract TResult VisitSchemaTypeExpression(TContext context, SchemaTypeExpression node);
-        public abstract TResult VisitExpressionStatement(TContext context, ExpressionStatement node);
-        public abstract TResult VisitMaterializeExpression(TContext context, MaterializeExpression node);
-        public abstract TResult VisitSetOptionStatement(TContext context, SetOptionStatement node);
-        public abstract TResult VisitOptionValueClause(TContext context, OptionValueClause node);
-        public abstract TResult VisitQueryParametersStatement(TContext context, QueryParametersStatement node);
-        public abstract TResult VisitRestrictStatement(TContext context, RestrictStatement node);
-        public abstract TResult VisitPatternStatement(TContext context, PatternStatement node);
-        public abstract TResult VisitPatternDeclaration(TContext context, PatternDeclaration node);
-        public abstract TResult VisitPatternPathParameter(TContext context, PatternPathParameter node);
-        public abstract TResult VisitPatternMatch(TContext context, PatternMatch node);
-        public abstract TResult VisitPatternPathValue(TContext context, PatternPathValue node);
-        public abstract TResult VisitDataScopeExpression(TContext context, DataScopeExpression node);
-        public abstract TResult VisitDataTableExpression(TContext context, DataTableExpression node);
-        public abstract TResult VisitExternalDataExpression(TContext context, ExternalDataExpression node);
-        public abstract TResult VisitExternalDataWithClause(TContext context, ExternalDataWithClause node);
-        public abstract TResult VisitJoinOperator(TContext context, JoinOperator node);
-        public abstract TResult VisitLookupOperator(TContext context, LookupOperator node);
-        public abstract TResult VisitJoinOnClause(TContext context, JoinOnClause node);
-        public abstract TResult VisitJoinWhereClause(TContext context, JoinWhereClause node);
-        public abstract TResult VisitCommandWithValueClause(TContext context, CommandWithValueClause node);
-        public abstract TResult VisitCommandWithPropertyListClause(TContext context, CommandWithPropertyListClause node);
-        public abstract TResult VisitCommandInputExpression(TContext context, CommandInputExpression node);
-        public abstract TResult VisitUnknownCommand(TContext context, UnknownCommand node);
-        public abstract TResult VisitCustomCommand(TContext context, CustomCommand node);
-        public abstract TResult VisitBadCommand(TContext context, BadCommand node);
-        public abstract TResult VisitCommandBlock(TContext context, CommandBlock node);
-    }
-    public partial class DefaultSyntaxVisitor<TContext, TResult> : SyntaxVisitor<TContext, TResult>
-    {
-        protected abstract TResult DefaultVisit(TContext context, SyntaxNode node);
-        
-        public override TResult VisitDirectiveBlock(TContext context, DirectiveBlock node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSkippedTokens(TContext context, SkippedTokens node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitQueryBlock(TContext context, QueryBlock node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTypeOfLiteralExpression(TContext context, TypeOfLiteralExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBadQueryOperator(TContext context, BadQueryOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCompoundStringLiteralExpression(TContext context, CompoundStringLiteralExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTokenName(TContext context, TokenName node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBrackettedName(TContext context, BrackettedName node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBracedName(TContext context, BracedName node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitWildcardedName(TContext context, WildcardedName node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitNameDeclaration(TContext context, NameDeclaration node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitNameReference(TContext context, NameReference node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitLiteralExpression(TContext context, LiteralExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitStarExpression(TContext context, StarExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitAtExpression(TContext context, AtExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJsonPair(TContext context, JsonPair node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJsonObjectExpression(TContext context, JsonObjectExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJsonArrayExpression(TContext context, JsonArrayExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDynamicExpression(TContext context, DynamicExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitParenthesizedExpression(TContext context, ParenthesizedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExpressionList(TContext context, ExpressionList node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExpressionCouple(TContext context, ExpressionCouple node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPrefixUnaryExpression(TContext context, PrefixUnaryExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBinaryExpression(TContext context, BinaryExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitInExpression(TContext context, InExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitHasAnyExpression(TContext context, HasAnyExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBetweenExpression(TContext context, BetweenExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFunctionCallExpression(TContext context, FunctionCallExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitToScalarExpression(TContext context, ToScalarExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitToTableExpression(TContext context, ToTableExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSimpleNamedExpression(TContext context, SimpleNamedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRenameList(TContext context, RenameList node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCompoundNamedExpression(TContext context, CompoundNamedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBrackettedExpression(TContext context, BrackettedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitConditionedExpression(TContext context, ConditionedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPathExpression(TContext context, PathExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitElementExpression(TContext context, ElementExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPipeExpression(TContext context, PipeExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRangeOperator(TContext context, RangeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitNamedParameter(TContext context, NamedParameter node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitConsumeOperator(TContext context, ConsumeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCountOperator(TContext context, CountOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCountAsIdentifierClause(TContext context, CountAsIdentifierClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExecuteAndCacheOperator(TContext context, ExecuteAndCacheOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExtendOperator(TContext context, ExtendOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFacetOperator(TContext context, FacetOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFacetWithOperatorClause(TContext context, FacetWithOperatorClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFacetWithExpressionClause(TContext context, FacetWithExpressionClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFilterOperator(TContext context, FilterOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitGetSchemaOperator(TContext context, GetSchemaOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFindOperator(TContext context, FindOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDataScopeClause(TContext context, DataScopeClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTypedColumnReference(TContext context, TypedColumnReference node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFindInClause(TContext context, FindInClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFindProjectClause(TContext context, FindProjectClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPackExpression(TContext context, PackExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitNameAndTypeDeclaration(TContext context, NameAndTypeDeclaration node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPrimitiveTypeExpression(TContext context, PrimitiveTypeExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSearchOperator(TContext context, SearchOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitForkOperator(TContext context, ForkOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitNameEqualsClause(TContext context, NameEqualsClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitForkExpression(TContext context, ForkExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesOperator(TContext context, MakeSeriesOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesExpression(TContext context, MakeSeriesExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDefaultExpressionClause(TContext context, DefaultExpressionClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesOnClause(TContext context, MakeSeriesOnClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesInRangeClause(TContext context, MakeSeriesInRangeClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesFromToStepClause(TContext context, MakeSeriesFromToStepClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMakeSeriesByClause(TContext context, MakeSeriesByClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvExpandOperator(TContext context, MvExpandOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvExpandExpression(TContext context, MvExpandExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvExpandRowLimitClause(TContext context, MvExpandRowLimitClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvApplyOperator(TContext context, MvApplyOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvApplyExpression(TContext context, MvApplyExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvApplyRowLimitClause(TContext context, MvApplyRowLimitClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvApplyContextIdClause(TContext context, MvApplyContextIdClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMvApplySubqueryExpression(TContext context, MvApplySubqueryExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitToTypeOfClause(TContext context, ToTypeOfClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitEvaluateOperator(TContext context, EvaluateOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitParseOperator(TContext context, ParseOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPartitionOperator(TContext context, PartitionOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPartitionExpression(TContext context, PartitionExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitProjectOperator(TContext context, ProjectOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitProjectAwayOperator(TContext context, ProjectAwayOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitProjectRenameOperator(TContext context, ProjectRenameOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitProjectReorderOperator(TContext context, ProjectReorderOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSampleOperator(TContext context, SampleOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSampleDistinctOperator(TContext context, SampleDistinctOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitReduceByOperator(TContext context, ReduceByOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitReduceByWithClause(TContext context, ReduceByWithClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSummarizeOperator(TContext context, SummarizeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSummarizeByClause(TContext context, SummarizeByClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDistinctOperator(TContext context, DistinctOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTakeOperator(TContext context, TakeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSortOperator(TContext context, SortOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitOrderedExpression(TContext context, OrderedExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitOrderingClause(TContext context, OrderingClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitOrderingNullsClause(TContext context, OrderingNullsClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopHittersOperator(TContext context, TopHittersOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopHittersByClause(TContext context, TopHittersByClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopOperator(TContext context, TopOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopNestedOperator(TContext context, TopNestedOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopNestedClause(TContext context, TopNestedClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitTopNestedWithOthersClause(TContext context, TopNestedWithOthersClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitUnionOperator(TContext context, UnionOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitAsOperator(TContext context, AsOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSerializeOperator(TContext context, SerializeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitInvokeOperator(TContext context, InvokeOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRenderOperator(TContext context, RenderOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRenderNameList(TContext context, RenderNameList node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRenderWithClause(TContext context, RenderWithClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPrintOperator(TContext context, PrintOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitAliasStatement(TContext context, AliasStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitLetStatement(TContext context, LetStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFunctionDeclaration(TContext context, FunctionDeclaration node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFunctionParameters(TContext context, FunctionParameters node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFunctionParameter(TContext context, FunctionParameter node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDefaultValueDeclaration(TContext context, DefaultValueDeclaration node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitFunctionBody(TContext context, FunctionBody node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSchemaTypeExpression(TContext context, SchemaTypeExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExpressionStatement(TContext context, ExpressionStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitMaterializeExpression(TContext context, MaterializeExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitSetOptionStatement(TContext context, SetOptionStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitOptionValueClause(TContext context, OptionValueClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitQueryParametersStatement(TContext context, QueryParametersStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitRestrictStatement(TContext context, RestrictStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPatternStatement(TContext context, PatternStatement node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPatternDeclaration(TContext context, PatternDeclaration node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPatternPathParameter(TContext context, PatternPathParameter node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPatternMatch(TContext context, PatternMatch node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitPatternPathValue(TContext context, PatternPathValue node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDataScopeExpression(TContext context, DataScopeExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitDataTableExpression(TContext context, DataTableExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExternalDataExpression(TContext context, ExternalDataExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitExternalDataWithClause(TContext context, ExternalDataWithClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJoinOperator(TContext context, JoinOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitLookupOperator(TContext context, LookupOperator node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJoinOnClause(TContext context, JoinOnClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitJoinWhereClause(TContext context, JoinWhereClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCommandWithValueClause(TContext context, CommandWithValueClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCommandWithPropertyListClause(TContext context, CommandWithPropertyListClause node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCommandInputExpression(TContext context, CommandInputExpression node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitUnknownCommand(TContext context, UnknownCommand node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCustomCommand(TContext context, CustomCommand node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitBadCommand(TContext context, BadCommand node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-        public override TResult VisitCommandBlock(TContext context, CommandBlock node)
-        {
-            return this.DefaultVisit(context, node);
-        }
-    }
-    #endregion /* SyntaxVisitor<TResult, TContext> */
     #endregion /* Visitors */
 }
 
