@@ -453,17 +453,23 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <PropertyGroup Condition="Exists('..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets')">
+    <PackageRoot>..\..\..\packages</PackageRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets')">
+    <PackageRoot>..\packages</PackageRoot>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bridge, Version=17.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Bridge.Core.17.1.1\lib\net40\Bridge.dll</HintPath>
+      <HintPath>$(PackageRoot)\Bridge.Core.17.1.1\lib\net40\Bridge.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets" Condition="Exists('..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets')" />
+  <Import Project="$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets" Condition="Exists('$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets')"/>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets'))" />
+    <Error Condition="!Exists('$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets'))" />
   </Target>
 </Project>
