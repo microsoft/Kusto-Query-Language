@@ -1628,6 +1628,13 @@ namespace Kusto.Language
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol RowWindowSession =
+            new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
+                new Parameter("maxDistanceFromFirst", ScalarTypes.TimeSpan),
+                new Parameter("minDistanceBetweenNeighbors", ScalarTypes.TimeSpan),
+                new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol Prev =
             new FunctionSymbol("prev", ReturnTypeKind.Parameter0,
                 new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Column),
@@ -1945,6 +1952,7 @@ namespace Kusto.Language
             CursorCurrent2,
             RowNumber,
             RowCumSum,
+            RowWindowSession,
             Prev,
             Next,
             RowstoreOrdinalRange,
