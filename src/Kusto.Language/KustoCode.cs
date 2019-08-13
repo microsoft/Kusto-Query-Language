@@ -146,15 +146,35 @@ namespace Kusto.Language
         /// Returns a new <see cref="KustoCode"/> with semantic analysis performed
         /// or the current instance if semantic analysis has already been performed.
         /// </summary>
-        public KustoCode Analyze(CancellationToken cancellationToken = default(CancellationToken))
+        public KustoCode Analyze(GlobalState globals = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.HasSemantics)
+            if (globals == null)
+            {
+                globals = this.Globals;
+            }
+
+            if (this.HasSemantics && this.Globals == globals)
             {
                 return this;
             }
             else
             {
-                return Create(this.Text, this.Globals, this.lexerTokens, analyze: true, cancellationToken: cancellationToken);
+                return Create(this.Text, this.Globals, this.lexerTokens, analyze: true, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="KustoCode"/> with the specified <see cref="GlobalState"/>
+        /// </summary>
+        public KustoCode WithGlobals(GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (this.Globals == globals)
+            {
+                return this;
+            }
+            else
+            {
+                return Create(this.Text, globals, this.lexerTokens, analyze: this.HasSemantics, cancellationToken);
             }
         }
 
