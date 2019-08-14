@@ -1,4 +1,4 @@
-# active_users_count plugin 
+# active_users_count plugin
 
 Calculates distinct count of values, where each value has appeared in at least a minimum number of periods in a lookback period.
 
