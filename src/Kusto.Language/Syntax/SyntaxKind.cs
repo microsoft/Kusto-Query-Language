@@ -718,7 +718,6 @@
         QueryParametersStatement,
 
         // commands
-        CommandInputExpression,
         CommandWithValueClause,
         CommandWithPropertyListClause,
         BadCommand,
@@ -729,6 +728,7 @@
         QueryBlock,
         CommandBlock,
         DirectiveBlock,
-        SkippedTokens
+        SkippedTokens,
+        InputTextToken,
     }
 }

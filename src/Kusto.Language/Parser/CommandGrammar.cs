@@ -11,6 +11,7 @@ namespace Kusto.Language.Parsing
     using static SyntaxParsers;
     using Q=QueryGrammar;
     using Utils;
+    using System.Text;
 
     /// <summary>
     /// Parsers for the Kusto command grammar.
@@ -19,13 +20,16 @@ namespace Kusto.Language.Parsing
     {
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }
 
+        private readonly Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser;
         private readonly Dictionary<CommandSymbol, Parser<LexicalToken, Command>> commandToParserMap;
 
         private CommandGrammar(
             Parser<LexicalToken, CommandBlock> commandBlockParser,
+            Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser,
             Dictionary<CommandSymbol, Parser<LexicalToken, Command>> commandToParserMap)
         {
             this.CommandBlock = commandBlockParser;
+            this.commandGrammarParser = commandGrammarParser;
             this.commandToParserMap = commandToParserMap;
         }
 
@@ -49,6 +53,11 @@ namespace Kusto.Language.Parsing
         {
             var q = Q.From(globals);
 
+            Parser<LexicalToken, Command> commandCore = null;
+
+            var command = Forward(() => commandCore)
+                .WithTag("<command>");
+
             var unknownCommandToken =
                 If(Not(First(
                     Token(SyntaxKind.BarToken),
@@ -71,11 +80,11 @@ namespace Kusto.Language.Parsing
                     .WithTag("<bad-command>");
 
             // include parsers for all command symbol grammars
-            var grammarParser = GetCommandGrammarParser(globals);
+            var grammarParser = CreateCommandGrammarParser(globals, command);
             var commandParsers = globals.Commands.Select(c => CreateCommandParser(c, grammarParser)).ToArray();
             var map = Enumerable.Range(0, commandParsers.Length).ToDictionary(i => globals.Commands[i], i => commandParsers[i]);
 
-            var command =
+            commandCore =
                 First(
                     //createFunctionCommand,
                     Best(commandParsers), // pick whichever command will successfully consume most input
@@ -83,6 +92,7 @@ namespace Kusto.Language.Parsing
                     badCommand) // otherwise its just bad
                 .WithTag("<command>");
 
+#if false
             var commandInputItem =
                 First(
                     If(Token(SyntaxKind.DotToken),
@@ -100,10 +110,11 @@ namespace Kusto.Language.Parsing
                             (cmd, op, expr) =>
                                 (Expression)new CommandInputExpression((Command)cmd, op, expr))
                             .WithTag("<command-input-pipe>"));
+#endif
 
             var commandOutputPipeExpression =
-                ApplyZeroOrMore(
-                    commandInputExpression,
+                ApplyOptional(
+                    command.Cast<Expression>(),
                     _left =>
                         Rule(
                             _left,
@@ -131,7 +142,7 @@ namespace Kusto.Language.Parsing
                     (cmd, skipped, end) =>
                         new CommandBlock(cmd, skipped, end));
 
-            return new CommandGrammar(commandBlock, map);
+            return new CommandGrammar(commandBlock, grammarParser, map);
         }
 
         private static Statement MissingCommandStatementNode =
@@ -143,7 +154,9 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Creates a command parser for a <see cref="CommandSymbol"/>
         /// </summary>
-        private static Parser<LexicalToken, Command> CreateCommandParser(CommandSymbol symbol, Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser)
+        private static Parser<LexicalToken, Command> CreateCommandParser(
+            CommandSymbol symbol, 
+            Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser)
         {
             Parser<LexicalToken, Command> commandParser = null;
 
@@ -240,30 +253,21 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets the command grammar parser associated with the specified <see cref="GlobalState"/>.
+        /// </summary>
         public static Parser<char, Parser<LexicalToken, SyntaxElement>> GetCommandGrammarParser(GlobalState globals)
         {
-            if (!globals.Cache.TryGetValue<CommandGrammarParser>(out var cgp))
-            {
-                cgp = globals.Cache.GetOrCreate(() => new CommandGrammarParser(CreateCommandGrammarParser(globals)));
-            }
-
-            return cgp.Parser;
-        }
-
-        private class CommandGrammarParser
-        {
-            public Parser<char, Parser<LexicalToken, SyntaxElement>> Parser { get; }
-
-            public CommandGrammarParser(Parser<char, Parser<LexicalToken, SyntaxElement>> parser)
-            {
-                this.Parser = parser;
-            }
+            var grammar = From(globals);
+            return grammar.commandGrammarParser;
         }
 
         /// <summary>
         /// Creates a parser that parsers command grammars to produce command parsers.. obviously.
         /// </summary>
-        private static Parser<char, Parser<LexicalToken, SyntaxElement>> CreateCommandGrammarParser(GlobalState globals)
+        private static Parser<char, Parser<LexicalToken, SyntaxElement>> CreateCommandGrammarParser(
+            GlobalState globals,
+            Parser<LexicalToken, Command> command)
         {
             var q = Q.From(globals);
 
@@ -381,16 +385,16 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(hint: Editor.CompletionHint.Syntax),
                     () => (SyntaxElement)Q.MissingType());
 
-            var NameOrStringLiteral =
+            var NameDeclarationOrStringLiteral =
                 First(
                     q.SimpleNameDeclarationExpression,
                     q.StringLiteral);
 
-            var KustoNameInfo =
+            var KustoNameDeclarationInfo =
                 new ParserInfo(
-                    NameOrStringLiteral.Cast<SyntaxElement>(),
+                    NameDeclarationOrStringLiteral.Cast<SyntaxElement>(),
                     new CustomElementDescriptor(hint: Editor.CompletionHint.None),
-                    () => (SyntaxElement)Q.MissingNameReference());
+                    () => (SyntaxElement)Q.MissingNameDeclaration());
 
             var KustoColumnNameInfo =
                 new ParserInfo(
@@ -460,6 +464,48 @@ namespace Kusto.Language.Parsing
                                 null,
                                 CreateMissingToken(SyntaxKind.CloseBraceToken))));
 
+            var CommandInput =
+                First(
+                    If(Token(SyntaxKind.DotToken),
+                        command.Cast<SyntaxElement>()),
+                    q.StatementList.Cast<SyntaxElement>());
+
+            var KustoCommandInputInfo =
+                new ParserInfo(
+                    CommandInput,
+                    new CustomElementDescriptor(CompletionHint.Query),
+                    () => (SyntaxElement)Q.MissingExpression());
+
+            var InputTextTokens = ZeroOrMore(AnyTokenButEnd);
+
+            var InputText =
+                Match(
+                    (source, start) => 
+                        InputTextTokens.Scan(source, start),
+
+                    (source, start, length) =>
+                    {
+                        var builder = new StringBuilder();
+                        var token = source.Peek(start);
+                        var trivia = token.Trivia;
+                        builder.Append(source.Peek(start).Text);
+
+                        for (int i = 1; i < length; i++)
+                        {
+                            token = source.Peek(start + i);
+                            builder.Append(token.Trivia);
+                            builder.Append(token.Text);
+                        }
+
+                        return SyntaxToken.Other(trivia, builder.ToString(), SyntaxKind.InputTextToken);
+                    });
+
+            var KustoInputText =
+                new ParserInfo(
+                    InputText.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(CompletionHint.None),
+                    () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
+
             var grammar = GrammarParser.Create(
                 rules: new Dictionary<string, ParserInfo>()
                 {
@@ -467,7 +513,7 @@ namespace Kusto.Language.Parsing
                     { "type", KustoTypeInfo },
                     { "string", KustoStringLiteralInfo },
                     { "guid", KustoGuidLiteralInfo },
-                    { "name", KustoNameInfo },
+                    { "name", KustoNameDeclarationInfo },
                     { "column", KustoColumnNameInfo },
                     { "table_column", KustoTableColumnNameInfo },
                     { "database_table_column", KustoDatabaseTableColumnNameInfo },
@@ -477,6 +523,8 @@ namespace Kusto.Language.Parsing
                     { "cluster", KustoClusterNameInfo },
                     { "function", KustoFunctionNameInfo },
                     { "function_declaration", KustoFunctionDeclaration },
+                    { "input_query", KustoCommandInputInfo },
+                    { "input_data", KustoInputText }
                 },
 
                 createTerm: textAndOffset =>

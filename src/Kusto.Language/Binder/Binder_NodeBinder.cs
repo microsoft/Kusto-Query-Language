@@ -2840,14 +2840,9 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
+            #endregion
 
-            public override SemanticInfo VisitCommandInputExpression(CommandInputExpression node)
-            {
-                return null;
-            }
-#endregion
-
-#region Directives
+            #region Directives
             public override SemanticInfo VisitDirectiveBlock(DirectiveBlock node)
             {
                 return null;

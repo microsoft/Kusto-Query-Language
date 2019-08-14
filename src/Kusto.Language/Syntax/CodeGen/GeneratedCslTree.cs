@@ -11125,79 +11125,6 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class Command */
     
-    #region class CommandInputExpression
-    public sealed partial class CommandInputExpression : Expression
-    {
-        public override SyntaxKind Kind => SyntaxKind.CommandInputExpression;
-        
-        public Command Command { get; }
-        
-        public SyntaxToken LessThanBar { get; }
-        
-        public SyntaxNode Query { get; }
-        
-        /// <summary>
-        /// Constructs a new instance of <see cref="CommandInputExpression"/>.
-        /// </summary>
-        internal CommandInputExpression(Command command, SyntaxToken lessThanBar, SyntaxNode query, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
-        {
-            this.Command = Attach(command);
-            this.LessThanBar = Attach(lessThanBar);
-            this.Query = Attach(query);
-            this.Init();
-        }
-        
-        public override int ChildCount => 3;
-        
-        public override SyntaxElement GetChild(int index)
-        {
-            switch (index)
-            {
-                case 0: return Command;
-                case 1: return LessThanBar;
-                case 2: return Query;
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        public override string GetName(int index)
-        {
-            switch (index)
-            {
-                case 0: return nameof(Command);
-                case 1: return nameof(LessThanBar);
-                case 2: return nameof(Query);
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        protected override CompletionHint GetCompletionHintCore(int index)
-        {
-            switch (index)
-            {
-                case 0: return CompletionHint.Tabular;
-                case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Tabular;
-                default: return CompletionHint.Inherit;
-            }
-        }
-        
-        public override void Accept(SyntaxVisitor visitor)
-        {
-            visitor.VisitCommandInputExpression(this);
-        }
-        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-        {
-            return visitor.VisitCommandInputExpression(this);
-        }
-        
-        protected override SyntaxElement CloneCore()
-        {
-            return new CommandInputExpression((Command)Command?.Clone(), (SyntaxToken)LessThanBar?.Clone(), (SyntaxNode)Query?.Clone(), this.SyntaxDiagnostics);
-        }
-    }
-    #endregion /* class CommandInputExpression */
-    
     #region class UnknownCommand
     public sealed partial class UnknownCommand : Command
     {
@@ -11627,7 +11554,6 @@ namespace Kusto.Language.Syntax
         public abstract void VisitJoinWhereClause(JoinWhereClause node);
         public abstract void VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract void VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
-        public abstract void VisitCommandInputExpression(CommandInputExpression node);
         public abstract void VisitUnknownCommand(UnknownCommand node);
         public abstract void VisitCustomCommand(CustomCommand node);
         public abstract void VisitBadCommand(BadCommand node);
@@ -12201,10 +12127,6 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
-        public override void VisitCommandInputExpression(CommandInputExpression node)
-        {
-            this.DefaultVisit(node);
-        }
         public override void VisitUnknownCommand(UnknownCommand node)
         {
             this.DefaultVisit(node);
@@ -12368,7 +12290,6 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitJoinWhereClause(JoinWhereClause node);
         public abstract TResult VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
-        public abstract TResult VisitCommandInputExpression(CommandInputExpression node);
         public abstract TResult VisitUnknownCommand(UnknownCommand node);
         public abstract TResult VisitCustomCommand(CustomCommand node);
         public abstract TResult VisitBadCommand(BadCommand node);
@@ -12939,10 +12860,6 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node)
-        {
-            return this.DefaultVisit(node);
-        }
-        public override TResult VisitCommandInputExpression(CommandInputExpression node)
         {
             return this.DefaultVisit(node);
         }

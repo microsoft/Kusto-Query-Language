@@ -749,7 +749,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.QueryParametersStatement, "", SyntaxCategory.Node),
 
                 // commands
-                new SyntaxData(SyntaxKind.CommandInputExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.CommandWithValueClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.CommandWithPropertyListClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BadCommand, "", SyntaxCategory.Node),
@@ -761,6 +760,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.CommandBlock, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.DirectiveBlock, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.SkippedTokens, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InputTextToken, "", SyntaxCategory.Other),
             };
 
             // put in sorted order  TODO: fix list to be in order 

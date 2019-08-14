@@ -906,6 +906,46 @@ namespace Kusto.Language
             new CommandSymbol("drop cluster blockedprincipals", "drop cluster blockedprincipals <string>:Principal [application <string>:AppName] [user <string>:UserName]");
         #endregion
 
+        #region Data Ingestion
+        private static readonly string SourceDataLocatorList = "'(' { <string>:SourceDataLocator, ',' }+ ')'";
+        private static readonly string IngestionPropertyList = "with '(' { <name>:IngestionPropertyName '=' <value>:IngestionPropertyValue, ',' }+ ')'";
+
+        public static readonly CommandSymbol IngestIntoTable =
+            new CommandSymbol("ingest into table", $"ingest [async] into table! <table>:TableName {SourceDataLocatorList} [{IngestionPropertyList}]",
+                new TableSymbol(
+                    new ColumnSymbol("ExtentId", ScalarTypes.Guid),
+                    new ColumnSymbol("ItemLoaded", ScalarTypes.String),
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan),
+                    new ColumnSymbol("HasErrors", ScalarTypes.Bool),
+                    new ColumnSymbol("OperationId", ScalarTypes.Guid)));
+
+        public static readonly CommandSymbol IngestInlineIntoTable =
+            new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName [{IngestionPropertyList}] '<|' <input_data>:Data", 
+                new TableSymbol(
+                    new ColumnSymbol("ExtendId", ScalarTypes.Guid)));
+
+        private static readonly TableSymbol DataIngestionSetAppendResult =
+            new TableSymbol(
+                new ColumnSymbol("ExtentId", ScalarTypes.Guid),
+                new ColumnSymbol("OriginalSize", ScalarTypes.Long),
+                new ColumnSymbol("ExtentSize", ScalarTypes.Long),
+                new ColumnSymbol("ColumnSize", ScalarTypes.Long),
+                new ColumnSymbol("IndexSize", ScalarTypes.Long),
+                new ColumnSymbol("RowCount", ScalarTypes.Long));
+
+        public static readonly CommandSymbol SetTable =
+            new CommandSymbol("set table", $"set [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+
+        public static readonly CommandSymbol AppendTable =
+            new CommandSymbol("append table", $"append [async] <table>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+
+        public static readonly CommandSymbol SetOrAppendTable =
+            new CommandSymbol("set-or-append table", $"set-or-append [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+
+        public static readonly CommandSymbol SetOrReplaceTable =
+            new CommandSymbol("set-or-replace table", $"set-or-replace [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+        #endregion
+
         #region System Information Commands
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol("show cluster",
@@ -1068,6 +1108,8 @@ namespace Kusto.Language
                     new ColumnSymbol("MemoryCacheDetails", ScalarTypes.String),
                     new ColumnSymbol("DiskCacheDetails", ScalarTypes.String)));
         #endregion
+
+
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
             new CommandSymbol[]
@@ -1284,6 +1326,15 @@ namespace Kusto.Language
                 ShowClusterBlockedPrincipals,
                 AddClusterBlockedPrincipals,
                 DropClusterBlockedPrincipals,
+                #endregion
+
+                #region DataIngestion
+                IngestInlineIntoTable,
+                IngestIntoTable,
+                SetTable,
+                AppendTable,
+                SetOrAppendTable,
+                SetOrReplaceTable,
                 #endregion
 
                 #region System Information Commands

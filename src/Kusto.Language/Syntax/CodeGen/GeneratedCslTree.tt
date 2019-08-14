@@ -2274,21 +2274,6 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
-        Name = "CommandInputExpression",
-        Doc = "",
-        Base = "Expression",
-        Sealed = true,
-        Kind = "CommandInputExpression",
-        Properties = new GeneratedProperty[]
-        {
-            new GeneratedProperty { Name = "Command", Type = "Command", Completion="Tabular"},
-            new GeneratedProperty { Name = "LessThanBar", Type = "SyntaxToken", Completion="Syntax"},
-            new GeneratedProperty { Name = "Query", Type = "SyntaxNode", Completion="Tabular"}
-        }
-    },
-
-    new GeneratedCslNodeClass
-    {
         Name = "UnknownCommand",
         Doc = "",
         Base = "Command",
