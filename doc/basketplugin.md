@@ -93,4 +93,3 @@ StormEvents
 |6|1310|22.3|\*|\*|YES|-1
 |7|1291|21.9|\*|Thunderstorm Wind|\*|-1
 
-<#ifdef MICROSOFT>If you have questions about basket or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

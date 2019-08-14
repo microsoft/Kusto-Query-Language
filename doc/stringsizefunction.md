@@ -27,7 +27,7 @@ print size = string_size("hello")
 
 <!-- csl -->
 ```
-print size = string_size("⒦⒰⒮⒯⒪")
+print size = string_size("â’¦â’°â’®â’¯â’ª")
 ```
 
 |size|

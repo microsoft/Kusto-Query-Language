@@ -9,21 +9,21 @@ Diffpatterns compares two data sets of the same structure and finds patterns of 
 
 **Syntax**
 
-`T | evaluate diffpatterns(`SplitColumn, SplitValueA, SplitValueB [, WeightColumn, Threshold, MaxDimensions, CustomWildcard, ...]`)` 
+`T | evaluate diffpatterns(`SplitColumn, SplitValueA, SplitValueB [,Â WeightColumn,Â Threshold, MaxDimensions,Â CustomWildcard, ...]`)` 
 
 **Required Arguments**
 
 * SplitColumn - *column_name*
 
-    Tells the algorithm how to split the query into data sets. According to the specified values for the SplitValueA and SplitValueB arguments (see below), the algorithm splits the query into two data sets, “A” and “B”, and analyze the differences between them. As such, the split column must have at least two distinct values.
+    Tells the algorithm how to split the query into data sets. According to the specified values for the SplitValueA and SplitValueB arguments (see below), the algorithm splits the query into two data sets, â€œAâ€ and â€œBâ€, and analyze the differences between them. As such, the split column must have at least two distinct values.
 
 * SplitValueA - *string*
 
-    A string representation of one of the values in the SplitColumn that was specified. All the rows which have this value in their SplitColumn considered as data set “A”.
+    A string representation of one of the values in the SplitColumn that was specified. All the rows which have this value in their SplitColumn considered as data set â€œAâ€.
 
 * SplitValueB - *string*
 
-    A string representation of one of the values in the SplitColumn that was specified. All the rows which have this value in their SplitColumn considered as data set  “B”.
+    A string representation of one of the values in the SplitColumn that was specified. All the rows which have this value in their SplitColumn considered as data set  â€œBâ€.
 
     Example: `T | extend splitColumn=iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure") `
 
@@ -113,4 +113,3 @@ StormEvents
 |7|150|117|3.28|8.93|5.65||Flood|||
 |8|362|176|7.91|13.44|5.52|||Emergency Manager||
 
-<#ifdef MICROSOFT>If you have questions about diffpatterns or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

@@ -316,7 +316,7 @@ Logs
 | render anomalychart 
 ```
 
-The service identified few time buckets with suspicious error rate. I'm using Kusto to zoom into this time frame, running a query that aggregates on the ‘Message' column trying to look for the top errors. I've trimmed the relevant parts out of the entire stack trace of the message to better fit into the page. You can see that I had nice success with the top eight errors, but then reached a long tail of errors since the error message was created by a format string that contained changing data. 
+The service identified few time buckets with suspicious error rate. I'm using Kusto to zoom into this time frame, running a query that aggregates on the â€˜Message' column trying to look for the top errors. I've trimmed the relevant parts out of the entire stack trace of the message to better fit into the page. You can see that I had nice success with the top eight errors, but then reached a long tail of errors since the error message was created by a format string that contained changing data. 
 
 <!-- csl -->
 ```
@@ -384,7 +384,7 @@ Logs
 ## Mapping values from one set to another
 
 A common use-case is using static mapping of values that can help in adopting results into more presentable way.  
-For example, consider having next table. DeviceModel  specifies a model of the device, which is not a very convenient form of referencing to the device name.  
+For example, consider having next table. DeviceModel  specifies a model of the device, which is not a very convenient form of referencing to the device name.â€¯ 
 
 
 |DeviceModel |Count 
@@ -394,7 +394,7 @@ For example, consider having next table. DeviceModel  specifies a model of the d
 |iPhone7,2 |55 
 |iPhone5,2 |66 
 
-  
+â€¯ 
 A better representation may be:  
 
 |FriendlyName |Count 
@@ -404,7 +404,7 @@ A better representation may be:
 |iPhone 6 |55 
 |iPhone5 |66 
 
-The two approaches below demonstrate how this can be achieved.  
+The two approaches below demonstrate how this can be achieved.â€¯ 
 
 ### Mapping using dynamic dictionary
 
@@ -459,9 +459,9 @@ Content of Devices now:
 
 |DeviceModel |FriendlyName 
 |---|---
-|iPhone5,1 |iPhone 5 
-|iPhone3,2 |iPhone 4 
-|iPhone7,2 |iPhone 6 
+|iPhone5,1 |iPhoneâ€¯5 
+|iPhone3,2 |iPhoneâ€¯4 
+|iPhone7,2 |iPhoneâ€¯6 
 |iPhone5,2 |iPhone5 
 
 
@@ -488,9 +488,9 @@ Result:
 
 |FriendlyName |Count 
 |---|---
-|iPhone 5 |32 
-|iPhone 4 |432 
-|iPhone 6 |55 
+|iPhoneâ€¯5 |32 
+|iPhoneâ€¯4 |432 
+|iPhoneâ€¯6 |55 
 |iPhone5 |66 
 
 

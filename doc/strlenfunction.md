@@ -33,7 +33,7 @@ print length = strlen("hello")
 
 <!-- csl -->
 ```
-print length = strlen("⒦⒰⒮⒯⒪")
+print length = strlen("â’¦â’°â’®â’¯â’ª")
 ```
 
 |length|

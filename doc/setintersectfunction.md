@@ -1,6 +1,6 @@
 # set_intersect()
 
-Returns a `dynamic` (JSON) array of the set of all distinct values that are in all arrays - (arr1 ∩ arr2 ∩ ...).
+Returns a `dynamic` (JSON) array of the set of all distinct values that are in all arrays - (arr1 âˆ© arr2 âˆ© ...).
 
 **Syntax**
 

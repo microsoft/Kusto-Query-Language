@@ -19,7 +19,7 @@ See [`make_string()`](makestringfunction.md))
 
 <!-- csl -->
 ```
-print arr = to_utf8("⒦⒰⒮⒯⒪")
+print arr = to_utf8("â’¦â’°â’®â’¯â’ª")
 ```
 
 |arr|
@@ -28,7 +28,7 @@ print arr = to_utf8("⒦⒰⒮⒯⒪")
 
 <!-- csl -->
 ```
-print arr = to_utf8("קוסטו - Kusto")
+print arr = to_utf8("×§×•×¡×˜×• - Kusto")
 ```
 
 |arr|

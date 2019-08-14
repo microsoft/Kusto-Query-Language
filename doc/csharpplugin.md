@@ -1,16 +1,7 @@
-<#ifdef MICROSOFT># csharp plugin (Experimental)
 
-> [!NOTE]
-> This plugin is currently experimental.
-> One should not take a hard dependency on it at this point in time.
-
-The `csharp` plugin runs a user-defined-function (UDF) using a C# script. The C# script gets tabular data as its input, and is expected to produce a tabular output.
-The plugin's runtime is hosted in <#ifdef PAAS> a sandbox, an isolated and secure environment,<#endif> <#ifdef MICROSOFT>[sandboxes](../concepts/sandboxes.md),<#endif> running on the cluster's nodes.
 
 ### Syntax
 
-<#ifdef PAAS>*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `csharp(`*output_schema*`,` *script* [`,` *script_parameters*]`)`<#endif>
-<#ifdef MICROSOFT>*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `csharp(`*output_schema*`,` *script* [`,` *script_parameters*][`,` *external_artifacts*]`)`<#endif>
 
 ### Arguments
 
@@ -24,11 +15,6 @@ The plugin's runtime is hosted in <#ifdef PAAS> a sandbox, an isolated and secur
    Default: `single`.
     * `single`: A single instance of the script will run over the entire query data.
     * `per_node`: If the query before the C# block is distributed, an instance of the script will run on each node over the data that it contains.
-<#ifdef MICROSOFT>* *external_artifacts*: An optional (and **experimental**) `dynamic` literal which is a property bag of name/URL pairs of artifacts
-    that are accessible from cloud storage and can be made available for the script to use at runtime.
-    * Any URL that is referenced as part of this property bag is required to be included in the cluster's [Callout policy](../concepts/calloutpolicy.md).
-    * The artifacts are made available for the script to consume from a local temporary directory, `D:/Temp`, and the names provided in the property bag are used as the local file names (see [example](#examples) below).
-<#endif>
 
 ### CSharp interface
 
@@ -81,29 +67,14 @@ The names of the arguments/variables (`input` and `context` in the example above
 
 ### Onboarding
 
-<#ifdef MICROSOFT>* Prerequisites for enabling the plugin are listed [here](../concepts/sandboxes.md#prerequisites).<#endif>
 * The plugin is disabled by default.
     * *Interested in enabling the plugin on your cluster?*
-        <#ifdef MICROSOFT>* Open a [support ticket](https://aka.ms/kustosupport) in which you should specify
-          you've read and acknowledged all the prerequisites, and have approval from the cluster's owner(s).<#endif>
-        <#ifdef PAAS>* In the Azure portal, within your Azure Data Explorer cluster, select **New support request** in the left-hand menu.<#endif>
         * Disabling the plugin requires opening a support ticket as well.
 
 ### Notes and Limitations
 
 * The `dynamic` datatype is treated as `String` by the plugin, for both `TInput` and `TOutput`.One is required to de/serialize these as part of the script.
 * The C# sandbox limits accessing the network, therefore the C# code can't dynamically install additional packages that are
-  not included in the underlying image.<#ifdef PAAS>Open a **New support request** in the Azure portal<#endif> <#ifdef MICROSOFT>Contact [Kusto Machine Learning DL](mailto:kustoml@microsoft.com)<#endif> if you need specific packages.
-<#ifdef MICROSOFT>
-* **[Ingestion from query](../management/data-ingestion/ingest-from-query.md) and [Update policies](../concepts/updatepolicy.md)**
-    * It is possible to use the plugin in queries which are:
-        1. Defined as part of an update policy, whose source table is ingested to using *non-streaming* ingestion.
-        2. Run as part of a command which ingests from a query (e.g. `.set-or-append`).
-    * In both the above cases, it's recommended to verify that the volume and frequency of the ingestion, as well as the complexity and
-      resources utilization of the C# logic are aligned with [sandbox limitations](../concepts/sandboxes.md#limitations), and the cluster's available resources.
-      Failure to do so may result with [throttling errors](../concepts/sandboxes.md#errors).
-    * It is *not* possible to use the plugin in a query which is defined as part of an update policy, whose source table is ingested to 
-    using [*streaming* ingestion](../management/data-ingestion/streaming.md).<#endif>
 
 ### Examples
 

@@ -1,6 +1,4 @@
-<#ifdef MICROSOFT># Installing packages for the Python plugin (experimental)
 
-As written in the [Python plugin doc](./pythonplugin.md), the `python` plugin sandbox image is based on Anaconda 5.2.0 distribution with Python 3.6 engine. If you need a common public package that is not pre-installed, we recommend <#ifdef PAAS>opening a **support request** in the Azure portal<#endif> <#ifdef MICROSOFT>contacting [Kusto Machine Learning DL](mailto:kustoml@microsoft.com)<#endif> to check if it can be added to the common image. You may need to self install package(s) due to the following reasons:
 
 * Your own private package
 * Public package but likely to be irrelevant for other plugin users

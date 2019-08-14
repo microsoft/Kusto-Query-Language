@@ -2,7 +2,7 @@
 
 Finds the most significant periods that exist in a time series.  
 
-Very often a metric measuring an application’s traffic is characterized by two significant periods: a weekly and a daily. Given such a time series, `series_periods_detect()` shall detect these 2 dominant periods.  
+Very often a metric measuring an applicationâ€™s traffic is characterized by two significant periods: a weekly and a daily. Given such a time series, `series_periods_detect()` shall detect these 2 dominant periods.  
 The function takes as input a column containing a dynamic array of time series (typically the resulting output of [make-series](make-seriesoperator.md) operator), two `real` numbers defining the minimal and maximal period size (i.e. number of bins, e.g. for 1h bin the size of a daily period would be 24) to search for, and a `long` number defining the total number of periods for the function to search. The function outputs 2 columns:
 * *periods*: a dynamic array containing the periods that have been found (in units of the bin size), ordered by their scores
 * *scores*: a dynamic array containing values between 0 and 1, each measures the significance of a period in its respective position in the *periods* array
@@ -28,7 +28,7 @@ The function takes as input a column containing a dynamic array of time series (
 
 **Example**
 
-The following query embeds a snapshot of a month of an application’s traffic, aggregated twice a day (i.e. the bin size is 12 hours).
+The following query embeds a snapshot of a month of an applicationâ€™s traffic, aggregated twice a day (i.e. the bin size is 12 hours).
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```

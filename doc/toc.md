@@ -42,8 +42,6 @@
 ## [Set statement](setstatement.md)
 ## [Tabular expression statements](tabularexpressionstatements.md)
 ## [Batches](batches.md)
-<#ifdef MICROSOFT>## [Cost Based Optimizer](costbasedoptimizer.md)<#endif>
-<#ifdef MICROSOFT>## [Query Results Cache](queryresultscache.md)<#endif>
 
 # [Tabular operators](queries.md)
 ## [as operator](asoperator.md)
@@ -56,13 +54,7 @@
 ### [bag_unpack](bag-unpackplugin.md)
 ### [basket](basketplugin.md)
 <!--### [diagnose](diagnoseplugin.md)-->
-<#ifdef MICROSOFT>### [cosmosdb_sql_request](cosmosdb-sqlrequestplugin.md)<#endif>
-<#ifdef MICROSOFT>### [csharp](csharpplugin.md)<#endif>
 ### [dcount_intersect](dcount-intersect-plugin.md)
-<#ifdef MICROSOFT>### [diffpatterns](diffpatternsplugin.md)<#endif>
-<#ifdef MICROSOFT>### [execute_show_command](execute-show-command-plugin.md)<#endif>
-<#ifdef MICROSOFT>### [http_request](httprequestplugin.md)<#endif>
-<#ifdef MICROSOFT>### [http_request_post](httprequestplugin.md)<#endif>
 ### [narrow](narrowplugin.md)
 ### [pivot](pivotplugin.md)
 ### [preview](previewplugin.md)
@@ -188,7 +180,6 @@
 ## [dayofyear()](dayofyearfunction.md)
 ## [dcount_hll()](dcount-hllfunction.md)
 ## [degrees()](degreesfunction.md)
-<#ifdef MICROSOFT>## [distance()](distancefunction.md)<#endif>
 ## [endofday()](endofdayfunction.md)
 ## [endofmonth()](endofmonthfunction.md)
 ## [endofweek()](endofweekfunction.md)
@@ -255,7 +246,6 @@
 ## [percentile_tdigest()](percentile-tdigestfunction.md)
 ## [percentrank_tdigest()](percentrank-tdigestfunction.md)
 ## [pi()](pifunction.md)
-<#ifdef MICROSOFT>## [point()](pointfunction.md)<#endif>
 ## [pow()](powfunction.md)
 ## [radians()](radiansfunction.md)
 ## [rand()](randfunction.md)
@@ -407,7 +397,3 @@
 # [Reference material for Kusto Query Language](reference.md)
 ## [RE2 syntax](re2.md)
 ## [SQL to Kusto Cheat Sheet](sqlcheatsheet.md)
-<#ifdef MICROSOFT>## [Splunk to Kusto Cheat Sheet](splunktokusto-cheatsheet.md)
-### [Concepts](splunktokusto-concepts.md)
-### [Operators](splunktokusto-operators.md)
-### [Functions](splunktokusto-functions.md)<#endif>

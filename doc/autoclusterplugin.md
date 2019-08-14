@@ -97,4 +97,3 @@ StormEvents
 
 * AutoCluster is largely based on the Seed-Expand algorithm from the following paper: [Algorithms for Telemetry Data Mining using Discrete Attributes](https://www.scitepress.org/DigitalLibrary/PublicationsDetail.aspx?ID=d5kcrO+cpEU=&t=1). 
 
-<#ifdef MICROSOFT>If you have questions about autocluster or other ML related workflows in Kusto you can post them on the following DL: [KustoML](mailto:kustoML@microsoft.com).<#endif>

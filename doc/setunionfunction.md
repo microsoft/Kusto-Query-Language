@@ -1,6 +1,6 @@
 # set_union()
 
-Returns a `dynamic` (JSON) array of the set of all distinct values that are in any of arrays - (arr1 ∪ arr2 ∪ ...).
+Returns a `dynamic` (JSON) array of the set of all distinct values that are in any of arrays - (arr1 âˆª arr2 âˆª ...).
 
 **Syntax**
 

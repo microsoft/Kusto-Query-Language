@@ -22,8 +22,8 @@ Takes an expression containing a series (dynamic numerical array) as input and e
     * "linefit": extract trend component using linear regression
 * *Test_points*: 0 [default] or positive integer, specifying the number of points at the end of the series to exclude from the learning (regression) process. This parameter should be set for forecasting purpose
 * *AD_method*: A string controlling the anomaly detection method (see [series_outliers](series-outliersfunction.md)) on the residual time series, containing either    
-    * “ctukey”: [Tukey’s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with custom 10th-90th percentile range [default]
-    * “tukey”: [Tukey’s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with standard 25th-75th percentile range
+    * â€œctukeyâ€: [Tukeyâ€™s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with custom 10th-90th percentile range [default]
+    * â€œtukeyâ€: [Tukeyâ€™s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with standard 25th-75th percentile range
 
 
 
