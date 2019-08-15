@@ -7,7 +7,7 @@
 
 You can self install packages by zipping them, upload the zip to a blob storage, and reference it from the Python sandbox using the external_artifact plugin parameter as follows:
 
-1. One time pre-requisite:
+1. One time prerequisite:
     * Create a blob container to host the package(s), preferably at the same region as your cluster. For example, https://artifcatswestus.blob.core.windows.net/python assuming your cluster is in westus 
     * Open a support ticket to enable the sandbox accessing that location. The ticket subject should be "Altering python sandbox callout policy" and the description should include the command to run, e.g. to enable access to a blob located in https://artifcatswestus.blob.core.windows.net/python the command to run by ops is:
 
