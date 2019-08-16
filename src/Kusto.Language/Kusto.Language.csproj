@@ -114,7 +114,7 @@
     <Compile Include="Parser\CommandGrammar.cs" />
     <Compile Include="Parser\DirectiveGrammar.cs" />
     <Compile Include="Parser\KustoFacts.cs" />
-    <Compile Include="Parser\Combinators\GrammarParser.cs" />
+    <Compile Include="Parser\Combinators\GrammarGrammar.cs" />
     <Compile Include="Parser\QueryGrammar.cs" />
     <Compile Include="Parser\LexicalToken.cs" />
     <Compile Include="Editor\CodeScript.cs" />

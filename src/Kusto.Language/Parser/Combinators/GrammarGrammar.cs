@@ -9,24 +9,43 @@ namespace Kusto.Language.Parsing
     using static CharScanners;
     using static Parsers<char>;
 
-    public static class GrammarParser
+    /// <summary>
+    /// A factory for creating parsers that parse a simple grammar grammar.
+    /// </summary>
+    ///
+    // grammar grammar
+    //
+    // alternation:
+    // s1 | s2      one or more sequences one of which must occur
+    //
+    // sequence:
+    // e1 e2        one or more elements that all must occur
+    //
+    // element:
+    // abc          term
+    // 'abc'        quoted term
+    // e !          required element
+    // e ?          optional element
+    // e *          zero or more of the same element
+    // e +          one or more of the same element
+    // e : tag      element with tag 
+    // e : 'tag'    element with tag
+    // [ a ]        optional alternation
+    // { a }        zero or more alternations
+    // { a }*       zero or more alternations
+    // { a }+       one or more alternations
+    // { a, e }     list of zero or more alternations (a) separated by element (e)
+    // { a, e }*    list of zero or more alternations (a) separated by element (e)
+    // { a, e }+    list of one or more alternations (a) separated by element (e)
+    // ( a )        grouped alternation
+    // <name>       external grammar rule
+    //
+    public static class GrammarGrammar
     {
         /// <summary>
-        /// Creates a parser that parses the following grammar rules:
-        /// abc -> term,
-        /// 'abc' -> term,
-        ///  ### ! -> required,
-        /// [ ### ] -> optional,
-        /// ### ? -> optional
-        /// ### * -> zero or more,
-        /// ### + -> one or more,
-        /// { ### } -> zero or more,
-        /// { ###, ### } -> zero or more separated list,
-        /// ( ### ) -> grouping,
-        ///  ### | ### -> alternation,
-        /// &lt;rule&gt; -> named parsing rule,
+        /// Creates a parser that parses the grammar grammar.
         /// </summary>
-        public static Parser<char, TResult> Create<TResult>(
+        public static Parser<char, TResult> CreateParser<TResult>(
             IReadOnlyDictionary<string, TResult> rules,
             Func<OffsetValue<string>, TResult> createTerm,
             Func<TResult, TResult> createOptional,
@@ -39,7 +58,7 @@ namespace Kusto.Language.Parsing
             Func<TResult, TResult, TResult> createZeroOrMoreSeparated,
             Func<TResult, TResult, TResult> createOneOrMoreSeparated)
         {
-            // build the parser that parsers the command symbol grammar into a Kusto IToken scanner
+            // build the parser that parsers the simple grammar grammar
             Parser<char, TResult> elementCore = null;
             var element = Forward(() => elementCore);
 
@@ -47,7 +66,7 @@ namespace Kusto.Language.Parsing
                 Count(ZeroOrMore(Whitespace));
 
             Parser<char, string> TokenText(string text) =>
-                Text(And(text.Select(ch => Char(ch)).ToArray()));
+                Convert(Chars(text), text);
 
             var IdentifierScan =
                 And(Or(Letter, Char('_')), ZeroOrMore(Or(Letter, Digit, Char('_'), Char('-'))));

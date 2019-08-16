@@ -506,7 +506,7 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(CompletionHint.None),
                     () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
 
-            var grammar = GrammarParser.Create(
+            var grammar = GrammarGrammar.CreateParser(
                 rules: new Dictionary<string, ParserInfo>()
                 {
                     { "value", KustoValueInfo },

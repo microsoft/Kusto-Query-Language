@@ -10,6 +10,9 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public static class GrammarBuilder
     {
+        /// <summary>
+        /// Returns a textual representation of a parser's grammar.
+        /// </summary>
         public static string BuildGrammar<TInput>(Parser<TInput> parser, bool showRequired = false)
         {
             var builder = new Builder<TInput>(showRequired);

@@ -908,10 +908,10 @@ namespace Kusto.Language
 
         #region Data Ingestion
         private static readonly string SourceDataLocatorList = "'(' { <string>:SourceDataLocator, ',' }+ ')'";
-        private static readonly string IngestionPropertyList = "with '(' { <name>:IngestionPropertyName '=' <value>:IngestionPropertyValue, ',' }+ ')'";
+        private static readonly string PropertyList = "with '(' { <name>:PropertyName '=' <value>:PropertyValue, ',' }+ ')'";
 
         public static readonly CommandSymbol IngestIntoTable =
-            new CommandSymbol("ingest into table", $"ingest [async] into table! <table>:TableName {SourceDataLocatorList} [{IngestionPropertyList}]",
+            new CommandSymbol("ingest into table", $"ingest [async] into table! <table>:TableName {SourceDataLocatorList} [{PropertyList}]",
                 new TableSymbol(
                     new ColumnSymbol("ExtentId", ScalarTypes.Guid),
                     new ColumnSymbol("ItemLoaded", ScalarTypes.String),
@@ -920,7 +920,7 @@ namespace Kusto.Language
                     new ColumnSymbol("OperationId", ScalarTypes.Guid)));
 
         public static readonly CommandSymbol IngestInlineIntoTable =
-            new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName [{IngestionPropertyList}] '<|' <input_data>:Data", 
+            new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName [{PropertyList}] '<|' <input_data>:Data", 
                 new TableSymbol(
                     new ColumnSymbol("ExtendId", ScalarTypes.Guid)));
 
@@ -934,16 +934,84 @@ namespace Kusto.Language
                 new ColumnSymbol("RowCount", ScalarTypes.Long));
 
         public static readonly CommandSymbol SetTable =
-            new CommandSymbol("set table", $"set [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+            new CommandSymbol("set table", $"set [async] <name>:TableName [{PropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol AppendTable =
-            new CommandSymbol("append table", $"append [async] <table>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+            new CommandSymbol("append table", $"append [async] <table>:TableName [{PropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrAppendTable =
-            new CommandSymbol("set-or-append table", $"set-or-append [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+            new CommandSymbol("set-or-append table", $"set-or-append [async] <name>:TableName [{PropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrReplaceTable =
-            new CommandSymbol("set-or-replace table", $"set-or-replace [async] <name>:TableName [{IngestionPropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+            new CommandSymbol("set-or-replace table", $"set-or-replace [async] <name>:TableName [{PropertyList}] '<|' <input_query>:QueryOrCommand", DataIngestionSetAppendResult);
+        #endregion
+
+        #region Data Export
+        private static string DataConnectionStringList = "'(' { <string>:DataConnectionString, ',' }+ ')'";
+
+        public static readonly CommandSymbol ExportToStorage =
+            new CommandSymbol("export to storage", $"export [async] [compressed] to (csv|tsv|json|parquet) {DataConnectionStringList} [{PropertyList}] '<|' <input_query>:Query");
+
+        public static readonly CommandSymbol ExportToSqlTable =
+            new CommandSymbol("export to sql table", $"export [async] to sql <name>:SqlTableName <string>:SqlConnectionString [{PropertyList}] '<|' <input_query>:Query");
+
+        public static readonly CommandSymbol ExportToExternalTable =
+            new CommandSymbol("export to external table", $"export [async] to table <name>:ExternalTableName [{PropertyList}] '<|' <input_query>:Query");
+
+        private static readonly string OverClause = "over '(' { <name>:TableName, ',' }+ ')'";
+
+        public static readonly CommandSymbol CreateOrAlterContinuousExport =
+            new CommandSymbol("create-or-alter continuous-export", $"create-or-alter continuous-export <name>:ContinuousExportName [{OverClause}] to table <name>:ExternalTableName [{PropertyList}] '<|' <input_query>:Query");
+
+        private static readonly TableSymbol ShowContinuousExportResult =
+            new TableSymbol(
+                new ColumnSymbol("Name", ScalarTypes.String),
+                new ColumnSymbol("ExternalTableName", ScalarTypes.String),
+                new ColumnSymbol("Query", ScalarTypes.String),
+                new ColumnSymbol("ForcedLatency", ScalarTypes.TimeSpan),
+                new ColumnSymbol("IntervalBetweenRuns", ScalarTypes.TimeSpan),
+                new ColumnSymbol("CursorScopedTables", ScalarTypes.String),
+                new ColumnSymbol("ExportProperties", ScalarTypes.String),
+                new ColumnSymbol("LastRunTime", ScalarTypes.DateTime),
+                new ColumnSymbol("StartCursor", ScalarTypes.String),
+                new ColumnSymbol("IsDisabled", ScalarTypes.Bool),
+                new ColumnSymbol("LastRunResult", ScalarTypes.String),
+                new ColumnSymbol("ExportedTo", ScalarTypes.DateTime),
+                new ColumnSymbol("IsRunning", ScalarTypes.Bool));
+
+        public static readonly CommandSymbol ShowContinuousExport =
+            new CommandSymbol("show continuous-export", "show continuous-export <name>:ContinuousExportName", ShowContinuousExportResult);
+
+        public static readonly CommandSymbol ShowContinuousExports =
+            new CommandSymbol("show continuous-exports", "show continuous-exports", ShowContinuousExportResult);
+
+        public static readonly CommandSymbol ShowContinuousExportExportedArtifacts =
+            new CommandSymbol("show continuous-export exported-artifacts", "show continuous-export <name>:ContinuousExportName exported-artifacts",
+                new TableSymbol(
+                    new ColumnSymbol("Timestamp", ScalarTypes.DateTime),
+                    new ColumnSymbol("ExternalTableName", ScalarTypes.String),
+                    new ColumnSymbol("Path", ScalarTypes.String),
+                    new ColumnSymbol("NumRecords", ScalarTypes.Long)));
+
+        public static readonly CommandSymbol ShowContinuousExportFailures =
+            new CommandSymbol("show continuous-export failures", "show continuous-export <name>:ContinuousExportName failures",
+                new TableSymbol(
+                    new ColumnSymbol("Timestamp", ScalarTypes.DateTime),
+                    new ColumnSymbol("OperationId", ScalarTypes.String),
+                    new ColumnSymbol("Name", ScalarTypes.String),
+                    new ColumnSymbol("LastSuccessRun", ScalarTypes.DateTime),
+                    new ColumnSymbol("FailureKind", ScalarTypes.String),
+                    new ColumnSymbol("Details", ScalarTypes.String)));
+
+        public static readonly CommandSymbol DropContinuousExport =
+            new CommandSymbol("drop continuous-export", "drop continuous-export <name>:ContinousExportName", ShowContinuousExportResult);
+
+        public static readonly CommandSymbol EnableContinuousExport =
+            new CommandSymbol("enable continuous-export", "enable continuous-export <name>:ContinousExportName", ShowContinuousExportResult);
+
+        public static readonly CommandSymbol DisableContinuousExport =
+            new CommandSymbol("disable continuous-export", "disable continuous-export <name>:ContinousExportName", ShowContinuousExportResult);
+
         #endregion
 
         #region System Information Commands
@@ -1328,13 +1396,27 @@ namespace Kusto.Language
                 DropClusterBlockedPrincipals,
                 #endregion
 
-                #region DataIngestion
+                #region Data Ingestion
                 IngestInlineIntoTable,
                 IngestIntoTable,
                 SetTable,
                 AppendTable,
                 SetOrAppendTable,
                 SetOrReplaceTable,
+                #endregion
+
+                #region Data Export
+                ExportToStorage,
+                ExportToSqlTable,
+                ExportToExternalTable,
+                CreateOrAlterContinuousExport,
+                ShowContinuousExport,
+                ShowContinuousExports,
+                ShowContinuousExportExportedArtifacts,
+                ShowContinuousExportFailures,
+                DropContinuousExport,
+                EnableContinuousExport,
+                DisableContinuousExport,
                 #endregion
 
                 #region System Information Commands

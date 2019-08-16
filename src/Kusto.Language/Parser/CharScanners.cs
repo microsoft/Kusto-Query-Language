@@ -15,6 +15,11 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<char> Chars(string text, bool ignoreCase = false)
         {
+            if (text.Length == 1)
+            {
+                return Char(text[0], ignoreCase);
+            }
+
             if (ignoreCase)
             {
                 var lower = text.ToLower();

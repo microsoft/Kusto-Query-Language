@@ -14,13 +14,13 @@ namespace Kusto.Language.Parsing
     public abstract class Parser<TInput>
     {
         /// <summary>
-        /// Create a shallow copy of this grammar rule
+        /// Create a shallow copy of this parser
         /// </summary>
         protected abstract Parser<TInput> Clone();
 
         /// <summary>
-        /// The name of the grammar element.
-        /// Most grammar elements will not have names.
+        /// The name of the parser.
+        /// Most parsers have no name.
         /// </summary>
         public string Tag { get; private set; } = string.Empty;
 
@@ -46,7 +46,7 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Annotations on the grammar element.
+        /// Annotations on the parser.
         /// </summary>
         public IReadOnlyList<object> Annotations { get; private set; } = EmptyReadOnlyList<object>.Instance;
 
@@ -74,7 +74,7 @@ namespace Kusto.Language.Parsing
         private string description;
 
         /// <summary>
-        /// A description of the grammar element.
+        /// A description of the parser.
         /// </summary>
         public string Description
         {
@@ -97,7 +97,7 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// True if the grammar element is hidden from searching.
+        /// True if the parser is hidden from searching.
         /// </summary>
         public bool IsHidden { get; private set; } = false;
 
@@ -146,27 +146,29 @@ namespace Kusto.Language.Parsing
         public abstract int Parse(Source<TInput> input, int inputStart, List<object> output, int outputStart);
 
         /// <summary>
-        /// Returns the number of source items that successfully match this grammar, or a negative number indicating failure.
+        /// Returns the number of source items that are successfully matched by this parser, or a negative number indicating failure.
         /// </summary>
         public abstract int Scan(Source<TInput> input, int inputStart);
 
         /// <summary>
-        /// Searches the grammar and invokes the action for each grammar element that is considered.
+        /// Scans the input and invokes the action for each nested parser that is considered.
         /// </summary>
         /// <param name="input">The input source.</param>
         /// <param name="inputStart">The starting offset within the input source.</param>
         /// <param name="prevWasMissing">True if the previous rule considered was required and determined to be missing.</param>
-        /// <param name="action">The action to take each time the search considers a grammar element (parser).</param>
+        /// <param name="action">The action to take each time the search considers a parser.</param>
         public SearchResult Search(Source<TInput> input, int inputStart, bool prevWasMissing, SearchAction<TInput> action)
         {
             return SafeSearcher.SearchSafe(this, input, inputStart, prevWasMissing, action);
         }
 
         /// <summary>
-        /// Searches the grammar and invokes the action for each grammar element that is considered.
+        /// Scans the input and invokes the action for each nested parser that is considered.
         /// </summary>
-        public SearchResult Search(Source<TInput> source, SearchAction<TInput> action) =>
-            Search(source, 0, false, action);
+        /// <param name="input">The input source.</param>
+        /// <param name="action">The action to take each time the search considers a parser.</param>
+        public SearchResult Search(Source<TInput> input, SearchAction<TInput> action) =>
+            Search(input, 0, false, action);
     }
 
     public struct ParseResult<TOutput>

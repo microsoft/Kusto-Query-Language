@@ -211,8 +211,8 @@
     <Compile Include="..\Kusto.Language\Parser\Combinators\GrammarBuilder.cs">
       <Link>Src\GrammarBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Kusto.Language\Parser\Combinators\GrammarParser.cs">
-      <Link>Src\GrammarParser.cs</Link>
+    <Compile Include="..\Kusto.Language\Parser\Combinators\GrammarGrammar.cs">
+      <Link>Src\GrammarGrammar.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Parser\Combinators\Parser.cs">
       <Link>Src\Parser.cs</Link>
@@ -465,7 +465,7 @@
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets" Condition="Exists('$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets')"/>
+  <Import Project="$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets" Condition="Exists('$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
