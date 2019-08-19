@@ -21,8 +21,10 @@ You can self install packages by zipping them, upload the zip to a blob storage,
 
 3. Create a zip file, containing the required package and its dependencies:
 
-    * for public packages: zip the files that were downloaded in the previous step (note that you can skip whl files for packages that already exist with the same version in the sandbox image)
-    * for private packages: zip the directories of the package and those of its dependencies
+    * for public packages: zip the files that were downloaded in the previous step. Notes:
+        * make sure to zip the .whl files themselves and *not* their parent folder
+        * you can skip .whl files for packages that already exist with the same version in the sandbox image
+    * for private packages: zip the folder of the package and those of its dependencies
 
 4. Upload the zipped file to a blob in the artifacts location
 
