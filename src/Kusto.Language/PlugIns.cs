@@ -214,7 +214,15 @@ namespace Kusto.Language
              new FunctionSymbol("execute_show_command",
                  (table, args) => new TableSymbol().Open(), // depends on contents of command string
                  Tabularity.Tabular,
+                 new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("command", ScalarTypes.String));
+
+        public static readonly FunctionSymbol ExecuteQuery =
+             new FunctionSymbol("execute_query",
+                 (table, args) => new TableSymbol().Open(), // depends on contents of command string
+                 Tabularity.Tabular,
+                 new Parameter("connection_string", ScalarTypes.String),
+                 new Parameter("query", ScalarTypes.String));
 
         public static readonly FunctionSymbol ExternalDatatable =
              new FunctionSymbol("external_datatable",
@@ -493,6 +501,7 @@ namespace Kusto.Language
             DiffPatterns,
             EstimateRowsCount,
             ExecuteShowCommand,
+            ExecuteQuery,
             ExternalDatatable,
             // FunnelAnalysis,
             FunnelSequence,
