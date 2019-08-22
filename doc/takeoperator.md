@@ -17,7 +17,7 @@ the source data is sorted.
 
 (`take` and `limit` are synonyms.)
 
-**Remarks**
+**Notes**
 
 `take` is a simple, quick, and efficient way to view a small sample of records
 when browsing data interactively, but be aware that it doesn't guarantee any consistency

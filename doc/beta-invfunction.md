@@ -25,7 +25,7 @@ The beta distribution can be used in project planning to model probable completi
 
 * The inverse of the beta cumulative probability density function [beta_cdf()](./beta-cdffunction.md)
 
-**Remarks**
+**Notes**
 
 If any argument is nonnumeric, beta_inv() returns null value.
 

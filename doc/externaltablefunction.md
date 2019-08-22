@@ -21,7 +21,7 @@ external_table('StormEvent')
   fields in the actual (external) data shards to the columns output
   by this function.
 
-**Remarks**
+**Notes**
 
 See [external tables](schema-entities/externaltables.md) for more information
 on external tables.

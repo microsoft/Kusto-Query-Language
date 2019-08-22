@@ -12,7 +12,7 @@ and `current_cursor` are synonyms.)
 Returns a single value of type `string` which encodes the current value of the
 cursor of the database in scope.
 
-**Remarks**
+**Notes**
 
 See [database cursors](../management/databasecursor.md) for additional
 details on database cursors.

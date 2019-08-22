@@ -14,7 +14,7 @@ T | sample 5
 **Arguments**
 * *NumberOfRows*: The number of rows of *T* to return. You can specify any numeric expression.
 
-**Remarks**
+**Notes**
 
 `sample` is a non-deterministic operator, and will return different result set each time it is evaluated during the query. For example, the following query yields two different rows (even if one would expect to return the same row twice).
 

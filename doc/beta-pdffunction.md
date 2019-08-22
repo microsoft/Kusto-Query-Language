@@ -23,7 +23,7 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 * The [probability beta density function](https://en.wikipedia.org/wiki/Beta_distribution#Probability_density_function).
 
-**Remarks**
+**Notes**
 
 If any argument is nonnumeric, beta_pdf() returns null value.
 

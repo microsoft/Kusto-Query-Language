@@ -26,7 +26,7 @@
 
 The function returns the values at the beginning of each session.
 
-**Comments**
+**Notes**
 
 The function has the following conceptual calculation model:
 

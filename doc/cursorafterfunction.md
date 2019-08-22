@@ -16,7 +16,7 @@ against a database cursor.
 A scalar value of type `bool` that indicates whether the record was ingested
 after the database cursor *RHS* (`true`) or not (`false`).
 
-**Comments**
+**Notes**
 
 See [database cursors](../management/databasecursor.md) for additional
 details on database cursors.

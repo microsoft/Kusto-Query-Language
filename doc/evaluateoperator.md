@@ -19,7 +19,7 @@ Where:
 * *PluginName* is the mandatory name of the plugin being invoked.
 * *PluginArg1*, ... are the optional arguments to the plugin.
 
-**Remarks**
+**Notes**
 
 Syntactically, `evaluate` behaves similarly
 to the [invoke operator](./invokeoperator.md), which invokes tabular functions.

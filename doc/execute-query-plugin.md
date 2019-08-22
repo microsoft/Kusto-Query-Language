@@ -14,8 +14,23 @@ its first record set available for further processing.
   in scope.
   
 * *QueryText*: A `string` value holding the query to run.
+  If the `evaluate` operator has no tabular input, the query has no tabular input;
+  otherwise, the query will have that tabular
+  input as its own input (see examples below).
 
 **Examples**
+
+The following example highlights the differences between a use of this plugin
+with and without tabular input. The first use of the plugin has no tabular
+input, and the second invocation has as its input the output of the first
+invocation. Note in particular how the second invocation's query is not a valid
+Kusto query if it appears as "standalone" -- it requires a piped-in tabular input.
+
+<!-- csl -->
+```
+evaluate execute_query(".", "print First='Hello'")
+| evaluate execute_query(".", "extend b='World!'")
+```
 
 The following example executes a random query from a set of queries stored
 in a table.

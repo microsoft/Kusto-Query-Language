@@ -15,7 +15,7 @@ isnull(parse_json("")) == true
 
 True or false depending on the whether the value is null or not null.
 
-**Comments**
+**Notes**
 
 * `string` values cannot be null. Use [isempty](./isemptyfunction.md)
   to determine if a value of type `string` is empty or not.
