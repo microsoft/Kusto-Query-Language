@@ -17,6 +17,18 @@ namespace Kusto.Language.Symbols
         None,
 
         /// <summary>
+        /// The name is combination of the name of function and the name inferred from the first argument.
+        /// </summary>
+        NameAndFirstArgument,
+
+        /// <summary>
+        /// The name is a combination of the function name and the name is inferred from the the first argument,
+        /// but only if there is only one argument, otherwise it acts as <see cref="None"/>.
+        /// </summary>
+        /// <remarks>This option exists because of odd name inference behavior of a few functions that differ depending on the number of arguments.</remarks>
+        NameAndOnlyArgument,
+
+        /// <summary>
         /// The name is a combination of the specified prefix and the name inferred from the first argument.
         /// </summary>
         PrefixAndFirstArgument,
@@ -39,6 +51,16 @@ namespace Kusto.Language.Symbols
         /// The name is the prefix name as specified (no underscores added.)
         /// </summary>
         PrefixOnly,
+
+        /// <summary>
+        /// The name is the name inferred from the first argument.
+        /// </summary>
+        FirstArgument,
+
+        /// <summary>
+        /// The name is the name inferred from the first argument if there is only one argument, otherwise it acts the same as <see cref="None"/>
+        /// </summary>
+        OnlyArgument,
 
         Default = None
     }

@@ -15,16 +15,16 @@ its first record set available for further processing.
   
 * *QueryText*: A `string` value holding the query to run.
   If the `evaluate` operator has no tabular input, the query has no tabular input;
-  otherwise, the query will have that tabular
+  Otherwise, the query will have that tabular
   input as its own input (see examples below).
 
 **Examples**
 
-The following example highlights the differences between a use of this plugin
+The following example highlights the differences between the use of this plugin
 with and without tabular input. The first use of the plugin has no tabular
-input, and the second invocation has as its input the output of the first
-invocation. Note in particular how the second invocation's query is not a valid
-Kusto query if it appears as "standalone" -- it requires a piped-in tabular input.
+input, and the second invocation has the output of the first
+invocation as its input. The second invocation query is not a valid
+Kusto query if it is "standalone". It requires a piped-in tabular input.
 
 <!-- csl -->
 ```

@@ -79,13 +79,3 @@ operator for example, Kusto will revert to scanning the values in the column
 if it cannot determine a match, which is far slower than looking the term
 up in the term index.)
 
-It is possible to modify the way Kusto breaks a `string` value into terms
-when building the term index. Currently, the only other option is to treat
-the whole width of the column as a single term. This is useful, for example,
-for GUID/UUID values stored as strings for which looking-up something other
-than the whole value is very rare. (The motivation for doing so is to
-reduce the memory footprint of the index.) It is also possible to have
-a substring index defined on the column (which allows searching for any
-substring, not just a whole term, very quickly), at the cost of increased
-memory footprint of the index. Last, it is possible to disable building
-any index on a column.

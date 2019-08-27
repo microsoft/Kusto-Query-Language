@@ -1271,7 +1271,7 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     _binder.CheckIsInteger(node.Expression, diagnostics);
-                    _binder.CheckIsColumn(node.ByExpression, diagnostics);
+                    _binder.CheckIsScalar(node.ByExpression, diagnostics);
 
                     // does not change table shape
                     var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty)).Sorted();

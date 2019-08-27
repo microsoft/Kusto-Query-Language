@@ -3657,6 +3657,17 @@ namespace Kusto.Language.Binding
             var kind = fs?.ResultNameKind ?? ResultNameKind.None;
             var prefix = fs?.ResultNamePrefix;
 
+            if (kind == ResultNameKind.NameAndFirstArgument)
+            {
+                prefix = fs.Name;
+                kind = ResultNameKind.PrefixAndFirstArgument;
+            }
+            else if (kind == ResultNameKind.NameAndOnlyArgument)
+            {
+                prefix = fs.Name;
+                kind = ResultNameKind.PrefixAndOnlyArgument;
+            }
+
             if (kind == ResultNameKind.PrefixAndFirstArgument)
             {
                 if (fc.ArgumentList.Expressions.Count > 0)
@@ -3706,9 +3717,24 @@ namespace Kusto.Language.Binding
                     return defaultName;
                 }
             }
+            else if (kind == ResultNameKind.FirstArgument)
+            {
+                if (fc.ArgumentList.Expressions.Count > 0)
+                {
+                    return GetExpressionResultName(fc.ArgumentList.Expressions[0].Element, defaultName);
+                }
+                else
+                {
+                    return null;
+                }
+            }
             else if (kind == ResultNameKind.PrefixOnly && prefix != null)
             {
                 return prefix;
+            }
+            else if (kind == ResultNameKind.OnlyArgument && fc.ArgumentList.Expressions.Count == 1)
+            {
+                return GetExpressionResultName(fc.ArgumentList.Expressions[0].Element, defaultName);
             }
             else
             {

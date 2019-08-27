@@ -59,13 +59,13 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Strrep =
             new FunctionSymbol("strrep", ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar),
-                new Parameter("multiplier", ScalarTypes.Long, ArgumentKind.Constant))
+                new Parameter("multiplier", ScalarTypes.Long))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Strlen =
             new FunctionSymbol("strlen", ScalarTypes.Long,
                 new Parameter("string", ParameterTypeKind.StringOrDynamic))
-            .WithResultNameKind(ResultNameKind.None);
+            .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         public static readonly FunctionSymbol StringSize =
             new FunctionSymbol("string_size", ScalarTypes.Long,
@@ -222,7 +222,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime),
                 new Parameter("culture", ScalarTypes.String),
                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .Hide();
 
         public static readonly FunctionSymbol NumberToLocaleString =
@@ -231,7 +231,7 @@ namespace Kusto.Language
                 new Parameter("number", ParameterTypeKind.Number),
                 new Parameter("culture", ScalarTypes.String),
                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .Hide();
         #endregion
 
@@ -240,93 +240,93 @@ namespace Kusto.Language
             new FunctionSymbol("tostring", ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToHex =
             new FunctionSymbol("tohex", ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Integer))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDynamic_ =  // use _ because build fails claiming ToDynamic exists on object.
             new FunctionSymbol("todynamic", ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToObject_Depricated =
             new FunctionSymbol("toobject", ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .Hide();
 
         public static readonly FunctionSymbol ToLong =
             new FunctionSymbol("tolong", ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToInt =
             new FunctionSymbol("toint", ScalarTypes.Int,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToReal =
             new FunctionSymbol("toreal", ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDouble =
             new FunctionSymbol("todouble", ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDateTime =
             new FunctionSymbol("todatetime", ScalarTypes.DateTime,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTimespan =
             new FunctionSymbol("totimespan", ScalarTypes.TimeSpan,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTime=
            new FunctionSymbol("totime", ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Hide()
            .ConstantFoldable()
-           .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+           .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBool =
             new FunctionSymbol("tobool", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBoolean =
             new FunctionSymbol("toboolean", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDecimal =
             new FunctionSymbol("todecimal", ScalarTypes.Decimal,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToGuid =
             new FunctionSymbol("toguid", ScalarTypes.Guid,
                 new Parameter("value", ParameterTypeKind.StringOrDynamic))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly new FunctionSymbol GetType =
             new FunctionSymbol("gettype", ScalarTypes.String,
@@ -384,23 +384,23 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ParseCsv =
             new FunctionSymbol("parse_csv", ScalarTypes.Dynamic,
                 new Parameter("csv_text", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ParseJson_Depricated =
             new FunctionSymbol("parsejson", ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .Hide();
 
         public static readonly FunctionSymbol ParseJson =
             new FunctionSymbol("parse_json", ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ParseXml =
             new FunctionSymbol("parse_xml", ScalarTypes.Dynamic,
                 new Parameter("xml_text", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ParseUrl_Depricated =
             new FunctionSymbol("parseurl", ScalarTypes.Dynamic,
@@ -451,13 +451,13 @@ namespace Kusto.Language
             new FunctionSymbol("format_datetime", ScalarTypes.String,
                 new Parameter("date", ScalarTypes.DateTime),
                 new Parameter("format", ScalarTypes.String, ArgumentKind.LiteralNotEmpty))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol FormatTimespan =
             new FunctionSymbol("format_timespan", ScalarTypes.String,
                 new Parameter("timespan", ScalarTypes.TimeSpan),
                 new Parameter("format", ScalarTypes.String, ArgumentKind.LiteralNotEmpty))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol MakeDatetime =
             new FunctionSymbol("make_datetime",
@@ -471,7 +471,7 @@ namespace Kusto.Language
                     new Parameter("minute", ParameterTypeKind.Number, minOccurring: 0),
                     new Parameter("second", ParameterTypeKind.Number, minOccurring: 0)))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndOnlyArgument);
+            .WithResultNameKind(ResultNameKind.OnlyArgument);
 
         public static readonly FunctionSymbol MakeTimespan =
             new FunctionSymbol("make_timespan",
@@ -487,7 +487,7 @@ namespace Kusto.Language
                     new Parameter("minutes", ParameterTypeKind.Integer),
                     new Parameter("seconds", ParameterTypeKind.Integer)))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndOnlyArgument);
+            .WithResultNameKind(ResultNameKind.OnlyArgument);
 
         private static readonly string[] s_dateDiffLiteralValues =
             new[] { "Year", "Quarter", "Month", "Week", "Day", "Hour", "Minute", "Second", "Millisecond", "Microsecond", "Nanosecond" };
@@ -552,7 +552,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime),
                 new Parameter("offset", ScalarTypes.Long, minOccurring: 0))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.PrefixAndOnlyArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol StartOfWeek =
             new FunctionSymbol("startofweek", ScalarTypes.DateTime,
@@ -713,7 +713,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.DateTime,
                     new Parameter("value", ScalarTypes.DateTime),
                     new Parameter("roundTo", ScalarTypes.TimeSpan)))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol Floor =
             new FunctionSymbol("floor",
@@ -729,7 +729,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.DateTime,
                     new Parameter("value", ScalarTypes.DateTime),
                     new Parameter("roundTo", ScalarTypes.TimeSpan)))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol BinAt =
             new FunctionSymbol("bin_at",
@@ -753,12 +753,12 @@ namespace Kusto.Language
                     new Parameter("value", ScalarTypes.DateTime),
                     new Parameter("bin_size", ParameterTypeKind.Summable),
                     new Parameter("fixed_point", ScalarTypes.DateTime)))
-                .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+                .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol BinAuto =
             new FunctionSymbol("bin_auto", "bin_at(value, query_bin_auto_size, query_bin_auto_at)", Tabularity.Scalar,
                 new Parameter("value", ParameterTypeKind.Summable))
-                .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+                .WithResultNameKind(ResultNameKind.FirstArgument)
                 .Hide();
         #endregion
 
@@ -835,41 +835,41 @@ namespace Kusto.Language
             new FunctionSymbol("binary_and", ScalarTypes.Long,
                 new Parameter("value1", ParameterTypeKind.Integer),
                 new Parameter("value2", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BinaryOr =
             new FunctionSymbol("binary_or", ScalarTypes.Long,
                 new Parameter("value1", ParameterTypeKind.Integer),
                 new Parameter("value2", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BinaryXor =
             new FunctionSymbol("binary_xor", ScalarTypes.Long,
                 new Parameter("value1", ParameterTypeKind.Integer),
                 new Parameter("value2", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BinaryNot =
             new FunctionSymbol("binary_not", ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BinaryShiftRight =
             new FunctionSymbol("binary_shift_right", ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Integer),
                 new Parameter("shift", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BinaryShiftLeft =
            new FunctionSymbol("binary_shift_left", ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Integer),
                 new Parameter("shift", ParameterTypeKind.Integer))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
         #endregion
 
@@ -1023,8 +1023,7 @@ namespace Kusto.Language
                     new Parameter("tdigest", ScalarTypes.Dynamic),
                     new Parameter("percentile1", ScalarTypes.Real),
                     new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
-            .WithResultNamePrefix("percentile_tdigest")
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         // does not exists in engine?
 #if false
@@ -1071,8 +1070,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol DCountHll =
             new FunctionSymbol("dcount_hll", ScalarTypes.Long,
                 new Parameter("hll", ScalarTypes.Dynamic))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("dcount_hll");
+            .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         public static readonly FunctionSymbol SeriesFir =
             new FunctionSymbol("series_fir", ScalarTypes.Dynamic,
@@ -1080,7 +1078,7 @@ namespace Kusto.Language
                 new Parameter("filter", ScalarTypes.Dynamic),
                 new Parameter("normalize", ScalarTypes.Bool, minOccurring: 0),
                 new Parameter("center", ScalarTypes.Bool, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesStats =
             new FunctionSymbol("series_stats",
@@ -1159,14 +1157,14 @@ namespace Kusto.Language
                     new Parameter("min_percentile", ScalarTypes.Real),
                     new Parameter("max_percentile", ScalarTypes.Real, minOccurring: 0),
                     new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0)))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesIIR =
             new FunctionSymbol("series_iir", ScalarTypes.Dynamic,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("numerators", ScalarTypes.Dynamic),
                 new Parameter("denominators", ScalarTypes.Dynamic))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesPeriodsDetect =
             new FunctionSymbol("series_periods_detect",
@@ -1194,20 +1192,20 @@ namespace Kusto.Language
             new FunctionSymbol("series_fill_backward", ScalarTypes.Dynamic,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillForward =
             new FunctionSymbol("series_fill_forward", ScalarTypes.Dynamic,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillConst =
             new FunctionSymbol("series_fill_const", ScalarTypes.Dynamic,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("constant_value", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillLinear =
             new FunctionSymbol("series_fill_linear", ScalarTypes.Dynamic,
@@ -1215,7 +1213,7 @@ namespace Kusto.Language
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("fill_edges", ScalarTypes.Bool, minOccurring: 0),
                 new Parameter("constant_value", ParameterTypeKind.Number, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesAdd =
             new FunctionSymbol("series_add", ScalarTypes.Dynamic,
@@ -1330,62 +1328,62 @@ namespace Kusto.Language
             new FunctionSymbol("round", ReturnTypeKind.Parameter0,
                 new Parameter("number", ParameterTypeKind.Number),
                 new Parameter("precision", ScalarTypes.Long, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Ceiling =
             new FunctionSymbol("ceiling", ReturnTypeKind.Parameter0,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Pow =
             new FunctionSymbol("pow", ScalarTypes.Real,
                 new Parameter("base", ParameterTypeKind.Number),
                 new Parameter("exponent", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Sqrt =
             new FunctionSymbol("sqrt", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Log =
             new FunctionSymbol("log", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Log2 =
             new FunctionSymbol("log2", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Log10 =
             new FunctionSymbol("log10", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Exp =
             new FunctionSymbol("exp", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Exp2 =
             new FunctionSymbol("exp2", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Exp10 =
             new FunctionSymbol("exp10", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PI =
@@ -1395,44 +1393,44 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Cos =
             new FunctionSymbol("cos", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Sin =
             new FunctionSymbol("sin", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Tan =
             new FunctionSymbol("tan", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Acos =
             new FunctionSymbol("acos", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Asin =
             new FunctionSymbol("asin", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Atan =
             new FunctionSymbol("atan", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Atan2 =
             new FunctionSymbol("atan2", ScalarTypes.Real,
                 new Parameter("x", ParameterTypeKind.Number),
                 new Parameter("y", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Abs =
@@ -1441,7 +1439,7 @@ namespace Kusto.Language
                     new Parameter("number", ParameterTypeKind.Integer)),
                 new Signature(ScalarTypes.Real,
                     new Parameter("number", ParameterTypeKind.RealOrDecimal)))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Cot =
@@ -1471,7 +1469,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Rand =
             new FunctionSymbol("rand", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Integer, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BetaCdf =
@@ -1495,13 +1493,13 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Gamma =
             new FunctionSymbol("gamma", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol LogGamma =
             new FunctionSymbol("loggamma", ScalarTypes.Real,
                 new Parameter("number", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol IsNan =
