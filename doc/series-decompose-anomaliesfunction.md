@@ -6,7 +6,7 @@ Takes an expression containing a series (dynamic numerical array) as input and e
 
 **Syntax**
 
-`series_decompose_anomalies (`*Series*`, ` *Threshold*`,` *Seasonality*`,` *Trend*`, ` *Test_points*`, ` *AD_method*`)`
+`series_decompose_anomalies (`*Series* `[, ` *Threshold*`,` *Seasonality*`,` *Trend*`, ` *Test_points*`, ` *AD_method*`,` *Seasonality_threshold* `])`
 
 **Arguments**
 
@@ -24,7 +24,7 @@ Takes an expression containing a series (dynamic numerical array) as input and e
 * *AD_method*: A string controlling the anomaly detection method (see [series_outliers](series-outliersfunction.md)) on the residual time series, containing either    
     * â€œctukeyâ€: [Tukeyâ€™s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with custom 10th-90th percentile range [default]
     * â€œtukeyâ€: [Tukeyâ€™s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with standard 25th-75th percentile range
-
+* *Seasonality_threshold*: The threshold for seasonality score when *Seasonality* is set to autodetect, the default score threshold is `0.6`  (for more details see: [series_periods_detect](series-periods-detectfunction.md))
 
 
 **Return**

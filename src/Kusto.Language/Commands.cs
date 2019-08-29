@@ -1175,9 +1175,143 @@ namespace Kusto.Language
                     new ColumnSymbol("DiskCacheMissCount", ScalarTypes.Long),
                     new ColumnSymbol("MemoryCacheDetails", ScalarTypes.String),
                     new ColumnSymbol("DiskCacheDetails", ScalarTypes.String)));
+
+        public static readonly CommandSymbol ShowCommands =
+            new CommandSymbol("show commands", "show comandsd",
+                new TableSymbol(
+                    new ColumnSymbol("ClientActivityId", ScalarTypes.String),
+                    new ColumnSymbol("CommandType", ScalarTypes.String),
+                    new ColumnSymbol("Text", ScalarTypes.String),
+                    new ColumnSymbol("Database", ScalarTypes.String),
+                    new ColumnSymbol("StartedOn", ScalarTypes.DateTime),
+                    new ColumnSymbol("LastUpdatedOn", ScalarTypes.DateTime)));
+
+        public static readonly CommandSymbol ShowCommandsAndQueries =
+            new CommandSymbol("show commands-and-queries", "show commands-and-queries",
+                new TableSymbol(
+                    new ColumnSymbol("ClientActivityId", ScalarTypes.String),
+                    new ColumnSymbol("CommandType", ScalarTypes.String),
+                    new ColumnSymbol("Text", ScalarTypes.String),
+                    new ColumnSymbol("Database", ScalarTypes.String),
+                    new ColumnSymbol("StartedOn", ScalarTypes.DateTime),
+                    new ColumnSymbol("LastUpdatedOn", ScalarTypes.DateTime),
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan),
+                    new ColumnSymbol("State", ScalarTypes.String),
+                    new ColumnSymbol("FailureReason", ScalarTypes.String),
+                    new ColumnSymbol("RootActivityId", ScalarTypes.Guid),
+                    new ColumnSymbol("User", ScalarTypes.String),
+                    new ColumnSymbol("Application", ScalarTypes.String),
+                    new ColumnSymbol("Principal", ScalarTypes.String),
+                    new ColumnSymbol("ClientRequestProperties", ScalarTypes.Dynamic),
+                    new ColumnSymbol("TotalCpu", ScalarTypes.TimeSpan),
+                    new ColumnSymbol("MemoryPeak", ScalarTypes.Long),
+                    new ColumnSymbol("CacheStatistics", ScalarTypes.Dynamic),
+                    new ColumnSymbol("ScannedExtentsStatistics", ScalarTypes.Dynamic),
+                    new ColumnSymbol("ResultSetStatistics", ScalarTypes.Dynamic)));
+
+        public static readonly CommandSymbol ShowIngestionFailures =
+            new CommandSymbol("show ingestion failures", "show ingestion failures [with '(' OperationId '=' <string>:OperationId ')']",
+                new TableSymbol(
+                    new ColumnSymbol("OperationId", ScalarTypes.String),
+                    new ColumnSymbol("Database", ScalarTypes.String),
+                    new ColumnSymbol("Table", ScalarTypes.String),
+                    new ColumnSymbol("FailedOn", ScalarTypes.DateTime),
+                    new ColumnSymbol("IngestionSourcePath", ScalarTypes.String),
+                    new ColumnSymbol("Details", ScalarTypes.String),
+                    new ColumnSymbol("FailureKind", ScalarTypes.String),
+                    new ColumnSymbol("RootActivityId", ScalarTypes.String),
+                    new ColumnSymbol("OperationKind", ScalarTypes.String),
+                    new ColumnSymbol("OriginatesFromUpdatePolicy", ScalarTypes.Bool)));
+
         #endregion
 
+        #region Advanced Commands
+        private static readonly TableSymbol ShowExtentsResults =
+            new TableSymbol(
+                new ColumnSymbol("ExtendId", ScalarTypes.Guid),
+                new ColumnSymbol("DatabaseName", ScalarTypes.String),
+                new ColumnSymbol("TableName", ScalarTypes.String),
+                new ColumnSymbol("MaxCreatedOn", ScalarTypes.DateTime),
+                new ColumnSymbol("OriginalSize", ScalarTypes.Real),
+                new ColumnSymbol("ExtentSize", ScalarTypes.Real),
+                new ColumnSymbol("CompressedSize", ScalarTypes.Real),
+                new ColumnSymbol("IndexSize", ScalarTypes.Real),
+                new ColumnSymbol("Blocks", ScalarTypes.Long),
+                new ColumnSymbol("Segments", ScalarTypes.Long),
+                new ColumnSymbol("AssignedDataNodes", ScalarTypes.String),
+                new ColumnSymbol("LoadedDataNodes", ScalarTypes.String),
+                new ColumnSymbol("ExtentContainerId", ScalarTypes.String),
+                new ColumnSymbol("RowCount", ScalarTypes.Long),
+                new ColumnSymbol("MinCreatedOn", ScalarTypes.DateTime),
+                new ColumnSymbol("Tags", ScalarTypes.String));
 
+        public static readonly CommandSymbol ShowClusterExtents =
+            new CommandSymbol("show cluster extents", "show cluster extents [hot]", ShowExtentsResults);
+
+        private static readonly string ExtentIdList = "'(' {<guid>:ExtentId, ','} ')'";
+        private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains') <string>:Tag, and }";
+
+        public static readonly CommandSymbol ShowDatabaseExtents =
+            new CommandSymbol("show database extents", $"show database <database>:DatabaseName extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
+
+        public static readonly CommandSymbol ShowTableExtents =
+            new CommandSymbol("show table extents", $"show table <table>:TableName extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
+
+        private static readonly string TableNameList = "'(' { <table>:TableName, ',' } ')'";
+        public static readonly CommandSymbol ShowTablesExtents =
+            new CommandSymbol("show tables extents", $"show tables [{TableNameList}] extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
+
+        private static readonly string GuidList = "'(' {<guid>:GUID, ','} ')'";
+        public static readonly CommandSymbol MergeExtents =
+            new CommandSymbol("merge extents", $"merge [async | dryrun] <table>:TableName {GuidList} [with '(' rebuild '=' <value> ')']",
+                new TableSymbol(
+                    new ColumnSymbol("OriginalExtentId", ScalarTypes.String),
+                    new ColumnSymbol("ResultExtentId", ScalarTypes.String),
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan)));
+
+        private static readonly TableSymbol MoveExtentsResult =
+            new TableSymbol(
+                new ColumnSymbol("OriginalExtentId", ScalarTypes.String),
+                new ColumnSymbol("ResultExtentId", ScalarTypes.String),
+                new ColumnSymbol("Details", ScalarTypes.String));
+
+        public static readonly CommandSymbol MoveExtentsFrom =
+            new CommandSymbol("move extents from", $"move [async] extents (all | {GuidList}) from table <table>:SourceTableName to table <table>:DestinationTableName", MoveExtentsResult);
+
+        public static readonly CommandSymbol MoveExtentsQuery =
+            new CommandSymbol("move extents query", $"move [async] extents to table <table>:DestinationTableName '<|' <input_query>:Query", MoveExtentsResult);
+
+        private static readonly TableSymbol DropExtentResult =
+            new TableSymbol(
+                new ColumnSymbol("ExtentId", ScalarTypes.String),
+                new ColumnSymbol("TableName", ScalarTypes.String),
+                new ColumnSymbol("CreatedOn", ScalarTypes.DateTime));
+
+        //public static readonly CommandSymbol DropExtentsQuery =
+        //    new CommandSymbol("drop extents query", "drop extents [whatif] '<|' <input_query>:Query", DropExtentResult);
+
+        public static readonly CommandSymbol DropExtent =
+            new CommandSymbol("drop extent", "drop extent <guid>:ExtentId [from <table>:TableName]", DropExtentResult);
+
+        //public static readonly CommandSymbol DropExtents =
+        //    new CommandSymbol("drop extents", "drop extents '(' { <guid>:ExtentId, ',' } ')' [from <table>:TableName]", DropExtentResult);
+
+        private static readonly string DropProperties = "[older <value>:Older (days | hours)] from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]";
+
+        public static readonly CommandSymbol DropExtents =
+            new CommandSymbol("drop extents",
+                @"drop extents 
+                    ('(' { <guid>:ExtentId, ',' } ')' [from <table>:TableName]
+                     | whatif '<|' <input_query>:Query
+                     | '<|' <input_query>:Query
+                     | older <value>:Older (days | hours) from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]
+                     | from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]
+                     )", DropExtentResult);
+
+        public static readonly CommandSymbol DropPretendExtentsByProperties =
+            new CommandSymbol("drop-pretend extents by properties", $"drop-pretend extents {DropProperties}", DropExtentResult);
+
+        #endregion
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
             new CommandSymbol[]
@@ -1434,6 +1568,24 @@ namespace Kusto.Language
                 ShowQueryPlan,
                 ShowBasicAuthUsers,
                 ShowCache,
+                ShowCommands,
+                ShowCommandsAndQueries,
+                ShowIngestionFailures,
+                #endregion
+
+                #region Advanced Commands
+                ShowClusterExtents,
+                ShowDatabaseExtents,
+                ShowTableExtents,
+                ShowTablesExtents,
+                MergeExtents,
+                MoveExtentsFrom,
+                MoveExtentsQuery,
+                DropExtent,
+                DropExtents,
+                //DropExtentsQuery,
+                //DropExtentsByProperties,
+                DropPretendExtentsByProperties,
                 #endregion
             };
     }

@@ -70,6 +70,7 @@ SQL Server endpoint:
    via AAD to Kusto, and the same token is then used to access the SQL Server network
    endpoint.
 
+# ([SuppressMessage\("Microsoft.Security", "CS002:SecretInNextLine", Justification="Approved. False positive."\)])
 * **Username/Password authentication** (`User ID=...; Password=...;`):
    Support for this method is provided when AAD integrated authentication
    cannot be performed. Avoid this method, when possible, as secret
