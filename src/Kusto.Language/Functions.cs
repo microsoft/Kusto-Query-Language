@@ -620,7 +620,8 @@ namespace Kusto.Language
                 new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, s_datePartLiteralValues),
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None);
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
 
         public static readonly FunctionSymbol DatetimePart =
             new FunctionSymbol("datetime_part", ScalarTypes.Int,
@@ -1617,7 +1618,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RowNumber =
             new FunctionSymbol("row_number", ScalarTypes.Long,
-                new Parameter("start_index", ScalarTypes.Long, minOccurring: 0))
+                new Parameter("startingIndex", ScalarTypes.Long, minOccurring: 0),
+                new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowCumSum =
@@ -1628,6 +1630,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RowWindowSession =
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
+                new Parameter("expr", ScalarTypes.DateTime),
                 new Parameter("maxDistanceFromFirst", ScalarTypes.TimeSpan),
                 new Parameter("minDistanceBetweenNeighbors", ScalarTypes.TimeSpan),
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
@@ -1637,14 +1640,14 @@ namespace Kusto.Language
             new FunctionSymbol("prev", ReturnTypeKind.Parameter0,
                 new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Column),
                 new Parameter("offset", ScalarTypes.Long, minOccurring: 0),
-                new Parameter("default_value", ParameterTypeKind.Parameter0, ArgumentKind.Constant, minOccurring: 0))
+                new Parameter("default_value", ParameterTypeKind.Scalar, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Next =
             new FunctionSymbol("next", ReturnTypeKind.Parameter0,
                 new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Column),
                 new Parameter("offset", ScalarTypes.Long, minOccurring: 0),
-                new Parameter("default_value", ParameterTypeKind.Parameter0, ArgumentKind.Constant, minOccurring: 0))
+                new Parameter("default_value", ParameterTypeKind.Scalar, ArgumentKind.Constant, minOccurring: 0))
            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowstoreOrdinalRange =

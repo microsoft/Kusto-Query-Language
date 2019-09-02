@@ -10,7 +10,7 @@ summarize `avgif(`*Expr*`, `*Predicate*`)`
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation. 
+* *Expr*: Expression that will be used for aggregation calculation. Records with `null` values are ignored and not accounted for the calculation.
 * *Predicate*:  predicate that if true, the *Expr* calculated value will be added to the average.
 
 **Returns**

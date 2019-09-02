@@ -58,8 +58,14 @@ namespace Kusto.Language.Editor
         /// </summary>
         public abstract QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Gets the <see cref="TextRange"/> of the syntax element at or adjacent to the text position.
+        /// </summary>
         public abstract TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Gets a list of all the syntax elements related to the syntax element at or adjacent to the text position.
+        /// </summary>
         public abstract RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

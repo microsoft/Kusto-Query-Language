@@ -119,7 +119,7 @@ where each partition calculates its own Count, and all later summarized into Tot
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 let N = 10;                 // Number of query-partitions
-range p from 1 to N step 1  // 
+range p from 0 to N-1 step 1  // 
 | partition by p            // Run the sub-query partitioned 
 {
     StormEvents 
@@ -131,7 +131,7 @@ range p from 1 to N step 1  //
 
 |TotalCount|
 |---|
-|53137|
+|59066|
 
 
 **Example: partition-reference**

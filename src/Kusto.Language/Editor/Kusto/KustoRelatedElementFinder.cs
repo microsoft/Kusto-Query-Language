@@ -152,13 +152,12 @@ namespace Kusto.Language.Editor
 
         public bool IsNameReferenceOrDeclaration(SyntaxToken token)
         {
-            return token.Parent is NameReference
-                || token.Parent is NameDeclaration;
+            return token.Parent is Name n && (n.Parent is NameReference || n.Parent is NameDeclaration);
         }
 
         public void GetRelatedNameReferencesAndDeclarations(SyntaxToken token, List<RelatedElement> elements, FindRelatedOptions options)
         {
-            var symbol = token.Parent.ReferencedSymbol;
+            var symbol = token.Parent.GetFirstAncestorOrSelf<SyntaxNode>(n => n.ReferencedSymbol != null)?.ReferencedSymbol;
 
             if (symbol != null)
             {

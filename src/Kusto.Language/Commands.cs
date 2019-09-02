@@ -338,12 +338,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateMergeTable =
             new CommandSymbol("create-merge table",
-                "create-merge table <name>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')' [with '(' docstring '=' <string>:Documentation [',' folder '=' <string>:FolderName] ')']",
+                "create-merge table <name>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')'",
                 ShowTableSchemaResult);
 
         public static readonly CommandSymbol CreateTables =
             new CommandSymbol("create tables",
-                @"create tables { <name>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')' [with '(' docstring '=' <string>:Documentation [',' folder '=' <string>:FolderName] ')'], ',' }+",
+                @"create tables { <name>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')', ',' }+",
                 ShowTableSchemaResult);
 
         public static readonly CommandSymbol AlterTable =
@@ -400,12 +400,6 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterTableIngestionMapping =
             new CommandSymbol("alter table ingestion mapping", "alter table <table> ingestion (csv | json):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
 
-        public static readonly CommandSymbol ShowIngestionMappings =
-            new CommandSymbol("show ingestion mappings", "show ingestion (csv | json):MappingKind mappings", TableIngestionMappingResult);
-
-        public static readonly CommandSymbol ShowIngestionMapping =
-            new CommandSymbol("show ingestion mapping", "show ingestion (csv | json):MappingKind mapping <string>:MappingName", TableIngestionMappingResult);
-
         public static readonly CommandSymbol ShowTableIngestionMappings =
             new CommandSymbol("show table ingestion mappings", "show table <table>:TableName ingestion (csv | json):MappingKind mappings", TableIngestionMappingResult);
 
@@ -432,11 +426,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol DropTableColumns =
             new CommandSymbol("drop table columns", "drop table <table>:TableName columns '(' { <column>:ColumnName, ',' }+ ')'");
 
-        public static readonly CommandSymbol AlterTableColumnDocString =
-            new CommandSymbol("alter table column-docstring", "alter table <table>:TableName column-docstring '(' { <column>:ColumnName ':' <string>:DocString, ',' }+ ')'");
+        public static readonly CommandSymbol AlterTableColumnDocStrings =
+            new CommandSymbol("alter table column-docstrings", "alter table <table>:TableName column-docstrings '(' { <column>:ColumnName ':' <string>:DocString, ',' }+ ')'");
 
-        public static readonly CommandSymbol AlterMergeTableColumnDocString =
-            new CommandSymbol("alter-merge table column-docstring", "alter-merge table <table>:TableName column-docstring '(' { <column>:ColumnName ':' <string>:DocString, ',' }+ ')'");
+        public static readonly CommandSymbol AlterMergeTableColumnDocStrings =
+            new CommandSymbol("alter-merge table column-docstrings", "alter-merge table <table>:TableName column-docstrings '(' { <column>:ColumnName ':' <string>:DocString, ',' }+ ')'");
         #endregion
 
         #region Functions
@@ -458,11 +452,11 @@ namespace Kusto.Language
             new CommandSymbol("create function", "create function [ifnotexists] [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')'] <name>:FunctionName <function_declaration>", FunctionResult);
 
         public static readonly CommandSymbol AlterFunction =
-            new CommandSymbol("alter function", "alter function [ifnotexists] [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')'] <name>:FunctionName <function_declaration>", FunctionResult);
+            new CommandSymbol("alter function", "alter function [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')'] <name>:FunctionName <function_declaration>", FunctionResult);
 
         public static readonly CommandSymbol CreateOrAlterFunction =
-            new CommandSymbol("create-or-alter function", "create-or-alter function [ifnotexists] [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')'] <name>:FunctionName <function_declaration>", FunctionResult);
-
+            new CommandSymbol("create-or-alter function", "create-or-alter function [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')'] <name>:FunctionName <function_declaration>", FunctionResult);
+         
         public static readonly CommandSymbol DropFunction =
             new CommandSymbol("drop function", "drop function <function>:FunctionName",
                 new TableSymbol(
@@ -521,7 +515,7 @@ namespace Kusto.Language
             new CommandSymbol("create external table",
                 @"create external table <name>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')'
                     kind '=' (blob | adl):TableKind
-                    [partition [format_datetime '=' <string>:DateTimePartitionFormat] by bin '(' <name>:BinColumn ',' <value>:BinValue ')']
+                    [partition by [format_datetime '=' <string>:DateTimePartitionFormat] bin '(' <name>:BinColumn ',' <timespan>:BinValue ')']
                     dataformat '=' (csv | tsv | json | parquet):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
                     [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')']",
                 ExternalTableFullResult);
@@ -530,7 +524,7 @@ namespace Kusto.Language
             new CommandSymbol("alter external table",
                 @"alter external table <table>:TableName '(' { <name>:ColumnName ':' <type>:ColumnType, ',' }+ ')'
                     kind '=' (blob | adl):TableKind
-                    [partition [format_datetime '=' <string>:DateTimePartitionFormat] by bin '(' <column>:BinColumn ',' <value>:BinValue ')']
+                    [partition by [format_datetime '=' <string>:DateTimePartitionFormat] bin '(' <column>:BinColumn ',' <timespan>:BinValue ')']
                     dataformat '=' (csv | tsv | json | parquet):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
                     [with '(' { <name>:PropertyName '=' <value>:Value, ',' }+ ')']",
                 ExternalTableFullResult);
@@ -554,13 +548,13 @@ namespace Kusto.Language
             new CommandSymbol("show table policy caching", "show table <database_table> policy caching", PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyCaching =
-            new CommandSymbol("alter database policy caching", "alter database <database> policy caching hot '=' <value>:Timespan", PolicyResult);
+            new CommandSymbol("alter database policy caching", "alter database <database> policy caching hot '=' <timespan>:Timespan", PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyCaching =
-            new CommandSymbol("alter table policy caching", "alter table <database_table> policy caching hot '=' <value>:Timespan", PolicyResult);
+            new CommandSymbol("alter table policy caching", "alter table <database_table> policy caching hot '=' <timespan>:Timespan", PolicyResult);
 
         public static readonly CommandSymbol AlterClusterPolicyCaching =
-            new CommandSymbol("alter cluster policy caching", "alter cluster policy caching hot '=' <value>:Timespan");
+            new CommandSymbol("alter cluster policy caching", "alter cluster policy caching hot '=' <timespan>:Timespan");
 
         public static readonly CommandSymbol DeleteTablePolicyCaching =
             new CommandSymbol("delete table policy caching", "delete table <database_table> policy caching");
@@ -597,10 +591,10 @@ namespace Kusto.Language
             new CommandSymbol("alter tables policy retention", "alter tables '(' { <table>:TableName, ',' }+ ')' policy retention <string>:RetentionPolicy", PolicyResult);
 
         public static readonly CommandSymbol AlterMergeTablePolicyRetention =
-            new CommandSymbol("alter-merge table policy retention", "alter-merge table <database_table>:TableName policy retention (<string>:RetentionPolicy | [softdelete '=' <value>:SoftDeleteValue] [recoverability '=' (disabled|enabled):RecoverabilityValue])", PolicyResult);
+            new CommandSymbol("alter-merge table policy retention", "alter-merge table <database_table>:TableName policy retention (<string>:RetentionPolicy | softdelete '=' <timespan>:SoftDeleteValue [recoverability '=' (disabled|enabled):RecoverabilityValue] | recoverability '=' (disabled|enabled):RecoverabilityValue)", PolicyResult);
 
         public static readonly CommandSymbol AlterMergeDatabasePolicyRetention =
-            new CommandSymbol("alter-merge database policy retention", "alter-merge database <database>:DatabaseName policy retention (<string>:RetentionPolicy | [softdelete '=' <value>:SoftDeleteValue] [recoverability '=' (disabled|enabled):RecoverabilityValue])", PolicyResult);
+            new CommandSymbol("alter-merge database policy retention", "alter-merge database <database>:DatabaseName policy retention (<string>:RetentionPolicy | softdelete '=' <timespan>:SoftDeleteValue [recoverability '=' (disabled|enabled):RecoverabilityValue] | recoverability '=' (disabled|enabled):RecoverabilityValue)", PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyRetention =
             new CommandSymbol("delete table policy retention", "delete table <database_table>:TableName policy retention");
@@ -735,7 +729,7 @@ namespace Kusto.Language
             new CommandSymbol("alter table policy restricted_view_access", "alter table <database_table>:TableName policy restricted_view_access (true | false)", PolicyResult);
 
         public static readonly CommandSymbol AlterTablesPolicyRestrictedViewAccess =
-            new CommandSymbol("alter tables policy restricted_view_access", "alter tables '(' { <table>:TableName policy, ',' }+ ')' restricted_view_access (true | false)", PolicyResult);
+            new CommandSymbol("alter tables policy restricted_view_access", "alter tables '(' { <table>:TableName, ',' }+ ')' policy restricted_view_access (true | false)", PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyRestrictedViewAccess =
             new CommandSymbol("delete table policy restricted_view_access", "delete table <database_table>:TableName policy restricted_view_access");
@@ -833,7 +827,7 @@ namespace Kusto.Language
             new CommandSymbol("show database principals", $"show database <database>:DatabaseName principals", ShowPrincipalsResult);
 
         public static readonly CommandSymbol ShowTablePrincipals =
-            new CommandSymbol("show table principals", $"show table <database_table>:TableName principals", ShowPrincipalsResult);
+            new CommandSymbol("show table principals", $"show table <table>:TableName principals", ShowPrincipalsResult);
 
         public static readonly CommandSymbol ShowFunctionPrincipals =
             new CommandSymbol("show function principals", $"show function <function>:FunctionName principals", ShowPrincipalsResult);
@@ -900,7 +894,7 @@ namespace Kusto.Language
             new CommandSymbol("show cluster blockedprincipals", BlockedPrincipalsResult);
 
         public static readonly CommandSymbol AddClusterBlockedPrincipals =
-            new CommandSymbol("add cluster blockedprincipals", "add cluster blockedprincipals <string>:Principal [application <string>:AppName] [user <string>:UserName] [period <value>:Period] [reason <string>:Reason]", BlockedPrincipalsResult);
+            new CommandSymbol("add cluster blockedprincipals", "add cluster blockedprincipals <string>:Principal [application <string>:AppName] [user <string>:UserName] [period <timespan>:Period] [reason <string>:Reason]", BlockedPrincipalsResult);
 
         public static readonly CommandSymbol DropClusterBlockedPrincipals =
             new CommandSymbol("drop cluster blockedprincipals", "drop cluster blockedprincipals <string>:Principal [application <string>:AppName] [user <string>:UserName]");
@@ -1148,7 +1142,7 @@ namespace Kusto.Language
                 "cancel query <string>:ClientRequestId");
 
         public static readonly CommandSymbol ShowQueryPlan =
-            new CommandSymbol("show queryplan",
+            new CommandSymbol("show queryplan", "show queryplan '<|' <input_query>:Query",
                 new TableSymbol(
                     new ColumnSymbol("ResultType", ScalarTypes.String),
                     new ColumnSymbol("RelopTree", ScalarTypes.String),
@@ -1177,7 +1171,7 @@ namespace Kusto.Language
                     new ColumnSymbol("DiskCacheDetails", ScalarTypes.String)));
 
         public static readonly CommandSymbol ShowCommands =
-            new CommandSymbol("show commands", "show comandsd",
+            new CommandSymbol("show commands", "show commands",
                 new TableSymbol(
                     new ColumnSymbol("ClientActivityId", ScalarTypes.String),
                     new ColumnSymbol("CommandType", ScalarTypes.String),
@@ -1210,7 +1204,7 @@ namespace Kusto.Language
                     new ColumnSymbol("ResultSetStatistics", ScalarTypes.Dynamic)));
 
         public static readonly CommandSymbol ShowIngestionFailures =
-            new CommandSymbol("show ingestion failures", "show ingestion failures [with '(' OperationId '=' <string>:OperationId ')']",
+            new CommandSymbol("show ingestion failures", "show ingestion failures [with '(' OperationId '=' <guid>:OperationId ')']",
                 new TableSymbol(
                     new ColumnSymbol("OperationId", ScalarTypes.String),
                     new ColumnSymbol("Database", ScalarTypes.String),
@@ -1248,8 +1242,8 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterExtents =
             new CommandSymbol("show cluster extents", "show cluster extents [hot]", ShowExtentsResults);
 
-        private static readonly string ExtentIdList = "'(' {<guid>:ExtentId, ','} ')'";
-        private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains') <string>:Tag, and }";
+        private static readonly string ExtentIdList = "'(' {<guid>:ExtentId, ','}+ ')'";
+        private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains') <string>:Tag, and }+";
 
         public static readonly CommandSymbol ShowDatabaseExtents =
             new CommandSymbol("show database extents", $"show database <database>:DatabaseName extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
@@ -1257,17 +1251,22 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTableExtents =
             new CommandSymbol("show table extents", $"show table <table>:TableName extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
 
-        private static readonly string TableNameList = "'(' { <table>:TableName, ',' } ')'";
+        private static readonly string TableNameList = "'(' { <table>:TableName, ',' }+ ')'";
         public static readonly CommandSymbol ShowTablesExtents =
-            new CommandSymbol("show tables extents", $"show tables [{TableNameList}] extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
+            new CommandSymbol("show tables extents", $"show tables {TableNameList} extents [{ExtentIdList}] [hot] [{TagWhereClause}]", ShowExtentsResults);
 
-        private static readonly string GuidList = "'(' {<guid>:GUID, ','} ')'";
-        public static readonly CommandSymbol MergeExtents =
-            new CommandSymbol("merge extents", $"merge [async | dryrun] <table>:TableName {GuidList} [with '(' rebuild '=' <value> ')']",
-                new TableSymbol(
+        private static readonly TableSymbol MergeExtentsResult =
+            new TableSymbol(
                     new ColumnSymbol("OriginalExtentId", ScalarTypes.String),
                     new ColumnSymbol("ResultExtentId", ScalarTypes.String),
-                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan)));
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan));
+
+        private static readonly string GuidList = "'(' {<guid>:GUID, ','}+ ')'";
+        public static readonly CommandSymbol MergeExtents =
+            new CommandSymbol("merge extents", $"merge [async] <table>:TableName {GuidList} [with '(' rebuild '=' true ')']", MergeExtentsResult);
+
+        public static readonly CommandSymbol MergeExtentsDryrun =
+            new CommandSymbol("merge extents", $"merge dryrun <table>:TableName {GuidList}", MergeExtentsResult);
 
         private static readonly TableSymbol MoveExtentsResult =
             new TableSymbol(
@@ -1296,16 +1295,16 @@ namespace Kusto.Language
         //public static readonly CommandSymbol DropExtents =
         //    new CommandSymbol("drop extents", "drop extents '(' { <guid>:ExtentId, ',' } ')' [from <table>:TableName]", DropExtentResult);
 
-        private static readonly string DropProperties = "[older <value>:Older (days | hours)] from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]";
+        private static readonly string DropProperties = "[older <long>:Older (days | hours)] from (<table>:TableName | all tables) [trim by (extentsize | datasize) <long>:TrimSize (MB | GB | bytes)] [limit <long>:LimitCount]";
 
         public static readonly CommandSymbol DropExtents =
             new CommandSymbol("drop extents",
                 @"drop extents 
-                    ('(' { <guid>:ExtentId, ',' } ')' [from <table>:TableName]
+                    ('(' { <guid>:ExtentId, ',' }+ ')' [from <table>:TableName]
                      | whatif '<|' <input_query>:Query
                      | '<|' <input_query>:Query
-                     | older <value>:Older (days | hours) from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]
-                     | from (<table>:TableName | all tables) [trim by (extentsize | datasize) <value>:TrimSize (MB | GB | bytes)] [limit <value>:LimitCount]
+                     | older <long>:Older (days | hours) from (<table>:TableName | all tables) [trim by (extentsize | datasize) <long>:TrimSize (MB | GB | bytes)] [limit <long>:LimitCount]
+                     | from (<table>:TableName | all tables) [trim by (extentsize | datasize) <long>:TrimSize (MB | GB | bytes)] [limit <long>:LimitCount]
                      )", DropExtentResult);
 
         public static readonly CommandSymbol DropPretendExtentsByProperties =
@@ -1358,8 +1357,6 @@ namespace Kusto.Language
                 DropTables,
                 CreateTableIngestionMapping,
                 AlterTableIngestionMapping,
-                ShowIngestionMappings,
-                ShowIngestionMapping,
                 ShowTableIngestionMappings,
                 ShowTableIngestionMapping,
                 DropTableIngestionMapping,
@@ -1372,8 +1369,8 @@ namespace Kusto.Language
                 AlterColumnType,
                 DropColumn,
                 DropTableColumns,
-                AlterTableColumnDocString,
-                AlterMergeTableColumnDocString,
+                AlterTableColumnDocStrings,
+                AlterMergeTableColumnDocStrings,
 
                 // Functions
                 ShowFunctions,
@@ -1579,6 +1576,7 @@ namespace Kusto.Language
                 ShowTableExtents,
                 ShowTablesExtents,
                 MergeExtents,
+                MergeExtentsDryrun,
                 MoveExtentsFrom,
                 MoveExtentsQuery,
                 DropExtent,

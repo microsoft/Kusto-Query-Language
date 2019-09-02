@@ -46,7 +46,7 @@ namespace Kusto.Language.Parsing
         /// Creates a parser that parses the grammar grammar.
         /// </summary>
         public static Parser<char, TResult> CreateParser<TResult>(
-            IReadOnlyDictionary<string, TResult> rules,
+            Func<string, TResult> getRule,
             Func<OffsetValue<string>, TResult> createTerm,
             Func<TResult, TResult> createOptional,
             Func<TResult, TResult> createRequired,
@@ -57,6 +57,7 @@ namespace Kusto.Language.Parsing
             Func<TResult, TResult> createOneOrMore,
             Func<TResult, TResult, TResult> createZeroOrMoreSeparated,
             Func<TResult, TResult, TResult> createOneOrMoreSeparated)
+            where TResult : class
         {
             // build the parser that parsers the simple grammar grammar
             Parser<char, TResult> elementCore = null;
@@ -112,17 +113,21 @@ namespace Kusto.Language.Parsing
                     Token("<"), Text(OneOrMore(Not(Token(">")))), Token(">"),
                     (open, name, close) =>
                     {
-                        if (rules.TryGetValue(name, out var value))
+                        var ruleValue = getRule(name);
+                        if (ruleValue == null)
                         {
-                            return value;
+                            throw new InvalidOperationException($"Unknown rule <{name}>");
                         }
-                        throw new InvalidOperationException($"Unknown rule <{name}>");
+                        else
+                        {
+                            return ruleValue;
+                        }
                     }).WithTag("<rule>");
 
             var sequence = Produce(
                 OneOrMore(element),
                 (IReadOnlyList<TResult> list) =>
-                    list.Count == 0 ? list[0] : createSequence(list))
+                    list.Count == 0 ? list[0] : createSequence(list.ToList()))
                 .WithTag("<sequence>");
 
             var alternation =

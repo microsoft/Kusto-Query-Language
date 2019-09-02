@@ -507,24 +507,34 @@ namespace Kusto.Language.Parsing
                     () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
 
             var grammar = GrammarGrammar.CreateParser(
-                rules: new Dictionary<string, ParserInfo>()
-                {
-                    { "value", KustoValueInfo },
-                    { "type", KustoTypeInfo },
-                    { "string", KustoStringLiteralInfo },
-                    { "guid", KustoGuidLiteralInfo },
-                    { "name", KustoNameDeclarationInfo },
-                    { "column", KustoColumnNameInfo },
-                    { "table_column", KustoTableColumnNameInfo },
-                    { "database_table_column", KustoDatabaseTableColumnNameInfo },
-                    { "table", KustoTableNameInfo },
-                    { "database_table", KustoDatabaseTableNameInfo },
-                    { "database", KustoDatabaseNameInfo },
-                    { "cluster", KustoClusterNameInfo },
-                    { "function", KustoFunctionNameInfo },
-                    { "function_declaration", KustoFunctionDeclaration },
-                    { "input_query", KustoCommandInputInfo },
-                    { "input_data", KustoInputText }
+                getRule: name => {
+                    switch (name)
+                    {
+                        case "value": return KustoValueInfo;
+                        case "timespan": return KustoValueInfo;
+                        case "datetime": return KustoValueInfo;
+                        case "string": return KustoStringLiteralInfo;
+                        case "bool": return KustoValueInfo;
+                        case "long": return KustoValueInfo;
+                        case "int": return KustoValueInfo;
+                        case "decimal": return KustoValueInfo;
+                        case "real": return KustoValueInfo;
+                        case "type": return KustoTypeInfo;
+                        case "guid": return KustoGuidLiteralInfo;
+                        case "name": return KustoNameDeclarationInfo;
+                        case "column": return KustoColumnNameInfo;
+                        case "table_column": return KustoTableColumnNameInfo;
+                        case "database_table_column": return KustoDatabaseTableColumnNameInfo;
+                        case "table": return KustoTableNameInfo;
+                        case "database_table": return KustoDatabaseTableNameInfo;
+                        case "database": return KustoDatabaseNameInfo;
+                        case "cluster": return KustoClusterNameInfo;
+                        case "function": return KustoFunctionNameInfo;
+                        case "function_declaration": return KustoFunctionDeclaration;
+                        case "input_query": return KustoCommandInputInfo;
+                        case "input_data": return KustoInputText;
+                        default: return null;
+                    }
                 },
 
                 createTerm: textAndOffset =>

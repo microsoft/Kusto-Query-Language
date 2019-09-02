@@ -10,7 +10,7 @@ summarize `avg(`*Expr*`)`
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation. 
+* *Expr*: Expression that will be used for aggregation calculation. Records with `null` values are ignored and not accounted for the calculation.
 
 **Returns**
 
