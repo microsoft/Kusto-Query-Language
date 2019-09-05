@@ -38,7 +38,7 @@ Where:
 | `scatterchart`     | Points graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
 | `stackedareachart` | Stacked area graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
 | `table`            | Default - results are shown as a table.|
-| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other columns are y-axes.|
+| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There can be one string column whose values will be used to “group” the numeric columns and create different lines in the chart (further string columns are ignored).|
 | `timepivot`        | Interactive navigation over the events time-line (pivoting on time axis)|
 
 * *PropertyName*/*PropertyValue* indicate additional information to use when rendeing.
