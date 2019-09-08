@@ -444,7 +444,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetAggregateNotAllowedInThisContext(string name)
         {
-            return new Diagnostic("The aggregate function '{name}' is not allowed in this context.");
+            return new Diagnostic($"The aggregate function '{name}' is not allowed in this context.");
         }
 
         public static Diagnostic GetColumnMustExistOnBothSidesOfJoin(string name)

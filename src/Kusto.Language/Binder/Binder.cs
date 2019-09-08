@@ -202,6 +202,7 @@ namespace Kusto.Language.Binding
             GlobalState globals,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
+            LocalScope outerScope,
             GlobalBindingCache globalBindingCache,
             LocalBindingCache localBindingCache,
             Action<SyntaxNode, SemanticInfo> semanticInfoSetter,
@@ -212,7 +213,7 @@ namespace Kusto.Language.Binding
             _currentDatabase = currentDatabase ?? globals.Database;
             _globalBindingCache = globalBindingCache ?? new GlobalBindingCache();
             _localBindingCache = localBindingCache ?? new LocalBindingCache();
-            _localScope = new LocalScope();
+            _localScope = new LocalScope(outerScope);
             _semanticInfoSetter = semanticInfoSetter;
             _cancellationToken = cancellationToken;
         }
@@ -236,6 +237,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // outer scope
                     bindingCache,
                     localBindingCache,
                     semanticInfoSetter: semanticInfoSetter,
@@ -262,26 +264,40 @@ namespace Kusto.Language.Binding
             Binder outer,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
-            SyntaxNode contextNode,
+            LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
             var binder = new Binder(
-                outer._globals, 
+                outer._globals,
                 currentCluster ?? outer._currentCluster,
                 currentDatabase ?? outer._currentDatabase,
+                outerScope,
                 outer._globalBindingCache,
                 outer._localBindingCache,
                 outer._semanticInfoSetter,
                 outer._cancellationToken);
-            binder.SetContext(contextNode, locals: locals);
+
+            if (locals != null)
+            {
+                binder.SetLocals(locals);
+            }
+
             var treeBinder = new TreeBinder(binder);
             expansionRoot.Accept(treeBinder);
+        }
+
+        private void SetLocals(IEnumerable<Symbol> locals)
+        {
+            foreach (var local in locals)
+            {
+                _localScope.AddSymbol(local);
+            }
         }
 
         /// <summary>
         /// Sets the context of the binder to the specified node and text position.
         /// </summary>
-        private void SetContext(SyntaxNode contextNode, int position = -1, IEnumerable<Symbol> locals = null)
+        private void SetContext(SyntaxNode contextNode, int position = -1)
         {
             // note: assumes this API is only called at most once after constructor.
             if (contextNode != null)
@@ -289,17 +305,7 @@ namespace Kusto.Language.Binding
                 var builder = new ContextBuilder(this, position >= 0 ? position : contextNode.TextStart);
                 contextNode.Accept(builder);
             }
-
-            if (locals != null)
-            {
-                _localScope = new LocalScope(_localScope);
-
-                foreach (var local in locals)
-                {
-                    _localScope.AddDeclaration(local);
-                }
-            }
-        }
+        }       
 
         /// <summary>
         /// Gets the computed return type for functions specified with a body or declaration.
@@ -316,6 +322,7 @@ namespace Kusto.Language.Binding
                     globals,
                     currentCluster,
                     currentDatabase,
+                    null, // dynamic scope
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null, 
@@ -344,6 +351,30 @@ namespace Kusto.Language.Binding
             /// </summary>
             PlugIn
         }
+
+        /// <summary>
+        /// Gets the <see cref="ScopeKind"/> in effect for a function's arguments.
+        /// </summary>
+        private ScopeKind GetArgumentScope(FunctionCallExpression fc, ScopeKind outerScope)
+        {
+            if (GetReferencedSymbol(fc.Name) is FunctionSymbol fs
+                && _globals.IsAggregateFunction(fs))
+            {
+                // aggregate function arguments are always normal
+                return ScopeKind.Normal;
+            }
+            else if (outerScope == ScopeKind.Aggregate)
+            {
+                // if the function is not a known aggregate then keep aggregate scope as there may be
+                // aggregates nested in the function arguments
+                return ScopeKind.Aggregate;
+            }
+            else
+            {
+                return ScopeKind.Normal;
+            }
+        }
+
         #region Semantic Info accessors
         private SemanticInfo GetSemanticInfo(SyntaxNode node)
         {
@@ -697,6 +728,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // outer scope
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null,
@@ -719,6 +751,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // outer scope
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null,
@@ -1629,7 +1662,7 @@ namespace Kusto.Language.Binding
                     iArg = signature.GetArgumentIndex(signature.Parameters[0], arguments);
                     if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var tableName))
                     {
-                        return GetTable(tableName);
+                        return GetTableFunctionResult(tableName);
                     }
                     else
                     {
@@ -1646,22 +1679,24 @@ namespace Kusto.Language.Binding
 
         private SignatureResult GetComputedSignatureResult(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
+            var outerScope = _localScope.Copy();
+
             if (signature.FunctionBodyFacts == FunctionBodyFacts.None)
             {
                 // body has non-variable (fixed) return type and does not contain cluster/database/table calls.
                 return new SignatureResult(
                     signature.NonVariableComputedReturnType,
-                    GetDeferredCallSiteExpansion(signature, arguments, argumentTypes));
+                    GetDeferredCallSiteExpansion(signature, arguments, argumentTypes, outerScope));
             }
             else
             {
-                var expansion = this.GetCallSiteExpansion(signature, arguments, argumentTypes);
+                var expansion = this.GetCallSiteExpansion(signature, arguments, argumentTypes, outerScope);
                 var returnType = expansion?.Expression?.ResultType ?? ErrorSymbol.Instance;
                 return new SignatureResult(returnType, () => expansion);
             }
         }
 
-        private Func<SyntaxNode> GetDeferredCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null)
+        private Func<SyntaxNode> GetDeferredCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
         {
             SyntaxNode expansion = null;
             var args = arguments.ToReadOnly(); // force copy
@@ -1674,7 +1709,7 @@ namespace Kusto.Language.Binding
                     // re-introduce binding lock since deferred function can be called outside the current binding lock
                     lock (this._globalBindingCache)
                     {
-                        expansion = this.GetCallSiteExpansion(signature, args, types);
+                        expansion = this.GetCallSiteExpansion(signature, args, types, outerScope);
                     }
                 }
 
@@ -1734,12 +1769,43 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets the table addressable in the current context.
+        /// Gets the result of calling the table() function in the current context.
         /// </summary>
-        private TypeSymbol GetTable(string name)
+        private TypeSymbol GetTableFunctionResult(string name)
         {
-            var database = _pathScope as DatabaseSymbol ?? _currentDatabase;
-            return GetTable(name, database) ?? (TypeSymbol)ErrorSymbol.Instance;
+            var pathDb = _pathScope as DatabaseSymbol;
+
+            if (pathDb == null)
+            {
+                var match = SymbolMatch.Table | SymbolMatch.Local;
+
+                var symbols = s_symbolListPool.AllocateFromPool();
+                try
+                {
+                    // check scope for variables, etc
+                    _localScope.GetSymbols(name, match, symbols);
+
+                    if (symbols.Count > 0)
+                    {
+                        var result = GetResultType(symbols[0]);
+                        return result as TableSymbol ?? (TypeSymbol)ErrorSymbol.Instance;
+                    }
+                    else
+                    {
+                        return GetTable(name, _currentDatabase)
+                            ?? (TypeSymbol)ErrorSymbol.Instance;
+                    }
+                }
+                finally
+                {
+                    s_symbolListPool.ReturnToPool(symbols);
+                }
+            }
+            else 
+            {
+                return GetTable(name, pathDb ?? _currentDatabase)
+                    ?? (TypeSymbol)ErrorSymbol.Instance;
+            }
         }
 
         /// <summary>
@@ -2554,7 +2620,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the inline expansion of an invocation of this <see cref="Signature"/>.
         /// </summary>
-        internal FunctionBody GetCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null)
+        internal FunctionBody GetCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
         {
             if (signature.ReturnKind != ReturnTypeKind.Computed)
                 return null;
@@ -2581,7 +2647,7 @@ namespace Kusto.Language.Binding
                             var isDatabaseFunction = IsDatabaseFunction(signature);
                             var currentDatabase = isDatabaseFunction ? _globals.GetDatabase((FunctionSymbol)signature.Symbol) : null;
                             var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
-                            BindExpansion(expansion, this, currentCluster, currentDatabase, signature.Declaration, callSiteInfo.Locals);
+                            BindExpansion(expansion, this, currentCluster, currentDatabase, outerScope, callSiteInfo.Locals);
                             SetSignatureBindingInfo(signature, expansion);
                         }
                     }
@@ -2623,6 +2689,10 @@ namespace Kusto.Language.Binding
             // Adds expansion to global or local cache.
             void AddExpansionToCache(CallSiteInfo callsite, FunctionBody expansion)
             {
+                // if there is a call to unqualified table(t) then it may require resolving using dynamic scope, so don't cache anywhere
+                if ((callsite.Signature.FunctionBodyFacts & FunctionBodyFacts.Table) != 0)
+                    return;
+
                 // only add database functions that are variable in nature to global cache
                 var shouldCacheGlobally = IsDatabaseFunction(callsite.Signature)
                     && callsite.Signature.FunctionBodyFacts != FunctionBodyFacts.None;
@@ -2732,7 +2802,16 @@ namespace Kusto.Language.Binding
             {
                 if (fc.ReferencedSymbol == Functions.Table)
                 {
-                    result |= FunctionBodyFacts.Table;
+                    // distinguish between database(d).table(t) vs just table(t)
+                    // since table(t) can see variables in dynamic scope
+                    if (fc.Parent is PathExpression p && p.Selector == fc)
+                    {
+                        result |= FunctionBodyFacts.QualifiedTable;
+                    }
+                    else
+                    {
+                        result |= FunctionBodyFacts.Table;
+                    }
                 }
                 else if (fc.ReferencedSymbol == Functions.Database)
                 {
@@ -2814,7 +2893,7 @@ namespace Kusto.Language.Binding
         #region Declarations
         private void AddLetDeclarationToScope(LocalScope scope, LetStatement statement, List<Diagnostic> diagnostics = null)
         {
-            scope.AddDeclaration(GetReferencedSymbol(statement.Name));
+            scope.AddSymbol(GetReferencedSymbol(statement.Name));
         }
 
         private void AddDeclarationsToLocalScope(LocalScope scope, SyntaxList<SeparatedElement<FunctionParameter>> declarations)
@@ -2841,7 +2920,7 @@ namespace Kusto.Language.Binding
             var symbol = GetReferencedSymbol(declaration.Name);
             if (symbol != null)
             {
-                scope.AddDeclaration(symbol); 
+                scope.AddSymbol(symbol); 
             }
         }
 

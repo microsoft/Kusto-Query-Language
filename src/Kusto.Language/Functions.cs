@@ -672,6 +672,16 @@ namespace Kusto.Language
             new FunctionSymbol("hash_sha256", ScalarTypes.String,
                 new Parameter("source", ParameterTypeKind.NotDynamic))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol HashCombine =
+          new FunctionSymbol("hash_combine", ScalarTypes.Long,
+                  new Parameter("source", ParameterTypeKind.Scalar, ArgumentKind.Column, minOccurring: 2, maxOccurring: MaxRepeat))
+          .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol HashMany =
+          new FunctionSymbol("hash_many", ScalarTypes.Long,
+              new Parameter("source", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 1, maxOccurring: MaxRepeat))
+          .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region iif / case
@@ -1550,7 +1560,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 #endregion
 
-        #region spatial functions
+        #region geospatial functions
         public static readonly FunctionSymbol Point =
             new FunctionSymbol("point", ScalarTypes.Dynamic,
                 new Parameter("latitude", ParameterTypeKind.Number),
@@ -1564,6 +1574,25 @@ namespace Kusto.Language
                 new Parameter("point2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
+
+        public static readonly FunctionSymbol GeoDistance2Points =
+            new FunctionSymbol("geo_distance_2points", ScalarTypes.Real,
+                new Parameter("p1_longitude", ParameterTypeKind.Number),
+                new Parameter("p1_latitude", ParameterTypeKind.Number),
+                new Parameter("p2_longitude", ParameterTypeKind.Number),
+                new Parameter("p2_latitude", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoPointInCircle =
+            new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
+                new Parameter("p_longitude", ParameterTypeKind.Number),
+                new Parameter("p_latitude", ParameterTypeKind.Number),
+                new Parameter("pc_longitude", ParameterTypeKind.Number),
+                new Parameter("pc_latitude", ParameterTypeKind.Number),
+                new Parameter("c_radius", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
         #endregion
 
         #region other
@@ -1787,6 +1816,8 @@ namespace Kusto.Language
             Hash,
             HashSha256,
             HashXXH64,
+            HashCombine,
+            HashMany,
             #endregion
 
 #region iif / case
@@ -1935,6 +1966,8 @@ namespace Kusto.Language
 #region spatial functions
             Point,
             Distance,
+            GeoDistance2Points,
+            GeoPointInCircle,
 #endregion
 
             #region other

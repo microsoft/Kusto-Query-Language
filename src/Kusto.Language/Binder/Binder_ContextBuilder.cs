@@ -88,7 +88,7 @@ namespace Kusto.Language.Binding
                 if (_position >= node.ArgumentList.TextStart)
                 {
                     _binder._pathScope = null;
-                    _binder._scopeKind = ScopeKind.Normal;
+                    _binder._scopeKind = _binder.GetArgumentScope(node, _binder._scopeKind);
                     _binder._implicitArgumentType = null;
                 }
             }
@@ -145,7 +145,7 @@ namespace Kusto.Language.Binding
                         }
                         else if (se.Element is PatternStatement ps)
                         {
-                            _binder._localScope.AddDeclaration(_binder.GetReferencedSymbol(ps.Name));
+                            _binder._localScope.AddSymbol(_binder.GetReferencedSymbol(ps.Name));
                         }
                     }
                 }
@@ -319,7 +319,7 @@ namespace Kusto.Language.Binding
                 if (!string.IsNullOrEmpty(name) && _position > node.End && type != null)
                 {
                     var declaration = new VariableSymbol(node.Name.SimpleName, type);
-                    _binder._localScope.AddDeclaration(declaration);
+                    _binder._localScope.AddSymbol(declaration);
                 }
             }
 
@@ -344,7 +344,7 @@ namespace Kusto.Language.Binding
                     if (command != null)
                     {
                         var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
-                        _binder._localScope.AddDeclaration(commandResults);
+                        _binder._localScope.AddSymbol(commandResults);
                     }
                 }
             }

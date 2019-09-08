@@ -567,12 +567,34 @@ namespace Kusto.Language.Symbols
     [Flags]
     internal enum FunctionBodyFacts
     {
+        /// <summary>
+        /// The function body does not have any known special conditions.
+        /// </summary>
         None                = 0b_0000_0000,
 
+        /// <summary>
+        /// The function body or any of its dependencies includes a call to the cluster() function.
+        /// </summary>
         Cluster             = 0b_0000_0001,
+
+        /// <summary>
+        /// The function body or any of its dependencies includes a call to the database() function.
+        /// </summary>
         Database            = 0b_0000_0010,
+
+        /// <summary>
+        /// The function body or any of its dependencies includes an unqualified call to the table() function.
+        /// </summary>
         Table               = 0b_0000_0100,
 
+        /// <summary>
+        /// The function body or any of its dependencies includes a qualified call to the table() function.
+        /// </summary>
+        QualifiedTable      = 0b_0000_1000,
+
+        /// <summary>
+        /// The function body may have a variable return type (due to variable tabular input)
+        /// </summary>
         VariableReturn      = 0b_0001_0000,
     }
 }

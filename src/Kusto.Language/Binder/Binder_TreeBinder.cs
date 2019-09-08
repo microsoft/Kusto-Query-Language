@@ -258,7 +258,7 @@ namespace Kusto.Language.Binding
                     var name = node.Name.SimpleName;
                     var symbol = new VariableSymbol(name, _binder._rowScope);
                     _binder.SetSemanticInfo(node.Name, new SemanticInfo(symbol, null));
-                    _binder._localScope.AddDeclaration(symbol);
+                    _binder._localScope.AddSymbol(symbol);
                 }
 
                 BindNode(node);
@@ -309,14 +309,16 @@ namespace Kusto.Language.Binding
                 _binder._pathScope = null; 
                 try
                 {
-                    // handle function argument binding specially
+                    var argumentScope = _binder.GetArgumentScope(node, _binder._scopeKind);
+
                     if (_binder.GetReferencedSymbol(node.Name) is FunctionSymbol fn && fn.Signatures.Count == 1)
                     {
-                        this.VisitArgumentList(node.ArgumentList, fn.Signatures[0]);
+                        // handle arguments from a known signature specially
+                        this.VisitArgumentList(node.ArgumentList, fn.Signatures[0], argumentScope);
                     }
                     else
                     {
-                        this.VisitInScope(node.ArgumentList, ScopeKind.Normal);
+                        this.VisitInScope(node.ArgumentList, argumentScope);
                     }
                 }
                 finally
@@ -334,14 +336,8 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private void VisitArgumentList(ExpressionList list, Signature signature)
+            private void VisitArgumentList(ExpressionList list, Signature signature, ScopeKind argumentScope)
             {
-                // if the function is an aggregate, then evaluate its arguments using normal scope where aggregates are not allowed.
-                var argumentScope =
-                    (signature.Symbol is FunctionSymbol fn && _binder._globals.IsAggregateFunction(fn)) 
-                        ? ScopeKind.Normal 
-                        : _binder._scopeKind;
-
                 for (int i = 0, n = list.Expressions.Count; i < n; i++)
                 {
                     var arg = list.Expressions[i].Element;
@@ -414,7 +410,7 @@ namespace Kusto.Language.Binding
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));
 
                 // add to local scope
-                _binder._localScope.AddDeclaration(local);
+                _binder._localScope.AddSymbol(local);
             }
 
             public override void VisitFunctionDeclaration(FunctionDeclaration node)
@@ -479,7 +475,7 @@ namespace Kusto.Language.Binding
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));
 
                 // add to local scope
-                _binder._localScope.AddDeclaration(local);
+                _binder._localScope.AddSymbol(local);
             }
 
             public override void VisitPatternDeclaration(PatternDeclaration node)
@@ -666,7 +662,7 @@ namespace Kusto.Language.Binding
                     if (command != null)
                     {
                         var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
-                        _binder._localScope.AddDeclaration(commandResults);
+                        _binder._localScope.AddSymbol(commandResults);
                     }
 
                     // all other statements

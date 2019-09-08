@@ -117,11 +117,12 @@ namespace Kusto.Language.Binding
 
                 var fs = new FunctionSymbol(name, decl, parameters);
 
+#if false  // TODO: check if we can add this back if we know it is invariant
                 // add exiting declaration as default expansion
                 var cs = _binder.GetCallSiteInfo(fs.Signatures[0], EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
                 _binder._localBindingCache.CallSiteToExpansionMap.Add(cs, decl.Body);
                 _binder.SetSignatureBindingInfo(fs.Signatures[0], decl.Body);
-
+#endif
                 return fs;
             }
 
@@ -1937,6 +1938,8 @@ namespace Kusto.Language.Binding
 
             void CheckJoinAndOrEquality(Expression condition, List<Diagnostic> diagnostics)
             {
+                condition = RemoveParenthesis(condition);
+
                 if (condition is BinaryExpression be)
                 {
                     if (be.Kind == SyntaxKind.EqualExpression)
@@ -1961,6 +1964,8 @@ namespace Kusto.Language.Binding
 
             void CheckJoinEquality(Expression condition, List<Diagnostic> diagnostics)
             {
+                condition = RemoveParenthesis(condition);
+
                 if (condition is BinaryExpression be
                     && condition.Kind == SyntaxKind.EqualExpression)
                 {
@@ -1975,23 +1980,50 @@ namespace Kusto.Language.Binding
 
             void CheckJoinEqualityOperand(Expression operand, string prefix, List<Diagnostic> diagnostics)
             {
+                operand = RemoveParenthesis(operand);
+
                 if (operand is PathExpression path)
                 {
-                    if (path.Expression is NameReference id)
+                    // look for $left.c or $right.c
+                    if (GetReferencedName(path.Expression) == prefix)
                     {
-                        if (id.SimpleName == prefix)
+                        if (_binder.CheckIsColumn(operand, diagnostics))
                         {
-                            if (_binder.CheckIsColumn(operand, diagnostics))
-                            {
-                                _binder.CheckIsScalar(operand, diagnostics); // are there non-scalar columns?
-                            }
-
-                            return;
+                            _binder.CheckIsScalar(operand, diagnostics); // are there non-scalar columns?
                         }
+
+                        return;
                     }
                 }
 
                 diagnostics.Add(DiagnosticFacts.GetInvalidJoinConditionOperand(prefix).WithLocation(operand));
+            }
+
+            private static Expression RemoveParenthesis(Expression expression)
+            {
+                while (expression is ParenthesizedExpression pe)
+                    expression = pe.Expression;
+
+                return expression;
+            }
+
+            private static string GetReferencedName(Expression expression)
+            {
+                switch (expression)
+                {
+                    case NameReference nr:
+                        return nr.SimpleName;
+
+                    case BrackettedExpression br:
+                        if (br.Expression.Kind == SyntaxKind.StringLiteralExpression
+                            || br.Expression.Kind == SyntaxKind.CompoundStringLiteralExpression)
+                        {
+                            return (string)br.Expression.LiteralValue;
+                        }
+                        break;
+                }
+
+                return null;
             }
 
             private static readonly QueryParameterInfo[] s_JoinParameters = new QueryParameterInfo[]
@@ -2840,9 +2872,9 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-            #endregion
+#endregion
 
-            #region Directives
+#region Directives
             public override SemanticInfo VisitDirectiveBlock(DirectiveBlock node)
             {
                 return null;
