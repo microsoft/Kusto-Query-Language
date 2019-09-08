@@ -32,10 +32,22 @@ See:
 [top operator](topoperator.md)
 [top-nested operator](topnestedoperator.md)
 
-## A note on paging through a large resultset (or: the lack of a `skip` operator)
+## Does Kusto support paging of query results?
 
-Kusto does not support the complementary `skip` operator. This is intentional, as
-`take` and `skip` together are mainly used for thin client paging, and have a major
-performance impact on the service. Application builders that want to support result
-paging are advised to query for several pages of data (say, 10,000 records at a time)
-and then display a page of data at a time to the user.
+Kusto does not provide a built-in paging mechanism.
+
+Kusto is aa complex service that continuously optimizes the data it stores
+in the background in order to provide excellent query performance over huge data
+sets. While paging is a useful mechanism for stateless clients with limited
+resources, it does so by shifting the burden to the backend service which now
+has to track client state information; this, in turn, severly limits the performance
+and scalability of the backend service.
+
+Customers that require paging support can implement one by using other Kusto
+features, such as:
+
+1. Exporting the result of a query to an external storage and paging through the
+   generated data.
+
+2. Writing a middle-tier application that provide a statful paging API by caching
+   the results of a Kusto query.
