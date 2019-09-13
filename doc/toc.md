@@ -121,7 +121,7 @@
 ## [Numerical operators](numoperators.md)
 ## [String operators](datatypes-string-operators.md)
 ## [between operator](betweenoperator.md)
-## [!between operator](notbetweenoperator.md)
+## [not-between operator (!between)](notbetweenoperator.md)
 ## [in and !in operators](inoperator.md)
 ## [has_any operator](has-anyoperator.md)
 

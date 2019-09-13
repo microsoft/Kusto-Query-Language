@@ -1577,20 +1577,34 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol GeoDistance2Points =
             new FunctionSymbol("geo_distance_2points", ScalarTypes.Real,
-                new Parameter("p1_longitude", ParameterTypeKind.Number),
-                new Parameter("p1_latitude", ParameterTypeKind.Number),
-                new Parameter("p2_longitude", ParameterTypeKind.Number),
-                new Parameter("p2_latitude", ParameterTypeKind.Number))
+                new Parameter("p1_longitude", ScalarTypes.Real),
+                new Parameter("p1_latitude", ScalarTypes.Real),
+                new Parameter("p2_longitude", ScalarTypes.Real),
+                new Parameter("p2_latitude", ScalarTypes.Real))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInCircle =
             new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
-                new Parameter("p_longitude", ParameterTypeKind.Number),
-                new Parameter("p_latitude", ParameterTypeKind.Number),
-                new Parameter("pc_longitude", ParameterTypeKind.Number),
-                new Parameter("pc_latitude", ParameterTypeKind.Number),
-                new Parameter("c_radius", ParameterTypeKind.Number))
+                new Parameter("p_longitude", ScalarTypes.Real),
+                new Parameter("p_latitude", ScalarTypes.Real),
+                new Parameter("pc_longitude", ScalarTypes.Real),
+                new Parameter("pc_latitude", ScalarTypes.Real),
+                new Parameter("c_radius", ScalarTypes.Real))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoPointToGeohash =
+            new FunctionSymbol("geo_point_to_geohash", ScalarTypes.String,
+                new Parameter("longitude", ScalarTypes.Real),
+                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("accuracy", ScalarTypes.Int))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeohashToCentralPoint =
+            new FunctionSymbol("geo_geohash_to_central_point", ScalarTypes.Dynamic,
+                new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
         #endregion
@@ -1963,11 +1977,13 @@ namespace Kusto.Language
             WelchTest,
 #endregion
 
-#region spatial functions
+#region geospatial functions
             Point,
             Distance,
             GeoDistance2Points,
             GeoPointInCircle,
+            GeoPointToGeohash,
+            GeohashToCentralPoint,
 #endregion
 
             #region other
