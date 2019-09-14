@@ -83,7 +83,7 @@ The following tables classifies the language syntax to the flavors outlined abov
 |  [count operator](countoperator.md) | Core |  |
 |  [datatable operator](datatableoperator.md) | Core |  |
 |  [distinct operator](distinctoperator.md) | Core |  |
-|  [evaluate operator](operator.md) | Core | No semantics, followed by a syntax of a function call |
+|  [evaluate operator](evaluateoperator.md) | Core | No semantics, followed by a syntax of a function call |
 |  [extend operator](extendoperator.md) | Core |  |
 |  [externaldata operator](externaldata-operator.md) | Full |  |
 |  [facet operator](facetoperator.md) | Out of scope |  |
