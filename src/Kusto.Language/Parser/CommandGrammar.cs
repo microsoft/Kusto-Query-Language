@@ -84,33 +84,44 @@ namespace Kusto.Language.Parsing
             var commandParsers = globals.Commands.Select(c => CreateCommandParser(c, grammarParser)).ToArray();
             var map = Enumerable.Range(0, commandParsers.Length).ToDictionary(i => globals.Commands[i], i => commandParsers[i]);
 
+            // use Best combinator with function to pick which output is better when there are ambiguities
+            var bestCommandParsers = Best(commandParsers, (command1, command2) =>
+            {
+                // neither command has diagnostics, neither is better
+                if (!command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                    return 0;
+
+                // command1 has diagnostics, command1 is not better than command2
+                if (command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                    return -1;
+
+                // command2 has diagnostics, command1 is better
+                if (!command1.ContainsSyntaxDiagnostics && command2.ContainsSyntaxDiagnostics)
+                    return 1;
+
+                var dx1 = command1.GetContainedSyntaxDiagnostics();
+                var dx2 = command2.GetContainedSyntaxDiagnostics();
+
+                // command1 first diagnostic occurs lexically after command2 first diagnostics, command1 is better
+                if (dx1[0].Start > dx2[0].Start)
+                    return 1;
+
+                // command1 first diagnostic occurs lexically before command2 first diagnostic, command1 is not better
+                if (dx1[0].Start < dx2[0].Start)
+                    return -1;
+
+                // don't compare number of diagnostics, since we want to favor what happens early rather than later
+
+                // otherwise neither is better
+                return 0;
+            });
+
             commandCore =
                 First(
-                    //createFunctionCommand,
-                    Best(commandParsers), // pick whichever command will successfully consume most input
+                    bestCommandParsers, // pick whichever command will successfully consume most input
                     unknownCommand, // fall back for commands that are not defined
                     badCommand) // otherwise its just bad
                 .WithTag("<command>");
-
-#if false
-            var commandInputItem =
-                First(
-                    If(Token(SyntaxKind.DotToken),
-                        command.Cast<SyntaxNode>()),
-                    q.StatementList.Cast<SyntaxNode>());
-
-            var commandInputExpression =
-                ApplyOptional(
-                    command.Cast<Expression>(),
-                    _left =>
-                        Rule(
-                            _left,
-                            Token(SyntaxKind.LessThanBarToken),
-                            Required(commandInputItem, () => (SyntaxNode)Q.MissingExpression()),
-                            (cmd, op, expr) =>
-                                (Expression)new CommandInputExpression((Command)cmd, op, expr))
-                            .WithTag("<command-input-pipe>"));
-#endif
 
             var commandOutputPipeExpression =
                 ApplyOptional(
@@ -485,19 +496,26 @@ namespace Kusto.Language.Parsing
 
                     (source, start, length) =>
                     {
-                        var builder = new StringBuilder();
-                        var token = source.Peek(start);
-                        var trivia = token.Trivia;
-                        builder.Append(source.Peek(start).Text);
-
-                        for (int i = 1; i < length; i++)
+                        if (length > 0)
                         {
-                            token = source.Peek(start + i);
-                            builder.Append(token.Trivia);
-                            builder.Append(token.Text);
-                        }
+                            var builder = new StringBuilder();
+                            var token = source.Peek(start);
+                            var trivia = token.Trivia;
+                            builder.Append(source.Peek(start).Text);
 
-                        return SyntaxToken.Other(trivia, builder.ToString(), SyntaxKind.InputTextToken);
+                            for (int i = 1; i < length; i++)
+                            {
+                                token = source.Peek(start + i);
+                                builder.Append(token.Trivia);
+                                builder.Append(token.Text);
+                            }
+
+                            return SyntaxToken.Other(trivia, builder.ToString(), SyntaxKind.InputTextToken);
+                        }
+                        else
+                        {
+                            return SyntaxToken.Other("", "", SyntaxKind.InputTextToken);
+                        }
                     });
 
             var KustoInputText =
@@ -571,18 +589,19 @@ namespace Kusto.Language.Parsing
 
                         var parsers = new List<Parser<LexicalToken>>();
 
-                        bool term = true;
+                        bool required = false;
                         for (int i = 0; i < list.Count; i++)
                         {
                             var t = list[i];
 
                             // everything after first element or first sequence of terms will be required
                             // this enables building appropriate custom nodes with missing elements that cue correct completion.
-                            term &= i == 0 || t.IsTerm;
+                            var notRequired = i == 0 || (i == 1 && t.IsTerm);
+                            required |= !notRequired;
 
-                            var p = term || t.Parser.IsOptional
-                                ? t.Parser
-                                : Required(t.Parser, t.Missing);
+                            var p = required && !t.Parser.IsOptional
+                                ? Required(t.Parser, t.Missing)
+                                : t.Parser;
 
                             parsers.Add(p);
                         }
@@ -632,7 +651,7 @@ namespace Kusto.Language.Parsing
                             elem.Parser,
                             sep.Parser,
                             elem.Missing,
-                            sep.Missing,
+                            null, //sep.Missing,
                             oneOrMore: false,
                             allowTrailingSeparator: false,
                             producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),
@@ -645,7 +664,7 @@ namespace Kusto.Language.Parsing
                             elem.Parser,
                             sep.Parser,
                             elem.Missing,
-                            sep.Missing,
+                            null, //sep.Missing,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),

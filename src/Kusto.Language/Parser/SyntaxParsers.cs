@@ -466,6 +466,15 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Scans the first matching item.
+        /// </summary>
+        public static int ScanFirst(this Parser<LexicalToken> parser, string text, bool alwaysProduceEOF = false)
+        {
+            var source = new ArraySource<LexicalToken>(LexicalGrammar.GetTokens(text, alwaysProduceEOF));
+            return parser.Scan(source, 0);
+        }
+
+        /// <summary>
         /// Adds examples of completions as annotations onto this grammar rule.
         /// </summary>
         public static Parser<LexicalToken, TParser> Examples<TParser>(this Parser<LexicalToken, TParser> parser, IReadOnlyList<string> values) =>

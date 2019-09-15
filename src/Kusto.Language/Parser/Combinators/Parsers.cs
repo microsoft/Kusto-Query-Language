@@ -58,6 +58,12 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that yields the result of the parser that consumed the most input items.
         /// </summary>
+        public static Parser<TInput, TOutput> Best<TOutput>(Parser<TInput, TOutput>[] parsers, Func<TOutput, TOutput, int> fnBetter) =>
+            new BestParser<TInput, TOutput>(parsers, fnBetter);
+
+        /// <summary>
+        /// A parser that yields the result of the parser that consumed the most input items.
+        /// </summary>
         public static RightParser<TInput, TOutput> Best<TOutput>(params RightParser<TInput, TOutput>[] parsers) =>
             new RightParser<TInput, TOutput>(new BestParser<TInput, TOutput>(parsers.Select(p => p.Parser).ToArray()));
 
@@ -909,6 +915,13 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Creates a parser that parses a list of elements and separators.
         /// </summary>
+        /// <param name="element">The parser for the element.</param>
+        /// <param name="separator">The parser for the separator.</param>
+        /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
+        /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
         public static Parser<TInput, TProducer> SeparatedList<TParser, TProducer>(
             Parser<TInput, TParser> element,
             Parser<TInput, TParser> separator,
@@ -932,50 +945,70 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Creates a parser that parses a list of elements and separators.
         /// </summary>
+        /// <param name="primaryElement">The parser for the primary element.</param>
+        /// <param name="secondaryElement">The parser for any element after the first. If null, then it will use the primary element parser.</param>
+        /// <param name="separator">The parser for the separator.</param>
+        /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
+        /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
         public static Parser<TInput, TList> SeparatedList<TElement, TList>(
             Parser<TInput, TElement> primaryElement,
             Parser<TInput, TElement> secondaryElement,
             Parser<TInput, TElement> separator,
-            Func<TElement> missingElement,
-            Func<TElement> missingSeparator,
+            Func<TElement> missingElement, // optional
+            Func<TElement> missingSeparator, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
             Func<IReadOnlyList<TElement>, TList> producer)
         {
             Ensure.ArgumentNotNull(primaryElement, nameof(primaryElement));
-            Ensure.ArgumentNotNull(secondaryElement, nameof(secondaryElement));
             Ensure.ArgumentNotNull(separator, nameof(separator));
-            Ensure.ArgumentNotNull(missingElement, nameof(missingElement));
-            Ensure.ArgumentNotNull(missingSeparator, nameof(missingSeparator));
 
-            var requiredPrimaryElement = Required(primaryElement, missingElement);
-            var requiredSecondaryElement = Required(secondaryElement, missingElement);
-            var requiredSeparator = Required(separator, missingSeparator);
+            if (secondaryElement == null)
+                secondaryElement = primaryElement;
+
+            var requiredPrimaryElement = missingElement != null ? Required(primaryElement, missingElement) : primaryElement;
+            var requiredSecondaryElement = missingElement != null ? Required(secondaryElement, missingElement) : secondaryElement;
+            var requiredSeparator = missingSeparator != null ? Required(separator, missingSeparator) : separator;
             Func<TList> emptyList = () => producer(new TElement[] { });
 
             if (oneOrMore)
             {
                 if (allowTrailingSeparator)
                 {
+                    var secondary = Sequence(separator, secondaryElement);
+                    if (missingSeparator != null)
+                    {
+                        secondary = First(
+                            secondary,
+                            // check for missing secondardy element between two separators
+                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                    }
+
                     return Produce(
                         Sequence(
                             requiredPrimaryElement,
-                            ZeroOrMore(
-                                First(
-                                    Sequence(separator, secondaryElement),
-                                    If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide())),
+                            ZeroOrMore(secondary),
                             Optional(separator)),
                         producer);
                 }
                 else
                 {
+                    var secondary = Sequence(separator, requiredSecondaryElement);
+                    if (missingSeparator != null)
+                    {
+                        secondary = First(
+                            secondary,
+                            // check for missing secondardy element between two separators
+                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                    }
+
                     return Produce(
                         Sequence(
                             requiredPrimaryElement,
-                            ZeroOrMore(
-                                First(
-                                    Sequence(separator, requiredSecondaryElement),
-                                    If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide()))),
+                            ZeroOrMore(secondary)),
                         producer);
                 }
             }
@@ -983,32 +1016,44 @@ namespace Kusto.Language.Parsing
             {
                 if (allowTrailingSeparator)
                 {
+                    var secondary = Sequence(separator, secondaryElement);
+                    if (missingSeparator != null)
+                    {
+                        secondary = First(
+                            secondary,
+                            // check for missing secondardy element between two separators
+                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                    }
+
                     return Optional(
                         Produce(
                             Sequence(
                                 First(
-                                    If(separator, requiredPrimaryElement).Hide(),
+                                    If(separator, requiredPrimaryElement).Hide(), // check for missing primary element
                                     primaryElement),
-                                ZeroOrMore(
-                                    First(
-                                        Sequence(separator, secondaryElement),
-                                        If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide())),
+                                ZeroOrMore(secondary),
                                 Optional(separator)),
                             producer),
                         emptyList);
                 }
                 else
                 {
+                    var secondary = Sequence(separator, requiredSecondaryElement);
+                    if (missingSeparator != null)
+                    {
+                        secondary = First(
+                            secondary,
+                            // check for missing secondardy element between two separators
+                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                    }
+
                     return Optional(
                         Produce(
                             Sequence(
                                 First(
-                                    If(separator, requiredPrimaryElement).Hide(),
+                                    If(separator, requiredPrimaryElement).Hide(), // check for missing primary element
                                     primaryElement),
-                                ZeroOrMore(
-                                    First(
-                                        Sequence(separator, requiredPrimaryElement),
-                                        If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide()))),
+                                ZeroOrMore(secondary)),
                             producer),
                         emptyList);
                 }
@@ -1757,13 +1802,18 @@ namespace Kusto.Language.Parsing
     public sealed class BestParser<TInput, TOutput> : Parser<TInput, TOutput>
     {
         private readonly Parser<TInput, TOutput>[] _parsers;
+        private readonly Func<TOutput, TOutput, int> _fnBetter;
+
         public IReadOnlyList<Parser<TInput, TOutput>> Parsers => _parsers;
 
-        public BestParser(IReadOnlyList<Parser<TInput, TOutput>> parsers)
+        public BestParser(
+            IReadOnlyList<Parser<TInput, TOutput>> parsers, 
+            Func<TOutput, TOutput, int> fnBetter = null)
         {
             Ensure.ArgumentNotNull(parsers, nameof(parsers));
             Ensure.ElementsNotNull(parsers, nameof(parsers));
             _parsers = parsers.ToArray();
+            _fnBetter = fnBetter;
         }
 
         public override void Accept(ParserVisitor<TInput> visitor)
@@ -1786,6 +1836,7 @@ namespace Kusto.Language.Parsing
             int minLength = -1;
             int maxLength = -1;
             int bestParser = -1;
+            List<Parser<TInput, TOutput>> candidates = null;
 
             // figure out which parser will consume most input
             for (int i = 0; i < _parsers.Length; i++)
@@ -1797,6 +1848,20 @@ namespace Kusto.Language.Parsing
                 {
                     maxLength = length;
                     bestParser = i;
+
+                    if (candidates != null)
+                    {
+                        candidates.Clear();
+                    }
+                }
+                else if (length == maxLength && bestParser >= 0 && _fnBetter != null)
+                {
+                    if (candidates == null)
+                    {
+                        candidates = new List<Parser<TInput, TOutput>>();
+                    }
+
+                    candidates.Add(_parsers[i]);
                 }
                 else if (length < minLength)
                 {
@@ -1806,8 +1871,28 @@ namespace Kusto.Language.Parsing
 
             if (maxLength >= 0)
             {
-                var result = _parsers[bestParser].Parse(source, start);
-                return new ParseResult<TOutput>(maxLength, result.Value);
+                var bestP = _parsers[bestParser];
+
+                if (candidates != null && candidates.Count > 0)
+                {
+                    var bestV = bestP.Parse(source, start).Value;
+
+                    for (int i = 0; i < candidates.Count; i++)
+                    {
+                        var otherV = candidates[i].Parse(source, start).Value;
+                        if (_fnBetter(otherV, bestV) > 0)
+                        {
+                            bestV = otherV;
+                        }
+                    }
+
+                    return new ParseResult<TOutput>(maxLength, bestV);
+                }
+                else
+                {
+                    var result = bestP.Parse(source, start);
+                    return new ParseResult<TOutput>(maxLength, result.Value);
+                }
             }
             else
             {
@@ -1820,6 +1905,7 @@ namespace Kusto.Language.Parsing
             int minLength = -1;
             int maxLength = -1;
             int bestParser = -1;
+            List<Parser<TInput, TOutput>> candidates = null;
 
             // figure out which parser will consume most input
             for (int i = 0; i < _parsers.Length; i++)
@@ -1831,6 +1917,20 @@ namespace Kusto.Language.Parsing
                 {
                     maxLength = length;
                     bestParser = i;
+
+                    if (candidates != null)
+                    {
+                        candidates.Clear();
+                    }
+                }
+                else if (length == maxLength && bestParser >= 0 && _fnBetter != null)
+                {
+                    if (candidates == null)
+                    {
+                        candidates = new List<Parser<TInput, TOutput>>();
+                    }
+
+                    candidates.Add(_parsers[i]);
                 }
                 else if (length < minLength)
                 {
@@ -1840,7 +1940,32 @@ namespace Kusto.Language.Parsing
 
             if (maxLength >= 0)
             {
-                _parsers[bestParser].Parse(source, inputStart, output, outputStart);
+                var bestP = _parsers[bestParser];
+
+                if (candidates != null && candidates.Count > 0)
+                {
+                    bestP.Parse(source, inputStart, output, outputStart);
+                    var bestV = (TOutput)output[outputStart];
+                    output.SetCount(outputStart);
+
+                    for (int i = 0; i < candidates.Count; i++)
+                    {
+                        candidates[i].Parse(source, inputStart, output, outputStart);
+                        var otherV = (TOutput)output[outputStart];
+                        output.SetCount(outputStart);
+
+                        if (_fnBetter(otherV, bestV) > 0)
+                        {
+                            bestV = otherV;
+                        }
+                    }
+
+                    output.Add(bestV);
+                }
+                else
+                {
+                    bestP.Parse(source, inputStart, output, outputStart);
+                }
             }
 
             return maxLength;
