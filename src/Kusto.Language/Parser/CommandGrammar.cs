@@ -173,7 +173,13 @@ namespace Kusto.Language.Parsing
 
             try
             {
-                var customParser = commandGrammarParser.Parse(symbol.Grammar).Value;
+                var result = commandGrammarParser.Parse(symbol.Grammar);
+                var customParser = result.Value;
+
+                if (result.Length != symbol.Grammar.Length)
+                {
+                    Ensure.IsTrue(result.Length == symbol.Grammar.Length, $"control command grammar {symbol.Name} failed to parse fully at offset ({result.Length}): {symbol.Grammar}");
+                }
 
                 if (customParser != null)
                 {
