@@ -383,6 +383,12 @@
 ## [basket](basketplugin.md)
 ## [diffpatterns](diffpatternsplugin.md)
 
+# Geospatial
+## [geo_point_to_geohash()](geo_point_to_geohash.md)
+## [geo_geohash_to_central_point()](geo_geohash_to_central_point.md)
+## [geo_distance_2points()](geo_distance_2points.md)
+## [geo_point_in_circle()](geo_point_in_circle.md)
+
 # [User Analytics](useranalytics.md)
 ## [Activity Counts Metrics (total values, distinct values, new values)](activity-counts-metrics-plugin.md)
 ## [Activity Engagement (DAU, WAU, MAU)](activity-engagement-plugin.md)
