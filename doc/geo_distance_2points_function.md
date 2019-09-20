@@ -4,7 +4,7 @@ Calculates the distance between 2 geospatial coordinates on Earth.
 
 **Syntax**
 
-`geo_distance_2points(`*p1_longitude*`, `*p1_latitude*`, `*p2_longitude*`, `*p2_latitude*`,)`
+`geo_distance_2points(`*p1_longitude*`, `*p1_latitude*`, `*p2_longitude*`, `*p2_latitude*`)`
 
 **Arguments**
 

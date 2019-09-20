@@ -4,7 +4,7 @@ Calculates whether the geospatial coordinates are inside a circle on Earth.
 
 **Syntax**
 
-`geo_point_in_circle(`*p_longitude*`, `*p_latitude*`, `*pc_longitude*`, `*pc_latitude*`, `*c_radius*`,)`
+`geo_point_in_circle(`*p_longitude*`, `*p_latitude*`, `*pc_longitude*`, `*pc_latitude*`, `*c_radius*`)`
 
 **Arguments**
 

@@ -1,6 +1,6 @@
 # geo_point_to_geohash()
 
-Calculates the Geohash value for a geographic location.
+Calculates the Geohash string value for a geographic location.
 
 More information on Geohash can be found [here](https://en.wikipedia.org/wiki/Geohash).
 
@@ -20,7 +20,7 @@ The Geohash string value of a given geographic location with requested accuracy 
 
 
 > [!NOTE]
-> Invoking [geo_geohash_to_central_point()](geo_geohash_to_central_point.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
+> Invoking [geo_geohash_to_central_point()](geo_geohash_to_central_point_function.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
 
 **Examples**
 
