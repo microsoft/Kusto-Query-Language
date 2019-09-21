@@ -55,6 +55,7 @@
 ### [basket](basketplugin.md)
 <!--### [diagnose](diagnoseplugin.md)-->
 ### [dcount_intersect](dcount-intersect-plugin.md)
+<#ifdev MICROSOFT>### [geneva_metrics_request](geneva-metrics-requestplugin.md)<#endif>
 ### [narrow](narrowplugin.md)
 ### [pivot](pivotplugin.md)
 ### [preview](previewplugin.md)
