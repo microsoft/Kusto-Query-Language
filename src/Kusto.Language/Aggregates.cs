@@ -192,11 +192,17 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set");
 
+        public static readonly FunctionSymbol Passthrough =
+           new FunctionSymbol("passthrough", ReturnTypeKind.Parameter0,
+               new Parameter("value", ParameterTypeKind.Scalar))
+           .WithResultNameKind(ResultNameKind.FirstArgument)
+           .Hide();
+
         public static readonly FunctionSymbol MakeDictionary =
             new FunctionSymbol("make_dictionary", ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.Dynamic),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)            
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("dictionary")
             .Hide();
 
@@ -545,6 +551,7 @@ namespace Kusto.Language
             MakeDictionary,
             MakeBag,
             BuildSchema,
+            Passthrough,
             Percentile,
             Percentiles,
             PercentilesArray,

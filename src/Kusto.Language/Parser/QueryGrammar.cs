@@ -1447,7 +1447,8 @@ namespace Kusto.Language.Parsing
 
             var MvExpandParameters =
                 First(
-                    TokenNamedParameter(KustoFacts.MvExpandBagExpansionProperty, KustoFacts.MvExpandBagExpansions),
+                    TokenNamedParameter(KustoFacts.MvExpandBagExpansionProperty, KustoFacts.MvExpandBagExpansions).Hide(),
+                    TokenNamedParameterK(SyntaxKind.KindKeyword, KustoFacts.MvExpandBagExpansions),
                     NameDeclarationNamedParameter(KustoFacts.MvExpandWithItemIndexProperty),
                     QueryOperatorParameter);
 
@@ -1456,7 +1457,7 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.MvExpandKeyword, CompletionKind.QueryPrefix).Hide(),
                         Token(SyntaxKind.MvDashExpandKeyword, CompletionKind.QueryPrefix)),
-                    List(MvExpandParameters).Hide(),
+                    List(MvExpandParameters),
                     MvExpandExpressionList,
                     Optional(MvExpandRowLimitClause),
                     (keyword, parameters, list, rowLimit) =>
