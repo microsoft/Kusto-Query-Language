@@ -34,20 +34,17 @@ See:
 
 ## Does Kusto support paging of query results?
 
-Kusto does not provide a built-in paging mechanism.
+Kusto doesn't provide a built-in paging mechanism.
 
-Kusto is aa complex service that continuously optimizes the data it stores
-in the background in order to provide excellent query performance over huge data
-sets. While paging is a useful mechanism for stateless clients with limited
-resources, it does so by shifting the burden to the backend service which now
-has to track client state information; this, in turn, severly limits the performance
-and scalability of the backend service.
+Kusto is a complex service that continuously optimizes the data it stores to provide excellent query performance over huge data sets. While paging is a useful mechanism for stateless clients with limited
+resources, it shifts the burden to the backend service which
+has to track client state information. Subsequently, the performance
+and scalability of the backend service is severely limited.
 
-Customers that require paging support can implement one by using other Kusto
-features, such as:
+For paging support implement one of the following features:
 
-1. Exporting the result of a query to an external storage and paging through the
+* Exporting the result of a query to an external storage and paging through the
    generated data.
 
-2. Writing a middle-tier application that provide a statful paging API by caching
+* Writing a middle-tier application that provides a stateful paging API by caching
    the results of a Kusto query.
