@@ -20,7 +20,7 @@ The Geohash string value of a given geographic location with requested accuracy 
 
 
 > [!NOTE]
-> Invoking [geo_geohash_to_central_point()](geo_geohash_to_central_point_function.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
+> Invoking [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
 
 **Examples**
 

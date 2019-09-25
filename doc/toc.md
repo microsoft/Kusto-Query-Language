@@ -384,10 +384,10 @@
 ## [diffpatterns](diffpatternsplugin.md)
 
 # Geospatial
-## [geo_point_to_geohash()](geo_point_to_geohash_function.md)
-## [geo_geohash_to_central_point()](geo_geohash_to_central_point_function.md)
-## [geo_distance_2points()](geo_distance_2points_function.md)
-## [geo_point_in_circle()](geo_point_in_circle_function.md)
+## [geo_point_to_geohash()](geo-point-to-geohash-function.md)
+## [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)
+## [geo_distance_2points()](geo-distance-2points-function.md)
+## [geo_point_in_circle()](geo-point-in-circle-function.md)
 
 # [User Analytics](useranalytics.md)
 ## [Activity Counts Metrics (total values, distinct values, new values)](activity-counts-metrics-plugin.md)
