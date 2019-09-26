@@ -1,6 +1,6 @@
 # assert()
 
-Checks for a condition; if the condition is false, outputs error messages and fails the query.
+Checks for a condition. If the condition is false, outputs error messages and fails the query.
 
 **Syntax**
 
@@ -8,8 +8,8 @@ Checks for a condition; if the condition is false, outputs error messages and fa
 
 **Arguments**
 
-* *condition*: The conditional expression to evaluate. If the condition is `false`, the specified message is used to report an error. If the condition is `true` - returns `true` as evaluation result. Condition must be evalauted to constant during query analysis phase.
-* *message*: The message to be used in case of assertion is evaluated to `false`. *message* must be a string literal.
+* *condition*: The conditional expression to evaluate. If the condition is `false`, the specified message is used to report an error. If the condition is `true`, it returns `true` as an evaluation result. Condition must be evaluated to constant during the query analysis phase.
+* *message*: The message used if assertion is evaluated to `false`. The *message* must be a string literal.
 
 
 **Returns**
@@ -19,11 +19,11 @@ Checks for a condition; if the condition is false, outputs error messages and fa
 
 **Notes**
 
-* `condition` must be evaluated to constant during query analysis phase. In other words, it can be constructed from other expressions referencing constants, and cannot be bound to row-context.
+* `condition` must be evaluated to constant during the query analysis phase. In other words, it can be constructed from other expressions referencing constants, and can't be bound to row-context.
 
 **Examples**
 
-The following query defines a function `checkLength()` which checks input string length, and uses `assert` to validate input length parameter (checks it is greater than zero).
+The following query defines a function `checkLength()` that checks input string length, and uses `assert` to validate input length parameter (checks that it is greater than zero).
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```

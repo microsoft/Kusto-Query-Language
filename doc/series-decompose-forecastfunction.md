@@ -11,17 +11,17 @@ trailing points (refer to [series_decompose](series-decomposefunction.md) for mo
 
 **Arguments**
 
-* *Series*: Dynamic array cell which is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators
-* *Points*: Integer specifying the number of points at the end of the series to predict (forecast). These points are excluded from the learning (regression) process
-* *Seasonality*: An integer controlling the seasonal analysis, containing either
-    * -1: autodetect seasonality (using [series_periods_detect](series-periods-detectfunction.md)) [default] 
-    * period: positive integer, specifying the expected period in number of bins unit. For example, if the series is in 1h bins, a weekly period is 168 bins
-    * 0: no seasonality (i.e. skip extracting this component)    
-* *Trend*: A string controlling the trend analysis, containing either
-    * "linefit": extract trend component using linear regression [default]    
-    * "avg": define trend component as average(x)
-    * "none": no trend, skip extracting this component    
-* *Seasonality_threshold*: The threshold for seasonality score when *Seasonality* is set to autodetect, the default score threshold is `0.6`  (for more details see: [series_periods_detect](series-periods-detectfunction.md))
+* *Series*: Dynamic array cell that is an array of numeric values. Typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
+* *Points*: Integer specifying the number of points at the end of the series to predict (forecast). These points are excluded from the learning (regression) process.
+* *Seasonality*: An integer controlling the seasonal analysis, containing one of the following:
+    * -1: auto-detect seasonality using [series_periods_detect](series-periods-detectfunction.md) (default). 
+    * period: positive integer, specifying the expected period in number of bins. For example, if the series is in 1h bins, a weekly period is 168 bins.
+    * 0: no seasonality (skip extracting this component).   
+* *Trend*: A string controlling the trend analysis, containing one of the following:
+    * "linefit": extract trend component using linear regression (default).    
+    * "avg": define trend component as average(x).
+    * "none": no trend, skip extracting this component.   
+* *Seasonality_threshold*: The threshold for seasonality score when *Seasonality* is set to auto-detect, the default score threshold is `0.6`. For more information, see [series_periods_detect](series-periods-detectfunction.md).
 
 **Return**
 
