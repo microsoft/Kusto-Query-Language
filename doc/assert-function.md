@@ -19,7 +19,7 @@ Checks for a condition; if the condition is false, outputs error messages and fa
 
 **Notes**
 
-* `condition` must be evaluated to constant during qyery analysis phase. In other words, it can be constructed from other expressions referencing constants, and cannot be bound to row-context.
+* `condition` must be evaluated to constant during query analysis phase. In other words, it can be constructed from other expressions referencing constants, and cannot be bound to row-context.
 
 **Examples**
 
