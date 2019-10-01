@@ -495,38 +495,48 @@ namespace Kusto.Language.Parsing
 
             var InputTextTokens = ZeroOrMore(AnyTokenButEnd);
 
-            var InputText =
-                Match(
-                    (source, start) => 
-                        InputTextTokens.Scan(source, start),
+            SourceProducer<LexicalToken, SyntaxToken> InputTextBuilder = (source, start, length) =>
+            {
+                if (length > 0)
+                {
+                    var builder = new StringBuilder();
+                    var token = source.Peek(start);
+                    var trivia = token.Trivia;
+                    builder.Append(source.Peek(start).Text);
 
-                    (source, start, length) =>
+                    for (int i = 1; i < length; i++)
                     {
-                        if (length > 0)
-                        {
-                            var builder = new StringBuilder();
-                            var token = source.Peek(start);
-                            var trivia = token.Trivia;
-                            builder.Append(source.Peek(start).Text);
+                        token = source.Peek(start + i);
+                        builder.Append(token.Trivia);
+                        builder.Append(token.Text);
+                    }
 
-                            for (int i = 1; i < length; i++)
-                            {
-                                token = source.Peek(start + i);
-                                builder.Append(token.Trivia);
-                                builder.Append(token.Text);
-                            }
+                    return SyntaxToken.Other(trivia, builder.ToString(), SyntaxKind.InputTextToken);
+                }
+                else
+                {
+                    return SyntaxToken.Other("", "", SyntaxKind.InputTextToken);
+                }
+            };
 
-                            return SyntaxToken.Other(trivia, builder.ToString(), SyntaxKind.InputTextToken);
-                        }
-                        else
-                        {
-                            return SyntaxToken.Other("", "", SyntaxKind.InputTextToken);
-                        }
-                    });
+            var InputText =
+                Convert(InputTextTokens, InputTextBuilder);
 
             var KustoInputText =
                 new ParserInfo(
                     InputText.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(CompletionHint.None),
+                    () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
+
+            var BrackettedInputTextTokens =
+                ZeroOrMore(Not(Token("]")));
+
+            var BrackettedInputText =
+                Convert(BrackettedInputTextTokens, InputTextBuilder);
+
+            var KustoBrackettedInputText =
+                new ParserInfo(
+                    BrackettedInputText.Cast<SyntaxElement>(),
                     new CustomElementDescriptor(CompletionHint.None),
                     () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
 
@@ -557,6 +567,7 @@ namespace Kusto.Language.Parsing
                         case "function_declaration": return KustoFunctionDeclaration;
                         case "input_query": return KustoCommandInputInfo;
                         case "input_data": return KustoInputText;
+                        case "bracketted_input_data": return KustoBrackettedInputText;
                         default: return null;
                     }
                 },

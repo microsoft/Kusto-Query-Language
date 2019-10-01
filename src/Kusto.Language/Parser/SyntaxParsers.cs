@@ -67,7 +67,6 @@ namespace Kusto.Language.Parsing
         public static readonly Parser<LexicalToken, SyntaxToken> AnyTokenButEnd =
             Match(t => t.Kind != SyntaxKind.EndOfTextToken, t => SyntaxToken.From(t)).WithTag("<any!end>");
 
-
         /// <summary>
         /// Gets the default tag to assign a token parser, based on the token's text.
         /// </summary>

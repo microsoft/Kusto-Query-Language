@@ -919,7 +919,7 @@ namespace Kusto.Language
                     new ColumnSymbol("OperationId", ScalarTypes.Guid)));
 
         public static readonly CommandSymbol IngestInlineIntoTable =
-            new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName [{PropertyList}] '<|' <input_data>:Data", 
+            new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName ('[' <bracketted_input_data>:Data ']' | {PropertyList} '<|'! <input_data>:Data | '<|' <input_data>:Data)",
                 new TableSymbol(
                     new ColumnSymbol("ExtendId", ScalarTypes.Guid)));
 
