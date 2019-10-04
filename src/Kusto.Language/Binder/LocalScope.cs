@@ -79,6 +79,17 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Adds a collection of <see cref="Symbol"/> to the <see cref="LocalScope"/>.
+        /// </summary>
+        public void AddSymbols(IEnumerable<Symbol> symbols)
+        {
+            foreach (var symbol in symbols)
+            {
+                AddSymbol(symbol);
+            }
+        }
+
+        /// <summary>
         /// Gets all the matching symbols in the scope, and then from any outer scopes.
         /// </summary>
         public void GetSymbols(string name, SymbolMatch match, List<Symbol> symbols)

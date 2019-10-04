@@ -237,7 +237,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
-                    null, // outer scope
+                    GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache,
                     semanticInfoSetter: semanticInfoSetter,
@@ -245,6 +245,19 @@ namespace Kusto.Language.Binding
                 var treeBinder = new TreeBinder(binder);
                 root.Accept(treeBinder);
             }
+        }
+
+        private static LocalScope GetDefaultOuterScope(GlobalState globals)
+        {
+            LocalScope outerScope = null;
+
+            if (globals.Parameters.Count > 0)
+            {
+                outerScope = new LocalScope();
+                outerScope.AddSymbols(globals.Parameters);
+            }
+
+            return outerScope;
         }
 
         private static void DefaultSetSemanticInfo(SyntaxNode node, SemanticInfo info)
@@ -322,7 +335,7 @@ namespace Kusto.Language.Binding
                     globals,
                     currentCluster,
                     currentDatabase,
-                    null, // dynamic scope
+                    GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null, 
@@ -728,7 +741,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
-                    null, // outer scope
+                    GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null,
@@ -751,7 +764,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
-                    null, // outer scope
+                    GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
                     semanticInfoSetter: null,

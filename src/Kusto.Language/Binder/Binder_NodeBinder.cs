@@ -1812,6 +1812,8 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
+                var exprColumns = s_columnListPool.AllocateFromPool();
+                var rightJoinColumns = s_columnListPool.AllocateFromPool();
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -1826,7 +1828,7 @@ namespace Kusto.Language.Binding
                     for (int i = 0, n = joinOnClause.Expressions.Count; i < n; i++)
                     {
                         var expr = joinOnClause.Expressions[i].Element;
-                        CheckJoinOnExpression(expr, diagnostics);
+                        CheckJoinOnExpression(expr, diagnostics, null, rightJoinColumns);
                     }
 
                     // figure out the result type
@@ -1835,7 +1837,16 @@ namespace Kusto.Language.Binding
                     var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null)
                     {
-                        _binder.GetDeclaredAndInferredColumns(exprTable, columns);
+                        _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
+
+                        foreach (var col in exprColumns)
+                        {
+                            // only add expr columns that were not equated to a source column via the join-on expression
+                            if (!rightJoinColumns.Contains(col))
+                            {
+                                columns.Add(col);
+                            }
+                        }
                     }
 
                     MakeColumnNamesUnique(columns);
@@ -1847,6 +1858,8 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
+                    s_columnListPool.ReturnToPool(exprColumns);
+                    s_columnListPool.ReturnToPool(rightJoinColumns);
                 }
             }
 
@@ -1898,24 +1911,43 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private void CheckJoinOnExpression(Expression condition, List<Diagnostic> diagnostics)
+            private void CheckJoinOnExpression(
+                Expression condition,
+                List<Diagnostic> diagnostics, 
+                List<ColumnSymbol> leftColumns = null,
+                List<ColumnSymbol> rightColumns = null)
             {
                 if (condition is NameReference)
                 {
                     if (_binder.CheckIsColumn(condition, diagnostics))
                     {
-                        CheckCommonColumn((NameReference)condition, diagnostics);
+                        if (CheckCommonColumn((NameReference)condition, diagnostics, out var leftColumn, out var rightColumn))
+                        {
+                            if (leftColumn != null && rightColumn != null)
+                            {
+                                leftColumns?.Add(leftColumn);
+                                rightColumns?.Add(rightColumn);
+                            }
+                        }
+
                         _binder.CheckIsScalar(condition, diagnostics); // are there non-scalar columns?
                     }
                 }
                 else
                 {
-                    CheckJoinAndOrEquality(condition, diagnostics);
+                    CheckJoinAndOrEquality(condition, diagnostics, leftColumns, rightColumns);
                 }
             }
 
-            private bool CheckCommonColumn(NameReference name, List<Diagnostic> diagnostics)
+            private bool CheckCommonColumn(
+                NameReference name,
+                List<Diagnostic> diagnostics,
+                out ColumnSymbol leftColumn,
+                out ColumnSymbol rightColumn)
             {
+                leftColumn = null;
+                rightColumn = null;
+
                 var leftColumns = s_symbolListPool.AllocateFromPool();
                 var rightColumns = s_symbolListPool.AllocateFromPool();
                 try
@@ -1924,7 +1956,11 @@ namespace Kusto.Language.Binding
                     RightRowScopeOrEmpty.GetMembers(name.SimpleName, SymbolMatch.Column, rightColumns);
 
                     if (leftColumns.Count == 1 && rightColumns.Count == 1)
+                    {
+                        leftColumn = (ColumnSymbol)leftColumns[0];
+                        rightColumn = (ColumnSymbol)rightColumns[0];
                         return true;
+                    }
 
                     diagnostics.Add(DiagnosticFacts.GetColumnMustExistOnBothSidesOfJoin(name.SimpleName).WithLocation(name));
                     return false;
@@ -1936,7 +1972,11 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            void CheckJoinAndOrEquality(Expression condition, List<Diagnostic> diagnostics)
+            private void CheckJoinAndOrEquality(
+                Expression condition, 
+                List<Diagnostic> diagnostics, 
+                List<ColumnSymbol> leftColumns, 
+                List<ColumnSymbol> rightColumns)
             {
                 condition = RemoveParenthesis(condition);
 
@@ -1944,12 +1984,19 @@ namespace Kusto.Language.Binding
                 {
                     if (be.Kind == SyntaxKind.EqualExpression)
                     {
-                        CheckJoinEquality(be, diagnostics);
+                        if (CheckJoinEquality(be, diagnostics, out var leftMatchingColumn, out var rightMatchingColumn))
+                        {
+                            if (leftMatchingColumn != null && rightMatchingColumn != null)
+                            {
+                                leftColumns?.Add(leftMatchingColumn);
+                                rightColumns?.Add(rightMatchingColumn);
+                            }
+                        }
                     }
                     else if (be.Kind == SyntaxKind.AndExpression)
                     {
-                        CheckJoinAndOrEquality(be.Left, diagnostics);
-                        CheckJoinAndOrEquality(be.Right, diagnostics);
+                        CheckJoinAndOrEquality(be.Left, diagnostics, leftColumns, rightColumns);
+                        CheckJoinAndOrEquality(be.Right, diagnostics, leftColumns, rightColumns);
                     }
                     else
                     {
@@ -1962,41 +2009,52 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            void CheckJoinEquality(Expression condition, List<Diagnostic> diagnostics)
+            private bool CheckJoinEquality(
+                Expression condition, 
+                List<Diagnostic> diagnostics,
+                out ColumnSymbol leftColumn,
+                out ColumnSymbol rightColumn)
             {
+                leftColumn = null;
+                rightColumn = null;
                 condition = RemoveParenthesis(condition);
 
-                if (condition is BinaryExpression be
-                    && condition.Kind == SyntaxKind.EqualExpression)
-                {
-                    CheckJoinEqualityOperand(be.Left, "$left", diagnostics);
-                    CheckJoinEqualityOperand(be.Right, "$right", diagnostics);
-                }
-                else
+                if (!(condition is BinaryExpression be
+                    && condition.Kind == SyntaxKind.EqualExpression))
                 {
                     diagnostics.Add(DiagnosticFacts.GetInvalidJoinCondition().WithLocation(condition));
+                    return false;
                 }
+
+                if (CheckJoinEqualityOperand(be.Left, "$left", diagnostics, out leftColumn)
+                    & CheckJoinEqualityOperand(be.Right, "$right", diagnostics, out rightColumn))
+                {
+                    return true;
+                }
+
+                return false;
             }
 
-            void CheckJoinEqualityOperand(Expression operand, string prefix, List<Diagnostic> diagnostics)
+            private bool CheckJoinEqualityOperand(Expression operand, string prefix, List<Diagnostic> diagnostics, out ColumnSymbol column)
             {
+                column = null;
                 operand = RemoveParenthesis(operand);
 
-                if (operand is PathExpression path)
+                if (!(operand is PathExpression path
+                    && GetReferencedName(path.Expression) == prefix)) // look for $left.c or $right.c
                 {
-                    // look for $left.c or $right.c
-                    if (GetReferencedName(path.Expression) == prefix)
-                    {
-                        if (_binder.CheckIsColumn(operand, diagnostics))
-                        {
-                            _binder.CheckIsScalar(operand, diagnostics); // are there non-scalar columns?
-                        }
-
-                        return;
-                    }
+                    diagnostics.Add(DiagnosticFacts.GetInvalidJoinConditionOperand(prefix).WithLocation(operand));
+                    return false;
                 }
 
-                diagnostics.Add(DiagnosticFacts.GetInvalidJoinConditionOperand(prefix).WithLocation(operand));
+                // look for $left.c or $right.c
+                if (_binder.CheckIsColumn(operand, diagnostics))
+                {
+                    column = _binder.GetReferencedSymbol(operand) as ColumnSymbol;
+                    return _binder.CheckIsScalar(operand, diagnostics); // are there non-scalar columns?
+                }
+
+                return false;
             }
 
             private static Expression RemoveParenthesis(Expression expression)

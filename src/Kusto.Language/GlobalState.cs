@@ -52,6 +52,12 @@ namespace Kusto.Language
         /// </summary>
         public IReadOnlyList<CommandSymbol> Commands { get; }
 
+
+        /// <summary>
+        /// Ambient parameters
+        /// </summary>
+        public IReadOnlyList<ParameterSymbol> Parameters { get; }
+
         private GlobalState(
             IReadOnlyList<ClusterSymbol> clusters,
             ClusterSymbol cluster,
@@ -66,7 +72,8 @@ namespace Kusto.Language
             Dictionary<OperatorKind, OperatorSymbol> operatorMap,
             IReadOnlyList<CommandSymbol> commands,
             Dictionary<string, CommandSymbol> commandMap,
-            Dictionary<string, IReadOnlyList<CommandSymbol>> commandListMap)
+            Dictionary<string, IReadOnlyList<CommandSymbol>> commandListMap,
+            IReadOnlyList<ParameterSymbol> parameters)
         {
             this.Clusters = clusters;
             this.Cluster = cluster ?? new ClusterSymbol("", databases: null, isOpen: true);
@@ -78,6 +85,7 @@ namespace Kusto.Language
             this.Commands = commands;
             this.commandMap = commandMap;
             this.commandListMap = commandListMap;
+            this.Parameters = parameters.ToReadOnly();
         }
 
         private Dictionary<string, FunctionSymbol> aggregatesMap;
@@ -109,6 +117,7 @@ namespace Kusto.Language
 
         private static readonly IReadOnlyList<ClusterSymbol> NoClusters = EmptyReadOnlyList<ClusterSymbol>.Instance;
         private static readonly IReadOnlyList<CommandSymbol> NoCommands = EmptyReadOnlyList<CommandSymbol>.Instance;
+        private static readonly IReadOnlyList<ParameterSymbol> NoParameters = EmptyReadOnlyList<ParameterSymbol>.Instance;
 
         private GlobalState With(
             Optional<IReadOnlyList<ClusterSymbol>> clusters = default(Optional<IReadOnlyList<ClusterSymbol>>),
@@ -118,7 +127,8 @@ namespace Kusto.Language
             Optional<IReadOnlyList<FunctionSymbol>> aggregates = default(Optional<IReadOnlyList<FunctionSymbol>>),
             Optional<IReadOnlyList<FunctionSymbol>> plugins = default(Optional<IReadOnlyList<FunctionSymbol>>),
             Optional<IReadOnlyList<OperatorSymbol>> operators = default(Optional<IReadOnlyList<OperatorSymbol>>),
-            Optional<IReadOnlyList<CommandSymbol>> commands = default(Optional<IReadOnlyList<CommandSymbol>>))
+            Optional<IReadOnlyList<CommandSymbol>> commands = default(Optional<IReadOnlyList<CommandSymbol>>),
+            Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>))
         {
             var useClusters = clusters.HasValue ? clusters.Value : this.Clusters;
             var useCluster = cluster.HasValue ? cluster.Value : this.Cluster;
@@ -128,6 +138,7 @@ namespace Kusto.Language
             var usePlugins = plugins.HasValue ? plugins.Value : this.PlugIns;
             var useOperators = operators.HasValue ? operators.Value : this.Operators;
             var useCommands = commands.HasValue ? commands.Value : this.Commands;
+            var useParameters = parameters.HasValue ? parameters.Value : this.Parameters;
 
             if (useClusters != this.Clusters
                 || useCluster != this.Cluster
@@ -136,7 +147,8 @@ namespace Kusto.Language
                 || useAggregates != this.Aggregates
                 || usePlugins != this.PlugIns
                 || useOperators != this.Operators
-                || useCommands != this.Commands)
+                || useCommands != this.Commands
+                || useParameters != this.Parameters)
             {
                 return new GlobalState(
                     useClusters,
@@ -152,7 +164,8 @@ namespace Kusto.Language
                     useOperators == this.Operators ? this.operatorMap : null,
                     useCommands,
                     useCommands == this.Commands ? this.commandMap : null,
-                    useCommands == this.Commands ? this.commandListMap : null);
+                    useCommands == this.Commands ? this.commandListMap : null,
+                    useParameters);
             }
             else
             {
@@ -542,6 +555,30 @@ namespace Kusto.Language
             return command;
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified parameters.
+        /// </summary>
+        public GlobalState WithParameters(IReadOnlyList<ParameterSymbol> parameters)
+        {
+            return With(parameters: Optional(parameters));
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the additional parameters.
+        /// </summary>
+        public GlobalState AddParameters(IReadOnlyList<ParameterSymbol> parameters)
+        {
+            return WithParameters(this.Parameters.Concat(parameters).ToList());
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the additional parameters.
+        /// </summary>
+        public GlobalState AddParameters(params ParameterSymbol[] parameters)
+        {
+            return WithParameters((IReadOnlyList<ParameterSymbol>)parameters);
+        }
+
         private static Optional<T> Optional<T>(T value) => new Optional<T>(value);
 
         private static GlobalState s_default;
@@ -564,7 +601,8 @@ namespace Kusto.Language
                             Language.Aggregates.All, null,
                             Language.PlugIns.All, null,
                             Language.Operators.All, null,
-                            Language.Commands.All, null, null),
+                            Language.Commands.All, null, null,
+                            NoParameters),
                         null);
                 }
 
