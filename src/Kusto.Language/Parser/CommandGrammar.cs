@@ -124,7 +124,7 @@ namespace Kusto.Language.Parsing
                 .WithTag("<command>");
 
             var commandOutputPipeExpression =
-                ApplyOptional(
+                ApplyZeroOrMore(
                     command.Cast<Expression>(),
                     _left =>
                         Rule(
