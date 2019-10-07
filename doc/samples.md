@@ -307,7 +307,7 @@ Here's a step-by-step explanation of the query above:
 
 There are many interesting use cases for leveraging machine learning algorithms and derive interesting insights out of telemetry data. While often these algorithms require a very structured dataset as their input, the raw log data will usually not match the required structure and size. 
 
-Our journey starts with looking for anomalies in the error rate of a specific Bing Inferences service. The Logs table has 65B records, and the simple query below filters 250K errors, and creates a time series data of errors count that utilizes anomaly detection function[series_decompose_anomalies](series-decompose-anomaliesfunction.md). The anomalies detected by the Kusto service, and are highlighted as red dots on the time series chart.
+Our journey starts with looking for anomalies in the error rate of a specific Bing Inferences service. The Logs table has 65B records, and the simple query below filters 250K errors, and creates a time series data of errors count that utilizes anomaly detection function [series_decompose_anomalies](series-decompose-anomaliesfunction.md). The anomalies are detected by the Kusto service, and are highlighted as red dots on the time series chart.
 
 <!-- csl -->
 ```
@@ -343,7 +343,7 @@ Logs
 |1|Inference System error... SocialGraph.BOSS.OperationResponse...AIS TraceId:8292FC561AC64BED8FA243808FE74EFD...
 |1|Inference System error... SocialGraph.BOSS.OperationResponse...AIS TraceId: 5F79F7587FF943EC9B641E02E701AFBF...
 
-This is where the new `reduce` operator comes to help. The `reduce` operator identified 63 different errors as originated by the same trace instrumentation point in the code, and helped me focus on additional meaningful error trace in that time window.
+This is where the `reduce` operator comes to help. The `reduce` operator identified 63 different errors as originated by the same trace instrumentation point in the code, and helped me focus on additional meaningful error trace in that time window.
 
 <!-- csl -->
 ```
@@ -366,7 +366,7 @@ Logs
 |  10|Inference System error..Microsoft.Bing.Platform.Inferences.Service.Managers.UserInterimDataManagerException:...
 |  3|InferenceHostService call failed..System.ServiceModel.*: The * object, System.ServiceModel.Channels.*+*, * * * for * * * is * the * *...   at Syst...
 
-Now that I have a good view into the top errors that contributed to the detected anomalies, I want to understand the impact of these errors across my system. The 'Logs' table contains additional dimensional data such as 'Component', 'Cluster', etc... The new 'autocluster' plugin can help me derive that insight with a simple query. In this example below, I can clearly see that each of the top four errors are specific to a component, and while the top three errors are specific to DB4 cluster, the fourth one happens across all clusters.
+Now that I have a good view into the top errors that contributed to the detected anomalies, I want to understand the impact of these errors across my system. The 'Logs' table contains additional dimensional data such as 'Component', 'Cluster', etc... The new 'autocluster' plugin can help me derive that insight with a simple query. In this example below, I can clearly see that each of the top four errors is specific to a component, and while the top three errors are specific to DB4 cluster, the fourth one happens across all clusters.
 
 <!-- csl -->
 ```
@@ -561,7 +561,7 @@ datatable(id:string, timestamp:datetime, bla:string)           // (1)
   "Donald", datetime(2017-01-19), "6"
   ]
 | top-nested   of id        by dummy0=max(1),                  // (2)
-  top-nested 2 of timestamp by dummy1=max(timestamp),  // (3)
+  top-nested 2 of timestamp by dummy1=max(timestamp),          // (3)
   top-nested   of bla       by dummy2=max(1)                   // (4)
 | project-away dummy0, dummy1, dummy2                          // (5)
 ```
