@@ -567,6 +567,6 @@ The `join` operator supports a number of hints that control the way a query exec
 These do not change the semantic of `join`, but may affect its performance.
 
 Join hints explained in the following articles: 
-* `hint.shufflekey=<key>` and `hint.strategy=shuffle` - [shuffle join](shufflejoin.md)
+* `hint.shufflekey=<key>` and `hint.strategy=shuffle` - [shuffle query](shufflequery.md)
 * `hint.strategy=broadcast` - [broadcast join](broadcastjoin.md)
 * `hint.remote=<strategy>` - [cross-cluster join](joincrosscluster.md)

@@ -28,4 +28,4 @@ Table | distinct fruit, price
 **Notes**
 
 * Unlike `summarize by ...`, the `distinct` operator supports providing an asterisk (`*`) as the group key, making it easier to use for wide tables.
-* If the group by keys are of high cardinalities, using `summarize by ...` with the [shuffle strategy](shufflesummarize.md) could be useful.
+* If the group by keys are of high cardinalities, using `summarize by ...` with the [shuffle strategy](shufflequery.md) could be useful.

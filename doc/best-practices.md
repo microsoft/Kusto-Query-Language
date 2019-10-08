@@ -22,14 +22,14 @@ materializing this column at ingestion time. This way - you will pay only once f
 
 ## summarize operator
 
--	When the group by keys of the summarize operator are with high cardinality (best practice: above 1 million) then it is recommended to use the [hint.strategy=shuffle](./shufflesummarize.md).
+-	When the group by keys of the summarize operator are with high cardinality (best practice: above 1 million) then it is recommended to use the [hint.strategy=shuffle](./shufflequery.md).
 
 ## join operator
 
 -   When using [join operator](./joinoperator.md) - choose the table with less rows to be the first one (left-most). 
 -   When using [join operator](./joinoperator.md) data across clusters - run the query on the "right" side of the join (where most of the data is located).
 -   When left side is small (up to 100,000 records) and right side is big then it is recommended to use the [hint.strategy=broadcast](./broadcastjoin.md).
--   When both sides of the join are too big and the join key is with high cardinality, then it is recommended to use the [hint.strategy=shuffle](./shufflejoin.md).
+-   When both sides of the join are too big and the join key is with high cardinality, then it is recommended to use the [hint.strategy=shuffle](./shufflequery.md).
     
 ## parse operator and extract() function
 
