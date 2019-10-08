@@ -1,4 +1,4 @@
-#Shuffle Query
+# Shuffle query
 
 Shuffle query is a semantic-preserving transformation for a set of operators that supports shuffle strategy that depending on the actual data can yield considerably better performance.
 
