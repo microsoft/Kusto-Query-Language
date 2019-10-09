@@ -1262,8 +1262,8 @@ namespace Kusto.Language.Parsing
                    Token(SyntaxKind.OpenBraceToken),
                    Required(Expression, MissingExpression),
                    RequiredToken(SyntaxKind.CloseBraceToken),
-                   (openParen, expr, closeParen) =>
-                       new PartitionExpression(openParen, expr, closeParen));
+                   (openBrace, expr, closeBrace) =>
+                       (PartitionOperand)new PartitionQuery(openBrace, expr, closeBrace));
 
             var PartitionSubqueryExpression =
                 Rule(
@@ -1271,7 +1271,7 @@ namespace Kusto.Language.Parsing
                     Required(PartitionPipeExpression, MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
-                        new PartitionExpression(openParen, expr, closeParen));
+                        (PartitionOperand)new PartitionSubquery(openParen, expr, closeParen));
 
             var PartitionOperator =
                 Rule(
@@ -1285,7 +1285,7 @@ namespace Kusto.Language.Parsing
                              )),
                     RequiredToken(SyntaxKind.ByKeyword),
                     Required(EntityReferenceExpression, MissingNameReference),
-                    Required(First(PartitionSubqueryExpression, PartitionQueryExpression), MissingPartitionSubqueryExpression),
+                    Required(First(PartitionSubqueryExpression, PartitionQueryExpression), MissingPartitionOperand),
                     (partitionKeyword, parameters, byKeyword, byExpression, operand) =>
                         (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, operand))
                 .WithTag("<partition>");
@@ -2583,23 +2583,14 @@ namespace Kusto.Language.Parsing
         public static readonly Func<ForkExpression> MissingForkExpression =
             () => (ForkExpression)MissingForkExpressionNode.Clone();
 
-        public static readonly PartitionExpression MissingPartitionSubqueryExpressionNode =
-            new PartitionExpression(
+        public static readonly PartitionOperand MissingPartitionOperandNode =
+            new PartitionSubquery(
                 CreateMissingToken(SyntaxKind.OpenParenToken),
                 (Expression)MissingExpressionNode.Clone(),
                 CreateMissingToken(SyntaxKind.CloseParenToken));
 
-        public static readonly Func<PartitionExpression> MissingPartitionSubqueryExpression =
-            () => (PartitionExpression)MissingPartitionSubqueryExpressionNode.Clone();
-
-        public static readonly PartitionExpression MissingPartitionQueryExpressionNode =
-            new PartitionExpression(
-                CreateMissingToken(SyntaxKind.OpenBraceToken),
-                (Expression)MissingExpressionNode.Clone(),
-                CreateMissingToken(SyntaxKind.CloseBraceToken));
-
-        public static readonly Func<PartitionExpression> MissingPartitionQueryExpression =
-            () => (PartitionExpression)MissingPartitionQueryExpressionNode.Clone();
+        public static readonly Func<PartitionOperand> MissingPartitionOperand =
+            () => (PartitionOperand)MissingPartitionOperandNode.Clone();
 
         public static readonly Statement MissingStatementNode =
             new ExpressionStatement(

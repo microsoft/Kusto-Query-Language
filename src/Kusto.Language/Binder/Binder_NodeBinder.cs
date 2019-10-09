@@ -782,9 +782,21 @@ namespace Kusto.Language.Binding
                 return new SemanticInfo(resultType);
             }
 
-            public override SemanticInfo VisitPartitionExpression(PartitionExpression node)
+            public override SemanticInfo VisitPartitionSubquery(PartitionSubquery node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.Expression);
+                var resultType = _binder.GetResultTypeOrError(node.Subquery);
+
+                if (resultType is TableSymbol table)
+                {
+                    resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
+                }
+
+                return new SemanticInfo(resultType);
+            }
+
+            public override SemanticInfo VisitPartitionQuery(PartitionQuery node)
+            {
+                var resultType = _binder.GetResultTypeOrError(node.Query);
 
                 if (resultType is TableSymbol table)
                 {
@@ -963,7 +975,7 @@ namespace Kusto.Language.Binding
             private static bool IsChildOfPipeStartingExpression(Expression expr)
             {
                 return (expr.Parent is ForkExpression fce && fce.Expression == expr)
-                    || (expr.Parent is PartitionExpression pce && pce.Expression == expr && pce.IsSubquery)
+                    || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
                     || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
                     || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
                     || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe));

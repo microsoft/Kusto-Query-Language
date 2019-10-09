@@ -180,9 +180,4 @@ namespace Kusto.Language.Syntax
             }
         }
     }
-
-    public partial class PartitionExpression
-    {
-        public bool IsSubquery => this.OpenParen.Kind == SyntaxKind.OpenParenToken;
-    }
 }

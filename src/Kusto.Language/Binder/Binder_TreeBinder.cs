@@ -264,6 +264,45 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitPartitionOperator(PartitionOperator node)
+            {
+                node.ByExpression.Accept(this);
+
+                if (node.Operand is PartitionQuery)
+                {
+                    // partition-expressions { xxx } don't have an implied row-scope, since you 
+                    // are required to specify a complete query expression.
+                    var oldRowScope = _binder._rowScope;
+                    _binder._rowScope = null;
+
+                    var oldLocalScope = _binder._localScope;
+                    try
+                    {
+                        // put column referenced in by-expression into scope during evaluation of partition expression
+                        var column = _binder.GetReferencedSymbol(node.ByExpression) as ColumnSymbol;
+                        if (column != null)
+                        {
+                            _binder._localScope = new LocalScope(_binder._localScope);
+                            _binder._localScope.AddSymbol(column);
+                        }
+
+                        node.Operand.Accept(this);
+                    }
+                    finally
+                    {
+                        _binder._rowScope = oldRowScope;
+                        _binder._localScope = oldLocalScope;
+                    }
+                }
+                else
+                {
+                    // do nothing here, this sub expression assumes same row-scope as partition operator has
+                    node.Operand.Accept(this);
+                }
+
+                BindNode(node);
+            }
+
             public override void VisitForkOperator(ForkOperator node)
             {
                 var oldRowScope = _binder._rowScope;

@@ -643,7 +643,8 @@
         MvExpandExpression,
         MvExpandRowLimitClause,
 
-        PartitionExpression,
+        PartitionSubquery,
+        PartitionQuery,
         PartitionOperator,
         ParseOperator,
 

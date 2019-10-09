@@ -1312,21 +1312,44 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
             new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="None" },
             new GeneratedProperty { Name = "ByKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "ByExpression", Type = "Expression", Completion="Scalar" },
-            new GeneratedProperty { Name = "Operand", Type = "PartitionExpression", Completion="Tabular" }
+            new GeneratedProperty { Name = "Operand", Type = "PartitionOperand", Completion="Tabular" }
         }
     },
 
     new GeneratedCslNodeClass
     {
-        Name = "PartitionExpression",
-        Doc = "",
+        Name = "PartitionOperand",
         Base = "Expression",
+        Abstract = true,
+        Properties = new GeneratedProperty[]
+        {
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "PartitionQuery",
+        Base = "PartitionOperand",
         Sealed = true,
-        Kind = "PartitionExpression",
+        Kind = "PartitionQuery",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "OpenBrace", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Query", Type = "Expression", Completion="Tabular" },
+            new GeneratedProperty { Name = "CloseBrace", Type = "SyntaxToken", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "PartitionSubquery",
+        Base = "PartitionOperand",
+        Sealed = true,
+        Kind = "PartitionSubquery",
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Clause" },
+            new GeneratedProperty { Name = "Subquery", Type = "Expression", Completion="Syntax" },
             new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
         }
     },

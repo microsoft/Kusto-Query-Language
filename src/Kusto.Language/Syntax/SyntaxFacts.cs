@@ -673,7 +673,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MvExpandRowLimitClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.PartitionOperator, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.PartitionExpression, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.PartitionSubquery, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.PartitionQuery, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.EvaluateOperator, "", SyntaxCategory.Node), // evaluate

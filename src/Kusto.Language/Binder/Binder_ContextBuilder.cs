@@ -270,6 +270,20 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitPartitionOperator(PartitionOperator node)
+            {
+                base.VisitPartitionOperator(node);
+
+                if (_position >= node.Operand.TextStart && node.Operand is PartitionQuery)
+                {
+                    var column = node.ByExpression.ReferencedSymbol as ColumnSymbol;
+                    if (column != null)
+                    {
+                        _binder._localScope.AddSymbol(column);
+                    }
+                }
+            }
+
             public override void VisitCustomCommand(CustomCommand node)
             {
                 var nearestTableRef = node.GetDescendants<NameReference>(nr => nr.ReferencedSymbol is TableSymbol)
