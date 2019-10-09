@@ -1349,7 +1349,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "Subquery", Type = "Expression", Completion="Syntax" },
+            new GeneratedProperty { Name = "Subquery", Type = "Expression", Completion="Query" },
             new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
         }
     },

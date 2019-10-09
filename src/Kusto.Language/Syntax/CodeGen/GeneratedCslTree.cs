@@ -6564,7 +6564,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Query;
                 case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
