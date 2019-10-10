@@ -27,6 +27,8 @@ Where:
 
 ::: zone pivot="kusto"
 
+For Kusto flavor:
+
 |*Visualization*     |Description|
 |--------------------|-|
 | `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
@@ -46,6 +48,8 @@ Where:
 ::: zone-end
 
 ::: zone pivot="loganalytics"
+
+For Log Analytics flavor:
 
 |*Visualization*     |Description|
 |--------------------|-|
@@ -132,6 +136,8 @@ three kinds of columns:
 
 ::: zone pivot="kusto"
 
+For Kusto flavor:
+
 **Examples**
 
 [Rendering examples in the tutorial](./tutorial.md#render-display-a-chart-or-table).
@@ -150,6 +156,8 @@ range x from -2 to 2 step 0.1
 ::: zone-end
 
 ::: zone pivot="loganalytics"
+
+For Log Analytics flavor:
 
 **Example**
 
