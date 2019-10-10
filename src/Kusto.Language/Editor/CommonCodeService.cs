@@ -254,11 +254,11 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<DatabaseReference>.Instance;
         }
 
-        public override string GetMinimalText(CancellationToken cancellationToken)
+        public override string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken)
         {
             // use kusto lexer to identify tokens and trivia (as best guess)
             var list = new SyntaxList<SyntaxToken>(Parsing.LexicalGrammar.GetTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
-            return list.ToString(IncludeTrivia.Minimal);
+            return list.ToString(KustoCodeService.GetIncludeTrivia(kind));
         }
 
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)

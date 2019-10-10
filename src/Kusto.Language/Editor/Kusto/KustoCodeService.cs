@@ -530,11 +530,24 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        public override string GetMinimalText(CancellationToken cancellationToken = default(CancellationToken))
+        public static IncludeTrivia GetIncludeTrivia(MinimalTextKind kind)
+        {
+            switch (kind)
+            {
+                case MinimalTextKind.RemoveLeadingWhitespaceAndComments:
+                    return IncludeTrivia.Interior;
+                case MinimalTextKind.MinimizeWhitespaceAndRemoveComments:
+                    return IncludeTrivia.Minimal;
+                default:
+                    throw new InvalidOperationException($"Unhandled MinimalTextKind '{kind}'");
+            }
+        }
+
+        public override string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
-                return code.Syntax.ToString(IncludeTrivia.Minimal);
+                return code.Syntax.ToString(GetIncludeTrivia(kind));
             }
 
             return this.Text;

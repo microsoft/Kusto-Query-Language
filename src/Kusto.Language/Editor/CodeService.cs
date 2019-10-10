@@ -83,7 +83,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the text with all whitespace/trivia minimized.
         /// </summary>
-        public abstract string GetMinimalText(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the text with all the whitespace/trivia formatted using the specified options.
@@ -94,5 +94,11 @@ namespace Kusto.Language.Editor
         /// Gets the client parameter references embedded in the text.
         /// </summary>
         public abstract IReadOnlyList<ClientParameter> GetClientParameters();
+    }
+
+    public enum MinimalTextKind
+    {
+        RemoveLeadingWhitespaceAndComments,
+        MinimizeWhitespaceAndRemoveComments
     }
 }

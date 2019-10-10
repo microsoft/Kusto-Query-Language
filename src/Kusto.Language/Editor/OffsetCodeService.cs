@@ -120,9 +120,9 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override string GetMinimalText(CancellationToken cancellationToken)
+        public override string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken)
         {
-            return _service.GetMinimalText(cancellationToken);
+            return _service.GetMinimalText(kind, cancellationToken);
         }
 
         public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
