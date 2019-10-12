@@ -91,7 +91,7 @@ The following tables classifies the language syntax to the flavors outlined abov
 |  [fork operator](forkoperator.md) | Out of scope |  |
 |  [getschema operator](getschemaoperator.md) | Core |  |
 |  [invoke operator](invokeoperator.md) | Core |  |
-|  [join operator](joinoperator.md) | Core | [Shuffle join](shufflejoin.md) and [Broadcast join](broadcastjoin.md) are out of scope. join flavors in core: inner, leftouter, rightouter, fullouter (requires specifying kind)
+|  [join operator](joinoperator.md) | Core | [Shuffle join and summarize](shufflequery.md) are out of scope. join flavors in core: inner, leftouter, rightouter, fullouter (requires specifying kind)
 join flavors in full: innerunique (default), leftanti, right anti, left semi and right semi|
 |  [limit operator](limitoperator.md) | Core |  |
 |  [lookup operator](lookupoperator.md) | Full |  |
@@ -115,7 +115,7 @@ eroperator.md) | Core |  |
 |  [search operator](searchoperator.md) | Out of scope |  |
 |  [serialize operator](serializeoperator.md) | Full |  |
 |  [sort operator](sortoperator.md) | Core |  |
-|  [summarize operator](summarizeoperator.md) | Core | [Shuffle Summarize](shufflesummarize.md) is out of scope |
+|  [summarize operator](summarizeoperator.md) | Core | [Shuffle join and summarize](shufflequery.md) are out of scope |
 |  [take operator](takeoperator.md) | Core |  |
 |  [top operator](topoperator.md) | Core |  |
 |  [top-nested operator](topnestedoperator.md) | Full |  |

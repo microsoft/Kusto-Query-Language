@@ -260,3 +260,11 @@
 |[rank_tdigest()](rank-tdigest.md)|Calculates relative rank of a value in a set.|
 |[tdigest_merge()](tdigest-mergefunction.md)|Merges tdigest results (scalar version of the aggregate version tdigest-merge()).|
 
+## Spatial functions
+
+|Function Name                                                             |Description                                             |
+|--------------------------------------------------------------------------|--------------------------------------------------------|
+|[geo_distance_2points()](geo-distance-2points-function.md)                ||
+|[geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)||
+|[geo_point_in_circle()](geo-point-in-circle-function.md)                  ||
+|[geo_point_to_geohash()](geo-point-to-geohash-function.md)                ||
