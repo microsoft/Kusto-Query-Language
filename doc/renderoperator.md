@@ -126,7 +126,6 @@ three kinds of columns:
 
 **Tips**
 
-* Only positive values are displayed.
 * Use `where`, `summarize` and `top` to limit the volume that you display.
 * Sort the data to define the order of the x-axis.
 * User agents are free to "guess" the value of properties that are not specified
@@ -135,8 +134,6 @@ three kinds of columns:
   columns when that happens. 
 
 ::: zone pivot="kusto"
-
-For Kusto flavor:
 
 **Examples**
 
