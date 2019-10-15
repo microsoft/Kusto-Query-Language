@@ -218,7 +218,8 @@ namespace Kusto.Language.Editor
 
         private static bool IsQueryOperatorToken(SyntaxToken token)
         {
-            return token.Parent is QueryOperator q && q.GetChild(0) == token;
+            return (token.Parent is QueryOperator q && q.GetChild(0) == token)
+                || (token.Parent is TopNestedClause tc && tc.GetChild(0) == token);
         }
 
         private static bool IsQueryParameter(SyntaxToken token)

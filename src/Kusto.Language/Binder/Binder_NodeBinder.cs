@@ -1355,9 +1355,13 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsScalar(clause.ByExpression, diagnostics);
 
-                        var name = GetExpressionResultName(clause.OfExpression);
-                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(name), _binder.GetResultTypeOrError(clause.OfExpression)));
-                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName("aggregated_" + name), _binder.GetResultTypeOrError(clause.ByExpression)));
+                        var ofName = GetExpressionResultName(clause.OfExpression);
+                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(ofName), _binder.GetResultTypeOrError(clause.OfExpression)));
+
+                        var byName = clause.ByExpression is SimpleNamedExpression sn 
+                            ? sn.Name.SimpleName 
+                            : "aggregated_" + ofName;
+                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(byName), _binder.GetResultTypeOrError(clause.ByExpression)));
                     }
 
                     return new SemanticInfo(RowScopeOrEmpty.WithColumns(columns).Sorted(), diagnostics);

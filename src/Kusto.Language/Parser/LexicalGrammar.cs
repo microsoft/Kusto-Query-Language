@@ -98,7 +98,7 @@ namespace Kusto.Language.Parsing
             And(Chars("datetime"), Goo);
 
         private static readonly Parser<char> PrefixedTimespanLiteral =
-            And(Chars("time"), Goo);
+            And(Or(Chars("time"), Chars("timespan")), Goo);
 
         private static readonly Parser<char> TimespanLiteral =
             And(NonHexIntegerNumber, Or(
