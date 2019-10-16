@@ -71,6 +71,11 @@ namespace Kusto.Language.Symbols
         Parameter0Table,
 
         /// <summary>
+        /// The return type is a table. If the argument for parameter 0 is a literal string, the named external table is used.
+        /// </summary>
+        Parameter0ExternalTable,
+
+        /// <summary>
         /// The return type is the common scalar type of all the parameters marked as Common.
         /// </summary>
         Common,

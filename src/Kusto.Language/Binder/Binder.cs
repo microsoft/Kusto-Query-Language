@@ -904,7 +904,10 @@ namespace Kusto.Language.Binding
                         break;
                     case SymbolKind.Database:
                         if (name == null || Functions.Database.Name == name)
+                        {
                             functions.Add(Functions.Table);
+                            functions.Add(Functions.ExternalTable);
+                        }
                         break;
                 }
             }
@@ -1186,6 +1189,10 @@ namespace Kusto.Language.Binding
                                 if (name == Functions.Table.Name)
                                 {
                                     list.Add(Functions.Table);
+                                }
+                                else if (name == Functions.ExternalTable.Name)
+                                {
+                                    list.Add(Functions.ExternalTable);
                                 }
                                 else if (ds.IsOpen)
                                 {
@@ -1686,6 +1693,17 @@ namespace Kusto.Language.Binding
                         return TableSymbol.Empty.Open();
                     }
 
+                case ReturnTypeKind.Parameter0ExternalTable:
+                    iArg = signature.GetArgumentIndex(signature.Parameters[0], arguments);
+                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var externalTableName))
+                    {
+                        return GetExternalTableFunctionResult(externalTableName);
+                    }
+                    else
+                    {
+                        return TableSymbol.Empty.Open();
+                    }
+
                 case ReturnTypeKind.Custom:
                     return signature.CustomReturnType(_rowScope ?? TableSymbol.Empty, arguments, signature) ?? ErrorSymbol.Instance;
 
@@ -1823,6 +1841,15 @@ namespace Kusto.Language.Binding
                 return GetTable(name, pathDb ?? _currentDatabase)
                     ?? (TypeSymbol)ErrorSymbol.Instance;
             }
+        }
+
+        /// <summary>
+        /// Gets the result of calling the external_table() function in the current context.
+        /// </summary>
+        private TypeSymbol GetExternalTableFunctionResult(string name)
+        {
+            var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
+            return db.GetExternalTable(name) ?? (TypeSymbol)ErrorSymbol.Instance;
         }
 
         /// <summary>
@@ -2853,7 +2880,10 @@ namespace Kusto.Language.Binding
 
             // look for explicit calls to table(), database() or cluster() functions
             foreach (var fc in body.GetDescendants<FunctionCallExpression>(
-                _fc => _fc.ReferencedSymbol == Functions.Table || _fc.ReferencedSymbol == Functions.Database || _fc.ReferencedSymbol == Functions.Cluster))
+                _fc => _fc.ReferencedSymbol == Functions.Table 
+                    || _fc.ReferencedSymbol == Functions.ExternalTable
+                    || _fc.ReferencedSymbol == Functions.Database 
+                    || _fc.ReferencedSymbol == Functions.Cluster))
             {
                 if (fc.ReferencedSymbol == Functions.Table)
                 {
@@ -2867,6 +2897,10 @@ namespace Kusto.Language.Binding
                     {
                         result |= FunctionBodyFacts.Table;
                     }
+                }
+                else if(fc.ReferencedSymbol == Functions.ExternalTable)
+                {
+                    result |= FunctionBodyFacts.ExternalTable;
                 }
                 else if (fc.ReferencedSymbol == Functions.Database)
                 {

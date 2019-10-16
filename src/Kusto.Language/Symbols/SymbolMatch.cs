@@ -17,14 +17,19 @@ namespace Kusto.Language.Symbols
         Column = 1,
 
         /// <summary>
-        /// Any table
+        /// Any table (not external)
         /// </summary>
         Table = Column << 1,
 
         /// <summary>
+        /// Any external table
+        /// </summary>
+        ExternalTable = Table << 1,
+
+        /// <summary>
         /// Any function
         /// </summary>
-        Function = Table << 1,
+        Function = ExternalTable << 1,
 
         /// <summary>
         /// Any local variable or parameter
@@ -88,7 +93,10 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Column) != 0 && symbol.Kind == SymbolKind.Column)
                 return true;
 
-            if ((match & SymbolMatch.Table) != 0 && symbol.Kind == SymbolKind.Table)
+            if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal)
+                return true;
+
+            if ((match & SymbolMatch.ExternalTable) != 0 && symbol is TableSymbol ets && ets.IsExternal)
                 return true;
 
             if ((match & SymbolMatch.Database) != 0 && symbol.Kind == SymbolKind.Database)

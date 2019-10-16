@@ -409,6 +409,7 @@ namespace Kusto.Language.Symbols
                         case ReturnTypeKind.Custom:
                             return Tabularity.Unknown;
                         case ReturnTypeKind.Parameter0Table:
+                        case ReturnTypeKind.Parameter0ExternalTable:
                         case ReturnTypeKind.Parameter0Database:
                         case ReturnTypeKind.Parameter0Cluster:
                             return Tabularity.Tabular;
@@ -593,8 +594,13 @@ namespace Kusto.Language.Symbols
         QualifiedTable      = 0b_0000_1000,
 
         /// <summary>
+        /// The function body or any of its dependencies includes a call to the external_table() function.
+        /// </summary>
+        ExternalTable = 0b_0001_0000,
+
+        /// <summary>
         /// The function body may have a variable return type (due to variable tabular input)
         /// </summary>
-        VariableReturn      = 0b_0001_0000,
+        VariableReturn      = 0b_0010_0000,
     }
 }

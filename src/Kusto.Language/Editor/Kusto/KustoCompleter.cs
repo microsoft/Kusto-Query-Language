@@ -388,7 +388,8 @@ namespace Kusto.Language.Editor
         {
             if (function == Functions.Cluster
                 || function == Functions.Database
-                || function == Functions.Table)
+                || function == Functions.Table
+                || function == Functions.ExternalTable)
             {
                 return true;
             }
@@ -800,12 +801,12 @@ namespace Kusto.Language.Editor
                                 {
                                     if (cpl.ResultType is ClusterSymbol cc)
                                     {
-                                        builder.AddRange(GetMemberNameExamples(cc.Members));
+                                        builder.AddRange(GetMemberNameExamples(cc.Databases));
                                     }
                                 }
                                 else
                                 {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Cluster.Members));
+                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Cluster.Databases));
                                 }
 
                                 GetStringValuesInScope(position, contextNode, builder);
@@ -817,12 +818,29 @@ namespace Kusto.Language.Editor
                                 {
                                     if (dpl.ResultType is DatabaseSymbol ds)
                                     {
-                                        builder.AddRange(GetMemberNameExamples(ds.Members.OfType<TableSymbol>()));
+                                        builder.AddRange(GetMemberNameExamples(ds.Tables));
                                     }
                                 }
                                 else
                                 {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.Members.OfType<TableSymbol>()));
+                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.Tables));
+                                }
+
+                                GetStringValuesInScope(position, contextNode, builder);
+                                return CompletionMode.Isolated;
+
+                            case ReturnTypeKind.Parameter0ExternalTable:
+                                // show either the dotted database's table names or the global database's table names
+                                if (GetLeftOfFunctionCall(contextNode) is Expression edpl)
+                                {
+                                    if (edpl.ResultType is DatabaseSymbol ds)
+                                    {
+                                        builder.AddRange(GetMemberNameExamples(ds.ExternalTables));
+                                    }
+                                }
+                                else
+                                {
+                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.ExternalTables));
                                 }
 
                                 GetStringValuesInScope(position, contextNode, builder);

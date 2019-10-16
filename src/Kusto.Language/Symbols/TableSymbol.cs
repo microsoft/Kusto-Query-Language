@@ -20,10 +20,11 @@ namespace Kusto.Language.Symbols
         [Flags]
         private enum TableState : ushort
         {
-            None = 0,
-            Serialized = 1,
-            Sorted = 2,
-            Open = 4,
+            None =          0b0000_0000,
+            Serialized =    0b0000_0001,
+            Sorted =        0b0000_0010,
+            Open =          0b0000_0100,
+            External =      0b0000_1000
         }
 
         /// <summary>
@@ -83,6 +84,11 @@ namespace Kusto.Language.Symbols
         /// True if the table is open.
         /// </summary>
         public bool IsOpen => (this.state & TableState.Open) != 0;
+
+        /// <summary>
+        /// True if the table is external.
+        /// </summary>
+        public bool IsExternal => (this.state & TableState.External) != 0;
 
         /// <summary>
         /// Creates a new <see cref="TableSymbol"/> with the specified name.
@@ -154,6 +160,14 @@ namespace Kusto.Language.Symbols
         public TableSymbol Open()
         {
             return new TableSymbol(this.state | TableState.Open, this.Columns);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="TableSymbol"/> that is considered external.
+        /// </summary>
+        public TableSymbol External()
+        {
+            return new TableSymbol(this.Name, this.state | TableState.External, this.Columns);
         }
 
         private Dictionary<string, ColumnSymbol> lazyColumnMap;

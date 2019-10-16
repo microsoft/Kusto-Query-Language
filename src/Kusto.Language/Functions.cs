@@ -25,6 +25,12 @@ namespace Kusto.Language
                 ReturnTypeKind.Parameter0Table,
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("query_data_scope", ScalarTypes.String, minOccurring: 0));
+
+        public static readonly FunctionSymbol ExternalTable = new FunctionSymbol("external_table",
+                ReturnTypeKind.Parameter0ExternalTable,
+                new Parameter("name", ScalarTypes.String),
+                new Parameter("mapping", ScalarTypes.String, minOccurring: 0));
+
         #endregion
 
         #region string functions
@@ -1717,6 +1723,7 @@ namespace Kusto.Language
             Cluster,
             Database,
             Table,
+            ExternalTable,
 #endregion
 
 #region string functions
