@@ -17,6 +17,11 @@ namespace Kusto.Language.Symbols
         public static readonly ScalarSymbol Dynamic = new ScalarSymbol("dynamic", null, ScalarFlags.Interval);
         public static readonly ScalarSymbol String = new ScalarSymbol("string", widerThan: new[] { Dynamic });
 
+        /// <summary>
+        /// This is not actually a scalar type, but is used when a column has an unknown type.
+        /// </summary>
+        public static readonly ScalarSymbol Unknown = new ScalarSymbol("unknown", null, ScalarFlags.All);
+
         private static readonly IReadOnlyList<ScalarSymbol> s_types = new ScalarSymbol[]
         {
             Bool,

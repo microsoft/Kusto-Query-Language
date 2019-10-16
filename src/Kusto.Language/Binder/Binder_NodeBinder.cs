@@ -544,7 +544,7 @@ namespace Kusto.Language.Binding
                         return VisitWildcardedNameReference(node, wc);
                     case BracedName _:
                         // client parameter does not bind to anything
-                        return new SemanticInfo(ScalarTypes.Dynamic);
+                        return new SemanticInfo(ScalarTypes.Unknown);
                     default:
                         throw new NotImplementedException();
                 }
@@ -596,7 +596,8 @@ namespace Kusto.Language.Binding
                     {
                         return ErrorInfo;
                     }
-                    else if (_binder._pathScope != ScalarTypes.Dynamic)
+                    else if (_binder._pathScope != ScalarTypes.Dynamic
+                        && _binder._pathScope != ScalarTypes.Unknown)
                     {
                         // only works for dynamic values
                         return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(node));
@@ -640,7 +641,7 @@ namespace Kusto.Language.Binding
                         // computed name lookup?? Is this valid here?
                         return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
                     }
-                    else if (_binder._pathScope == ScalarTypes.Dynamic)
+                    else if (_binder._pathScope == ScalarTypes.Dynamic || _binder._pathScope == ScalarTypes.Unknown)
                     {
                         // dynamic name lookup, no need to bind
                         return new SemanticInfo(ScalarTypes.Dynamic);

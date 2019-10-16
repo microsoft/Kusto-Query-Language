@@ -1108,8 +1108,8 @@ namespace Kusto.Language.Binding
         private static readonly SemanticInfo LiteralDateTimeInfo = new SemanticInfo(ScalarTypes.DateTime, isConstant: true);
         private static readonly SemanticInfo LiteralTimeSpanInfo = new SemanticInfo(ScalarTypes.TimeSpan, isConstant: true);
         private static readonly SemanticInfo LiteralGuidInfo = new SemanticInfo(ScalarTypes.Guid, isConstant: true);
-        private static readonly SemanticInfo LiteralTypeInfo = new SemanticInfo(ScalarTypes.Type, isConstant: true);
         private static readonly SemanticInfo LiteralDynamicInfo = new SemanticInfo(ScalarTypes.Dynamic, isConstant: true);
+        private static readonly SemanticInfo UnknownInfo = new SemanticInfo(ScalarTypes.Unknown, isConstant: true);
         private static readonly SemanticInfo ErrorInfo = new SemanticInfo(ErrorSymbol.Instance);
         private static readonly SemanticInfo VoidInfo = new SemanticInfo(VoidSymbol.Instance);
         #endregion
@@ -1147,6 +1147,10 @@ namespace Kusto.Language.Binding
                 if (_pathScope == ScalarTypes.Dynamic)
                 {
                     return LiteralDynamicInfo;
+                }
+                else if(_pathScope == ScalarTypes.Unknown)
+                {
+                    return UnknownInfo;
                 }
                 else if (_pathScope == ErrorSymbol.Instance)
                 {
@@ -1266,7 +1270,7 @@ namespace Kusto.Language.Binding
                     if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
                     {
                         // table is open, so create a dynamic column for the otherwise unbound name
-                        list.Add(GetOpenColumn(name, ScalarTypes.Dynamic, _rowScope));
+                        list.Add(GetOpenColumn(name, ScalarTypes.Unknown, _rowScope));
                     }
                 }
 
@@ -1417,7 +1421,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    if (!ArgumentsHaveErrors(argumentTypes))
+                    if (!ArgumentsHaveErrorsOrUnknown(argumentTypes))
                     {
                         diagnostics.Add(DiagnosticFacts.GetOperatorNotDefined(location.ToString(IncludeTrivia.Interior), argumentTypes).WithLocation(location));
                     }
@@ -1878,6 +1882,7 @@ namespace Kusto.Language.Binding
         private static TypeSymbol GetCommonArgumentType(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
         {
             TypeSymbol commonType = null;
+            var hadUnknown = false;
 
             for (int i = 0; i < argumentTypes.Count; i++)
             {
@@ -1891,16 +1896,23 @@ namespace Kusto.Language.Binding
                         || (parameter.TypeKind == ParameterTypeKind.CommonNumber && IsNumber(argType))
                         || (parameter.TypeKind == ParameterTypeKind.CommonSummable && IsSummable(argType)))
                     {
-                        if (commonType == null)
+                        if (commonType == null )
                         {
-                            commonType = argType;
+                            if (argType == ScalarTypes.Unknown)
+                            {
+                                hadUnknown = true;
+                            }
+                            else
+                            {
+                                commonType = argType;
+                            }
                         }
                         else if (IsPromotable(commonType, argType))
                         {
                             // a type that can be promoted to is better
                             commonType = argType;
                         }
-                        else if (SymbolsAssignable(commonType, ScalarTypes.Dynamic))
+                        else if (commonType == ScalarTypes.Dynamic)
                         {
                             // non-dynamic scalars are better
                             commonType = argType;
@@ -1908,6 +1920,9 @@ namespace Kusto.Language.Binding
                     }
                 }
             }
+
+            if (commonType == null && hadUnknown)
+                return ScalarTypes.Unknown;
 
             return commonType;
         }
@@ -1934,7 +1949,16 @@ namespace Kusto.Language.Binding
                 {
                     var type = GetSignatureResult(signatures[i], arguments, argumentTypes).Type;
                     if (!SymbolsAssignable(type, firstType))
-                        return ErrorSymbol.Instance;
+                    {
+                        if (ArgumentsHaveErrorsOrUnknown(argumentTypes))
+                        {
+                            return ScalarTypes.Unknown;
+                        }
+                        else
+                        {
+                            return ErrorSymbol.Instance;
+                        }
+                    }
                 }
 
                 return firstType;
@@ -1948,6 +1972,7 @@ namespace Kusto.Language.Binding
         private static TypeSymbol GetCommonScalarType(params TypeSymbol[] types)
         {
             TypeSymbol commonType = null;
+            bool hadUnknown = false;
 
             for (int i = 0; i < types.Length; i++)
             {
@@ -1958,7 +1983,14 @@ namespace Kusto.Language.Binding
                     // TODO: should there be a general betterness between types instead of these specific rules?
                     if (commonType == null)
                     {
-                        commonType = type;
+                        if (type == ScalarTypes.Unknown)
+                        {
+                            hadUnknown = true;
+                        }
+                        else
+                        {
+                            commonType = type;
+                        }
                     }
                     else if (IsPromotable(commonType, type))
                     {
@@ -1972,6 +2004,9 @@ namespace Kusto.Language.Binding
                     }
                 }
             }
+
+            if (commonType == null && hadUnknown)
+                return ScalarTypes.Unknown;
 
             return commonType;
         }
@@ -2175,6 +2210,11 @@ namespace Kusto.Language.Binding
             None,
 
             /// <summary>
+            /// The argument had an unknown type.
+            /// </summary>
+            Unknown,
+
+            /// <summary>
             /// The argument's type is not the excluded type
             /// </summary>
             NotType,
@@ -2259,13 +2299,16 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Determines the kind of match that the argument has with its corresponding signature parameter.
         /// </summary>
-        private MatchKind GetParameterMatchKind(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, Parameter parameter, Expression argument, TypeSymbol resultType)
+        private MatchKind GetParameterMatchKind(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, Parameter parameter, Expression argument, TypeSymbol argumentType)
         {
             if (parameter == null)
                 return MatchKind.None;
 
+            if (argumentType == ScalarTypes.Unknown)
+                return MatchKind.Unknown;
+
             if (parameter.DefaultValueIndicator != null
-                && resultType == ScalarTypes.String
+                && argumentType == ScalarTypes.String
                 && argument is LiteralExpression lit
                 && lit.LiteralValue is string value
                 && value == parameter.DefaultValueIndicator)
@@ -2286,7 +2329,7 @@ namespace Kusto.Language.Binding
             switch (parameter.TypeKind)
             {
                 case ParameterTypeKind.Declared:
-                    if (SymbolsAssignable(parameter.DeclaredTypes, resultType, Conversion.None))
+                    if (SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.None))
                     {
                         if (parameter.DeclaredTypes.Count == 1)
                         {
@@ -2297,96 +2340,96 @@ namespace Kusto.Language.Binding
                             return MatchKind.OneOfTwo;
                         }
                     }
-                    else if (SymbolsAssignable(parameter.DeclaredTypes, resultType, Conversion.Promotable))
+                    else if (SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Promotable))
                     {
                         return MatchKind.Promoted;
                     }
                     else if (AllowLooseParameterMatching(signature)
-                        && SymbolsAssignable(parameter.DeclaredTypes, resultType, Conversion.Compatible))
+                        && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Compatible))
                     {
                         return MatchKind.Compatible;
                     }
                     break;
 
                 case ParameterTypeKind.Scalar:
-                    if (resultType.IsScalar)
+                    if (argumentType.IsScalar)
                         return MatchKind.Scalar;
                     break;
 
                 case ParameterTypeKind.Integer:
-                    if (IsInteger(resultType))
+                    if (IsInteger(argumentType))
                         return MatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.RealOrDecimal:
-                    if (IsRealOrDecimal(resultType))
+                    if (IsRealOrDecimal(argumentType))
                         return MatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.StringOrDynamic:
-                    if (IsStringOrDynamic(resultType))
+                    if (IsStringOrDynamic(argumentType))
                         return MatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.IntegerOrDynamic:
-                    if (IsIntegerOrDynamic(resultType))
+                    if (IsIntegerOrDynamic(argumentType))
                         return MatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.Number:
-                    if (IsNumber(resultType))
+                    if (IsNumber(argumentType))
                         return MatchKind.Number;
                     break;
 
                 case ParameterTypeKind.Summable:
-                    if (IsSummable(resultType))
+                    if (IsSummable(argumentType))
                         return MatchKind.Summable;
                     break;
 
                 case ParameterTypeKind.Tabular:
                 case ParameterTypeKind.SingleColumnTable:
-                    if (IsTabular(resultType))
+                    if (IsTabular(argumentType))
                         return MatchKind.Tabular;
                     break;
 
                 case ParameterTypeKind.Database:
-                    if (IsDatabase(resultType))
+                    if (IsDatabase(argumentType))
                         return MatchKind.Database;
                     break;
 
                 case ParameterTypeKind.Cluster:
-                    if (IsCluster(resultType))
+                    if (IsCluster(argumentType))
                         return MatchKind.Cluster;
                     break;
 
                 case ParameterTypeKind.NotBool:
-                    if (!SymbolsAssignable(resultType, ScalarTypes.Bool))
+                    if (!SymbolsAssignable(argumentType, ScalarTypes.Bool))
                         return MatchKind.NotType;
                     break;
 
                 case ParameterTypeKind.NotRealOrBool:
-                    if (!SymbolsAssignable(resultType, ScalarTypes.Real)
-                        && !SymbolsAssignable(resultType, ScalarTypes.Bool))
+                    if (!SymbolsAssignable(argumentType, ScalarTypes.Real)
+                        && !SymbolsAssignable(argumentType, ScalarTypes.Bool))
                         return MatchKind.NotType;
                     break;
 
                 case ParameterTypeKind.NotDynamic:
-                    if (!SymbolsAssignable(resultType, ScalarTypes.Dynamic))
+                    if (!SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
                         return MatchKind.NotType;
                     break;
 
                 // TODO: verify these are doing the right thing...
                 case ParameterTypeKind.Parameter0:
                     var p0 = signature.GetParameter(0, arguments.Count);
-                    return GetParameterMatchKind(signature, arguments, argumentTypes, p0, argument, resultType);
+                    return GetParameterMatchKind(signature, arguments, argumentTypes, p0, argument, argumentType);
 
                 case ParameterTypeKind.Parameter1:
                     var p1 = signature.GetParameter(1, arguments.Count);
-                    return GetParameterMatchKind(signature, arguments, argumentTypes, p1, argument, resultType);
+                    return GetParameterMatchKind(signature, arguments, argumentTypes, p1, argument, argumentType);
 
                 case ParameterTypeKind.Parameter2:
                     var p2 = signature.GetParameter(2, arguments.Count);
-                    return GetParameterMatchKind(signature, arguments, argumentTypes, p2, argument, resultType);
+                    return GetParameterMatchKind(signature, arguments, argumentTypes, p2, argument, argumentType);
 
                 case ParameterTypeKind.CommonScalar:
                 case ParameterTypeKind.CommonNumber:
@@ -2395,20 +2438,20 @@ namespace Kusto.Language.Binding
                     var commonType = GetCommonArgumentType(signature, arguments, argumentTypes);
                     if (commonType != null)
                     {
-                        if (SymbolsAssignable(resultType, commonType, Conversion.None))
+                        if (SymbolsAssignable(argumentType, commonType, Conversion.None))
                         {
                             return MatchKind.Exact;
                         }
-                        else if (SymbolsAssignable(resultType, commonType, Conversion.Promotable))
+                        else if (SymbolsAssignable(argumentType, commonType, Conversion.Promotable))
                         {
                             return MatchKind.Promoted;
                         }
                         else if (AllowLooseParameterMatching(signature)
-                            && SymbolsAssignable(resultType, commonType, Conversion.Compatible))
+                            && SymbolsAssignable(argumentType, commonType, Conversion.Compatible))
                         {
                             return MatchKind.Compatible;
                         }
-                        else if (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic && SymbolsAssignable(resultType, ScalarTypes.Dynamic))
+                        else if (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic && SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
                         {
                             return MatchKind.Exact;
                         }
@@ -2471,14 +2514,13 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    var types = arguments.Select(e => GetResultTypeOrError(e)).ToList();
-
-                    if (arguments.Count == 0)
+                    if (arguments.Count == 0 && fn.MinArgumentCount > 0)
                     {
                         diagnostics.Add(DiagnosticFacts.GetFunctionExpectsArgumentCountRange(fn.Name, fn.MinArgumentCount, fn.MaxArgumentCount).WithLocation(functionCall.Name));
                     }
-                    else
+                    else if (!ArgumentsHaveErrorsOrUnknown(argumentTypes))
                     {
+                        var types = arguments.Select(e => GetResultTypeOrError(e)).ToList();
                         diagnostics.Add(DiagnosticFacts.GetFunctionNotDefinedWithMatchingParameters(functionCall.Name.SimpleName, types).WithLocation(functionCall.Name));
                     }
 
@@ -3845,7 +3887,8 @@ namespace Kusto.Language.Binding
                         || be.Expression.Kind == SyntaxKind.CompoundStringLiteralExpression:
                     return (string)be.Expression.LiteralValue;
                 case PathExpression p:
-                    if (p.Expression.ResultType == ScalarTypes.Dynamic)
+                    if (p.Expression.ResultType == ScalarTypes.Dynamic
+                        || p.Expression.ResultType == ScalarTypes.Unknown)
                     {
                         var left = GetExpressionResultName(p.Expression, null);
                         var right = GetExpressionResultName(p.Selector, null);
@@ -3856,7 +3899,8 @@ namespace Kusto.Language.Binding
                         return GetExpressionResultName(p.Selector, defaultName);
                     }
                 case ElementExpression e:
-                    if (e.Expression.ResultType == ScalarTypes.Dynamic)
+                    if (e.Expression.ResultType == ScalarTypes.Dynamic
+                        || e.Expression.ResultType == ScalarTypes.Unknown)
                     {
                         var left = GetExpressionResultName(e.Expression, null);
                         var right = GetExpressionResultName(e.Selector, null);
@@ -3971,12 +4015,12 @@ namespace Kusto.Language.Binding
 
         private static bool IsRealOrDecimal(TypeSymbol type)
         {
-            return SymbolsAssignable(type, ScalarTypes.Real) || SymbolsAssignable(type, ScalarTypes.Decimal);
+            return SymbolsAssignable(ScalarTypes.Real, type) || SymbolsAssignable(ScalarTypes.Decimal, type);
         }
 
         private static bool IsStringOrDynamic(TypeSymbol type)
         {
-            return type == ScalarTypes.String || type == ScalarTypes.Dynamic;
+            return SymbolsAssignable(ScalarTypes.String, type) || SymbolsAssignable(ScalarTypes.Dynamic, type);
         }
 
         private static bool IsNumber(TypeSymbol type)
@@ -3986,7 +4030,7 @@ namespace Kusto.Language.Binding
 
         private static bool IsIntegerOrDynamic(TypeSymbol type)
         {
-            return IsInteger(type) || type == ScalarTypes.Dynamic;
+            return IsInteger(type) || SymbolsAssignable(ScalarTypes.Dynamic, type);
         }
 
         private static bool IsSummable(TypeSymbol type)
@@ -4078,6 +4122,12 @@ namespace Kusto.Language.Binding
 
             if (parameterType == null || valueType == null)
                 return false;
+
+            if (valueType == ScalarTypes.Unknown && parameterType.IsScalar)
+                return true;
+
+            if (parameterType == ScalarTypes.Unknown && valueType.IsScalar)
+                return true;
 
             if (parameterType.Kind != valueType.Kind)
                 return false;
@@ -4624,12 +4674,12 @@ namespace Kusto.Language.Binding
         {
             var resultType = GetResultTypeOrError(expression);
 
-            if (SymbolsAssignable(resultType, type) || (canPromote && IsPromotable(resultType, type)) || SymbolsAssignable(resultType, ScalarTypes.Dynamic))
+            if (SymbolsAssignable(type, resultType) || (canPromote && IsPromotable(resultType, type)) || SymbolsAssignable(ScalarTypes.Dynamic, resultType))
                 return true;
 
             if (!resultType.IsError)
             {
-                if (SymbolsAssignable(type, ScalarTypes.Dynamic))
+                if (SymbolsAssignable(ScalarTypes.Dynamic, type))
                 {
                     diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(type).WithLocation(expression));
                 }
@@ -4663,7 +4713,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsNotType(Expression expression, Symbol type, List<Diagnostic> diagnostics)
         {
-            if (!SymbolsAssignable(GetResultTypeOrError(expression), type))
+            var resultType = GetResultTypeOrError(expression);
+
+            if (resultType == ScalarTypes.Unknown)
+                return true;
+
+            if (!SymbolsAssignable(type, resultType))
                 return true;
 
             if (!GetResultTypeOrError(expression).IsError)
@@ -4943,13 +4998,14 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// True if any argument type is an error type.
+        /// True if any argument type is an error type or unknown.
         /// </summary>
-        private static bool ArgumentsHaveErrors(IReadOnlyList<TypeSymbol> argumentTypes)
+        private static bool ArgumentsHaveErrorsOrUnknown(IReadOnlyList<TypeSymbol> argumentTypes)
         {
             for (int i = 0; i < argumentTypes.Count; i++)
             {
-                if (argumentTypes[i].IsError)
+                var type = argumentTypes[i];
+                if (type.IsError || type == ScalarTypes.Unknown)
                     return true;
             }
 

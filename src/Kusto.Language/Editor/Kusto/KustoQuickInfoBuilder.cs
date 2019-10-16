@@ -105,7 +105,14 @@ namespace Kusto.Language.Editor
             switch (symbol)
             {
                 case ColumnSymbol c:
-                    return $"(column) {c.Name}: {c.Type.Display}";
+                    if (c.Type != ScalarTypes.Unknown)
+                    {
+                        return $"(column) {c.Name}: {c.Type.Display}";
+                    }
+                    else
+                    {
+                        return $"(column) {c.Name}";
+                    }
 
                 case TableSymbol t:
                     return $"(table) {t.Name}: {t.Display}";
@@ -117,17 +124,21 @@ namespace Kusto.Language.Editor
                     {
                         return GetSymbolInfo(v.Type, type);
                     }
-                    else if (v.Type is ScalarSymbol)
+                    else 
                     {
-                        return $"(scalar) {v.Name}: {v.Type.Display}";
-                    }
-                    else
-                    {
-                        return $"(variable) {v.Name}: {v.Type.Display}";
+                        var kind = (v.Type is ScalarSymbol ? "(scalar)" : "(variable)");
+                        if (v.Type != ScalarTypes.Unknown)
+                        {
+                            return $"{kind} {v.Name}: {v.Type.Display}";
+                        }
+                        else
+                        {
+                            return $"{kind} {v.Name}";
+                        }
                     }
 
                 case FunctionSymbol f:
-                    if (type != null && !type.IsError)
+                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
                     {
                         return $"(function) {f.GetDisplay(verbose: true)}: {type.Display}";
                     }
@@ -137,7 +148,7 @@ namespace Kusto.Language.Editor
                     }
 
                 case OperatorSymbol o:
-                    if (type != null && !type.IsError)
+                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
                     {
                         return $"(operator) {o.Name}: {type.Display}";
                     }
@@ -147,7 +158,7 @@ namespace Kusto.Language.Editor
                     }
 
                 case PatternSymbol p:
-                    if (type != null && !type.IsError)
+                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
                     {
                         return $"(pattern) {p.Display}: {type.Display}";
                     }

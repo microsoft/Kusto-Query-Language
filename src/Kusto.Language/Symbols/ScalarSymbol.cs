@@ -79,6 +79,11 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Can be used in the Sum aggregate
         /// </summary>
-        Summable = 0b0000_1000
+        Summable = 0b0000_1000,
+
+        /// <summary>
+        /// All flags
+        /// </summary>
+        All = Integer | Numeric | Interval | Summable
     }
 }
