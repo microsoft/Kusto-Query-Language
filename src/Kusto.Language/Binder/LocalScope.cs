@@ -44,6 +44,15 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Returns true if the local scope constains a symbol with the given name.
+        /// </summary>
+        public bool ContainsSymbol(string name)
+        {
+            return (_symbols != null && _symbols.ContainsKey(name))
+                || (_sharedScope != null && _sharedScope.ContainsSymbol(name));
+        }
+
+        /// <summary>
         /// Makes a copy of this <see cref="LocalScope"/>.
         /// </summary>
         public LocalScope Copy()

@@ -636,6 +636,11 @@ namespace Kusto.Language
             return new Diagnostic($"Failure in expansion of '{name}': {errors}");
         }
 
+        public static Diagnostic GetVariableAlreadyDeclared(string name)
+        {
+            return new Diagnostic($"A variable with the name '{name}' has already been declared.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

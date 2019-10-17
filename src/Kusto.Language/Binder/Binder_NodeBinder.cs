@@ -2856,6 +2856,13 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 try
                 {
+                    var name = node.Name.Name.SimpleName;
+
+                    if (_binder._localScope.ContainsSymbol(name))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetVariableAlreadyDeclared(name).WithLocation(node.Name));
+                    }
+
                     if (_binder.GetResultType(node.Expression) is TupleSymbol ts)
                     {
                         diagnostics.Add(DiagnosticFacts.GetMultiValuedExpressionCannotBeAssignedToVariable().WithLocation(node.Expression));
