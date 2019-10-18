@@ -201,6 +201,7 @@
 ## [gettype()](gettypefunction.md)
 ## [getyear()](getyearfunction.md)
 ## [hash()](hashfunction.md)
+## [hash_combine()](hash_combinefunction.md)
 ## [hash_sha256()](sha256hashfunction.md)
 ## [hll_merge()](hllmergefunction.md)
 ## [hourofday()](hourofdayfunction.md)
