@@ -23,7 +23,7 @@ Alternative form with no piped input:
     *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin `E`.
 * `kind`: 
     * `inner` - The result has the subset of columns that are common to all of the input tables.
-    * `outer` - The result has all the columns that occur in any of the inputs. Cells that were not defined by an input row are set to `null`.
+    * `outer` - (default). The result has all the columns that occur in any of the inputs. Cells that were not defined by an input row are set to `null`.
 * `withsource`=*ColumnName*: If specified, the output will include a column
 called *ColumnName* whose value indicates which source table has contributed each row.
 If the query effectively (after wildcard matching) references tables from more than one database (default database always counts) the value of this column will have a table name qualified with the database.
