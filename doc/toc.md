@@ -194,6 +194,7 @@
 ## [extract_all()](extractallfunction.md)
 ## [extractjson()](extractjsonfunction.md)
 ## [floor()](floorfunction.md)
+## [format_bytes()](format-bytesfunction.md)
 ## [format_datetime()](format-datetimefunction.md)
 ## [format_timespan()](format-timespanfunction.md)
 ## [gamma()](gammafunction.md)

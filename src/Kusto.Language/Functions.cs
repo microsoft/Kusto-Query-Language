@@ -1665,6 +1665,13 @@ namespace Kusto.Language
         public static readonly FunctionSymbol CursorCurrent2 =
             new FunctionSymbol("current_cursor", ScalarTypes.String).Hide();
 
+        public static readonly FunctionSymbol FormatBytes=
+    new FunctionSymbol("format_bytes", ScalarTypes.String,
+        new Parameter("size", ParameterTypeKind.Number),
+        new Parameter("precision", ScalarTypes.Long, minOccurring: 0),
+        new Parameter("format", ScalarTypes.String, ArgumentKind.LiteralNotEmpty, minOccurring: 0))
+    .WithResultNameKind(ResultNameKind.FirstArgument);
+
         public static readonly FunctionSymbol RowNumber =
             new FunctionSymbol("row_number", ScalarTypes.Long,
                 new Parameter("startingIndex", ScalarTypes.Long, minOccurring: 0),
@@ -2007,6 +2014,7 @@ namespace Kusto.Language
             CursorBeforeOrAt,
             CursorCurrent,
             CursorCurrent2,
+            FormatBytes,
             RowNumber,
             RowCumSum,
             RowWindowSession,
