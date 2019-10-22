@@ -20,7 +20,7 @@ format_timespan(time(14.02:03:04.12345), 'h:m:s.fffffff') == "2:3:4.1234500"
 
 The string with the format result.
 
-**Supported formats**
+## Supported formats
 
 |Format specifier	|Description	|Examples
 |---|---|---

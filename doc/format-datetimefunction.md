@@ -20,7 +20,7 @@ format_datetime(datetime(2015-12-14 02:03:04.12345), 'y-M-d h:m:s.fffffff') == "
 
 The string with the format result.
 
-**Supported formats**
+## Supported formats
 
 |Format specifier	|Description	|Examples
 |---|---|---
