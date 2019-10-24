@@ -1313,13 +1313,21 @@ namespace Kusto.Language
                     new ColumnSymbol("trend", ScalarTypes.Dynamic),
                     new ColumnSymbol("residual", ScalarTypes.Dynamic)));
 
+        private static TypeSymbol SeriesDecomposeAnomaliesResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
+            MakePrefixedTuple(sig, "series", args,
+                new TupleSymbol(
+                    new ColumnSymbol("ad_flag", ScalarTypes.Dynamic),
+                    new ColumnSymbol("ad_score", ScalarTypes.Dynamic),
+                    new ColumnSymbol("baseline", ScalarTypes.Dynamic)));
+
         public static readonly FunctionSymbol SeriesDecompose =
              new FunctionSymbol("series_decompose",
                 new Signature(SeriesDecomposeResult, Tabularity.Scalar,
                     new Parameter("series", ScalarTypes.Dynamic),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("trend", ScalarTypes.String, minOccurring: 0),
-                    new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0)));
+                    new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0),
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
 
         public static readonly FunctionSymbol SeriesDecomposeForecast =
              new FunctionSymbol("series_decompose_forecast",
@@ -1327,17 +1335,19 @@ namespace Kusto.Language
                     new Parameter("series", ScalarTypes.Dynamic),
                     new Parameter("test_points", ParameterTypeKind.Integer),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
-                    new Parameter("trend", ScalarTypes.String, minOccurring: 0)));
+                    new Parameter("trend", ScalarTypes.String, minOccurring: 0),
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
 
         public static readonly FunctionSymbol SeriesDecomposeAnomalies =
              new FunctionSymbol("series_decompose_anomalies",
-                new Signature(SeriesDecomposeResult, Tabularity.Scalar,
+                new Signature(SeriesDecomposeAnomaliesResult, Tabularity.Scalar,
                     new Parameter("series", ScalarTypes.Dynamic),
                     new Parameter("threshold", ParameterTypeKind.Number, minOccurring: 0),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("trend", ScalarTypes.String, minOccurring: 0),
                     new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0),
-                    new Parameter("method", ScalarTypes.String, minOccurring: 0)));
+                    new Parameter("method", ScalarTypes.String, minOccurring: 0),
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
 #endregion
 
         #region math functions
