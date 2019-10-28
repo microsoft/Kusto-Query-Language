@@ -21,9 +21,9 @@ Where:
 * *evaluateParameters*: Zero or more (space-separated) parameters in the form of
   *Name* `=` *Value* that control the behavior of the evaluate operation and execution plan. The following parameters are supported: 
 
-  |Name           |Values                                        |Description                                  |
-  |---------------|----------------------------------------------|---------------------------------------------|
-  |`hint.distribution`  |`single`, `node`, `full`|[Distribution hints](#distribution-hints)     |
+  |Name                |Values                           |Description                                |
+  |--------------------|---------------------------------|-------------------------------------------|
+  |`hint.distribution` |`single`, `per_node`, `per_shard`| [Distribution hints](#distribution-hints) |
 
 **Notes**
 
@@ -38,10 +38,10 @@ when performing cross-cluster queries.
 
 ## Distribution hints
 
-Disribution hints specify how the plugin execution will be distributed across multiple cluster nodes. Each plugin may implement a different support for the distribution. Plugin's documentation will specify what distribution options are supported by the plugin.
+Distribution hints specify how the plugin execution will be distributed across multiple cluster nodes. Each plugin may implement a different support for the distribution. Plugin's documentation will specify what distribution options are supported by the plugin.
 
 Possible values:
 
 * `single`: A single instance of the plugin will run over the entire query data.
-* `node`: If the query before the plugin call is distributed across nodes, then an instance of the plugin will run on each node over the data that it contains.
-* `full`: If the data before the plugin call is distributed across shards, then an instance of the plugin will run over each shard of the data.
+* `per_node`: If the query before the plugin call is distributed across nodes, then an instance of the plugin will run on each node over the data that it contains.
+* `per_shard`: If the data before the plugin call is distributed across shards, then an instance of the plugin will run over each shard of the data.
