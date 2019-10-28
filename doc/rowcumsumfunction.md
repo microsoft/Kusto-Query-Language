@@ -21,7 +21,7 @@ The function returns the cumulative sum of its argument.
 **Examples**
 
 The following example shows how to calculate the cumulative sum of the first
-few odd integers.
+few even integers.
 
 <!-- csl -->
 ```
