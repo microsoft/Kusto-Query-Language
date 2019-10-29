@@ -23,6 +23,11 @@ Browser: Family, MajorVersion, MinorVersion, Patch
 OperatingSystem: Family, MajorVersion, MinorVersion, Patch, PatchMinor             
 
 Device: Family, Brand, Model
+
+> [!WARNING]
+> The function implementation is built on regex checks of the input string against a huge number of predefined patterns. Theerfore the expected time / CPU consumption is high.
+When the function is used in a query, make sure it would run distributely on multiple machines.
+If queries with this function are frequently used, it might make sense to pre-create the results via [update policy] (../concepts/updatepolicy.md), but you need to take into account that using this function inside the update policy will increase the ingestion latency.
  
 **Example**
 
