@@ -4,13 +4,18 @@ Tables are named entities that hold data. A table has an ordered set
 of [columns](./columns.md), and zero or more rows of data, each row holding one data value
 for each of the columns of the table. The order of rows in the table is unknown
 and does not in general affect queries, except for some tabular operators (such as
-the [top operatpr](../topoperator.md)) that are inherently indetermined.
+the [top operator](../topoperator.md)) that are inherently indetermined.
 
 Tables occupy the same namespace as [stored functions](./stored-functions.md),
 so if a stored function and a table both have the same name, the stored function
 will be chosen.
 
-Table names follow the rules for [entity names](./entity-names.md).
+**Notes**  
+
+* Table names are case-sensitive.
+* Table names follow the rules for [entity names](./entity-names.md).
+* Maximum limit of tables per database is 10,000.
+
 
 Details on how to create and manage tables can be found under [managing tables](../../management/tables.md)
 

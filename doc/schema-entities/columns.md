@@ -1,11 +1,16 @@
 # Columns
 
-Every table in Kusto, and every tabular data stream, is a rectangular grid
-of columns and rows. Every column in the table has a name (which must
-follow the rules of [entity names](./entity-names.md)) and a specific
+Every [table](tables.md) in Kusto, and every tabular data stream, is a rectangular grid
+of columns and rows. Every column in the table has a name and a specific
 [scalar data type](../scalar-data-types/index.md). The columns of a table
 or a tabular data stream are ordered, so a column also has a specific position
 in the table's collection of columns.
+
+**Notes**  
+
+* Column names are case-sensitive.
+* Column names follow the rules for [entity names](./entity-names.md).
+* Maximum limit of columns per table is 10,000.
 
 In queries, columns are generally references by name only. They can only appear
 in expressions, and the query operator under which the expression appears
