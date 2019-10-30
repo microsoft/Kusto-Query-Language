@@ -1,6 +1,6 @@
 # Kusto Query Language Classification
 
-The Kusto Query Language was created as part of the Kusto service, also known as [Azure Data Explorer](https://azure.microsoft.com/en-us/services/data-explorer/).
+The Kusto Query Language was created as part of the Kusto service, also known as [Azure Data Explorer](https://azure.microsoft.com/services/data-explorer/).
 
 The contents of this documentation folder are an exact match for the implementation of the language by the Kusto service.
 

@@ -1,13 +1,13 @@
 # diffpatterns_text plugin
 
-Compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
+The `diffpatterns_text` plugin compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
 
 <!-- csl -->
 ```
 T | evaluate diffpatterns_text(TextColumn, BooleanCondition)
 ```
 
-diffpatterns_text returns a set of text patterns that capture different portions of the data in the two sets (i.e. a pattern capturing a large percentage of the rows when the conditions is `true` and low percentage of the rows when the condition is `false`). The patterns are built from consecutive tokens (separated by white space), with either a token from the text column or a `*` representing a wildcard. Each pattern is represented by a row in the results.
+The `diffpatterns_text` returns a set of text patterns that capture different portions of the data in the two sets (i.e. a pattern capturing a large percentage of the rows when the condition is `true` and low percentage of the rows when the condition is `false`). The patterns are built from consecutive tokens (separated by white space), with a token from the text column or a `*` representing a wildcard. Each pattern is represented by a row in the results.
 
 **Syntax**
 
@@ -21,7 +21,7 @@ diffpatterns_text returns a set of text patterns that capture different portions
     
 * BooleanCondition - *Boolean expression*
 
-    Defines how to generate the two records subsets to compare from the input table. The algorithm splits the query into two data sets, â€œTrueâ€ and â€œFalseâ€ according to the condition, then analyzes the (text) differences between them. 
+    Defines how to generate the two record subsets to compare to the input table. The algorithm splits the query into two data sets, â€œTrueâ€ and â€œFalseâ€ according to the condition, then analyzes the (text) differences between them. 
 
 **Optional Arguments**
 
@@ -33,7 +33,7 @@ All other arguments are optional, but they must be ordered as below.
 
 * Threshold - 0.015 < *double* < 1 [default: 0.05]
 
-    Sets the minimal pattern (ratio) difference between the two sets (see [diffpatterns](.\diffpatternsplugin.md)).
+    Sets the minimal pattern (ratio) difference between the two sets (see [diffpatterns](diffpatternsplugin.md)).
 
 * MaxTokens  - 0 < *int* [default: 20]
 
@@ -43,16 +43,14 @@ All other arguments are optional, but they must be ordered as below.
 
 The result of diffpatterns_text returns the following columns:
 
-* Count_of_True: the number of rows matching the pattern when the conditions is `true`.
-* Count_of_False: the number of rows matching the pattern when the conditions is `false`.
-* Percent_of_True: the percentage of rows matching the pattern out of the rows when the condition is `true`.
-* Percent_of_False: the percentage of rows matching the pattern out of the rows when the condition is `false`.
-* Pattern: the text pattern, containing tokens from the text string and '`*`' for wildcards. 
+* Count_of_True: The number of rows matching the pattern when the condition is `true`.
+* Count_of_False: The number of rows matching the pattern when the condition is `false`.
+* Percent_of_True: The percentage of rows matching the pattern from the rows when the condition is `true`.
+* Percent_of_False: The percentage of rows matching the pattern from the rows when the condition is `false`.
+* Pattern: The text pattern containing tokens from the text string and '`*`' for wildcards. 
 
-**Note:**
-
-The patterns are not necessarily distinct nor provide full coverage of the data set, they may be overlapping and some rows may not match any pattern.
-
+> [!NOTE]
+> The patterns aren't necessarily distinct and may not provide full coverage of the data set. The patterns may be overlapping and some rows may not match any pattern.
 
 **Example**
 
@@ -63,7 +61,7 @@ StormEvents
 | where EventType == "Drought" or EventType == "Extreme Cold/Wind Chill"
 | evaluate diffpatterns_text(EpisodeNarrative, EventType == "Extreme Cold/Wind Chill", 2)
 ```
-|Count_True|Count_False|Percent_of_True|Percent_of_False|Pattern|
+|Count_of_True|Count_of_False|Percent_of_True|Percent_of_False|Pattern|
 |---|---|---|---|---|
 |11|0|6.29|0|Winds shifting northwest in * wake * a surface trough brought heavy lake effect snowfall downwind * Lake Superior from|
 |9|0|5.14|0|Canadian high pressure settled * * region * produced the coldest temperatures since February * 2006. Durations * freezing temperatures|
@@ -71,5 +69,4 @@ StormEvents
 |0|42|0|7.71|* * * * * * caused * * * * * * * * across western Colorado. *|
 |0|45|0|8.26|* * below normal *|
 |0|110|0|20.18|Below normal *|
-
 

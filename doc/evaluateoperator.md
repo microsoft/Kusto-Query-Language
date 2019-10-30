@@ -27,18 +27,15 @@ Where:
 
 **Notes**
 
-Syntactically, `evaluate` behaves similarly
+* Syntactically, `evaluate` behaves similarly
 to the [invoke operator](./invokeoperator.md), which invokes tabular functions.
-
-Plugins provided through the evaluate operator are not bound by the regular rules of query execution or argument evaluation.
-
-Specific plugins may have specific restrictions. For example, plugins whose output schema depends
-on the data (e.g., the [bag_unpack plugin](./bag-unpackplugin.md)) cannot be used
+* Plugins provided through the evaluate operator aren't bound by the regular rules of query execution or argument evaluation.
+Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data (for example, [bag_unpack plugin](./bag-unpackplugin.md)) can't be used
 when performing cross-cluster queries.
 
 ## Distribution hints
 
-Distribution hints specify how the plugin execution will be distributed across multiple cluster nodes. Each plugin may implement a different support for the distribution. Plugin's documentation will specify what distribution options are supported by the plugin.
+Distribution hints specify how the plugin execution will be distributed across multiple cluster nodes. Each plugin may implement a different support for the distribution. The plugin's documentation specifies the distribution options supported by the plugin.
 
 Possible values:
 

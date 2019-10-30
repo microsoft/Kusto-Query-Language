@@ -1,6 +1,6 @@
 # hash_combine()
 
-Combimes hash values of two or more hashes.
+The hash_combine() function combines hash values of two or more hashes.
 
 **Syntax**
 
@@ -10,7 +10,7 @@ Combimes hash values of two or more hashes.
 
 * *h1*: Long value representing the first hash value.
 * *h2*: Long value representing the second hash value.
-* *hN*: Long value representing N-th hash value.
+* *hN*: Long value representing Nth hash value.
 
 **Returns**
 

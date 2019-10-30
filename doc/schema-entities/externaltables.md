@@ -8,4 +8,4 @@ and can be referenced by its name. External table names canâ€™t overlap wit
 
 > [!NOTE]
 > Kusto supports [exporting data to an external table](../../management/data-export/export-data-to-an-external-table.md).
-> as well as [querying external tables](https://docs.microsoft.com/en-us/azure/data-explorer/data-lake-query-data).
+> as well as [querying external tables](https://docs.microsoft.com/azure/data-explorer/data-lake-query-data).
