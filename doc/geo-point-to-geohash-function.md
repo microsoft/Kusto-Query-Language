@@ -12,11 +12,11 @@ More information on Geohash can be found [here](https://en.wikipedia.org/wiki/Ge
 
 * *longitude*: Longitude value of a geographic location. Longitude x will be considered valid if x is a real number and x in range [-180, +180]. 
 * *Latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in range [-90, +90]. 
-* *Accuracy*: An optional `int` literal that defines the requested accuracy. Supported values are in range [1,18]. If unspecified, the default value `5` is used.
+* *Accuracy*: An optional `int` that defines the requested accuracy. Supported values are in range [1,18]. If unspecified, the default value `5` is used.
 
 **Returns**
 
-The Geohash string value of a given geographic location with requested accuracy length.
+The Geohash string value of a given geographic location with requested accuracy length. In case of invalid coordinate\accuracy the query will be either rejected or will produce empty\null result.
 
 
 > [!NOTE]
