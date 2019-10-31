@@ -416,6 +416,7 @@ eroperator.md) | Core |  |
 |  [series_multiply()](series-multiplyfunction.md) | Full |  |
 |  [series_not_equals()](series-not-equalsfunction.md) | Full |  |
 |  [series_outliers()](series-outliersfunction.md) | Full |  |
+|  [series_pearson_correlation()](series-pearson-correlationfunction.md) | Full |  |
 |  [series_periods_detect()](series-periods-detectfunction.md) | Full |  |
 |  [series_periods_validate()](series-periods-validatefunction.md) | Full |  |
 |  [series_seasonal()](series-seasonalfunction.md) | Full |  |

@@ -373,6 +373,7 @@
 ## [series_multiply()](series-multiplyfunction.md)
 ## [series_not_equals()](series-not-equalsfunction.md)
 ## [series_outliers()](series-outliersfunction.md)
+## [series_pearson_correlation()](series-pearson-correlationfunction.md)
 ## [series_periods_detect()](series-periods-detectfunction.md)
 ## [series_periods_validate()](series-periods-validatefunction.md)
 ## [series_seasonal()](series-seasonalfunction.md)

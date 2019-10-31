@@ -198,6 +198,7 @@
 |[series_fit_line_dynamic()](series-fit-line-dynamicfunction.md)|Applies linear regression on a series, returning dynamic object.|
 |[series_iir()](series-iirfunction.md)|Applies a Infinite Impulse Response filter on a series.|
 |[series_outliers()](series-outliersfunction.md)|Scores anomaly points in a series.|
+|[series_pearson_correlation()](series-pearson-correlationfunction.md)|Calculates the Pearson correlation coefficient of two series.|
 |[series_periods_detect()](series-periods-detectfunction.md)|Finds the most significant periods that exist in a time series.|
 |[series_periods_validate()](series-periods-validatefunction.md)|Checks whether a time series contains periodic patterns of given lengths.|
 |[series_seasonal()](series-seasonalfunction.md)|Finds the seasonal component of the series.|

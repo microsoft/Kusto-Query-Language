@@ -1348,7 +1348,13 @@ namespace Kusto.Language
                     new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("method", ScalarTypes.String, minOccurring: 0),
                     new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
-#endregion
+
+        public static readonly FunctionSymbol SeriesPearsonCorrelation =
+            new FunctionSymbol("series_pearson_correlation", ScalarTypes.Real,
+                new Parameter("series1", ScalarTypes.Dynamic),
+                new Parameter("series2", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None);
+        #endregion
 
         #region math functions
         public static readonly FunctionSymbol Round =
@@ -1960,6 +1966,7 @@ namespace Kusto.Language
             SeriesDecompose,
             SeriesDecomposeForecast,
             SeriesDecomposeAnomalies,
+            SeriesPearsonCorrelation,
 #endregion
 
 #region math functions
