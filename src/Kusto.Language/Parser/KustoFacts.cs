@@ -92,8 +92,8 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> JoinKinds = new string[]
         {
-            "inner", "fullouter", "outer", "innerunique", "leftanti", "leftantisemi", "anti",
-            "leftouter", "leftsemi", "rightanti", "rightantisemi", "rightouter", "rightsemi"
+            "inner", "fullouter", "innerunique", "leftanti", "leftantisemi", "anti",
+            "leftouter", "leftsemi", "rightanti", /*"rightantisemi",*/ "rightouter", "rightsemi"
         };
 
         public static readonly IReadOnlyList<string> JoinHintRemotes = new string[]

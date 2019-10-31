@@ -1855,15 +1855,9 @@ namespace Kusto.Language.Binding
                     if (exprTable != null)
                     {
                         _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
-
-                        foreach (var col in exprColumns)
-                        {
-                            // only add expr columns that were not equated to a source column via the join-on expression
-                            if (!rightJoinColumns.Contains(col))
-                            {
-                                columns.Add(col);
-                            }
-                        }
+                        // only add expr columns that were not equated to a source column via the join-on expression
+                        exprColumns.RemoveAll(c => rightJoinColumns.Contains(c));
+                        columns.AddRange(exprColumns);
                     }
 
                     MakeColumnNamesUnique(columns);
@@ -1884,6 +1878,8 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
+                var exprColumns = s_columnListPool.AllocateFromPool();
+                var rightJoinColumns = s_columnListPool.AllocateFromPool();
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -1899,7 +1895,7 @@ namespace Kusto.Language.Binding
                             for (int i = 0, n = c.Expressions.Count; i < n; i++)
                             {
                                 var expr = c.Expressions[i].Element;
-                                CheckJoinOnExpression(expr, diagnostics);
+                                CheckJoinOnExpression(expr, diagnostics, null, rightJoinColumns);
                             }
                             break;
                         case JoinWhereClause c:
@@ -1907,13 +1903,25 @@ namespace Kusto.Language.Binding
                             break;
                     }
 
+                    var joinKindNode = node.Parameters.GetFirstDescendant<NamedParameter>(np => np.Name.SimpleName == "kind");
+                    var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
+
                     // figure out the result type
                     columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
  
                     var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null)
                     {
-                        _binder.GetDeclaredAndInferredColumns(exprTable, columns);
+                        _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
+
+                        // anti & semi joins have different column merging rules than normal inner/outer joins
+                        if (rightJoinColumns.Count > 0 && (joinKind.Contains("anti") || joinKind.Contains("semi")))
+                        {
+                            // only add expr columns that were not equated to a source column via the join-on expression
+                            exprColumns.RemoveAll(c => rightJoinColumns.Contains(c));
+                        }
+
+                        columns.AddRange(exprColumns);
                     }
 
                     MakeColumnNamesUnique(columns);
@@ -1925,6 +1933,8 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
+                    s_columnListPool.ReturnToPool(exprColumns);
+                    s_columnListPool.ReturnToPool(rightJoinColumns);
                 }
             }
 
