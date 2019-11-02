@@ -117,6 +117,7 @@
         ExtentsMergeKeyword,
         ExternalKeyword,
         ExternalDataKeyword,
+        External_DataKeyword,
 
         FabricKeyword,
         FabricCacheKeyword,

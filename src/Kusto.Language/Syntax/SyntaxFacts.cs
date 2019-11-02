@@ -149,6 +149,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ExtentsMergeKeyword, "extentsmerge", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ExternalKeyword, "external"),
                 new SyntaxData(SyntaxKind.ExternalDataKeyword, "externaldata"),
+                new SyntaxData(SyntaxKind.External_DataKeyword, "external_data"),
 
                 new SyntaxData(SyntaxKind.FabricKeyword, "fabric", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.FabricCacheKeyword, "fabriccache", canBeIdentifier: true),

@@ -2379,7 +2379,9 @@ namespace Kusto.Language.Parsing
 
             var ExternalDataExpression =
                 Rule(
-                    Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
+                    First(
+                        Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
+                        Token(SyntaxKind.External_DataKeyword).Hide()),
                     List(QueryOperatorParameter),
                     SchemaMultipartType,
                     RequiredToken(SyntaxKind.OpenBracketToken),
