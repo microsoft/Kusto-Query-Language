@@ -16,11 +16,12 @@ More information on Geohash can be found [here](https://en.wikipedia.org/wiki/Ge
 
 **Returns**
 
-The Geohash string value of a given geographic location with requested accuracy length. In case of invalid coordinate\accuracy the query will be either rejected or will produce empty\null result.
+The Geohash string value of a given geographic location with requested accuracy length. In case of invalid coordinate\accuracy the query will produce empty result.
 
 
-> [!NOTE]
-> Invoking [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
+**Notes**
+* Invoking [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on geohash string that was calculated on some longitude x and latitude y won't necessairly return x and y.
+* Due to Geohash definition it's possible that 2 geographic locations are very close to each other but they have different Geohash codes.
 
 **Examples**
 
@@ -43,7 +44,6 @@ print geohash = geo_point_to_geohash(-80.195829, 25.802215, 8)
 |dhwfz15h|
 
 The following example finds groups of coordinates. Every pair of coordinates in the group are no further than 1.22km from each other.
-
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 datatable(location_id:string, longitude:real, latitude:real)
@@ -62,6 +62,12 @@ datatable(location_id:string, longitude:real, latitude:real)
 |c23n8g|2|[<br>  "A",<br>  "B"<br>]|
 |c23n97|1|[<br>  "C"<br>]|
 
+The following example produces empty result because of the bad input (invalid coordinate).
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
+print geohash = geo_point_to_geohash(200,1,8)
+```
 
-> [!NOTE]
-> Due to Geohash definition it's possible that 2 geographic locations are very close to each other but they have different Geohash codes.
+|geohash|
+|---|
+||

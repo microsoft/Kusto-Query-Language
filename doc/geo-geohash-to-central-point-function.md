@@ -15,10 +15,10 @@ More information on Geohash can be found [here](https://en.wikipedia.org/wiki/Ge
 
 **Returns**
 
-The geospatial coordinates value in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a dynamic data type.
+The geospatial coordinates value in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. In case of invalid geohash the query will produce null result.
 
-> [!NOTE]
-> The GeoJSON format specifies longitude first and latitude second.
+**Notes**
+* The GeoJSON format specifies longitude first and latitude second.
 
 **Examples**
 
@@ -33,3 +33,13 @@ print point = geo_geohash_to_central_point("sunny")
 |point|coordinates|longitude|latitude|
 |---|---|---|---|
 |{<br>  "type": "Point",<br>  "coordinates": [<br>    42.47314453125,<br>    23.70849609375<br>  ]<br>}|[<br>  42.47314453125,<br>  23.70849609375<br>]|42.47314453125|23.70849609375|
+
+The following example will return empty result because of the bad input (invalid geohash).
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
+print geohash = geo_geohash_to_central_point("a")
+```
+
+|geohash|
+|---|
+||
