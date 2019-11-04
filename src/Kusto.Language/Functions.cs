@@ -1616,6 +1616,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoPointInPolygon =
+            new FunctionSymbol("geo_point_in_polygon", ScalarTypes.Bool,
+                new Parameter("longitude", ScalarTypes.Real),
+                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
         public static readonly FunctionSymbol GeoPointToGeohash =
             new FunctionSymbol("geo_point_to_geohash", ScalarTypes.String,
                 new Parameter("longitude", ScalarTypes.Real),
@@ -2013,6 +2021,7 @@ namespace Kusto.Language
             Distance,
             GeoDistance2Points,
             GeoPointInCircle,
+            GeoPointInPolygon,
             GeoPointToGeohash,
             GeohashToCentralPoint,
 #endregion

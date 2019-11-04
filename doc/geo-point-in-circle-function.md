@@ -68,7 +68,7 @@ print in_circle = geo_point_in_circle(-122.137575, 47.630683, -122.100896, 47.52
 |---|
 |0|
 
-The following example will return empty result because of the bad input (invalid coordinate).
+The following example will return null result because of the bad input (invalid coordinate).
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_circle = geo_point_in_circle(200, 1, 1, 1, 1)
@@ -78,7 +78,7 @@ print in_circle = geo_point_in_circle(200, 1, 1, 1, 1)
 |---|
 ||
 
-The following example will return empty result because of the bad input (invalid circle radius).
+The following example will return null result because of the bad input (invalid circle radius).
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_circle = geo_point_in_circle(1, 1, 1, 1, -1)

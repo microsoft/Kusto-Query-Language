@@ -34,7 +34,7 @@ print point = geo_geohash_to_central_point("sunny")
 |---|---|---|---|
 |{<br>  "type": "Point",<br>  "coordinates": [<br>    42.47314453125,<br>    23.70849609375<br>  ]<br>}|[<br>  42.47314453125,<br>  23.70849609375<br>]|42.47314453125|23.70849609375|
 
-The following example will return empty result because of the bad input (invalid geohash).
+The following example will return null result because of the bad input (invalid geohash).
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print geohash = geo_geohash_to_central_point("a")

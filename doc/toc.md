@@ -391,6 +391,7 @@
 ## [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)
 ## [geo_distance_2points()](geo-distance-2points-function.md)
 ## [geo_point_in_circle()](geo-point-in-circle-function.md)
+## [geo_point_in_polygon()](geo-point-in-polygon-function.md)
 
 # [User Analytics](useranalytics.md)
 ## [Activity Counts Metrics (total values, distinct values, new values)](activity-counts-metrics-plugin.md)

@@ -50,7 +50,7 @@ StormEvents
 |10 meters|Flooding was reported at Calle Cerezo and 5 in the municipality of Yabucoa.|
 |7 meters|Minor flooding was reported along Route 120 in Rumford.|
 
-The following example will return empty result because of the bad input (invalid coordinate).
+The following example will return null result because of the bad input (invalid coordinate).
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print distance = geo_distance_2points(300,1,1,1)
