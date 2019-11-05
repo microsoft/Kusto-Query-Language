@@ -3,7 +3,7 @@
 Calculates whether the geospatial coordinates are inside a polygon on Earth.
 
 > [!WARNING]
-> This is upcoming feature and might not yet be available on your cluster.
+> This feature may not yet be available on your cluster.
 
 **Syntax**
 
@@ -11,35 +11,34 @@ Calculates whether the geospatial coordinates are inside a polygon on Earth.
 
 **Arguments**
 
-* *longitude*: geospatial coordinate longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *latitude*: geospatial coordinate latitude value in degrees. Valid value is a real number and in range [-90, +90].
-* *polygon*: literal in the [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+* *longitude*: geospatial coordinate, longitude value in degrees. Valid value is a real number and in range [-180, +180].
+* *latitude*: geospatial coordinate, latitude value in degrees. Valid value is a real number and in range [-90, +90].
+* *polygon*: literal in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 
 **Returns**
 
-Indication whether the geospatial coordinates are inside a polygon. In case of invalid coordinates\polygon the query will produce null result.
+Indicates whether the geospatial coordinates are inside a polygon. If the coordinates or polygon are invalid, the query will produce a null result. 
 
-**Notes**
-* Geospatial coordinates are interpreted as represented per the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) reference system which is the most popular coordinate reference system today.
-* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) that is being used for measurements on Earth is sphere. Polygon edges are geodesics on the sphere.
+> [!NOTE]
+> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used for measurements on Earth is a sphere. Polygon edges are geodesics on the sphere.
 
 **Polygon definition and constraints**
 
 dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ]})
 
-* LinearRingShell is a must have and defined as `counterclockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be only one shell.
-* LinearRingHole is an optional and defined as `clockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be any number of interior rings\holes.
-* LinearRing vertices must be distinct, at least 3 coordinates and first coordinate must be equal to last, therefore at least 4 entries.
-* Coordinate [longitude,latitude] must be valid where longitude is a real number in range [-180, +180] and latitude is a real number in range [-90, +90].
-* LinearRingShell will enclose at most half the sphere. LinearRing divides the sphere into two regions and the smaller of the two will be chosen.
-* LinearRings must not cross and must not share edges.
-* LinearRings may share vertices.
-* Polygon does not necessarily contains its vertices. Point containment in polygon is defined such that if the Earth is subdivided into polygons, every point is contained by exactly one polygon.
+* LinearRingShell is required and defined as a `counterclockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be only one shell.
+* LinearRingHole is optional and defined as a `clockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be any number of interior rings and holes.
+* LinearRing vertices must be distinct with at least 3 coordinates. The first coordinate must be equal to the last; therefore, at least four entries are required.
+* Coordinates [longitude,latitude] must be valid where longitude is a real number in range [-180, +180] and latitude is a real number in range [-90, +90].
+* LinearRingShell encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
+* LinearRings must not cross and must not share edges.LinearRings may share vertices.
+* Polygon doesn't necessarily contains its vertices. Point containment in polygon is defined as such that if the Earth is subdivided into polygons, every point is contained by exactly one polygon.
 
 **Examples**
 
-Manhattan island without the Central Park
-![alt text](./images/queries/geo/polygon_manhattan_with_hole.png)
+Manhattan island without Central Park
+![Manhattan with a hole](./images/queries/geo/polygon_manhattan_with_hole.png)
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -57,7 +56,8 @@ datatable(longitude:real, latitude:real, place:string)
 |---|
 |Empire State Building|
 
-The following example will return null result because of the bad input (invalid coordinate).
+The following example will return a null result because of the invalid coordinate input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_polygon = geo_point_in_polygon(200,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,1],[0,0]]]}))
@@ -67,7 +67,8 @@ print in_polygon = geo_point_in_polygon(200,1,dynamic({"type": "Polygon","coordi
 |---|
 ||
 
-The following example will return null result because of the bad input (invalid polygon).
+The following example will return a null result because of the invalid polygon input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_polygon = geo_point_in_polygon(1,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,10],[0,0]]]}))

@@ -1,6 +1,6 @@
 # geo_geohash_to_central_point()
 
-The `geo_geohash_to_central_point()` function calculates the geospatial coordinates that represent the center of a [Geohash]((https://en.wikipedia.org/wiki/Geohash)) rectangular area. 
+Calculates the geospatial coordinates that represent the center of a Geohash rectangular area. For more information about Geohash, click [here](https://en.wikipedia.org/wiki/Geohash).  
 
 **Syntax**
 

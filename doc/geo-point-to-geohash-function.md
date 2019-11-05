@@ -1,6 +1,6 @@
 # geo_point_to_geohash()
 
-The `geo_point_to_geohash()` function calculates the [Geohash](https://en.wikipedia.org/wiki/Geohash) string value for a geographic location.
+Calculates the Geohash string value for a geographic location. For more information about Geohash, click [here](https://en.wikipedia.org/wiki/Geohash).  
 
 **Syntax**
 

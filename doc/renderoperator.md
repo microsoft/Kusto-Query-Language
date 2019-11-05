@@ -1,6 +1,6 @@
 # render operator
 
-Instructs the user agent to render the results of the query in a particular way.
+The render operator instructs the user agent to render the results of the query in a particular way.
 
 <!-- csl -->
 ```
@@ -8,10 +8,9 @@ range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 ```
 
 > [!NOTE]
-> The render operator should be the last operator in the query, and used only
+> * The render operator should be the last operator in the query, and used only
 > with queries that produce a single tabular data stream result.
->
-> The render operator has no impact on the results returned for the query,
+> * The render operator has no impact on the results returned for the query,
 > other than to inject a annotation (called "Visualization") that contains
 > the rendering information provided in the query.
 > User agents might not render results as instructed, depending on their
@@ -26,8 +25,6 @@ Where:
 * *Visualization* indicates the kind of visualization to use. The supported values are:
 
 ::: zone pivot="kusto"
-
-For Kusto flavor:
 
 |*Visualization*     |Description|
 |--------------------|-|
@@ -49,8 +46,6 @@ For Kusto flavor:
 ::: zone-end
 
 ::: zone pivot="loganalytics"
-
-For Log Analytics flavor:
 
 |*Visualization*     |Description|
 |--------------------|-|
@@ -154,8 +149,6 @@ range x from -2 to 2 step 0.1
 ::: zone-end
 
 ::: zone pivot="loganalytics"
-
-For Log Analytics flavor:
 
 **Example**
 
