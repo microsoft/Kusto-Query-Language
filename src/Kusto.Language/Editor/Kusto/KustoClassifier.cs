@@ -14,7 +14,7 @@ namespace Kusto.Language.Editor
 
     internal static class KustoClassifier
     {
-        public static void GetClassifications(SyntaxNode root, int start, int length, List<ClassifiedRange> list, CancellationToken cancellationToken)
+        public static void GetClassifications(SyntaxNode root, int start, int length, bool clipToRange, List<ClassifiedRange> list, CancellationToken cancellationToken)
         {
             var end = start + length;
 
@@ -25,9 +25,11 @@ namespace Kusto.Language.Editor
                 if (range.End > start && range.Start < end)
                 {
                     // adjust range it if starts before or ends after the window
-                    if (range.Start < start || range.End > end)
+                    if (clipToRange && (range.Start < start || range.End > end))
                     {
-                        range = new ClassifiedRange(range.Kind, Math.Max(range.Start, start), Math.Min(range.End, end));
+                        var clipStart = Math.Max(range.Start, start);
+                        var clipEnd = Math.Min(range.End, end);
+                        range = new ClassifiedRange(range.Kind, clipStart, clipEnd - clipStart);
                     }
 
                     // merge ranges if this range is adjacent to the last range and the same kind

@@ -29,9 +29,9 @@ namespace Kusto.Language.Editor
 
         public override string Text => _service.Text;
 
-        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis, CancellationToken cancellationToken)
+        public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange, bool waitForAnalysis, CancellationToken cancellationToken)
         {
-            var result = _service.GetClassifications(start - _offset, length, waitForAnalysis, cancellationToken);
+            var result = _service.GetClassifications(start - _offset, length, clipToRange, waitForAnalysis, cancellationToken);
             if (result.Classifications.Count > 0 && _offset > 0)
             {
                 return new ClassificationInfo(result.Classifications.Select(cr => new ClassifiedRange(cr.Kind, cr.Start + _offset, cr.Length)));

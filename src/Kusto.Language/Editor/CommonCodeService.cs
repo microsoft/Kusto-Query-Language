@@ -34,7 +34,7 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<Diagnostic>.Instance;
         }
 
-        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis, CancellationToken cancellationToken)
+        public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange, bool waitForAnalysis, CancellationToken cancellationToken)
         {
             // by default classify entire text as plain-text.
             var classifications = new[] { new ClassifiedRange(ClassificationKind.PlainText, start, length) };

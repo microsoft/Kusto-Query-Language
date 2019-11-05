@@ -23,21 +23,31 @@ namespace Kusto.Language.Editor
         /// Determines if the feature is supported at the position within the text.
         /// If the position is not specified, then the feature is considered over the entire text.
         /// </summary>
+        /// <param name="feature">The name of feature. See <see cref="CodeServiceFeatures"/></param>
+        /// <param name="position">The text position where the feature support is in question. If not specified, the entire block is considered.</param>
         public abstract bool IsFeatureSupported(string feature, int position = -1);
 
         /// <summary>
         /// Gets the diagnostics for the code.
         /// </summary>
+        /// <param name="waitForAnalysis">If false, do not require semantic analysis to be performed.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.
         /// </summary>
-        public abstract ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name="start">The start of the text range to get classifications for.</param>
+        /// <param name="length">The length of the text range to get classifications for.</param>
+        /// <param name="clipToRange">If true, then adjust the start and end of classification ranges so they do not start before or go beyond the specified range.</param>
+        /// <param name="waitForAnalysis">If false, do not require semantic analysis to be performed.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        public abstract ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the ranges of the text that can be expanded or collapsed.
         /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -51,43 +61,60 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the completion items for the position within the text.
         /// </summary>
+        /// <param name="position">The text position of the caret.</param>
+        /// <param name="options">Optional options.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the <see cref="QuickInfo"/> associated with the position within the text.
         /// </summary>
+        /// <param name="position">The text position of the caret.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the <see cref="TextRange"/> of the syntax element at or adjacent to the text position.
         /// </summary>
+        /// <param name="position">The text position of the caret.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a list of all the syntax elements related to the syntax element at or adjacent to the text position.
         /// </summary>
+        /// <param name="position">The text position of the caret.</param>
+        /// <param name="options">Optional options</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a list of all the explicit cluster references in the text.
         /// These are clusters specified in calls to the cluster() function.
         /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a list of all the explicit database references in the text.
         /// These are databases specified in calls to the database() function.
         /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the text with all whitespace/trivia minimized.
         /// </summary>
+        /// <param name="kind">The kind of minimal text to produce.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the text with all the whitespace/trivia formatted using the specified options.
         /// </summary>
+        /// <param name="options">Optional options.</param>
+        /// <param name="cursorPosition">The text position of the caret before formatting.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

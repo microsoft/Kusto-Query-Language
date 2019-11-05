@@ -1,6 +1,6 @@
 # geo_distance_2points()
 
-Calculates the distance between 2 geospatial coordinates on Earth.
+The `geo_distance_2points()` function calculates the distance between two geospatial coordinates on Earth.
 
 **Syntax**
 
@@ -8,24 +8,23 @@ Calculates the distance between 2 geospatial coordinates on Earth.
 
 **Arguments**
 
-* *p1_longitude*: 1st geospatial coordinate longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *p1_latitude*: 1st geospatial coordinate latitude value in degrees. Valid value is a real number and in range [-90, +90].
-* *p2_longitude*: 2nd geospatial coordinate longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *p2_latitude*: 2nd geospatial coordinate latitude value in degrees. Valid value is a real number and in range [-90, +90].
+* *p1_longitude*: First geospatial coordinate, longitude value in degrees. Valid value is a real number and in range [-180, +180].
+* *p1_latitude*: First geospatial coordinate, latitude value in degrees. Valid value is a real number and in range [-90, +90].
+* *p2_longitude*: Second geospatial coordinate, longitude value in degrees. Valid value is a real number and in range [-180, +180].
+* *p2_latitude*: Second geospatial coordinate, latitude value in degrees. Valid value is a real number and in range [-90, +90].
 
 **Returns**
 
-The distance in meters between 2 geographic locations on Earth. In case of invalid coordinates the query will produce null result.
+The distance in meters between two geographic locations on Earth. If the coordinates are invalid, the query will produce a null result.
 
-
-**Notes**
-* Geospatial coordinates are interpreted as represented per the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) reference system which is the most popular coordinate reference system today.
-* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) that is being used in order to measure distance on Earth is sphere.
+> [!NOTE]
+> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere.
 
 **Examples**
 
-The following example finds distance between Seattle and Los Angels.
-![alt text](./images/queries/geo/distance_2points_seattle_los_angeles.png)
+The following example finds the distance between Seattle and Los Angeles.
+![Distance between Seattle and Los Angeles](./images/queries/geo/distance_2points_seattle_los_angeles.png)
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -36,7 +35,7 @@ print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275
 |---|
 |1546754.35197381|
 
-The following example finds all rows where the distance between 2 coordinates is between 1 to 11 meters.
+The following example finds all rows in which the distance between two coordinates is between 1 to 11 meters.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 StormEvents
@@ -50,7 +49,7 @@ StormEvents
 |10 meters|Flooding was reported at Calle Cerezo and 5 in the municipality of Yabucoa.|
 |7 meters|Minor flooding was reported along Route 120 in Rumford.|
 
-The following example will return null result because of the bad input (invalid coordinate).
+The following example will return a null result because of the invalid coordinate input.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print distance = geo_distance_2points(300,1,1,1)

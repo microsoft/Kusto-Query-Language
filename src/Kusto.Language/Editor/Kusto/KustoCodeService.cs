@@ -162,7 +162,7 @@ namespace Kusto.Language.Editor
             return this.lazyDiagnostics;
         }
 
-        public override ClassificationInfo GetClassifications(int start, int length, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
+        public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
             {
@@ -170,7 +170,7 @@ namespace Kusto.Language.Editor
                 try
                 {
                     var classifications = new List<ClassifiedRange>();
-                    KustoClassifier.GetClassifications(code.Syntax, start, length, classifications, cancellationToken);
+                    KustoClassifier.GetClassifications(code.Syntax, start, length, clipToRange, classifications, cancellationToken);
 
                     var clientParameterClassifications = GetClientParametersClassifications();
                     if (clientParameterClassifications.Count > 0)

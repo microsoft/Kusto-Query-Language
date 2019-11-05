@@ -1,6 +1,6 @@
 # geo_point_in_circle()
 
-Calculates whether the geospatial coordinates are inside a circle on Earth.
+The `geo_point_in_circle()` function calculates whether the geospatial coordinates are inside a circle on Earth.
 
 **Syntax**
 
@@ -8,25 +8,24 @@ Calculates whether the geospatial coordinates are inside a circle on Earth.
 
 **Arguments**
 
-* *p_longitude*: geospatial coordinate longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *p_latitude*: geospatial coordinate latitude value in degrees. Valid value is a real number and in range [-90, +90].
-* *pc_longitude*: circle center geospatial coordinate longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *pc_latitude*: circle center geospatial coordinate latitude value in degrees. Valid value is a real number and in range [-90, +90].
-* *c_radius*: circle radius in meters. Valid value must be positive.
+* *p_longitude*: Geospatial coordinate longitude value in degrees. Valid value is a real number and in the range [-180, +180].
+* *p_latitude*: Geospatial coordinate latitude value in degrees. Valid value is a real number and in the range [-90, +90].
+* *pc_longitude*: Circle center geospatial coordinate longitude value in degrees. Valid value is a real number and in the range [-180, +180].
+* *pc_latitude*: circle center geospatial coordinate latitude value in degrees. Valid value is a real number and in the range [-90, +90].
+* *c_radius*: Circle radius in meters. Valid value must be positive.
 
 **Returns**
 
-Indication whether the geospatial coordinates are inside a circle. In case of invalid coordinates\circle the query will produce null result.
+Indicates whether the geospatial coordinates are inside a circle. If the coordinates or circle are invalid, the query will produce a null result.
 
-
-**Notes**
-* Geospatial coordinates are interpreted as represented per the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) reference system which is the most popular coordinate reference system today.
-* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) that is being used in order to measure distance on Earth is sphere and circle is a spherical cap on Earth.
+> [!NOTE]
+> * > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+>* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere and circle is a spherical cap on Earth.
 
 **Examples**
 
-The following query finds all places in the area defined by a circle whose center is at [-122.317404, 47.609119] coordinate and radius of 18km.
-![alt text](./images/queries/geo/circle_seattle.png)
+The following query finds all the places in the area defined by a circle with a radius of 18 km whose center is at [-122.317404, 47.609119] coordinates.
+![Places near Seattle](./images/queries/geo/circle_seattle.png)
 
 <!-- csl: https://mbrichkokustocluster.westeurope.dev.kusto.windows.net/tesddb1 -->
 ```
@@ -68,7 +67,7 @@ print in_circle = geo_point_in_circle(-122.137575, 47.630683, -122.100896, 47.52
 |---|
 |0|
 
-The following example will return null result because of the bad input (invalid coordinate).
+The following example will return a null result because of the invalid coordinate input.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_circle = geo_point_in_circle(200, 1, 1, 1, 1)
@@ -78,7 +77,7 @@ print in_circle = geo_point_in_circle(200, 1, 1, 1, 1)
 |---|
 ||
 
-The following example will return null result because of the bad input (invalid circle radius).
+The following example will return a  null result because of the invalid circle radius input.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print in_circle = geo_point_in_circle(1, 1, 1, 1, -1)

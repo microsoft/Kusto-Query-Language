@@ -1461,8 +1461,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Atan2 =
             new FunctionSymbol("atan2", ScalarTypes.Real,
-                new Parameter("x", ParameterTypeKind.Number),
-                new Parameter("y", ParameterTypeKind.Number))
+                new Parameter("y", ParameterTypeKind.Number),
+                new Parameter("x", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
