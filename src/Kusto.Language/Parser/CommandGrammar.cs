@@ -490,7 +490,7 @@ namespace Kusto.Language.Parsing
             var KustoCommandInputInfo =
                 new ParserInfo(
                     CommandInput,
-                    new CustomElementDescriptor(CompletionHint.Query),
+                    new CustomElementDescriptor(CompletionHint.Tabular),
                     () => (SyntaxElement)Q.MissingExpression());
 
             var InputTextTokens = ZeroOrMore(AnyTokenButEnd);

@@ -329,6 +329,16 @@ namespace Kusto.Language
             return new Diagnostic($"The plug-in function '{name}' is not defined.");
         }
 
+        public static Diagnostic GetPlugInFunctionIsNotEnabled(string name)
+        {
+            return new Diagnostic($"The plug-in function '{name}' is not enabled.");
+        }
+
+        public static Diagnostic GetPluginNotAllowedInThisContext(string name)
+        {
+            return new Diagnostic($"The plug-in function '{name}' is not allowed in this context.");
+        }
+
         public static Diagnostic GetFunctionNotDefinedWithMatchingParameters(string name, IReadOnlyList<Symbol> argumentTypes)
         {
             var types = string.Join(", ", argumentTypes.Select(p => p.Name));
@@ -437,9 +447,9 @@ namespace Kusto.Language
             return new Diagnostic($"The name '{name}' does not refer to any known column, table, variable or function.");
         }
 
-        public static Diagnostic GetNameDoesNotReferToAnyKnownFunction(string name)
+        public static Diagnostic GetFunctionNotDefine(string name)
         {
-            return new Diagnostic($"The name '{name}' does not refer to any known function.");
+            return new Diagnostic($"The function '{name}' is not defined.");
         }
 
         public static Diagnostic GetAggregateNotAllowedInThisContext(string name)

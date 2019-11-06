@@ -1001,7 +1001,15 @@ namespace Kusto.Language.Binding
                             }
                             else if (diagnostics != null)
                             {
-                                diagnostics.Add(DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
+                                // if it exists in the list of all plug-ins then it must be disabled.
+                                if (PlugIns.GetPlugIn(name) != null)
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
+                                }
+                                else
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
+                                }
                             }
                         }
                         break;
@@ -1131,6 +1139,12 @@ namespace Kusto.Language.Binding
         private static bool IsPossibleInvocableFunctionWithoutArgumentList(SyntaxNode name)
         {
             return !IsFunctionCallName(name) && IsInvocableFunctionName(name);
+        }
+
+        private static bool IsEvaluateFunctionName(SyntaxNode name)
+        {
+            return name.Parent is FunctionCallExpression fn
+                && fn.Parent is EvaluateOperator;
         }
 
         private static bool IsInCommand(SyntaxNode location)
@@ -1310,14 +1324,28 @@ namespace Kusto.Language.Binding
                 {
                     if (IsFunctionCallName(location))
                     {
-                        if (_globals.GetAggregate(name) != null
-                            && _scopeKind != ScopeKind.Aggregate)
+                        if (_globals.GetAggregate(name) != null && _scopeKind != ScopeKind.Aggregate)
                         {
                             return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetAggregateNotAllowedInThisContext(name).WithLocation(location));
                         }
+                        else if (_globals.GetPlugIn(name) != null && _scopeKind != ScopeKind.PlugIn)
+                        {
+                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPluginNotAllowedInThisContext(name).WithLocation(location));
+                        }
+                        else if (IsEvaluateFunctionName(location))
+                        {
+                            if (PlugIns.GetPlugIn(name) != null)
+                            {
+                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
+                            }
+                            else
+                            {
+                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
+                            }
+                        }
                         else
                         {
-                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
+                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetFunctionNotDefine(name).WithLocation(location));
                         }
                     }
 

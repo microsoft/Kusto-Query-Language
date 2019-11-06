@@ -521,5 +521,21 @@ namespace Kusto.Language
             SlidingWindowCounts,
             SqlRequest
         };
+
+        private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;
+
+        /// <summary>
+        /// Gets the plug-in function given the name, or null if no plug-in is defined with the specified name.
+        /// </summary>
+        public static FunctionSymbol GetPlugIn(string name)
+        {
+            if (s_nameToPlugInMap == null)
+            {
+                s_nameToPlugInMap = All.ToDictionary(f => f.Name);
+            }
+
+            s_nameToPlugInMap.TryGetValue(name, out var fn);
+            return fn;
+        }
     }
 }

@@ -2626,12 +2626,21 @@ namespace Kusto.Language.Binding
                             case NameDeclaration nd:
                                 if (DeclareColumnName(declaredNames, nd.SimpleName, diagnostics, nd))
                                 {
-                                    columns.Add(new ColumnSymbol(nd.SimpleName, ScalarTypes.String));
+                                    var col = new ColumnSymbol(nd.SimpleName, ScalarTypes.String);
+                                    columns.Add(col);
+                                    _binder.SetSemanticInfo(nd, GetSemanticInfo(col));
                                 }
                                 break;
 
                             case NameAndTypeDeclaration nat:
-                                CreateColumnsFromSchema(nat, columns, declaredNames, diagnostics);
+                                if (nat.Type is PrimitiveTypeExpression pt
+                                    && DeclareColumnName(declaredNames, nat.Name.SimpleName, diagnostics, nat.Name))
+                                {
+                                    var type = Binder.GetType(pt);
+                                    var col = new ColumnSymbol(nat.Name.SimpleName, type);
+                                    columns.Add(col);
+                                    _binder.SetSemanticInfo(nat.Name, GetSemanticInfo(col));
+                                }
                                 break;
                         }
                     }
