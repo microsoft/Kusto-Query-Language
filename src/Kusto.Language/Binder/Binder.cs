@@ -907,6 +907,7 @@ namespace Kusto.Language.Binding
                         {
                             functions.Add(Functions.Table);
                             functions.Add(Functions.ExternalTable);
+                            functions.Add(Functions.MaterializedView);
                         }
                         break;
                 }
@@ -1207,6 +1208,10 @@ namespace Kusto.Language.Binding
                                 else if (name == Functions.ExternalTable.Name)
                                 {
                                     list.Add(Functions.ExternalTable);
+                                }
+                                else if (name == Functions.MaterializedView.Name)
+                                {
+                                    list.Add(Functions.MaterializedView);
                                 }
                                 else if (ds.IsOpen)
                                 {
@@ -1731,7 +1736,16 @@ namespace Kusto.Language.Binding
                     {
                         return TableSymbol.Empty.Open();
                     }
-
+                case ReturnTypeKind.Parameter0MaterializedView:
+                    iArg = signature.GetArgumentIndex(signature.Parameters[0], arguments);
+                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var materializedViewName))
+                    {
+                        return GetMaterializedViewFunctionResult(materializedViewName);
+                    }
+                    else
+                    {
+                        return TableSymbol.Empty.Open();
+                    }
                 case ReturnTypeKind.Custom:
                     return signature.CustomReturnType(_rowScope ?? TableSymbol.Empty, arguments, signature) ?? ErrorSymbol.Instance;
 
@@ -1878,6 +1892,15 @@ namespace Kusto.Language.Binding
         {
             var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
             return db.GetExternalTable(name) ?? (TypeSymbol)ErrorSymbol.Instance;
+        }
+
+        /// <summary>
+        /// Gets the result of calling the materialized_view() function in the current context.
+        /// </summary>
+        private TypeSymbol GetMaterializedViewFunctionResult(string name)
+        {
+            var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
+            return db.GetMaterializedView(name) ?? (TypeSymbol)ErrorSymbol.Instance;
         }
 
         /// <summary>
@@ -2910,6 +2933,7 @@ namespace Kusto.Language.Binding
             foreach (var fc in body.GetDescendants<FunctionCallExpression>(
                 _fc => _fc.ReferencedSymbol == Functions.Table 
                     || _fc.ReferencedSymbol == Functions.ExternalTable
+                    || _fc.ReferencedSymbol == Functions.MaterializedView
                     || _fc.ReferencedSymbol == Functions.Database 
                     || _fc.ReferencedSymbol == Functions.Cluster))
             {
@@ -2929,6 +2953,10 @@ namespace Kusto.Language.Binding
                 else if(fc.ReferencedSymbol == Functions.ExternalTable)
                 {
                     result |= FunctionBodyFacts.ExternalTable;
+                }
+                else if (fc.ReferencedSymbol == Functions.MaterializedView)
+                {
+                    result |= FunctionBodyFacts.MaterializedView;
                 }
                 else if (fc.ReferencedSymbol == Functions.Database)
                 {

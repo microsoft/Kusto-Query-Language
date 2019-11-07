@@ -31,6 +31,11 @@ namespace Kusto.Language
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("mapping", ScalarTypes.String, minOccurring: 0));
 
+        public static readonly FunctionSymbol MaterializedView = new FunctionSymbol("materialized_view",
+                ReturnTypeKind.Parameter0MaterializedView,
+                new Parameter("name", ScalarTypes.String),
+                new Parameter("max_age", ScalarTypes.TimeSpan, minOccurring: 0));
+
         #endregion
 
         #region string functions
@@ -1755,6 +1760,7 @@ namespace Kusto.Language
             Database,
             Table,
             ExternalTable,
+            MaterializedView,
 #endregion
 
 #region string functions

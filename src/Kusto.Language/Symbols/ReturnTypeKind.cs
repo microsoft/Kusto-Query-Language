@@ -84,5 +84,10 @@ namespace Kusto.Language.Symbols
         /// The return type is the widest numeric scalar type of all the arguments.
         /// </summary>
         Widest,
+
+        /// <summary>
+        /// The return type is a materialized view. If the argument for parameter 0 is a literal string, the named materialized view is used.
+        /// </summary>
+        Parameter0MaterializedView,
     }
 }

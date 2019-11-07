@@ -389,7 +389,8 @@ namespace Kusto.Language.Editor
             if (function == Functions.Cluster
                 || function == Functions.Database
                 || function == Functions.Table
-                || function == Functions.ExternalTable)
+                || function == Functions.ExternalTable
+                || function == Functions.MaterializedView)
             {
                 return true;
             }
@@ -841,6 +842,23 @@ namespace Kusto.Language.Editor
                                 else
                                 {
                                     builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.ExternalTables));
+                                }
+
+                                GetStringValuesInScope(position, contextNode, builder);
+                                return CompletionMode.Isolated;
+
+                            case ReturnTypeKind.Parameter0MaterializedView:
+                                // show either the dotted database's table names or the global database's table names
+                                if (GetLeftOfFunctionCall(contextNode) is Expression mvdpl)
+                                {
+                                    if (mvdpl.ResultType is DatabaseSymbol ds)
+                                    {
+                                        builder.AddRange(GetMemberNameExamples(ds.MaterializedViews));
+                                    }
+                                }
+                                else
+                                {
+                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.MaterializedViews));
                                 }
 
                                 GetStringValuesInScope(position, contextNode, builder);

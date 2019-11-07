@@ -57,9 +57,14 @@ namespace Kusto.Language.Symbols
         Tabular = Scalar << 1,
 
         /// <summary>
+        /// Any materialized view
+        /// </summary>
+        MaterializedView = Tabular << 1,
+
+        /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
-        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster,
+        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView,
 
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
@@ -93,10 +98,13 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Column) != 0 && symbol.Kind == SymbolKind.Column)
                 return true;
 
-            if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal)
+            if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal && !ts.IsMaterializedView)
                 return true;
 
             if ((match & SymbolMatch.ExternalTable) != 0 && symbol is TableSymbol ets && ets.IsExternal)
+                return true;
+
+            if ((match & SymbolMatch.MaterializedView) != 0 && symbol is TableSymbol mv && mv.IsMaterializedView)
                 return true;
 
             if ((match & SymbolMatch.Database) != 0 && symbol.Kind == SymbolKind.Database)

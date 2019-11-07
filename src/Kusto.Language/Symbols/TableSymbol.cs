@@ -20,11 +20,12 @@ namespace Kusto.Language.Symbols
         [Flags]
         private enum TableState : ushort
         {
-            None =          0b0000_0000,
-            Serialized =    0b0000_0001,
-            Sorted =        0b0000_0010,
-            Open =          0b0000_0100,
-            External =      0b0000_1000
+            None =              0b0000_0000,
+            Serialized =        0b0000_0001,
+            Sorted =            0b0000_0010,
+            Open =              0b0000_0100,
+            External =          0b0000_1000,
+            MaterializedView =  0b0001_0000
         }
 
         /// <summary>
@@ -89,6 +90,11 @@ namespace Kusto.Language.Symbols
         /// True if the table is external.
         /// </summary>
         public bool IsExternal => (this.state & TableState.External) != 0;
+
+        /// <summary>
+        /// True if the table is a materialized view.
+        /// </summary>
+        public bool IsMaterializedView => (this.state & TableState.MaterializedView) != 0;
 
         /// <summary>
         /// Creates a new <see cref="TableSymbol"/> with the specified name.
@@ -168,6 +174,14 @@ namespace Kusto.Language.Symbols
         public TableSymbol External()
         {
             return new TableSymbol(this.Name, this.state | TableState.External, this.Columns);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="TableSymbol"/> that is considered a materialized view.
+        /// </summary>
+        public TableSymbol MaterializedView()
+        {
+            return new TableSymbol(this.Name, this.state | TableState.MaterializedView, this.Columns);
         }
 
         private Dictionary<string, ColumnSymbol> lazyColumnMap;

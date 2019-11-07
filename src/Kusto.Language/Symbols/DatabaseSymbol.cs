@@ -22,6 +22,7 @@ namespace Kusto.Language.Symbols
         // caches
         private IReadOnlyList<TableSymbol> tables;
         private IReadOnlyList<TableSymbol> externalTables;
+        private IReadOnlyList<TableSymbol> materializedViews;
         private IReadOnlyList<FunctionSymbol> functions;
         private HashSet<Symbol> symbolSet;
 
@@ -61,7 +62,7 @@ namespace Kusto.Language.Symbols
             {
                 if (this.tables == null)
                 {
-                    this.tables = this.Members.OfType<TableSymbol>().Where(ts => !ts.IsExternal).ToReadOnly();
+                    this.tables = this.Members.OfType<TableSymbol>().Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
                 }
 
                 return this.tables;
@@ -81,6 +82,22 @@ namespace Kusto.Language.Symbols
                 }
 
                 return this.externalTables;
+            }
+        }
+
+        /// <summary>
+        /// The materialized views accessible from the database.
+        /// </summary>
+        public IReadOnlyList<TableSymbol> MaterializedViews
+        {
+            get
+            {
+                if (this.materializedViews == null)
+                {
+                    this.materializedViews = this.Members.OfType<TableSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
+                }
+
+                return this.materializedViews;
             }
         }
 
@@ -122,6 +139,14 @@ namespace Kusto.Language.Symbols
         public TableSymbol GetExternalTable(string name)
         {
             return this.ExternalTables.FirstOrDefault(t => t.Name == name);
+        }
+
+        /// <summary>
+        /// Gets the materialized view with the specified name or returns null.
+        /// </summary>
+        public TableSymbol GetMaterializedView(string name)
+        {
+            return this.MaterializedViews.FirstOrDefault(t => t.Name == name);
         }
 
         /// <summary>
