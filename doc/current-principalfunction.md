@@ -1,6 +1,6 @@
 # current_principal()
 
-Returns the current principal running this query.
+Returns the current principal name running the query.
 
 **Syntax**
 
@@ -8,11 +8,17 @@ Returns the current principal running this query.
 
 **Returns**
 
-The current principal FQN as a `string`.
+The current principal fully-qualified-name (FQN) as a `string`.  
+The string is formed as:  
+*PrinciplaType*`=`*PrincipalId*`;`*TenantId*
 
 **Example**
 
-<!-- csl -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```
-.show queries | where Principal == current_principal()
+print fqn=current_principal()
 ```
+
+|fqn|
+|---|
+|aaduser=346e950e-4a62-42bf-96f5-4cf4eac3f11e;72f988bf-86f1-41af-91ab-2d7cd011db47|
