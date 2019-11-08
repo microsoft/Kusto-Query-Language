@@ -252,6 +252,7 @@
         PackedColumnKeyword,
         ParseKeyword,
         PartitionKeyword,
+        PartitioningKeyword,
         PasswordKeyword,
         PatternKeyword,
         PersistKeyword,

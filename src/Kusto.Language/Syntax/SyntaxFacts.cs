@@ -283,6 +283,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PackedColumnKeyword, "__packedColumn"),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.PartitioningKeyword, "partitioning"),
                 new SyntaxData(SyntaxKind.PasswordKeyword, "password", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PatternKeyword, "pattern", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PersistKeyword, "persist", canBeIdentifier: true),
