@@ -652,6 +652,30 @@ namespace Kusto.Language
                 new Parameter("timespan", ScalarTypes.TimeSpan, examples: KustoFacts.AgoExamples))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol UnixTimeSecondsToDateTime =
+            new FunctionSymbol("unixtime_seconds_todatetime", ScalarTypes.DateTime,
+                new Parameter("number", ParameterTypeKind.Number))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol UnixTimeMillisecondsToDateTime =
+            new FunctionSymbol("unixtime_milliseconds_todatetime", ScalarTypes.DateTime,
+                new Parameter("number", ParameterTypeKind.Number))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol UnixTimeMicrosecondsToDateTime =
+            new FunctionSymbol("unixtime_microseconds_todatetime", ScalarTypes.DateTime,
+                new Parameter("number", ParameterTypeKind.Number))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol UnixTimeNanosecondsToDateTime =
+            new FunctionSymbol("unixtime_nanoseconds_todatetime", ScalarTypes.DateTime,
+                new Parameter("number", ParameterTypeKind.Number))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region hash functions
@@ -1866,6 +1890,10 @@ namespace Kusto.Language
             DatetimePart,
             Now,
             Ago,
+            UnixTimeSecondsToDateTime,
+            UnixTimeMillisecondsToDateTime,
+            UnixTimeMicrosecondsToDateTime,
+            UnixTimeNanosecondsToDateTime,
 #endregion
 
 #region hash functions
