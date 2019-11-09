@@ -165,7 +165,7 @@
 ## [cos()](cosfunction.md)
 ## [cot()](cotfunction.md)
 ## [countof()](countoffunction.md)
-## [current_cluster_endprinoint()](current-cluster-endpoint-function.md)
+## [current_cluster_endpoint()](current-cluster-endpoint-function.md)
 ## [current_cursor()](cursorcurrent.md)
 ## [current_database()](current-database-function.md)
 ## [current_principal()](current-principalfunction.md)

@@ -103,7 +103,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> JoinHintStrategies = new string[]
         {
-            "broadcast", "centralized"
+            "broadcast", "centralized", "shuffle"
         };
 
         public static readonly IReadOnlyList<string> DistributionHintStrategies = new string[]
