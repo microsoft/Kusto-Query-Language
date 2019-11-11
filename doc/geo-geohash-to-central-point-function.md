@@ -43,9 +43,9 @@ print geohash = geo_geohash_to_central_point("a")
 |---|
 ||
 
-### Example: Creating location deep-links for Bing Maps
+## Example: Creating location deep-links for Bing Maps
 
-Use Geohash value to create deep-link URL to Bing Maps pointing to Geohash's center point:
+You can use the Geohash value to create a deep-link URL to Bing Maps by pointing to the Geohash center point:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```

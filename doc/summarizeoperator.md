@@ -1,5 +1,4 @@
-
-# summarize operator
+# Summarize operator
 
 Produces a table that aggregates the content of the input table. 
 
@@ -143,7 +142,7 @@ Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
 |`2876`|`singing`|`0:20:00.000`
 |...
 
-**Examples for the aggregates default values**
+**Example for the aggregates default values**
 
 When the input of summarize operator that has at least one group-by key is empty then it's result is empty too.
 
