@@ -710,12 +710,12 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol HashCombine =
           new FunctionSymbol("hash_combine", ScalarTypes.Long,
-                  new Parameter("source", ParameterTypeKind.Scalar, ArgumentKind.Column, minOccurring: 2, maxOccurring: MaxRepeat))
+                  new Parameter("source", ParameterTypeKind.Scalar, minOccurring: 2, maxOccurring: MaxRepeat))
           .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HashMany =
           new FunctionSymbol("hash_many", ScalarTypes.Long,
-              new Parameter("source", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 1, maxOccurring: MaxRepeat))
+              new Parameter("source", ParameterTypeKind.NotDynamic, minOccurring: 1, maxOccurring: MaxRepeat))
           .WithResultNameKind(ResultNameKind.None);
         #endregion
 
