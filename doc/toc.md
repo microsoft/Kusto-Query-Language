@@ -55,6 +55,8 @@
 ### [basket](basketplugin.md)
 <!--### [diagnose](diagnoseplugin.md)-->
 ### [dcount_intersect](dcount-intersect-plugin.md)
+### [diffpatterns](diffpatternsplugin.md)
+### [diffpatterns_text](diffpatterns-textplugin.md)
 ### [narrow](narrowplugin.md)
 ### [pivot](pivotplugin.md)
 ### [preview](previewplugin.md)
@@ -386,6 +388,7 @@
 ## [autocluster](autoclusterplugin.md)
 ## [basket](basketplugin.md)
 ## [diffpatterns](diffpatternsplugin.md)
+## [diffpatterns_text](diffpatterns-textplugin.md)
 
 # Geospatial
 ## [geo_point_to_geohash()](geo-point-to-geohash-function.md)
