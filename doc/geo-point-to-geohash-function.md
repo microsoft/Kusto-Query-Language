@@ -66,7 +66,7 @@ print geohash = geo_point_to_geohash(-80.195829, 25.802215, 8)
 |---|
 |dhwfz15h|
 
-The following example finds groups of coordinates. Every pair of coordinates in the group are no further than 1.22km from each other.
+The following example finds groups of coordinates. Every pair of coordinates in the group reside in a rectangular area of 4.88km on 4.88km.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 datatable(location_id:string, longitude:real, latitude:real)
@@ -77,13 +77,13 @@ datatable(location_id:string, longitude:real, latitude:real)
 ]
 | summarize count = count(),                                          // items per group count
             locations = make_list(location_id)                        // items in the group
-         by geohash = geo_point_to_geohash(longitude, latitude, 6)    // geohash of the group
+            by geohash = geo_point_to_geohash(longitude, latitude)    // geohash of the group
 ```
 
 |geohash|count|locations|
 |---|---|---|
-|c23n8g|2|[<br>  "A",<br>  "B"<br>]|
-|c23n97|1|[<br>  "C"<br>]|
+|c23n8|2|[<br>  "A",<br>  "B"<br>]|
+|c23n9|1|[<br>  "C"<br>]|
 
 The following example produces an empty result because of the invalid coordinate input.
 <!-- csl: https://help.kusto.windows.net/Samples -->
