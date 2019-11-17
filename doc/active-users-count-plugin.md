@@ -3,6 +3,9 @@
 Calculates distinct count of values, where each value has appeared in at least a minimum number of periods in a lookback period.
 
 Useful for calculating distinct counts of "fans" only,  while not including appearances of "non-fans". A user is counted as a "fan" only if it was active during the lookback period. 
+The lookback period is only used to determine whether a user is considered `active` ("fan") or not. 
+The aggregation itself does not include users from the lookback window (unlike [sliding_window_counts]
+(sliding-window-counts-plugin.md) in which the aggregation is over the sliding window of the lookback period).
 
 <!-- csl -->
 ```

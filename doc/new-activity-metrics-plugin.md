@@ -1,9 +1,9 @@
 # new_activity_metrics plugin
 
-Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) for the cohort of `New Users`.
-
-Concept of this plugin is similar to [activity_metrics plugin](./activity-metrics-plugin.md), but focuses on `New Users`.
-
+Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) for the cohort of `New Users`. 
+Each cohort of `New Users` (all users which were 1st seen in time window) is compared to all prior cohorts. 
+Comparison takes into account *all* previous time windows. For example, in the record for from=T2 and to=T3, 
+the distinct count of users will be all users in T3 who were not seen in both T1 and T2. 
 <!-- csl -->
 ```
 T | evaluate new_activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
