@@ -5,8 +5,6 @@
 
 # [Entities](./schema-entities/index.md)
 ## [Entity names](./schema-entities/entity-names.md)
-## [Querying external entities](schema-entities/externaltables.md)
-
 <!-- Enable this section when the actual content is available, blank pages are confusing external customers.
 ## [Entity references](./schema-entities/entity-references.md)
 ## [Clusters](./schema-entities/clusters.md)
@@ -15,7 +13,7 @@
 ## [Tables](./schema-entities/tables.md)
 ## [Columns](./schema-entities/columns.md)
 ## [Stored functions](./schema-entities/stored-functions.md)
-## [External Tables](./schema-entities/externaltables.md)
+## [External tables](./schema-entities/externaltables.md)
 
 # [Data types](./scalar-data-types/index.md)
 ## [bool](./scalar-data-types/bool.md)
@@ -301,6 +299,10 @@
 ## [trim()](trimfunction.md)
 ## [trim_end()](trimendfunction.md)
 ## [trim_start()](trimstartfunction.md)
+## [unixtime_microseconds_todatetime()](unixtime-microseconds-todatetimefunction.md)
+## [unixtime_milliseconds_todatetime()](unixtime-milliseconds-todatetimefunction.md)
+## [unixtime_nanoseconds_todatetime()](unixtime-nanoseconds-todatetimefunction.md)
+## [unixtime_seconds_todatetime()](unixtime-seconds-todatetimefunction.md)
 ## [url_decode()](urldecodefunction.md)
 ## [url_encode()](urlencodefunction.md)
 ## [weekofyear()](weekofyearfunction.md)

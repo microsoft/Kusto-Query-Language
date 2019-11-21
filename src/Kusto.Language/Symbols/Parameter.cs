@@ -54,6 +54,12 @@ namespace Kusto.Language.Symbols
         public bool IsRepeatable => this.MaxOccurring > 1;
 
         /// <summary>
+        /// True if this parameter repeats in a block with the next parameter.
+        /// If parameter A repeats with the next parameter B, they can occur in the pattern ABABAB instead of AAABBB.
+        /// </summary>
+        public bool RepeatsWithNext { get; }
+
+        /// <summary>
         /// The specific values that this parameter is constrained to.
         /// </summary>
         public IReadOnlyList<object> Values { get; }
@@ -131,7 +137,18 @@ namespace Kusto.Language.Symbols
             int minOccurring = 1, 
             int maxOccurring = 1,
             Expression defaultValue = null)
-            : this(name, typeKind, null, argumentKind, values, examples, isCaseSensitive, defaultValueIndicator, minOccurring, maxOccurring, defaultValue)
+            : this(
+                  name, 
+                  typeKind, 
+                  null, 
+                  argumentKind, 
+                  values, 
+                  examples, 
+                  isCaseSensitive, 
+                  defaultValueIndicator, 
+                  minOccurring, 
+                  maxOccurring, 
+                  defaultValue)
         {
         }
 
@@ -146,7 +163,18 @@ namespace Kusto.Language.Symbols
             int minOccurring = 1,
             int maxOccurring = 1,
             Expression defaultValue = null)
-            : this(name, ParameterTypeKind.Declared, new[] { type }, argumentKind, values, examples, isCaseSensitive, defaultValueIndicator, minOccurring, maxOccurring, defaultValue)
+            : this(
+                  name, 
+                  ParameterTypeKind.Declared, 
+                  new[] { type }, 
+                  argumentKind, 
+                  values, 
+                  examples, 
+                  isCaseSensitive, 
+                  defaultValueIndicator, 
+                  minOccurring, 
+                  maxOccurring, 
+                  defaultValue)
         {
         }
 
@@ -161,7 +189,18 @@ namespace Kusto.Language.Symbols
             int minOccurring = 1,
             int maxOccurring = 1,
             Expression defaultValue = null)
-            : this(name, ParameterTypeKind.Declared, types, argumentKind, values, examples, isCaseSensitive, defaultValueIndicator, minOccurring, maxOccurring, defaultValue)
+            : this(
+                  name, 
+                  ParameterTypeKind.Declared, 
+                  types, 
+                  argumentKind, 
+                  values, 
+                  examples, 
+                  isCaseSensitive, 
+                  defaultValueIndicator, 
+                  minOccurring, 
+                  maxOccurring, 
+                  defaultValue)
         {
         }
 

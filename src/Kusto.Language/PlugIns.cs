@@ -4,6 +4,7 @@ using System.Linq;
 namespace Kusto.Language
 {
     using Symbols;
+    using Syntax;
     using static FunctionHelpers;
 
     /// <summary>
@@ -128,6 +129,75 @@ namespace Kusto.Language
                     new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant, minOccurring: 0),
                     new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant, minOccurring: 0))
                 );
+
+#if true // problem with optional parameters and repeatable parameters
+
+        private static Parameter nam_IdColumn = new Parameter("IdColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column);
+        private static Parameter nam_TimelineColumn = new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column);
+        private static Parameter nam_Start = new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant);
+        private static Parameter nam_End = new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant);
+        private static Parameter nam_Window = new Parameter("Window", ParameterTypeKind.Scalar);
+        private static Parameter nam_Cohort = new Parameter("Cohort", ParameterTypeKind.Scalar, ArgumentKind.Constant, minOccurring: 0);
+        private static Parameter nam_Dimension = new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat);
+        private static Parameter nam_Lookback = new Parameter("lookback", ParameterTypeKind.Tabular, minOccurring: 0);
+
+        public static readonly FunctionSymbol NewActivityMetrics =
+            new FunctionSymbol("new_activity_metrics",
+                 new Signature(
+                     (table, args, signature) =>
+                     {
+                         var cols = new List<ColumnSymbol>();
+                         var tCol = GetReferencedColumn(signature, "TimelineColumn", args); // timeline column
+                         if (tCol != null)
+                         {
+                             cols.Add(new ColumnSymbol("from_" + tCol.Name, tCol.Type));
+                             cols.Add(new ColumnSymbol("to_" + tCol.Name, tCol.Type));
+                         }
+
+                         AddReferencedColumns(cols, signature, "Dimension", args); // dimension columns
+
+                         cols.Add(new ColumnSymbol("dcount_new_values", ScalarTypes.Long));
+                         cols.Add(new ColumnSymbol("dcount_retained_values", ScalarTypes.Long));
+                         cols.Add(new ColumnSymbol("dcount_churn_values", ScalarTypes.Long));
+                         cols.Add(new ColumnSymbol("retention_rate", ScalarTypes.Real));
+                         cols.Add(new ColumnSymbol("churn_rate", ScalarTypes.Real));
+                         return new TableSymbol(cols);
+                     },
+                     Tabularity.Tabular,
+                     nam_IdColumn,
+                     nam_TimelineColumn,
+                     nam_Start,
+                     nam_End,
+                     nam_Window,
+                     nam_Cohort,
+                     nam_Dimension,
+                     nam_Lookback)
+                .WithArgumentParametersBuilder((sig, args, list) =>
+                {
+                    // add these even if not that many arguments supplied.. should not cause a problem
+                    list.Add(nam_IdColumn);
+                    list.Add(nam_TimelineColumn);
+                    list.Add(nam_Start);
+                    list.Add(nam_End);
+                    list.Add(nam_Window);
+
+                    // if the next argument is a constant (or not a column == dimension), then it must be the optional cohort argument
+                    if (args.Count > 5 && (args[5].IsConstant || !(args[5].ReferencedSymbol is ColumnSymbol)))
+                        list.Add(nam_Cohort);
+
+                    // after cohort, all non-tabular arguments are dimension arguments
+                    int i = list.Count;
+                    for (; i < args.Count && !args[i].ResultType.IsTabular; i++)
+                    {
+                        list.Add(nam_Dimension);
+                    }
+
+                    // this last argument should be the lookback table
+                    if (i < args.Count)
+                        list.Add(nam_Lookback);
+                }));
+#endif
+
 
         public static readonly IReadOnlyList<ColumnSymbol> AutoClusterColumns = new[] {
             new ColumnSymbol("SegmentId", ScalarTypes.Long),
@@ -324,38 +394,6 @@ namespace Kusto.Language
             new FunctionSymbol("narrow",
                  new TableSymbol(NarrowColumns));
 
-#if false // problem with optional parameters and repeatable parameters
-            new FunctionSymbol("new_activity_metrics",
-                 new Signature(
-                     (table, args, signature) =>
-                     {
-                         var cols = new List<ColumnSymbol>();
-                         var timelineColumnParameter = signature.GetParameter("TimelineColumn");
-                         var timelineColumnArg = signature.GetArgumentIndex(timelineColumnParameter, args);
-                         return table;
-                     },
-                     Tabularity.Tabular,
-                     new Parameter("IdColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
-                     new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column),
-                     new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant),
-                     new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant),
-                     new Parameter("Window", ParameterTypeKind.Scalar),
-                     new Parameter("Cohort", ParameterTypeKind.Scalar, ArgumentKind.Constant),
-                     new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat),
-                     new Parameter("lookback", ParameterTypeKind.Tabular, minOccurring: 0)),
-                 new Signature(
-                     (table, args, signature) => table,
-                     Tabularity.Tabular,
-                     new Parameter("IdColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
-                     new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column),
-                     new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant),
-                     new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant),
-                     new Parameter("Window", ParameterTypeKind.Scalar),
-                     new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat),
-                     new Parameter("lookback", ParameterTypeKind.Tabular, minOccurring: 0))
-                 ),
-#endif
-
         public static readonly FunctionSymbol Pivot =
              new FunctionSymbol("pivot",
                  (table, args) =>
@@ -511,7 +549,7 @@ namespace Kusto.Language
             Identity,
             IdentityV3,
             Narrow,
-            //NewActivityMetrics,
+            NewActivityMetrics,
             Pivot,
             Preview,
             Python,

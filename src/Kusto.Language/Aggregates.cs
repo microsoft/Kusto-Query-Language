@@ -225,7 +225,8 @@ namespace Kusto.Language
             var valueArgName = GetExpressionResultName(valueArg);
 
             var percentileParameter = signature.GetParameter(percentileParameterName);
-            signature.GetArgumentRange(percentileParameter, args, out var start, out var length);
+            var argumentParameters = signature.GetArgumentParameters(args);
+            GetArgumentRange(argumentParameters, percentileParameter, out var start, out var length);
 
             for (int p = start; p < start + length; p++)
             {

@@ -782,9 +782,17 @@ namespace Kusto.Language.Editor
 
                 foreach (var sig in signatures)
                 {
-                    var p = name != null 
-                        ? sig.GetParameter(name) 
-                        : sig.GetParameter(argumentIndex, argumentCount);
+                    Parameter p = null;
+
+                    if (name != null)
+                    {
+                         p = sig.GetParameter(name);
+                    }
+                    else if (argumentIndex < arguments.Count)
+                    {
+                        var argParams = sig.GetArgumentParameters(arguments);
+                        p = argParams[argumentIndex];
+                    }
 
                     if (argumentIndex == 0)
                     {
@@ -929,7 +937,6 @@ namespace Kusto.Language.Editor
             }
         }
 
-
         private static SyntaxNode GetLeftOfFunctionCall(SyntaxNode expression)
         {
             var parent = expression.Parent;
@@ -974,13 +981,17 @@ namespace Kusto.Language.Editor
 
         private bool IsArgumentNameRequired(Signature signature, IReadOnlyList<Expression> arguments, int argumentIndex)
         {
-            for (int i = 0, n = arguments.Count; i < argumentIndex; i++)
+            if (argumentIndex > 0)
             {
-                var arg = arguments[i];
+                var argumentParameters = signature.GetArgumentParameters(arguments);
+                var unnamedArgumentParameters = signature.GetArgumentParameters(arguments, allowNamedArguments: false);
 
-                // unordered named argument causes requirement to use named arguments
-                if (signature.GetParameter(arg, i, n) != signature.GetParameter(i, n))
-                    return true;
+                for (int i = 0; i < argumentIndex; i++)
+                {
+                    // unordered named argument causes requirement to use named arguments
+                    if (argumentParameters[i] != unnamedArgumentParameters[i])
+                        return true;
+                }
             }
 
             return false;
@@ -1015,6 +1026,7 @@ namespace Kusto.Language.Editor
                     && specifiedNames.All(n => sig.Parameters.Any(p => p.Name == n)))
                 {
                     unspecifiedNames.Clear();
+                    var argumentParameters = sig.GetArgumentParameters(arguments);
 
                     // check for argument with unspecified names
                     for (int i = 0, n = arguments.Count; i < n; i++)
@@ -1022,7 +1034,7 @@ namespace Kusto.Language.Editor
                         if (i != argumentIndex)
                         {
                             var arg = arguments[i];
-                            var p = sig.GetParameter(arg, i, n);
+                            var p = argumentParameters[i];
                             unspecifiedNames.Add(p.Name);
                         }
                     }
@@ -1264,11 +1276,11 @@ namespace Kusto.Language.Editor
                         }
                         break;
                     case ParameterTypeKind.Parameter0:
-                        return GetParameterHint(signature, signature.GetParameter(0, 1));
+                        return GetParameterHint(signature, signature.Parameters.Count > 0 ? signature.Parameters[0] : null);
                     case ParameterTypeKind.Parameter1:
-                        return GetParameterHint(signature, signature.GetParameter(1, 2));
+                        return GetParameterHint(signature, signature.Parameters.Count > 1 ?  signature.Parameters[1] : null);
                     case ParameterTypeKind.Parameter2:
-                        return GetParameterHint(signature, signature.GetParameter(2, 3));
+                        return GetParameterHint(signature, signature.Parameters.Count > 2 ? signature.Parameters[2] : null);
                     case ParameterTypeKind.Tabular:
                     case ParameterTypeKind.SingleColumnTable:
                         return CompletionHint.Tabular;

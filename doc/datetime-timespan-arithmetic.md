@@ -28,6 +28,9 @@ and `timespan`:
 
 ## Example: Unix time
 
+> [!NOTE]
+> The below examples are shown as demonstration, while dedicated functions for unix-epoch time conversions exist.
+
 [Unix time](https://en.wikipedia.org/wiki/Unix_time) (also known as POSIX time or UNIX Epoch time)
 is a system for describing a point in time as the number of seconds that have elapsed since 
 00:00:00 Thursday, 1 January 1970, Coordinated Universal Time (UTC), minus leap seconds.

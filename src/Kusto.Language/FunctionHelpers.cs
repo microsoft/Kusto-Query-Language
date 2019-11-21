@@ -48,15 +48,39 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// Gets the range of arguments all associated with the same repeating parameter.
+        /// </summary>
+        public static void GetArgumentRange(List<Parameter> argumentParameters, Parameter parameter, out int start, out int length)
+        {
+            start = argumentParameters.IndexOf(parameter);
+            if (start >= 0)
+            {
+                var end = start + 1;
+                while (end < argumentParameters.Count && argumentParameters[end] == parameter)
+                {
+                    end++;
+                }
+
+                length = end - start;
+            }
+            else
+            {
+                length = 0;
+            }
+        }
+
+
+
+        /// <summary>
         /// Adds columns to the columns collection for each column referenced by arguments associated with the specified parameter.
         /// The column's name is the name of the column referenced by the argument expression.
         /// The column's type is either the argument's type or the explicit type if specified.
         /// </summary>
-        public static void AddReferencedColumns(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Syntax.Expression> args, TypeSymbol type = null)
+        public static void AddReferencedColumns(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Expression> args, TypeSymbol type = null)
         {
             var parameter = signature.GetParameter(parameterName);
-
-            signature.GetArgumentRange(parameter, args, out var start, out var length);
+            var argumentParameters = signature.GetArgumentParameters(args);
+            GetArgumentRange(argumentParameters, parameter, out var start, out var length);
 
             for (int argIndex = start; argIndex >= 0 && argIndex < start + length; argIndex++)
             {
@@ -79,10 +103,11 @@ namespace Kusto.Language
         /// The column's name is the name of the column referenced by the argument expression or the explicit name if specified.
         /// The column's type is either the argument's type or the explicit type if specified.
         /// </summary>
-        public static void AddReferencedColumn(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Syntax.Expression> args, string name = null, TypeSymbol type = null)
+        public static void AddReferencedColumn(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Expression> args, string name = null, TypeSymbol type = null)
         {
             var parameter = signature.GetParameter(parameterName);
-            var argIndex = signature.GetArgumentIndex(parameter, args);
+            var argumentParameters = signature.GetArgumentParameters(args);
+            var argIndex = argumentParameters.IndexOf(parameter);
 
             if (argIndex >= 0 && argIndex < args.Count)
             {
@@ -111,7 +136,8 @@ namespace Kusto.Language
         public static ColumnSymbol GetReferencedColumn(Signature signature, string parameterName, IReadOnlyList<Expression> args)
         {
             var parameter = signature.GetParameter(parameterName);
-            var argIndex = signature.GetArgumentIndex(parameter, args);
+            var argumentParameters = signature.GetArgumentParameters(args);
+            var argIndex = argumentParameters.IndexOf(parameter);
 
             if (argIndex >= 0 && argIndex < args.Count)
             {
@@ -134,7 +160,8 @@ namespace Kusto.Language
             var p = signature.GetParameter(parameterName);
             if (p != null)
             {
-                var argIndex = signature.GetArgumentIndex(p, args);
+                var argumentParameters = signature.GetArgumentParameters(args);
+                var argIndex = argumentParameters.IndexOf(p);
                 if (argIndex >= 0 && argIndex < args.Count)
                 {
                     return args[argIndex];

@@ -1,6 +1,6 @@
 # diffpatterns_text plugin
 
-The `diffpatterns_text` plugin compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
+Compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
 
 <!-- csl -->
 ```

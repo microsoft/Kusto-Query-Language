@@ -120,6 +120,26 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitMakeSeriesOperator(MakeSeriesOperator node)
+            {
+                base.VisitMakeSeriesOperator(node);
+
+                if (_position < node.OnClause.TextStart || _position >= node.End)
+                {
+                    _binder._scopeKind = ScopeKind.Aggregate;
+                }
+            }
+
+            public override void VisitTopNestedClause(TopNestedClause node)
+            {
+                base.VisitTopNestedClause(node);
+
+                if (node.ByKeyword.Width > 0 && _position > node.ByKeyword.End)
+                {
+                    _binder._scopeKind = ScopeKind.Aggregate;
+                }
+            }
+
             public override void VisitList(SyntaxList list)
             {
                 base.VisitList(list);

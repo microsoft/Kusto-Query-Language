@@ -380,20 +380,18 @@ namespace Kusto.Language.Binding
                 for (int i = 0, n = list.Expressions.Count; i < n; i++)
                 {
                     var arg = list.Expressions[i].Element;
-                    var p = signature.GetParameter(arg, i, n);
+                    var p = i < signature.Parameters.Count ? signature.Parameters[i] : null;
 
-                    if (p != null)
+                    if (p != null && signature.HasAggregateParameters)
                     {
-                        switch (p.ArgumentKind)
+                        if (p.ArgumentKind == ArgumentKind.Aggregate)
                         {
-                            case ArgumentKind.Aggregate:
-                                // switch to aggregate scope for arguments that need to be aggregate expressions
-                                this.VisitInScope(arg, ScopeKind.Aggregate);
-                                break;
-
-                            default:
-                                this.VisitInScope(arg, argumentScope);
-                                break;
+                            // switch to aggregate scope for arguments that need to be aggregate expressions
+                            this.VisitInScope(arg, ScopeKind.Aggregate);
+                        }
+                        else
+                        {
+                            this.VisitInScope(arg, argumentScope);
                         }
                     }
                     else
