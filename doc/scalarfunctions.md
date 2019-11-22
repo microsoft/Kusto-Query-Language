@@ -117,7 +117,7 @@
 |[log2()](log2-function.md)|Returns the base-2 logarithm function.|
 |[loggamma()](loggammafunction.md)|Computes log of absolute value of the gamma function.|
 |[not()](notfunction.md)|Reverses the value of its bool argument.|
-|[pi()](pifunction.md)|Returns the constant value of Pi (ÃƒÂÃ¢â€šÂ¬).|
+|[pi()](pifunction.md)|Returns the constant value of Pi (Ï€).|
 |[pow()](powfunction.md)|Returns a result of raising to power.|
 |[radians()](radiansfunction.md)|Converts angle value in degrees into value in radians, using formula radians = (PI / 180 ) * angle-in-degrees.|
 |[rand()](randfunction.md)|Returns a random number.|
