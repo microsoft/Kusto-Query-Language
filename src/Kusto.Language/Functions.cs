@@ -440,6 +440,19 @@ namespace Kusto.Language
                 new Parameter("ipvb", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol ParseIPV4Mask =
+            new FunctionSymbol("parse_ipv4_mask", ScalarTypes.Long,
+                new Parameter("ipvb", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long))
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol Ipv4Compare  =
+            new FunctionSymbol("ipv4_compare", ScalarTypes.Long,
+                new Parameter("ip1", ScalarTypes.String),
+                new Parameter("ip2", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol ParsePath =
             new FunctionSymbol("parse_path", ScalarTypes.Dynamic,
                 new Parameter("path", ScalarTypes.String))
@@ -1858,6 +1871,7 @@ namespace Kusto.Language
             ParseUrlQuery_Depricated,
             ParseUrlQuery,
             ParseIPV4,
+            ParseIPV4Mask,
             ParsePath,
             ParseUserAgent,
             ParseVersion,
@@ -2058,7 +2072,11 @@ namespace Kusto.Language
             GeoPointInPolygon,
             GeoPointToGeohash,
             GeohashToCentralPoint,
-#endregion
+            #endregion
+
+            #region ipv4 functions
+            Ipv4Compare,
+            #endregion
 
             #region other
             CurrentClusterEndpoint,
