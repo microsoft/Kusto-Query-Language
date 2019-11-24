@@ -1,30 +1,32 @@
 # The dynamic data type
 
-The `dynamic` data type is a scalar type that behaves somewhat like a JSON data
-type. A value of this type can be:
+The `dynamic` scalar data type is special in that it can take on any value
+of any other scalar data type, as well as arrays and property bags. Specifically,
+A `dynamic` value can be:
 
-* A value of any of the primitive Kusto data types:
+* Null.
+
+* A value of any of the primitive scalar data types:
   `bool`, `datetime`, `guid`, `int`, `long`, `real`, `string`, and `timespan`.
 
-* An array of `dynamic` values. The array has zero or more elements,
-  and is indexed starting from zero for the first element.
+* An array of `dynamic` values, holding zero or more values with zero-based
+  indexing.
 
 * A property bag that maps unique `string` values to `dynamic` values.
-  The property bag has zero or more such mappings,
-  and the mappings are unordered.
-
-* A null value of the `dynamic` type.
+  The property bag has zero or more such mappings (called "slots"),
+  indexed by the unique `string` values. The slots are unordered.
 
 > [!NOTE]
 > Values of type `dynamic` are limited to 1MB bytes (2^20).
 
 > [!NOTE]
 > Although the `dynamic` type appears JSON-like, it can hold values that the JSON
-> model does not represent, as the Kusto model is more-detailed than JSON's
-> (for example, it differentiates between `long` and `real` numbers, has explicit
-> support for `datetime` and `timespan` values, etc.) Therefore, in serializing
-> `dynamic` values into a JSON representation, Kusto will use a string to serialize
-> values that JSON does not support. Conversely, Kusto will parse strings
+> model does not represent because they don't exist in JSON (e.g.,
+> `long`, `real`, `datetime`, `timespan`, `guid` are all types that JSON doesn't
+> have a representation for).
+> Therefore, in serializing
+> `dynamic` values into a JSON representation, values that JSON can't represent
+> are serialized into `string` values. Conversely, Kusto will parse strings
 > as strongly-typed values if they can be parsed as such.
 > This applies for `datetime`, `real`, `long`, and `guid` types. 
 > For more about the JSON object model, see See [json.org](https://json.org/).
@@ -37,8 +39,26 @@ type. A value of this type can be:
 
 ## dynamic literals
 
-The external representation of a `dynamic` value is JSON. A literal of type `dynamic`
-wraps the actual JSON representation of the value by `dynamic(` and `)`:
+A literal of type `dynamic` looks like this:
+
+`dynamic(` *Value* `)`
+
+*Value* can be:
+
+* `null`, in which case the literal represents the null dynamic value:
+  `dynamic(null)`.
+
+* Another scalar data type literal, in which case the literal represents the
+  `dynamic` literal of the "inner" type. For example, `dynamic(4)` is
+  a dynamic value holding the value 4 of the long scalar data type.
+
+* An array of dynamic or other literals: `[` *ListOfValues* `]`. For example,
+  `dynamic([1, 2, "hello"])` is a dynamic array of three elements, two `long` values
+  and one `string` value.
+
+* A property bag: `{` *Name* `=` *Value* ... `}`. For example, `dynamic({"a":1, "b":{"a":2}})`
+  is a property bag with two slots, `a`, and `b`, with the second slot being
+  another property bag.
 
 <!-- csl -->
 ```
