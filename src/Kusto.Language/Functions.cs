@@ -389,6 +389,12 @@ namespace Kusto.Language
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol Base64EncodeFromArray =
+            new FunctionSymbol("base64_encode_fromarray", ScalarTypes.String,
+                new Parameter("base64_string_decodced_as_array", ScalarTypes.Dynamic))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region parsing functions
@@ -1864,6 +1870,7 @@ namespace Kusto.Language
             Base64EncodeString,
             Base64EncodeToString,
             Base64DecodeToArray,
+            Base64EncodeFromArray,
             Base64DecodeString,
             Base64DecodeToString,
             #endregion

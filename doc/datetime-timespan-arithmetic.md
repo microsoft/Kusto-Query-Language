@@ -62,4 +62,8 @@ print result = toUnixTime(datetime(2019-01-07 21:45:31.0000000))
 |1546897531                 |
 
 > [!NOTE]
-> In addition to the functions above, see dedicated functions for unix-epoch time conversions.
+> In addition to the functions above, see dedicated functions for unix-epoch time conversions:
+> [unixtime_seconds_todatetime()](unixtime-seconds-todatetimefunction.md)
+> [unixtime_milliseconds_todatetime()](unixtime-milliseconds-todatetimefunction.md)
+> [unixtime_microseconds_todatetime()](unixtime-microseconds-todatetimefunction.md)
+> [unixtime_nanoseconds_todatetime()](unixtime-nanoseconds-todatetimefunction.md)
