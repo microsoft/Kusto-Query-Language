@@ -1709,6 +1709,12 @@ namespace Kusto.Language
             new FunctionSymbol("current_principal_details", ScalarTypes.Dynamic)
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol CurrentPrincipalIsMemberOf =
+          new FunctionSymbol("current_principal_is_member_of", ScalarTypes.Bool, 
+              new Parameter("group", ParameterTypeKind.StringOrDynamic, minOccurring: 1, maxOccurring: 32))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
         public static readonly FunctionSymbol ExtentId =
             new FunctionSymbol("extent_id", ScalarTypes.Guid)
             .WithResultNameKind(ResultNameKind.None);
@@ -2098,6 +2104,7 @@ namespace Kusto.Language
             CurrentDatabase,
             CurrentPrincipal,
             CurrentPrincipalDetails,
+            CurrentPrincipalIsMemberOf,
             ExtentId,
             ExtentId2,
             ExtentTags,
