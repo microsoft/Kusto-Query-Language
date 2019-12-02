@@ -354,6 +354,12 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol UrlEncode_Component =
+            new FunctionSymbol("url_encode_component", ScalarTypes.String,
+                new Parameter("url", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol UrlDecode =
             new FunctionSymbol("url_decode", ScalarTypes.String,
                 new Parameter("encoded_url", ScalarTypes.String))
@@ -1872,6 +1878,7 @@ namespace Kusto.Language
 
 #region encoding/decoding functions
             UrlEncode,
+            UrlEncode_Component,
             UrlDecode,
             Base64EncodeString,
             Base64EncodeToString,
