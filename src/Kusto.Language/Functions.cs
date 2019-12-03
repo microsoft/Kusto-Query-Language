@@ -465,6 +465,13 @@ namespace Kusto.Language
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol Ipv4IsMatch =
+            new FunctionSymbol("ipv4_is_match", ScalarTypes.Bool,
+                new Parameter("ip1", ScalarTypes.String),
+                new Parameter("ip2", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol ParsePath =
             new FunctionSymbol("parse_path", ScalarTypes.Dynamic,
                 new Parameter("path", ScalarTypes.String))
@@ -2104,6 +2111,7 @@ namespace Kusto.Language
 
             #region ipv4 functions
             Ipv4Compare,
+            Ipv4IsMatch,
             #endregion
 
             #region other
