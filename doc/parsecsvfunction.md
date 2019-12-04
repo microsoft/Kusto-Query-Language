@@ -13,12 +13,16 @@ parse_csv("aaa,bbb,ccc") == ["aaa","bbb","ccc"]
 
 **Arguments**
 
-* *source*: The source string representing a single record of comma separated values. Embedded line feeds, commas and quotes 
-are supported. If a multiple record CSV text is provided, only the first record is taken
+* *source*: The source string representing a single record of comma separated values.
 
 **Returns**
 
 A string array that contains the split values.
+
+**Notes**
+
+Embedded line feeds, commas and quotes may be escaped using the double quotation mark ('"'). 
+This function does not support multiple records per row (only the first record is taken).
 
 **Examples**
 
