@@ -538,6 +538,8 @@ namespace Kusto.Language.Editor
                     return IncludeTrivia.Interior;
                 case MinimalTextKind.MinimizeWhitespaceAndRemoveComments:
                     return IncludeTrivia.Minimal;
+                case MinimalTextKind.SingleLine:
+                    return IncludeTrivia.SingleLine;
                 default:
                     throw new InvalidOperationException($"Unhandled MinimalTextKind '{kind}'");
             }

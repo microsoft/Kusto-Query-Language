@@ -21,9 +21,26 @@ namespace Kusto.Language.Syntax
             : base(diagnostics)
         {
             this.shape = shape ?? EmptyReadOnlyList<CustomElementDescriptor>.Instance;
-            this.elements = elements != null
-                ? elements.Select((e, i) => Attach(e, optional: this.shape[i].IsOptional)).ToArray() 
-                : EmptyReadOnlyList<SyntaxElement>.Instance;
+
+            if (elements != null)
+            {
+                var elist = new List<SyntaxElement>(elements.Count);
+
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    var e = elements[i];
+                    var optional = this.shape[i].IsOptional;
+                    var attached = Attach(e, optional);
+                    elist.Add(attached);
+                }
+
+                this.elements = elist.AsReadOnly();
+            }
+            else
+            {
+                this.elements = EmptyReadOnlyList<SyntaxElement>.Instance;
+            }
+
             this.Init();
             this.fullWidth = ComputeFullWidth();
         }

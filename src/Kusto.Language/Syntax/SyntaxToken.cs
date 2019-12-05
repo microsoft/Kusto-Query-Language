@@ -92,6 +92,9 @@ namespace Kusto.Language.Syntax
         {
             if (!string.IsNullOrEmpty(this.Trivia))
             {
+                bool beforeQuery = this.TriviaStart == initialTriviaStart;
+                bool afterQuery = this.Kind == SyntaxKind.EndOfTextToken;
+
                 switch (includeTrivia)
                 {
                     case IncludeTrivia.All:
@@ -99,15 +102,16 @@ namespace Kusto.Language.Syntax
                         break;
 
                     case IncludeTrivia.Interior:
-                        if (this.TriviaStart > initialTriviaStart)
+                        if (!beforeQuery)
                         {
                             builder.Append(this.Trivia);
                         }
                         break;
 
                     case IncludeTrivia.Minimal:
-                        if (this.TriviaStart > initialTriviaStart)
+                        if (!beforeQuery && !afterQuery)
                         {
+                            // if there is any trivia replace it with single space or line-break
                             if (this.Trivia.Contains("\n"))
                             {
                                 // trivia had a line feed, so minimal trivia is just one line feed
@@ -118,6 +122,14 @@ namespace Kusto.Language.Syntax
                                 // minimal trivia is just a single space
                                 builder.Append(" ");
                             }
+                        }
+                        break;
+
+                    case IncludeTrivia.SingleLine:
+                        if (!beforeQuery && !afterQuery)
+                        {
+                            // if there was any trivia replace it with a single space.
+                            builder.Append(" ");
                         }
                         break;
                 }

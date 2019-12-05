@@ -881,5 +881,10 @@ namespace Kusto.Language.Syntax
         /// Trivia before the first token is not included, all other trivia becomes a single space or line feed.
         /// </summary>
         Minimal,
+
+        /// <summary>
+        /// Same as <see cref="Minimal"/> except no line breaks are preserved.
+        /// </summary>
+        SingleLine
     }
 }
