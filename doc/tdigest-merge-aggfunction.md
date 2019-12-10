@@ -10,6 +10,8 @@ Read more about the underlying algorithm (T-Digest) and the estimated error [her
 
 summarize `tdigest_merge(`*Expr*`)`.
 
+summarize `tdigest_merge(`*Expr*`)` - An alias.
+
 **Arguments**
 
 * *Expr*: Expression that will be used for aggregation calculation. 

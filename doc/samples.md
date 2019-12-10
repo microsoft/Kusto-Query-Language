@@ -690,3 +690,111 @@ Step-by-step explanation (numbers refer to the numbers in query inline comments)
 4. mv-expand the array, thus duplicating each record to 7 records, 1 day apart from each other. 
 5. Perform the aggregation function for each day. Due to #4, this actually summarizes the _past_ 7 days. 
 6. Finally, since the data for the first 7d is incomplete (there's no 7d lookback period for the first 7 days), we exclude the first 7 days from the final result (they only participate in the aggregation for the 2018-10-01). 
+
+## Find preceding event
+The next example demonstrates how to find a preceding event between 2 data sets.  
+
+*Purpose:* : Given 2 data sets, A and B, for each record in B find its preceding event in A (in other words, the arg_max record in A which is still â€œolderâ€ than B). 
+For instance, below is the expected output for the following sample data sets: 
+
+```
+let A = datatable(Timestamp:datetime, Id:string, EventA:string)
+[
+    datetime(2019-01-01 00:00:00), "x", "Ax1",
+    datetime(2019-01-01 00:00:01), "x", "Ax2",
+    datetime(2019-01-01 00:00:02), "y", "Ay1",
+    datetime(2019-01-01 00:00:05), "y", "Ay2",
+    datetime(2019-01-01 00:00:00), "z", "Az1"
+];
+let B = datatable(Timestamp:datetime, Id:string, EventB:string)
+[
+    datetime(2019-01-01 00:00:03), "x", "B",
+    datetime(2019-01-01 00:00:04), "x", "B",
+    datetime(2019-01-01 00:00:04), "y", "B",
+    datetime(2019-01-01 00:02:00), "z", "B"
+];
+A; B
+```
+
+|Timestamp|Id|EventB|
+|---|---|---|
+|2019-01-01 00:00:00.0000000|x|Ax1|
+|2019-01-01 00:00:00.0000000|z|Az1|
+|2019-01-01 00:00:01.0000000|x|Ax2|
+|2019-01-01 00:00:02.0000000|y|Ay1|
+|2019-01-01 00:00:05.0000000|y|Ay2|
+
+</br>
+
+|Timestamp|Id|EventA|
+|---|---|---|
+|2019-01-01 00:00:03.0000000|x|B|
+|2019-01-01 00:00:04.0000000|x|B|
+|2019-01-01 00:00:04.0000000|y|B|
+|2019-01-01 00:02:00.0000000|z|B|
+
+Expected output: 
+
+|Id|Timestamp|EventB|A_Timestamp|EventA|
+|---|---|---|---|---|
+|x|2019-01-01 00:00:03.0000000|B|2019-01-01 00:00:01.0000000|Ax2|
+|x|2019-01-01 00:00:04.0000000|B|2019-01-01 00:00:01.0000000|Ax2|
+|y|2019-01-01 00:00:04.0000000|B|2019-01-01 00:00:02.0000000|Ay1|
+|z|2019-01-01 00:02:00.0000000|B|2019-01-01 00:00:00.0000000|Az1|
+
+There are 2 different approaches suggested for this problem. You should test both on your specific data set to find the one most suitable for you
+ (they may perform differently on different data sets). 
+
+### Suggestion #1:
+This suggestion serializes both data sets by Id and timestamp, then groups all B events with all their preceding A events,
+ and picks the `arg_max` out of all As in the group. 
+
+```
+A
+| extend A_Timestamp = Timestamp, Kind="A"
+| union (B | extend B_Timestamp = Timestamp, Kind="B")
+| order by Id, Timestamp asc 
+| extend t = iff(Kind == "A" and (prev(Kind) != "A" or prev(Id) != Id), 1, 0)
+| extend t = row_cumsum(t)
+| summarize Timestamp=make_list(Timestamp), EventB=make_list(EventB), arg_max(A_Timestamp, EventA) by t, Id
+| mv-expand Timestamp to typeof(datetime), EventB to typeof(string)
+| where isnotempty(EventB)
+| project-away t
+```
+
+### Suggestion #2:
+This suggestion requires defining a max-lookback-period (how much â€œolderâ€ do we allow the record in A to be compared to B?) and then joins the 2 data sets on Id and this lookback period. The join produces all possible candidates (all A records which are older than B and within the lookback period), and we then filter the closest one to 
+B by arg_min(TimestampB â€“ TimestampA). The smaller the lookback period is, the query is expected to perform better. 
+
+In the example below, the lookback period is set to 1m, and therefore record with Id 'z' does not have a corresponding 'A' event (since it's 'A' is older by 2m).
+
+```
+let _maxLookbackPeriod = 1m;  
+let _internalWindowBin = _maxLookbackPeriod / 2;
+let B_events = B 
+    | extend ID = new_guid()
+    | extend _time = bin(Timestamp, _internalWindowBin)
+    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin) 
+    | mv-expand _range to typeof(datetime) 
+    | extend B_Timestamp = Timestamp, _range;
+let A_events = A 
+    | extend _time = bin(Timestamp, _internalWindowBin)
+    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin) 
+    | mv-expand _range to typeof(datetime) 
+    | extend A_Timestamp = Timestamp, _range;
+B_events
+    | join kind=leftouter (
+        A_events
+) on Id, _range
+| where isnull(A_Timestamp) or (A_Timestamp <= B_Timestamp and B_Timestamp <= A_Timestamp + _maxLookbackPeriod)
+| extend diff = coalesce(B_Timestamp - A_Timestamp, _maxLookbackPeriod*2)
+| summarize arg_min(diff, *) by ID
+| project Id, B_Timestamp, A_Timestamp, EventB, EventA
+```
+
+|Id|B_Timestamp|A_Timestamp|EventB|EventA|
+|---|---|---|---|---|
+|x|2019-01-01 00:00:03.0000000|2019-01-01 00:00:01.0000000|B|Ax2|
+|x|2019-01-01 00:00:04.0000000|2019-01-01 00:00:01.0000000|B|Ax2|
+|y|2019-01-01 00:00:04.0000000|2019-01-01 00:00:02.0000000|B|Ay1|
+|z|2019-01-01 00:02:00.0000000||B||

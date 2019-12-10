@@ -9,11 +9,11 @@ Table1 | union Table2, Table3
 
 **Syntax**
 
-*T* `| union` [`kind=` `inner`|`outer`] [`withsource=`*ColumnName*] [`isfuzzy=` `true`|`false`] *Table* [`,` *Table*]...  
+*T* `| union` [*UnionParameters*] [`kind=` `inner`|`outer`] [`withsource=`*ColumnName*] [`isfuzzy=` `true`|`false`] *Table* [`,` *Table*]...  
 
 Alternative form with no piped input:
 
-`union` [`kind=` `inner`|`outer`] [`withsource=`*ColumnName*] [`isfuzzy=` `true`|`false`] *Table* [`,` *Table*]...  
+`union` [*UnionParameters*] [`kind=` `inner`|`outer`] [`withsource=`*ColumnName*] [`isfuzzy=` `true`|`false`] *Table* [`,` *Table*]...  
 
 **Arguments**
 
@@ -30,6 +30,14 @@ If the query effectively (after wildcard matching) references tables from more t
 Similarly __cluster and database__ qualifications will be present in the value if more than one cluster is referenced. 
 * `isfuzzy=` `true` | `false`: If `isfuzzy` is set to `true` - allows fuzzy resolution of union legs. `Fuzzy` applies to the set of `union` sources. It means that while analyzing the query and preparing for execution, the set of union sources is reduced to the set of table references that exist and are accessible at the time. If at least one such table was found, any resolution failure will yield a warning in the query status results (one for each missing reference), but will not prevent the query execution; if no resolutions were successful - the query will return an error.
 The default is `isfuzzy=` `false`.
+* *UnionParameters*: Zero or more (space-separated) parameters in the form of
+  *Name* `=` *Value* that control the behavior
+  of the row-match operation and execution plan. The following parameters are supported: 
+
+  |Name           |Values                                        |Description                                  |
+  |---------------|----------------------------------------------|---------------------------------------------|
+  |`hint.concurrency`|*Number*|Hints the system how many concurrent subqueries of the `union` operator should be executed in parallel. *Default*: Amount of CPU cores on the single node of the cluster (2 to 16).|
+  |`hint.spread`|*Number*|Hints the system how many nodes should be used by the concurrent `union` subqueries execution. *Default*: 1.|
 
 **Returns**
 

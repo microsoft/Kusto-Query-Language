@@ -2,18 +2,15 @@
 
 Calculates whether the geospatial coordinates are inside a polygon on Earth.
 
-> [!WARNING]
-> This feature may not yet be available on your cluster.
-
 **Syntax**
 
 `geo_point_in_polygon(`*longitude*`, `*latitude*`, `*polygon*`)`
 
 **Arguments**
 
-* *longitude*: geospatial coordinate, longitude value in degrees. Valid value is a real number and in range [-180, +180].
-* *latitude*: geospatial coordinate, latitude value in degrees. Valid value is a real number and in range [-90, +90].
-* *polygon*: literal in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+* *longitude*: Geospatial coordinate, longitude value in degrees. Valid value is a real number and in range [-180, +180].
+* *latitude*: Geospatial coordinate, latitude value in degrees. Valid value is a real number and in range [-90, +90].
+* *polygon*: Polygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 
 **Returns**
 
@@ -32,8 +29,12 @@ dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1 ,.
 * LinearRing vertices must be distinct with at least 3 coordinates. The first coordinate must be equal to the last; therefore, at least four entries are required.
 * Coordinates [longitude,latitude] must be valid where longitude is a real number in range [-180, +180] and latitude is a real number in range [-90, +90].
 * LinearRingShell encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
+* LinearRing edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 * LinearRings must not cross and must not share edges.LinearRings may share vertices.
 * Polygon doesn't necessarily contains its vertices. Point containment in polygon is defined as such that if the Earth is subdivided into polygons, every point is contained by exactly one polygon.
+
+> [!TIP]
+> Using literal polygons may result in better performance.
 
 **Examples**
 

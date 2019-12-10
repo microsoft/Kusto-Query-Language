@@ -1,9 +1,11 @@
-# [Overview](./index.md)
+# Overview
+## [Kusto query](./index.md)
 ## [Tutorial](tutorial.md)
 ## [Samples](samples.md) 
 ## [Best practices](best-practices.md)
 
-# [Entities](./schema-entities/index.md)
+# Entities
+## [Entity types](./schema-entities/index.md)
 ## [Entity names](./schema-entities/entity-names.md)
 <!-- Enable this section when the actual content is available, blank pages are confusing external customers.
 ## [Entity references](./schema-entities/entity-references.md)
@@ -15,7 +17,8 @@
 ## [Stored functions](./schema-entities/stored-functions.md)
 ## [External tables](./schema-entities/externaltables.md)
 
-# [Data types](./scalar-data-types/index.md)
+# Data types
+## [Scalar data types overview](./scalar-data-types/index.md)
 ## [bool](./scalar-data-types/bool.md)
 ## [datetime](./scalar-data-types/datetime.md)
 ## [decimal](./scalar-data-types/decimal.md)
@@ -28,10 +31,12 @@
 ## [timespan](./scalar-data-types/timespan.md)
 ## [Null values](./scalar-data-types/null-values.md)
 
-# [Functions](./functions/index.md)
+# Functions
+## [Function types](./functions/index.md)
 ## [User-defined functions](./functions/user-defined-functions.md)
 
-# [Query statements](statements.md)
+# Query statements
+## [Query statement types](statements.md)
 ## [Alias statement](aliasstatement.md)
 ## [Let statement](letstatement.md)
 ## [Pattern statement](patternstatement.md)
@@ -41,13 +46,15 @@
 ## [Tabular expression statements](tabularexpressionstatements.md)
 ## [Batches](batches.md)
 
-# [Tabular operators](queries.md)
+# Tabular operators
+## [tablular data](queries.md)
 ## [as operator](asoperator.md)
 ## [consume operator](consumeoperator.md)
 ## [count operator](countoperator.md)
 ## [datatable operator](datatableoperator.md)
 ## [distinct operator](distinctoperator.md)
-## [evaluate operator](evaluateoperator.md)
+## evaluate operator
+### [evaluate plugin operator](evaluateoperator.md)
 ### [autocluster](autoclusterplugin.md)
 ### [bag_unpack](bag-unpackplugin.md)
 ### [basket](basketplugin.md)
@@ -70,7 +77,8 @@
 ## [fork operator](forkoperator.md)
 ## [getschema operator](getschemaoperator.md)
 ## [invoke operator](invokeoperator.md)
-## [join operator](joinoperator.md)
+## join operator
+### [join operator overview](joinoperator.md)
 ### [shuffle](shufflequery.md)
 ### [Cross-cluster join](joincrosscluster.md)
 ### [Broadcast join](broadcastjoin.md)
@@ -96,7 +104,8 @@
 ## [search operator](searchoperator.md)
 ## [serialize operator](serializeoperator.md)
 ## [sort operator](sortoperator.md)
-## [summarize operator](summarizeoperator.md)
+## summarize operator
+### [summarize operator overview](summarizeoperator.md)
 ### [Using hll() and tdigest()](usinghlltdigest.md)
 ### [shuffle](shufflequery.md)
 ## [take operator](takeoperator.md)
@@ -125,7 +134,8 @@
 ## [in and !in operators](inoperator.md)
 ## [has_any operator](has-anyoperator.md)
 
-# [Scalar functions](scalarfunctions.md)
+# Scalar functions
+## [Scalar function types](scalarfunctions.md)
 ## [abs()](abs-function.md)
 ## [acos()](acosfunction.md)
 ## [ago()](agofunction.md)
@@ -342,7 +352,8 @@
 ## [varianceif()](varianceif-aggfunction.md)
 ## [variancep()](variancep-aggfunction.md)
 
-# [Window functions](windowsfunctions.md)
+# Window functions
+## [Window functions overview](windowsfunctions.md)
 ## [next()](nextfunction.md)
 ## [prev()](prevfunction.md)
 ## [row_cumsum()](rowcumsumfunction.md)
@@ -353,7 +364,7 @@
 ## [rolling_percentile()](rolling-percentile-plugin.md)
 
 # Time Series Analysis
-## [time series analysis](machine-learning-and-tsa.md)
+## [time series analysis overview](machine-learning-and-tsa.md)
 ## [make-series operator](make-seriesoperator.md)
 ## [series_add()](series-addfunction.md)
 ## [series_decompose()](series-decomposefunction.md)
@@ -396,10 +407,12 @@
 ## [geo_point_to_geohash()](geo-point-to-geohash-function.md)
 ## [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)
 ## [geo_distance_2points()](geo-distance-2points-function.md)
+## [geo_distance_point_to_line()](geo-distance-point-to-line-function.md)
 ## [geo_point_in_circle()](geo-point-in-circle-function.md)
 ## [geo_point_in_polygon()](geo-point-in-polygon-function.md)
 
-# [User Analytics](useranalytics.md)
+# User Analytics
+## [User Analytics plugins](useranalytics.md)
 ## [Activity Counts Metrics (total values, distinct values, new values)](activity-counts-metrics-plugin.md)
 ## [Activity Engagement (DAU, WAU, MAU)](activity-engagement-plugin.md)
 ## [Activity Metrics - New (retention, churn, new values)](new-activity-metrics-plugin.md)
@@ -410,6 +423,6 @@
 ## [Funnel Sequence](funnel-sequence-plugin.md)
 ## [Funnel Sequence Completion](funnel-sequence-completion-plugin.md)
 
-# [Reference material for Kusto Query Language](reference.md)
+# Reference material for Kusto Query Language
 ## [RE2 syntax](re2.md)
 ## [SQL to Kusto Cheat Sheet](sqlcheatsheet.md)

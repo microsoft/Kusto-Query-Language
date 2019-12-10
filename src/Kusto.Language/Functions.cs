@@ -1667,6 +1667,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoDistancePointToLine =
+            new FunctionSymbol("geo_distance_point_to_line", ScalarTypes.Real,
+                new Parameter("longitude", ScalarTypes.Real),
+                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("lineString", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
         public static readonly FunctionSymbol GeoPointInCircle =
             new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
                 new Parameter("p_longitude", ScalarTypes.Real),
@@ -1724,7 +1732,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol CurrentPrincipalIsMemberOf =
           new FunctionSymbol("current_principal_is_member_of", ScalarTypes.Bool, 
-              new Parameter("group", ParameterTypeKind.StringOrDynamic, minOccurring: 1, maxOccurring: 32))
+              new Parameter("group", ParameterTypeKind.StringOrDynamic, minOccurring: 1, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
@@ -2102,6 +2110,7 @@ namespace Kusto.Language
             Point,
             Distance,
             GeoDistance2Points,
+            GeoDistancePointToLine,
             GeoPointInCircle,
             GeoPointInPolygon,
             GeoPolygonValidate,
