@@ -1,5 +1,7 @@
 # Query statements
 
+::: zone pivot="azuredataexplorer"
+
 A query consists of one or more **query statements**, delimited by a semicolon (`;`).
 At least one of these query statements must be a [tabular expression statement](./tabularexpressionstatements.md).
 The tabular expression statement generates one or more tabular results.
@@ -53,3 +55,11 @@ Following is a list of application query statements:
 * A [restrict statement](./restrictstatement.md), which is used by applications that are built
   on top of Kusto to restrict queries to a specific subset of data in Kusto (including restricting
   access to specific columns and records.)
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

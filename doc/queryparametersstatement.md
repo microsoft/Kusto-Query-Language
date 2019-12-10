@@ -1,5 +1,7 @@
 # Query parameters declaration statement
 
+::: zone pivot="azuredataexplorer"
+
 Queries sent to Kusto may include, in addition to the query text itself,
 a set of name/value pairs called **query parameters**. The query text may then
 reference one or more query parameters values by specifying their names and
@@ -86,3 +88,11 @@ the REST API, as described above. The query text itself must still [declare the 
 ### Kusto.Explorer
 
 Query parameters are currently not supported by Kusto.Explorer.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

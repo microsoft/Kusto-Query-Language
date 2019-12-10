@@ -1,5 +1,7 @@
 # extent_id()
 
+::: zone pivot="azuredataexplorer"
+
 Returns a unique identifier that identifies the data shard ("extent") that the current record resides in. 
 
 Applying this function to calculated data which is not attached to a data shard returns an empty guid (all zeros).
@@ -29,3 +31,11 @@ T
 | extend eid=extent_id()
 | summarize by eid
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

@@ -4,7 +4,7 @@ Calculates the Intermediate results of [`percentiles()`](percentiles-aggfunction
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md).
 
-Read more about the underlying algorithm (T-Digest) and the estimated error [here](percentiles-aggfunction.md#estimation-error-in-percentiles).
+Read more about the [underlying algorithm (T-Digest) and the estimated error](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
 **Syntax**
 
@@ -23,9 +23,9 @@ The Intermediate results of weighted percentiles of *Expr* across the group.
  
 **Tips**
 
-1) You may use the aggregation function [`merge_tdigests()`](merge-tdigests-aggfunction.md) to merge the output of tdigest again across another group.
+1) You may use the aggregation function [tdigest_merge()](tdigest-merge-aggfunction.md) to merge the output of tdigest again across another group.
 
-2) You may use the function [`percentile_tdigest()`] (percentile-tdigestfunction.md) to calculate the percentile/percentilew of the tdigest results.
+2) You may use the function [percentile_tdigest()] (percentile-tdigestfunction.md) to calculate the percentile/percentilew of the tdigest results.
 
 **Examples**
 

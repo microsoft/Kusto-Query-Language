@@ -1,5 +1,7 @@
 # Restrict statement
 
+::: zone pivot="azuredataexplorer"
+
 The restrict statement limits the set of table/view entities which are
 visible to query statements that follow it. For example, in a database that
 includes two tables (`A`, `B`), the application can prevent the rest
@@ -132,3 +134,11 @@ let View2 = view () { Table2 | project Column1, Column2 };
 restrict access to (View1, View2);
 Table1 |  count
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

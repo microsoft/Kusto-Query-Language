@@ -1,5 +1,7 @@
 # Alias statement
 
+::: zone pivot="azuredataexplorer"
+
 Alias statements allow to define alias for databases which can be used later in the same query.
 
 This is useful when working with several clusters while trying to appear as working on less clusters or only on one cluster.
@@ -27,3 +29,11 @@ database("wiki").PageViews | count
 alias database Logs = cluster("https://othercluster.kusto.windows.net:443").database("otherdatabase");
 database("Logs").Traces | count 
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

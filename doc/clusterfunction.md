@@ -1,5 +1,7 @@
 # cluster() (scope function)
 
+::: zone pivot="azuredataexplorer"
+
 Changes the reference of the query to a remote cluster. 
 
 <!--- csl --->
@@ -71,3 +73,11 @@ receives a parameter `clusterName` - which is passed into the cluster() function
 ```
 
 **Note:** such functions can be used only locally and not in the cross-cluster query.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

@@ -1,5 +1,7 @@
 # execute_show_command plugin
 
+::: zone pivot="azuredataexplorer"
+
 The `execute_show_command` plugin executes a Kusto `.show` command
 on a cluster and returns its results.
 
@@ -42,3 +44,11 @@ union
     "https://help.kusto.windows.net/$systemdb",
     ".show commands | take 2 | project What='Command', StartedOn, Text"))
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

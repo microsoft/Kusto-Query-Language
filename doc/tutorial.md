@@ -1,5 +1,7 @@
 # Tutorial
 
+::: zone pivot="azuredataexplorer"
+
 The best way to learn about the Kusto query language is to look at some simple
 queries to get the "feel" for the language using a [database with some sample data](https://help.kusto.windows.net/Samples). The queries demonstrated in this article should run on that database. The `StormEvents`
 table in this sample database provides some information about storms that happened
@@ -486,3 +488,11 @@ All of the above assumed that both databases reside in the cluster you are curre
 Logs | join cluster("TelemetryCluster").database("Telemetry").Metrics on Request MachineId | ...
 ```
 > Note: when the cluster is specified the database is mandatory
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

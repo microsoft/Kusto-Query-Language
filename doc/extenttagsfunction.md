@@ -1,5 +1,7 @@
 # extent_tags()
 
+::: zone pivot="azuredataexplorer"
+
 Returns a dynamic array with the [tags](../management/extents-overview.md#extent-tagging) of the data shard ("extent") that the current record resides in. 
 
 Applying this function to calculated data which is not attached to a data shard returns an empty value.
@@ -42,3 +44,11 @@ T
 | where Tags has_cs 'MyTag' and Tags !has_cs 'drop-by:MyOtherTag'
 | count
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

@@ -1,5 +1,7 @@
 # Set statement
 
+::: zone pivot="azuredataexplorer"
+
 The `set` statement is used to set a query option for the duration of the query.
 Query options control how a query executes and returns results. They can be
 Boolean flags (off by default), or have some integer value. A query may contain
@@ -23,3 +25,11 @@ statements that trail them in program order.
 set querytrace;
 Events | take 100
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

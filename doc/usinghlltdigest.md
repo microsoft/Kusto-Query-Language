@@ -79,7 +79,7 @@ To solve this problem, Newly added data may be added to a temp table as hll or t
 
 ::: zone-end
 
-Then when we need to get the final results of these values, the queries may use hll/tdigest mergers: [`hll-merge()`](hll-merge-aggfunction.md)/[`merge_tdigests()`](merge-tdigests-aggfunction.md), Then, After getting the merged values, [`percentile_tdigest()`](percentile-tdigestfunction.md) / [`dcount_hll()`](dcount-hllfunction.md) may be invoked on these merged values to get the final result of dcount or percentiles.
+Then when we need to get the final results of these values, the queries may use hll/tdigest mergers: [`hll-merge()`](hll-merge-aggfunction.md)/[`tdigest_merge()`](tdigest-merge-aggfunction.md), Then, After getting the merged values, [`percentile_tdigest()`](percentile-tdigestfunction.md) / [`dcount_hll()`](dcount-hllfunction.md) may be invoked on these merged values to get the final result of dcount or percentiles.
 
 Assuming that we have a table PageViews where each day we ingest data, each day we want to calculate the distinct count of pages viewed per minuite later than date = datetime(2016-05-01 18:00:00.0000000).
 

@@ -1,5 +1,7 @@
 # sql_request plugin
 
+::: zone pivot="azuredataexplorer"
+
   `evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)`
 
 The `sql_request` plugin sends a SQL query to a SQL Server network endpoint
@@ -117,3 +119,11 @@ Where:
 > One cannot omit, for example, the prefix `tcp:` even though it is possible to
 > do so when using the SQL client libraries programmatically.
 
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

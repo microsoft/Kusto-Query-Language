@@ -1,5 +1,7 @@
 # Cross-Cluster Join
 
+::: zone pivot="azuredataexplorer"
+
 For general discussion on cross-cluster queries see [cross-cluster or cross-database queries](cross-cluster-or-database-queries.md)
 
 It is possible to perform join operation on datasets residing on different clusters. For example 
@@ -48,3 +50,11 @@ Following are legal values for *`strategy`*
 * **`auto`** - (default) let Kusto make the automatic remoting decision
 
 **Note:** Join remoting hint will be ignored by Kusto if hinted strategy is not applicable to the join operation.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

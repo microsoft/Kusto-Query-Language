@@ -1,5 +1,7 @@
 # database() (scope function)
 
+::: zone pivot="azuredataexplorer"
+
 Changes the reference of the query to a specific database within the cluster scope. 
 
 <!--- csl --->
@@ -66,3 +68,11 @@ receives a parameter `dbName` - which is passed into the database() function.
 ```
 
 **Note:** such functions can be used only locally and not in the cross-cluster query.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end

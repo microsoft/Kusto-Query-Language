@@ -1,5 +1,7 @@
 # Cross-database and cross-cluster queries
 
+::: zone pivot="azuredataexplorer"
+
 Every Kusto query operates in the context of the current cluster and the default database.
 * When using [Kusto Client Library](../api/netfx/about-kusto-data.md) the current cluster and the default database are specified by the `Data Source` and `Initial Catalog` properties of 
  the [Kusto connection strings](../api/connection-strings/kusto.md) respectively.
@@ -168,3 +170,11 @@ of the `take` operator. To lift this limit, use the `notruncation`
 client request option.
 
 To display data in graphical form, use the [render operator](renderoperator.md).
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end
