@@ -1,5 +1,7 @@
 # R plugin (Preview)
 
+::: zone pivot="azuredataexplorer"
+
 The R plugin runs a user-defined-function (UDF) using an R script. The R script gets tabular data as its input, and is expected to produce a tabular output.
 
 ### Syntax
@@ -109,4 +111,12 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
     ```
 
 ---
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end
 

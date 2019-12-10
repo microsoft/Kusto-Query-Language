@@ -33,11 +33,26 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
   *Name* `=` *Value* that control the behavior
   of the row-match operation and execution plan. The following parameters are supported: 
 
+::: zone pivot="azuredataexplorer"
+
   |Name           |Values                                        |Description                                  |
   |---------------|----------------------------------------------|---------------------------------------------|
   |`kind`         |Join flavors|See [Join Flavors](#join-flavors)|                                             |
   |`hint.remote`  |`auto`, `left`, `local`, `right`              |See [Cross-Cluster Join](joincrosscluster.md)|
   |`hint.strategy`|Execution hints                               |See [Join hints](#join-hints)                |
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+  |Name           |Values                                        |Description                                  |
+  |---------------|----------------------------------------------|---------------------------------------------|
+  |`kind`         |Join flavors|See [Join Flavors](#join-flavors)|                                             |
+  |`hint.remote`  |`auto`, `left`, `local`, `right`              |                                             |
+  |`hint.strategy`|Execution hints                               |See [Join hints](#join-hints)                |
+
+::: zone-end
+
 
 > [!WARNING]
 > The default join flavor, if `kind` is not specified, is `innerunique`. This is different than some other

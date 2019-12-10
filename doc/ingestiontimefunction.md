@@ -4,13 +4,13 @@ Retrieves the record's `$IngestionTime` hidden `datetime` column, or null.
 
 The `$IngestionTime` column is automatically defined when the table's
 
-::: zone pivot="kusto"
+::: zone pivot="azuredataexplorer"
 
 [IngestionTime policy](../concepts/ingestiontimepolicy.md) is set (enabled).
 
 ::: zone-end
 
-::: zone pivot="loganalytics"
+::: zone pivot="azuremonitor"
 
 IngestionTime policy is set (enabled).
 

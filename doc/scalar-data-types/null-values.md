@@ -54,9 +54,13 @@ Then:
 |&nbsp;|&nbsp;|false    |false     |1        |true     |
 |a     |1     |false    |false     |1        |false    |
 
+::: zone pivot="azuredataexplorer"
+
 > If you run the query above in Kusto.Explorer, all `true`
   values will be displated as `1`, and all `false` values
   will be displayed as `0`.
+
+::: zone-end
 
 > Kusto does not offer a way to constrain a table's column from having null
   values (in other words, there's no equivalent to SQL's `NOT NULL` constraint).

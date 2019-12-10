@@ -24,7 +24,7 @@ Where:
 
 * *Visualization* indicates the kind of visualization to use. The supported values are:
 
-::: zone pivot="kusto"
+::: zone pivot="azuredataexplorer"
 
 |*Visualization*     |Description|
 |--------------------|-|
@@ -45,7 +45,7 @@ Where:
 
 ::: zone-end
 
-::: zone pivot="loganalytics"
+::: zone pivot="azuremonitor"
 
 |*Visualization*     |Description|
 |--------------------|-|
@@ -129,7 +129,7 @@ three kinds of columns:
   the result might translate into them guessing wrong. Try projecting-away such
   columns when that happens. 
 
-::: zone pivot="kusto"
+::: zone pivot="azuredataexplorer"
 
 **Examples**
 
@@ -148,7 +148,7 @@ range x from -2 to 2 step 0.1
 
 ::: zone-end
 
-::: zone pivot="loganalytics"
+::: zone pivot="azuremonitor"
 
 **Example**
 

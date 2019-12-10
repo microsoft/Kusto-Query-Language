@@ -10,12 +10,25 @@ Note that this operator does not have a pipeline input.
 
 **Arguments**
 
+::: zone pivot="azuredataexplorer"
+
 * *ColumnName*, *ColumnType*: These define the schema of the table. The Syntax
   used is precisely the same as the syntax used when defining a table
   (see [.create table](../management/tables.md#create-table)).
 * *ScalarValue*: A constant scalar value to insert into the table. The number of values
   must be an integer multiple of the columns in the table, and the *n*'th value
   must have a type that corresponds to column *n* % *NumColumns*.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+* *ColumnName*, *ColumnType*: These define the schema of the table.
+* *ScalarValue*: A constant scalar value to insert into the table. The number of values
+  must be an integer multiple of the columns in the table, and the *n*'th value
+  must have a type that corresponds to column *n* % *NumColumns*.
+
+::: zone-end
 
 **Returns**
 

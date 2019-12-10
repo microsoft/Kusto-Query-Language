@@ -66,7 +66,19 @@ PageViewsHllTDigest
 
 
 When having a too large datasets where we need to run a periodic queries over this dataset but running the regular queries to calculate [`percentile()`](percentiles-aggfunction.md) or [`dcount()`](dcount-aggfunction.md) over these big dataset hits kusto limits.
+
+::: zone pivot="azuredataexplorer"
+
 To solve this problem, Newly added data may be added to a temp table as hll or tdigest values using [`hll()`](hll-aggfunction.md) when the required operation is dcount or [`tdigest()`](tdigest-aggfunction.md) when the required operation is percentile using [`set/append`](../management/data-ingestion/index.md) or [`update policy`](../concepts/updatepolicy.md), In this case, the intermediate results of dcount or tdigest are saved into another dataset which should be smaller than the target big one.
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+To solve this problem, Newly added data may be added to a temp table as hll or tdigest values using [`hll()`](hll-aggfunction.md) when the required operation is dcount, In this case, the intermediate results of dcount are saved into another dataset which should be smaller than the target big one.
+
+::: zone-end
+
 Then when we need to get the final results of these values, the queries may use hll/tdigest mergers: [`hll-merge()`](hll-merge-aggfunction.md)/[`merge_tdigests()`](merge-tdigests-aggfunction.md), Then, After getting the merged values, [`percentile_tdigest()`](percentile-tdigestfunction.md) / [`dcount_hll()`](dcount-hllfunction.md) may be invoked on these merged values to get the final result of dcount or percentiles.
 
 Assuming that we have a table PageViews where each day we ingest data, each day we want to calculate the distinct count of pages viewed per minuite later than date = datetime(2016-05-01 18:00:00.0000000).

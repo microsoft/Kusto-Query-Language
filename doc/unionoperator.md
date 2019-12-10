@@ -17,6 +17,8 @@ Alternative form with no piped input:
 
 **Arguments**
 
+::: zone pivot="azuredataexplorer"
+
 * `Table`:
     *  The name of a table, such as `Events`; or
     *  A query expression that must be enclosed with parenthesis, such as `(Events | where id==42)` or `(cluster("https://help.kusto.windows.net:443").database("Samples").table("*"))`; or
@@ -39,11 +41,34 @@ The default is `isfuzzy=` `false`.
   |`hint.concurrency`|*Number*|Hints the system how many concurrent subqueries of the `union` operator should be executed in parallel. *Default*: Amount of CPU cores on the single node of the cluster (2 to 16).|
   |`hint.spread`|*Number*|Hints the system how many nodes should be used by the concurrent `union` subqueries execution. *Default*: 1.|
 
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+* `Table`:
+    *  The name of a table, such as `Events`; or
+    *  A query expression that must be enclosed with parenthesis, such as `(Events | where id==42)`; or
+    *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin `E`.
+* `kind`: 
+    * `inner` - The result has the subset of columns that are common to all of the input tables.
+    * `outer` - (default). The result has all the columns that occur in any of the inputs. Cells that weren't defined by an input row are set to `null`.
+* `withsource`=*ColumnName*: If specified, the output will include a column
+called *ColumnName* whose value indicates which source table has contributed each row.
+If the query effectively (after wildcard matching) references tables from more than one database (default database always counts) the value of this column will have a table name qualified with the database.
+Similarly __cluster and database__ qualifications will be present in the value if more than one cluster is referenced. 
+* `isfuzzy=` `true` | `false`: If `isfuzzy` is set to `true` - allows fuzzy resolution of union legs. `Fuzzy` applies to the set of `union` sources. It means that while analyzing the query and preparing for execution, the set of union sources is reduced to the set of table references that exist and are accessible at the time. If at least one such table was found, any resolution failure will yield a warning in the query status results (one for each missing reference), but will not prevent the query execution; if no resolutions were successful - the query will return an error.
+The default is `isfuzzy=` `false`.
+
+::: zone-end
+
 **Returns**
 
 A table with as many rows as there are in all the input tables.
 
 **Notes**
+
+::: zone pivot="azuredataexplorer"
+
 1. `union` scope can include [let statements](./letstatement.md) if those are 
 attributed with [view keyword](./letstatement.md)
 2. `union` scope will not include [functions](../management/functions.md). To include 
@@ -52,6 +77,22 @@ with [view keyword](./letstatement.md)
 3. If the `union` input is [tables](../management/tables.md) (as oppose to [tabular expressions](./tabularexpressionstatements.md)), and the `union` is followed by a [where operator](./whereoperator.md), consider replacing both with [find](./findoperator.md) for better performance. Please note the different [output schema](./findoperator.md#output-schema) produced by the `find` operator. 
 4. `isfuzzy=` `true` applies only to the phase of the `union` sources resolution. Once the set of source tables was determined, possible additional query failures will not be suppressed.
 5. When using `outer union`, the result has all the columns that occur in any of the inputs, one column for each name and type occurrences. This means that if a column appears in multiple tables and has multiple types, it will have a corresponding column for each type in the `union`'s result. This column name will be suffixed with a '_' followed by the origin column [type](./scalar-data-types/index.md).
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+1. `union` scope can include [let statements](./letstatement.md) if those are 
+attributed with [view keyword](./letstatement.md)
+2. `union` scope will not include functions. To include 
+function in the union scope - define a [let statement](./letstatement.md) 
+with [view keyword](./letstatement.md)
+3. If the `union` input is tables (as oppose to [tabular expressions](./tabularexpressionstatements.md)), and the `union` is followed by a [where operator](./whereoperator.md), consider replacing both with [find](./findoperator.md) for better performance. Please note the different [output schema](./findoperator.md#output-schema) produced by the `find` operator. 
+4. `isfuzzy=` `true` applies only to the phase of the `union` sources resolution. Once the set of source tables was determined, possible additional query failures will not be suppressed.
+5. When using `outer union`, the result has all the columns that occur in any of the inputs, one column for each name and type occurrences. This means that if a column appears in multiple tables and has multiple types, it will have a corresponding column for each type in the `union`'s result. This column name will be suffixed with a '_' followed by the origin column [type](./scalar-data-types/index.md).
+
+::: zone-end
+
 
 **Example**
 

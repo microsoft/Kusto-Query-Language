@@ -3,6 +3,7 @@
 ## [Tutorial](tutorial.md)
 ## [Samples](samples.md) 
 ## [Best practices](best-practices.md)
+## [Cross-database and cross-cluster queries](cross-cluster-or-database-queries.md)
 
 # Entities
 ## [Entity types](./schema-entities/index.md)

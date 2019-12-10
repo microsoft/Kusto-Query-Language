@@ -1,5 +1,7 @@
 # Python plugin (Preview)
 
+::: zone pivot="azuredataexplorer"
+
 The Python plugin runs a user-defined-function (UDF) using a Python script. The Python script gets tabular data as its input, and is expected to produce a tabular output.
 
 ### Syntax
@@ -119,4 +121,12 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
     ```
 
 ---
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This isn't supported in Azure Monitor
+
+::: zone-end
 
