@@ -9,12 +9,13 @@ range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 
 > [!NOTE]
 > * The render operator should be the last operator in the query, and used only
-> with queries that produce a single tabular data stream result.
-> * The render operator has no impact on the results returned for the query,
-> other than to inject a annotation (called "Visualization") that contains
-> the rendering information provided in the query.
-> User agents might not render results as instructed, depending on their
-> support for the required rendering instructions.
+>   with queries that produce a single tabular data stream result.
+> * The render operator does not modify data; its impact is to inject an anotation
+>   (called "Visualization") into the result's extended properties that holds
+>   the information provided with the operator in the query.
+> * The interpretation of the visualization information is done by the user
+>   agent; different agents (such as Kusto.Explorer, Kusto.WebExplorer, etc.)
+>   might support different visualizations.
 
 **Syntax**
 
