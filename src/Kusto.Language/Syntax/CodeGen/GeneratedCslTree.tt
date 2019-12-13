@@ -1298,6 +1298,23 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
             new GeneratedProperty { Name = "Patterns", Type = "SyntaxList<SyntaxNode>", Completion="Syntax"}
         }
     },
+
+	 new GeneratedCslNodeClass
+    {
+        Name = "ParseWhereOperator",
+        Doc = "",
+        Base = "QueryOperator",
+        Sealed = true,
+        Kind = "ParseWhereOperator",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ParseKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="None"},
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar"},
+            new GeneratedProperty { Name = "WithKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Patterns", Type = "SyntaxList<SyntaxNode>", Completion="Syntax"}
+        }
+    },
     
     new GeneratedCslNodeClass
     {

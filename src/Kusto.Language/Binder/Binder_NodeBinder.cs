@@ -2553,7 +2553,7 @@ namespace Kusto.Language.Binding
                 new QueryParameterInfo("ymax", QueryParameterKind.Number),
             };
 
-            public override SemanticInfo VisitParseOperator(ParseOperator node)
+            private SemanticInfo ParseVisitCommon(QueryOperator node, Expression expression, SyntaxList<SyntaxNode> patterns, SyntaxList<NamedParameter> parameters)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
@@ -2564,12 +2564,12 @@ namespace Kusto.Language.Binding
 
                     _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, columns);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_ParseParameters, diagnostics);
-                    _binder.CheckIsScalar(node.Expression, diagnostics);
+                    _binder.CheckQueryParameters(parameters, s_ParseParameters, diagnostics);
+                    _binder.CheckIsScalar(expression, diagnostics);
 
-                    for (int i = 0, n = node.Patterns.Count; i < n; i++)
+                    for (int i = 0, n = patterns.Count; i < n; i++)
                     {
-                        var part = node.Patterns[i];
+                        var part = patterns[i];
 
                         // check for legal pattern arrangment
                         switch (part.Kind)
@@ -2579,9 +2579,9 @@ namespace Kusto.Language.Binding
                                 break;
 
                             case SyntaxKind.StarExpression:
-                                if (i < node.Patterns.Count - 1)
+                                if (i < patterns.Count - 1)
                                 {
-                                    var nextPart = node.Patterns[i  + 1];
+                                    var nextPart = patterns[i + 1];
                                     if (nextPart.Kind != SyntaxKind.StringLiteralExpression && nextPart.Kind != SyntaxKind.CompoundStringLiteralExpression)
                                     {
                                         diagnostics.Add(DiagnosticFacts.GetParsePatternStringLiteralMustFollowStar().WithLocation(part));
@@ -2590,10 +2590,10 @@ namespace Kusto.Language.Binding
 
                                 if (i > 0)
                                 {
-                                    var prevPart = node.Patterns[i - 1];
-                                    if (prevPart.Kind == SyntaxKind.NameDeclaration 
-                                        || prevPart.Kind == SyntaxKind.BrackettedExpression 
-                                        || (prevPart is NameAndTypeDeclaration nat 
+                                    var prevPart = patterns[i - 1];
+                                    if (prevPart.Kind == SyntaxKind.NameDeclaration
+                                        || prevPart.Kind == SyntaxKind.BrackettedExpression
+                                        || (prevPart is NameAndTypeDeclaration nat
                                             && nat.Type is PrimitiveTypeExpression pt
                                             && Binder.GetType(pt) == ScalarTypes.String))
                                     {
@@ -2606,7 +2606,7 @@ namespace Kusto.Language.Binding
                             case SyntaxKind.NameAndTypeDeclaration:
                                 if (i > 0)
                                 {
-                                    var prevPart = node.Patterns[i - 1];
+                                    var prevPart = patterns[i - 1];
                                     if (prevPart.Kind != SyntaxKind.StringLiteralExpression && prevPart.Kind != SyntaxKind.CompoundStringLiteralExpression)
                                     {
                                         diagnostics.Add(DiagnosticFacts.GetParsePatternNameDoesNotFollowStringLiteral().WithLocation(part));
@@ -2654,6 +2654,16 @@ namespace Kusto.Language.Binding
                     s_columnListPool.ReturnToPool(columns);
                     s_stringSetPool.ReturnToPool(declaredNames);
                 }
+            }
+
+            public override SemanticInfo VisitParseWhereOperator(ParseWhereOperator node)
+            {
+                return ParseVisitCommon(node, node.Expression, node.Patterns, node.Parameters);
+            }
+
+            public override SemanticInfo VisitParseOperator(ParseOperator node)
+            {
+                return ParseVisitCommon(node, node.Expression, node.Patterns, node.Parameters);
             }
 
             private static readonly QueryParameterInfo[] s_ParseParameters = new QueryParameterInfo[]

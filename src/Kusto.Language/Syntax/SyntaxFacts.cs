@@ -282,6 +282,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PackKeyword, "pack", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PackedColumnKeyword, "__packedColumn"),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
+                new SyntaxData(SyntaxKind.ParseWhereKeyword, "parse-where"),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PartitioningKeyword, "partitioning"),
                 new SyntaxData(SyntaxKind.PasswordKeyword, "password", canBeIdentifier: true),
@@ -678,6 +679,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PartitionSubquery, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PartitionQuery, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ParseWhereOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.EvaluateOperator, "", SyntaxCategory.Node), // evaluate
 

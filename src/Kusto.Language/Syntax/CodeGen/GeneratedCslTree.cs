@@ -6343,6 +6343,91 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ParseOperator */
     
+    #region class ParseWhereOperator
+    public sealed partial class ParseWhereOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.ParseWhereOperator;
+        
+        public SyntaxToken ParseKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        public Expression Expression { get; }
+        
+        public SyntaxToken WithKeyword { get; }
+        
+        public SyntaxList<SyntaxNode> Patterns { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ParseWhereOperator"/>.
+        /// </summary>
+        internal ParseWhereOperator(SyntaxToken parseKeyword, SyntaxList<NamedParameter> parameters, Expression expression, SyntaxToken withKeyword, SyntaxList<SyntaxNode> patterns, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ParseKeyword = Attach(parseKeyword);
+            this.Parameters = Attach(parameters);
+            this.Expression = Attach(expression);
+            this.WithKeyword = Attach(withKeyword);
+            this.Patterns = Attach(patterns);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ParseKeyword;
+                case 1: return Parameters;
+                case 2: return Expression;
+                case 3: return WithKeyword;
+                case 4: return Patterns;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ParseKeyword);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Expression);
+                case 3: return nameof(WithKeyword);
+                case 4: return nameof(Patterns);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Scalar;
+                case 3: return CompletionHint.Keyword;
+                case 4: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitParseWhereOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitParseWhereOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ParseWhereOperator((SyntaxToken)ParseKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)WithKeyword?.Clone(), (SyntaxList<SyntaxNode>)Patterns?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ParseWhereOperator */
+    
     #region class PartitionOperator
     public sealed partial class PartitionOperator : QueryOperator
     {
@@ -11578,6 +11663,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitToTypeOfClause(ToTypeOfClause node);
         public abstract void VisitEvaluateOperator(EvaluateOperator node);
         public abstract void VisitParseOperator(ParseOperator node);
+        public abstract void VisitParseWhereOperator(ParseWhereOperator node);
         public abstract void VisitPartitionOperator(PartitionOperator node);
         public abstract void VisitPartitionQuery(PartitionQuery node);
         public abstract void VisitPartitionSubquery(PartitionSubquery node);
@@ -11969,6 +12055,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitParseWhereOperator(ParseWhereOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitPartitionOperator(PartitionOperator node)
         {
             this.DefaultVisit(node);
@@ -12319,6 +12409,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitToTypeOfClause(ToTypeOfClause node);
         public abstract TResult VisitEvaluateOperator(EvaluateOperator node);
         public abstract TResult VisitParseOperator(ParseOperator node);
+        public abstract TResult VisitParseWhereOperator(ParseWhereOperator node);
         public abstract TResult VisitPartitionOperator(PartitionOperator node);
         public abstract TResult VisitPartitionQuery(PartitionQuery node);
         public abstract TResult VisitPartitionSubquery(PartitionSubquery node);
@@ -12707,6 +12798,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitParseOperator(ParseOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitParseWhereOperator(ParseWhereOperator node)
         {
             return this.DefaultVisit(node);
         }

@@ -40,9 +40,9 @@ find in (Table1, Table2, Table3) where Fruit=="apple"
 If the query effectively (after wildcard matching) references tables from more than one database (default database always counts) the value of this column will have a table name qualified with the database. Similarly __cluster and database__ qualifications will be present in the value if more than one cluster is referenced.
 * *Predicate*: [see details](./findoperator.md#predicate-syntax). A `boolean` [expression](./scalar-data-types/bool.md) over the columns of the input tables *Table* [`,` *Table*, ...]. It is evaluated for each row in each input table. 
 * `Table`: Optional. By default *find* will search in all tables in the current database
- *  The name of a table, such as `Events` or
- *  A query expression, such as `(Events | where id==42)`
- *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin `E`.
+    *  The name of a table, such as `Events` or
+    *  A query expression, such as `(Events | where id==42)`
+    *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin `E`.
 * `project-smart` | `project`: [see details](./findoperator.md#output-schema) if not specified `project-smart` will be used by default
 
 ::: zone-end
@@ -52,9 +52,9 @@ If the query effectively (after wildcard matching) references tables from more t
 * `withsource=`*ColumnName*: Optional. By default the output will include a column called *source_* whose values indicates which source table has contributed each row. If specified, *ColumnName* will be used instead of *source_* .
 * *Predicate*: [see details](./findoperator.md#predicate-syntax). A `boolean` [expression](./scalar-data-types/bool.md) over the columns of the input tables *Table* [`,` *Table*, ...]. It is evaluated for each row in each input table. 
 * `Table`: Optional. By default *find* will search in all tables
- *  The name of a table, such as `Events` or
- *  A query expression, such as `(Events | where id==42)`
- *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables whose names begin `E`.
+    *  The name of a table, such as `Events` or
+    *  A query expression, such as `(Events | where id==42)`
+    *  A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables whose names begin `E`.
 * `project-smart` | `project`: [see details](./findoperator.md#output-schema) if not specified `project-smart` will be used by default
 
 ::: zone-end

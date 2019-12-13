@@ -251,6 +251,7 @@
         PackKeyword,
         PackedColumnKeyword,
         ParseKeyword,
+        ParseWhereKeyword,
         PartitionKeyword,
         PartitioningKeyword,
         PasswordKeyword,
@@ -649,6 +650,7 @@
         PartitionQuery,
         PartitionOperator,
         ParseOperator,
+        ParseWhereOperator,
 
         EvaluateOperator,
 

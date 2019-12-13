@@ -1577,6 +1577,18 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new ParseOperator(parseKeyword, parameters, expr, withKeyword, expressions))
                 .WithTag("<parse>");
 
+            // TODO ZIHAM: once all clusters deployed, unhide parse-where.
+            var ParseWhereOperator =
+                Rule(
+                    Token(SyntaxKind.ParseWhereKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
+                    ParseParameters,
+                    Required(UnnamedExpression, MissingExpression),
+                    RequiredToken(SyntaxKind.WithKeyword),
+                    List(Rule(ParseWithExpression, e => (SyntaxNode)e)),
+                    (parseKeyword, parameters, expr, withKeyword, expressions) =>
+                        (QueryOperator)new ParseWhereOperator(parseKeyword, parameters, expr, withKeyword, expressions))
+                .WithTag("<parse-where>").Hide();
+
             var ProjectOperator =
                 Rule(
                     Token(SyntaxKind.ProjectKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
@@ -1977,6 +1989,7 @@ namespace Kusto.Language.Parsing
                     MvExpandOperator,
                     EvaluateOperator,
                     ParseOperator,
+                    ParseWhereOperator,
                     PartitionOperator,
                     ProjectOperator,
                     SampleOperator,
@@ -2004,6 +2017,7 @@ namespace Kusto.Language.Parsing
                     ExtendOperator,
                     FilterOperator,
                     ParseOperator,
+                    ParseWhereOperator,
                     TakeOperator,
                     TopNestedOperator,
                     ProjectOperator,
@@ -2037,6 +2051,7 @@ namespace Kusto.Language.Parsing
                     ExtendOperator,
                     FilterOperator,
                     ParseOperator,
+                    ParseWhereOperator,
                     TakeOperator,
                     TopNestedOperator,
                     ProjectOperator,
