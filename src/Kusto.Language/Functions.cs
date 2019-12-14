@@ -1713,6 +1713,22 @@ namespace Kusto.Language
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoPointToS2Cell =
+            new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
+                new Parameter("longitude", ScalarTypes.Real),
+                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("level", ScalarTypes.Int))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol S2CellToCentralPoint =
+            new FunctionSymbol("geo_s2cell_to_central_point", ScalarTypes.Dynamic,
+                new Parameter("s2cell", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region other
@@ -2116,6 +2132,8 @@ namespace Kusto.Language
             GeoPolygonValidate,
             GeoPointToGeohash,
             GeohashToCentralPoint,
+            GeoPointToS2Cell,
+            S2CellToCentralPoint,
             #endregion
 
             #region ipv4 functions
