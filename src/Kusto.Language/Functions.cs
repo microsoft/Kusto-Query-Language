@@ -949,6 +949,13 @@ namespace Kusto.Language
                 new Parameter("shift", ParameterTypeKind.Integer))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol BitsetOnes =
+           new FunctionSymbol("bitset_ones", ScalarTypes.Long,
+               new Parameter("value", ParameterTypeKind.Integer))
+           .WithResultNameKind(ResultNameKind.FirstArgument)
+           .ConstantFoldable()
+           .Hide();
         #endregion
 
         #region dynamic array/object functions
@@ -2014,6 +2021,7 @@ namespace Kusto.Language
             BinaryNot,
             BinaryShiftRight,
             BinaryShiftLeft,
+            BitsetOnes,
 #endregion
 
 #region dynamic array/object functions
