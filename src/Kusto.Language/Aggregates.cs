@@ -219,6 +219,27 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("schema");
 
+        public static readonly FunctionSymbol BinaryAllOr =
+           new FunctionSymbol("binary_all_or",
+               new Signature(ReturnTypeKind.Parameter0,
+                   new Parameter("value", ParameterTypeKind.Summable)))
+            .WithResultNameKind(ResultNameKind.FirstArgument)
+            .Hide(); // TODO: open in Jan 2020
+
+        public static readonly FunctionSymbol BinaryAllAnd =
+          new FunctionSymbol("binary_all_and",
+              new Signature(ReturnTypeKind.Parameter0,
+                  new Parameter("value", ParameterTypeKind.Summable)))
+          .WithResultNameKind(ResultNameKind.FirstArgument)
+          .Hide(); // TODO: open in Jan 2020
+
+        public static readonly FunctionSymbol BinaryAllXor =
+          new FunctionSymbol("binary_all_xor",
+              new Signature(ReturnTypeKind.Parameter0,
+                  new Parameter("value", ParameterTypeKind.Summable)))
+          .WithResultNameKind(ResultNameKind.FirstArgument)
+          .Hide(); // TODO: open in Jan 2020
+
         private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
         {
             var valueArg = GetArgument(args, signature, valueParameterName);
@@ -570,7 +591,10 @@ namespace Kusto.Language
             ArgMin,
             ArgMax,
             ArgMin_Depricated,
-            ArgMax_Depricated
+            ArgMax_Depricated,
+            BinaryAllOr,
+            BinaryAllAnd,
+            BinaryAllXor,
         };
     }
 }

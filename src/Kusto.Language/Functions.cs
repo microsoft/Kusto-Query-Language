@@ -950,8 +950,8 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol BitsetOnes =
-           new FunctionSymbol("bitset_ones", ScalarTypes.Long,
+        public static readonly FunctionSymbol BitsetCountOnes =
+           new FunctionSymbol("bitset_count_ones", ScalarTypes.Long,
                new Parameter("value", ParameterTypeKind.Integer))
            .WithResultNameKind(ResultNameKind.FirstArgument)
            .ConstantFoldable()
@@ -1007,6 +1007,11 @@ namespace Kusto.Language
                 new Parameter("condition_array", ScalarTypes.Dynamic),
                 new Parameter("when_true", ParameterTypeKind.Scalar),
                 new Parameter("when_false", ParameterTypeKind.Scalar)).Hide();
+
+        public static readonly FunctionSymbol ArrayIndexOf =
+            new FunctionSymbol("array_index_of", ScalarTypes.Long,
+                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("value", ParameterTypeKind.Scalar));
 
         public static readonly FunctionSymbol ArraySlice =
             new FunctionSymbol("array_slice", ScalarTypes.Dynamic,
@@ -2021,7 +2026,7 @@ namespace Kusto.Language
             BinaryNot,
             BinaryShiftRight,
             BinaryShiftLeft,
-            BitsetOnes,
+            BitsetCountOnes,
 #endregion
 
 #region dynamic array/object functions
@@ -2033,6 +2038,7 @@ namespace Kusto.Language
             ArrayConcat,
             ArrayIif,
             ArrayIff,
+            ArrayIndexOf,
             ArraySlice,
             ArraySplit,
             ArrayShiftLeft,
