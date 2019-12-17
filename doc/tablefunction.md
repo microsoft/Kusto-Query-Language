@@ -1,6 +1,7 @@
 # table() (scope function)
 
-References specific table using an query-time evaluated string-expression. 
+The table() function references a table by providing its name as an expression
+of type `string`.
 
 <!--- csl --->
 ```
@@ -9,35 +10,48 @@ table('StormEvent')
 
 **Syntax**
 
-`table(`*stringConstant* [`,` *query_data_scope* ]`)`
+`table` `(` *TableName* [`,` *DataScope*] `)`
 
 **Arguments**
 
 ::: zone pivot="azuredataexplorer"
 
-* *stringConstant*: Name of the table that is referenced. Argument has to be _constant_ prior of query execution, i.e. cannot come from sub-query evaluation.
+* *TableName*: An expression of type `string` that provides the name of the table
+  being referenced. The value of this expression must be constant at the point
+  of call to the function (i.e. it cannot vary by the data context).
 
-* *query_data_scope*: An optional parameter that controls the tables's datascope -- whether the query applies to all data or just part of it. Possible values:
-    - `"hotcache"`: Table scope is data that is covered by [cache policy](../concepts/cachepolicy.md)
-    - `"all"`: Table scope is all data, hot or cold.
-    - `"default"`: Table scope is default (cluster default policy)
+* *DataScope*: An optional parameter of type `string` that can be used to restrict
+  the table reference to data according to how this data falls under the table's
+  effective [cache policy](../concepts/cachepolicy.md). If used, the actual argument
+  must be a constant `string` expression having one of the following possible values:
+
+    - `"hotcache"`: Only data that is categorized as hot cache will be referenced.
+    - `"all"`: All the data in the table will be referenced.
+    - `"default"`: This is the same as `"all"`, except if the cluster has been
+      set to use `"hotcache"` as the default by the cluster admin.
 
 ::: zone-end
 
 ::: zone pivot="azuremonitor"
 
-* *stringConstant*: Name of the table that is referenced. Argument has to be _constant_ prior of query execution, i.e. cannot come from sub-query evaluation.
+* *TableName*: An expression of type `string` that provides the name of the table
+  being referenced. The value of this expression must be constant at the point
+  of call to the function (i.e. it cannot vary by the data context).
 
-* *query_data_scope*: An optional parameter that controls the tables's datascope -- whether the query applies to all data or just part of it. Possible values:
-    - `"hotcache"`: Table scope is data that is covered by cache policy
-    - `"all"`: Table scope is all data, hot or cold.
-    - `"default"`: Table scope is default (cluster default policy)
+* *DataScope*: An optional parameter of type `string` that can be used to restrict
+  the table reference to data according to how this data falls under the table's
+  effective cache policy. If used, the actual argument
+  must be a constant `string` expression having one of the following possible values:
+
+    - `"hotcache"`: Only data that is categorized as hot cache will be referenced.
+    - `"all"`: All the data in the table will be referenced.
+    - `"default"`: This is the same as `"all"`.
 
 ::: zone-end
 
 ## Examples
 
-### Use table() to access table of the current database. 
+### Use table() to access table of the current database
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -48,7 +62,7 @@ table('StormEvent') | count
 |---|
 |59066|
 
-### Use table() inside let statements 
+### Use table() inside let statements
 
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `tableName` - which is passed into the table() function.
@@ -66,7 +80,7 @@ foo('help')
 |---|
 |59066|
 
-### Use table() inside Functions 
+### Use table() inside Functions
 
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `tableName` - which is passed into the table() function.
@@ -97,7 +111,7 @@ let T1 = print x=1;
 let T2 = print x=2;
 let _choose = (_selector:string)
 {
-    union 
+    union
     (T1 | where _selector == 'T1'),
     (T2 | where _selector == 'T2')
 };
