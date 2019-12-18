@@ -792,17 +792,27 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTablePolicyStreamingIngestion =
             new CommandSymbol("show table policy streamingingestion", "show table <database_table>:TableName policy streamingingestion", PolicyResult);
 
+        public static readonly CommandSymbol ShowClusterPolicyStreamingIngestion =
+            new CommandSymbol("show cluster policy streamingingestion", "show cluster policy streamingingestion", PolicyResult);
+
         public static readonly CommandSymbol AlterDatabasePolicyStreamingIngestion =
             new CommandSymbol("alter database policy streamingingestion", "alter database <database>:DatabaseName policy streamingingestion <string>:StreamingIngestionPolicy", PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyStreamingIngestion =
             new CommandSymbol("alter table policy streamingingestion", "alter table <database_table>:TableName policy streamingingestion <string>:StreamingIngestionPolicy", PolicyResult);
 
+        public static readonly CommandSymbol AlterClusterPolicyStreamingIngestion =
+            new CommandSymbol("alter cluster policy streamingingestion", "alter cluster policy streamingingestion <string>:StreamingIngestionPolicy", PolicyResult);
+
         public static readonly CommandSymbol DeleteDatabasePolicyStreamingIngestion =
             new CommandSymbol("delete database policy streamingingestion", "delete database <database>:DatabaseName policy streamingingestion");
 
         public static readonly CommandSymbol DeleteTablePolicyStreamingIngestion =
             new CommandSymbol("delete table policy streamingingestion", "delete table <database_table>:TableName policy streamingingestion");
+
+        public static readonly CommandSymbol DeleteClusterPolicyStreamingIngestion =
+            new CommandSymbol("delete cluster policy streamingingestion", "delete cluster policy streamingingestion");
+
         #endregion
 
         #endregion
@@ -1496,10 +1506,13 @@ namespace Kusto.Language
                 // Streaming Ingestion
                 ShowDatabasePolicyStreamingIngestion,
                 ShowTablePolicyStreamingIngestion,
+                ShowClusterPolicyStreamingIngestion,
                 AlterDatabasePolicyStreamingIngestion,
                 AlterTablePolicyStreamingIngestion,
+                AlterClusterPolicyStreamingIngestion,
                 DeleteDatabasePolicyStreamingIngestion,
                 DeleteTablePolicyStreamingIngestion,
+                DeleteClusterPolicyStreamingIngestion,
                 #endregion
 
                 #region Security Role Commands
