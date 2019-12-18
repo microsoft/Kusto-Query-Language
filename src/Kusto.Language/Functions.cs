@@ -1014,6 +1014,12 @@ namespace Kusto.Language
                 new Parameter("array", ScalarTypes.Dynamic),
                 new Parameter("value", ParameterTypeKind.Scalar));
 
+        public static readonly FunctionSymbol SetHasElement =
+            new FunctionSymbol("set_has_element", ScalarTypes.Bool,
+                new Parameter("set", ScalarTypes.Dynamic),
+                new Parameter("value", ParameterTypeKind.Scalar))
+            .Hide(); // slneimer to remove this line after 5/Jan/2020
+
         public static readonly FunctionSymbol ArraySlice =
             new FunctionSymbol("array_slice", ScalarTypes.Dynamic,
                 new Parameter("array", ScalarTypes.Dynamic),
@@ -2052,6 +2058,7 @@ namespace Kusto.Language
             PackDictionary,
             PackAll,
             PackArray,
+            SetHasElement,
             SetUnion,
             SetIntersect,
             SetDifference,
