@@ -727,7 +727,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol HashXXH64 =
             new FunctionSymbol("__hash_xxh64", ScalarTypes.Long,
                 new Parameter("source", ParameterTypeKind.NotDynamic),
-                new Parameter("mod", ParameterTypeKind.Integer, minOccurring: 0)).Hide();
+                new Parameter("mod", ParameterTypeKind.Integer),
+                new Parameter("seed", ParameterTypeKind.Integer)).Hide();
 
         public static readonly FunctionSymbol Hash =
             new FunctionSymbol("hash", ScalarTypes.Long,

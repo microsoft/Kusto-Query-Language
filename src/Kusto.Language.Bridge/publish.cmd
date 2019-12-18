@@ -4,7 +4,7 @@ IF "%PUBLISH_DEBUG%" == "1" ECHO ON
 
 SET ROOT=%~dp0
 SET KUSTOROOT=%~dp0..\..\..\
-set OUT=bin\release\bridge
+set OUT=%KUSTOROOT%\bin\Release\Projects\Kusto.Language.Bridge\bridge
 
 SET ALL=0
 IF "%1" == "" SET ALL=1
