@@ -72,7 +72,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> ChartKinds = new string[]
         {
-            "default", "unstacked", "stacked", "stacked100"
+            "default", "unstacked", "stacked", "stacked100", "map"
         };
 
         public static readonly IReadOnlyList<string> ChartLegends = new string[]
