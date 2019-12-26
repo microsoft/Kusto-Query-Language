@@ -39,6 +39,11 @@ Operator        |Description                                                    
 `!in~`          |Not equals to any of the elements                                 |No            |`"bca" !in~ ("123", "345", "ABC")`
 `has_any`       |Same as `has` but works on any of the elements                    |No            |`"North America" has_any("south", "north")`
 
+## Performance tips
+
+Prefer using case-sensitive operators when applicable, as they are more performant. For example,
+prefer using `==` over `=~`, `in` over `in~`, and `contains_cs` over `contains`.
+
 Use `has` or `in` if you're testing for the presence of a whole lexical term - that is,
 a symbol or an alphanumeric word bounded by non-alphanumeric characters or start or end of field.
 `has` performs faster than `contains`, `startswith`, or `endswith`.
@@ -63,7 +68,7 @@ substring match, these operators match **terms**.
 
 To understand term-based match, one first needs to understand what is a
 term. By default, Kusto breaks each `string` value into maximal sequences of
-alphanumeric characters, and each of those is made into a term. For example,
+ASCII alphanumeric characters, and each of those is made into a term. For example,
 in the following `string`, the terms are `Kusto`, `WilliamGates3rd`, and
 the following substrings: `ad67d136`, `c1db`, `4f9f`, `88ef`, `d94f3b6b0b5a`:
 

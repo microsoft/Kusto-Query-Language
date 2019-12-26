@@ -21,31 +21,39 @@ attacks.
 
 To be able to reference query parameters, the query text (or functions it uses)
 must first declare which query parameter it uses. For each parameter, the
-declaration provides the name and scalar type. Kusto then parses the query parameter's
+declaration provides the name and scalar type. Optionally, the parameter can
+also have a default value to be used if the request doesn't provide a concrete
+value for the parameter. Kusto then parses the query parameter's
 value according to its normal parsing rules for that type.
 
 **Syntax**
 
-`declare` `query_parameters` `(` *Name1* `:` *Type1* [`,`...] `);`
+`declare` `query_parameters` `(` *Name1* `:` *Type1* [`=` *DefaultValue1*] [`,`...] `);`
 
 * *Name1*: The name of a query parameter used in the query.
 * *Type1*: The the corresponding type (e.g. `string`, `datetime`, etc.)
   The values provided by the user are encoded as strings, to Kusto will
   apply the appropriate parse method to the query parameter to get
   a strongly-typed value.
+* *DefaultValue1*: An optional default value for the parameter. This must be
+  a literal of the appropriate scalar type.
+
+> [!NOTE]
+> Like [user defined functions](functions/user-defined-functions.md),
+> query parameters of type `dynamic` cannot have default values.
 
 **Examples**
 
 <!-- csl -->
 ```
-declare query_parameters (UserName:string, Password:string);
+declare query_parameters(UserName:string, Password:string);
 print n=UserName, p=hash(Password)
 ```
 
 <!-- csl -->
 ```
-declare query_parameters(amount:long);
-T | where amountColumn == amount
+declare query_parameters(percentage:long = 90);
+T | where Likelihood > percentage
 ```
 
 ## Specifying query parameters in a client application
@@ -73,9 +81,9 @@ ask the user for his or her birthday):
     "csl": "declare query_parameters(birthday:datetime); print strcat(\"Your age is: \", tostring(now() - birthday))",
     "properties": "{\"Options\":{},\"Parameters\":{\"birthday\":\"datetime(1970-05-11)\",\"courses\":\"dynamic(['Java', 'C++'])\"}}"
 }
-``` 
+```
 
-### Kusto .NET client
+### Kusto .NET SDK
 
 To provide the names and values of query parameters when using the Kusto .NET
 client library, one creates a new instance of the `ClientRequestProperties`
@@ -87,7 +95,8 @@ the REST API, as described above. The query text itself must still [declare the 
 
 ### Kusto.Explorer
 
-Query parameters are currently not supported by Kusto.Explorer.
+To set the query parameters sent when making a request to the service,
+use the **Query parameters** "wrench" icon (`ALT` + `P`).
 
 ::: zone-end
 

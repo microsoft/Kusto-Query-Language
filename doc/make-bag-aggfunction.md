@@ -6,16 +6,16 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *Expr*
 
 **Syntax**
 
-`summarize` `make_bag(`*Expr* [`,` *MaxListSize*]`)`
+`summarize` `make_bag(`*Expr* [`,` *MaxSize*]`)`
 
 **Arguments**
 
 * *Expr*: Expression of type `dynamic` that will be used for aggregation calculation.
-* *MaxListSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxListSize value cannot exceed 1048576.
+* *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
 
 **Note**
 
-An legacy and obsolete variant of this function: `make_dictionary()` has a default limit of *MaxListSize* = 128.
+A legacy and obsolete variant of this function: `make_dictionary()` has a default limit of *MaxSize* = 128.
 
 **Returns**
 

@@ -178,6 +178,15 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
+        public static readonly FunctionSymbol MakeListIf =
+            new FunctionSymbol("make_list_if", ScalarTypes.Dynamic,
+                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("predicate", ScalarTypes.Bool),
+                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("list")
+            .Hide(); // slneimer to remove this line after 15/Jan/2020
+
         public static readonly FunctionSymbol MakeSet_Depricated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,
                 new Parameter("value", ParameterTypeKind.Scalar),
@@ -191,6 +200,15 @@ namespace Kusto.Language
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set");
+
+        public static readonly FunctionSymbol MakeSetIf =
+            new FunctionSymbol("make_set_if", ScalarTypes.Dynamic,
+                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("predicate", ScalarTypes.Bool),
+                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("set")
+            .Hide(); // slneimer to remove this line after 15/Jan/2020
 
         public static readonly FunctionSymbol Passthrough =
            new FunctionSymbol("passthrough", ReturnTypeKind.Parameter0,
@@ -212,6 +230,15 @@ namespace Kusto.Language
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("bag");
+
+        public static readonly FunctionSymbol MakeBagIf =
+            new FunctionSymbol("make_bag_if", ScalarTypes.Dynamic,
+                new Parameter("value", ScalarTypes.Dynamic),
+                new Parameter("predicate", ScalarTypes.Bool),
+                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("bag")
+            .Hide(); // slneimer to remove this line after 15/Jan/2020
 
         public static readonly FunctionSymbol BuildSchema =
             new FunctionSymbol("buildschema", ScalarTypes.Dynamic,
@@ -568,10 +595,13 @@ namespace Kusto.Language
             AvgIf,
             MakeList_Depricated,
             MakeList,
+            MakeListIf,
             MakeSet_Depricated,
             MakeSet,
+            MakeSetIf,
             MakeDictionary,
             MakeBag,
+            MakeBagIf,
             BuildSchema,
             Passthrough,
             Percentile,

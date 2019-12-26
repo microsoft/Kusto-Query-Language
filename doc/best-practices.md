@@ -7,7 +7,9 @@ There are several "Dos and Don'ts" you can follow to make you query run faster.
 ### Do
 
 -	Use time filters first. Kusto is highly optimized to utilize time filters.
--	Prefer `has` keyword over `contains` when looking for full tokens. `has` is more performant as it doesn't have to look-up for substrings.
+-	When using string operators:
+	-	Prefer `has` operator over `contains` when looking for full tokens. `has` is more performant as it doesn't have to look-up for substrings.
+	-	Prefer using case-sensitive operators when applicable, as they are more performant. For example, prefer using `==` over `=~`, `in` over `in~`, and `contains_cs` over `contains` (but if you can avoid `contains`/`contains_cs` altogother and use `has`/`has_cs`, that's even better).
 -	Prefer looking in specific column rather than using `*` (full text search across all columns)
 -   If you find that most of your queries deal with extracting fields from [dynamic objects](./scalar-data-types/dynamic.md) across millions of rows, consider
 materializing this column at ingestion time. This way - you will pay only once for column extraction.  
