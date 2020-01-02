@@ -406,7 +406,9 @@
 
 # Geospatial
 ## [geo_point_to_geohash()](geo-point-to-geohash-function.md)
+## [geo_point_to_s2cell()](geo-point-to-s2cell-function.md)
 ## [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)
+## [geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md)
 ## [geo_distance_2points()](geo-distance-2points-function.md)
 ## [geo_distance_point_to_line()](geo-distance-point-to-line-function.md)
 ## [geo_point_in_circle()](geo-point-in-circle-function.md)

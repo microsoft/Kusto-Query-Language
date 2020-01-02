@@ -1,6 +1,6 @@
 # geo_distance_2points()
 
-Calculates the distance between two geospatial coordinates on Earth.
+Calculates shortest distance between two geospatial coordinates on Earth.
 
 **Syntax**
 
@@ -15,7 +15,7 @@ Calculates the distance between two geospatial coordinates on Earth.
 
 **Returns**
 
-The distance in meters between two geographic locations on Earth. If the coordinates are invalid, the query will produce a null result.
+The shortest distance in meters between two geographic locations on Earth. If the coordinates are invalid, the query will produce a null result.
 
 > [!NOTE]
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
@@ -23,7 +23,7 @@ The distance in meters between two geographic locations on Earth. If the coordin
 
 **Examples**
 
-The following example finds the distance between Seattle and Los Angeles.
+The following example finds the shortest distance between Seattle and Los Angeles.
 ![Distance between Seattle and Los Angeles](./images/queries/geo/distance_2points_seattle_los_angeles.png)
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -35,7 +35,7 @@ print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275
 |---|
 |1546754.35197381|
 
-The following example finds all rows in which the distance between two coordinates is between 1 to 11 meters.
+The following example finds all rows in which the shortest distance between two coordinates is between 1 to 11 meters.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 StormEvents

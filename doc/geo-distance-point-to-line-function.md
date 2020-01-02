@@ -2,9 +2,6 @@
 
 Calculates shortest distance between coordinate and line on Earth.
 
-> [!WARNING]
-> This feature may not yet be available on your cluster.
-
 **Syntax**
 
 `geo_distance_point_to_line(`*longitude*`, `*latitude*`, `*lineString*`)`
