@@ -1189,11 +1189,13 @@ namespace Kusto.Language
                         new ColumnSymbol("stdev", ScalarTypes.Real),
                         new ColumnSymbol("variance", ScalarTypes.Real))),
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic));
+                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("ignore_nonfinite", ScalarTypes.Bool, minOccurring:0));
 
         public static readonly FunctionSymbol SeriesStatsDynamic =
             new FunctionSymbol("series_stats_dynamic", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic))
+                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("ignore_nonfinite", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesFitLine =
