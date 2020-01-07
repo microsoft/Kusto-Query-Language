@@ -81,7 +81,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol StringSize =
             new FunctionSymbol("string_size", ScalarTypes.Long,
                 new Parameter("string", ParameterTypeKind.StringOrDynamic))
-            .WithResultNameKind(ResultNameKind.None);
+            .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         public static readonly FunctionSymbol ToUpper =
             new FunctionSymbol("toupper", ScalarTypes.String,

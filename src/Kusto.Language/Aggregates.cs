@@ -276,13 +276,19 @@ namespace Kusto.Language
             var argumentParameters = signature.GetArgumentParameters(args);
             GetArgumentRange(argumentParameters, percentileParameter, out var start, out var length);
 
+            var resultType = valueArg.ResultType;
+            if (resultType == ScalarTypes.Int)
+                resultType = ScalarTypes.Long;
+            else if (resultType == ScalarTypes.Decimal)
+                resultType = ScalarTypes.Real;
+
             for (int p = start; p < start + length; p++)
             {
                 var percentileArg = args[p];
                 var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
                 var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
 
-                columns.Add(new ColumnSymbol(name, ScalarTypes.Real));
+                columns.Add(new ColumnSymbol(name, resultType));
             }
         }
 
