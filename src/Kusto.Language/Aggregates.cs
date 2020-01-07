@@ -13,13 +13,13 @@ namespace Kusto.Language
     {
         public static readonly FunctionSymbol Sum =
             new FunctionSymbol("sum", ReturnTypeKind.Parameter0,
-                new Parameter("value", ParameterTypeKind.Summable))
+                new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("sum");
 
         public static readonly FunctionSymbol SumIf =
             new FunctionSymbol("sumif", ReturnTypeKind.Parameter0,
-                new Parameter("value", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("sumif");
@@ -43,14 +43,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DCount =
             new FunctionSymbol("dcount", ScalarTypes.Long,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("accuracy", ParameterTypeKind.NotDynamic, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("dcount");
 
         public static readonly FunctionSymbol DCountIf =
             new FunctionSymbol("dcountif", ScalarTypes.Long,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("accuracy", ParameterTypeKind.NotDynamic, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -58,7 +58,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol TDigest =
             new FunctionSymbol("tdigest", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("weight", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("tdigest");
@@ -77,7 +77,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Hll =
             new FunctionSymbol("hll", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.NotRealOrBool),
+                new Parameter("expr", ParameterTypeKind.NotRealOrBool),
                 new Parameter("accuracy", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("hll");
@@ -91,19 +91,19 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Min =
             new FunctionSymbol("min",
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ParameterTypeKind.Summable)),
+                    new Parameter("expr", ParameterTypeKind.Summable)),
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ScalarTypes.String)))
+                    new Parameter("expr", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("min");
 
         public static readonly FunctionSymbol MinIf =
             new FunctionSymbol("minif",
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ParameterTypeKind.Summable),
+                    new Parameter("expr", ParameterTypeKind.Summable),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ScalarTypes.String),
+                    new Parameter("expr", ScalarTypes.String),
                     new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("minif");
@@ -111,19 +111,19 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Max =
             new FunctionSymbol("max",
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ParameterTypeKind.Summable)),
+                    new Parameter("expr", ParameterTypeKind.Summable)),
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ScalarTypes.String)))
+                    new Parameter("expr", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("max");
 
         public static readonly FunctionSymbol MaxIf =
             new FunctionSymbol("maxif",
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ParameterTypeKind.Summable),
+                    new Parameter("expr", ParameterTypeKind.Summable),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("value", ScalarTypes.String),
+                    new Parameter("expr", ScalarTypes.String),
                     new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("maxif");
@@ -131,41 +131,41 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Avg =
             new FunctionSymbol("avg",
                 new Signature(ScalarTypes.Real,
-                    new Parameter("value", ParameterTypeKind.Integer)),
+                    new Parameter("expr", ParameterTypeKind.Integer)),
                 new Signature(ScalarTypes.Real,
-                    new Parameter("value", ScalarTypes.Real)),
+                    new Parameter("expr", ScalarTypes.Real)),
                 new Signature(ScalarTypes.Decimal,
-                    new Parameter("value", ScalarTypes.Decimal)),
+                    new Parameter("expr", ScalarTypes.Decimal)),
                 new Signature(ScalarTypes.TimeSpan,
-                    new Parameter("value", ScalarTypes.TimeSpan)),
+                    new Parameter("expr", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.DateTime,
-                    new Parameter("value", ScalarTypes.DateTime)))
+                    new Parameter("expr", ScalarTypes.DateTime)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("avg");
 
         public static readonly FunctionSymbol AvgIf =
             new FunctionSymbol("avgif",
                 new Signature(ScalarTypes.Real,
-                    new Parameter("value", ParameterTypeKind.Integer),
+                    new Parameter("expr", ParameterTypeKind.Integer),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ScalarTypes.Real,
-                    new Parameter("value", ScalarTypes.Real),
+                    new Parameter("expr", ScalarTypes.Real),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ScalarTypes.Decimal,
-                    new Parameter("value", ScalarTypes.Decimal),
+                    new Parameter("expr", ScalarTypes.Decimal),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ScalarTypes.TimeSpan,
-                    new Parameter("value", ScalarTypes.TimeSpan),
+                    new Parameter("expr", ScalarTypes.TimeSpan),
                     new Parameter("predicate", ScalarTypes.Bool)),
                 new Signature(ScalarTypes.DateTime,
-                    new Parameter("value", ScalarTypes.DateTime),
+                    new Parameter("expr", ScalarTypes.DateTime),
                     new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("avgif");
 
         public static readonly FunctionSymbol MakeList_Depricated =
             new FunctionSymbol("makelist", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list")
@@ -173,14 +173,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol MakeList =
             new FunctionSymbol("make_list", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeListIf =
             new FunctionSymbol("make_list_if", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -189,21 +189,21 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol MakeSet_Depricated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set").Hide();
 
         public static readonly FunctionSymbol MakeSet =
             new FunctionSymbol("make_set", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set");
 
         public static readonly FunctionSymbol MakeSetIf =
             new FunctionSymbol("make_set_if", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -212,13 +212,13 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Passthrough =
            new FunctionSymbol("passthrough", ReturnTypeKind.Parameter0,
-               new Parameter("value", ParameterTypeKind.Scalar))
+               new Parameter("expr", ParameterTypeKind.Scalar))
            .WithResultNameKind(ResultNameKind.FirstArgument)
            .Hide();
 
         public static readonly FunctionSymbol MakeDictionary =
             new FunctionSymbol("make_dictionary", ScalarTypes.Dynamic,
-                new Parameter("value", ScalarTypes.Dynamic),
+                new Parameter("expr", ScalarTypes.Dynamic),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("dictionary")
@@ -226,14 +226,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol MakeBag =
             new FunctionSymbol("make_bag", ScalarTypes.Dynamic,
-                new Parameter("value", ScalarTypes.Dynamic),
+                new Parameter("expr", ScalarTypes.Dynamic),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("bag");
 
         public static readonly FunctionSymbol MakeBagIf =
             new FunctionSymbol("make_bag_if", ScalarTypes.Dynamic,
-                new Parameter("value", ScalarTypes.Dynamic),
+                new Parameter("expr", ScalarTypes.Dynamic),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -249,21 +249,21 @@ namespace Kusto.Language
         public static readonly FunctionSymbol BinaryAllOr =
            new FunctionSymbol("binary_all_or",
                new Signature(ReturnTypeKind.Parameter0,
-                   new Parameter("value", ParameterTypeKind.Summable)))
+                   new Parameter("expr", ParameterTypeKind.Summable)))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .Hide(); // TODO: open in Jan 2020
 
         public static readonly FunctionSymbol BinaryAllAnd =
           new FunctionSymbol("binary_all_and",
               new Signature(ReturnTypeKind.Parameter0,
-                  new Parameter("value", ParameterTypeKind.Summable)))
+                  new Parameter("expr", ParameterTypeKind.Summable)))
           .WithResultNameKind(ResultNameKind.FirstArgument)
           .Hide(); // TODO: open in Jan 2020
 
         public static readonly FunctionSymbol BinaryAllXor =
           new FunctionSymbol("binary_all_xor",
               new Signature(ReturnTypeKind.Parameter0,
-                  new Parameter("value", ParameterTypeKind.Summable)))
+                  new Parameter("expr", ParameterTypeKind.Summable)))
           .WithResultNameKind(ResultNameKind.FirstArgument)
           .Hide(); // TODO: open in Jan 2020
 
@@ -289,14 +289,14 @@ namespace Kusto.Language
         private static CustomReturnType PercentileReturn = (table, args, signature) =>
         {
             var cols = new List<ColumnSymbol>();
-            AddPercentileColumns(cols, signature, "value", "percentile", args);
+            AddPercentileColumns(cols, signature, "expr", "percentile", args);
             return new TupleSymbol(cols);
         };
 
         private static CustomReturnType PercentileArrayReturn = (table, args, signature) =>
         {
             var cols = new List<ColumnSymbol>();
-            var valueArg = GetArgument(args, signature, "value");
+            var valueArg = GetArgument(args, signature, "expr");
             var valueArgName = GetExpressionResultName(valueArg);
             cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic));
             return new TupleSymbol(cols);
@@ -304,81 +304,81 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Percentile =
             new FunctionSymbol("percentile", PercentileReturn, Tabularity.Scalar,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("percentile", ParameterTypeKind.Number));
 
         public static readonly FunctionSymbol Percentiles =
             new FunctionSymbol("percentiles", PercentileReturn, Tabularity.Scalar,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat));
 
         public static readonly FunctionSymbol PercentilesArray =
             new FunctionSymbol("percentiles_array",
                 new Signature(PercentileArrayReturn, Tabularity.Scalar,
-                    new Parameter("value", ParameterTypeKind.Scalar),
+                    new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat)),
                 new Signature(PercentileArrayReturn, Tabularity.Scalar,
-                    new Parameter("value", ParameterTypeKind.Scalar),
+                    new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("percentiles", ScalarTypes.Dynamic)));
 
         public static readonly FunctionSymbol PercentileW =
             new FunctionSymbol("percentilew", PercentileReturn, Tabularity.Scalar,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("weight", ParameterTypeKind.Integer),
                 new Parameter("percentile", ParameterTypeKind.Number));
 
         public static readonly FunctionSymbol PercentilesW =
             new FunctionSymbol("percentilesw", PercentileReturn, Tabularity.Scalar,
-                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("weight", ParameterTypeKind.Integer),
                 new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat));
 
         public static readonly FunctionSymbol PercentilesWArray =
             new FunctionSymbol("percentilesw_array",
                 new Signature(PercentileArrayReturn, Tabularity.Scalar,
-                    new Parameter("value", ParameterTypeKind.Scalar),
+                    new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("weight", ParameterTypeKind.Integer),
                     new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat)),
                 new Signature(PercentileArrayReturn, Tabularity.Scalar,
-                    new Parameter("value", ParameterTypeKind.Scalar),
+                    new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("weight", ParameterTypeKind.Integer),
                     new Parameter("percentiles", ScalarTypes.Dynamic)));
 
         public static readonly FunctionSymbol Stdev =
             new FunctionSymbol("stdev", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable))
+                new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("stdev");
 
         public static readonly FunctionSymbol StdevIf =
             new FunctionSymbol("stdevif", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("stdevif");
 
         public static readonly FunctionSymbol Stdevp =
             new FunctionSymbol("stdevp", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable))
+                new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("stdevp");
 
         public static readonly FunctionSymbol Variance =
             new FunctionSymbol("variance", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable))
+                new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("variance");
 
         public static readonly FunctionSymbol VarianceIf =
             new FunctionSymbol("varianceif", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("varianceif");
 
         public static readonly FunctionSymbol Variancep =
             new FunctionSymbol("variancep", ScalarTypes.Real,
-                new Parameter("value", ParameterTypeKind.Summable))
+                new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("variancep");
 
@@ -387,17 +387,17 @@ namespace Kusto.Language
                 new Signature(
                     GetAnyResult,
                     Tabularity.Scalar,
-                    new Parameter("expression", ParameterTypeKind.Scalar, minOccurring: 1, maxOccurring: MaxRepeat)),
+                    new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 1, maxOccurring: MaxRepeat)),
                 new Signature(
                     GetAnyResult,
                     Tabularity.Scalar,
-                    new Parameter("expression", ParameterTypeKind.Scalar, ArgumentKind.Star)));
+                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
         public static readonly FunctionSymbol AnyIf =
             new FunctionSymbol("anyif",
                 new Signature(
                     ReturnTypeKind.Parameter0,
-                    new Parameter("expression", ParameterTypeKind.Scalar),
+                    new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("anyif");
