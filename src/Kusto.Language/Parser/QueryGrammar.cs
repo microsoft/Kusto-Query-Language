@@ -84,7 +84,7 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, QueryOperator> PartitionPipeOperatorCore = null;
             Parser<LexicalToken, Expression> PartitionPipeExpressionCore = null;
             Parser<LexicalToken, Statement> LetStatementCore = null;
-            Parser<LexicalToken, Statement> QueryParametersStatementCore = null;
+            Parser<LexicalToken, Statement> DeclareQueryParametersStatementCore = null;
 
             this.Expression =
                 Forward(() => ExpressionCore)
@@ -138,8 +138,8 @@ namespace Kusto.Language.Parsing
                 Forward(() => LetStatementCore)
                 .WithTag("<let>");
 
-            var QueryParametersStatement =
-                Forward(() => QueryParametersStatementCore)
+            var DeclareQueryParametersStatement =
+                Forward(() => DeclareQueryParametersStatementCore)
                 .WithTag("<query-parameters>");
             #endregion
 
@@ -2149,7 +2149,7 @@ namespace Kusto.Language.Parsing
                 First(
                     Rule(LetStatement, RequiredToken(SyntaxKind.SemicolonToken),
                         (statement, semicolon) => new SeparatedElement<Statement>(statement, semicolon)),
-                    Rule(QueryParametersStatement, RequiredToken(SyntaxKind.SemicolonToken),
+                    Rule(DeclareQueryParametersStatement, RequiredToken(SyntaxKind.SemicolonToken),
                         (statement, semicolon) => new SeparatedElement<Statement>(statement, semicolon)));
 
             var FunctionBodyStatementList =
@@ -2229,10 +2229,10 @@ namespace Kusto.Language.Parsing
                         (Statement)new SetOptionStatement(keyword, name, value))
                 .WithTag("<set-option>");
 
-            QueryParametersStatementCore =
+            DeclareQueryParametersStatementCore =
                 Rule(
                     Token(SyntaxKind.DeclareKeyword, CompletionKind.QueryPrefix).Hide(),
-                    Token(SyntaxKind.QueryParametersKeyword),
+                    RequiredToken(SyntaxKind.QueryParametersKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     SeparatedList(FunctionParameter, SyntaxKind.CommaToken, missingElement: MissingFunctionParameterNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
@@ -2338,7 +2338,7 @@ namespace Kusto.Language.Parsing
                     (equal, openParen, parameters, closeParen, pathParameter, openBrace, patterns, closeBrace) =>
                         new PatternDeclaration(equal, openParen, parameters, closeParen, pathParameter, openBrace, patterns, closeBrace));
 
-            var PatternStatement =
+            var DeclarePatternStatement =
                 Rule(
                     Token(SyntaxKind.DeclareKeyword, CompletionKind.QueryPrefix).Hide(),
                     Token(SyntaxKind.PatternKeyword),
@@ -2419,9 +2419,9 @@ namespace Kusto.Language.Parsing
                     AliasStatement,
                     LetStatement,
                     SetOptionStatement,
-                    QueryParametersStatement,
+                    DeclarePatternStatement,
+                    DeclareQueryParametersStatement,
                     RestrictStatement,
-                    PatternStatement,
                     QueryStatement)
                 .WithTag("<statement>");
             #endregion
