@@ -10535,6 +10535,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken DataTableKeyword { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public SchemaTypeExpression Schema { get; }
         
         public SyntaxToken OpenBracket { get; }
@@ -10546,9 +10548,10 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="DataTableExpression"/>.
         /// </summary>
-        internal DataTableExpression(SyntaxToken dataTableKeyword, SchemaTypeExpression schema, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> values, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal DataTableExpression(SyntaxToken dataTableKeyword, SyntaxList<NamedParameter> parameters, SchemaTypeExpression schema, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> values, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DataTableKeyword = Attach(dataTableKeyword);
+            this.Parameters = Attach(parameters);
             this.Schema = Attach(schema);
             this.OpenBracket = Attach(openBracket);
             this.Values = Attach(values);
@@ -10556,17 +10559,18 @@ namespace Kusto.Language.Syntax
             this.Init();
         }
         
-        public override int ChildCount => 5;
+        public override int ChildCount => 6;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return DataTableKeyword;
-                case 1: return Schema;
-                case 2: return OpenBracket;
-                case 3: return Values;
-                case 4: return CloseBracket;
+                case 1: return Parameters;
+                case 2: return Schema;
+                case 3: return OpenBracket;
+                case 4: return Values;
+                case 5: return CloseBracket;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10576,10 +10580,11 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(DataTableKeyword);
-                case 1: return nameof(Schema);
-                case 2: return nameof(OpenBracket);
-                case 3: return nameof(Values);
-                case 4: return nameof(CloseBracket);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Schema);
+                case 3: return nameof(OpenBracket);
+                case 4: return nameof(Values);
+                case 5: return nameof(CloseBracket);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10589,10 +10594,11 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Syntax;
+                case 1: return CompletionHint.None;
                 case 2: return CompletionHint.Syntax;
-                case 3: return CompletionHint.Literal;
-                case 4: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Literal;
+                case 5: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10608,7 +10614,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(), (SchemaTypeExpression)Schema?.Clone(), (SyntaxToken)OpenBracket?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SchemaTypeExpression)Schema?.Clone(), (SyntaxToken)OpenBracket?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class DataTableExpression */

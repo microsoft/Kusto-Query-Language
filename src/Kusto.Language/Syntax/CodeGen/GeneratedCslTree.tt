@@ -2143,6 +2143,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "DataTableKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="None" },
             new GeneratedProperty { Name = "Schema", Type = "SchemaTypeExpression", Completion="Syntax" },
             new GeneratedProperty { Name = "OpenBracket", Type = "SyntaxToken", Completion="Syntax" },
             new GeneratedProperty { Name = "Values", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Literal" },

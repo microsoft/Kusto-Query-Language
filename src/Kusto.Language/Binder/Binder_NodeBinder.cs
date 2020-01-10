@@ -1662,7 +1662,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
                     var withSource = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.FindWithSourceProperty);
-                    string sourceColumnName = (withSource != null) ? withSource.Expression.ToString() : "source_";
+                    string sourceColumnName = (withSource != null) ? GetNameDeclarationName(withSource.Expression) ?? "source_" : "source_";
                     columns.Add(new ColumnSymbol(sourceColumnName, ScalarTypes.String));
 
                     if (node.Project != null)
@@ -1781,10 +1781,13 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryParameters(node.Parameters, s_UnionParameters, diagnostics);
 
                     var withSourceParameter = node.Parameters.FirstOrDefault(p => KustoFacts.UnionWithSourceProperties.Contains(p.Name.SimpleName));
-                    if (withSourceParameter?.Expression is NameDeclaration nd)
+                    if (withSourceParameter != null)
                     {
-                        var name = nd.SimpleName;
-                        columns.Add(new ColumnSymbol(name, ScalarTypes.String));
+                        var name = GetNameDeclarationName(withSourceParameter.Expression);
+                        if (name != null)
+                        {
+                            columns.Add(new ColumnSymbol(name, ScalarTypes.String));
+                        }
                     }
 
                     if(RowScopeOrEmpty != null)

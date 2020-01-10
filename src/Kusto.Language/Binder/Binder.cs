@@ -4055,6 +4055,25 @@ namespace Kusto.Language.Binding
                     return defaultName;
             }
         }
+
+        public static string GetNameDeclarationName(Expression expr)
+        {
+            switch (expr)
+            {
+                case NameDeclaration nd:
+                    return nd.Name.SimpleName;
+                case NameReference nr:
+                    return nr.Name.SimpleName;
+                case LiteralExpression le:
+                    if (le.Kind == SyntaxKind.StringLiteralExpression)
+                        return (string)le.LiteralValue;
+                    break;
+                case CompoundStringLiteralExpression cs:
+                    return (string)cs.LiteralValue;
+            }
+
+            return null;
+        }
 #endregion
 
 #region Other
@@ -4686,7 +4705,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         private void CheckDataValueTypes(SyntaxList<SeparatedElement<Expression>> expressions, List<ColumnSymbol> columns, List<Diagnostic> diagnostics)
         {
-            if (expressions.Count % columns.Count != 0)
+            if (columns.Count > 0 && expressions.Count % columns.Count != 0)
             {
                 diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfDataValues(columns.Count).WithLocation(expressions));
             }

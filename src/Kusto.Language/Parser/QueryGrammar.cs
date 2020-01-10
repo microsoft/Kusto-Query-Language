@@ -337,7 +337,7 @@ namespace Kusto.Language.Parsing
             var SchemaMultipartType =
                     Rule(
                         Token(SyntaxKind.OpenParenToken),
-                        SeparatedList<Expression>(Rule(NameAndTypeDeclaration, nat => (Expression)nat), SyntaxKind.CommaToken, missingElement: MissingNameAndTypeDeclarationNode, oneOrMore: true),
+                        SeparatedList<Expression>(Rule(NameAndTypeDeclaration, nat => (Expression)nat), SyntaxKind.CommaToken, missingElement: MissingNameAndTypeDeclarationNode),
                         RequiredToken(SyntaxKind.CloseParenToken),
 
                         (openParen, columns, closeParen) =>
@@ -999,7 +999,7 @@ namespace Kusto.Language.Parsing
             //    NamedParameter(keyword, SimpleNameDeclarationExpression, MissingNameDeclarationExpression, expressionHint);
 
             Parser<LexicalToken, NamedParameter> NameDeclarationNamedParameter(string keyword, CompletionHint expressionHint = CompletionHint.None) =>
-                NamedParameter(keyword, SimpleNameDeclarationExpression, MissingNameDeclarationExpression, expressionHint);
+                NamedParameter(keyword, First(SimpleNameDeclarationExpression, StringLiteral), MissingNameDeclarationExpression, expressionHint);
 
             Parser<LexicalToken, NamedParameter> NameDeclarationNamedParameterL(IReadOnlyList<string> keywords, CompletionHint expressionHint = CompletionHint.None) =>
                 First(keywords.Select(keyword => NameDeclarationNamedParameter(keyword, expressionHint)).ToArray());
@@ -1028,14 +1028,25 @@ namespace Kusto.Language.Parsing
                     First(StringOrCompoundStringLiteral, SimpleNameReference, ConstantExpression.Hide()),
                     MissingStringLiteral);
 
+            var QueryOperatorParameterType =
+                First(
+                    AsTokenLiteral(Token(SyntaxKind.IdentifierToken)),
+                    BooleanLiteral,
+                    NumericConstantExpression,
+                    StringOrCompoundStringLiteral);
+
             var QueryOperatorParameter =
                 NamedParameter(
-                    Token(KnownQueryOperatorParameterNames).Hide(),
                     First(
-                        AsTokenLiteral(Token(SyntaxKind.IdentifierToken)),
-                        BooleanLiteral,
-                        NumericConstantExpression,
-                        StringOrCompoundStringLiteral)).Hide();
+                        Token(KnownQueryOperatorParameterNames).Hide(),
+                        Token(SyntaxKind.IdentifierToken)), // allows for unknown by parser operator parameter names
+                    QueryOperatorParameterType).Hide();
+
+            // just like QueryOperatorParameters, except it only allows known parameter names
+            var KnownQueryOperatorParameter =
+                NamedParameter(
+                    Token(KnownQueryOperatorParameterNames).Hide(),
+                    QueryOperatorParameterType).Hide();
             #endregion
 
             #region Query Operators
@@ -1104,7 +1115,7 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.WhereKeyword, CompletionKind.QueryPrefix, CompletionPriority.Top),
                         Token(SyntaxKind.FilterKeyword).Hide()),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     Required(NamedExpression, MissingExpression),
                     (keyword, parameters, condition) =>
                         (QueryOperator)new FilterOperator(keyword, parameters, condition))
@@ -1333,7 +1344,7 @@ namespace Kusto.Language.Parsing
                             NameReferenceNamedParameterK(SyntaxKind.HintDotShuffleKeyKeyword, expressionHint: CompletionHint.Column),
                             TokenNamedParameterK(SyntaxKind.HintDotStrategyKeyword, KustoFacts.JoinHintStrategies),
                             NumericNamedParameterK(SyntaxKind.HintDotNumPartitions),
-                            QueryOperatorParameter // allow parsing of any known query parameter
+                            QueryOperatorParameter // allow parsing of any query parameter
                             )),
                     Required(UnnamedExpression, MissingExpression),
                     Optional(First(
@@ -1404,7 +1415,7 @@ namespace Kusto.Language.Parsing
             var MakeSeriesOperator =
                 Rule(
                     Token(SyntaxKind.MakeSeriesKeyword, CompletionKind.QueryPrefix),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     SeparatedList(MakeSeriesExpression, SyntaxKind.CommaToken, MissingMakeSeriesExpressionNode, oneOrMore: true),
                     MakeSeriesOnClause,
                     First(MakeSeriesFromToStepClause, MakeSeriesInRangeClause),
@@ -1450,7 +1461,7 @@ namespace Kusto.Language.Parsing
                     TokenNamedParameter(KustoFacts.MvExpandBagExpansionProperty, KustoFacts.MvExpandBagExpansions).Hide(),
                     TokenNamedParameterK(SyntaxKind.KindKeyword, KustoFacts.MvExpandBagExpansions),
                     NameDeclarationNamedParameter(KustoFacts.MvExpandWithItemIndexProperty),
-                    QueryOperatorParameter);
+                    KnownQueryOperatorParameter);
 
             var MvExpandOperator =
                 Rule(
@@ -1499,7 +1510,7 @@ namespace Kusto.Language.Parsing
             var MvApplyParameters =
                 First(
                     NameDeclarationNamedParameter(KustoFacts.MvApplyWithItemIndexProperty),
-                    QueryOperatorParameter);
+                    KnownQueryOperatorParameter);
 
             var MvApplySubqueryExpression =
                 Rule(
@@ -1613,7 +1624,7 @@ namespace Kusto.Language.Parsing
             var SampleOperator =
                 Rule(
                     Token(SyntaxKind.SampleKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     Required(NamedExpression, MissingExpression),
                     (sampleKeyword, parameters, expression) => (QueryOperator)new SampleOperator(sampleKeyword, parameters, expression))
                 .WithTag("<sample>");
@@ -1621,7 +1632,7 @@ namespace Kusto.Language.Parsing
             var SampleDistinctOperator =
                 Rule(
                     Token(SyntaxKind.SampleDistinctKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     Required(NamedExpression, MissingExpression),
                     RequiredToken(SyntaxKind.OfKeyword),
                     Required(NamedExpression, MissingExpression),
@@ -1672,7 +1683,7 @@ namespace Kusto.Language.Parsing
                     List(First(
                         NameReferenceNamedParameterK(SyntaxKind.HintDotShuffleKeyKeyword, expressionHint: CompletionHint.Column),
                         NumericNamedParameterK(SyntaxKind.HintDotNumPartitions),
-                        QueryOperatorParameter)),
+                        KnownQueryOperatorParameter)),
                     SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
                     Optional(SummarizeByClause),
                     (summarizeKeyword, parameters, aggregates, byClause) =>
@@ -1691,7 +1702,7 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.LimitKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                         Token(SyntaxKind.TakeKeyword, CompletionKind.QueryPrefix)),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     Required(NamedExpression.Examples(KustoFacts.LimitExamples), MissingExpression),
                     (keyword, parameters, expression) =>
                         (QueryOperator)new TakeOperator(keyword, parameters, expression))
@@ -1858,7 +1869,7 @@ namespace Kusto.Language.Parsing
             var AsOperator =
                 Rule(
                     Token(SyntaxKind.AsKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     Required(SimpleNameDeclaration, MissingNameDeclaration),
                     (keyword, parameters, name) => (QueryOperator)new AsOperator(keyword, parameters, name))
                 .WithTag("<as>");
@@ -1866,7 +1877,7 @@ namespace Kusto.Language.Parsing
             var SerializeOperator =
                 Rule(
                     Token(SyntaxKind.SerializeKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    List(QueryOperatorParameter),
+                    List(KnownQueryOperatorParameter),
                     SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
                     (keyword, parameters, exprs) =>
                         (QueryOperator)new SerializeOperator(keyword, parameters, exprs))
@@ -2082,7 +2093,8 @@ namespace Kusto.Language.Parsing
             var InitialPipeElementExpression =
                 First(
                     Rule(PrePipeQueryOperator, o => (Expression)o),
-                    Rule(PostPipeQueryOperator, o => (Expression)o).Hide(), // allow these to parse, but fail in binding
+                    If(Not(And(Token(SyntaxKind.CountKeyword), Token("("))),
+                        Rule(PostPipeQueryOperator, o => (Expression)o).Hide()), // allow other pipe operators to parse, but fail in binding
                     UnnamedExpression);
 
             this.FollowingPipeElementExpression =
@@ -2366,12 +2378,13 @@ namespace Kusto.Language.Parsing
             var DataTableExpression =
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
+                    List(QueryOperatorParameter),
                     SchemaMultipartType,
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     SeparatedList(ConstantExpression, SyntaxKind.CommaToken, MissingExpressionNode, allowTrailingSeparator: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
-                    (keyword, schema, openBracket, values, closeBracket) =>
-                        (Expression)new DataTableExpression(keyword, schema, openBracket, values, closeBracket));
+                    (keyword, parameters, schema, openBracket, values, closeBracket) =>
+                        (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
 
             var ExternalDataWithClauseNamedParameter =
                 Rule(
