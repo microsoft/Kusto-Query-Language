@@ -106,7 +106,13 @@ we can use the `percentilesw()` function. For example, for the 50,
 
 <!-- csl -->
 ```
-Table
+datatable (ReqCount:long, LatencyBucket:long) 
+[ 
+    8, 10, 
+    6, 20, 
+    3, 30, 
+    1, 40 
+]
 | summarize percentilesw(LatencyBucket, ReqCount, 50, 75, 99.9) 
 ```
 
