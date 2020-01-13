@@ -2301,7 +2301,8 @@ namespace Kusto.Language.Binding
                     var itemIndex = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.MvExpandWithItemIndexProperty);
                     if (itemIndex != null)
                     {
-                        builder.Add(new ColumnSymbol(itemIndex.Expression.ToString(), ScalarTypes.Long));
+                        var indexName = GetNameDeclarationName(itemIndex.Expression);
+                        builder.Add(new ColumnSymbol(indexName, ScalarTypes.Long));
                     }
 
                     if (node.RowLimitClause != null)
@@ -2369,7 +2370,8 @@ namespace Kusto.Language.Binding
                     var itemIndex = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.MvApplyWithItemIndexProperty);
                     if (itemIndex != null)
                     {
-                        builder.Add(new ColumnSymbol(itemIndex.Expression.ToString(), ScalarTypes.Long));
+                        var indexName = GetNameDeclarationName(itemIndex.Expression);
+                        builder.Add(new ColumnSymbol(indexName, ScalarTypes.Long));
                     }
 
                     if (node.RowLimitClause != null)
