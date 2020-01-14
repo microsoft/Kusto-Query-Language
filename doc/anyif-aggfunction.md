@@ -1,27 +1,34 @@
 # anyif() (aggregation function)
 
-The `anyif()` aggregation function returns random non-empty value from the specified expression values for which *Predicate* evaluates to `true`.
-
-* This is useful when a column has a large number of values
-(e.g., an "error text" column) and you want to sample that column once per a unique value of the compound group key.
-* Can only be used in context of aggregation inside [summarize](summarizeoperator.md)
-
-> [!NOTE]
-> There are *no guarantees* about which record will be returned; the algorithm for selecting that record is undocumented and one should not assume it is stable.
+Arbitrarily chooses one record for each group in a [summarize operator](summarizeoperator.md) for which the predicate
+is true,
+and returns the value of an expression over each such record.
 
 **Syntax**
 
-`summarize` `anyif(`*Expr*, `*Predicate*`)`
+`summarize` `anyif` `(` *Expr*, *Predicate* )`
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation.
-* *Predicate*: Predicate that if true, the *Expr* will be used for aggregation calculation.
+* *Expr*: An expression over each record selected from the input to return.
+* *Predicate*: Predicate to indicate which records may be
+  considered for evaluation.
 
 **Returns**
 
-Randomly selects one row of the group and returns the value of the specified expression for which *Predicate* evaluates to `true`.
+The `anyif` aggregation function returns the value of the expression calculated
+for each of the records selected randomly from each group
+of the summarize operator. Only records for which *Predicate* returns true may be selected (if the predicate doesn't return
+true, null value is produced).
 
+**Remarks**
+
+This function is useful when one wants to get a sample value of one column
+per value of the compound group key, subject to some predicate
+being true.
+
+The function attempts to
+return a non-null/non-empty value if such value is present.
 
 **Examples**
 

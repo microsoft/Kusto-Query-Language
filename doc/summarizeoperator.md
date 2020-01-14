@@ -1,6 +1,6 @@
 # Summarize operator
 
-Produces a table that aggregates the content of the input table. 
+Produces a table that aggregates the content of the input table.
 
 <!-- csl -->
 ```
@@ -35,7 +35,11 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 
 The input rows are arranged into groups having the same values of the `by` expressions. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns and also at least one column for each computed aggregate. (Some aggregation functions return multiple columns.)
 
-The result has as many rows as there are distinct combinations of `by` values. If you want to summarize over ranges of numeric values, use `bin()` to reduce ranges to discrete values.
+The result has as many rows as there are distinct combinations of `by` values
+(which may be zero). If there are no group keys provided, the result has a single
+record.
+
+If you want to summarize over ranges of numeric values, use `bin()` to reduce ranges to discrete values.
 
 **Notes**
 
