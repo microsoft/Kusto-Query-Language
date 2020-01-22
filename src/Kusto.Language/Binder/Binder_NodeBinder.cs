@@ -1877,12 +1877,42 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            private static bool IsAntiOrSemiJoin(string joinKind)
+            {
+                return IsLeftAntiOrSemiJoin(joinKind)
+                    || IsRightAntiOrSemiJoin(joinKind);
+            }
+
+            private static bool IsLeftAntiOrSemiJoin(string joinKind)
+            {
+                switch (joinKind)
+                {
+                    case "anti":
+                    case "leftanti":
+                    case "leftsemi":
+                    case "leftantisemi":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            private static bool IsRightAntiOrSemiJoin(string joinKind)
+            {
+                switch (joinKind)
+                {
+                    case "rightanti":
+                    case "rightsemi":
+                        return true;
+                    default:
+                        return false;                 
+                }
+            }
+
             public override SemanticInfo VisitJoinOperator(JoinOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
-                var exprColumns = s_columnListPool.AllocateFromPool();
-                var rightJoinColumns = s_columnListPool.AllocateFromPool();
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -1898,7 +1928,7 @@ namespace Kusto.Language.Binding
                             for (int i = 0, n = c.Expressions.Count; i < n; i++)
                             {
                                 var expr = c.Expressions[i].Element;
-                                CheckJoinOnExpression(expr, diagnostics, null, rightJoinColumns);
+                                CheckJoinOnExpression(expr, diagnostics);
                             }
                             break;
                         case JoinWhereClause c:
@@ -1909,22 +1939,18 @@ namespace Kusto.Language.Binding
                     var joinKindNode = node.Parameters.GetFirstDescendant<NamedParameter>(np => np.Name.SimpleName == "kind");
                     var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
 
-                    // figure out the result type
-                    columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
- 
-                    var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
-                    if (exprTable != null)
+                    // if not explicitly a right-anti/semi join, then add left-side columns
+                    if (!IsRightAntiOrSemiJoin(joinKind))
                     {
-                        _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
+                        // add left-side columns
+                        columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+                    }
 
-                        // anti & semi joins have different column merging rules than normal inner/outer joins
-                        if (rightJoinColumns.Count > 0 && (joinKind.Contains("anti") || joinKind.Contains("semi")))
-                        {
-                            // only add expr columns that were not equated to a source column via the join-on expression
-                            exprColumns.RemoveAll(c => rightJoinColumns.Contains(c));
-                        }
-
-                        columns.AddRange(exprColumns);
+                    var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
+                    if (exprTable != null && !IsLeftAntiOrSemiJoin(joinKind))
+                    {
+                        // add right-side columns
+                        _binder.GetDeclaredAndInferredColumns(exprTable, columns);
                     }
 
                     MakeColumnNamesUnique(columns);
@@ -1936,8 +1962,6 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
-                    s_columnListPool.ReturnToPool(exprColumns);
-                    s_columnListPool.ReturnToPool(rightJoinColumns);
                 }
             }
 
