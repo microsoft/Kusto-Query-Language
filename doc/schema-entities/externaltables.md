@@ -1,4 +1,4 @@
-# External tables (preview)
+# External tables
 
 An **external table** is a Kusto schema entity that references data stored outside Kusto database.
 

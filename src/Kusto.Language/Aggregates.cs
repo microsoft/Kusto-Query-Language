@@ -184,8 +184,7 @@ namespace Kusto.Language
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("list")
-            .Hide(); // slneimer to remove this line after 15/Jan/2020
+            .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeSet_Depricated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,
@@ -207,8 +206,7 @@ namespace Kusto.Language
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("set")
-            .Hide(); // slneimer to remove this line after 15/Jan/2020
+            .WithResultNamePrefix("set");
 
         public static readonly FunctionSymbol Passthrough =
            new FunctionSymbol("passthrough", ReturnTypeKind.Parameter0,
@@ -237,8 +235,7 @@ namespace Kusto.Language
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("bag")
-            .Hide(); // slneimer to remove this line after 15/Jan/2020
+            .WithResultNamePrefix("bag");
 
         public static readonly FunctionSymbol BuildSchema =
             new FunctionSymbol("buildschema", ScalarTypes.Dynamic,
