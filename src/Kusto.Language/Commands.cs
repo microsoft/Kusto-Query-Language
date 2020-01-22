@@ -294,6 +294,7 @@ namespace Kusto.Language
                 new ColumnSymbol("DocString", ScalarTypes.String),
                 new ColumnSymbol("TotalExtents", ScalarTypes.Long),
                 new ColumnSymbol("TotalExtentSize", ScalarTypes.Real),
+                new ColumnSymbol("TotalOriginalSize", ScalarTypes.Real),
                 new ColumnSymbol("TotalRowCount", ScalarTypes.Long),
                 new ColumnSymbol("HotExtents", ScalarTypes.Long),
                 new ColumnSymbol("HotExtentSize", ScalarTypes.Real),
@@ -304,9 +305,11 @@ namespace Kusto.Language
                 new ColumnSymbol("CachingPolicy", ScalarTypes.String),
                 new ColumnSymbol("ShardingPolicy", ScalarTypes.String),
                 new ColumnSymbol("MergePolicy", ScalarTypes.String),
-                new ColumnSymbol("StreamIngestionPolicy", ScalarTypes.String),
+                new ColumnSymbol("StreamingIngestionPolicy", ScalarTypes.String),
+                new ColumnSymbol("IngestionBatchingPolicy", ScalarTypes.String),
                 new ColumnSymbol("MinExtentsCreationTime", ScalarTypes.DateTime),
-                new ColumnSymbol("MaxExtentsCreationTime", ScalarTypes.DateTime));
+                new ColumnSymbol("MaxExtentsCreationTime", ScalarTypes.DateTime),
+                new ColumnSymbol("RowOrderPolicy", ScalarTypes.DateTime));
 
         private static readonly TableSymbol ShowTableSchemaResult =
             new TableSymbol(
