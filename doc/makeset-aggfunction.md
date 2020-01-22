@@ -35,4 +35,7 @@ PageViewLog
 
 ![alt text](./images/aggregations/makeset.png "makeset")
 
-See also the [`mv-expand` operator](mvexpandoperator.md) for the opposite function.
+**See also**
+
+-	Use [`mv-expand`](./mvexpandoperator.md) operator for the opposite function.
+-	[`make_set_if`](./makesetif-aggfunction.md) operator is similar to `make_set`, except it also accepts a predicate.

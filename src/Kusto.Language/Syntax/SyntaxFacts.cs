@@ -57,6 +57,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.AlterMergeKeyword, "alter-merge", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.AndKeyword, "and", opKind: OperatorKind.And),
                 new SyntaxData(SyntaxKind.AppendKeyword, "append", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.ArtifactsKeyword, "artifacts", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.AsKeyword, "as"),
                 new SyntaxData(SyntaxKind.AscKeyword, "asc"),
                 new SyntaxData(SyntaxKind.AsyncKeyword, "async", canBeIdentifier: true),

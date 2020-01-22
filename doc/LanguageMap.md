@@ -344,6 +344,7 @@ eroperator.md) | Core |  |
 |**Name**|**Flavor**|**Comment**|
 |---|---|---|
 |  [any()](any-aggfunction.md) | Core |  |
+|  [anyif()](anyif-aggfunction.md) | Core |  |
 |  [arg_max()](arg-max-aggfunction.md) | Core |  |
 |  [arg_min()](arg-min-aggfunction.md) | Core |  |
 |  [avg()](avg-aggfunction.md) | Core |  |
@@ -356,10 +357,15 @@ eroperator.md) | Core |  |
 |  [hll()](hll-aggfunction.md) | Full |  |
 |  [hll_merge()](hll-merge-aggfunction.md) | Full |  |
 |  [make_bag()](make-bag-aggfunction.md) | Full |  |
+|  [make_bag_if()](make-bag-if-aggfunction.md) | Full |  |
 |  [make_list()](makelist-aggfunction.md) | Core |  |
+|  [make_list_if()](makelistif-aggfunction.md) | Core |  |
 |  [make_set()](makeset-aggfunction.md) | Core |  |
+|  [make_set_if()](makesetif-aggfunction.md) | Core |  |
 |  [max()](max-aggfunction.md) | Core |  |
+|  [maxif()](maxif-aggfunction.md) | Core |  |
 |  [min()](min-aggfunction.md) | Core |  |
+|  [minif()](minif-aggfunction.md) | Core |  |
 |  [percentiles()](percentiles-aggfunction.md) | Core |  |
 |  [stdev()](stdev-aggfunction.md) | Core |  |
 |  [stdevif()](stdevif-aggfunction.md) | Full |  |

@@ -25,6 +25,7 @@
         AlterMergeKeyword,
         AndKeyword,
         AppendKeyword,
+        ArtifactsKeyword,
         AsKeyword,
         AscKeyword,
         AsyncKeyword,

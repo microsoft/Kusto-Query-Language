@@ -2,7 +2,7 @@
 
 Get a match for a [regular expression](./re2.md) from a text string. 
 
-Optionally, it then converts the extracted substring to the indicated type.
+Optionally, convert the extracted substring to the indicated type.
 
     extract("x=([0-9.]+)", 1, "hello x=45.6|wo") == "45.6"
 

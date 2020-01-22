@@ -52,21 +52,30 @@ The automatic hourly bins for datetime columns is no longer supported. Use expli
 |Function|Description|
 |--------|-----------|
 |[any()](any-aggfunction.md)|Returns random non-empty value for the group|
+|[anyif()](anyif-aggfunction.md)|Returns random non-empty value for the group (with predicate)|
 |[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when argument is maximized|
 |[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when argument is minimized|
 |[avg()](avg-aggfunction.md)|Returns average value across the group|
+|[avgif()](avgif-aggfunction.md)|Returns average value across the group (with predicate)|
 |[buildschema()](buildschema-aggfunction.md)|Returns the minimal schema that admits all values of the `dynamic` input|
 |[count()](count-aggfunction.md)|Returns count of the group|
 |[countif()](countif-aggfunction.md)|Returns count with the predicate of the group|
 |[dcount()](dcount-aggfunction.md)|Returns approximate distinct count of the group elements|
+|[dcountif()](dcountif-aggfunction.md)|Returns approximate distinct count of the group elements (with predicate)|
 |[make_bag()](make-bag-aggfunction.md)|Returns a property bag of dynamic values within the group|
+|[make_bag_if()](make-bag-if-aggfunction.md)|Returns a property bag of dynamic values within the group (with predicate)|
 |[make_list()](makelist-aggfunction.md)|Returns a list of all the values within the group|
+|[make_list_if()](makelistif-aggfunction.md)|Returns a list of all the values within the group (with predicate)|
 |[make_set()](makeset-aggfunction.md)|Returns a set of distinct values within the group|
+|[make_set_if()](makesetif-aggfunction.md)|Returns a set of distinct values within the group (with predicate)|
 |[max()](max-aggfunction.md)|Returns the maximum value across the group|
+|[maxif()](maxif-aggfunction.md)|Returns the maximum value across the group (with predicate)|
 |[min()](min-aggfunction.md)|Returns the minimum value across the group|
+|[minif()](minif-aggfunction.md)|Returns the minimum value across the group (with predicate)|
 |[percentiles()](percentiles-aggfunction.md)|Returns the percentile approximate of the group|
 |[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
 |[sum()](sum-aggfunction.md)|Returns the sum of the elements withing the group|
+|[sumif()](sumif-aggfunction.md)|Returns the sum of the elements withing the group (with predicate)|
 |[variance()](variance-aggfunction.md)|Returns the variance across the group|
 
 ## Aggregates default values
@@ -76,8 +85,8 @@ The following table summarizes the default values of aggregations
 Operator       |Default value                         
 ---------------|------------------------------------
  `count()`, `countif()`, `dcount()`, `dcountif()`         |   0                            
- `make_set()`, `make_list()`          |    empty dynamic array              ([])          
- `any()`, `arg_max()`. `arg_min()`, `avg()`, `buildschema()`, `hll()`, `max()`, `min()`, `percentiles()`, `stdev()`, `sum()`, `sumif()`, `tdigest()`, `variance()`          |   null                           
+ `make_bag()`, `make_bag_if()`, `make_list()`, `make_list_if()`, `make_set()`, `make_set_if()` |    empty dynamic array              ([])          
+ `any()`, `anyif()`, `arg_max()`. `arg_min()`, `avg()`, `avgif()`, `buildschema()`, `hll()`, `max()`, `maxif()`, `min()`, `minif()`, `percentiles()`, `stdev()`, `sum()`, `sumif()`, `tdigest()`, `variance()`          |   null                           
 
  In addition, when using these aggregates over entities which includes null values, the null values will be ignored and won't participate in the calculation (See examples below).
 

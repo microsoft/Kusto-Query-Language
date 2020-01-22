@@ -41,13 +41,16 @@ Operator        |Description                                                    
 
 ## Performance tips
 
-Prefer using case-sensitive operators when applicable, as they are more performant. For example,
-prefer using `==` over `=~`, `in` over `in~`, and `contains_cs` over `contains`.
+For better performance, when there are two operators that perform the same task, use the case-sensitive one.
+For example:
 
-Use `has` or `in` if you're testing for the presence of a whole lexical term - that is,
-a symbol or an alphanumeric word bounded by non-alphanumeric characters or start or end of field.
-`has` performs faster than `contains`, `startswith`, or `endswith`.
-The first of these queries runs faster:
+* instead of `=~`, use `==`
+* instead of `in~`, use `in`
+* instead of `contains`, use `contains_cs`
+
+For faster results, if you are testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters (or the start or end of a field), use `has` or `in`. `has` performs faster than `contains`, `startswith`, or `endswith`.
+
+For example, the first of these queries runs faster:
 
 <!-- csl -->
 ```

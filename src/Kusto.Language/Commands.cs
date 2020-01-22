@@ -495,6 +495,10 @@ namespace Kusto.Language
                 new ColumnSymbol("Folder", ScalarTypes.String),
                 new ColumnSymbol("DocString", ScalarTypes.String));
 
+        private static readonly TableSymbol ExternalTableArtifactsResult =
+            new TableSymbol(
+                new ColumnSymbol("Uri", ScalarTypes.String));
+
         private static readonly TableSymbol ExternalTableFullResult =
             new TableSymbol(
                 new ColumnSymbol("TableName", ScalarTypes.String),
@@ -515,6 +519,9 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowExternalTableSchema =
             new CommandSymbol("show external table schema", "show external table <name>:TableName schema as (json | csl)", ExternalTableSchemaResult);
+
+        public static readonly CommandSymbol ShowExternalTableArtifacts =
+            new CommandSymbol("show external table artifacts", "show external table <name>:TableName artifacts", ExternalTableArtifactsResult);
 
         public static readonly CommandSymbol DropExternalTable =
             new CommandSymbol("drop external table", "drop external table <name>:TableName", ExternalTableFullResult);
@@ -1404,6 +1411,7 @@ namespace Kusto.Language
                 ShowExternalTable,
                 ShowExternalTableCslSchema,
                 ShowExternalTableSchema,
+                ShowExternalTableArtifacts,
                 DropExternalTable,
                 CreateExternalTable,
                 AlterExternalTable,

@@ -40,9 +40,7 @@ To get the fastest performance:
 
 * **Simplest terms first**: If you have multiple clauses conjoined with `and`, put first the clauses that involve just one column. So `Timestamp > ago(1d) and OpId == EventId` is better than the other way around.
 
-For a summary of available string operators, see [String operators](./datatypes-string-operators.md).
-
-For a summary of available numeric operators, see [Numerical operators](./numoperators.md).
+For more information, refer to the summary of [available String operators](./datatypes-string-operators.md) and the summary of [available Numerical operators](./numoperators.md).
 
 **Example**
 

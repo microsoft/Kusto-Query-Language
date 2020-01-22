@@ -21,3 +21,22 @@ The sum value of *Expr* for which *Predicate* evaluates to `true`.
 
 > [!TIP]
 > Use `summarize sumif(expr, filter)` instead of `where filter | summarize sum(expr)`
+
+**Example**
+
+<!-- csl -->
+```
+let T = datatable(name:string, day_of_birth:long)
+[
+   "John", 9,
+   "Paul", 18,
+   "George", 25,
+   "Ringo", 7
+];
+T
+| summarize sumif(day_of_birth, strlen(name) > 4)
+```
+
+|sumif_day_of_birth|
+|----|
+|32|
