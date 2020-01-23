@@ -5,13 +5,10 @@ of any other scalar data type, as well as arrays and property bags. Specifically
 A `dynamic` value can be:
 
 * Null.
-
 * A value of any of the primitive scalar data types:
   `bool`, `datetime`, `guid`, `int`, `long`, `real`, `string`, and `timespan`.
-
 * An array of `dynamic` values, holding zero or more values with zero-based
   indexing.
-
 * A property bag that maps unique `string` values to `dynamic` values.
   The property bag has zero or more such mappings (called "slots"),
   indexed by the unique `string` values. The slots are unordered.
@@ -22,22 +19,20 @@ A `dynamic` value can be:
 > [!NOTE]
 > Although the `dynamic` type appears JSON-like, it can hold values that the JSON
 > model does not represent because they don't exist in JSON (e.g.,
-> `long`, `real`, `datetime`, `timespan`, `guid` are all types that JSON doesn't
-> have a representation for).
-> Therefore, in serializing
-> `dynamic` values into a JSON representation, values that JSON can't represent
+> `long`, `real`, `datetime`, `timespan`, and `guid`).
+> Therefore, in serializing `dynamic` values into a JSON representation, values that JSON can't represent
 > are serialized into `string` values. Conversely, Kusto will parse strings
 > as strongly-typed values if they can be parsed as such.
 > This applies for `datetime`, `real`, `long`, and `guid` types. 
 > For more about the JSON object model, see See [json.org](https://json.org/).
 
 > [!NOTE]
-> The system does not attempt to preserve the order of name-to-value mappings in
-> a property bag, and one cannot assume the order to be preserved. It's entirely
+> Kusto doesn't attempt to preserve the order of name-to-value mappings in
+> a property bag, and so you can't assume the order to be preserved. It's entirely
 > possible for two property bags with the same set of mappings to yield different
 > results when they are represented as `string` values, for example.
 
-## dynamic literals
+## Dynamic literals
 
 A literal of type `dynamic` looks like this:
 
@@ -47,15 +42,12 @@ A literal of type `dynamic` looks like this:
 
 * `null`, in which case the literal represents the null dynamic value:
   `dynamic(null)`.
-
 * Another scalar data type literal, in which case the literal represents the
   `dynamic` literal of the "inner" type. For example, `dynamic(4)` is
   a dynamic value holding the value 4 of the long scalar data type.
-
 * An array of dynamic or other literals: `[` *ListOfValues* `]`. For example,
   `dynamic([1, 2, "hello"])` is a dynamic array of three elements, two `long` values
   and one `string` value.
-
 * A property bag: `{` *Name* `=` *Value* ... `}`. For example, `dynamic({"a":1, "b":{"a":2}})`
   is a property bag with two slots, `a`, and `b`, with the second slot being
   another property bag.
@@ -70,7 +62,7 @@ For convenience, `dynamic` literals that appear in the query text itself may
 also include other Kusto literals (such as `datetime` literals, `timespan`
 literals, etc.) This extension over JSON is not available when parsing strings
 (such as when using the `parse_json` function or when ingesting data), but it
-allows one to do this:
+enables you to do this:
 
 <!-- csl -->
 ```
@@ -87,14 +79,14 @@ value, use the `parse_json` function. For example:
 * `parse_json('{"a":123, "b":"hello", "c":[1,2,3], "d":{}}')` - gives the same
    value as `o` in the example above.
 
-> [!WARNING]
-> Note that, unlike JavaScript, JSON mandates the use of double-quote
+> [!NOTE]
+> Unlike JavaScript, JSON mandates the use of double-quote
 > (`"`) characters around strings and property-bag property names.
 > Therefore, it is generally easier to quote a JSON-encoded string literal by using
 > a single-quote (`'`) character.
   
-The following example shows how one might define a table that holds a `dynamic` column (as well as
-a `datetime` column) and then ingest into it a single record. it also demonstrates how one
+The following example shows how you can define a table that holds a `dynamic` column (as well as
+a `datetime` column) and then ingest into it a single record. it also demonstrates how you
 can encode JSON strings in CSV files:
 
 <!-- csl -->
@@ -102,14 +94,14 @@ can encode JSON strings in CSV files:
 // dynamic is just like any other type:
 .create table Logs (Timestamp:datetime, Trace:dynamic)
 
-// Everything between the "[" and "]" is parsed as a CSV line would:
+// Everything between the "[" and "]" is parsed as a CSV line would be:
 // 1. Since the JSON string includes double-quotes and commas (two characters
 //    that have a special meaning in CSV), we must CSV-quote the entire second field.
 // 2. CSV-quoting means adding double-quotes (") at the immediate beginning and end
-//    of the field (no spaces allows before the first double-quote or after the second
+//    of the field (no spaces allowed before the first double-quote or after the second
 //    double-quote!)
 // 3. CSV-quoting also means doubling-up every instance of a double-quotes within
-//    the contents
+//    the contents.
 .ingest inline into table Logs
   [2015-01-01,"{""EventType"":""Demo"", ""EventValue"":""Double-quote love!""}"]
 ```
@@ -121,9 +113,10 @@ can encode JSON strings in CSV files:
 ## Dynamic object accessors
 
 To subscript a dictionary, use either the dot notation (`dict.key`) or the brackets notation (`dict["key"]`).
-When the subscript is a string constant- both options are equivalent.
+When the subscript is a string constant, both options are equivalent.
 
-> Note: to use an expression as the subscript, use the brackets notation. When using arithmetic expressions, the expression inside the brackets must be wrapped in parenthesis.
+> [!NOTE] 
+> To use an expression as the subscript, use the brackets notation. When using arithmetic expressions, the expression inside the brackets must be wrapped in parentheses.
 
 In the examples below `dict` and `arr` are columns of dynamic type:
 
@@ -170,7 +163,7 @@ Cast functions are:
 
 ## Building dynamic objects
 
-Several functions allow one to create new `dynamic` objects:
+Several functions enable you to create new `dynamic` objects:
 
 * [pack()](../packfunction.md) creates a property bag from name/value pairs.
 * [pack_array()](../packarrayfunction.md) creates an array from name/value pairs.
@@ -206,4 +199,4 @@ arrays to hold aggregated values:
 |[`summarize make_list(`column`)` ](../makelist-aggfunction.md)| Flattens groups of rows and puts the values of the column in an array.
 |[`summarize make_list_if(`column,predicate`)` ](../makelistif-aggfunction.md)| Flattens groups of rows and puts the values of the column in an array (with predicate).
 |[`summarize make_set(`column`)`](../makeset-aggfunction.md) | Flattens groups of rows and puts the values of the column in an array, without duplication.
-|[`summarize make_set_if(`column,predicate`)`](../makesetif-aggfunction.md) | Flattens groups of rows and puts the values of the column in an array, without duplication (with predicate).
+|[`summarize make_bag(`column`)`](../make-bag-aggfunction.md) | Merges the property bag (dictionary) values in the column into one property bag, without key duplication.

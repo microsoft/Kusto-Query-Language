@@ -29,7 +29,7 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 * *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
 * *GroupExpression:* An expression over the columns, that provides a set of distinct values. Typically it's either a column name that already provides a restricted set of values, or `bin()` with a numeric or time column as argument. 
 
-    If you don't provide a *GroupExpression,* the whole table is summarized in a single output row.
+If you don't provide a *GroupExpression,* the whole table is summarized in a single output row.
 
 **Returns**
 
@@ -41,27 +41,25 @@ record.
 
 If you want to summarize over ranges of numeric values, use `bin()` to reduce ranges to discrete values.
 
-**Notes**
-
-Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names, or apply `bin()` to a numeric column.
-
-The automatic hourly bins for datetime columns is no longer supported. Use explicit binning instead - for example `summarize by bin(timestamp, 1h)`.
+> [!NOTE]
+> * Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names, or apply `bin()` to a numeric column.
+> * The automatic hourly bins for datetime columns is no longer supported. Use explicit binning instead - for example `summarize by bin(timestamp, 1h)`.
 
 ## List of aggregation functions
 
 |Function|Description|
 |--------|-----------|
-|[any()](any-aggfunction.md)|Returns random non-empty value for the group|
-|[anyif()](anyif-aggfunction.md)|Returns random non-empty value for the group (with predicate)|
-|[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when argument is maximized|
-|[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when argument is minimized|
-|[avg()](avg-aggfunction.md)|Returns average value across the group|
-|[avgif()](avgif-aggfunction.md)|Returns average value across the group (with predicate)|
+|[any()](any-aggfunction.md)|Returns a random non-empty value for the group|
+|[anyif()](anyif-aggfunction.md)|Returns a random non-empty value for the group (with predicate)|
+|[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when the argument is maximized|
+|[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when the argument is minimized|
+|[avg()](avg-aggfunction.md)|Returns an average value across the group|
+|[avgif()](avgif-aggfunction.md)|Returns an average value across the group (with predicate)|
 |[buildschema()](buildschema-aggfunction.md)|Returns the minimal schema that admits all values of the `dynamic` input|
-|[count()](count-aggfunction.md)|Returns count of the group|
-|[countif()](countif-aggfunction.md)|Returns count with the predicate of the group|
-|[dcount()](dcount-aggfunction.md)|Returns approximate distinct count of the group elements|
-|[dcountif()](dcountif-aggfunction.md)|Returns approximate distinct count of the group elements (with predicate)|
+|[count()](count-aggfunction.md)|Returns a count of the group|
+|[countif()](countif-aggfunction.md)|Returns a count with the predicate of the group|
+|[dcount()](dcount-aggfunction.md)|Returns an approximate distinct count of the group elements|
+|[dcountif()](dcountif-aggfunction.md)|Returns an approximate distinct count of the group elements (with predicate)|
 |[make_bag()](make-bag-aggfunction.md)|Returns a property bag of dynamic values within the group|
 |[make_bag_if()](make-bag-if-aggfunction.md)|Returns a property bag of dynamic values within the group (with predicate)|
 |[make_list()](makelist-aggfunction.md)|Returns a list of all the values within the group|
@@ -138,8 +136,8 @@ Create a row for each continent, showing a count of the cities in which activiti
 
 **Example**
 
-The following example calculates a  histogram for each activity
-type. Because `Duration` has many values, we use `bin` to group its values into 10-minute intervals:
+The following example calculates a histogram for each activity
+type. Because `Duration` has many values, use `bin` to group its values into 10-minute intervals:
 
 ```
 Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
@@ -157,9 +155,9 @@ Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
 
 **Example for the aggregates default values**
 
-When the input of summarize operator that has at least one group-by key is empty then it's result is empty too.
+When the input of summarize operator that has at least one group-by key is empty, it's result is empty, too.
 
-When the input of summarize operator that doesn't have any group-by key is empty, then the result is the default values of the aggregates used in the summarize:
+When the input of summarize operator that doesn't have any group-by key is empty, the result is the default values of the aggregates used in the summarize:
 
 <!-- csl -->
 ```

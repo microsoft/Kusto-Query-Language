@@ -10,8 +10,8 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation.
-* *Predicate*: Predicate that has to evaluate to `true`, in order for *Expr* to be added to the result.
+* *Expr*: Expression used for aggregation calculation.
+* *Predicate*: Predicate that has to evaluate to `true` for *Expr* to be added to the result.
 * *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
 
 **Returns**
@@ -20,7 +20,7 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 The array's sort order is undefined.
 
 > [!TIP]
-> To just count the distinct values, use [dcountif()](dcountif-aggfunction.md)
+> To only count the distinct values, use [dcountif()](dcountif-aggfunction.md)
 
 **See also**
 

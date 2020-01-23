@@ -10,12 +10,11 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation.
+* *Expr*: Expression for aggregation calculation.
 * *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
 
-**Note**
-
-A legacy and obsolete variant of this function: `makeset()` has a default limit of *MaxSize* = 128.
+> [!NOTE]
+> A legacy and obsolete variant of this function: `makeset()` has a default limit of *MaxSize* = 128.
 
 **Returns**
 
@@ -23,7 +22,7 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 The array's sort order is undefined.
 
 > [!TIP]
-> To just count the distinct values, use [dcount()](dcount-aggfunction.md)
+> To only count distinct values, use [dcount()](dcount-aggfunction.md)
 
 **Example**
 
@@ -37,5 +36,5 @@ PageViewLog
 
 **See also**
 
--	Use [`mv-expand`](./mvexpandoperator.md) operator for the opposite function.
--	[`make_set_if`](./makesetif-aggfunction.md) operator is similar to `make_set`, except it also accepts a predicate.
+* Use [`mv-expand`](./mvexpandoperator.md) operator for the opposite function.
+* [`make_set_if`](./makesetif-aggfunction.md) operator is similar to `make_set`, except it also accepts a predicate.

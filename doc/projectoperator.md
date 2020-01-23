@@ -1,8 +1,8 @@
-# project operator
+# Project operator
 
 Select the columns to include, rename or drop, and insert new computed columns. 
 
-The order of the columns in the result is specified by the order of the arguments. Only the columns specified in the arguments are included in the result: any others in the input are dropped.  (See also `extend`.)
+The order of the columns in the result is specified by the order of the arguments. Only the columns specified in the arguments are included in the result. Any other columns in the input are dropped.  (See also `extend`.)
 
 <!-- csl -->
 ```
@@ -20,8 +20,8 @@ or
 **Arguments**
 
 * *T*: The input table.
-* *ColumnName:* Optional name of a column to appear in the output. If there is no *Expression*, then *ColumnName* is mandatory and a column of that name must appear in the input. If omitted then the name will be generated. If *Expression* returns more than one column, then a list of column names can be specified in parenthesis. In this case *Expression*'s output columns will be given the specified names, dropping all rest of the output columns if any. If list of the column names is not specified then all *Expression*'s output columns with generated names will be added to output.
-* *Expression:* Optional scalar expression referencing the input columns. If *ColumnName* is not omitted then Expression* is mandatory.
+* *ColumnName:* Optional name of a column to appear in the output. If there is no *Expression*, then *ColumnName* is mandatory and a column of that name must appear in the input. If omitted, the name will be automatically generated. If *Expression* returns more than one column, a list of column names can be specified in parentheses. In this case *Expression*'s output columns will be given the specified names, dropping all rest of the output columns, if there are any. If list of the column names is not specified, all *Expression*'s output columns with generated names will be added to the output.
+* *Expression:* Optional scalar expression referencing the input columns. If *ColumnName* is not omitted then *Expression* is mandatory.
 
     It is legal to return a new calculated column with the same name as an existing column in the input.
 
@@ -44,4 +44,4 @@ T
     B=2*B                      // Calculate a new column B from the old B
 ```
 
-See [series_stats](series-statsfunction.md) as an example of a function that returns multiple columns
+[series_stats](series-statsfunction.md) is an example of a function that returns multiple columns.

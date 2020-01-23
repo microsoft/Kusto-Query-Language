@@ -9,7 +9,7 @@ Determines whether the specified set contains the specified element.
 **Arguments**
 
 * *array*: Input array to search.
-* *value*: Value to search for. The value should be of type long, integer, double, datetime, timespan, decimal, string or guid.
+* *value*: Value to search for. The value should be of type `long`, `integer`, `double`, `datetime`, `timespan`, `decimal`, `string`, or `guid`.
 
 **Returns**
 
@@ -30,5 +30,4 @@ print arr=dynamic(["this", "is", "an", "example"])
 **See also**
 
 If you are also interested in the position at which the value exists in the array,
-you can use [array_index_of(arr, value)](arrayindexoffunction.md) -
-both functions are the same performance-wise.
+you can use [array_index_of(arr, value)](arrayindexoffunction.md). Both functions are the same, performance-wise.

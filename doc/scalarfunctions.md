@@ -52,7 +52,7 @@
 |[startofyear()](startofyearfunction.md)|Returns the start of the year containing the date, shifted by an offset, if provided.|
 |[todatetime()](todatetimefunction.md)|Converts input to datetime scalar.|
 |[totimespan()](totimespanfunction.md)|Converts input to timespan scalar.|
-|[weekofyear()](weekofyearfunction.md)|Retunrs the integer number represents the week number.|
+|[weekofyear()](weekofyearfunction.md)|Returns an integer representing the week number.|
 
 
 ## Dynamic/Array Functions

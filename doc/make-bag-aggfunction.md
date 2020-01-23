@@ -25,8 +25,7 @@ If a key appears in more than one row, an arbitrary value (out of the possible v
 
 **See also**
 
--	See [`bag_unpack`](bag-unpackplugin.md) plugin for expanding dynamic JSON objects into columns using property bag keys. 
--	[`make_bag_if`](make-bag-if-aggfunction.md) operator is similar to `make_bag`, except it also accepts a predicate.
+Use the [bag_unpack()](bag-unpackplugin.md) plugin for expanding dynamic JSON objects into columns using property bag keys. 
 
 **Examples**
 
