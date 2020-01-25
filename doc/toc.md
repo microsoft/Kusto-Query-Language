@@ -182,6 +182,7 @@
 ## [current_database()](current-database-function.md)
 ## [current_principal()](current-principalfunction.md)
 ## [current_principal_details()](current-principal-detailsfunction.md)
+## [current_principal_is_member_of()](current-principal-ismemberoffunction.md)
 ## [cursor_after()](cursorafterfunction.md)
 ## [cursor_before_or_at()](cursorbeforeoratfunction.md)
 ## [cursor_current()](cursorcurrent.md)
