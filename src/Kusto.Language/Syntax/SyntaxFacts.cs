@@ -392,7 +392,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.UndoKeyword, "undo", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.UnionKeyword, "union"),
-                new SyntaxData(SyntaxKind.UpdateKeyword, "udpate", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.UpdateKeyword, "update", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.UserKeyword, "user", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.UsersKeyword, "users", canBeIdentifier: true),
 
