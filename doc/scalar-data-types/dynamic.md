@@ -14,7 +14,7 @@ A `dynamic` value can be:
   indexed by the unique `string` values. The slots are unordered.
 
 > [!NOTE]
-> Values of type `dynamic` are limited to 1MB bytes (2^20).
+> Values of type `dynamic` are limited to 1MB (2^20).
 
 > [!NOTE]
 > Although the `dynamic` type appears JSON-like, it can hold values that the JSON
