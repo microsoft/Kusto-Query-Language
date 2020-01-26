@@ -15,18 +15,18 @@ and returns the value of one or more expressions over each such record.
 **Returns**
 
 The `any` aggregation function returns the values of the expressions calculated
-for each of the records selected randomly from each group of the summarize operator.
+for each of the records, selected randomly from each group of the summarize operator.
 
-If the `*` argument is provided, behaves as if the expressions are all columns
+If the `*` argument is provided, the function behaves as if the expressions are all columns
 of the input to the summarize operator barring the group-by columns, if any.
 
 **Remarks**
 
-This function is useful when one wants to get a sample value of one or more columns
+This function is useful when you want to get a sample value of one or more columns
 per value of the compound group key.
 
 When the function is provided with a single column reference, it will attempt to
-return a non-null/non-empty value if such value is present.
+return a non-null/non-empty value, if such value is present.
 
 As a result of the random nature of this function, using it multiple times in
 a single application of the `summarize` operator is not equivalent to using
