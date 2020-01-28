@@ -2,7 +2,7 @@
 
 Calculates the Geohash string value for a geographic location.
 
-For more information about Geohash, click [here](https://en.wikipedia.org/wiki/Geohash).  
+For more information about Geohash, see [here](https://en.wikipedia.org/wiki/Geohash).  
 
 **Syntax**
 
@@ -10,7 +10,7 @@ For more information about Geohash, click [here](https://en.wikipedia.org/wiki/G
 
 **Arguments**
 
-* *longitude*: Longitude value of a geographic location. Longitude x will be considered valid if x is a real number and x is in range [-180, +180]. 
+* *longitude*: Longitude value of a geographic location. Longitude x will be considered valid if x is a real number and is in range [-180, +180]. 
 * *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in in range [-90, +90]. 
 * *accuracy*: An optional `int` that defines the requested accuracy. Supported values are in the range [1,18]. If unspecified, the default value `5` is used.
 
@@ -21,10 +21,10 @@ The Geohash string value of a given geographic location with requested accuracy 
 **Notes**
 
 * Geohash can be useful geospatial clustering tool.
-* Geohash has 18 accuracy levels with area coverage ranging from 25Million kmÂ² at the highest level 1 to 0.6 Î¼Â² at the lowest level 18.
+* Geohash has 18 accuracy levels with area coverage ranging from 25 Million kmÂ² at the highest level 1 to 0.6 Î¼Â² at the lowest level 18.
 * Common prefix of Geohashes indicate on proximity of points to each other. The longer a shared prefix is, the closer the two places are. Accuracy value translates to geohash length.
 * Geohash is a rectangular area on a plane surface.
-* Invoking the [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on a geohash string that was calculated on longitude x and latitude y won't necessairly return x and y.
+* Invoking the [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on a geohash string that was calculated on longitude x and latitude y won't necessarily return x and y.
 * Due to the Geohash definition, it's possible that two geographic locations are very close to each other but have different Geohash codes.
 
 **Geohash rectangular area coverage per accuracy value:**
@@ -72,7 +72,7 @@ print geohash = geo_point_to_geohash(-80.195829, 25.802215, 8)
 |---|
 |dhwfz15h|
 
-The following example finds groups of coordinates. Every pair of coordinates in the group reside in a rectangular area of 4.88km on 4.88km.
+The following example finds groups of coordinates. Every pair of coordinates in the group reside in a rectangular area of 4.88 km on 4.88 km.
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 datatable(location_id:string, longitude:real, latitude:real)

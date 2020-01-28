@@ -63,7 +63,7 @@ Level|Min area|Max area|Average area|Units
 |29|1.77|3.71|2.95|cmÂ²|
 |30|0.44|0.93|0.74|cmÂ²|
 
-Table source can be found [here](http://s2geometry.io/resources/s2cell_statistics).
+The table source can be found [here](http://s2geometry.io/resources/s2cell_statistics).
 
 See also [geo_point_to_geohash()](geo-point-to-geohash-function.md).
 
@@ -78,7 +78,7 @@ print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 |---|
 |88d9b|
 
-The following example finds groups of coordinates. Every pair of coordinates in the group reside in s2cell with maximum area of 1632.45kmÂ².
+The following example finds groups of coordinates. Every pair of coordinates in the group reside in s2cell with maximum area of 1632.45 kmÂ².
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 datatable(location_id:string, longitude:real, latitude:real)
@@ -126,5 +126,3 @@ print s2cell = geo_point_to_s2cell(1,1,int(null))
 |s2cell|
 |---|
 ||
-
-

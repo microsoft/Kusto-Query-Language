@@ -1,6 +1,6 @@
 # geo_distance_point_to_line()
 
-Calculates shortest distance between coordinate and line on Earth.
+Calculates the shortest distance between a coordinate and a line on Earth.
 
 **Syntax**
 
@@ -14,7 +14,7 @@ Calculates shortest distance between coordinate and line on Earth.
 
 **Returns**
 
-The shortest distance in meters between coordinate and line on Earth. If the coordinate or lineString are invalid, the query will produce a null result.
+The shortest distance, in meters, between a coordinate and a line on Earth. If the coordinate or lineString are invalid, the query will produce a null result.
 
 > [!NOTE]
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
@@ -24,16 +24,16 @@ The shortest distance in meters between coordinate and line on Earth. If the coo
 
 dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
 
-* LineString coordinates array must contain at least 2 entries.
+* LineString coordinates array must contain at least two entries.
 * Coordinates [longitude,latitude] must be valid where longitude is a real number in range [-180, +180] and latitude is a real number in range [-90, +90].
 * Edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
 > [!TIP]
-> Using literal lines may result in better performance.
+> For better performance, use literal lines.
 
 **Examples**
 
-The following example finds the shortest distance between North Las Vegas Airport and nearby road.
+The following example finds the shortest distance between North Las Vegas Airport and a nearby road.
 ![Distance between North Las Vegas Airport and road](./images/queries/geo/distance_point_to_line.png)
 
 <!-- csl: https://help.kusto.windows.net/Samples -->

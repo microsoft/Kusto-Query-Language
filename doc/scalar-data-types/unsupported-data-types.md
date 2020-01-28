@@ -2,7 +2,7 @@
 
 All undocumented **scalar data type** are considered unsupported in Kusto.
 
-Among the unsupported types are the following. Please note that some types were previously supported:
+Among the unsupported types are the following. Some types were previously supported:
 
 | Type       | Additional name(s)   | Equivalent .NET type              | Storage Type (internal name)|
 | ---------- | -------------------- | --------------------------------- | ----------------------------|

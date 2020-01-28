@@ -1,19 +1,19 @@
 # Scalar data types
 
 Every data value (such as the value of an expression, or the parameter to a function,
-or the value of an expression) has a **data type**. A data type is broadly
-categorized as either being a **scalar data type**
-(one of the built-in predefined types listed below), or be a **user-defined record**
+or the value of an expression) has a **data type**. A data type is either a **scalar data type**
+(one of the built-in predefined types listed below), or a **user-defined record**
 (an ordered sequence of name/scalar-data-type pairs, such as the data type of a
 row of a table).
 
 Kusto supplies a set of system data types that define all the types of data
 that can be used with Kusto.
 
+> [!NOTE]
 > User-defined data types are not supported in Kusto.
 
-The following table lists the data types supported by in Kusto, alongside
-additional aliases one can use to refer to them and a roughly equivalent
+The following table lists the data types supported by Kusto, alongside
+additional aliases you can use to refer to them and a roughly equivalent
 .NET Framework type.
 
 | Type       | Additional name(s)   | Equivalent .NET type              | gettype()   |Storage Type (internal name)|
@@ -30,9 +30,9 @@ additional aliases one can use to refer to them and a roughly equivalent
 | `decimal`  |                      | `System.Data.SqlTypes.SqlDecimal` | `decimal`   | `Decimal`                  |
 
 All data types include a special "null" value, which represents the lack of data
-or a mismatch of data. (For example, attempting to ingest the string `"abc"`
-into an `int` column results in this value.)
-It is not possible to materialize this value explicitly, but one can detect
+or a mismatch of data. For example, attempting to ingest the string `"abc"`
+into an `int` column results in this value.
+It is not possible to materialize this value explicitly, but you can detect
 whether an expression evaluates to this value by using the `isnull()` function.
 
 > [!WARNING]
