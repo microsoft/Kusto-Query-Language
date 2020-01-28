@@ -30,9 +30,9 @@ namespace Kusto.Language.Editor
         Identifier,
 
         /// <summary>
-        /// A literal
+        /// An example value
         /// </summary>
-        Literal,
+        Example,
 
         /// <summary>
         /// A keyword that starts a scalar expression

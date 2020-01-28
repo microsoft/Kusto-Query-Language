@@ -1,6 +1,6 @@
 # estimate_data_size()
 
-Returns an estimated data size of the selected columns of the tabular expression.
+Returns an estimated data size in bytes of the selected columns of the tabular expression.
 
 <!-- csl -->
 ```
@@ -20,7 +20,7 @@ estimate_data_size(Col1, Col2, Col3)
 
 **Returns**
 
-* The estimated data size of the record size. Estimation is based on data types and values lengths.
+* The estimated data size  in bytes of the record size. Estimation is based on data types and values lengths.
 
 **Examples**
 

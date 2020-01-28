@@ -276,7 +276,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.TimeKeyword).Hide(),
                         Token(SyntaxKind.TimespanKeyword),
                         Token(SyntaxKind.UniqueIdKeyword).Hide()
-                        ));
+                        )).WithTag("<param-type>");
 
             this.ParamTypeExtended =
                 AsPrimitiveTypeExpression(
@@ -373,7 +373,8 @@ namespace Kusto.Language.Parsing
             var BooleanLiteral =
                 Rule(
                     Token(SyntaxKind.BooleanLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.BooleanLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.BooleanLiteralExpression, token))
+                .WithTag("<bool-literal>");
 
             var BooleanLiteralWithCompletion =
                 First(
@@ -383,41 +384,57 @@ namespace Kusto.Language.Parsing
             var LongLiteral =
                 Rule(
                     Token(SyntaxKind.LongLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.LongLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.LongLiteralExpression, token))
+                .WithTag("<long-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "long()", "long(", ")", "long"));
 
             var RealLiteral =
                 Rule(
                     Token(SyntaxKind.RealLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.RealLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.RealLiteralExpression, token))
+                .WithTag("<real-literal>")
+                .WithCompletion(
+                    new CompletionItem(CompletionKind.ScalarPrefix, "real()", "real(", ")", "real"),
+                    new CompletionItem(CompletionKind.ScalarPrefix, "double()", "double(", ")", "double"));
 
             var DecimalLiteral =
                 Rule(
                     Token(SyntaxKind.DecimalLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.DecimalLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.DecimalLiteralExpression, token))
+                .WithTag("<decimal-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "decimal()", "decimal(", ")", "decimal"));
 
             var IntLiteral =
                 Rule(
                     Token(SyntaxKind.IntLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.IntLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.IntLiteralExpression, token))
+                .WithTag("<int-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "int()", "int(", ")", "int"));
 
             var GuidLiteral =
                 Rule(
                     Token(SyntaxKind.GuidLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, token))
+                .WithTag("<guid-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "guid()", "guid(", ")", "guid"));
 
             var DateTimeLiteral =
                 Rule(Token(SyntaxKind.DateTimeLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.DateTimeLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.DateTimeLiteralExpression, token))
+                .WithTag("<datetime-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "datetime()", "datetime(", ")", "datetime"));
 
             var TimespanLiteral =
                 Rule(Token(SyntaxKind.TimespanLiteralToken),
-                    token => (Expression)new LiteralExpression(SyntaxKind.TimespanLiteralExpression, token));
+                    token => (Expression)new LiteralExpression(SyntaxKind.TimespanLiteralExpression, token))
+                .WithTag("<timespan-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "timespan()", "timespan(", ")", "timespan"));
 
             this.StringLiteral =
                 Rule(
                     Token(SyntaxKind.StringLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.StringLiteralExpression, token))
-                .WithTag("<string>");
+                .WithTag("<string-literal>");
 
             var TypeofElement =
                 First(
@@ -453,14 +470,16 @@ namespace Kusto.Language.Parsing
                         RequiredToken(SyntaxKind.CloseParenToken),
                         (keyword, openParen, list, closeParen) =>
                             (Expression)new TypeOfLiteralExpression(keyword, openParen, list, closeParen)
-                        ));
+                        ))
+                .WithTag("<typeof-literal>");
 
             StringOrCompoundStringLiteralCore =
                 OneOrMore(
                     Token(SyntaxKind.StringLiteralToken),
                     list => list.Count == 1
                         ? (Expression)new LiteralExpression(SyntaxKind.StringLiteralExpression, list[0])
-                        : new CompoundStringLiteralExpression(new SyntaxList<SyntaxToken>(list)));
+                        : new CompoundStringLiteralExpression(new SyntaxList<SyntaxToken>(list)))
+                .WithTag("<string-literal>");
 
             LiteralCore =
                 First(
@@ -482,7 +501,8 @@ namespace Kusto.Language.Parsing
             var NullLiteralExpression =
                 Rule(
                     Token("null"),
-                    (token) => (Expression)new LiteralExpression(SyntaxKind.NullLiteralExpression, token));
+                    (token) => (Expression)new LiteralExpression(SyntaxKind.NullLiteralExpression, token))
+                .WithCompletion(new CompletionItem(CompletionKind.Syntax, "null"));
 
             var JsonPair =
                 First(
@@ -523,7 +543,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (dynamicKeyword, openParen, value, closeParen) =>
                         (Expression)new DynamicExpression(dynamicKeyword, openParen, value, closeParen))
-                .WithTag("<dynamic>");
+                .WithTag("<dynamic-literal>")
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "dynamic()", "dynamic(", ")", "dynamic"));
 
             var JsonNumber =
                 First(

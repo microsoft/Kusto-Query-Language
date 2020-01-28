@@ -2239,7 +2239,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OnKeyword", Type = "SyntaxToken", Completion="Keyword" },
-            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Scalar" },
+            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Column" },
         }
     },
 

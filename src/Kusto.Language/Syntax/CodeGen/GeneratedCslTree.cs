@@ -11032,7 +11032,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Scalar;
+                case 1: return CompletionHint.Column;
                 default: return CompletionHint.Inherit;
             }
         }

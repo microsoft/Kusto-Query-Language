@@ -253,7 +253,7 @@ namespace Kusto.Language.Editor
 
             switch (item.Kind)
             {
-                case CompletionKind.Literal:
+                case CompletionKind.Example:
                     return OrderingRank.Literal;
 
                 case CompletionKind.Keyword:
@@ -890,7 +890,7 @@ namespace Kusto.Language.Editor
                 {
                     foreach (var x in examples)
                     {
-                        builder.Add(new CompletionItem(CompletionKind.Literal, x));
+                        builder.Add(new CompletionItem(CompletionKind.Example, x));
                     }
                 }
             }
@@ -957,7 +957,7 @@ namespace Kusto.Language.Editor
 
         private IEnumerable<CompletionItem> GetMemberNameExamples(IEnumerable<Symbol> symbols)
         {
-            return symbols.Select(s => new CompletionItem(CompletionKind.Literal, KustoFacts.GetStringLiteral(s.Name)));
+            return symbols.Select(s => new CompletionItem(CompletionKind.Example, KustoFacts.GetStringLiteral(s.Name)));
         }
 
         private bool ShowParameterNames(FunctionSymbol function)
@@ -1575,21 +1575,33 @@ namespace Kusto.Language.Editor
 
             var source = new ArraySource<LexicalToken>(this.code.LexerTokens);
 
-#if false
-            var list = new List<Grammar>();
+#if DEBUG
+            // maintain a path from the outer grammar rule to the one being considered on each callback
+            var path = new List<Parser<LexicalToken>>();
 #endif
 
-            this.code.Grammar.Search(source, 0, false, (_grammar, _source, _start, _prevWasMissing) =>
+            this.code.Grammar.Search(source, 0, false, (_parser, _source, _start, _prevWasMissing) =>
             {
-                if (_start == offset)
-                {
-#if false
-                    list.Add(_grammar);
+#if DEBUG
+                path.Add(_parser);
 #endif
-                    if (!_prevWasMissing)
-                        action(_grammar);
+
+                if (_start == offset && !_prevWasMissing)
+                {
+                    action(_parser);
                 }
-            });
+            }
+#if DEBUG
+            ,
+            (_parser) =>
+            {
+                if (path.Count > 0 && path[path.Count - 1] == _parser)
+                {
+                    path.RemoveAt(path.Count - 1);
+                }
+            }
+#endif
+            );
         }
 
         private SyntaxToken GetTokenLeftOfPosition(int position)
@@ -1657,6 +1669,7 @@ namespace Kusto.Language.Editor
                 case CompletionKind.TabularSuffix:
                     return left != null && left.ResultType != null && left.ResultType.IsTabular;
                 case CompletionKind.ScalarPrefix:
+                case CompletionKind.Example:
                     return (match & SymbolMatch.Scalar) != 0;
                 case CompletionKind.ScalarInfix:
                     return AnyInfixMatches(left, item.DisplayText, position);

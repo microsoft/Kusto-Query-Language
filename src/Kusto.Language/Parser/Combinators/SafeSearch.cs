@@ -38,12 +38,12 @@ namespace Kusto.Language.Parsing
 
     public static class SafeSearcher
     {
-        public static SearchResult SearchSafe<TInput>(this Parser<TInput> parser, Source<TInput> source, int start, bool prevWasMissing, SearchAction<TInput> action)
+        public static SearchResult SearchSafe<TInput>(this Parser<TInput> parser, Source<TInput> source, int start, bool prevWasMissing, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction = null)
         {
             var sss = StackSafeSearcher<TInput>.pool.AllocateFromPool();
             try
             {
-                sss.Initialize(source, action);
+                sss.Initialize(source, beforeAction, afterAction);
                 return sss.Search(parser, start, prevWasMissing);
             }
             finally
@@ -55,7 +55,8 @@ namespace Kusto.Language.Parsing
         private class StackSafeSearcher<TInput> : ParserVisitor<TInput, Parser<TInput>>
         {
             private Source<TInput> source;
-            private SearchAction<TInput> action;
+            private SearchAction<TInput> beforeAction;
+            private Action<Parser<TInput>> afterAction;
             private List<SearchState> stack;
             private int stackPosition;
             private SearchState state;
@@ -70,10 +71,11 @@ namespace Kusto.Language.Parsing
                 this.stackPosition = -1;
             }
 
-            public void Initialize(Source<TInput> source, SearchAction<TInput> action)
+            public void Initialize(Source<TInput> source, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction)
             {
                 this.source = source;
-                this.action = action;
+                this.beforeAction = beforeAction;
+                this.afterAction = afterAction;
             }
 
             public void Clear()
@@ -186,7 +188,7 @@ namespace Kusto.Language.Parsing
                     {
                         if (this.state.State == 0)
                         {
-                            action(this.state.Parser, source, this.state.InputStart, this.prevWasMissing);
+                            beforeAction(this.state.Parser, source, this.state.InputStart, this.prevWasMissing);
                         }
 
                         nextParser = this.state.Parser.Accept(this);
@@ -199,6 +201,7 @@ namespace Kusto.Language.Parsing
                     else
                     {
                         var length = this.state.InputLength;
+                        this.afterAction?.Invoke(this.state.Parser);
 
                         if (this.stackPosition == 0)
                         {

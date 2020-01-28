@@ -259,7 +259,7 @@ namespace Kusto.Language.Parsing
                     case SyntaxCategory.Operator:
                         return CompletionKind.ScalarInfix;
                     case SyntaxCategory.Literal:
-                        return CompletionKind.Literal;
+                        return CompletionKind.ScalarPrefix;
                     default:
                         return CompletionKind.Keyword;
                 }

@@ -111,9 +111,9 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Add completion annotation to the parser.
         /// </summary>
-        public static Parser<LexicalToken, TElement> WithCompletion<TElement>(this Parser<LexicalToken, TElement> parser, CompletionItem item)
+        public static Parser<LexicalToken, TElement> WithCompletion<TElement>(this Parser<LexicalToken, TElement> parser, params CompletionItem[] items)
         {
-            return parser.WithAnnotations(parser.Annotations.Concat(new[] { (object)item }));
+            return parser.WithAnnotations(parser.Annotations.Concat(items));
         }
 
         /// <summary>
@@ -477,7 +477,7 @@ namespace Kusto.Language.Parsing
         /// Adds examples of completions as annotations onto this grammar rule.
         /// </summary>
         public static Parser<LexicalToken, TParser> Examples<TParser>(this Parser<LexicalToken, TParser> parser, IReadOnlyList<string> values) =>
-            parser.WithAnnotations(values.Select(v => new CompletionItem(CompletionKind.Literal, v)));
+            parser.WithAnnotations(values.Select(v => new CompletionItem(CompletionKind.Example, v)));
 
         /// <summary>
         /// Adds examples of completions as annotations onto this grammar rule.
