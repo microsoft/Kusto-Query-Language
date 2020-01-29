@@ -13,10 +13,10 @@ datetime_part("Day",datetime(2015-12-14))
 
 **Arguments**
 
-* `date`: `datetime`.
-* `part`: `string`. 
+* `date`: `datetime`
+* `part`: `string`
 
-Possible values of *part*: 
+Possible values of `part`: 
 - Year
 - Quarter
 - Month

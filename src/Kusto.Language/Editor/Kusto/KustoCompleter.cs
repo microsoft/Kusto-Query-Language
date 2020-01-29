@@ -308,13 +308,29 @@ namespace Kusto.Language.Editor
             if (element == null)
                 return false;
 
-            // actually inside a function body, so this is not part of the command proper
+            // actually inside a function body, even if it is part of a create command this is not part of the command proper.
             var body = element.GetFirstAncestorOrSelf<FunctionBody>();
             if (body != null)
                 return false;
 
+            var statementList = element.GetFirstAncestorOrSelf<SyntaxList<SeparatedElement<Statement>>>();
             var command = element.GetFirstAncestorOrSelf<Command>();
-            return command != null;
+
+            if (command != null)
+            {
+                if (statementList != null && command.IsAncestorOf(statementList))
+                {
+                    // statements inside commands are part of input pipe and are not considered part of the command for completion
+                    return false;
+                }
+                else
+                {
+                    // this is truly part of a command
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private CompletionMode GetSymbolCompletions(int position, CompletionBuilder builder)
