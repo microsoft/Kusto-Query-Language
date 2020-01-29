@@ -13,6 +13,8 @@ There are several "Dos and Don'ts" you can follow to make you query run faster.
 -	Prefer looking in specific column rather than using `*` (full text search across all columns)
 -   If you find that most of your queries deal with extracting fields from [dynamic objects](./scalar-data-types/dynamic.md) across millions of rows, consider
 materializing this column at ingestion time. This way - you will pay only once for column extraction.  
+-   If you have a `let` statement the value of which you use more than once, consider using the [materialize() function](./materializefunction.md)
+    (see some [best practices](#materialize-function) on using `materialize()`)
 
 ### Don't
 
@@ -20,7 +22,8 @@ materializing this column at ingestion time. This way - you will pay only once f
     Running unbound queries over unknown data set may yield GBs of results to be returned to the client, resulting in slow response and cluster being busy.
 -   If you find that you're applying conversions (JSON, string, etc) over 1 billion records - reshape your query to reduce amount of data fed into the conversion.
 -   Don't use `tolower(Col) == "lowercasestring"` to do case insensitive comparisons. Kusto has an operator for that. Please use `Col =~ "lowercasestring"` instead.
--   Don't filter on a calculated column, if you can filter on a table column. In other words: Don't do this `T | extend _value = <expression> | where predicate(_value)`, instead do: `T | where predicate(<expression>)`
+    -   If your data is already in lowercase (or uppercase), then avoid using case insensitive comparisons, and use `Col == "lowercasestring"` (or `Col == "UPPERCASESTRING"`) instead.
+-   Don't filter on a calculated column, if you can filter on a table column. In other words: don't do this `T | extend _value = <expression> | where predicate(_value)`, instead do: `T | where predicate(<expression>)`
 
 ## summarize operator
 
