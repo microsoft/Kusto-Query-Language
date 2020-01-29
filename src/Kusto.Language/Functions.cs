@@ -578,8 +578,17 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
+        // To be deprecated as current implementation isn't ISO 8601 compliant.
+        // A new function, week_of_year, that is ISO 8601 compliant has been added.
         public static readonly FunctionSymbol WeekOfYear =
             new FunctionSymbol("weekofyear", ScalarTypes.Int,
+                new Parameter("date", ScalarTypes.DateTime))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
+        public static readonly FunctionSymbol WeekOfYearISO =
+            new FunctionSymbol("week_of_year", ScalarTypes.Int,
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
@@ -1965,6 +1974,7 @@ namespace Kusto.Language
             DayOfYear,
             HourOfDay,
             WeekOfYear,
+            WeekOfYearISO,
             MonthOfYear,
             StartOfDay,
             StartOfWeek,
