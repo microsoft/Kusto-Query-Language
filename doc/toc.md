@@ -63,6 +63,7 @@
 ### [dcount_intersect](dcount-intersect-plugin.md)
 ### [diffpatterns](diffpatternsplugin.md)
 ### [diffpatterns_text](diffpatterns-textplugin.md)
+### [infer_storage_schema](inferstorageschemaplugin.md)
 ### [narrow](narrowplugin.md)
 ### [pivot](pivotplugin.md)
 ### [preview](previewplugin.md)
