@@ -1733,7 +1733,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_point_to_geohash", ScalarTypes.String,
                 new Parameter("longitude", ScalarTypes.Real),
                 new Parameter("latitude", ScalarTypes.Real),
-                new Parameter("accuracy", ScalarTypes.Int))
+                new Parameter("accuracy", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -1747,7 +1747,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
                 new Parameter("longitude", ScalarTypes.Real),
                 new Parameter("latitude", ScalarTypes.Real),
-                new Parameter("level", ScalarTypes.Int))
+                new Parameter("level", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
