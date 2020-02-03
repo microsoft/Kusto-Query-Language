@@ -383,6 +383,13 @@ namespace Kusto.Language
                 new Parameter("mode", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("exceptionText", ScalarTypes.String, ArgumentKind.Constant));
 
+        public static readonly FunctionSymbol InferStorageSchema =
+             new FunctionSymbol("infer_storage_schema",
+                 new TableSymbol(new[] {
+                    new ColumnSymbol("CslSchema", ScalarTypes.String),
+                 }),
+                 new Parameter("Options", ScalarTypes.Dynamic));
+
         public static readonly IReadOnlyList<ColumnSymbol> NarrowColumns = new[]
         {
             new ColumnSymbol("Row", ScalarTypes.Long),
@@ -524,7 +531,6 @@ namespace Kusto.Language
                  new Parameter("ConnectionString", ScalarTypes.String),
                  new Parameter("SqlQuery", ScalarTypes.String));
 
-
         public static IReadOnlyList<FunctionSymbol> All { get; } = new FunctionSymbol[]
         {
             ActiveUseCounts,
@@ -548,6 +554,7 @@ namespace Kusto.Language
             HttpRequestPost,
             Identity,
             IdentityV3,
+            InferStorageSchema,
             Narrow,
             NewActivityMetrics,
             Pivot,
