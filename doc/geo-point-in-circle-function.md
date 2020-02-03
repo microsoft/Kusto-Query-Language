@@ -28,7 +28,7 @@ Indicates whether the geospatial coordinates are inside a circle. If the coordin
 The following query finds all the places in the area defined by a circle with a radius of 18 km whose center is at [-122.317404, 47.609119] coordinates.
 ![Places near Seattle](./images/queries/geo/circle_seattle.png)
 
-<!-- csl: https://mbrichkokustocluster.westeurope.dev.kusto.windows.net/tesddb1 -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 datatable(longitude:real, latitude:real, place:string)
 [
@@ -47,6 +47,29 @@ datatable(longitude:real, latitude:real, place:string)
 |Seattle|
 |Kirkland|
 |Redmond|
+
+Storm events in Orlando. The events are filtered by Orlando coordinates, within 100km and aggregated by event type and hash.
+![Storm events in Orlando](./images/queries/geo/orlando_storm_events.png)
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
+StormEvents
+| project BeginLon, BeginLat, EventType
+| where geo_point_in_circle(BeginLon, BeginLat, real(-81.3891), 28.5346, 1000 * 100)
+| summarize count() by EventType, hash = geo_point_to_s2cell(BeginLon, BeginLat)
+| project geo_s2cell_to_central_point(hash), EventType, count_
+| render piechart with (kind=map) // map rendering available in Kusto Explorer desktop
+```
+
+The following example shows NY Taxi pickups nearby some location and within 10 meters. Relevant pickups are aggregated by hash.
+![NY Taxi nearby Pickups](./images/queries/geo/circle_junction.png)
+```
+nyc_taxi
+| project pickup_longitude, pickup_latitude
+| where geo_point_in_circle( pickup_longitude, pickup_latitude, real(-73.9928), 40.7429, 10)
+| summarize by hash = geo_point_to_s2cell(pickup_longitude, pickup_latitude, 22)
+| project geo_s2cell_to_central_point(hash)
+| render scatterchart with (kind = map) // map rendering available in Kusto Explorer desktop
+```
 
 The following example will return true.
 <!-- csl: https://help.kusto.windows.net/Samples -->

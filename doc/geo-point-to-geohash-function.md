@@ -54,6 +54,17 @@ See also [geo_point_to_s2cell()](geo-point-to-s2cell-function.md).
 
 **Examples**
 
+US storm events aggregated by geohash.
+![US Geohash](./images/queries/geo/geohash.png)
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```
+StormEvents
+| project BeginLon, BeginLat
+| summarize by hash=geo_point_to_geohash(BeginLon, BeginLat, 3)
+| project geo_geohash_to_central_point(hash)
+| render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
+```
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 print geohash = geo_point_to_geohash(139.806115, 35.554128, 12)  
