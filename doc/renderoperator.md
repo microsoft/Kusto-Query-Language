@@ -2,20 +2,14 @@
 
 Instructs the user agent to render the results of the query in a particular way.
 
-<!-- csl -->
 ```
 range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 ```
 
 > [!NOTE]
-> * The render operator should be the last operator in the query, and used only
->   with queries that produce a single tabular data stream result.
-> * The render operator does not modify data; it injects an annotation
->   ("Visualization") into the result's extended properties. The annotation contains
->   the information provided by the operator in the query.
-> * The interpretation of the visualization information is done by the user
->   agent. Different agents (such as Kusto.Explorer, Kusto.WebExplorer, etc.)
->   might support different visualizations.
+> * The render operator should be the last operator in the query, and used only with queries that produce a single tabular data stream result.
+> * The render operator does not modify data. It injects an annotation ("Visualization") into the result's extended properties. The annotation contains the information provided by the operator in the query.
+> * The interpretation of the visualization information is done by the user agent. Different agents (such as Kusto.Explorer,Kusto.WebExplorer) might support different visualizations.
 
 **Syntax**
 
@@ -30,15 +24,15 @@ Where:
 |*Visualization*     |Description|
 |--------------------|-|
 | `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
-| `areachart`        | Area graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
-| `barchart`         | First column is x-axis, and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
-| `card`             | First result record is treated as set of scalar values and shows as card. |
-| `columnchart`      | Like `barchart`, with vertical strips instead of horizontal strips.|
+| `areachart`        | Area graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
+| `barchart`         | First column is the x-axis and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
+| `card`             | First result record is treated as set of scalar values and shows as a card. |
+| `columnchart`      | Like `barchart` with vertical strips instead of horizontal strips.|
 | `ladderchart`      | Last two columns are the x-axis, other columns are y-axis.|
 | `linechart`        | Line graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
 | `piechart`         | First column is color-axis, second column is numeric. |
 | `pivotchart`       | Displays a pivot table and chart. User can interactively select data, columns, rows and various chart types. |
-| `scatterchart`     | Points graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
+| `scatterchart`     | Points graph. First column is x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `stackedareachart` | Stacked area graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
 | `table`            | Default - results are shown as a table.|
 | `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to â€œgroupâ€ the numeric columns and create different lines in the chart (further string columns are ignored).|
@@ -50,13 +44,13 @@ Where:
 
 |*Visualization*     |Description|
 |--------------------|-|
-| `areachart`        | Area graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
-| `barchart`         | First column is x-axis, and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
-| `columnchart`      | Like `barchart`, with vertical strips instead of horizontal strips.|
+| `areachart`        | Area graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
+| `barchart`         | First column is the x-axis and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
+| `columnchart`      | Like `barchart` with vertical strips instead of horizontal strips.|
 | `piechart`         | First column is color-axis, second column is numeric. |
-| `scatterchart`     | Points graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
+| `scatterchart`     | Points graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `table`            | Default - results are shown as a table.|
-| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to â€œgroupâ€ the numeric columns and create different lines in the chart (further string columns are ignored).|
+| `timechart`        | Line graph. First column is the x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to â€œgroupâ€ the numeric columns and create different lines in the chart (further string columns are ignored).|
 
 ::: zone-end
 
@@ -106,28 +100,27 @@ Some visualizations support splitting into multiple y-axis values:
 |`ysplit`  |Description                                                       |
 |----------|------------------------------------------------------------------|
 |`none`    |A single y-axis is displayed for all series data. (Default)       |
-|`axes`    |A single chart is displayed with multiple y-axis (one per series).|
+|`axes`    |A single chart is displayed with multiple y-axes (one per series).|
 |`panels`  |One chart is rendered for each `ycolumn` value (up to some limit).|
 
-**Notes**
-
-The data model of the render operator looks at the tabular data as if it has
+> [!NOTES]
+> The data model of the render operator looks at the tabular data as if it has
 three kinds of columns:
-
-* The x axis column (indicated by the `xcolumn` property).
-* The series columns (any number of columns indicated by the `series` property.)
-  For each record, the combines values of these columns defines a single series,
-  and the chart has as many series as there are distinct combines values.
-* The y axis columns (any number of columns indicated by the `ycolumns`
+>
+> * The x axis column (indicated by the `xcolumn` property).
+> * The series columns (any number of columns indicated by the `series` property.)
+  For each record, the combined values of these columns defines a single series,
+  and the chart has as many series as there are distinct combined values.
+> * The y axis columns (any number of columns indicated by the `ycolumns`
   property).
   For each record, the series has as many measurements ("points" in the chart)
-  as there are y axis columns.
+  as there are y-axis columns.
 
-**Tips**
-
-* Use `where`, `summarize` and `top` to limit the volume that you display.
-* Sort the data to define the order of the x-axis.
-* User agents are free to "guess" the value of properties that are not specified
+> [!TIP]
+> 
+> * Use `where`, `summarize` and `top` to limit the volume that you display.
+> * Sort the data to define the order of the x-axis.
+> * User agents are free to "guess" the value of properties that are not specified
   by the query. In particular, having "uninteresting" columns in the schema of
   the result might translate into them guessing wrong. Try projecting-away such
   columns when that happens. 
@@ -140,7 +133,6 @@ three kinds of columns:
 
 [Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
 
-<!-- csl -->
 ```
 range x from -2 to 2 step 0.1
 | extend sin = sin(x), cos = cos(x)
@@ -155,7 +147,6 @@ range x from -2 to 2 step 0.1
 
 **Example**
 
-<!-- csl -->
 ```
 range x from -2 to 2 step 0.1
 | extend sin = sin(x), cos = cos(x)
