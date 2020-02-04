@@ -22,46 +22,48 @@ The S2 Cell Token string value of a given geographic location. If the coordinate
 >
 > * S2Cell can be a useful geospatial clustering tool.
 > * S2Cell has 31 levels of hierarchy with area coverage ranging from 85,011,012.19kmÂ² at the highest level 0 to 00.44cmÂ² at the lowest level 30.
-> * S2Cell has preserves the cell center well during level increase from 0 to 30. This is because cells reside along a [Hilbert Curve](https://en.wikipedia.org/wiki/Hilbert_curve).
+> * S2Cell preserves the cell center well during level increase from 0 to 30.
 > * S2Cell is a cell on a sphere surface and it's edges are geodesics.
 > * Invoking the [geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md) function on a s2cell token string that was calculated on longitude x and latitude y won't necessarily return x and y.
 > * It's possible that two geographic locations are very close to each other but have different S2 Cell tokens.
 
-**S2 Cell area coverage per level value:**
+**S2 Cell approximate area coverage per level value**
 
-| Level | Min area    | Max area    | Average area | Units |
-|-------|-------------|-------------|--------------|-------|
-| 0     | 85011012.19 | 85011012.19 | 85011012.19  | kmÂ²   |
-| 1     | 21252753.05 | 21252753.05 | 21252753.05  | kmÂ²   |
-| 2     | 4919708.23  | 6026521.16  | 5313188.26   | kmÂ²   |
-| 3     | 1055377.48  | 1646455.5   | 1328297.07   | kmÂ²   |
-| 4     | 231564.06   | 413918.15   | 332074.27    | kmÂ²   |
-| 5     | 53798.67    | 104297.91   | 83018.57     | kmÂ²   |
-| 6     | 12948.81    | 26113.3     | 20754.64     | kmÂ²   |
-| 7     | 3175.44     | 6529.09     | 5188.66      | kmÂ²   |
-| 8     | 786.2       | 1632.45     | 1297.17      | kmÂ²   |
-| 9     | 195.59      | 408.12      | 324.29       | kmÂ²   |
-| 10    | 48.78       | 102.03      | 81.07        | kmÂ²   |
-| 11    | 12.18       | 25.51       | 20.27        | kmÂ²   |
-| 12    | 3.04        | 6.38        | 5.07         | kmÂ²   |
-| 13    | 0.76        | 1.59        | 1.27         | kmÂ²   |
-| 14    | 0.19        | 0.4         | 0.32         | kmÂ²   |
-| 15    | 47520.3     | 99638.93    | 79172.67     | mÂ²    |
-| 16    | 11880.08    | 24909.73    | 19793.17     | mÂ²    |
-| 17    | 2970.02     | 6227.43     | 4948.29      | mÂ²    |
-| 18    | 742.5       | 1556.86     | 1237.07      | mÂ²    |
-| 19    | 185.63      | 389.21      | 309.27       | mÂ²    |
-| 20    | 46.41       | 97.3        | 77.32        | mÂ²    |
-| 21    | 11.6        | 24.33       | 19.33        | mÂ²    |
-| 22    | 2.9         | 6.08        | 4.83         | mÂ²    |
-| 23    | 0.73        | 1.52        | 1.21         | mÂ²    |
-| 24    | 0.18        | 0.38        | 0.3          | mÂ²    |
-| 25    | 453.19      | 950.23      | 755.05       | cmÂ²   |
-| 26    | 113.3       | 237.56      | 188.76       | cmÂ²   |
-| 27    | 28.32       | 59.39       | 47.19        | cmÂ²   |
-| 28    | 7.08        | 14.85       | 11.8         | cmÂ²   |
-| 29    | 1.77        | 3.71        | 2.95         | cmÂ²   |
-| 30    | 0.44        | 0.93        | 0.74         | cmÂ²   |
+For every level, the size of the s2cell is similar but not exactly equal. Nearby cells size tend to be more equal.
+
+|Level|Minimum random cell edge length (UK)|Maximum random cell edge length (US)|
+|--|--|--|
+|0|7842 km|7842 km|
+|1|3921 km|5004 km|
+|2|1825 km|2489 km|
+|3|840 km|1310 km|
+|4|432 km|636 km|
+|5|210 km|315 km|
+|6|108 km|156 km|
+|7|54 km|78 km|
+|8|27 km|39 km|
+|9|14 km|20 km|
+|10|7 km|10 km|
+|11|3 km|5 km|
+|12|1699 m|2 km|
+|13|850 m|1225 m|
+|14|425 m|613 m|
+|15|212 m|306 m|
+|16|106 m|153 m|
+|17|53 m|77 m|
+|18|27 m|38 m|
+|19|13 m|19 m|
+|20|7 m|10 m|
+|21|3 m|5 m|
+|22|166 cm|2 m|
+|23|83 cm|120 cm|
+|24|41 cm|60 cm|
+|25|21 cm|30 cm|
+|26|10 cm|15 cm|
+|27|5 cm|7 cm|
+|28|2 cm|4 cm|
+|29|12 mm|18 mm|
+|30|6 mm|9 mm|
 
 The table source can be found [here](http://s2geometry.io/resources/s2cell_statistics).
 

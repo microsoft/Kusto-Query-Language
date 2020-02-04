@@ -403,19 +403,19 @@ namespace Kusto.Language
                 new ColumnSymbol("Mapping", ScalarTypes.String));
 
         public static readonly CommandSymbol CreateTableIngestionMapping =
-            new CommandSymbol("create table ingestion mapping", "create table <name>:TableName ingestion! (csv | json):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
+            new CommandSymbol("create table ingestion mapping", "create table <name>:TableName ingestion! (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
 
         public static readonly CommandSymbol AlterTableIngestionMapping =
-            new CommandSymbol("alter table ingestion mapping", "alter table <table>:TableName ingestion (csv | json):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
+            new CommandSymbol("alter table ingestion mapping", "alter table <table>:TableName ingestion (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowTableIngestionMappings =
-            new CommandSymbol("show table ingestion mappings", "show table <table>:TableName ingestion (csv | json):MappingKind mappings", TableIngestionMappingResult);
+            new CommandSymbol("show table ingestion mappings", "show table <table>:TableName ingestion (csv | json | avro | parquet | orc):MappingKind mappings", TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowTableIngestionMapping =
-            new CommandSymbol("show table ingestion mapping", "show table <table>:TableName ingestion (csv | json):MappingKind mapping <string>:MappingName", TableIngestionMappingResult);
+            new CommandSymbol("show table ingestion mapping", "show table <table>:TableName ingestion (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName", TableIngestionMappingResult);
 
         public static readonly CommandSymbol DropTableIngestionMapping =
-            new CommandSymbol("drop table ingestion mapping", "drop table <table>:TableName ingestion (csv | json):MappingKind mapping <string>:MappingName");
+            new CommandSymbol("drop table ingestion mapping", "drop table <table>:TableName ingestion (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName");
         #endregion
 
         #region Columns

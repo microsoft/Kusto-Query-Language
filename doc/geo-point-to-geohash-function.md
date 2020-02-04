@@ -18,14 +18,14 @@ For more information about Geohash, see [here](https://en.wikipedia.org/wiki/Geo
 
 The Geohash string value of a given geographic location with requested accuracy length. If the coordinate or accuracy are invalid, the query will produce an empty result.
 
-**Notes**
-
-* Geohash can be a useful geospatial clustering tool.
-* Geohash has 18 accuracy levels with area coverage ranging from 25 Million kmÂ² at the highest level 1 to 0.6 Î¼Â² at the lowest level 18.
-* Common prefix of Geohashes indicate on proximity of points to each other. The longer a shared prefix is, the closer the two places are. Accuracy value translates to geohash length.
-* Geohash is a rectangular area on a plane surface.
-* Invoking the [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on a geohash string that was calculated on longitude x and latitude y won't necessarily return x and y.
-* Due to the Geohash definition, it's possible that two geographic locations are very close to each other but have different Geohash codes.
+> [!NOTE]
+>
+> * Geohash can be a useful geospatial clustering tool.
+> * Geohash has 18 accuracy levels with area coverage ranging from 25 Million kmÂ² at the highest level 1 to 0.6 Î¼Â² at the lowest level 18.
+> * Common prefix of Geohashes indicate on proximity of points to each other. The longer a shared prefix is, the closer the two places are. Accuracy value translates to geohash length.
+> * Geohash is a rectangular area on a plane surface.
+> * Invoking the [geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md) function on a geohash string that was calculated on longitude x and latitude y won't necessarily return x and y.
+> * Due to the Geohash definition, it's possible that two geographic locations are very close to each other but have different Geohash codes.
 
 **Geohash rectangular area coverage per accuracy value:**
 
