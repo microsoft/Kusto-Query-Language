@@ -26,7 +26,7 @@
 
   // Delete everything from the output folder
   // Default is false
-  "cleanOutputFolderBeforeBuild": true,
+  "cleanOutputFolderBeforeBuild": false,
 
   // Set to false to disable Report generation.
   // Default is false.

@@ -11,7 +11,7 @@ The `externaldata` operator returns a table whose schema is defined in the query
 
 **Arguments**
 
-* *ColumnName*, *ColumnType*: Define the schema of the table. The syntax is the same as the syntax used when defining a table in [.create table](../management/tables.md#create-table).
+* *ColumnName*, *ColumnType*: Define the schema of the table. The syntax is the same as the syntax used when defining a table in [.create table](../management/create-table-command.md).
 * *DataFileUri*: The URI (including authentication option, if any) for the file holding the data.
 * *Prop1*, *Value1*, ...: Additional properties that describe how to interpret the data in the raw file, as listed under [ingestion properties](../management/data-ingestion/index.md).
     * Currently supported properties: `format` and `ignoreFirstRecord`.
