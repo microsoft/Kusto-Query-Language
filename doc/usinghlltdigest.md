@@ -36,12 +36,12 @@ MyTable
 |---------|
 | 1       |
 
-
-To avoid this, use a special [encoding policy type](../management/encoding-policy.md#alter-column-encoding-policy-by-type) `bigobject`, which overrides the MaxValueSize to 2MB like this:
+To avoid this, use the special encoding policy type `bigobject`, which overrides the MaxValueSize to 2MB like this:
 
 ```
 .alter column MyTable.hll_x policy encoding type='bigobject'
 ```
+
 
 So ingesting a value now to the same table above:
 

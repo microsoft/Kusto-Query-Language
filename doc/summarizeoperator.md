@@ -29,7 +29,12 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 * *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
 * *GroupExpression:* An expression over the columns, that provides a set of distinct values. Typically it's either a column name that already provides a restricted set of values, or `bin()` with a numeric or time column as argument. 
 
-If you don't provide a *GroupExpression,* the whole table is summarized in a single output row.
+> [!NOTE]
+> When the input table is empty, the output depends on whether *GroupExpression*
+> is used:
+>
+> * If *GroupExpression* is not provided, the output will be a single (empty) row.
+> * If *GroupExpression* is provided, the output will have no rows.
 
 **Returns**
 
