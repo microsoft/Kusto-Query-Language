@@ -17,7 +17,7 @@ Azure Blob Storage).
   The syntax is the same as the syntax used when defining a table in [.create table](../management/create-table-command.md).
 
 * *StorageConnectionString*: The [storage connection string](../api/connection-strings/storage.md)
-  that describes the storage artifact holding the data to return.
+  describes the storage artifact holding the data to return.
 
 * *Prop1*, *Value1*, ...: Additional properties that describe how to interpret
   the data retrieved from storage, as listed under [ingestion properties](../management/data-ingestion/index.md).
@@ -27,17 +27,16 @@ Azure Blob Storage).
 
 **Returns**
 
-The `externaldata` operator returns a data table of the given schema,
+The `externaldata` operator returns a data table of the given schema
 whose data was parsed from the specified storage artifact
 indicated by the storage connection string.
 
 **Example**
 
-The following example shows you how to find all the records in a table whose
+The following example shows how to find all records in a table whose
 `UserID` column falls into a known set of IDs, held (one per line) in an external blob.
 Because the set is indirectly referenced by the query, it can be very large.
 
-<!-- csl -->
 ```
 Users
 | where UserID in ((externaldata (UserID:string) [
