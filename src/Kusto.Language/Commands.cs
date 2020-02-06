@@ -1054,7 +1054,7 @@ namespace Kusto.Language
                 new TableSymbol(
                     new ColumnSymbol("IsHealthy", ScalarTypes.Bool),
                     new ColumnSymbol("IsScaleOutRequired", ScalarTypes.Bool),
-                    new ColumnSymbol("MachineTotal", ScalarTypes.Long),
+                    new ColumnSymbol("MachinesTotal", ScalarTypes.Long),
                     new ColumnSymbol("MachinesOffline", ScalarTypes.Long),
                     new ColumnSymbol("NodeLastRestartedOn", ScalarTypes.DateTime),
                     new ColumnSymbol("AdminLastElectedOn", ScalarTypes.DateTime),
