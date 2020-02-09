@@ -23,7 +23,6 @@ column `ActivityId`. It demonstrates that some query operators (here,
 the `where` operator, but this is also true for `extend` and `project`)
 preserve the information about the data shard hosting the record.
 
-<!-- csl -->
 ```
 T
 | where Timestamp > ago(1h)
@@ -36,7 +35,6 @@ The following example shows how to obtain a count of all records from the
 last hour, which are stored in extents which are tagged with the tag `MyTag`
 (and potentially other tags), but not tagged with the tag `drop-by:MyOtherTag`.
 
-<!-- csl -->
 ```
 T
 | where Timestamp > ago(1h)

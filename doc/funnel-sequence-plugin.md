@@ -2,7 +2,6 @@
 
 Calculates distinct count of users who've taken a sequence of states, and the distribution of previous/next states that have led to / were followed by the sequence. 
 
-<!-- csl -->
 ```
 T | evaluate funnel_sequence(id, datetime_column, startofday(ago(30d)), startofday(now()), 10m, 1d, state_column, dynamic(['S1', 'S2', 'S3']))
 ```
@@ -46,7 +45,6 @@ Returns 3 output tables, useful for constructing a sankey diagram for the analyz
     dcount: distinct count of <IdColumn> in time window that transitioned [prev] --> <Sequence> --> [next]. 
     samples: an array of ids (from <IdColumn>) corresponding to the row's sequence (a maximum of 128 ids are returned). 
 
-
 **Examples**
 
 ### Exploring Storm Events 
@@ -65,7 +63,6 @@ StormEvents
 Result includes 3 tables:
 
 * Table #1: All possible variants of what happened before and after the sequence. For example, second line tells that there were 87 different events that had next sequence: `Hail` -> `Tornado` -> `Hail`
-
 
 |StartTime|prev|next|dcount|
 |---|---|---|---|

@@ -2,7 +2,6 @@
 
 Returns the standard cumulative beta distribution function.
 
-<!-- csl -->
 ```
 beta_cdf(0.2, 10.0, 50.0)
 ```
@@ -53,7 +52,6 @@ datatable(x:double, alpha:double, beta:double, comment:string)
 |1.5|10|20|x > 1, yields NaN|NaN|
 |-10|10|20|x < 0, yields NaN|NaN|
 |0.1|-1|20|alpha is < 0, yields NaN|NaN|
-
 
 **See also**
 

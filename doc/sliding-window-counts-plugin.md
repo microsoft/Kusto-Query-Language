@@ -5,7 +5,6 @@ using the technique described [here](samples.md#performing-aggregations-over-a-s
 
 For instance, for each *day*, calculate count and distinct count of users in previous *week*. 
 
-<!-- csl -->
 ```
 T | evaluate sliding_window_counts(id, datetime_column, startofday(ago(30d)), startofday(now()), 7d, 1d, dim1, dim2, dim3)
 ```
@@ -40,7 +39,6 @@ Output table schema is:
 
 Calculate counts and dcounts for users in past week, for every day in the analysis period. 
 
-<!-- csl -->
 ```
 let start = datetime(2017 - 08 - 01);
 let end = datetime(2017 - 08 - 07); 

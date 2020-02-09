@@ -78,7 +78,6 @@ The names of the arguments/variables (`input` and `context` in the example above
 
 ### Examples
 
-<!-- csl -->
 ```
 range x from 1 to 360 step 1
 | as T
@@ -121,7 +120,6 @@ range x from 1 to 360 step 1
 
     For example:
 
-    <!-- csl -->
     ```
     .show operations
     | where StartedOn > ago(7d) // Filtering out irrelevant records before invoking the plugin
@@ -148,7 +146,6 @@ range x from 1 to 360 step 1
   
   For example:
 
-    <!-- csl -->
     ```    
     let script = 
         externaldata(script:string)
@@ -165,7 +162,6 @@ range x from 1 to 360 step 1
 * One can run the plugin in `debug` mode, in order to to get the auto-generated code as a string literal.
   For example:
 
-    <!-- csl -->
     ```
     print c_string = "hello world!", c_datetime = now(), c_timespan = 10sec, c_double = 0.5, c_decimal = decimal(1.23)
     | evaluate csharp(typeof(c_bool:bool), 'debug')

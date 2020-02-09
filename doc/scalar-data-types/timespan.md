@@ -33,7 +33,6 @@ fractional number of times one value can fit the other.
 
 The following example calculates how many seconds are in a day in several ways:
 
-<!-- csl -->
 ```
 print
     result1 = 1d / 1s,

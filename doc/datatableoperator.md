@@ -36,7 +36,6 @@ This operator returns a data table of the given schema and data.
 
 **Example**
 
-<!-- csl -->
 ```
 datatable (Date:datetime, Event:string)
     [datetime(1910-06-11), "Born",

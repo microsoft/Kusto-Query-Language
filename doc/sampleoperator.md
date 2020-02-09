@@ -2,7 +2,6 @@
 
 Returns up to the specified number of random rows from the input table.
 
-<!-- csl -->
 ```
 T | sample 5
 ```

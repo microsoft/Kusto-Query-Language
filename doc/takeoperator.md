@@ -2,7 +2,6 @@
 
 Return up to the specified number of rows.
 
-<!-- csl -->
 ```
 T | take 5
 ```

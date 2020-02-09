@@ -24,7 +24,6 @@ the tabular data stream and its value is returned as the results of the query.
 Note in particular how the column `c` is referenced by name without a need to
 reference its container (indeed, that container has no name):
 
-<!-- csl -->
 ```
 datatable (c:int) [int(-1), 0, 1, 2, 3]
 | where c*c >= 2

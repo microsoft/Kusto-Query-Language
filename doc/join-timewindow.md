@@ -56,7 +56,6 @@ We want our query to answer the following question:
 
 Semantically, the following query answers this question, albeit inefficiently:
 
-<!-- csl -->
 ```
 T 
 | where EventType == 'A'
@@ -85,7 +84,6 @@ The idea is to rewrite the query so that the `datetime` values are
 "discretized" into buckets whose size is half the size of the time window.
 We can then use Kusto's equi-join to compare those bucket IDs.
 
-<!-- csl -->
 ```
 let lookupWindow = 1min;
 let lookupBin = lookupWindow / 2.0; // lookup bin = equal to 1/2 of the lookup window

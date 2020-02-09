@@ -2,7 +2,6 @@
 
 Produce a table that represents a tabular schema of the input.
 
-<!-- csl -->
 ```
 T | summarize MyCount=count() by Country | getschema 
 ```

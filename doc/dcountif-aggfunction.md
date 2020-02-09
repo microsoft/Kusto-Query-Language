@@ -27,7 +27,6 @@ Returns an estimate of the number of distinct values of *Expr*  of rows for whic
 
 **Example**
 
-<!-- csl -->
 ```
 PageViewLog | summarize countries=dcountif(country, country startswith "United") by continent
 ```

@@ -1,6 +1,5 @@
 # narrow plugin
 
-<!-- csl -->
 ```
 T | evaluate narrow()
 ```
@@ -19,7 +18,6 @@ tables to be displayed comfortably without the need of horizontal scrolling.
 The following example shows an easy way to read the output of the Kusto
 `.show diagnostics` control command.
 
-<!-- csl -->
 ```
 .show diagnostics
  | evaluate narrow()

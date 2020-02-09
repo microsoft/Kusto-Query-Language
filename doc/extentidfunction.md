@@ -23,7 +23,6 @@ column `ActivityId`. It demonstrates that some query operators (here,
 the `where` operator, but this is also true for `extend` and `project`)
 preserve the information about the data shard hosting the record.
 
-<!-- csl -->
 ```
 T
 | where Timestamp > ago(1h)

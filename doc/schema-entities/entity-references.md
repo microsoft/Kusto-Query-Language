@@ -25,14 +25,9 @@ In some contexts, one may use a wildcard (`*`) to match all or part of an entity
 name. For example, the following query references all tables in the current database,
 as well as all tables in database `DB` whose name starts with a `T`:
 
-<!-- csl -->
 ```
 union *, database("DB1").T*
 ```
 
 Note: Wildcard matching does not match entity names that start with a dollar sign (`$`).
 Such names are system-reserved.
-
-
-
-

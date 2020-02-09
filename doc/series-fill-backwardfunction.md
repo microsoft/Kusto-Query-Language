@@ -18,7 +18,6 @@ Takes an expression containing dynamic numerical array as input, replaces all in
 
 * In order to apply any interpolation functions after [make-series](make-seriesoperator.md) it is recommended to specify *null* as a default value: 
 
-<!-- csl -->
 ```
 make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h), 1h) by Os, Browser
 ```

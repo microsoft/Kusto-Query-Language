@@ -4,7 +4,6 @@ Returns a single column that contains up to the specified number of distinct val
 
 the default (and currently only) flavor of the operator tries to return an answer as quickly as possible (rather than trying to make a fair sample)
 
-<!-- csl -->
 ```
 T | sample-distinct 5 of DeviceId
 ```

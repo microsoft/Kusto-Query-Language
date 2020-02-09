@@ -2,7 +2,6 @@
 
 Returns binary shift right operation on a pair of numbers.
 
-<!-- csl -->
 ```
 binary_shift_right(x,y)	
 ```

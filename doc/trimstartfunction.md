@@ -19,7 +19,6 @@ Removes leading match of the specified regular expression.
 
 Statement bellow trims *substring*  from the start of *string_to_trim*:
 
-<!-- csl -->
 ```
 let string_to_trim = @"https://bing.com";
 let substring = "https://";
@@ -32,7 +31,6 @@ print string_to_trim = string_to_trim,trimmed_string = trim_start(substring,stri
 
 Next statement trims all non-word characters from the beginning of the string:
 
-<!-- csl -->
 ```
 range x from 1 to 5 step 1
 | project str = strcat("-  ","Te st",x,@"// $")
@@ -46,5 +44,3 @@ range x from 1 to 5 step 1
 |-  Te st3// $|Te st3// $|
 |-  Te st4// $|Te st4// $|
 |-  Te st5// $|Te st5// $|
-
- 

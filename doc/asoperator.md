@@ -28,8 +28,6 @@ the query and binding a name through the [let statement](letstatement.md).
 
 **Examples**
 
-<!-- csl -->
-
 ```
 // 1. In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'
 range x from 1 to 10 step 1 

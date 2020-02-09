@@ -19,7 +19,6 @@ Removes trailing match of the specified regular expression.
 
 Statement bellow trims *substring*  from the end of *string_to_trim*:
 
-<!-- csl -->
 ```
 let string_to_trim = @"bing.com";
 let substring = ".com";
@@ -32,7 +31,6 @@ print string_to_trim = string_to_trim,trimmed_string = trim_end(substring,string
 
 Next statement trims all non-word characters from the end of the string:
 
-<!-- csl -->
 ```
 print str = strcat("-  ","Te st",x,@"// $")
 | extend trimmed_str = trim_end(@"[^\w]+",str)

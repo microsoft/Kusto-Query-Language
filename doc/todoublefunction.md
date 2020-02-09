@@ -2,7 +2,6 @@
 
 Converts the input to a value of type `real`. (`todouble()` and `toreal()` are synonyms.)
 
-<!-- csl -->
 ```
 toreal("123.4") == 123.4
 ```

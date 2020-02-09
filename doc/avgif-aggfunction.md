@@ -19,7 +19,6 @@ The average value of *Expr* across the group where *Predicate* evaluates to `tru
  
 **Examples**
 
-<!-- csl -->
 ```
 range x from 1 to 100 step 1
 | summarize avgif(x, x%2 == 0)

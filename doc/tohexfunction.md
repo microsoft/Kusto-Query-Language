@@ -2,7 +2,6 @@
 
 Converts input to a hexadecimal string.
 
-<!-- csl -->
 ```
 tohex(256) == '100'
 tohex(-256) == 'ffffffffffffff00' // 64-bit 2's complement of -256

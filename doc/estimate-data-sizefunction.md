@@ -2,7 +2,6 @@
 
 Returns an estimated data size in bytes of the selected columns of the tabular expression.
 
-<!-- csl -->
 ```
 estimate_data_size(*)
 estimate_data_size(Col1, Col2, Col3)

@@ -2,7 +2,6 @@
 
 Converts input  to [timespan](./scalar-data-types/timespan.md) scalar.
 
-<!-- csl -->
 ```
 totimespan("0.00:01:00") == time(1min)
 ```

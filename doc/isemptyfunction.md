@@ -2,7 +2,7 @@
 
 Returns `true` if the argument is an empty string or is null.
     
-<!-- csl -->
+
 ```
 isempty("") == true
 ```
@@ -25,7 +25,6 @@ Indicates whether the argument is an empty string or isnull.
 
 **Example**
 
-<!-- csl -->
 ```
 T
 | where isempty(fieldName)

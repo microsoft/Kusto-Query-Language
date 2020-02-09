@@ -46,7 +46,6 @@ The following variables are reserved for interaction between Kusto query languag
 
 ### Examples
 
-<!-- csl -->
 ```
 range x from 1 to 360 step 1
 | evaluate python(
@@ -78,7 +77,6 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
 
     Example:
 
-    <!-- csl -->
     ```    
     .show operations
     | where StartedOn > ago(7d) // Filtering out irrelevant records before invoking the plugin
@@ -106,7 +104,6 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
   
 	**Example**
 
-    <!-- csl -->
     ```    
     let script = 
         externaldata(script:string)

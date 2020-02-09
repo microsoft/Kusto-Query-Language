@@ -22,7 +22,6 @@ of a given bin size (round(2.15, 1) returns 2.2 while bin(2.15, 1) returns 2).
 
 **Examples**
 
-<!-- csl -->
 ```
 round(2.15, 1)                   // 2.2
 round(2.15) (which is the same as round(2.15, 0))                   // 2

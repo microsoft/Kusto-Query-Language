@@ -27,7 +27,6 @@ If a key appears in more than one row, an arbitrary value (out of the possible v
 
 **Examples**
 
-<!-- csl -->
 ```
 let T = datatable(prop:string, value:string, predicate:bool)
 [
@@ -47,7 +46,6 @@ T
 
 Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag_if() output into columns. 
 
-<!-- csl -->
 ```
 let T = datatable(prop:string, value:string, predicate:bool)
 [

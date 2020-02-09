@@ -19,7 +19,6 @@ Multiple tables: one for the `with` clause, and one for each column.
 
 **Example**
 
-<!-- csl -->
 ```
 MyTable 
 | facet by city, eventType 

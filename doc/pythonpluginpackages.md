@@ -12,7 +12,6 @@ You can self install packages by zipping them, upload the zip to a blob storage,
     * Open a support ticket to enable the sandbox accessing that location. The ticket's subject should be "Altering callout policy for sandbox artifacts" and the description should include the command to run.
         * For example, to enable access to a blob located in https://    artifcatswestus.blob.core.windows.net/python the command to run is:
 
-        <!-- csl -->
         ```
         .alter-merge cluster policy callout @'[{"CalloutType": "sandbox_artifacts","CalloutUriRegex": "artifcatswestus\\.blob\\.core\\.windows\\.net/python/","CanCall": true}]'
         ```
@@ -46,7 +45,6 @@ You can self install packages by zipping them, upload the zip to a blob storage,
 
 Installing the [Faker](https://pypi.org/project/Faker/) package that generates fake data:
 
-<!-- csl -->
 ```
 range Id from 1 to 3 step 1 
 | extend Name=''

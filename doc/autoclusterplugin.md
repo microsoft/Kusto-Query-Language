@@ -1,6 +1,5 @@
 # autocluster plugin
 
-<!-- csl -->
 ```
 T | evaluate autocluster()
 ```

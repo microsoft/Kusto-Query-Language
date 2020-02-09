@@ -2,7 +2,6 @@
 
 Detects sequence occurrences based on provided predicates.
 
-<!-- csl -->
 ```
 T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
 ```

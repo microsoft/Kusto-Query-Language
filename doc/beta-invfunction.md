@@ -2,7 +2,6 @@
 
 Returns the inverse of the beta cumulative probability beta density function.
 
-<!-- csl -->
 ```
 beta_inv(0.1, 10.0, 50.0)
 ```

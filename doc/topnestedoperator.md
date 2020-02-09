@@ -2,7 +2,6 @@
 
 Produces hierarchical top results, where each level is a drill-down based on previous level values. 
 
-<!-- csl -->
 ```
 T | top-nested 3 of Location with others="Others" by sum(MachinesNumber), top-nested 4 of bin(Timestamp,5m) by sum(MachinesNumber)
 ```
@@ -51,10 +50,8 @@ This means that the top n values for level i are calculated for each value in le
 
 * If you are not interested in getting `with others=` for some level, null values will be appended (for the aggreagated column and the level key, see example below).
 
-
 * It is possible to return additional columns for the selected top-nested candidates by appending additional top-nested statements like these (see examples below):
 
-<!-- csl -->
 ```
 top-nested 2 of ...., ..., ..., top-nested of <additionalRequiredColumn1> by max(1), top-nested of <additionalRequiredColumn2> by max(1)
 ```
@@ -87,8 +84,6 @@ StormEvents
 | top-nested 2 of State with others = "All Other States" by sum(BeginLat),
   top-nested 3 of Source by sum(BeginLat),
   top-nested 1 of EndLocation with others = "All Other End Locations" by  sum(BeginLat)
-
-
 ```
 
 |State|aggregated_State|Source|aggregated_Source|EndLocation|aggregated_EndLocation|
@@ -109,7 +104,6 @@ StormEvents
 |TEXAS|123400.5101|||All Other End Locations|58523.2932000001|
 |All Other States|1149279.5923|||All Other End Locations|1149279.5923|
 
-
 The following query shows the same results for the first level used in the example above:
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
@@ -122,7 +116,6 @@ The following query shows the same results for the first level used in the examp
 |sum_BeginLat|
 |---|
 |1149279.5923|
-
 
 Requesting another column (EventType) to the top-nested result: 
 

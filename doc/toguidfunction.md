@@ -2,7 +2,6 @@
 
 Converts input to [`guid`](./scalar-data-types/guid.md) representation.
 
-<!-- csl -->
 ```
 toguid("70fc66f7-8279-44fc-9092-d364d70fce44") == guid("70fc66f7-8279-44fc-9092-d364d70fce44")
 ```

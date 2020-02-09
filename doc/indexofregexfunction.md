@@ -25,7 +25,7 @@ In case of irrelevant (less than 0) *start_index*, *occurrence* or (less than -1
 
 
 **Examples**
-<!-- csl -->
+
 ```
 print
  idx1 = indexof_regex("abcabc", "a.c") // lookup found in input string

@@ -2,7 +2,6 @@
 
 Returns a result of the bitwise `and` operation between two values.
 
-<!-- csl -->
 ```
 binary_and(x,y)	
 ```

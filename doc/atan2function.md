@@ -17,7 +17,6 @@ Calculates the angle, in radians, between the positive x-axis and the ray from t
 
 **Examples**
 
-<!-- csl -->
 ```
 print atan2_0 = atan2(1,1) // Pi / 4 radians (45 degrees)
 | extend atan2_1 = atan2(0,-1) // Pi radians (180 degrees)

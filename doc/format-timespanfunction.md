@@ -2,7 +2,6 @@
 
 Formats a timespan according to the provided format.
 
-<!-- csl -->
 ```
 format_timespan(time(14.02:03:04.12345), 'h:m:s.fffffff') == "2:3:4.1234500"
 ```
@@ -77,4 +76,3 @@ v2=format_timespan(t, 'ddd.h:mm:ss [fffffff]')
 |v1|v2|
 |---|---|
 |29.09:00:05:12|029.9:00:05 [1234500]|
-

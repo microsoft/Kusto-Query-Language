@@ -27,7 +27,7 @@ Returns -1 if the string is not found in the input.
 In case of irrelevant (less than 0) *start_index*, *occurrence* or (less than -1) *length* parameter - returns *null*.
 
 **Examples**
-<!-- csl -->
+
 ```
 print
  idx1 = indexof("abcdefg","cde")    // lookup found in input string
@@ -44,4 +44,3 @@ print
 |idx1|idx2|idx3|idx4|idx5|idx6|idx7|idx8|idx9|
 |----|----|----|----|----|----|----|----|----|
 |2   |2   |-1  |-1  |    |4   |2   |9   |-1  |
-

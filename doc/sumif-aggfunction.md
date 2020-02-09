@@ -24,7 +24,6 @@ The sum value of *Expr* for which *Predicate* evaluates to `true`.
 
 **Example**
 
-<!-- csl -->
 ```
 let T = datatable(name:string, day_of_birth:long)
 [

@@ -2,7 +2,6 @@
 
 Compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
 
-<!-- csl -->
 ```
 T | evaluate diffpatterns_text(TextColumn, BooleanCondition)
 ```

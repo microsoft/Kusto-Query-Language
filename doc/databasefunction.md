@@ -27,7 +27,6 @@ cluster('help').database('Sample').StormEvents
 
 ### Use database() to access table of other database. 
 
-<!-- csl -->
 ```
 database('Samples').StormEvents | count
 ```
@@ -41,7 +40,6 @@ database('Samples').StormEvents | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-<!-- csl -->
 ```
 let foo = (dbName:string)
 {
@@ -59,7 +57,6 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-<!-- csl -->
 ```
 .create function foo(dbName:string)
 {

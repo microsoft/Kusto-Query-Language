@@ -19,7 +19,6 @@ A datetime representing the start of the week for the given *date* value, with t
 
 **Example**
 
-<!-- csl -->
 ```
   range offset from -1 to 1 step 1
  | project weekStart = startofweek(datetime(2017-01-01 10:10:17), offset) 

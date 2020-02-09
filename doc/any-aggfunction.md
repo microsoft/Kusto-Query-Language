@@ -38,7 +38,6 @@ over a single record (per distinct group).
 
 Show Random Continent:
 
-<!-- csl -->
 ```
 Continents | summarize any(Continent)
 ```
@@ -47,7 +46,6 @@ Continents | summarize any(Continent)
 
 Show all the details for a random record:
 
-<!-- csl -->
 ```
 Continents | summarize any(*)
 ```
@@ -56,7 +54,6 @@ Continents | summarize any(*)
 
 Show all the details for each random continent:
 
-<!-- csl -->
 ```
 Continents | summarize any(*) by Continent
 ```

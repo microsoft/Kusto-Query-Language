@@ -2,7 +2,6 @@
 
 Returns the integer number represents the day number of the given year.
 
-<!-- csl -->
 ```
 dayofyear(datetime(2015-12-14))
 ```

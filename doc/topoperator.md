@@ -2,7 +2,6 @@
 
 Returns the first *N* records sorted by the specified columns.
 
-<!-- csl -->
 ```
 T | top 5 by Name desc nulls last
 ```

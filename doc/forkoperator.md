@@ -32,7 +32,6 @@ The input stream will be cached by materialize and then the cached expression ca
 
 **Examples**
 
-<!-- csl -->
 ```
 KustoLogs
 | where Timestamp > ago(1h)

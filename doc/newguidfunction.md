@@ -2,7 +2,6 @@
 
 Returns a random GUID (Globally Unique Identifier).
 
-<!-- csl -->
 ```
 new_guid()
 ```

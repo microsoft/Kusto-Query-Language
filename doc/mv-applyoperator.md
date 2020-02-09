@@ -9,7 +9,6 @@ whose values are arrays of `real` numbers. The following query will locate the
 two biggest values in each `Metric` value, and return the records corresponding
 to these values.
 
-<!-- csl -->
 ```
 T | mv-apply Metric to typeof(real) on (top 2 by Metric desc)
 ```

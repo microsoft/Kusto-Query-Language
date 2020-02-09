@@ -3,7 +3,6 @@
 The `lookup` operator extends the columns of a fact table with values
 looked-up in a dimension table.
 
-<!-- csl -->
 ```
 FactTable | lookup kind=leftouter (DimensionTable) on CommonColumn, $left.Col1 == $right.Col2
 ```
@@ -76,7 +75,6 @@ A table with:
 
 **Examples**
 
-<!-- csl -->
 ```
 let FactTable=datatable(Row:string,Personal:string,Family:string) [
   "1", "Bill",   "Gates",

@@ -2,7 +2,6 @@
 
 Converts input to boolean (signed 8-bit) representation.
 
-<!-- csl -->
 ```
 tobool("true") == true
 tobool("false") == false

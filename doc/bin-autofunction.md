@@ -23,7 +23,6 @@ will be translated into itself.
 
 **Examples**
 
-<!-- csl -->
 ```
 set query_bin_auto_size=1h;
 set query_bin_auto_at=datetime(2017-01-01 00:05);

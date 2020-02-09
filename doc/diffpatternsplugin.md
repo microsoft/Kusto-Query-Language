@@ -1,6 +1,5 @@
 # diffpatterns plugin
 
-<!-- csl -->
 ```
 T | evaluate diffpatterns(splitColumn)
 ```

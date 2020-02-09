@@ -27,7 +27,6 @@ Thus, the modulo of two numbers, *N* % *D*, is such that:
 
 For example, the following query:
 
-<!-- csl -->
 ```
 print plusPlus = 14 % 12, minusPlus = -14 % 12, plusMinus = 14 % -12, minusMinus = -14 % -12
 ```

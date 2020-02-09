@@ -5,7 +5,6 @@ Broadcast join is an execution strategy of join which will distribute it over cl
 
 If left side of the join is a small dataset, then you may run join in broadcast mode using the following syntax (hint.strategy = broadcast):
 
-<!-- csl -->
 ```
 lookupTable 
 | join hint.strategy = broadcast (factTable) on key
@@ -13,7 +12,6 @@ lookupTable
 
 Performance improvement will be more noticeable in scenarios where the join is followed by other operators such as `summarize`. for example in this query:
 
-<!-- csl -->
 ```
 lookupTable 
 | join hint.strategy = broadcast (factTable) on Key

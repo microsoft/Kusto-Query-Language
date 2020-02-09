@@ -2,7 +2,6 @@
 
 Calculates funnel of completed sequence steps within comparing different time periods.
 
-<!-- csl -->
 ```
 T | evaluate funnel_sequence_completion(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, state_column, dynamic(['S1', 'S2', 'S3']), dynamic([10m, 30min, 1h]))
 ```
@@ -65,4 +64,3 @@ StormEvents
 Understanding the results:  
 The outcome it 3 funnels (for periods: 1 hour, 4 hours, and 1 day), while for each funnel step a number 
 of distinct count of EpisodeId is shown. You can see that the more time is given to complete the whole sequence of `Hail` -> `Tornado` -> `Thunderstorm Wind` the higher `dcount` value (meaning more occurrences of the sequence reaching the step of the funnel).
-

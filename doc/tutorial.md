@@ -243,7 +243,6 @@ Although we removed `mid` in the project operation, we still need it if we want 
 
 Strictly speaking, 'render' is a feature of the client rather than part of the query language. Still, it's integrated into the language and is very useful for envisioning your results.
 
-
 ## Timecharts
 
 Going back to numeric bins, let's display a time series:
@@ -370,7 +369,6 @@ Events
 It's good practice to use `project` to select just the columns we need before performing the join.
 In the same clauses, we rename the timestamp column.
 
-
 ## Plot a distribution
 
 How many storms are there of different lengths?
@@ -387,11 +385,9 @@ StormEvents
 | render timechart
 ```
 
-
 ![alt text](./images/tour/170.png "170")
 
 Or use `| render columnchart`:
-
 
 ![alt text](./images/tour/160.png "160")
 
@@ -401,7 +397,6 @@ What ranges of durations cover different percentages of storms?
 
 Use the above query, but replace `render` with:
 
-<!-- csl -->
 ```
 | summarize percentiles(duration, 5, 20, 50, 80, 95)
 ```
@@ -449,7 +444,8 @@ LightningStorms
 | distinct State
 ```
 
-> Tip: In the Kusto client, don't put blank lines between the parts of this. Make sure to execute all of it.
+> [!TIP]
+> In the Kusto client, don't put blank lines between the parts of this. Make sure to execute all of it.
 
 ## Combining data from several databases in a query
 
@@ -457,33 +453,29 @@ See [cross-database queries](./cross-cluster-or-database-queries.md) for detaile
 
 When you write a query of the style:
 
-<!-- csl -->
 ```
 Logs | where ...
 ```
 
 The table named Logs has to be in your default database. If you want to access table from another database use the following syntax:
 
-<!-- csl -->
 ```
 database("db").Table
 ```
 
 So if you have databases named *Diagnostics* and *Telemetry* and want to correlate some of their data, you might write (assuming *Diagnostics* is your default database)
 
-<!-- csl -->
 ```
 Logs | join database("Telemetry").Metrics on Request MachineId | ...
 ```
 or if your default database is *Telemetry*
 
-<!-- csl -->
 ```
 union Requests, database("Diagnostics").Logs | ...
 ```
     
 All of the above assumed that both databases reside in the cluster you are currently connected to. Suppose that *Telemetry* database belonged to another cluster named *TelemetryCluster.kusto.windows.net* then to access it you'll need
-<!-- csl -->
+
 ```
 Logs | join cluster("TelemetryCluster").database("Telemetry").Metrics on Request MachineId | ...
 ```

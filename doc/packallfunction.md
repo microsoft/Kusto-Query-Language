@@ -17,7 +17,7 @@ Given a table SmsMessages
 |555-555-1212 |555-555-1234 | 32 
 
 The following query:
-<!-- csl -->
+
 ```
 SmsMessages | extend Packed=pack_all()
 ``` 

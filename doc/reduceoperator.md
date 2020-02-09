@@ -2,7 +2,6 @@
 
 Groups a set of strings together based on values similarity.
 
-<!-- csl -->
 ```
 T | reduce by LogMessage with threshold=0.1
 ```
@@ -63,7 +62,6 @@ range x from 1 to 1000 step 1
 The following example shows how one might apply the `reduce` operator to a "sanitized"
 input, in which GUIDs in the column being reduced are replaced prior to reducing
 
-<!-- csl -->
 ```
 // Start with a few records from the Trace table.
 Trace | take 10000

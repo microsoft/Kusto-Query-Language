@@ -21,7 +21,6 @@ The standard deviation value of *Expr* across the group.
  
 **Examples**
 
-<!-- csl -->
 ```
 range x from 1 to 5 step 1
 | summarize make_list(x), stdevp(x)

@@ -2,7 +2,6 @@
 
 Converts input to a string representation.
 
-<!-- csl -->
 ```
 tostring(123) == "123"
 ```

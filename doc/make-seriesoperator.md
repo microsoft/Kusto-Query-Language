@@ -2,7 +2,6 @@
 
 Create series of specified aggregated values along specified axis. 
 
-<!-- csl -->
 ```
 T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from datetime(2016-01-01) to datetime(2016-01-10) step 1d by fruit, supplier
 ```
@@ -109,7 +108,6 @@ It is recommended to use the main syntax of make-series and not the alternate sy
   
  A table that shows arrays of the numbers and average prices of each fruit from each supplier ordered by the timestamp with specified range. There's a row in the output for each distinct combination of fruit and supplier. The output columns show the fruit, supplier and arrays of: count, average and the whole time line (from 2016-01-01 until 2016-01-10). All arrays are sorted by the respective timestamp and all gaps are filled with default values (0 in this example). All other input columns are ignored.
   
-<!-- csl -->
 ```
 T | make-series PriceAvg=avg(Price) default=0
 on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplier, Fruit

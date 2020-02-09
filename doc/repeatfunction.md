@@ -17,7 +17,6 @@ If *count* is less than zero, a null value is returned.
 
 The following example returns `[1, 1, 1]`:
 
-<!-- csl -->
 ```
 T | extend r = repeat(1, 3)
 ```

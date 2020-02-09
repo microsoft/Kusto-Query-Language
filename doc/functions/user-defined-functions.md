@@ -29,7 +29,6 @@ A function's inputs and output determine how and where it can be used:
 
 Example of scalar function:
 
-<!-- csl -->
 ```
 let Add7 = (arg0:long = 5) { arg0 + 7 };
 range x from 1 to 10 step 1
@@ -47,7 +46,6 @@ tenNumbers
 
 Example of a tabular function that uses a tabular input and a scalar input (all tabular parameters must appear before scalar parameters):
 
-<!-- csl -->
 ```
 let MyFilter = (T:(x:long), v:long) {
   T | where x >= v 
@@ -62,7 +60,7 @@ MyFilter((range x from 1 to 10 step 1), 9)
 
 Example of a tabular function that uses a tabular input with no column specified. Any table can be passed to a function, and no table's column can be referenced inside the function.
 
-<!-- csl -->
+
 ```
 let MyDistinct = (T:(*)) {
   T | distinct * 
@@ -88,7 +86,6 @@ The declaration of a user-defined function provides:
 > Lambda functions do not have a name and are bound to a name using a [let statement](../letstatement.md). Therefore, they can be regarded as user-defined stored functions.
 > Example: Declaration for a lambda that accepts two arguments (a `string` called `s` and a `long` called`i`). It returns the product of the first (after converting it into a number) and the second. The lambda is bound to the name `f`:
 
-<!-- csl -->
 ```
 let f=(s:string, i:long) {
     tolong(s) * i
@@ -119,7 +116,6 @@ The following example binds the name `Test` to a user-defined
 function (lambda) that makes use of three let
 statements. The output is `70`:
 
-<!-- csl -->
 ```
 let Test1 = (id: int) {
   let Test2 = 10;
@@ -139,7 +135,6 @@ range x from 1 to Test1(10) step 1
 The following example shows a function that accepts three arguments, the latter
 two have a default value and do not have to be present at the call site.
 
-<!-- csl -->
 ```
 let f = (a:long, b:string = "b.default", c:long = 0) {
   strcat(a, "-", b, "-", c)
@@ -152,7 +147,6 @@ print f(12, c=7) // Returns "12-b.default-7"
 A user-defined function that takes no arguments can be invoked by its
 name, or by its name with an empty argument list in parentheses. For example:
 
-<!-- csl -->
 ```
 // Bind the identifier a to a user-defined function (lambda) that takes
 // no arguments and returns a constant of type long:
@@ -162,7 +156,6 @@ range x from 1 to 10 step 1
 | extend y = x * a, z = x * a() 
 ```
 
-<!-- csl -->
 ```
 // Bind the identifier T to a user-defined function (lambda) that takes
 // no arguments and returns a random two-by-two table:
@@ -180,7 +173,6 @@ union T, (T())
 A user-defined function that takes one or more scalar arguments can be invoked
 by using the table name and a concrete argument list in parentheses:
 
-<!-- csl -->
 ```
 let f=(a:string, b:string) {
   strcat(a, " (la la la)", b)
@@ -204,7 +196,6 @@ takes one or more table arguments and returns a table. This is useful when
 the first concrete table argument to the function is the source of the `invoke`
 operator:
 
-<!-- csl -->
 ```
 let append_to_column_a=(T:(a:string), what:string) {
     T | extend a=strcat(a, " ", what)
@@ -234,7 +225,6 @@ The following example returns a table with two identical records; Note that
 in the first invocation of `f`, the arguments are completely "scrambled", and
 therefore each one is explicitly given a name:
 
-<!-- csl -->
 ```
 let f = (a:long, b:string = "b.default", c:long = 0) {
   strcat(a, "-", b, "-", c)
@@ -258,7 +248,6 @@ is done. The following example shows two user-defined functions, `T_view` and
 `T_notview`, and shows how only the first one is resolved by the wildcard
 reference in the `union`:
 
-<!-- csl -->
 ```
 let T_view = view () { print x=1 };
 let T_notview = () { print x=2 };
@@ -286,10 +275,8 @@ with an argument that varies with the row context is when the
 user-defined function is composed of scalar functions only and
 doesn't make use of `toscalar()`.
 
-
 **Example of Restriction 1**
 
-<!-- csl -->
 ```
 // Supported:
 // f is a scalar function that doesn't reference any tabular expression
@@ -317,7 +304,6 @@ Table2 | where Column != 123 | project d = f(Column)
 
 **Example of Restriction 2**
 
-<!-- csl -->
 ```
 // Not supported:
 // f is a tabular function that is invoked in a context
@@ -337,3 +323,4 @@ Table2 | where Column != 123 | project d = f(Column)
    The default value for a scalar parameter to a function must be
    a scalar literal (constant). Also, stored functions can't
    have a default value of type `dynamic`.
+   

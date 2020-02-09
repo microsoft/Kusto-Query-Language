@@ -2,7 +2,6 @@
 
 Formats a datetime according to the provided format.
 
-<!-- csl -->
 ```
 format_datetime(datetime(2015-12-14 02:03:04.12345), 'y-M-d h:m:s.fffffff') == "15-12-14 2:3:4.1234500"
 ```

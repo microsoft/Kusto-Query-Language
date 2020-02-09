@@ -21,7 +21,7 @@ current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
 
 **Examples**
-<!-- csl -->
+
 ```
 Table | serialize | extend prevA = prev(A,1)
 | extend diff = A - prevA

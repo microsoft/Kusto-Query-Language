@@ -4,7 +4,6 @@ The `consume` operator consumes the tabular data stream handed to it. It is
 mostly used for triggering the query side-effect without actually returning
 the results back to the caller.
 
-<!-- csl -->
 ```
 T | consume
 ```

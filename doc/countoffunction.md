@@ -2,7 +2,6 @@
 
 Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches do not.
 
-<!-- csl -->
 ```
 countof("The cat sat on the mat", "at") == 3
 countof("The cat sat on the mat", @"\b.at\b", "regex") == 3

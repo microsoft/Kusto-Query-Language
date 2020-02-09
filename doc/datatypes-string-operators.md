@@ -52,7 +52,6 @@ For faster results, if you are testing for the presence of a symbol or alphanume
 
 For example, the first of these queries runs faster:
 
-<!-- csl -->
 ```
 EventLog | where continent has "North" | count;
 EventLog | where continent contains "nor" | count

@@ -13,7 +13,6 @@ as a value of type `string`.
 
 **Example**
 
-<!-- csl -->
 ```
 print strcat("This query executed on: ", current_cluster_endpoint())
 ```

@@ -38,7 +38,6 @@ Let's suppose we have a log of events, in which some events mark the start or en
 
 Every event has an SessionId, so the problem is to match up the start and stop events with the same id.
 
-<!-- csl -->
 ```
 let Events = MyLogTable | where ... ;
 
@@ -55,7 +54,6 @@ Events
 Use [`let`](./letstatement.md) to name a projection of the table that is pared down as far as possible before going into the join.
 [`Project`](./projectoperator.md) is used to change the names of the timestamps so that both the start and stop times can appear in the result. It also selects the other columns we want to see in the result. [`join`](./joinoperator.md)  matches up the start and stop entries for the same activity, creating a  row for each activity. Finally, `project` again adds a column to show the duration of the activity.
 
-
 |City|SessionId|StartTime|StopTime|Duration|
 |---|---|---|---|---|
 |London|2817330|2015-12-09T10:12:02.32|2015-12-09T10:23:43.18|00:11:40.46|
@@ -65,7 +63,6 @@ Use [`let`](./letstatement.md) to name a projection of the table that is pared d
 
 Now let's suppose that the start and stop events don't conveniently have a session id that we can match on. But we do have an IP address of the client where the session took place. Assuming each client address only conducts one session at a time, we can match each start event to the next stop event from the same IP address.
 
-<!-- csl -->
 ```
 Events 
 | where Name == "Start" 
@@ -93,7 +90,6 @@ Then we group by start time and ip to get a group for each session. We must supp
 
 Then we can add some code to count the durations in conveniently-sized bins. We've a slight preference for a bar chart, so we divide by `1s` to convert the timespans to numbers. 
 
-
       // Count the frequency of each duration:
     | summarize count() by duration=bin(min_duration/1s, 10) 
       // Cut off the long tail:
@@ -107,7 +103,6 @@ Then we can add some code to count the durations in conveniently-sized bins. We'
 
 ### Real example
 
-<!-- csl -->
 ```
 Logs  
 | filter ActivityId == "ActivityId with Blablabla" 
@@ -192,7 +187,6 @@ We want a chart in 1-minute bins, so we want to create something that, at each 1
 
 Here's an intermediate result:
 
-<!-- csl -->
 ```
 X | extend samples = range(bin(StartTime, 1m), StopTime, 1m)
 ```
@@ -207,7 +201,6 @@ X | extend samples = range(bin(StartTime, 1m), StopTime, 1m)
 
 But instead of keeping those arrays, we'll expand them using [mv-expand](./mvexpandoperator.md):
 
-<!-- csl -->
 ```
 X | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 ```
@@ -227,7 +220,6 @@ X | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 
 We can now group these by sample time, counting the occurrences of each activity:
 
-<!-- csl -->
 ```
 X
 | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
@@ -236,7 +228,6 @@ X
 
 * We need todatetime() because [mv-expand](./mvexpandoperator.md) yields a column of dynamic type.
 * We need bin() because, for numeric values and dates, summarize always applies a bin function with a default interval if you don't supply one. 
-
 
 | count_SessionId | samples|
 |---|---|
@@ -255,7 +246,6 @@ When the `summarize` operator is applied over a group key that consists of a
 `datetime` column, one normally "bins" those values to fixed-width bins.
 For example:
 
-<!-- csl -->
 ```
 let StartTime=ago(12h);
 let StopTime=now()
@@ -273,7 +263,6 @@ no corresponding row in `T`.
 Often, it is desired to "pad" the table with those bins. Here's one way to do
 it:
 
-<!-- csl -->
 ```
 let StartTime=ago(12h);
 let StopTime=now()
@@ -309,7 +298,6 @@ There are many interesting use cases for leveraging machine learning algorithms 
 
 Our journey starts with looking for anomalies in the error rate of a specific Bing Inferences service. The Logs table has 65B records, and the simple query below filters 250K errors, and creates a time series data of errors count that utilizes anomaly detection function [series_decompose_anomalies](series-decompose-anomaliesfunction.md). The anomalies are detected by the Kusto service, and are highlighted as red dots on the time series chart.
 
-<!-- csl -->
 ```
 Logs
 | where Timestamp >= datetime(2015-08-22) and Timestamp < datetime(2015-08-23) 
@@ -320,7 +308,6 @@ Logs
 
 The service identified few time buckets with suspicious error rate. I'm using Kusto to zoom into this time frame, running a query that aggregates on the â€˜Message' column trying to look for the top errors. I've trimmed the relevant parts out of the entire stack trace of the message to better fit into the page. You can see that I had nice success with the top eight errors, but then reached a long tail of errors since the error message was created by a format string that contained changing data. 
 
-<!-- csl -->
 ```
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
@@ -345,7 +332,6 @@ Logs
 
 This is where the `reduce` operator comes to help. The `reduce` operator identified 63 different errors as originated by the same trace instrumentation point in the code, and helped me focus on additional meaningful error trace in that time window.
 
-<!-- csl -->
 ```
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
@@ -368,7 +354,6 @@ Logs
 
 Now that I have a good view into the top errors that contributed to the detected anomalies, I want to understand the impact of these errors across my system. The 'Logs' table contains additional dimensional data such as 'Component', 'Cluster', etc... The new 'autocluster' plugin can help me derive that insight with a simple query. In this example below, I can clearly see that each of the top four errors is specific to a component, and while the top three errors are specific to DB4 cluster, the fourth one happens across all clusters.
 
-<!-- csl -->
 ```
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
@@ -388,7 +373,6 @@ Logs
 A common use-case is using static mapping of values that can help in adopting results into more presentable way.  
 For example, consider having next table. DeviceModel  specifies a model of the device, which is not a very convenient form of referencing to the device name.â€¯ 
 
-
 |DeviceModel |Count 
 |---|---
 |iPhone5,1 |32 
@@ -396,7 +380,6 @@ For example, consider having next table. DeviceModel  specifies a model of the d
 |iPhone7,2 |55 
 |iPhone5,2 |66 
 
-â€¯ 
 A better representation may be:  
 
 |FriendlyName |Count 
@@ -441,15 +424,12 @@ Source
 |iPhone 6|55|
 |iPhone5|66|
 
-
-
 ### Mapping using static table
 
 The approach below shows how the mapping can be achieved using a persistent table and join operator.
  
 Create the mapping table (just once):
 
-<!-- csl -->
 ```
 .create table Devices (DeviceModel: string, FriendlyName: string) 
 
@@ -466,20 +446,16 @@ Content of Devices now:
 |iPhone7,2 |iPhoneâ€¯6 
 |iPhone5,2 |iPhone5 
 
-
 Same trick for creating test table Source:
 
-<!-- csl -->
 ```
 .create table Source (DeviceModel: string, Count: int)
 
 .ingest inline into table Source ["iPhone5,1",32]["iPhone3,2",432]["iPhone7,2",55]["iPhone5,2",66]
 ```
 
-
 Join and project:
 
-<!-- csl -->
 ```
 Devices  
 | join (Source) on DeviceModel  
@@ -494,7 +470,6 @@ Result:
 |iPhoneâ€¯4 |432 
 |iPhoneâ€¯6 |55 
 |iPhone5 |66 
-
 
 ## Creating and using query-time dimension tables
 
@@ -518,7 +493,6 @@ DimTable
 
 Here's a slightly more complex example:
 
-<!-- csl -->
 ```
 // Create a query-time dimension table using datatable
 let TeamFoundationJobResult = datatable(Result:int, ResultString:string)
@@ -549,7 +523,6 @@ column, where "latest" is defined as "having the highest value of `timestamp`".
 This can be done using the [top-nested operator](topnestedoperator.md).
 First we provide the query, and then we'll explain it:
 
-<!-- csl -->
 ```
 datatable(id:string, timestamp:datetime, bla:string)           // (1)
   [
@@ -603,7 +576,6 @@ and then divide each value of this column by the total. It is possible to do
 so for arbitrary results by giving these results a name using the
 [as operator](asoperator.md):
 
-<!-- csl -->
 ```
 // The following table literal represents a long calculation
 // that ends up with an anonymous tabular value:

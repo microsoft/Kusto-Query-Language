@@ -2,7 +2,6 @@
 
 Create calculated columns and append them to the result set.
 
-<!-- csl -->
 ```
 T | extend duration = endTime - startTime
 ```
@@ -36,7 +35,6 @@ A copy of the input tabular result set, such that:
 
 **Example**
 
-<!-- csl -->
 ```
 Logs
 | extend

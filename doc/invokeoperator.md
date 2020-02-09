@@ -2,7 +2,6 @@
 
 Invokes lambda that receives the source of `invoke` as tabular parameter argument.
 
-<!-- csl -->
 ```
 T | invoke foo(param1, param2)
 ```
@@ -48,4 +47,3 @@ range x from 1 to 100 step 1
 |avg_x|
 |---|
 |52|
-

@@ -18,7 +18,6 @@ Arguments, concatenated to a single string.
 
 **Examples**
   
-   <!-- csl -->
 ```
 print str = strcat("hello", " ", "world")
 ```

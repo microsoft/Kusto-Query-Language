@@ -27,7 +27,6 @@ The hash value of the given scalar, modulo the given mod value (if specified).
 
 **Examples**
 
-<!-- csl -->
 ```
 hash("World")                   // 1846988464401551951
 hash("World", 100)              // 51 (1846988464401551951 % 100)

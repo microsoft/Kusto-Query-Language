@@ -2,7 +2,6 @@
 
 Returns the minimum value of several evaluated numeric expressions.
 
-<!-- csl -->
 ```
 min_of(10, 1, -3, 17) == -3
 ```

@@ -2,7 +2,6 @@
 
 Select what columns in the input to exclude from the output
 
-<!-- csl -->
 ```
 T | project-away price, quantity, zz*
 ```
@@ -55,5 +54,3 @@ print  a2='a2', b = 'b', a3='a3', a1='a1'
 |b|
 |---|
 |b|
-
-

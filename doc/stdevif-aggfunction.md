@@ -19,7 +19,6 @@ The standard deviation value of *Expr* across the group where *Predicate* evalua
  
 **Examples**
 
-<!-- csl -->
 ```
 range x from 1 to 100 step 1
 | summarize stdevif(x, x%2 == 0)

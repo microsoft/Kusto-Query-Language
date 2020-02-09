@@ -13,7 +13,6 @@ The name of the database in scope as a value of type `string`.
 
 **Example**
 
-<!-- csl -->
 ```
 print strcat("Database in scope: ", current_database())
 ```

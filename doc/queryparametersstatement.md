@@ -44,13 +44,11 @@ value according to its normal parsing rules for that type.
 
 **Examples**
 
-<!-- csl -->
 ```
 declare query_parameters(UserName:string, Password:string);
 print n=UserName, p=hash(Password)
 ```
 
-<!-- csl -->
 ```
 declare query_parameters(percentage:long = 90);
 T | where Likelihood > percentage

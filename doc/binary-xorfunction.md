@@ -2,7 +2,6 @@
 
 Returns a result of the bitwise `xor` operation of the two values.
 
-<!-- csl -->
 ```
 binary_xor(x,y)
 ```

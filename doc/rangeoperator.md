@@ -51,7 +51,6 @@ range Steps from 1 to 8 step 3
 The next example shows how the `range` operator can be used to create
 a small, ad-hoc, dimension table which is then used to introduce zeros where the source data has no values.
 
-<!-- csl -->
 ```
 range TIMESTAMP from ago(4h) to now() step 1m
 | join kind=fullouter

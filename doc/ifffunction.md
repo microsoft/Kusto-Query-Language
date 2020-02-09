@@ -21,7 +21,6 @@ or the value of *ifFalse* otherwise.
 
 **Example**
 
-<!-- csl -->
 ```
 T 
 | extend day = iff(floor(Timestamp, 1d)==floor(now(), 1d), "today", "anotherday")

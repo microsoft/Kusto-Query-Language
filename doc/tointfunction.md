@@ -2,7 +2,6 @@
 
 Converts input to integer (signed 32-bit) number representation.
 
-<!-- csl -->
 ```
 toint("123") == 123
 ```

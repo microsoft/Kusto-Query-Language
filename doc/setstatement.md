@@ -20,7 +20,6 @@ statements that trail them in the program order.
 
 **Example**
 
-<!-- csl -->
 ```
 set querytrace;
 Events | take 100

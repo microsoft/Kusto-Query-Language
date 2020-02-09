@@ -16,7 +16,6 @@ Returns the length, in bytes, of the input string.
 
 **Examples**
 
-<!-- csl -->
 ```
 print size = string_size("hello")
 ```
@@ -25,7 +24,6 @@ print size = string_size("hello")
 |---|
 |5|
 
-<!-- csl -->
 ```
 print size = string_size("â’¦â’°â’®â’¯â’ª")
 ```
