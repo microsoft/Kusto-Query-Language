@@ -961,9 +961,21 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
 
-#region query operators
+            public override SemanticInfo VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
+            {
+                var resultType = _binder.GetResultTypeOrError(node.AggregationsClause.Expression);
+                return new SemanticInfo(resultType);
+            }
+
+            public override SemanticInfo VisitMaterializedViewCombineClause(MaterializedViewCombineClause node)
+            {
+                // handled by VisitMaterializedViewCombineExpression
+                return null;
+            }
+            #endregion
+
+            #region query operators
             /// <summary>
             /// True if the query operator is on the right hand side of a pipe expression.
             /// </summary>
@@ -979,7 +991,8 @@ namespace Kusto.Language.Binding
                     || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
                     || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
                     || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
-                    || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe));
+                    || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))
+                    || (expr.Parent is MaterializedViewCombineClause mvc && mvc.Parent is MaterializedViewCombineExpression mve && mve.AggregationsClause == mvc);
             }
 
             private void CheckFirstInPipe(QueryOperator queryOp, List<Diagnostic> diagnostics)

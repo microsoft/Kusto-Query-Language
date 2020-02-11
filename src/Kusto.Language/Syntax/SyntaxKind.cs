@@ -205,6 +205,7 @@
         MappingsKeyword,
         MatchesRegexKeyword,
         MaterializeKeyword,
+        MaterializedViewCombineKeyword,
         MdmKeyword,
         MemoryKeyword,
         MergeKeyword,
@@ -516,6 +517,8 @@
         ExternalDataExpression,
         ExternalDataWithClause,
         ExternalDataUriList,
+        MaterializedViewCombineExpression,
+        MaterializedViewCombineClause,
 
         // nullary?
         StarExpression,

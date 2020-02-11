@@ -2440,12 +2440,69 @@ namespace Kusto.Language.Parsing
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
                         (Expression)new ExternalDataExpression(keyword, parameters, schema, openBracket, name, closeBracket, withClause));
 
+            var ParenthesizedSummarizeOperator =
+                Rule(
+                    Token("("),
+                    Required(SummarizeOperator, MissingQueryOperator),
+                    RequiredToken(")"),
+                    (openParen, summarize, closeParen) =>
+                        (Expression)new ParenthesizedExpression(openParen, summarize, closeParen));
+
+            var MaterializedViewCombineBaseClause =
+                Rule(
+                    Token("base")
+                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "base", "base (", ")")),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Table),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, open, expression, close) =>
+                        new MaterializedViewCombineClause(keyword, open, expression, close));
+
+            var MaterializedViewCombineDeltaClause =
+                Rule(
+                    Token("delta")
+                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "delta", "delta (", ")")),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Tabular),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, open, expression, close) =>
+                        new MaterializedViewCombineClause(keyword, open, expression, close));
+
+            var MaterializedViewCombineAggregationsClause =
+                Rule(
+                    Token("aggregations")
+                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "aggregations", "aggregations (summarize ", ")")),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(SummarizeOperator, MissingQueryOperator).WithCompletionHint(CompletionHint.Query),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, open, summarize, close) =>
+                        new MaterializedViewCombineClause(keyword, open, summarize, close));
+
+            Func<MaterializedViewCombineClause> MissingMaterializedViewCombineClause(string name) =>
+                () =>
+                    new MaterializedViewCombineClause(
+                        SyntaxToken.Missing(SyntaxKind.MaterializedViewCombineClause),
+                        SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                        (Expression)MissingExpressionNode.Clone(),
+                        SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                        new[] { DiagnosticFacts.GetMissingClause(name) });
+
+            var MaterializedViewCombineExpression =
+                Rule(
+                    Token(SyntaxKind.MaterializedViewCombineKeyword, CompletionKind.TabularPrefix),
+                    Required(MaterializedViewCombineBaseClause, MissingMaterializedViewCombineClause("base")),
+                    Required(MaterializedViewCombineDeltaClause, MissingMaterializedViewCombineClause("delta")),
+                    Required(MaterializedViewCombineAggregationsClause, MissingMaterializedViewCombineClause("aggregates")),
+                    (keyword, baseClause, deltaClause, aggregatesClause) =>
+                        (Expression)new MaterializedViewCombineExpression(keyword, baseClause, deltaClause, aggregatesClause));
+
             PrimaryExpressionCore =
                 First(
                     ConstantExpression,
                     ParenthesizedExpression,
                     DataTableExpression,
                     ExternalDataExpression,
+                    MaterializedViewCombineExpression,
                     PrimaryPathSelector);
 
             this.Statement =

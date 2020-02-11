@@ -236,6 +236,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MappingsKeyword, "mappings", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.MatchesRegexKeyword, "matches regex", opKind: OperatorKind.MatchRegex),
                 new SyntaxData(SyntaxKind.MaterializeKeyword, "materialize"),
+                new SyntaxData(SyntaxKind.MaterializedViewCombineKeyword, "materialized-view-combine"),
                 new SyntaxData(SyntaxKind.MdmKeyword, "mdm"),
                 new SyntaxData(SyntaxKind.MemoryKeyword, "memory", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.MergeKeyword, "merge", canBeIdentifier: true),
@@ -526,6 +527,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ExternalDataExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ExternalDataWithClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ExternalDataUriList, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MaterializedViewCombineExpression, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MaterializedViewCombineClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.IntLiteralExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BooleanLiteralExpression, "", SyntaxCategory.Node),

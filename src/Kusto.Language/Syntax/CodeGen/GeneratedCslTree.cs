@@ -2433,6 +2433,170 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ToTableExpression */
     
+    #region class MaterializedViewCombineExpression
+    /// <summary>
+    /// A node in the Kusto syntax that represents the materilized-view-combine expression.
+    /// </summary>
+    public sealed partial class MaterializedViewCombineExpression : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.MaterializedViewCombineExpression;
+        
+        public SyntaxToken MaterializedViewCombineKeyword { get; }
+        
+        public MaterializedViewCombineClause BaseClause { get; }
+        
+        public MaterializedViewCombineClause DeltaClause { get; }
+        
+        public MaterializedViewCombineClause AggregationsClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MaterializedViewCombineExpression"/>.
+        /// </summary>
+        internal MaterializedViewCombineExpression(SyntaxToken materializedViewCombineKeyword, MaterializedViewCombineClause baseClause, MaterializedViewCombineClause deltaClause, MaterializedViewCombineClause aggregationsClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.MaterializedViewCombineKeyword = Attach(materializedViewCombineKeyword);
+            this.BaseClause = Attach(baseClause);
+            this.DeltaClause = Attach(deltaClause);
+            this.AggregationsClause = Attach(aggregationsClause);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return MaterializedViewCombineKeyword;
+                case 1: return BaseClause;
+                case 2: return DeltaClause;
+                case 3: return AggregationsClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(MaterializedViewCombineKeyword);
+                case 1: return nameof(BaseClause);
+                case 2: return nameof(DeltaClause);
+                case 3: return nameof(AggregationsClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMaterializedViewCombineExpression(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMaterializedViewCombineExpression(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new MaterializedViewCombineExpression((SyntaxToken)MaterializedViewCombineKeyword?.Clone(), (MaterializedViewCombineClause)BaseClause?.Clone(), (MaterializedViewCombineClause)DeltaClause?.Clone(), (MaterializedViewCombineClause)AggregationsClause?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class MaterializedViewCombineExpression */
+    
+    #region class MaterializedViewCombineClause
+    /// <summary>
+    /// A node in the Kusto syntax that represents the materilized-view-combine clause.
+    /// </summary>
+    public sealed partial class MaterializedViewCombineClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.MaterializedViewCombineClause;
+        
+        public SyntaxToken Keyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public Expression Expression { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MaterializedViewCombineClause"/>.
+        /// </summary>
+        internal MaterializedViewCombineClause(SyntaxToken keyword, SyntaxToken openParen, Expression expression, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Keyword = Attach(keyword);
+            this.OpenParen = Attach(openParen);
+            this.Expression = Attach(expression);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Keyword;
+                case 1: return OpenParen;
+                case 2: return Expression;
+                case 3: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Keyword);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(Expression);
+                case 3: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMaterializedViewCombineClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMaterializedViewCombineClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new MaterializedViewCombineClause((SyntaxToken)Keyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class MaterializedViewCombineClause */
+    
     #region class NamedExpression
     /// <summary>
     /// A node in the Kusto syntax that represents a named expression.
@@ -11619,6 +11783,8 @@ namespace Kusto.Language.Syntax
         public abstract void VisitFunctionCallExpression(FunctionCallExpression node);
         public abstract void VisitToScalarExpression(ToScalarExpression node);
         public abstract void VisitToTableExpression(ToTableExpression node);
+        public abstract void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node);
+        public abstract void VisitMaterializedViewCombineClause(MaterializedViewCombineClause node);
         public abstract void VisitSimpleNamedExpression(SimpleNamedExpression node);
         public abstract void VisitRenameList(RenameList node);
         public abstract void VisitCompoundNamedExpression(CompoundNamedExpression node);
@@ -11858,6 +12024,14 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitToTableExpression(ToTableExpression node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMaterializedViewCombineClause(MaterializedViewCombineClause node)
         {
             this.DefaultVisit(node);
         }
@@ -12365,6 +12539,8 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitFunctionCallExpression(FunctionCallExpression node);
         public abstract TResult VisitToScalarExpression(ToScalarExpression node);
         public abstract TResult VisitToTableExpression(ToTableExpression node);
+        public abstract TResult VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node);
+        public abstract TResult VisitMaterializedViewCombineClause(MaterializedViewCombineClause node);
         public abstract TResult VisitSimpleNamedExpression(SimpleNamedExpression node);
         public abstract TResult VisitRenameList(RenameList node);
         public abstract TResult VisitCompoundNamedExpression(CompoundNamedExpression node);
@@ -12604,6 +12780,14 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitToTableExpression(ToTableExpression node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMaterializedViewCombineClause(MaterializedViewCombineClause node)
         {
             return this.DefaultVisit(node);
         }

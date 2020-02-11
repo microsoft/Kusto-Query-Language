@@ -103,6 +103,7 @@ namespace Kusto.Language.Editor
                         case SyntaxKind.ColonToken:
                         case SyntaxKind.BarToken:
                         case SyntaxKind.EqualToken:
+                        case SyntaxKind.CloseParenToken: // some clauses end in ) but there is more to go
                             return true;
                     }
 
@@ -1512,23 +1513,32 @@ namespace Kusto.Language.Editor
             var expr = GetCompleteExpressionLeftOfPosition(position);
 
             // look for completions in the grammar elements corresponding to the text position
-            ScanGrammarAtPosition(position, g =>
+            ScanGrammarAtPosition(position, p =>
             {
                 this.cancellationToken.ThrowIfCancellationRequested();
 
-                for (int i = 0, n = g.Annotations.Count; i < n; i++)
+                if (p.Annotations.Count > 0)
                 {
-                    var item = g.Annotations[i] as CompletionItem;
-                    if (item != null)
+                    // add in any completion hints associated with this parser
+                    foreach (var hint in p.Annotations.OfType<CompletionHint>())
+                    {
+                        hints |= hint;
+                    }
+
+                    // consider all completion items associated with this parser
+                    foreach (var item in p.Annotations.OfType<CompletionItem>())
                     {
                         if (IncludeSyntax(item, position, hints, match, expr))
                         {
                             if (ShouldAugmentSyntaxCompletionItem(item))
                             {
-                                item = GetAugmentedCompletionItem(item);
+                                var augmentedItem = GetAugmentedCompletionItem(item);
+                                builder.Add(augmentedItem);
                             }
-
-                            builder.Add(item);
+                            else
+                            {
+                                builder.Add(item);
+                            }
                         }
                     }
                 }

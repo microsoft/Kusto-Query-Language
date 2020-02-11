@@ -461,9 +461,6 @@
   <PropertyGroup Condition="Exists('..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets')">
     <PackageRoot>..\packages</PackageRoot>
   </PropertyGroup>
-  <PropertyGroup>
-    <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bridge, Version=17.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(PackageRoot)\Bridge.Core.17.1.1\lib\net40\Bridge.dll</HintPath>

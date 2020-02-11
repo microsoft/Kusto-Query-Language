@@ -149,6 +149,11 @@ namespace Kusto.Language
             return GetMissingElement("clause");
         }
 
+        public static Diagnostic GetMissingClause(string clauseName)
+        {
+            return GetMissingElement($"{clauseName} clause");
+        }
+
         public static Diagnostic GetParsePatternMustStartWithColumnNameOrStar()
         {
             return new Diagnostic("The pattern must start with a column name or *");

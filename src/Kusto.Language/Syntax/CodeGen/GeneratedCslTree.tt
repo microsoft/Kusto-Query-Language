@@ -497,6 +497,38 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "MaterializedViewCombineExpression",
+        Doc = "A node in the Kusto syntax that represents the materilized-view-combine expression.",
+        Base = "Expression",
+        Sealed = true,
+        Kind = "MaterializedViewCombineExpression",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "MaterializedViewCombineKeyword", Type="SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "BaseClause", Type="MaterializedViewCombineClause", Completion="Syntax" },
+            new GeneratedProperty { Name = "DeltaClause", Type="MaterializedViewCombineClause", Completion="Syntax" },
+            new GeneratedProperty { Name = "AggregationsClause", Type="MaterializedViewCombineClause", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "MaterializedViewCombineClause",
+        Doc = "A node in the Kusto syntax that represents the materilized-view-combine clause.",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "MaterializedViewCombineClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "Keyword", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Syntax"},
+            new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "NamedExpression",
         Doc = "A node in the Kusto syntax that represents a named expression.",
         Base = "Expression",

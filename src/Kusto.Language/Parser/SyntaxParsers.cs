@@ -109,19 +109,19 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Add completion annotation to the parser.
+        /// Creates a new version of the parser with the ComplationItem annotation set.
         /// </summary>
         public static Parser<LexicalToken, TElement> WithCompletion<TElement>(this Parser<LexicalToken, TElement> parser, params CompletionItem[] items)
         {
-            return parser.WithAnnotations(parser.Annotations.Concat(items));
+            return parser.WithAnnotations(parser.Annotations.Where(a => !(a is CompletionItem)).Concat(items));
         }
 
         /// <summary>
-        /// Add completion hint to the parser.
+        /// Creates a new version of the parser with the CompletionHint annotation set.
         /// </summary>
         public static Parser<LexicalToken, TElement> WithCompletionHint<TElement>(this Parser<LexicalToken, TElement> parser, CompletionHint hint)
         {
-            return parser.WithAnnotations(parser.Annotations.Concat(new[] { (object)hint }));
+            return parser.WithAnnotations(parser.Annotations.Where(a => !(a is CompletionHint)).Concat(new[] { (object)hint }));
         }
 
         /// <summary>

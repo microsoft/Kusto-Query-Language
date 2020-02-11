@@ -382,6 +382,16 @@ namespace Kusto.Language.Binding
                     }
                 }
             }
+
+            public override void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
+            {
+                base.VisitMaterializedViewCombineExpression(node);
+
+                if (_position > node.AggregationsClause.OpenParen.TextStart)
+                {
+                    _binder._rowScope = _binder.GetResultType(node.DeltaClause.Expression) as TableSymbol;
+                }
+            }
         }
     }
 }

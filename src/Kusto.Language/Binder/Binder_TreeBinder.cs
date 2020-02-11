@@ -323,6 +323,26 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
+            {
+                node.BaseClause.Accept(this);
+                node.DeltaClause.Accept(this);
+
+                var oldScope = _binder._rowScope;
+                try
+                {
+                    _binder._rowScope = _binder.GetResultType(node.DeltaClause.Expression) as TableSymbol;
+                    node.AggregationsClause.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+
+                }
+
+                BindNode(node);
+            }
+
             public override void VisitParenthesizedExpression(ParenthesizedExpression node)
             {
                 // nested expressions should not see any existing path scope
