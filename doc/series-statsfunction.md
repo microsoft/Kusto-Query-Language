@@ -6,25 +6,26 @@ The `series_stats()` function takes a column containing dynamic numerical array 
 * `min`: minimum value in the input array
 * `min_idx`: first position of the minimum value in the input array
 * `max`: maximum value in the input array
-* `max_idx`:  first position of the maximum value in the input array
+* `max_idx`: first position of the maximum value in the input array
 * `avg`: average value of the input array
 * `variance`: sample variance of input array
 * `stdev`: sample standard deviation of the input array
 
-*Note* that this function returns multiple columns therefore it cannot be used as an argument for another function.
+> [!NOTE] 
+> This function returns multiple columns so it can't be used as an argument for another function.
 
 **Syntax**
 
 project `series_stats(`*x* `[,`*ignore_nonfinite*`])` or extend `series_stats(`*x*`)` 
-* Will return all mentioned above columns with the following names: series_stats_x_min, series_stats_x_min_idx and etc.
+Returns all above-mentioned columns with the following names: series_stats_x_min, series_stats_x_min_idx and etc.
  
 project (m, mi)=`series_stats(`*x*`)` or extend (m, mi)=`series_stats(`*x*`)`
-* Will return the following columns: m (min) and mi (min_idx).
+Returns the following columns: m (min) and mi (min_idx).
 
 **Arguments**
 
-* *x*: Dynamic array cell which is an array of numeric values. 
-* *ignore_nonfinite*: Boolean (optional, default: `false`) flag that specifies whether to calculate the statistics while ignoring non-finite values (*null*, *NaN*, *inf*, etc.). If set to `false` the returned values would be `null` if non-finite values are present in the array.
+* *x*: Dynamic array cell, which is an array of numeric values. 
+* *ignore_nonfinite*: Boolean (optional, default: `false`) flag that specifies whether to calculate the statistics while ignoring non-finite values (*null*, *NaN*, *inf*, etc.). If set to `false`, the returned values would be `null` if non-finite values are present in the array.
 
 **Example**
 

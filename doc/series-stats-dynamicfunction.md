@@ -1,12 +1,12 @@
 # series_stats_dynamic()
 
-Returns statistics for a series in dynamic object.  
+Returns statistics for a series in a dynamic object.  
 
 The `series_stats_dynamic()` function takes a column containing dynamic numerical array as input and generates a dynamic value with the following content:
 * `min`: minimum value in the input array
-* `min_idx`: minimum value in the input array
+* `min_idx`: first position of the minimum value in the input array
 * `max`: maximum value in the input array
-* `max_idx`: maximum value in the input array
+* `max_idx`: first position of the maximum value in the input array
 * `avg`: average value of the input array
 * `variance`: sample variance of input array
 * `stdev`: sample standard deviation of the input array
@@ -20,16 +20,13 @@ The `series_stats_dynamic()` function takes a column containing dynamic numerica
 * *x*: Dynamic array cell which is an array of numeric values. 
 * *ignore_nonfinite*: Boolean (optional, default: `false`) flag that specifies whether to calculate the statistics while ignoring non-finite values (*null*, *NaN*, *inf*, etc.). If set to `false` the returned result is `null` if non-finite values are present in the array.
 
-
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```
 print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
 | project stats=series_stats_dynamic(x)
-
 ```
-
 
 |stats
 |---|
