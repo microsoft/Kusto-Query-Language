@@ -4074,13 +4074,18 @@ namespace Kusto.Language.Binding
 
             return null;
         }
-#endregion
+        #endregion
 
-#region Other
+        #region Other
         /// <summary>
         /// Gets the type referenced in the type expression.
         /// </summary>
         private TypeSymbol GetTypeFromTypeExpression(TypeExpression typeExpression, List<Diagnostic> diagnostics = null)
+        {
+            return GetDeclaredType(typeExpression, diagnostics, this);
+        }
+
+        internal static TypeSymbol GetDeclaredType(TypeExpression typeExpression, List<Diagnostic> diagnostics = null, Binder binder = null)
         {
             switch (typeExpression)
             {
@@ -4106,11 +4111,14 @@ namespace Kusto.Language.Binding
                                 switch (expr)
                                 {
                                     case NameAndTypeDeclaration nat:
-                                        var declaredType = GetTypeFromTypeExpression(nat.Type, diagnostics);
+                                        var declaredType = GetDeclaredType(nat.Type, diagnostics, binder);
                                         var newColumn = new ColumnSymbol(nat.Name.SimpleName, declaredType);
                                         columns.Add(newColumn);
 
-                                        SetSemanticInfo(nat.Name, GetSemanticInfo(newColumn));
+                                        if (binder != null)
+                                        {
+                                            binder.SetSemanticInfo(nat.Name, GetSemanticInfo(newColumn));
+                                        }
                                         break;
 
                                     default:

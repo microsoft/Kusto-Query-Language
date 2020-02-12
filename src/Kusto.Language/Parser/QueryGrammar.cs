@@ -59,6 +59,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, Name> BrackettedName { get; private set; }
         public Parser<LexicalToken, Name> BracedName { get; private set; }
         public Parser<LexicalToken, TypeExpression> ParamTypeExtended { get; private set; }
+        public Parser<LexicalToken, SchemaTypeExpression> SchemaType { get; private set; }
         public Parser<LexicalToken, Expression> SimpleNameReference { get; private set; }
         public Parser<LexicalToken, Expression> ConstantExpression { get; private set; }
         public Parser<LexicalToken, Expression> Literal { get; private set; }
@@ -343,7 +344,7 @@ namespace Kusto.Language.Parsing
                         (openParen, columns, closeParen) =>
                             new SchemaTypeExpression(openParen, columns, closeParen));
 
-            var SchemaType =
+            this.SchemaType =
                 First(
                     If(And(Token(SyntaxKind.OpenParenToken), Token(SyntaxKind.AsteriskToken)), SchemaAsteriskType),
                     SchemaMultipartType);

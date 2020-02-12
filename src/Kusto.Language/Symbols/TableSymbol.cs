@@ -5,6 +5,7 @@ using System.Linq;
 namespace Kusto.Language.Symbols
 {
     using Utils;
+    using Parsing;
 
     /// <summary>
     /// A symbol representing a table
@@ -63,6 +64,28 @@ namespace Kusto.Language.Symbols
         public TableSymbol(params ColumnSymbol[] columns)
             : this((IEnumerable<ColumnSymbol>)columns)
         {
+        }
+
+        /// <summary>
+        /// Gets a <see cref="TableSymbol"/> for the schema: (name:type, ...)
+        /// </summary>
+        public static TableSymbol From(string schema)
+        {
+            if (schema == null)
+            {
+                throw new ArgumentNullException(nameof(schema));
+            }
+
+            // Use null for GlobalState to avoid cycle in definitions.
+            var parser = QueryGrammar.From(null).SchemaType;
+
+            var schemaType = parser.ParseFirst(schema);
+            if (schemaType == null)
+            {
+                throw new InvalidOperationException($"Invalid schema: {schema}");
+            }
+
+            return (TableSymbol)Binding.Binder.GetDeclaredType(schemaType);
         }
 
         public override SymbolKind Kind => SymbolKind.Table;

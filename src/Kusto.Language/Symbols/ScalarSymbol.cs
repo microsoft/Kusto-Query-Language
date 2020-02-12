@@ -29,6 +29,14 @@ namespace Kusto.Language.Symbols
             this.WiderThan = widerThan.ToReadOnly();
         }
 
+        /// <summary>
+        /// Gets the <see cref="ScalarSymbol"/> for the type name.
+        /// </summary>
+        public static ScalarSymbol From(string typeName)
+        {
+            return ScalarTypes.GetSymbol(typeName);
+        }
+
         public override SymbolKind Kind => SymbolKind.Scalar;
 
         public override Tabularity Tabularity => Tabularity.Scalar;

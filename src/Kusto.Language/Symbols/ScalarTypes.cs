@@ -22,7 +22,10 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public static readonly ScalarSymbol Unknown = new ScalarSymbol("unknown", null, ScalarFlags.All);
 
-        private static readonly IReadOnlyList<ScalarSymbol> s_types = new ScalarSymbol[]
+        /// <summary>
+        /// All known scalar symbols
+        /// </summary>
+        public static readonly IReadOnlyList<ScalarSymbol> All = new ScalarSymbol[]
         {
             Bool,
             Int,
@@ -42,7 +45,7 @@ namespace Kusto.Language.Symbols
 
         static ScalarTypes()
         {
-            foreach (var type in s_types)
+            foreach (var type in All)
             {
                 s_typeMap.Add(type.Name, type);
 
