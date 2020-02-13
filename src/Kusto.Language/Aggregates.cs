@@ -174,8 +174,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol MakeList =
             new FunctionSymbol("make_list", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar),
-                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("ignoreNulls", ScalarTypes.Bool, minOccurring: 0))
+                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
