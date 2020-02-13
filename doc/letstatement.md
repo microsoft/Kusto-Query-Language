@@ -72,6 +72,7 @@ Lambda expressions have the following syntax:
 Multiple let statements can be used with `;` delimiter between them as shown in the following example.
 The last statement must be a valid query expression: 
 
+<!-- csl -->
 ```
 let start = ago(5h); 
 let period = 2h; 
@@ -81,6 +82,7 @@ T | where Time > start and Time < start + period | ...
 Nested let statements are allowed and can be used inside a lambda expression.
 Let statements and Arguments are visible in the current and inner scope of the Function body.
 
+<!-- csl -->
 ```
 let start = ago(5h); 
 let period = 2h; 
@@ -94,6 +96,7 @@ T | where Time > start and Time < start + period | ...
 The following example binds the name `x` to the scalar literal `1`,
 and then uses it in a tabular expression statement:
 
+<!-- csl -->
 ```
 let x = 1;
 range y from x to x step x
@@ -101,6 +104,7 @@ range y from x to x step x
 
 Same example, but in this case - the name of the let statement is given using `['name']` notion:
 
+<!-- csl -->
 ```
 let ['x'] = 1;
 range y from x to x step x
@@ -108,6 +112,7 @@ range y from x to x step x
 
 Yet another example that uses let for scalar values:
 
+<!-- csl -->
 ```
 let n = 10;  // number
 let place = "Dallas";  // string
@@ -122,6 +127,7 @@ Events
 
 The following example defines two let statements where one statement (`foo2`) uses another (`foo1`).
 
+<!-- csl -->
 ```
 let foo1 = (_start:long, _end:long, _step:long) { range x from _start to _end step _step};
 let foo2 = (_step:long) { foo1(1, 100, _step)};

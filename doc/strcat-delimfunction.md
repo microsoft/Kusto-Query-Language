@@ -19,6 +19,7 @@ Arguments, concatenated to a single string with *delimiter*.
 
 **Examples**
 
+<!-- csl -->
 ```
 print st = strcat_delim('-', 1, '2', 'A', 1s)
 

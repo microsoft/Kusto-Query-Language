@@ -20,6 +20,7 @@ The pattern statement is used to declare or define a pattern.
 For example, the following is a pattern statement that declares `app`
 to be a pattern:
 
+<!-- csl -->
 ```
 declare pattern app;
 ```
@@ -29,6 +30,7 @@ tell Kusto how to resolve the pattern. As a result, any attempt to
 invoke this pattern in the query will result in a specific error
 listing all such invocations. For example:
 
+<!-- csl -->
 ```
 declare pattern app;
 app("ApplicationX").StartEvents
@@ -52,6 +54,7 @@ out, and the corresponding tabular expression given. When Kusto then executes
 the query, it replaces each pattern invocation with the corresponding pattern
 body. For example:
 
+<!-- csl -->
 ```
 declare pattern app = (applicationId:string)[eventType:string]
 {
@@ -119,6 +122,7 @@ prefixing it with the fully-elaborated pattern definition.
 Kusto automatically normalizes the pattern, so for example the following are all
 invocations of the same pattern, and a single one is reported back:
 
+<!-- csl -->
 ```
 declare pattern app;
 union
@@ -136,6 +140,7 @@ to be the same.
 Kusto doesn't treat wildcards in a pattern in any special way. For example,
 in the following query:
 
+<!-- csl -->
 ```
 declare pattern app;
 union app("ApplicationX").*
@@ -148,6 +153,7 @@ Kusto will report a single missing pattern invocation: `app("ApplicationX").["*"
 
 Queries over more than a single pattern invocation:
 
+<!-- csl -->
 ```
 declare pattern A
 {
@@ -169,6 +175,7 @@ union (A('a1').Text), (A('a2').Text)
 |App #2|This is a free text: 6|
 |App #2|This is a free text: 5|
 
+<!-- csl  -->
 ```
 declare pattern App;
 union (App('a1').Text), (App('a2').Text)
@@ -178,6 +185,7 @@ Semantic error:
 
      SEM0036: One or more pattern references were not declared. Detected pattern references: ["App('a1').['Text']","App('a2').['Text']"].
 
+<!-- csl  -->
 ```
 declare pattern App;
 declare pattern App = (applicationId:string)[scope:string]  

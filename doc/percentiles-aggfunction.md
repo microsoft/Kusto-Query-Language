@@ -40,12 +40,14 @@ Returns an estimate for *Expr* of the specified percentiles in the group.
 
 The value of `Duration` that is larger than 95% of the sample set and smaller than 5% of the sample set:
 
+<!-- csl -->
 ```
 CallDetailRecords | summarize percentile(Duration, 95) by continent
 ```
 
 Simultaneously calculate 5, 50 (median) and 95:
 
+<!-- csl -->
 ```
 CallDetailRecords 
 | summarize percentiles(Duration, 5, 50, 95) by continent
@@ -57,6 +59,7 @@ The results show that in Europe, 5% of calls are shorter than 11.55s, 50% of cal
 
 Calculate multiple statistics:
 
+<!-- csl -->
 ```
 CallDetailRecords 
 | summarize percentiles(Duration, 5, 50, 95), avg(Duration)
@@ -93,6 +96,7 @@ number of events in each bucket. To compute percentiles from this data,
 use the `percentilesw()` function. For example, for the 50,
 75 and 99.9 percentiles, use the following query: 
 
+<!-- csl -->
 ```
 datatable (ReqCount:long, LatencyBucket:long) 
 [ 
@@ -116,6 +120,7 @@ Notice, that the above query corresponds to the function
 ## Getting multiple percentiles in an array
 Multiple percentiles can be obtained as an array in a single dynamic column instead of multiple columns: 
 
+<!-- csl -->
 ```
 CallDetailRecords 
 | summarize percentiles_array(Duration, 5, 25, 50, 75, 95), avg(Duration)
@@ -127,11 +132,13 @@ Similarly, weighted percentiles can be returned as a dynamic array using `percen
 
 Percentiles for `percentiles_array` and `percentilesw_array` can be specified in a dynamic array of integer or floating-point numbers. The array must be constant but does not have to be literal.
 
+<!-- csl -->
 ```
 CallDetailRecords 
 | summarize percentiles_array(Duration, dynamic([5, 25, 50, 75, 95])), avg(Duration)
 ```
 
+<!-- csl -->
 ```
 CallDetailRecords 
 | summarize percentiles_array(Duration, range(0, 100, 5)), avg(Duration)

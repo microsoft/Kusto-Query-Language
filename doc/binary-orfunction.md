@@ -2,6 +2,7 @@
 
 Returns a result of the bitwise `or` operation of the two values. 
 
+<!-- csl -->
 ```
 binary_or(x,y)
 ```

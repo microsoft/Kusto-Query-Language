@@ -2,6 +2,7 @@
 
 Returns the integer number representing the hour number of the given date
 
+<!-- csl -->
 ```
 hourofday(datetime(2015-12-14 18:54)) == 18
 ```

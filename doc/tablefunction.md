@@ -85,6 +85,7 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `tableName` - which is passed into the table() function.
 
+<!-- csl -->
 ```
 .create function foo(tableName:string)
 {
@@ -104,6 +105,7 @@ A parameter, which is not scalar constant string can't be passed as parameter to
 
 Below, given an example of workaround for such case.
 
+<!-- csl -->
 ```
 let T1 = print x=1;
 let T2 = print x=2;

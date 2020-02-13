@@ -3,6 +3,7 @@
 Evaluates a string expression and parses its value into one or more calculated columns. For unsuccessfully parsed strings, calculated columns will have nulls.
 See [parse-where](parsewhereoperator.md) operator which filters out unsuccessfully parsed strings.
 
+<!-- csl -->
 ```
 T | parse Text with "ActivityName=" name ", ActivityType=" type
 ```
@@ -52,6 +53,7 @@ provided to the operator.
   are handled internally.
   So for example, this parse statement :
   
+	<!-- csl -->
 	```
 	parse kind=regex Col with * <regex1> var1:string <regex2> var2:long
 	```

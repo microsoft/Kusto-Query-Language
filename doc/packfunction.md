@@ -17,6 +17,7 @@ Alias to `pack_dictionary()` function.
 
 The following example returns `{"Level":"Information","ProcessID":1234,"Data":{"url":"www.bing.com"}}`:
 
+<!-- csl -->
 ```
 pack("Level", "Information", "ProcessID", 1234, "Data", pack("url", "www.bing.com"))
 ```
@@ -40,7 +41,7 @@ Table MmsMessages
 |555-555-1234 |555-555-1213 | 300 | png | Pic3
 
 The following query:
-
+<!-- csl -->
 ```
 SmsMessages 
 | extend Packed=pack("CharsCount", CharsCount) 

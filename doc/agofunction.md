@@ -2,6 +2,7 @@
 
 Subtracts the given timespan from the current UTC clock time.
 
+<!-- csl -->
 ```
 ago(1h)
 ago(1d)
@@ -28,6 +29,7 @@ for all instantiations.
 
 All rows with a timestamp in the past hour:
 
+<!-- csl -->
 ```
 T | where Timestamp > ago(1h)
 ```

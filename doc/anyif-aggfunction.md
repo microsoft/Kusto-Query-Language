@@ -33,6 +33,7 @@ return a non-null/non-empty value, if such value is present.
 
 Show random continent which has a population from 300 million to 600 million:
 
+<!-- csl -->
 ```
 Continents | summarize anyif(Continent, Population between (300000000 .. 600000000))
 ```

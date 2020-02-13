@@ -2,6 +2,7 @@
 
 Sort the rows of the input table into order by one or more columns.
 
+<!-- csl -->
 ```
 T | order by country asc, price desc
 ```
@@ -23,6 +24,7 @@ T | order by country asc, price desc
 
 **Example**
 
+<!-- csl -->
 ```
 Traces
 | where ActivityId == "479671d99b7b"
@@ -33,6 +35,7 @@ All rows in table Traces that have a specific `ActivityId`, sorted by their time
 
 In order to exclude null values from the result add a filter before the call to sort:
 
+<!-- csl -->
 ```
 Traces
 | where ActivityId == "479671d99b7b" and isnotnull(Timestamp)

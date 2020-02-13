@@ -31,6 +31,7 @@ An integer, which represents amount of `periods` in the result of subtraction (`
 
 **Examples**
 
+<!-- csl -->
 ```
 print
 year = datetime_diff('year',datetime(2017-01-01),datetime(2000-12-31)),

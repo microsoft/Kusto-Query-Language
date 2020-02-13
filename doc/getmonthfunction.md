@@ -6,6 +6,7 @@ Another alias: monthoyear()
 
 **Example**
 
+<!-- csl -->
 ```
 T 
 | extend month = getmonth(datetime(2015-10-12))

@@ -22,6 +22,7 @@ Alias to `floor()` function.
 
 The nearest multiple of *roundTo* below *value*.  
  
+<!-- csl -->
 ```
 (toint((value/roundTo))) * roundTo`
 ```
@@ -38,6 +39,7 @@ Expression | Result
 The following expression calculates a histogram of durations,
 with a bucket size of 1 second:
 
+<!-- csl -->
 ```
 T | summarize Hits=count() by bin(Duration, 1s)
 ```

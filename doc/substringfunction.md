@@ -4,6 +4,7 @@ Extracts a substring from a source string starting from some index to the end of
 
 Optionally, the length of the requested substring can be specified.
 
+<!-- csl -->
 ```
 substring("abcdefg", 1, 2) == "bc"
 ```
@@ -28,6 +29,7 @@ A substring from the given string. The substring starts at startingIndex (zero-b
 
 **Examples**
 
+<!-- csl -->
 ```
 substring("123456", 1)        // 23456
 substring("123456", 2, 2)     // 34

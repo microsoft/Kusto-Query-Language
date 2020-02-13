@@ -42,6 +42,7 @@ The following variables are reserved for interaction between Kusto query languag
 
 ### Examples
 
+<!-- csl -->
 ```
 range x from 1 to 360 step 1
 | evaluate r(
@@ -61,6 +62,7 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
 ![alt text](./images/samples/sine-demo.png "sine-demo")
 
 
+
 ### Performance tips
 
 * Reduce the plugin's input data set to the minimum amount required (columns/rows).
@@ -72,6 +74,7 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
 
     For example:
 
+    <!-- csl -->
     ```    
 	.show operations
 	| where StartedOn > ago(1d) // Filtering out irrelevant records before invoking the plugin
@@ -93,6 +96,7 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
   
   For example:
 
+    <!-- csl -->
     ```    
     let script = 
         externaldata(script:string)

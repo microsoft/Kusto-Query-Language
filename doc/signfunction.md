@@ -16,6 +16,7 @@ Sign of a numeric expression
 
 **Examples**
 
+<!-- csl -->
 ```
 print s1 = sign(-42), s2 = sign(0), s3 = sign(11.2)
 

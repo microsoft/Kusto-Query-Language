@@ -30,6 +30,7 @@ i.e. cannot come from sub-query evaluation.
 
 The next query can be run on any of the Kusto clusters.
 
+<!-- csl -->
 ```
 cluster('help').database('Samples').StormEvents | count
 
@@ -45,6 +46,7 @@ cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
+<!-- csl -->
 ```
 let foo = (clusterName:string)
 {
@@ -62,6 +64,7 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
+<!-- csl -->
 ```
 .create function foo(clusterName:string)
 {

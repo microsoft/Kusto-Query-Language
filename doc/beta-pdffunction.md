@@ -2,6 +2,7 @@
 
 Returns the probability density beta function.
 
+<!-- csl -->
 ```
 beta_pdf(0.2, 10.0, 50.0)
 ```

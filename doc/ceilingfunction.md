@@ -16,6 +16,7 @@ Calculates the smallest integer greater than, or equal to, the specified numeric
 
 **Examples**
 
+<!-- csl -->
 ```
 print c1 = ceiling(-1.1), c2 = ceiling(0), c3 = ceiling(0.9)
 ```

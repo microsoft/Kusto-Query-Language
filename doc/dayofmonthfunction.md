@@ -2,6 +2,7 @@
 
 Returns the integer number representing the day number of the given month
 
+<!-- csl -->
 ```
 dayofmonth(datetime(2015-12-14)) == 14
 ```

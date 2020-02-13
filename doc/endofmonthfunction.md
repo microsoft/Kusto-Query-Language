@@ -17,6 +17,7 @@ A datetime representing the end of the month for the given *date* value, with th
 
 **Example**
 
+<!-- csl -->
 ```
   range offset from -1 to 1 step 1
  | project monthEnd = endofmonth(datetime(2017-01-01 10:10:17), offset) 

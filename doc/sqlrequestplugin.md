@@ -35,6 +35,7 @@ data in this manner. It's usually preferable that SQL queries will be constructe
 to return the smallest data set possible, as currently the Kusto optimizer
 does not attempt to optimize queries between Kusto and SQL.
 
+<!-- csl -->
 ```
 evaluate sql_request(
   'Server=tcp:contoso.database.windows.net,1433;'
@@ -49,6 +50,7 @@ The following example is identical to the previous one, except that SQL
 authentication is done by username/password. Note that for confidentiality,
 we use obfuscated strings here.
 
+<!-- csl -->
 ```
 evaluate sql_request(
   'Server=tcp:contoso.database.windows.net,1433;'

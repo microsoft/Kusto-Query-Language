@@ -2,6 +2,7 @@
 
 Converts input to long (signed 64-bit) number representation.
 
+<!-- csl -->
 ```
 tolong("123") == 123
 ```

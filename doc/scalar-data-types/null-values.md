@@ -8,6 +8,7 @@ This value is called the **null value**, or simply **null**.
 The null value of a scalar type `T` is represented in the query language by the null literal `T(null)`.
 Thus, the following returns a single row full of nulls:
 
+<!-- csl -->
 ```
 print bool(null), datetime(null), dynamic(null), guid(null), int(null), long(null), real(null), double(null), time(null)
 ```
@@ -35,6 +36,7 @@ in the corresponding table cell. An exception to that are columns of type
 `string` and CSV-like ingestion, where a missing value produces an empty string.
 So, for example, if we have: 
 
+<!-- csl -->
 ```
 .create table T [a:string, b:int]
 
@@ -62,4 +64,3 @@ Then:
 
 * Kusto does not offer a way to constrain a table's column from having null
   values (in other words, there's no equivalent to SQL's `NOT NULL` constraint).
-  

@@ -2,6 +2,7 @@
 
 Renames columns in the result output.
 
+<!-- csl -->
 ```
 T | project-rename new_column_name = column_name
 ```

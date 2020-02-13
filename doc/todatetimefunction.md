@@ -2,6 +2,7 @@
 
 Converts input to [datetime](./scalar-data-types/datetime.md) scalar.
 
+<!-- csl -->
 ```
 todatetime("2015-12-24") == datetime(2015-12-24)
 ```

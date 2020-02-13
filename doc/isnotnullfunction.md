@@ -10,12 +10,14 @@ Returns `true` if the argument is not null.
 
 **Example**
 
+<!-- csl -->
 ```
 T | where isnotnull(PossiblyNull) | count
 ```
 
 Notice that there are other ways of achieving this effect:
 
+<!-- csl -->
 ```
 T | summarize count(PossiblyNull)
 ```

@@ -2,6 +2,7 @@
 
 Evaluates its sole argument and returns a `bool` value indicating if the argument evaluates to a null value.
 
+<!-- csl -->
 ```
 isnull(parse_json("")) == true
 ```
@@ -29,6 +30,7 @@ True or false depending on the whether the value is null or not null.
 
 **Example**
 
+<!-- csl -->
 ```
 T | where isnull(PossiblyNull) | count
 ```

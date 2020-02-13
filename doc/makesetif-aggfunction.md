@@ -28,6 +28,7 @@ The array's sort order is undefined.
 
 **Example**
 
+<!-- csl -->
 ```
 let T = datatable(name:string, day_of_birth:long)
 [

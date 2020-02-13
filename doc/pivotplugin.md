@@ -4,6 +4,7 @@ Rotates a table by turning the unique values from one column in the input table 
 in the output table, and performs aggregations where they are required on any remaining column values 
 that are wanted in the final output.
 
+<!-- csl -->
 ```
 T | evaluate pivot(PivotColumn)
 ```

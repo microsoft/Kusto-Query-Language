@@ -4,6 +4,7 @@ Get all matches for a [regular expression](./re2.md) from a text string.
 
 Optionally, a subset of matching groups can be retrieved.
 
+<!-- csl -->
 ```
 print extract_all(@"(\d+)", "a set of numbers: 123, 567 and 789") == dynamic(["123", "567", "789"])
 ```
@@ -35,6 +36,7 @@ If there's no match: `null`.
 ### Extracting single capture group
 The example below returns hex-byte representation (two hex-digits) of the GUID.
 
+<!-- csl -->
 ```
 print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 | extend guid_bytes = extract_all(@"([\da-f]{2})", Id) 
@@ -47,6 +49,7 @@ print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 ### Extracting several capture groups 
 Next example uses a regular expression with 3 capturing groups to split each GUID part into first letter, last letter and whatever in the middle.
 
+<!-- csl -->
 ```
 print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 | extend guid_bytes = extract_all(@"(\w)(\w+)(\w)", Id) 
@@ -61,6 +64,7 @@ print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 Next example shows how to select a subset of capturing groups: in this case the regular expression 
 matches into first letter, last letter and all the rest - while the *captureGroups* parameter is used to select only first and the last part. 
 
+<!-- csl -->
 ```
 print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 | extend guid_bytes = extract_all(@"(\w)(\w+)(\w)", dynamic([1,3]), Id) 
@@ -76,6 +80,7 @@ print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 You can utilize named capture groups of RE2 in extract_all(). 
 In the example below - the *captureGroups* uses both capture group indexes and named capture group reference to fetch matching values.
 
+<!-- csl -->
 ```
 print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 | extend guid_bytes = extract_all(@"(?P<first>\w)(?P<middle>\w+)(?P<last>\w)", dynamic(['first',2,'last']), Id) 

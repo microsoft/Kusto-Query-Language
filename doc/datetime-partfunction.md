@@ -45,6 +45,7 @@ An integer representing the extracted part.
 
 **Examples**
 
+<!-- csl -->
 ```
 let dt = datetime(2017-10-30 01:02:03.7654321); 
 print 

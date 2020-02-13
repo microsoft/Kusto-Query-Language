@@ -2,6 +2,7 @@
 
 Merge the rows of two tables to form a new table by matching values of the specified column(s) from each table.
 
+<!-- csl -->
 ```
 Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 ```
@@ -98,6 +99,7 @@ For best performance:
 
 Get extended activities from a log in which some entries mark the start and end of an activity. 
 
+<!-- csl -->
 ```
 let Events = MyLogTable | where type=="Event" ;
 Events
@@ -110,6 +112,7 @@ Events
 | project City, ActivityId, StartTime, StopTime, Duration = StopTime - StartTime
 ```
 
+<!-- csl -->
 ```
 let Events = MyLogTable | where type=="Event" ;
 Events
@@ -146,6 +149,7 @@ supports the following flavors of the join operator:
 -	When using **inner join flavor**, there will be a row in the output for every combination of matching rows from left and right without left keys deduplications. The output will be a cartesian product of left and right keys.
 	Example of **inner join**:
 
+<!-- csl-->
 ```
 let t1 = datatable(key:long, value:string)  
 [
@@ -174,6 +178,7 @@ on key
 	Example of **innerunique join** for the same datasets used above, Please note that **innerunique flavor** for this case may yield two possible outputs and both are correct.
 	In the first output, the join operator randomly picked the first key which appears in t1 with the value "val1.1" and matched it with t2 keys while in the second one, the join operator randomly picked the second key appears in t1 which has the value "val1.2" and matched it with t2 keys:
 
+<!-- csl-->
 ```
 let t1 = datatable(key:long, value:string)  
 [
@@ -196,6 +201,7 @@ on key
 |1|val1.1|1|val1.3|
 |1|val1.1|1|val1.4|
 
+<!-- csl-->
 ```
 let t1 = datatable(key:long, value:string)  
 [
@@ -287,6 +293,7 @@ the effective left side of the join (table X after de-duplication) would be:
 
 and the result of the join would be: 
 
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -311,6 +318,7 @@ X | join Y on Key
 |c|4|c|20|
 |c|4|c|30|
 
+
 (Note that the keys 'a' and 'd' do not appear in the output, since there were no matching keys on both left and right sides). 
  
 (Historically, this was the first implementation of the join supported by the initial version of Kusto; it is useful in the typical log/trace analysis scenarios where we want to correlate two events (each matching some filtering criterion) under the same correlation ID, and get back all appearances of the phenomenon we're looking for, ignoring multiple appearances of the contributing trace records.)
@@ -319,6 +327,7 @@ X | join Y on Key
 
 This is the standard inner join as known from the SQL world. Output record is produced whenever a record on the left side has the same join key as the record on the right side. 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -350,6 +359,7 @@ Note that (b,10) coming from the right side was joined twice: with both (b,2) an
 
 The result of a left outer join for tables X and Y always contains all records of the left table (X), even if the join condition does not find any matching record in the right table (Y). 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -376,10 +386,12 @@ X | join kind=leftouter Y on Key
 |c|4|c|30|
 |a|1|||
 
+ 
 ### Right outer join 
 
 Resembles the left outer join, but the treatment of the tables is reversed. 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -406,10 +418,12 @@ X | join kind=rightouter Y on Key
 |c|4|c|30|
 |||d|40|
 
+ 
 ### Full outer join 
 
 Conceptually, a full outer join combines the effect of applying both left and right outer joins. Where records in the joined tables do not match, the result set will have NULL values for every column of the table that lacks a matching row. For those records that do match, a single row will be produced in the result set (containing fields populated from both tables). 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -442,6 +456,7 @@ X | join kind=fullouter Y on Key
 
 Left anti join returns all records from the left side that do not match any record from the right side. 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -470,6 +485,7 @@ Anti-join models the "NOT IN" query.
 
 Right anti join returns all records from the right side that do not match any record from the left side. 
  
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -498,6 +514,7 @@ Anti-join models the "NOT IN" query.
 
 Left semi join returns all records from the left side that match a record from the right side. Only columns from the left side are returned. 
 
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -526,6 +543,7 @@ X | join kind=leftsemi Y on Key
 
 Right semi join returns all records from the right side that match a record from the left side. Only columns from the right side are returned. 
 
+<!-- csl -->
 ```
 let X = datatable(Key:string, Value1:long)
 [
@@ -549,6 +567,7 @@ X | join kind=rightsemi Y on Key
 |b|10|
 |c|20|
 |c|30|
+
 
 ### Cross join
 

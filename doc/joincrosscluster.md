@@ -6,6 +6,7 @@ For general discussion on cross-cluster queries see [cross-cluster or cross-data
 
 It is possible to perform join operation on datasets residing on different clusters. For example 
 
+<!-- csl -->
 ```
 T | ... | join (cluster("SomeCluster").database("SomeDB").T2 | ...) on Col1 // (1)
 
@@ -16,6 +17,7 @@ In the examples above join operation is a cross-cluster join assuming that curre
 
 Note that in the following example
 
+<!-- csl -->
 ```
 cluster("SomeCluster").database("SomeDB").T | ... | join (cluster("SomeCluster").database("SomeDB2").T2 | ...) on Col1 
 ```
@@ -36,6 +38,7 @@ If in example **(1)** it dataset produced by ```T | ...``` is much smaller than 
 
 This can be achieved by giving Kusto join remoting hint. The syntax is:
 
+<!-- csl -->
 ```
 T | ... | join hint.remote=<strategy> (cluster("SomeCluster").database("SomeDB").T2 | ...) on Col1
 ```

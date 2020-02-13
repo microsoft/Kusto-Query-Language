@@ -14,7 +14,7 @@ A `dynamic` value can be:
   indexed by the unique `string` values. The slots are unordered.
 
 > [!NOTE]
-> Values of type `dynamic` are limited to 1MB (2^20) of original size.
+> Values of type `dynamic` are limited to 1MB (2^20).
 
 > [!NOTE]
 > Although the `dynamic` type appears JSON-like, it can hold values that the JSON
@@ -52,6 +52,7 @@ A literal of type `dynamic` looks like this:
   is a property bag with two slots, `a`, and `b`, with the second slot being
   another property bag.
 
+<!-- csl -->
 ```
 print o=dynamic({"a":123, "b":"hello", "c":[1,2,3], "d":{}})
 | extend a=o.a, b=o.b, c=o.c, d=o.d
@@ -63,6 +64,7 @@ literals, etc.) This extension over JSON is not available when parsing strings
 (such as when using the `parse_json` function or when ingesting data), but it
 enables you to do this:
 
+<!-- csl -->
 ```
 print d=dynamic({"a": datetime(1970-05-11)})
 ```
@@ -87,6 +89,7 @@ The following example shows how you can define a table that holds a `dynamic` co
 a `datetime` column) and then ingest into it a single record. it also demonstrates how you
 can encode JSON strings in CSV files:
 
+<!-- csl -->
 ```
 // dynamic is just like any other type:
 .create table Logs (Timestamp:datetime, Trace:dynamic)

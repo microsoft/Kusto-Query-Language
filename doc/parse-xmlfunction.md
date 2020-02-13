@@ -70,6 +70,7 @@ and retrieves the value of the `duration` slot
 in the object, and from that it retrieves two slots, `duration.value` and
  `duration.min` (`118.0` and `110.0`, respectively).
 
+<!-- csl -->
 ```
 T
 | extend d=parse_xml(context_custom_metrics) 

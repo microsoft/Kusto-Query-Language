@@ -17,6 +17,7 @@ See [`make_string()`](makestringfunction.md))
 
 **Examples**
 
+<!-- csl -->
 ```
 print arr = to_utf8("â’¦â’°â’®â’¯â’ª")
 ```
@@ -25,6 +26,7 @@ print arr = to_utf8("â’¦â’°â’®â’¯â’ª")
 |---|
 |[9382, 9392, 9390, 9391, 9386]|
 
+<!-- csl -->
 ```
 print arr = to_utf8("×§×•×¡×˜×• - Kusto")
 ```
@@ -33,6 +35,7 @@ print arr = to_utf8("×§×•×¡×˜×• - Kusto")
 |---|
 |[1511, 1493, 1505, 1496, 1493, 32, 45, 32, 75, 117, 115, 116, 111]|
 
+<!-- csl -->
 ```
 print str = make_string(to_utf8("Kusto"))
 ```
@@ -40,3 +43,4 @@ print str = make_string(to_utf8("Kusto"))
 |str|
 |---|
 |Kusto|
+

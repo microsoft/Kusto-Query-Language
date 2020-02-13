@@ -21,6 +21,7 @@ current database), the first operator is `where` (which filter out records
 from its input according to some per-record predicate), and the second operator
 is `count` (which counts the number of records in its input data set):
 
+<!-- csl -->
 ```
 Logs | where Timestamp > ago(1d) | count
 ```
@@ -29,6 +30,7 @@ In the following more complex example, the `join` operator is used to combine
 records from two input data sets: one which is a filter on the `Logs` table,
 and another which is a filter on the `Events` table.
 
+<!-- csl -->
 ```
 Logs 
 | where Timestamp > ago(1d) 

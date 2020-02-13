@@ -2,6 +2,7 @@
 
 Splits a given string representing a single record of comma separated values and returns a string array with these values.
 
+<!-- csl -->
 ```
 parse_csv("aaa,bbb,ccc") == ["aaa","bbb","ccc"]
 ```

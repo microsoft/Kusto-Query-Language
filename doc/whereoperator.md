@@ -2,6 +2,7 @@
 
 Filters a table to the subset of rows that satisfy a predicate.
 
+<!-- csl -->
 ```
 T | where fruit=="apple"
 ```
@@ -43,6 +44,7 @@ For more information, refer to the summary of [available String operators](./dat
 
 **Example**
 
+<!-- csl -->
 ```
 Traces
 | where Timestamp > ago(1h)
@@ -57,6 +59,7 @@ Notice that we put the comparison between two columns last, as it can't utilize 
 
 **Example**
 
+<!-- csl -->
 ```
 Traces | where * has "Kusto"
 ```

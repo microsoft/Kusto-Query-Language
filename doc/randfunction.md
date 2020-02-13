@@ -2,6 +2,7 @@
 
 Returns a random number.
 
+<!-- csl -->
 ```
 rand()
 rand(1000)

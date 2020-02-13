@@ -8,6 +8,7 @@ Shuffle query strategy can be set by the query parameter `hint.strategy = shuffl
 
 **Syntax**
 
+<!-- csl -->
 ```
 T | where Event=="Start" | project ActivityId, Started=Timestamp
 | join hint.strategy = shuffle (T | where Event=="End" | project ActivityId, Ended=Timestamp)
@@ -16,11 +17,13 @@ T | where Event=="Start" | project ActivityId, Started=Timestamp
 | summarize avg(Duration)
 ```
 
+<!-- csl -->
 ```
 T
 | summarize hint.strategy = shuffle count(), avg(price) by supplier
 ```
 
+<!-- csl -->
 ```
 T
 | make-series hint.shufflekey = Fruit PriceAvg=avg(Price) default=0  on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplier, Fruit
@@ -34,6 +37,7 @@ It is useful to use the shuffle query strategy when the key (`join` key, `summar
 `hint.strategy=shuffle` means that the shuffled operator will be shuffled by all the keys.
 For example, in this query :
 
+<!-- csl -->
 ```
 T | where Event=="Start" | project ActivityId, Started=Timestamp
 | join hint.strategy = shuffle (T | where Event=="End" | project ActivityId, Ended=Timestamp)
@@ -46,6 +50,7 @@ The hash function that shuffles the data will use both keys ActivityId and Proce
 
 The query above is equivalent to :
 
+<!-- csl -->
 ```
 T | where Event=="Start" | project ActivityId, Started=Timestamp
 | join hint.shufflekey = ActivityId hint.shufflekey = ProcessId (T | where Event=="End" | project ActivityId, Ended=Timestamp)
@@ -58,6 +63,7 @@ When the shuffled operator has other shufflable operators like `summarize` or `j
 
 for example :
 
+<!-- csl -->
 ```
 T
 | where Event=="Start"
@@ -79,6 +85,7 @@ Shuffling by the compound key [`ActivityId`, `numeric_column`] doesn't mean that
 
 This example simplifies this assuming that the hash function used for a compound key is `binary_xor(hash(key1, 100) , hash(key2, 100))`
 
+<!-- csl -->
 ```
 
 datatable(ActivityId:string, NumericColumn:long)
@@ -94,12 +101,15 @@ datatable(ActivityId:string, NumericColumn:long)
 |activity1|2|56|
 |activity1|1|65|
 
+
+
 As you see the compound key for both records was mapped to different partitions 56 and 65 but these two records has the same value of `ActivityId` which means the the `summarize` on the left side of the `join` which
 expects similar values of the column `ActivityId` to be in the same partition will defintely produce wrong results.
 
 In this case, `hint.shufflekey` solves this issue by specifying the shuffle key on the join to `hint.shufflekey = ActivityId` which is a common key for all shuffelable operators.
 In this case, the shuffling is safe, both `join` and `summarize` shuffles by the same key so all similar values will defintely be in the same partition the results are correct :
 
+<!-- csl -->
 ```
 T
 | where Event=="Start"
@@ -134,6 +144,7 @@ The source table has 150M records and the cardinality of the group by key is 10M
 
 Running the regular `summarize` strategy, the query ends after 1:08 and the memory usage peak is ~3GB:
 
+<!-- csl -->
 ```
 orders
 | summarize arg_max(o_orderdate, o_totalprice) by o_custkey 
@@ -146,6 +157,7 @@ orders
 
 While using shuffle `summarize` strategy, the query ends after ~7 seconds and the memory usage peak is 0.43GB:
 
+<!-- csl -->
 ```
 orders
 | summarize hint.strategy = shuffle arg_max(o_orderdate, o_totalprice) by o_custkey 
@@ -160,6 +172,7 @@ The following example shows the improvement on a cluster which has 2 cluster nod
 
 Running the query without `hint.num_partitions` will use only 2 partitions (as cluster nodes number) and the following query will take ~1:10 mins :
 
+<!-- csl -->
 ```
 lineitem	
 | summarize hint.strategy = shuffle dcount(l_comment), dcount(l_shipdate) by l_partkey 
@@ -167,6 +180,7 @@ lineitem
 ```
 setting partitions number to 10, the query will end after 23 seconds: 
 
+<!-- csl -->
 ```
 lineitem	
 | summarize hint.strategy = shuffle hint.num_partitions = 10 dcount(l_comment), dcount(l_shipdate) by l_partkey 
@@ -180,6 +194,7 @@ The examples were sampled on a cluster with 10 nodes where the data is spread ov
 The left table has 15M records where the cardinality of the `join` key is ~14M, The right side of the `join` is with 150M records and the cardinality of the `join` key is 10M.
 Running the regular strategy of the `join`, the query ends after ~28 seconds and the memory usage peak is 1.43GB :
 
+<!-- csl-->
 ```
 customer
 | join
@@ -190,6 +205,7 @@ on $left.c_custkey == $right.o_custkey
 
 While using shuffle `join` strategy, the query ends after ~4 seconds and the memory usage peak is 0.3GB :
 
+<!-- csl-->
 ```
 customer
 | join
@@ -207,6 +223,7 @@ While using shuffle `join` strategy, the query ends after ~34 seconds and the me
 The following example shows the improvement on a cluster which has 2 cluster nodes, the table has 60M records and the cardinality of the `join` key is 2M.
 Running the query without `hint.num_partitions` will use only 2 partitions (as cluster nodes number) and the following query will take ~1:10 mins :
 
+<!-- csl -->
 ```
 lineitem
 | summarize dcount(l_comment), dcount(l_shipdate) by l_partkey
@@ -217,6 +234,7 @@ on $left.l_partkey == $right.p_partkey
 ```
 setting partitions number to 10, the query will end after 23 seconds: 
 
+<!-- csl -->
 ```
 lineitem
 | summarize dcount(l_comment), dcount(l_shipdate) by l_partkey

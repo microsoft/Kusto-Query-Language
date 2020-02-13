@@ -4,6 +4,7 @@ Marks that order of the input row set is safe for window functions usage.
 
 Operator has declarative meaning, and it marks input row set as serialized (ordered) so [window functions](./windowsfunctions.md) could be applied to it.
 
+<!-- csl -->
 ```
 T | serialize rn=row_number()
 ```
@@ -16,6 +17,7 @@ T | serialize rn=row_number()
 
 **Example**
 
+<!-- csl -->
 ```
 Traces
 | where ActivityId == "479671d99b7b"

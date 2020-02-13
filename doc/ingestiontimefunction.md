@@ -31,6 +31,7 @@ A `datetime` value specifying the approximate time of ingestion into a table.
 
 **Example**
 
+<!-- csl -->
 ```
 T 
 | extend ingestionTime = ingestion_time() | top 10 by ingestionTime

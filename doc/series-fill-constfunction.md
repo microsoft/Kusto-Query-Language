@@ -18,12 +18,14 @@ Takes an expression containing dynamic numerical array as input, replaces all in
 **Notes**
 * It is possible to create a series with constant fill in one call using `default = ` *DefaultValue* syntax (or just omitting which will assume 0). See [make-series](make-seriesoperator.md) for more information.
 
+<!-- csl -->
 ```
 make-series num=count() default=-1 on TimeStamp in range(ago(1d), ago(1h), 1h) by Os, Browser
 ```
   
 * In order to apply any interpolation functions after [make-series](make-seriesoperator.md) it is recommended to specify *null* as a default value: 
 
+<!-- csl -->
 ```
 make-series num=count() default=long(null) on TimeStamp in range(ago(1d), ago(1h), 1h) by Os, Browser
 ```

@@ -16,7 +16,8 @@ Creates a concatenated string of array values using specified delimiter.
 Array values, concatenated to a single string.
 
 **Examples**
-
+  
+<!-- csl -->
 ```
 print str = strcat_array(dynamic([1, 2, 3]), "->")
 ```

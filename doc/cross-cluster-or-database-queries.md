@@ -9,12 +9,12 @@ Every Kusto query operates in the context of the current cluster and the default
 ## Queries
 To access tables from any database other than the default, the *qualified name* syntax must be used:
 To access database in the current cluster:
-
+<!-- csl -->
 ```
 database("<database name>").<table name>
 ```
 Database in remote cluster:
-
+<!-- csl -->
 ```
 cluster("<cluster name>").database("<database name>").<table name>
 ```
@@ -34,7 +34,7 @@ cluster("<cluster name>").database("<database name>").<table name>
 *Qualified name* can be used in any context in which a table name can be used.
 All of the following are valid:
 
-
+<!-- csl -->
 ```
 database("OtherDb").Table | where ...
 
@@ -46,7 +46,7 @@ database("OtherDb1").Table1 | join cluster("OtherCluster").database("OtherDb2").
 When *qualified name* appears as an operand of the [union operator](./unionoperator.md), wildcards can be used to specify multiple tables
 and multiple databases. Wildcards are not allowed in cluster names:
 
-
+<!-- csl -->
 ```
 union withsource=TableName *, database("OtherDb*").*Table, cluster("OtherCluster").database("*").*
 ```
@@ -58,7 +58,7 @@ union withsource=TableName *, database("OtherDb*").*Table, cluster("OtherCluster
 
 ## Access restriction 
 Qualified names or patterns can also be included in [restrict access](./restrictstatement.md) statement (wildcards in cluster names aren't allowed)
-
+<!-- csl -->
 ```
 restrict access to (my*, database("MyOther*").*, cluster("OtherCluster").database("my2*").*);
 ```
@@ -73,7 +73,7 @@ The above will restrict the query access to the following entites:
 
 Functions and views (persistent and created inline) can refernce tables across database and cluster boundaries. The following is valid:
 
-
+<!-- csl -->
 ```
 let MyView = Table1 join database("OtherDb").Table2 on Key | join cluster("OtherCluster").database("SomeDb").Table3 on Key;
 MyView | where ...
@@ -83,20 +83,20 @@ Persistent functions and views can be accessed from another database in the same
 
 Tabular function (view) in `OtherDb`:
 
-
+<!-- csl -->
 ```
 .create function MyView(v:string) { Table1 | where Column1 has v ...  }  
 ```
 
 Scalar function in `OtherDb`:
-
+<!-- csl -->
 ```
 .create function MyCalc(a:double, b:double, c:double) { (a + b) / c }  
 ```
 
 In default database:
 
-
+<!-- csl -->
 ```
 database("OtherDb").MyView("exception") | extend CalCol=database("OtherDb").MyCalc(Col1, Col2, Col3) | limit 10
 ```
@@ -111,7 +111,7 @@ Tabular functions or views can be referenced across clusters. The following limi
 
 The following cross-cluster call is **valid**:
 
-
+<!-- csl -->
 ```
 cluster("OtherCluster").database("SomeDb").MyView("exception") | count
 ```
@@ -119,7 +119,7 @@ cluster("OtherCluster").database("SomeDb").MyView("exception") | count
 The following query calls remote scalar function `MyCalc`.
 This is violating rule #1, therefore it is **not valid**:
 
-
+<!-- csl -->
 ```
 MyTable | extend CalCol=cluster("OtherCluster").database("OtherDb").MyCalc(Col1, Col2, Col3) | limit 10
 ```
@@ -127,7 +127,7 @@ MyTable | extend CalCol=cluster("OtherCluster").database("OtherDb").MyCalc(Col1,
 The following query calls remote function `MyCalc` and provides a tabular parameter.
 This is violating rule #2, therefore it is **not valid**:
 
-
+<!-- csl -->
 ```
 cluster("OtherCluster").database("OtherDb").MyCalc(datatable(x:string, y:string)["x","y"] ) 
 ```
@@ -136,13 +136,13 @@ The following query calls remote function `SomeTable` that has variable schema o
 This is violating rule #3, therefore it is **not valid**:
 
 Tabular function in `OtherDb`:
-
+<!-- csl -->
 ```
 .create function SomeTable(tablename:string) { table(tablename)  }  
 ```
 
 In default database:
-
+<!-- csl -->
 ```
 cluster("OtherCluster").database("OtherDb").SomeTable("MyTable")
 ```
@@ -151,13 +151,13 @@ The following query calls remote function `GetDataPivot` that has variable schem
 This is violating rule #3, therefore it is **not valid**:
 
 Tabular function in `OtherDb`:
-
+<!-- csl -->
 ```
 .create function GetDataPivot() { T | evaluate pivot(PivotColumn) }  
 ```
 
 Tabular function in the default database:
-
+<!-- csl -->
 ```
 cluster("OtherCluster").database("OtherDb").GetDataPivot()
 ```

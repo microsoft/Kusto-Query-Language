@@ -2,6 +2,7 @@
 
 Returns the maximum value of several evaluated numeric expressions.
 
+<!-- csl -->
 ```
 max_of(10, 1, -3, 17) == 17
 ```

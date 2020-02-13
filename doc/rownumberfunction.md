@@ -25,6 +25,7 @@ The following example returns a table with two columns, the first column (`a`)
 with numbers from `10` down to `1`, and the second column (`rn`) with numbers
 from `1` up to `10`:
 
+<!-- csl -->
 ```
 range a from 1 to 10 step 1
 | sort by a desc
@@ -34,6 +35,7 @@ range a from 1 to 10 step 1
 The following example is similar to the above, only the second column (`rn`)
 starts at `7`:
 
+<!-- csl -->
 ```
 range a from 1 to 10 step 1
 | sort by a desc
@@ -43,6 +45,7 @@ range a from 1 to 10 step 1
 The last example shows how one can partition the data and number the rows
 per each partition. Here, we partition the data by `Airport`:
 
+<!-- csl -->
 ```
 datatable (Airport:string, Airline:string, Departures:long)
 [

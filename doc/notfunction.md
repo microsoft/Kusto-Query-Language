@@ -2,6 +2,7 @@
 
 Reverses the value of its `bool` argument.
 
+<!-- csl -->
 ```
 not(false) == true
 ```

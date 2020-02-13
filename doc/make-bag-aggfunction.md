@@ -29,6 +29,7 @@ Use the [bag_unpack()](bag-unpackplugin.md) plugin for expanding dynamic JSON ob
 
 **Examples**
 
+<!-- csl -->
 ```
 let T = datatable(prop:string, value:string)
 [
@@ -48,6 +49,7 @@ T
 
 Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag() output into columns. 
 
+<!-- csl -->
 ```
 let T = datatable(prop:string, value:string)
 [

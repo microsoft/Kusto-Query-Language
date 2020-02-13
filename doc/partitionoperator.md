@@ -5,6 +5,7 @@ according to the values of the specified column, executes a sub-query over each
 sub-table, and produces a single output table that is the union of the results
 of all sub-queries. 
 
+<!-- csl -->
 ```
 T | partition by Col1 ( top 10 by MaxValue )
 
@@ -140,6 +141,7 @@ range p from 0 to N-1 step 1  //
 The following example shows how one can use the [as operator](asoperator.md) to
 give a "name" to each data partition and then reuse that name within the subquery:
 
+<!-- csl -->
 ```
 T
 | partition by Dim

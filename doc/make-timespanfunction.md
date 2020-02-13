@@ -2,6 +2,7 @@
 
 Creates a [timespan](./scalar-data-types/timespan.md) scalar value from the specified time period.
 
+<!-- csl -->
 ```
 make_timespan(1,12,30,55.123) == time(1.12:30:55.123)
 ```
@@ -27,6 +28,7 @@ If creation is successful, result will be a [timespan](./scalar-data-types/times
  
 **Example**
 
+<!-- csl -->
 ```
 print ['timespan'] = make_timespan(1,12,30,55.123)
 
@@ -35,3 +37,6 @@ print ['timespan'] = make_timespan(1,12,30,55.123)
 |timespan|
 |---|
 |1.12:30:55.1230000|
+
+
+

@@ -2,6 +2,7 @@
 
 Converts input to decimal number representation.
 
+<!-- csl -->
 ```
 todecimal("123.45678") == decimal(123.45678)
 ```

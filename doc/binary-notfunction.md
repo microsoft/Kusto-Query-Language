@@ -2,6 +2,7 @@
 
 Returns a bitwise negation of the input value.
 
+<!-- csl -->
 ```
 binary_not(x)
 ```

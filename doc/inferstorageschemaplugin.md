@@ -2,6 +2,7 @@
 
 This plug-in infers schema of external data, and returns it as CSL schema string that can be used when [creating external tables](../management/externaltables.md#create-or-alter-external-table).
 
+<!-- csl -->
 ```
 let options = dynamic({
   'StorageContainers': [
@@ -40,6 +41,7 @@ The `infer_storage_schema` plugin returns a single result table containing a sin
 
 **Example**
 
+<!-- csl -->
 ```
 let options = dynamic({
   'StorageContainers': [

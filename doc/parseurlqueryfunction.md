@@ -16,6 +16,7 @@ An object of type [dynamic](./scalar-data-types/dynamic.md) that includes the qu
 
 **Example**
 
+<!-- csl -->
 ```
 parse_urlquery("k1=v1&k2=v2&k3=v3")
 ```

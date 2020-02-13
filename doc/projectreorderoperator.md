@@ -2,6 +2,7 @@
 
 Reorders columns in the result output.
 
+<!-- csl -->
 ```
 T | project-reorder Col2, Col1, Col* asc
 ```

@@ -2,6 +2,7 @@
 
 Formats a number as a string representing data size in bytes.
 
+<!-- csl -->
 ```
 format_bytes(1024) == '1 KB'"
 ```

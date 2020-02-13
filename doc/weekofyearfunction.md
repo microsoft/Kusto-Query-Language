@@ -7,6 +7,7 @@ Returns an integer which represents the week number. The week number is calculat
 `Week_Of_Year` returns the First Week of a year (according to the ISO 8601 standard), which is the one that includes the first Thursday (https://en.wikipedia.org/wiki/ISO_8601#Week_dates)
 -->
 
+<!-- csl -->
 ```
 weekofyear(datetime("2015-12-14"))
 ```

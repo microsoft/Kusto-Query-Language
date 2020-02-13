@@ -2,6 +2,7 @@
 
 Returns an approximation of the first *N* results (assuming skewed distribution of the input).
 
+<!-- csl -->
 ```
 T | top-hitters 25 of Page by Views 
 ```

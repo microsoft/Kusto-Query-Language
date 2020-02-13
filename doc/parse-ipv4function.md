@@ -2,6 +2,7 @@
 
 Converts input to integer (signed 64-bit) number representation.
 
+<!-- csl -->
 ```
 parse_ipv4("127.0.0.1") == 2130706433
 parse_ipv4('192.1.168.1') < parse_ipv4('192.1.168.2') == true
@@ -19,3 +20,4 @@ parse_ipv4('192.1.168.1') < parse_ipv4('192.1.168.2') == true
 
 If conversion is successful, result will be a long number.
 If conversion is not successful, result will be `null`.
+ 
