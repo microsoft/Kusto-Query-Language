@@ -96,6 +96,7 @@
 ## [project-rename operator](projectrenameoperator.md)
 ## [project-reorder operator](projectreorderoperator.md)
 ## [parse operator](parseoperator.md)
+## [parse-where operator](parsewhereoperator.md)
 ## [partition operator](partitionoperator.md)
 ## [print operator](printoperator.md)
 ## [range operator](rangeoperator.md)

@@ -1610,7 +1610,6 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new ParseOperator(parseKeyword, parameters, expr, withKeyword, expressions))
                 .WithTag("<parse>");
 
-            // TODO ZIHAM: once all clusters deployed, unhide parse-where.
             var ParseWhereOperator =
                 Rule(
                     Token(SyntaxKind.ParseWhereKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
@@ -1620,7 +1619,7 @@ namespace Kusto.Language.Parsing
                     List(Rule(ParseWithExpression, e => (SyntaxNode)e)),
                     (parseKeyword, parameters, expr, withKeyword, expressions) =>
                         (QueryOperator)new ParseWhereOperator(parseKeyword, parameters, expr, withKeyword, expressions))
-                .WithTag("<parse-where>").Hide();
+                .WithTag("<parse-where>");
 
             var ProjectOperator =
                 Rule(
