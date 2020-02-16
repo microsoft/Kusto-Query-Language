@@ -1403,16 +1403,34 @@ namespace Kusto.Language.Parsing
                     (inKeyword, rangeKeyword, openParen, list, closeParen) =>
                         (MakeSeriesRangeClause)new MakeSeriesInRangeClause(inKeyword, rangeKeyword, new ExpressionList(openParen, list, closeParen)));
 
-            var MakeSeriesFromToStepClause =
+            var MakeSeriesFromClause =
                 Rule(
                     Token(SyntaxKind.FromKeyword),
                     Required(UnnamedExpression, MissingExpression),
-                    RequiredToken(SyntaxKind.ToKeyword),
-                    Required(UnnamedExpression, MissingExpression),
-                    RequiredToken(SyntaxKind.StepKeyword),
-                    Required(UnnamedExpression, MissingExpression),
-                    (FromToken, fromEx, ToToken, toEx, stepToken, stepEx) =>
-                        (MakeSeriesRangeClause)new MakeSeriesFromToStepClause(FromToken, fromEx, ToToken, toEx, stepToken, stepEx));
+                    (FromToken, fromEx) =>
+                        new MakeSeriesFromClause(FromToken, fromEx));
+
+            var MakeSeriesToClause =
+               Rule(
+                   Token(SyntaxKind.ToKeyword),
+                   Required(UnnamedExpression, MissingExpression),
+                   (ToToken, toEx) =>
+                       new MakeSeriesToClause(ToToken, toEx));
+
+            var MakeSeriesStepClause =
+              Rule(
+                  Token(SyntaxKind.StepKeyword),
+                  Required(UnnamedExpression, MissingExpression),
+                  (stepToken, stepEx) =>
+                      new MakeSeriesStepClause(stepToken, stepEx));
+
+            var MakeSeriesFromToStepClause =
+                Rule(
+                    Optional(MakeSeriesFromClause),
+                    Optional(MakeSeriesToClause),
+                    MakeSeriesStepClause,
+                    (fromClause, toClause, stepClause) =>
+                        (MakeSeriesRangeClause)new MakeSeriesFromToStepClause(fromClause, toClause, stepClause));                       
 
             var MakeSeriesByClause =
                 Rule(
@@ -2489,7 +2507,7 @@ namespace Kusto.Language.Parsing
 
             var MaterializedViewCombineExpression =
                 Rule(
-                    Token(SyntaxKind.MaterializedViewCombineKeyword, CompletionKind.TabularPrefix),
+                    Token(SyntaxKind.MaterializedViewCombineKeyword, CompletionKind.TabularPrefix).Hide(),
                     Required(MaterializedViewCombineBaseClause, MissingMaterializedViewCombineClause("base")),
                     Required(MaterializedViewCombineDeltaClause, MissingMaterializedViewCombineClause("delta")),
                     Required(MaterializedViewCombineAggregationsClause, MissingMaterializedViewCombineClause("aggregates")),

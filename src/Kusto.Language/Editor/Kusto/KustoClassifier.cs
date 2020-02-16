@@ -170,6 +170,8 @@ namespace Kusto.Language.Editor
                     return ClassificationKind.Variable;
                 case SymbolKind.Parameter:
                     return ClassificationKind.Parameter;
+                case SymbolKind.MaterializedView:
+                    return ClassificationKind.MaterializedView;
                 default:
                     if (IsName(token))
                     {

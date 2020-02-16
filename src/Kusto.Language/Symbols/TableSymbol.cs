@@ -88,7 +88,7 @@ namespace Kusto.Language.Symbols
             return (TableSymbol)Binding.Binder.GetDeclaredType(schemaType);
         }
 
-        public override SymbolKind Kind => SymbolKind.Table;
+        public override SymbolKind Kind => IsMaterializedView ? SymbolKind.MaterializedView : SymbolKind.Table;
 
         public override IReadOnlyList<Symbol> Members => this.Columns;
 

@@ -87,5 +87,10 @@ namespace Kusto.Language.Symbols
         /// Command statements
         /// </summary>
         Command,
+
+        /// <summary>
+        /// Materialized view
+        /// </summary>
+        MaterializedView,
     }
 }

@@ -2298,9 +2298,16 @@ namespace Kusto.Language.Binding
                         }
                         else if (node.RangeClause is MakeSeriesFromToStepClause fromToClause)
                         {
-                            _binder.CheckIsType(fromToClause.From, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
-                            _binder.CheckIsType(fromToClause.To, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
-                            _binder.CheckIsIntervalType(fromToClause.Step, _binder.GetResultTypeOrError(node.OnClause.Expression), diagnostics);
+                            if (fromToClause.MakeSeriesFromClause?.Expression != null)
+                            {
+                                _binder.CheckIsType(fromToClause.MakeSeriesFromClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                            }
+
+                            if (fromToClause.MakeSeriesToClause?.Expression != null)
+                            {
+                                _binder.CheckIsType(fromToClause.MakeSeriesToClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                            }
+                            _binder.CheckIsIntervalType(fromToClause.MakeSeriesStepClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), diagnostics);
                         }
                     }
 
@@ -2821,11 +2828,25 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
+            public override SemanticInfo VisitMakeSeriesFromClause(MakeSeriesFromClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitMakeSeriesToClause(MakeSeriesToClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitMakeSeriesStepClause(MakeSeriesStepClause node)
+            {
+                return null;
+            }
 
             public override SemanticInfo VisitMakeSeriesFromToStepClause(MakeSeriesFromToStepClause node)
             {
                 return null;
-            }
+            }            
 
             public override SemanticInfo VisitMakeSeriesOnClause(MakeSeriesOnClause node)
             {

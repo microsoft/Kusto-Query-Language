@@ -5408,6 +5408,207 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class MakeSeriesOnClause */
     
+    #region class MakeSeriesFromClause
+    public sealed partial class MakeSeriesFromClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeSeriesFromClause;
+        
+        public SyntaxToken FromKeyword { get; }
+        
+        public Expression Expression { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeSeriesFromClause"/>.
+        /// </summary>
+        internal MakeSeriesFromClause(SyntaxToken fromKeyword, Expression expression, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.FromKeyword = Attach(fromKeyword);
+            this.Expression = Attach(expression);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return FromKeyword;
+                case 1: return Expression;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(FromKeyword);
+                case 1: return nameof(Expression);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeSeriesFromClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeSeriesFromClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new MakeSeriesFromClause((SyntaxToken)FromKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class MakeSeriesFromClause */
+    
+    #region class MakeSeriesToClause
+    public sealed partial class MakeSeriesToClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeSeriesToClause;
+        
+        public SyntaxToken ToKeyword { get; }
+        
+        public Expression Expression { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeSeriesToClause"/>.
+        /// </summary>
+        internal MakeSeriesToClause(SyntaxToken toKeyword, Expression expression, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ToKeyword = Attach(toKeyword);
+            this.Expression = Attach(expression);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ToKeyword;
+                case 1: return Expression;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ToKeyword);
+                case 1: return nameof(Expression);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeSeriesToClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeSeriesToClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new MakeSeriesToClause((SyntaxToken)ToKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class MakeSeriesToClause */
+    
+    #region class MakeSeriesStepClause
+    public sealed partial class MakeSeriesStepClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeSeriesStepClause;
+        
+        public SyntaxToken StepKeyword { get; }
+        
+        public Expression Expression { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeSeriesStepClause"/>.
+        /// </summary>
+        internal MakeSeriesStepClause(SyntaxToken stepKeyword, Expression expression, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.StepKeyword = Attach(stepKeyword);
+            this.Expression = Attach(expression);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return StepKeyword;
+                case 1: return Expression;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(StepKeyword);
+                case 1: return nameof(Expression);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeSeriesStepClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeSeriesStepClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new MakeSeriesStepClause((SyntaxToken)StepKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class MakeSeriesStepClause */
+    
     #region class MakeSeriesRangeClause
     public abstract partial class MakeSeriesRangeClause : Clause
     {
@@ -5498,44 +5699,32 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.MakeSeriesFromToStepClause;
         
-        public SyntaxToken FromToken { get; }
+        public MakeSeriesFromClause MakeSeriesFromClause { get; }
         
-        public Expression From { get; }
+        public MakeSeriesToClause MakeSeriesToClause { get; }
         
-        public SyntaxToken ToToken { get; }
-        
-        public Expression To { get; }
-        
-        public SyntaxToken StepToken { get; }
-        
-        public Expression Step { get; }
+        public MakeSeriesStepClause MakeSeriesStepClause { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="MakeSeriesFromToStepClause"/>.
         /// </summary>
-        internal MakeSeriesFromToStepClause(SyntaxToken fromToken, Expression from, SyntaxToken toToken, Expression to, SyntaxToken stepToken, Expression step, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal MakeSeriesFromToStepClause(MakeSeriesFromClause makeSeriesFromClause, MakeSeriesToClause makeSeriesToClause, MakeSeriesStepClause makeSeriesStepClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
-            this.FromToken = Attach(fromToken);
-            this.From = Attach(from);
-            this.ToToken = Attach(toToken);
-            this.To = Attach(to);
-            this.StepToken = Attach(stepToken);
-            this.Step = Attach(step);
+            this.MakeSeriesFromClause = Attach(makeSeriesFromClause, optional: true);
+            this.MakeSeriesToClause = Attach(makeSeriesToClause, optional: true);
+            this.MakeSeriesStepClause = Attach(makeSeriesStepClause);
             this.Init();
         }
         
-        public override int ChildCount => 6;
+        public override int ChildCount => 3;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
-                case 0: return FromToken;
-                case 1: return From;
-                case 2: return ToToken;
-                case 3: return To;
-                case 4: return StepToken;
-                case 5: return Step;
+                case 0: return MakeSeriesFromClause;
+                case 1: return MakeSeriesToClause;
+                case 2: return MakeSeriesStepClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -5544,13 +5733,22 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(FromToken);
-                case 1: return nameof(From);
-                case 2: return nameof(ToToken);
-                case 3: return nameof(To);
-                case 4: return nameof(StepToken);
-                case 5: return nameof(Step);
+                case 0: return nameof(MakeSeriesFromClause);
+                case 1: return nameof(MakeSeriesToClause);
+                case 2: return nameof(MakeSeriesStepClause);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                case 1:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -5558,12 +5756,9 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Scalar;
-                case 2: return CompletionHint.Keyword;
-                case 3: return CompletionHint.Scalar;
-                case 4: return CompletionHint.Keyword;
-                case 5: return CompletionHint.Scalar;
+                case 0: return CompletionHint.Clause;
+                case 1: return CompletionHint.Clause;
+                case 2: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -5579,7 +5774,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new MakeSeriesFromToStepClause((SyntaxToken)FromToken?.Clone(), (Expression)From?.Clone(), (SyntaxToken)ToToken?.Clone(), (Expression)To?.Clone(), (SyntaxToken)StepToken?.Clone(), (Expression)Step?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesFromToStepClause((MakeSeriesFromClause)MakeSeriesFromClause?.Clone(), (MakeSeriesToClause)MakeSeriesToClause?.Clone(), (MakeSeriesStepClause)MakeSeriesStepClause?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class MakeSeriesFromToStepClause */
@@ -11821,6 +12016,9 @@ namespace Kusto.Language.Syntax
         public abstract void VisitMakeSeriesExpression(MakeSeriesExpression node);
         public abstract void VisitDefaultExpressionClause(DefaultExpressionClause node);
         public abstract void VisitMakeSeriesOnClause(MakeSeriesOnClause node);
+        public abstract void VisitMakeSeriesFromClause(MakeSeriesFromClause node);
+        public abstract void VisitMakeSeriesToClause(MakeSeriesToClause node);
+        public abstract void VisitMakeSeriesStepClause(MakeSeriesStepClause node);
         public abstract void VisitMakeSeriesInRangeClause(MakeSeriesInRangeClause node);
         public abstract void VisitMakeSeriesFromToStepClause(MakeSeriesFromToStepClause node);
         public abstract void VisitMakeSeriesByClause(MakeSeriesByClause node);
@@ -12176,6 +12374,18 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitMakeSeriesOnClause(MakeSeriesOnClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeSeriesFromClause(MakeSeriesFromClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeSeriesToClause(MakeSeriesToClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeSeriesStepClause(MakeSeriesStepClause node)
         {
             this.DefaultVisit(node);
         }
@@ -12577,6 +12787,9 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitMakeSeriesExpression(MakeSeriesExpression node);
         public abstract TResult VisitDefaultExpressionClause(DefaultExpressionClause node);
         public abstract TResult VisitMakeSeriesOnClause(MakeSeriesOnClause node);
+        public abstract TResult VisitMakeSeriesFromClause(MakeSeriesFromClause node);
+        public abstract TResult VisitMakeSeriesToClause(MakeSeriesToClause node);
+        public abstract TResult VisitMakeSeriesStepClause(MakeSeriesStepClause node);
         public abstract TResult VisitMakeSeriesInRangeClause(MakeSeriesInRangeClause node);
         public abstract TResult VisitMakeSeriesFromToStepClause(MakeSeriesFromToStepClause node);
         public abstract TResult VisitMakeSeriesByClause(MakeSeriesByClause node);
@@ -12932,6 +13145,18 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitMakeSeriesOnClause(MakeSeriesOnClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeSeriesFromClause(MakeSeriesFromClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeSeriesToClause(MakeSeriesToClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeSeriesStepClause(MakeSeriesStepClause node)
         {
             return this.DefaultVisit(node);
         }

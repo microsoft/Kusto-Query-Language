@@ -637,6 +637,9 @@
         MakeSeriesExpression,
         MakeSeriesOnClause,
         MakeSeriesInRangeClause,
+        MakeSeriesFromClause,
+        MakeSeriesToClause,
+        MakeSeriesStepClause,
         MakeSeriesFromToStepClause,
         MakeSeriesByClause,
 

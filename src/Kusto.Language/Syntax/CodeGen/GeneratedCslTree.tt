@@ -1105,6 +1105,48 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         }
     },
 
+	new GeneratedCslNodeClass
+    {
+        Name = "MakeSeriesFromClause",
+        Doc = "",
+        Base = "Clause",
+        Sealed = true,
+        Kind = "MakeSeriesFromClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "FromKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" }
+        }
+    },
+
+	new GeneratedCslNodeClass
+    {
+        Name = "MakeSeriesToClause",
+        Doc = "",
+        Base = "Clause",
+        Sealed = true,
+        Kind = "MakeSeriesToClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ToKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" }
+        }
+    },
+
+	new GeneratedCslNodeClass
+    {
+        Name = "MakeSeriesStepClause",
+        Doc = "",
+        Base = "Clause",
+        Sealed = true,
+        Kind = "MakeSeriesStepClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "StepKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" }
+        }
+    },
+
     new GeneratedCslNodeClass
     {
         Name = "MakeSeriesRangeClause",
@@ -1140,12 +1182,9 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Kind = "MakeSeriesFromToStepClause",
         Properties = new GeneratedProperty[]
         {
-            new GeneratedProperty { Name = "FromToken", Type = "SyntaxToken", Completion="Keyword" },
-            new GeneratedProperty { Name = "From", Type = "Expression", Completion="Scalar" },
-            new GeneratedProperty { Name = "ToToken", Type = "SyntaxToken", Completion="Keyword" },
-            new GeneratedProperty { Name = "To", Type = "Expression", Completion="Scalar"},
-            new GeneratedProperty { Name = "StepToken", Type = "SyntaxToken", Completion="Keyword"}, 
-            new GeneratedProperty { Name = "Step", Type = "Expression", Completion="Scalar"}
+            new GeneratedProperty { Name = "MakeSeriesFromClause", Type = "MakeSeriesFromClause", Optional=true, Completion="Clause"},
+            new GeneratedProperty { Name = "MakeSeriesToClause", Type = "MakeSeriesToClause", Optional=true, Completion="Clause"},
+			new GeneratedProperty { Name = "MakeSeriesStepClause", Type = "MakeSeriesStepClause", Completion="Clause"}
         }
     },
 

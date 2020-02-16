@@ -4243,6 +4243,7 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Function:
                 case SymbolKind.Pattern:
                 case SymbolKind.Group:
+                case SymbolKind.MaterializedView:
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics);
                 case SymbolKind.Variable:
                     var v = (VariableSymbol)referencedSymbol;

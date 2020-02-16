@@ -241,7 +241,8 @@ namespace Kusto.Language.Editor
             Table = Column + 1,
             Variable = Table + 1,
             Function = Variable + 1,
-            Keyword = Function + 1,
+            MaterializedView = Function + 1,
+            Keyword = MaterializedView + 1,
             StringOperator = Keyword + 1,
             MathOperator = StringOperator + 1,
             Other = MathOperator + 1
@@ -268,6 +269,9 @@ namespace Kusto.Language.Editor
 
                 case CompletionKind.Table:
                     return OrderingRank.Table;
+
+                case CompletionKind.MaterialiedView:
+                    return OrderingRank.MaterializedView;
 
                 case CompletionKind.Variable:
                 case CompletionKind.Parameter:
@@ -1089,7 +1093,7 @@ namespace Kusto.Language.Editor
                 match |= SymbolMatch.Scalar | SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local;
 
             if ((hint & CompletionHint.Tabular) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local;
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.MaterializedView;
 
             if ((hint & CompletionHint.Expression) != 0)
                 match |= SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Tabular;
@@ -1936,6 +1940,8 @@ namespace Kusto.Language.Editor
                     return CompletionKind.Parameter;
                 case SymbolKind.Table:
                     return CompletionKind.Table;
+                case SymbolKind.MaterializedView:
+                    return CompletionKind.MaterialiedView;
                 case SymbolKind.Tuple:
                 case SymbolKind.Scalar:
                 case SymbolKind.Group:

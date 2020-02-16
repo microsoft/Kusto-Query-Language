@@ -114,6 +114,11 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The name of a cluster
         /// </summary>
-        Cluster
+        Cluster, 
+
+        /// <summary>
+        /// The name of a materialized view
+        /// </summary>
+        MaterialiedView,
     }
 }

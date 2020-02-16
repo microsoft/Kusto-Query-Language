@@ -111,6 +111,11 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The text is a language keyword
         /// </summary>
-        Keyword
+        Keyword, 
+
+        /// <summary>
+        /// The text is a materialized view entity
+        /// </summary>
+        MaterializedView
     }
 }

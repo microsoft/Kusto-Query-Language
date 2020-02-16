@@ -665,7 +665,10 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesOnClause, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.MakeSeriesInRangeClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeSeriesInRangeClause, "", SyntaxCategory.Node),                
+                new SyntaxData(SyntaxKind.MakeSeriesToClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeSeriesFromClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeSeriesStepClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesFromToStepClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesByClause, "", SyntaxCategory.Node),
 

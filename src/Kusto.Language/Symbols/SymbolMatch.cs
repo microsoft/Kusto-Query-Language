@@ -69,7 +69,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | Local | Scalar | Tabular,
+        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView,
     }
 
     public static class SymbolMatchExtensions
