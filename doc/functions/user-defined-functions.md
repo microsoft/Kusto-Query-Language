@@ -110,8 +110,7 @@ The function **body** includes:
 > Other kinds of [query statements](../statements.md) which are supported
 > at the query "top level", are not supported inside a function body.
 
-### Examples of user-definted functions
-
+### Examples of user-defined functions 
 
 **Example: User-defined function that uses a let statement**
 
