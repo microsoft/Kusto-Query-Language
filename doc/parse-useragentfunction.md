@@ -27,7 +27,7 @@ Device: Family, Brand, Model
 > [!WARNING]
 > The function implementation is built on regex checks of the input string against a huge number of predefined patterns. Therefore the expected time and CPU consumption is high.
 When the function is used in a query, make sure it runs in a distributed manner on multiple machines.
-If queries with this function are frequently used, you may want to pre-create the results via [update policy](../concepts/updatepolicy.md), but you need to take into account that using this function inside the update policy will increase the ingestion latency.
+If queries with this function are frequently used, you may want to pre-create the results via [update policy](../management/updatepolicy.md), but you need to take into account that using this function inside the update policy will increase the ingestion latency.
  
 **Example**
 

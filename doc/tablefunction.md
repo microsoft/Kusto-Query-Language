@@ -22,7 +22,7 @@ table('StormEvent')
 
 * *DataScope*: An optional parameter of type `string` that can be used to restrict
   the table reference to data according to how this data falls under the table's
-  effective [cache policy](../concepts/cachepolicy.md). If used, the actual argument
+  effective [cache policy](../management/cachepolicy.md). If used, the actual argument
   must be a constant `string` expression having one of the following possible values:
 
     - `"hotcache"`: Only data that is categorized as hot cache will be referenced.

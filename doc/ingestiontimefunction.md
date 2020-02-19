@@ -5,7 +5,7 @@ The `$IngestionTime` column is automatically defined when the table's
 
 ::: zone pivot="azuredataexplorer"
 
-[IngestionTime policy](../concepts/ingestiontimepolicy.md) is set (enabled).
+[IngestionTime policy](../management/ingestiontimepolicy.md) is set (enabled).
 
 ::: zone-end
 

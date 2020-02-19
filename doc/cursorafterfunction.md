@@ -24,7 +24,7 @@ See [database cursors](../management/databasecursor.md) for additional
 details on database cursors.
 
 This function can only be invoked on records of a table which has the
-[IngestionTime policy](../concepts/ingestiontimepolicy.md) enabled.
+[IngestionTime policy](../management/ingestiontimepolicy.md) enabled.
 
 ::: zone-end
 
