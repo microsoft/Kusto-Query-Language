@@ -6,9 +6,7 @@ Another alias: monthoyear()
 
 **Example**
 
-<!-- csl -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```
-T 
-| extend month = getmonth(datetime(2015-10-12))
-// month == 10
+print month = getmonth(datetime(2015-10-12))
 ```

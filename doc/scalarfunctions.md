@@ -10,6 +10,7 @@
 |[binary_shift_left()](binary-shift-leftfunction.md)|Returns binary shift left operation on a pair of numbers: a << n.|
 |[binary_shift_right()](binary-shift-rightfunction.md)|Returns binary shift right operation on a pair of numbers: a >> n.|
 |[binary_xor()](binary-xorfunction.md)|Returns a result of the bitwise xor operation of the two values.|
+|[bitset_count_ones()](bitset-count-onesfunction.md)|Returns the number of set bits in the binary representation of a number.|
 
 ## Conversion Functions
 
@@ -143,6 +144,8 @@
 |[current_cluster_endpoint()](current-cluster-endpoint-function.md)|Returns the current cluster running the query.|
 |[current_database()](current-database-function.md)|Returns the name of the database in scope.|
 |[current_principal()](current-principalfunction.md)|Returns the current principal running this query.|
+|[current_principal_details()](current-principal-detailsfunction.md)|Returns details of the principal running the query.|
+|[current_principal_is_member_of()](current-principal-ismemberoffunction.md)|Checks group membership or principal identity of the current principal running the query.|
 |[cursor_after()](cursorafterfunction.md)|Used to access to the records that were ingested after the previous value of the cursor.|
 |[estimate_data_size()](estimate-data-sizefunction.md)|Returns an estimated data size of the selected columns of the tabular expression.|
 |[extent_id()](extentidfunction.md)|Returns a unique identifier that identifies the data shard ("extent") that the current record resides in.|
@@ -166,7 +169,7 @@
 |-------------------------|--------------------------------------------------------|
 |[case()](casefunction.md)|Evaluates a list of predicates and returns the first result expression whose predicate is satisfied.|
 |[coalesce()](coalescefunction.md)|Evaluates a list of expressions and returns the first non-null (or non-empty for string) expression.|
-|[iif()](iiffunction.md)|Evaluates the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to true (second) or false (third).|
+|[iif()/iff()](iiffunction.md)|Evaluates the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to true (second) or false (third).|
 |[max_of()](max-offunction.md)|Returns the maximum value of several evaluated numeric expressions.|
 |[min_of()](min-offunction.md)|Returns the minimum value of several evaluated numeric expressions.|
 
@@ -227,7 +230,7 @@
 |[isnotnull()](isnotnullfunction.md)|Returns true if the argument is not null.|
 |[isnull()](isnullfunction.md)|Evaluates its sole argument and returns a bool value indicating if the argument evaluates to a null value.|
 |[parse_csv()](parsecsvfunction.md)|Splits a given string representing comma separated values and returns a string array with these values.|
-|[parse_ipv4()](parse-ipv4function.md)|Converts input to integener (signed 64-bit) number representation.|
+|[parse_ipv4()](parse-ipv4function.md)|Converts input to long (signed 64-bit) number representation.|
 |[parse_json()](parsejsonfunction.md)|Interprets a string as a JSON value) and returns the value as dynamic.|
 |[parse_url()](parseurlfunction.md)|Parses an absolute URL string and returns a dynamic object contains all parts of the URL.|
 |[parse_urlquery()](parseurlqueryfunction.md)|Parses a url query string and returns a dynamic object contains the Query parameters.|
@@ -249,6 +252,15 @@
 |[url_decode()](urldecodefunction.md)|The function converts encoded URL into a to regular URL representation.|
 |[url_encode()](urlencodefunction.md)|The function converts characters of the input URL into a format that can be transmitted over the Internet.|
 
+## IP v4 functions
+
+|Function Name     |Description                                          |
+|-------------------------|--------------------------------------------------------|
+|[ipv4_compare](ipv4-comparefunction.md)|Compares two IPv4 strings.|
+|[ipv4_is_match](ipv4-is-matchfunction.md)|Matches two IPv4 strings.|
+|[parse_ipv4()](parse-ipv4function.md)|Converts input string to long (signed 64-bit) number representation.|
+|[parse_ipv4_mask](parse-ipv4-maskfunction.md)|Converts input string and IP-prefix mask to long (signed 64-bit) number representation.|
+
 ## Type Functions
 
 |Function Name     |Description                                          |
@@ -267,11 +279,11 @@
 |[rank_tdigest()](rank-tdigest.md)|Calculates relative rank of a value in a set.|
 |[tdigest_merge()](tdigest-mergefunction.md)|Merges tdigest results (scalar version of the aggregate version tdigest-merge()).|
 
-## Spatial functions
+## Geo-Spatial functions
 
-|Function Name                                                             |Description                                             |
+|Function Name|Description|
 |--------------------------------------------------------------------------|--------------------------------------------------------|
-|[geo_distance_2points()](geo-distance-2points-function.md)                ||
-|[geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)||
-|[geo_point_in_circle()](geo-point-in-circle-function.md)                  ||
-|[geo_point_to_geohash()](geo-point-to-geohash-function.md)                ||
+|[geo_distance_2points()](geo-distance-2points-function.md)|Calculates the shortest distance between two geospatial coordinates on Earth.|
+|[geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of a Geohash rectangular area.|
+|[geo_point_in_circle()](geo-point-in-circle-function.md)|Calculates whether the geospatial coordinates are inside a circle on Earth.|
+|[geo_point_to_geohash()](geo-point-to-geohash-function.md)|Calculates the Geohash string value for a geographic location.|

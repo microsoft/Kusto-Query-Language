@@ -456,6 +456,7 @@ namespace Kusto.Language
             new FunctionSymbol("parse_ipv4_mask", ScalarTypes.Long,
                 new Parameter("ipvb", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long))
+            .Hide()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Ipv4Compare  =
@@ -964,8 +965,7 @@ namespace Kusto.Language
            new FunctionSymbol("bitset_count_ones", ScalarTypes.Long,
                new Parameter("value", ParameterTypeKind.Integer))
            .WithResultNameKind(ResultNameKind.FirstArgument)
-           .ConstantFoldable()
-           .Hide();
+           .ConstantFoldable();
         #endregion
 
         #region dynamic array/object functions
@@ -1776,8 +1776,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol CurrentPrincipalIsMemberOf =
           new FunctionSymbol("current_principal_is_member_of", ScalarTypes.Bool, 
               new Parameter("group", ParameterTypeKind.StringOrDynamic, minOccurring: 1, maxOccurring: 64))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ExtentId =
             new FunctionSymbol("extent_id", ScalarTypes.Guid)
