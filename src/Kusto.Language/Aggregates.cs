@@ -255,22 +255,20 @@ namespace Kusto.Language
            new FunctionSymbol("binary_all_or",
                new Signature(ReturnTypeKind.Parameter0,
                    new Parameter("expr", ParameterTypeKind.Summable)))
-            .WithResultNameKind(ResultNameKind.FirstArgument)
-            .Hide(); // TODO: open in Jan 2020
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol BinaryAllAnd =
           new FunctionSymbol("binary_all_and",
               new Signature(ReturnTypeKind.Parameter0,
                   new Parameter("expr", ParameterTypeKind.Summable)))
-          .WithResultNameKind(ResultNameKind.FirstArgument)
-          .Hide(); // TODO: open in Jan 2020
+          .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol BinaryAllXor =
           new FunctionSymbol("binary_all_xor",
               new Signature(ReturnTypeKind.Parameter0,
                   new Parameter("expr", ParameterTypeKind.Summable)))
           .WithResultNameKind(ResultNameKind.FirstArgument)
-          .Hide(); // TODO: open in Jan 2020
+          .Hide(); // TODO: open in March 2020
 
         private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
         {
