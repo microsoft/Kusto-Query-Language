@@ -30,8 +30,8 @@ The two IPv4 strings are parsed and compared while accounting for the combined I
 
 Returns:
 - `0`: if the long representation of the first IPv4 string argument is equal to the second IPv4 string argument.
--  `1`: if the long representation of the first IPv4 string argument is greater than the second IPv4 string argument.
-- `1`: if the long representation of the first IPv4 string argument is less than the second IPv4 string argument.
+- `1`: if the long representation of the first IPv4 string argument is greater than the second IPv4 string argument.
+- `-1`: if the long representation of the first IPv4 string argument is less than the second IPv4 string argument.
 
 If conversion for one of the two IPv4 strings was not successful, result will be `null`.
 
