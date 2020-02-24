@@ -1,6 +1,6 @@
 # binary_all_or() (aggregation function)
 
-Accumulates values using binary `OR` operation per summarization group (or in total, if summarization is done without grouping).
+Accumulates values using the binary `OR` operation per summarization group (or in total, if summarization is done without grouping).
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
@@ -14,7 +14,7 @@ summarize `binary_all_or(`*Expr*`)`
 
 **Returns**
 
-Returns a value that is aggregated using binary `OR` operation over  records per summarization group (or in total, if summarization is done without grouping).
+Returns a value that is aggregated using the binary `OR` operation over records per summarization group (or in total, if summarization is done without grouping).
 
 **Example**
 
@@ -35,6 +35,3 @@ datatable(num:long)
 |result|
 |---|
 |CAFEF00D|
-
-
-

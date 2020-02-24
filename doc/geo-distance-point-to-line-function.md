@@ -44,7 +44,7 @@ print distance_in_meters = geo_distance_point_to_line(-115.199625, 36.210419, dy
 |--------------------|
 | 3797.88887253334   |
 
-Storm events in south coast US. The events are filtered by maximum distance of 5km from the defined shore line.
+Storm events in south coast US. The events are filtered by a maximum distance of 5 km from the defined shore line.
 ![Storm events in US south coast](./images/queries/geo/us_south_coast_storm_events.png)
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -55,7 +55,7 @@ StormEvents
 | render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
 ```
 
-NY taxi pickups. Pickups are filtered by maximum distance of 0.1m from the defined line.
+NY taxi pickups. Pickups are filtered by maximum distance of 0.1 m from the defined line.
 ![Storm events in US South Coast](./images/queries/geo/park_ave_ny_road.png)
 ```
 nyc_taxi
@@ -76,7 +76,7 @@ StormEvents
 | render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
 ```
 
-NY taxi pickups. Pickups are filtered by maximum distance of 0.1m from the defined line.
+NY taxi pickups. Pickups are filtered by maximum distance of 0.1 m from the defined line.
 ![Storm events in US South Coast](./images/queries/geo/park_ave_ny_road.png)
 ```
 nyc_taxi

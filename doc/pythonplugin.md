@@ -13,12 +13,12 @@ The Python plugin runs a user-defined-function (UDF) using a Python script. The 
     * The format is: `typeof(`*ColumnName*`:` *ColumnType* [, ...]`)`, for example: `typeof(col1:string, col2:long)`.
     * For extending the input schema, use the following syntax: `typeof(*, col1:string, col2:long)`
 * *script*: A `string` literal that is the valid Python script to be executed.
-* *script_parameters*: An optional `dynamic` literal which is a property bag of name/value pairs to be passed to the
+* *script_parameters*: An optional `dynamic` literal, which is a property bag of name/value pairs to be passed to the
    Python script as the reserved `kargs` dictionary (see [Reserved Python variables](#reserved-python-variables)).
 * *hint.distribution*: An optional hint for the plugin's execution to be distributed across multiple cluster nodes.
    Default: `single`.
     * `single`: A single instance of the script will run over the entire query data.
-    * `per_node`: If the query before the Python block is distributed, then an instance of the script will run on each node over the data that it contains.
+    * `per_node`: If the query before the Python block is distributed, an instance of the script will run on each node over the data that it contains.
 
 ### Reserved Python variables
 
@@ -38,8 +38,8 @@ The following variables are reserved for interaction between Kusto query languag
 
 * The Python sandbox image is based on *Anaconda 5.2.0* distribution with *Python 3.6* engine.
   The list of its packages can be found [here](http://docs.anaconda.com/anaconda/packages/old-pkg-lists/5.2.0/py3.6_win-64/)
-  (note that a small percentage of packages might be incompatible with the limitations enforced by the sandbox in which the plugin is run).
-* The Python image also contain common ML packages: `tensorflow`, `keras`, `torch`, `hdbscan`, `xgboost` and other useful packages.
+  (a small percentage of packages might be incompatible with the limitations enforced by the sandbox in which the plugin is run).
+* The Python image also contains common ML packages: `tensorflow`, `keras`, `torch`, `hdbscan`, `xgboost` and other useful packages.
 * The plugin imports *numpy* (as `np`) & *pandas* (as `pd`) by default.  You can import other modules as needed.
 * The Python sandbox limits accessing the network, therefore, the Python code can't install additional Python packages (that are
 	
@@ -94,7 +94,7 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
 ### Usage tips
 
 * To generate multi-line strings containing the Python script in `Kusto.Explorer`, copy your Python script from your favorite
-  Python editor (e.g. *Jupyter*, *Visual Studio Code*, *PyCharm* etc.), then either:
+  Python editor (*Jupyter*, *Visual Studio Code*, *PyCharm*, etc.), then either:
     * Press *F2* to open the **Edit in Python** window. Paste the script into this window. Select **OK**. The script will be
       decorated with quotes and new lines (so it's valid in Kusto) and automatically pasted into the query tab.
     * Paste the Python code directly into the query tab, select those lines and press *Ctrl+K*, *Ctrl+S* hot key to decorate them as
@@ -102,7 +102,7 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
       Query Editor shortcuts.
 * To avoid conflicts between Kusto string delimiters and Python string literals, we recommend using single quote characters (`'`) for Kusto string 
   literals in Kusto queries, and double quote characters (`"`) for Python string literals in Python scripts.
-* Use [externaldata operator](externaldata-operator.md) to obtain the content of a script that you've stored in an external location, such as Azure Blob storage or a public GitHub repository.
+* Use the [externaldata operator](externaldata-operator.md) to obtain the content of a script that you've stored in an external location, such as Azure Blob storage or a public GitHub repository.
   
 	**Example**
 
