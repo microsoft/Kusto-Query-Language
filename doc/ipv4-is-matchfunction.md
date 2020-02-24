@@ -16,7 +16,7 @@ ipv4_is_match('192.168.1.1', '192.168.1.255', 24) == true
 
 **Arguments**
 
-* *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#if-prefix-notation).
+* *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
 * *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
 
 ### IP-prefix notation
