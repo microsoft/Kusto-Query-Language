@@ -1278,7 +1278,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Optional(NameEqualsClause),
                     Token(SyntaxKind.OpenParenToken),
-                    Required(ForkPipeExpression, MissingExpression),
+                    Required(First(ForkPipeExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (nameClause, openParen, expr, closeParen) =>
                         new ForkExpression(nameClause, openParen, expr, closeParen));
@@ -1301,7 +1301,7 @@ namespace Kusto.Language.Parsing
             var PartitionSubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(PartitionPipeExpression, MissingExpression),
+                    Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
                         (PartitionOperand)new PartitionSubquery(openParen, expr, closeParen));
@@ -2061,6 +2061,9 @@ namespace Kusto.Language.Parsing
                     SerializeOperator,
                     InvokeOperator);
 
+            var AllQueryOperator =
+                First(PrePipeQueryOperator, PostPipeQueryOperator);
+
             ForkPipeOperatorCore =
                 First(
                     CountOperator,
@@ -2086,7 +2089,8 @@ namespace Kusto.Language.Parsing
                     SampleDistinctOperator,
                     AsOperator,
                     InvokeOperator,
-                    ExecuteAndCacheOperator);
+                    ExecuteAndCacheOperator,
+                    AllQueryOperator.Hide()); // allow other query operators to parser, but fail in binding
 
             ForkPipeExpressionCore =
                 ApplyZeroOrMore(
@@ -2120,7 +2124,8 @@ namespace Kusto.Language.Parsing
                     SampleDistinctOperator,
                     AsOperator,
                     InvokeOperator,
-                    ExecuteAndCacheOperator);
+                    ExecuteAndCacheOperator,
+                    AllQueryOperator.Hide()); // allow all query operators to parse, but fail later in binding
 
             PartitionPipeExpressionCore =
                 ApplyZeroOrMore(

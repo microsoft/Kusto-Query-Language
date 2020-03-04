@@ -1556,6 +1556,7 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Expression;
                         _binder.CheckIsTabular(expr, diagnostics);
+                        CheckQueryOperators(expr, KustoFacts.ForkOperatorKinds, operatorRequired: true, diagnostics);
 
                         var tableType = _binder.GetResultType(expr) as TableSymbol;
                         if (tableType != null)
@@ -1574,6 +1575,31 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public void CheckQueryOperators(
+                Expression query, 
+                IReadOnlyList<SyntaxKind> validQueryOperators, 
+                bool operatorRequired,
+                List<Diagnostic> diagnostics)
+            {
+                if (query is QueryOperator q)
+                {
+                    var keyword = q.GetFirstToken();
+                    if (keyword != null && !validQueryOperators.Contains(query.Kind))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorNotAllowedInContext(keyword.Text).WithLocation(keyword));
+                    }
+                }
+                else if (query is PipeExpression p)
+                {
+                    CheckQueryOperators(p.Expression, validQueryOperators, operatorRequired, diagnostics);
+                    CheckQueryOperators(p.Operator, validQueryOperators, operatorRequired, diagnostics);
+                }
+                else if (operatorRequired)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpected().WithLocation(query));
+                }
+            }
+
             public override SemanticInfo VisitPartitionOperator(PartitionOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1585,6 +1611,18 @@ namespace Kusto.Language.Binding
                     var operand = node.Operand;
                     _binder.CheckIsColumn(node.ByExpression, diagnostics);
                     _binder.CheckIsTabular(operand, diagnostics);
+
+                    switch (operand)
+                    {
+                        case PartitionQuery pq:
+                            CheckQueryOperators(pq.Query, KustoFacts.PartitionOperatorKinds, operatorRequired: false, diagnostics);
+                            break;
+
+                        case PartitionSubquery ps:
+                            CheckQueryOperators(ps.Subquery, KustoFacts.PartitionOperatorKinds, operatorRequired: true, diagnostics);
+                            break;
+                    }
+
                     var tableType = _binder.GetResultType(operand) as TableSymbol;
                     if (tableType == null)
                     {
@@ -2202,6 +2240,7 @@ namespace Kusto.Language.Binding
                         {
                             case FacetWithOperatorClause c:
                                 _binder.CheckIsTabular(c.Operator, diagnostics);
+                                CheckQueryOperators(c.Operator, KustoFacts.ForkOperatorKinds, operatorRequired: true, diagnostics);
                                 tableType = _binder.GetResultType(c.Operator) as TableSymbol;
                                 if (tableType != null)
                                 {

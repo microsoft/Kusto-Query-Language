@@ -178,6 +178,62 @@ namespace Kusto.Language
             "30min", "1h", "1d"
         };
 
+        public static readonly IReadOnlyList<SyntaxKind> ForkOperatorKinds = new SyntaxKind[]
+        {
+            SyntaxKind.CountOperator,
+            SyntaxKind.ExtendOperator,
+            SyntaxKind.FilterOperator,
+            SyntaxKind.ParseOperator,
+            SyntaxKind.ParseWhereOperator,
+            SyntaxKind.TakeOperator,
+            SyntaxKind.TopNestedOperator,
+            SyntaxKind.ProjectOperator,
+            SyntaxKind.ProjectAwayOperator,
+            SyntaxKind.ProjectRenameOperator,
+            SyntaxKind.ProjectReorderOperator,
+            SyntaxKind.SummarizeOperator,
+            SyntaxKind.DistinctOperator,
+            SyntaxKind.TopHittersOperator,
+            SyntaxKind.TopOperator,
+            SyntaxKind.SortOperator,
+            SyntaxKind.MvExpandOperator,
+            SyntaxKind.MvApplyOperator,
+            SyntaxKind.ReduceByOperator,
+            SyntaxKind.SampleOperator,
+            SyntaxKind.SampleDistinctOperator,
+            SyntaxKind.AsOperator,
+            SyntaxKind.InvokeOperator,
+            SyntaxKind.ExecuteAndCacheOperator
+        };
+
+        public static readonly IReadOnlyList<SyntaxKind> PartitionOperatorKinds = new SyntaxKind[]
+        {
+            SyntaxKind.CountOperator,
+            SyntaxKind.ExtendOperator,
+            SyntaxKind.FilterOperator,
+            SyntaxKind.ParseOperator,
+            SyntaxKind.ParseWhereOperator,
+            SyntaxKind.TakeOperator,
+            SyntaxKind.TopNestedOperator,
+            SyntaxKind.ProjectOperator,
+            SyntaxKind.ProjectAwayOperator,
+            SyntaxKind.ProjectRenameOperator,
+            SyntaxKind.ProjectReorderOperator,
+            SyntaxKind.SummarizeOperator,
+            SyntaxKind.DistinctOperator,
+            SyntaxKind.TopHittersOperator,
+            SyntaxKind.TopOperator,
+            SyntaxKind.SortOperator,
+            SyntaxKind.MvExpandOperator,
+            SyntaxKind.MvApplyOperator,
+            SyntaxKind.ReduceByOperator,
+            SyntaxKind.SampleOperator,
+            SyntaxKind.SampleDistinctOperator,
+            SyntaxKind.AsOperator,
+            SyntaxKind.InvokeOperator,
+            SyntaxKind.ExecuteAndCacheOperator
+        };
+
         /// <summary>
         /// True if the text can an identifier in all places that declare or reference names.
         /// </summary>

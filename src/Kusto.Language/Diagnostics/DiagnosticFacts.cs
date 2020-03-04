@@ -532,6 +532,11 @@ namespace Kusto.Language
             return new Diagnostic("Query operator expected.");
         }
 
+        public static Diagnostic GetQueryOperatorNotAllowedInContext(string name)
+        {
+            return new Diagnostic($"The query operator '{name}' is not allowed in the current context.");
+        }
+
         public static Diagnostic GetTypeIsNotIntervalType(Symbol intervalType, Symbol rangeType)
         {
             return new Diagnostic($"The type '{intervalType.Name}' is not an appropriate interval type for '{rangeType.Name}'");
