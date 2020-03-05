@@ -1869,9 +1869,18 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol NewGuid = new FunctionSymbol("new_guid", ScalarTypes.Guid)
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol InternalFunnelCompletion =
+            new FunctionSymbol("__funnel_completion", ScalarTypes.String,
+                new Parameter("events", ScalarTypes.Dynamic),
+                new Parameter("times", ScalarTypes.Dynamic),
+                new Parameter("sequence", ScalarTypes.Dynamic),
+                new Parameter("periods", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
-#region All
+        #region All
         public static IReadOnlyList<FunctionSymbol> All { get; } = new FunctionSymbol[]
         {
 #region cluster / database / table
@@ -2187,6 +2196,7 @@ namespace Kusto.Language
             CursorCurrent,
             CursorCurrent2,
             FormatBytes,
+            InternalFunnelCompletion,
             RowNumber,
             RowCumSum,
             RowWindowSession,
