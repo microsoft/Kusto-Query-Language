@@ -1290,6 +1290,12 @@ namespace Kusto.Language.Parsing
                     (forkKeyword, list) => (QueryOperator)new ForkOperator(forkKeyword, list))
                 .WithTag("<fork>");
 
+            var PartitionScopeClause =
+                Rule(
+                    Token(SyntaxKind.InKeyword).Hide(),
+                    Required(First(FunctionCall, DynamicLiteral), MissingExpression),
+                    (inKeyword, expr) => expr);
+
             var PartitionQueryExpression =
                Rule(
                    Token(SyntaxKind.OpenBraceToken),
@@ -1318,9 +1324,10 @@ namespace Kusto.Language.Parsing
                              )),
                     RequiredToken(SyntaxKind.ByKeyword),
                     Required(EntityReferenceExpression, MissingNameReference),
+                    //         Optional(PartitionScopeClause),
                     Required(First(PartitionSubqueryExpression, PartitionQueryExpression), MissingPartitionOperand),
                     (partitionKeyword, parameters, byKeyword, byExpression, operand) =>
-                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, operand))
+                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, null, operand))
                 .WithTag("<partition>");
 
             var JoinEqualityExpression =
