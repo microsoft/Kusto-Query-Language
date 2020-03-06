@@ -661,6 +661,11 @@ namespace Kusto.Language
             return new Diagnostic($"A variable with the name '{name}' has already been declared.");
         }
 
+        public static Diagnostic GetMaterializedViewNameMustBeStringLiteral()
+        {
+            return new Diagnostic($"Materialized view name must be a string literal");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

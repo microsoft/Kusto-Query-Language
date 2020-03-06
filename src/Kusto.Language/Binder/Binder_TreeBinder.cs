@@ -325,6 +325,7 @@ namespace Kusto.Language.Binding
 
             public override void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
             {
+                node.ViewName.Accept(this);
                 node.BaseClause.Accept(this);
                 node.DeltaClause.Accept(this);
 

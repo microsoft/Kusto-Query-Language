@@ -505,9 +505,25 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "MaterializedViewCombineKeyword", Type="SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "ViewName", Type="MaterializedViewCombineNameClause", Completion="Syntax" },
             new GeneratedProperty { Name = "BaseClause", Type="MaterializedViewCombineClause", Completion="Syntax" },
             new GeneratedProperty { Name = "DeltaClause", Type="MaterializedViewCombineClause", Completion="Syntax" },
             new GeneratedProperty { Name = "AggregationsClause", Type="MaterializedViewCombineClause", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "MaterializedViewCombineNameClause",
+        Doc = "A node in the Kusto syntax that represents the materilized-view-combine view name part.",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "MaterializedViewCombineExpression",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Value", Type = "Expression", Completion="Literal"},
+            new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
         }
     },
 

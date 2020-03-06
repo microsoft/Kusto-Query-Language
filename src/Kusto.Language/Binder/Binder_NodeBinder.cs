@@ -965,7 +965,29 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
             {
                 var resultType = _binder.GetResultTypeOrError(node.AggregationsClause.Expression);
+
+                
                 return new SemanticInfo(resultType);
+            }
+            public override SemanticInfo VisitMaterializedViewCombineNameClause(MaterializedViewCombineNameClause node)
+            {
+                // verify string literal 
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    if (!_binder.CheckIsExactType(node.Value, ScalarTypes.String, diagnostics) ||
+                    !_binder.CheckIsLiteral(node.Value, diagnostics))
+                    {
+                        return new SemanticInfo(diagnostics);
+                    }
+
+                    return null;
+
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
 
             public override SemanticInfo VisitMaterializedViewCombineClause(MaterializedViewCombineClause node)

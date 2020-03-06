@@ -2471,6 +2471,14 @@ namespace Kusto.Language.Parsing
                     (openParen, summarize, closeParen) =>
                         (Expression)new ParenthesizedExpression(openParen, summarize, closeParen));
 
+            var MaterializedViewCombineViewNameClause =
+                Rule(
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Literal),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (open, expression, close) =>
+                        new MaterializedViewCombineNameClause(open, expression, close));
+
             var MaterializedViewCombineBaseClause =
                 Rule(
                     Token("base")
@@ -2510,14 +2518,22 @@ namespace Kusto.Language.Parsing
                         SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                         new[] { DiagnosticFacts.GetMissingClause(name) });
 
+            Func<MaterializedViewCombineNameClause> MissingMaterializedViewCombineNameClause() =>
+                () =>
+                    new MaterializedViewCombineNameClause(
+                        SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                        (Expression)MissingExpressionNode.Clone(),
+                        SyntaxToken.Missing(SyntaxKind.CloseParenToken));
+
             var MaterializedViewCombineExpression =
                 Rule(
                     Token(SyntaxKind.MaterializedViewCombineKeyword, CompletionKind.TabularPrefix).Hide(),
+                    Required(MaterializedViewCombineViewNameClause, MissingMaterializedViewCombineNameClause()),
                     Required(MaterializedViewCombineBaseClause, MissingMaterializedViewCombineClause("base")),
                     Required(MaterializedViewCombineDeltaClause, MissingMaterializedViewCombineClause("delta")),
                     Required(MaterializedViewCombineAggregationsClause, MissingMaterializedViewCombineClause("aggregates")),
-                    (keyword, baseClause, deltaClause, aggregatesClause) =>
-                        (Expression)new MaterializedViewCombineExpression(keyword, baseClause, deltaClause, aggregatesClause));
+                    (keyword, viewname, baseClause, deltaClause, aggregatesClause) =>
+                        (Expression)new MaterializedViewCombineExpression(keyword, viewname, baseClause, deltaClause, aggregatesClause));
 
             PrimaryExpressionCore =
                 First(
