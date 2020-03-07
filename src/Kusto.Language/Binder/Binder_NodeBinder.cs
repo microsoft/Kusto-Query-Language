@@ -2400,7 +2400,7 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsExactType(expr.Expression, ScalarTypes.Dynamic, diagnostics);
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol ?? expr.Expression.ResultType; 
-                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type);
+                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, isReplace: true, columnType: type);
                     }
 
                     var itemIndex = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.MvExpandWithItemIndexProperty);
@@ -2461,7 +2461,7 @@ namespace Kusto.Language.Binding
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_MvExpandParameters, diagnostics);
+                    _binder.CheckQueryParameters(node.Parameters, s_MvApplyParameters, diagnostics);
 
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
@@ -2518,14 +2518,23 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitMvApplySubqueryExpression(MvApplySubqueryExpression node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.Expression);
-
-                if (resultType is TableSymbol table)
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
                 {
-                    resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
-                }
+                    CheckQueryOperators(node.Expression, KustoFacts.PartitionOperatorKinds, operatorRequired: true, diagnostics);
 
-                return new SemanticInfo(resultType);
+                    var resultType = _binder.GetResultTypeOrError(node.Expression);
+                    if (resultType is TableSymbol table)
+                    {
+                        resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
+                    }
+
+                    return new SemanticInfo(resultType, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
 
             private static readonly QueryParameterInfo[] s_MvApplyParameters = new QueryParameterInfo[]

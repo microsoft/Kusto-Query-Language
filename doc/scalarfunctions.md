@@ -115,6 +115,7 @@
 |[gamma()](gammafunction.md)|Computes gamma function.|
 |[hash()](hashfunction.md)|Returns a hash value for the input value.|
 |[hash_combine()](hash_combinefunction.md)|Combines two or more hash values.|
+|[hash_many()](hash_manyfunction.md)|Returns a combined hash value of multiple values.|
 |[isfinite()](isfinitefunction.md)|Returns whether input is a finite value (is neither infinite nor NaN).|
 |[isinf()](isinffunction.md)|Returns whether input is an infinite (positive or negative) value.|
 |[isnan()](isnanfunction.md)|Returns whether input is Not-a-Number (NaN) value.|

@@ -7882,26 +7882,30 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken DistinctKeyword { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="DistinctOperator"/>.
         /// </summary>
-        internal DistinctOperator(SyntaxToken distinctKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal DistinctOperator(SyntaxToken distinctKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DistinctKeyword = Attach(distinctKeyword);
+            this.Parameters = Attach(parameters);
             this.Expressions = Attach(expressions);
             this.Init();
         }
         
-        public override int ChildCount => 2;
+        public override int ChildCount => 3;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return DistinctKeyword;
-                case 1: return Expressions;
+                case 1: return Parameters;
+                case 2: return Expressions;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -7911,7 +7915,8 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(DistinctKeyword);
-                case 1: return nameof(Expressions);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Expressions);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -7921,7 +7926,8 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Scalar;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Scalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -7937,7 +7943,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new DistinctOperator((SyntaxToken)DistinctKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new DistinctOperator((SyntaxToken)DistinctKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class DistinctOperator */

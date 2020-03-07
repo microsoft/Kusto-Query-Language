@@ -224,6 +224,7 @@ namespace Kusto.Language
             SyntaxKind.TopHittersOperator,
             SyntaxKind.TopOperator,
             SyntaxKind.SortOperator,
+            SyntaxKind.MakeSeriesOperator,
             SyntaxKind.MvExpandOperator,
             SyntaxKind.MvApplyOperator,
             SyntaxKind.ReduceByOperator,

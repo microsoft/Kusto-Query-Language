@@ -1739,8 +1739,9 @@ namespace Kusto.Language.Parsing
             var DistinctOperator =
                 Rule(
                     Token(SyntaxKind.DistinctKeyword, CompletionKind.QueryPrefix),
+                    List(KnownQueryOperatorParameter),
                     SeparatedList(First(StarExpression, UnnamedExpression), SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
-                    (keyword, list) => (QueryOperator)new DistinctOperator(keyword, list))
+                    (keyword, parameters, list) => (QueryOperator)new DistinctOperator(keyword, parameters, list))
                 .WithTag("<distinct>");
 
             var TakeOperator =
@@ -2124,6 +2125,7 @@ namespace Kusto.Language.Parsing
                     TopHittersOperator,
                     TopOperator,
                     SortOperator,
+                    MakeSeriesOperator,
                     MvExpandOperator,
                     MvApplyOperator,
                     ReduceByOperator,
