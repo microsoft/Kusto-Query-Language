@@ -58,6 +58,9 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 |[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when the argument is minimized|
 |[avg()](avg-aggfunction.md)|Returns an average value across the group|
 |[avgif()](avgif-aggfunction.md)|Returns an average value across the group (with predicate)|
+|[binary_all_and](binary-all-and-aggfunction.md)|Returns aggregated value using the binary `AND` of the group|
+|[binary_all_or](binary-all-or-aggfunction.md)|Returns aggregated value using the binary `OR` of the group|
+|[binary_all_xor](binary-all-xor-aggfunction.md)|Returns aggregated value using the binary `XOR` of the group|
 |[buildschema()](buildschema-aggfunction.md)|Returns the minimal schema that admits all values of the `dynamic` input|
 |[count()](count-aggfunction.md)|Returns a count of the group|
 |[countif()](countif-aggfunction.md)|Returns a count with the predicate of the group|
@@ -74,10 +77,15 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 |[min()](min-aggfunction.md)|Returns the minimum value across the group|
 |[minif()](minif-aggfunction.md)|Returns the minimum value across the group (with predicate)|
 |[percentiles()](percentiles-aggfunction.md)|Returns the percentile approximate of the group|
+|[percentiles_array()](percentiles-aggfunction.md)|Returns the percentiles approximates of the group|
+|[percentilesw()](percentiles-aggfunction.md)|Returns the weighted percentile approximate of the group|
+|[percentilesw_array()](percentiles-aggfunction.md)|Returns the weighted percentiles approximates of the group|
 |[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
+|[stdevif()](stdevif-aggfunction.md)|Returns the standard deviation across the group (with predicate)|
 |[sum()](sum-aggfunction.md)|Returns the sum of the elements withing the group|
 |[sumif()](sumif-aggfunction.md)|Returns the sum of the elements withing the group (with predicate)|
 |[variance()](variance-aggfunction.md)|Returns the variance across the group|
+|[varianceif()](varianceif-aggfunction.md)|Returns the variance across the group (with predicate)|
 
 ## Aggregates default values
 
@@ -87,7 +95,7 @@ Operator       |Default value
 ---------------|------------------------------------
  `count()`, `countif()`, `dcount()`, `dcountif()`         |   0                            
  `make_bag()`, `make_bag_if()`, `make_list()`, `make_list_if()`, `make_set()`, `make_set_if()` |    empty dynamic array              ([])          
- `any()`, `anyif()`, `arg_max()`. `arg_min()`, `avg()`, `avgif()`, `buildschema()`, `hll()`, `max()`, `maxif()`, `min()`, `minif()`, `percentiles()`, `stdev()`, `sum()`, `sumif()`, `tdigest()`, `variance()`          |   null                           
+ All others          |   null                           
 
  When using these aggregates over entities which includes null values, the null values will be ignored and won't participate in the calculation (see examples below).
 
