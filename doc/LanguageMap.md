@@ -360,6 +360,7 @@ eroperator.md) | Core |  |
 |  [make_bag_if()](make-bag-if-aggfunction.md) | Full |  |
 |  [make_list()](makelist-aggfunction.md) | Core |  |
 |  [make_list_if()](makelistif-aggfunction.md) | Core |  |
+|  [make_list_with_nulls()](make-list-with-nulls-aggfunction.md) | Core |  |
 |  [make_set()](makeset-aggfunction.md) | Core |  |
 |  [make_set_if()](makesetif-aggfunction.md) | Core |  |
 |  [max()](max-aggfunction.md) | Core |  |

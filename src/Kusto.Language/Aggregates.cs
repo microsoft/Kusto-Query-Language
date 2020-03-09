@@ -190,8 +190,7 @@ namespace Kusto.Language
             new FunctionSymbol("make_list_with_nulls", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("list")
-            .Hide(); // TODO: un-hide, once deployed (expected by end of Feb-2020)
+            .WithResultNamePrefix("list");            
 
         public static readonly FunctionSymbol MakeSet_Depricated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,

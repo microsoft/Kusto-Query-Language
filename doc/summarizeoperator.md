@@ -70,6 +70,7 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 |[make_bag_if()](make-bag-if-aggfunction.md)|Returns a property bag of dynamic values within the group (with predicate)|
 |[make_list()](makelist-aggfunction.md)|Returns a list of all the values within the group|
 |[make_list_if()](makelistif-aggfunction.md)|Returns a list of all the values within the group (with predicate)|
+|[make_list_with_nulls()](make-list-with-nulls-aggfunction.md)|Returns a list of all the values within the group, including null values|
 |[make_set()](makeset-aggfunction.md)|Returns a set of distinct values within the group|
 |[make_set_if()](makesetif-aggfunction.md)|Returns a set of distinct values within the group (with predicate)|
 |[max()](max-aggfunction.md)|Returns the maximum value across the group|

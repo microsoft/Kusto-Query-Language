@@ -351,6 +351,7 @@
 ## [make_bag_if()](make-bag-if-aggfunction.md)
 ## [make_list()](makelist-aggfunction.md)
 ## [make_list_if()](makelistif-aggfunction.md)
+## [make_list_with_nulls()](make-list-with-nulls-aggfunction.md)
 ## [make_set()](makeset-aggfunction.md)
 ## [make_set_if()](makesetif-aggfunction.md)
 ## [max()](max-aggfunction.md)

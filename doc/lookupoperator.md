@@ -8,10 +8,11 @@ looked-up in a dimension table.
 FactTable | lookup kind=leftouter (DimensionTable) on CommonColumn, $left.Col1 == $right.Col2
 ```
 
-Here, the result is a table that extends the `FactTable` table (also called `$left`)
-with new columns of data from the `DimensionTable` table (also called `$right`)
-by performing a lookup of each pair (`CommonColumn`,`Col`) from the former table
-with each pair (`CommonColumn1`,`Col2`) in the latter table.
+Here, the result is a table that extends the `FactTable` (`$left`) with data from `DimensionTable` (referenced by `$right`)
+ by performing a lookup of each pair (`CommonColumn`,`Col`) from the former table
+with each pair (`CommonColumn1`,`Col2`) in the latter table. 
+See [fact and dimension tables](../concepts/fact-and-dimension-tables.md) 
+for the differences between fact and dimension tables. 
 
 The `lookup` operator performs an operation similar to the [join operator](joinoperator.md)
 with the following differences:
