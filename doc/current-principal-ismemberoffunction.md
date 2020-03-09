@@ -34,7 +34,7 @@ The function returns:
 * `false`: if the current principal running the query was not member of any `aadgroup=` FQN arguments and was not equal to any of the `aaduser=` or `aadapp=` FQN arguments.
 * `(null)`: if the current principal running the query was not member of any `aadgroup=` FQN arguments and was not equal to any of the `aaduser=` or `aadapp=` FQN arguments, and at least one FQN argument was not successfully resolved (was not presed in AAD). 
 
-> [!NOTE}]
+> [!NOTE]
 > Because the function returns a tri-state value (`true`, `false`,  and `null`), it's important to rely only on positive return values to confirm successful membership. In other words, the following expressions are NOT the same:
 > 
 > * `where current_principal_is_member_of('non-existing-group')`

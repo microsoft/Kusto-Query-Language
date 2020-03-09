@@ -370,6 +370,7 @@ namespace Kusto.Language
             new FunctionSymbol("base64_encodestring", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
+            .Hide() // obsolete function name
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeToString =
@@ -382,6 +383,7 @@ namespace Kusto.Language
             new FunctionSymbol("base64_decodestring", ScalarTypes.String,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
+            .Hide() // obsolete function name
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToString =
