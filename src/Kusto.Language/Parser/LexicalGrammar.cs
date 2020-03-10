@@ -68,7 +68,7 @@ namespace Kusto.Language.Parsing
             And(Or(Char('e'), Char('E')), Optional(PlusOrMinus), OneOrMore(Digit));
 
         private static readonly Parser<char> RealLiteral = Or(
-            And(NonHexIntegerNumber, Char('.'), Fails(Char('.')), ZeroOrMore(Digit), Optional(Exponent)),
+            And(NonHexIntegerNumber, Char('.'), Fails(And(Char('.'), Fails(Char('.')))), ZeroOrMore(Digit), Optional(Exponent)),
             And(NonHexIntegerNumber, Exponent)
             );
 

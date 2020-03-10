@@ -6882,25 +6882,22 @@ namespace Kusto.Language.Syntax
         
         public Expression ByExpression { get; }
         
-        public Expression ScopeExpression { get; }
-        
         public PartitionOperand Operand { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="PartitionOperator"/>.
         /// </summary>
-        internal PartitionOperator(SyntaxToken partitionKeyword, SyntaxList<NamedParameter> parameters, SyntaxToken byKeyword, Expression byExpression, Expression scopeExpression, PartitionOperand operand, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal PartitionOperator(SyntaxToken partitionKeyword, SyntaxList<NamedParameter> parameters, SyntaxToken byKeyword, Expression byExpression, PartitionOperand operand, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.PartitionKeyword = Attach(partitionKeyword);
             this.Parameters = Attach(parameters);
             this.ByKeyword = Attach(byKeyword);
             this.ByExpression = Attach(byExpression);
-            this.ScopeExpression = Attach(scopeExpression, optional: true);
             this.Operand = Attach(operand);
             this.Init();
         }
         
-        public override int ChildCount => 6;
+        public override int ChildCount => 5;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -6910,8 +6907,7 @@ namespace Kusto.Language.Syntax
                 case 1: return Parameters;
                 case 2: return ByKeyword;
                 case 3: return ByExpression;
-                case 4: return ScopeExpression;
-                case 5: return Operand;
+                case 4: return Operand;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -6924,20 +6920,8 @@ namespace Kusto.Language.Syntax
                 case 1: return nameof(Parameters);
                 case 2: return nameof(ByKeyword);
                 case 3: return nameof(ByExpression);
-                case 4: return nameof(ScopeExpression);
-                case 5: return nameof(Operand);
+                case 4: return nameof(Operand);
                 default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        public override bool IsOptional(int index)
-        {
-            switch (index)
-            {
-                case 4:
-                    return true;
-                default:
-                    return false;
             }
         }
         
@@ -6949,8 +6933,7 @@ namespace Kusto.Language.Syntax
                 case 1: return CompletionHint.None;
                 case 2: return CompletionHint.Keyword;
                 case 3: return CompletionHint.Scalar;
-                case 4: return CompletionHint.Scalar;
-                case 5: return CompletionHint.Tabular;
+                case 4: return CompletionHint.Tabular;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -6966,7 +6949,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new PartitionOperator((SyntaxToken)PartitionKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)ByExpression?.Clone(), (Expression)ScopeExpression?.Clone(), (PartitionOperand)Operand?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionOperator((SyntaxToken)PartitionKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)ByExpression?.Clone(), (PartitionOperand)Operand?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class PartitionOperator */
@@ -7061,6 +7044,8 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.PartitionSubquery;
         
+        public Expression ScopeExpression { get; }
+        
         public SyntaxToken OpenParen { get; }
         
         public Expression Subquery { get; }
@@ -7070,23 +7055,25 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="PartitionSubquery"/>.
         /// </summary>
-        internal PartitionSubquery(SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal PartitionSubquery(Expression scopeExpression, SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
+            this.ScopeExpression = Attach(scopeExpression, optional: true);
             this.OpenParen = Attach(openParen);
             this.Subquery = Attach(subquery);
             this.CloseParen = Attach(closeParen);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
-                case 0: return OpenParen;
-                case 1: return Subquery;
-                case 2: return CloseParen;
+                case 0: return ScopeExpression;
+                case 1: return OpenParen;
+                case 2: return Subquery;
+                case 3: return CloseParen;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -7095,10 +7082,22 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(OpenParen);
-                case 1: return nameof(Subquery);
-                case 2: return nameof(CloseParen);
+                case 0: return nameof(ScopeExpression);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(Subquery);
+                case 3: return nameof(CloseParen);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -7106,9 +7105,10 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Query;
-                case 2: return CompletionHint.Syntax;
+                case 0: return CompletionHint.Scalar;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Query;
+                case 3: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -7124,7 +7124,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new PartitionSubquery((SyntaxToken)OpenParen?.Clone(), (Expression)Subquery?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionSubquery((Expression)ScopeExpression?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Subquery?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class PartitionSubquery */

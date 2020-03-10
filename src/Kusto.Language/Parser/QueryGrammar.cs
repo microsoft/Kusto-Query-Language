@@ -1304,13 +1304,22 @@ namespace Kusto.Language.Parsing
                    (openBrace, expr, closeBrace) =>
                        (PartitionOperand)new PartitionQuery(openBrace, expr, closeBrace));
 
-            var PartitionSubqueryExpression =
+            var ScopedPartitionSubqueryExpression =
+                Rule(
+                    PartitionScopeClause,
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (scopeExpression, openParen, expr, closeParen) =>
+                        (PartitionOperand)new PartitionSubquery(scopeExpression, openParen, expr, closeParen));
+
+            var UnscopedPartitionSubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
                     Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
-                        (PartitionOperand)new PartitionSubquery(openParen, expr, closeParen));
+                        (PartitionOperand)new PartitionSubquery(null, openParen, expr, closeParen));
 
             var PartitionOperator =
                 Rule(
@@ -1324,10 +1333,14 @@ namespace Kusto.Language.Parsing
                              )),
                     RequiredToken(SyntaxKind.ByKeyword),
                     Required(EntityReferenceExpression, MissingNameReference),
-                    //         Optional(PartitionScopeClause),
-                    Required(First(PartitionSubqueryExpression, PartitionQueryExpression), MissingPartitionOperand),
+                    Required(
+                        First(
+                            ScopedPartitionSubqueryExpression, 
+                            UnscopedPartitionSubqueryExpression,
+                            PartitionQueryExpression), 
+                        MissingPartitionOperand),
                     (partitionKeyword, parameters, byKeyword, byExpression, operand) =>
-                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, null, operand))
+                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, operand))
                 .WithTag("<partition>");
 
             var JoinEqualityExpression =
@@ -2741,6 +2754,7 @@ namespace Kusto.Language.Parsing
 
         public static readonly PartitionOperand MissingPartitionOperandNode =
             new PartitionSubquery(
+                null,
                 CreateMissingToken(SyntaxKind.OpenParenToken),
                 (Expression)MissingExpressionNode.Clone(),
                 CreateMissingToken(SyntaxKind.CloseParenToken));

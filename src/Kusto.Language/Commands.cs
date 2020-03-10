@@ -243,9 +243,8 @@ namespace Kusto.Language
                     new ColumnSymbol("DatabaseName", ScalarTypes.String),
                     new ColumnSymbol("AccessMode", ScalarTypes.String)));
 
-        public static readonly CommandSymbol ShowDatabaseSchema =
-            new CommandSymbol("show database schema", "show database <database>:DatabaseName schema [details] [if_later_than <string>:Version]",
-                new TableSymbol(
+        public static readonly TableSymbol ShowDatabaseSchemaResults =
+            new TableSymbol(
                     new ColumnSymbol("DatabaseName", ScalarTypes.String),
                     new ColumnSymbol("TableName", ScalarTypes.String),
                     new ColumnSymbol("ColumnName", ScalarTypes.String),
@@ -253,24 +252,22 @@ namespace Kusto.Language
                     new ColumnSymbol("IsDefaultTable", ScalarTypes.Bool),
                     new ColumnSymbol("IsDefaultColumn", ScalarTypes.Bool),
                     new ColumnSymbol("PrettyName", ScalarTypes.String),
-                    new ColumnSymbol("Version", ScalarTypes.String)));
+                    new ColumnSymbol("Version", ScalarTypes.String),
+                    new ColumnSymbol("Folder", ScalarTypes.String),
+                    new ColumnSymbol("DocString", ScalarTypes.String));
+
+        public static readonly CommandSymbol ShowDatabaseSchema =
+            new CommandSymbol("show database schema", "show database (schema | <database>:DatabaseName schema) [details] [if_later_than <string>:Version]",
+                ShowDatabaseSchemaResults);
 
         public static readonly CommandSymbol ShowDatabaseSchemaAsJson =
-            new CommandSymbol("show database schema as json", "show database <database>:DatabaseName schema [if_later_than <string>:Version] as json",
+            new CommandSymbol("show database schema as json", "show database (schema | <database>:DatabaseName schema) [if_later_than <string>:Version] as json",
                 new TableSymbol(
                     new ColumnSymbol("DatabaseSchema", ScalarTypes.String)));
 
         public static readonly CommandSymbol ShowDatabasesSchema =
             new CommandSymbol("show databases schema", "show databases '(' { <database>:DatabaseName [if_later_than <string>:Version], ',' }+ ')' schema [details]",
-                new TableSymbol(
-                    new ColumnSymbol("DatabaseName", ScalarTypes.String),
-                    new ColumnSymbol("TableName", ScalarTypes.String),
-                    new ColumnSymbol("ColumnName", ScalarTypes.String),
-                    new ColumnSymbol("ColumnType", ScalarTypes.String),
-                    new ColumnSymbol("IsDefaultTable", ScalarTypes.Bool),
-                    new ColumnSymbol("IsDefaultColumn", ScalarTypes.Bool),
-                    new ColumnSymbol("PrettyName", ScalarTypes.String),
-                    new ColumnSymbol("Version", ScalarTypes.String)));
+                ShowDatabaseSchemaResults);
 
         public static readonly CommandSymbol ShowDatabasesSchemaAsJson =
             new CommandSymbol("show databases schema as json", "show databases '(' { <database>:DatabaseName [if_later_than <string>:Version], ',' }+ ')' schema as json",
