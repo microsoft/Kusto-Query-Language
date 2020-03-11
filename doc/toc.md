@@ -158,6 +158,7 @@
 ## [atan2()](atan2function.md)
 ## [base64_decode_toarray()](base64_decode_toarrayfunction.md)
 ## [base64_decode_tostring()](base64_decode_tostringfunction.md)
+## [base64_encode_fromarray()](base64_encode_fromarrayfunction.md)
 ## [base64_encode_tostring()](base64_encode_tostringfunction.md)
 ## [bag_keys()](bagkeysfunction.md)
 ## [beta_cdf()](beta-cdffunction.md)
