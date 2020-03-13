@@ -6,19 +6,20 @@ Kusto supports user-defined functions, which are either:
 
 A user-defined function has:
 * A name:
-	* Must follow the [identifier naming rules](../schema-entities/entity-names.md#identifier-naming-rules)
-	* Must be unique in the scope of the definition with a type specification
+    * Must follow the [identifier naming rules](../schema-entities/entity-names.md#identifier-naming-rules)
+    * Must be unique in the scope of the definition with a type specification
 * A strongly-typed list of input parameters:
-	* May be scalar or tabular expressions
-	* Scalar parameters may be provided with a default value, used implicitly when the function's caller doesn't provide a value for the parameter (see [Default values](#default-values), below)
+    * May be scalar or tabular expressions
+    * Scalar parameters may be provided with a default value, used implicitly when the function's caller doesn't provide a value for the parameter (see [Default values](#default-values), below)
 * A strongly-typed return value, which may be scalar or tabular
 
 A function's inputs and output determine how and where it can be used:
 
 * **A scalar function**: 
-	* Is a function with no inputs, or with scalar inputs only, and that produces a scalar output
-	* Can be used wherever a scalar expression is allowed
-	* May only use the row context in which it is defined, and can only refer to tables (and views) that are in the accessible schema
+    * Is a function with no inputs, or with scalar inputs only, and that produces a scalar output
+    * Can be used wherever a scalar expression is allowed
+    * May only use the row context in which it is defined
+    * Can only refer to tables (and views) that are in the accessible schema
 
 Example:
 
@@ -30,8 +31,8 @@ range x from 1 to 10 step 1
 ```
 
 * **A tabular function**: 
-	* Is a function with no inputs, or at least one tabular input, and produces a tabular output
-	* Can be used wherever a tabular expression is allowed 
+    * Is a function with no inputs, or at least one tabular input, and produces a tabular output
+    * Can be used wherever a tabular expression is allowed 
 
 > [!NOTE]
 > All tabular parameters must appear before scalar parameters.
@@ -90,7 +91,7 @@ The declaration of a user-defined function provides:
 
 > [!TIP]
 > Lambda functions do not have a name and are bound to a name using a [let statement](../letstatement.md). Therefore, they can be regarded as user-defined stored functions.
-> Example: Declaration for a lambda that accepts two arguments (a `string` called `s` and a `long` called`i`). It returns the product of the first (after converting it into a number) and the second. The lambda is bound to the name `f`:
+> Example: Declaration for a lambda function that accepts two arguments (a `string` called `s` and a `long` called `i`). It returns the product of the first (after converting it into a number) and the second. The lambda is bound to the name `f`:
 
 <!-- csl -->
 ```

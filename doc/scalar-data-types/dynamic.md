@@ -2,7 +2,7 @@
 
 The `dynamic` scalar data type is special in that it can take on any value
 of other scalar data types from the list below, as well as arrays and property bags. Specifically,
-A `dynamic` value can be:
+a `dynamic` value can be:
 
 * Null.
 * A value of any of the primitive scalar data types:

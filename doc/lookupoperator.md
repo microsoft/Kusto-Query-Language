@@ -11,8 +11,7 @@ FactTable | lookup kind=leftouter (DimensionTable) on CommonColumn, $left.Col1 =
 Here, the result is a table that extends the `FactTable` (`$left`) with data from `DimensionTable` (referenced by `$right`)
  by performing a lookup of each pair (`CommonColumn`,`Col`) from the former table
 with each pair (`CommonColumn1`,`Col2`) in the latter table. 
-See [fact and dimension tables](../concepts/fact-and-dimension-tables.md) 
-for the differences between fact and dimension tables. 
+For the differences between fact and dimension tables, see [fact and dimension tables](../concepts/fact-and-dimension-tables.md). 
 
 The `lookup` operator performs an operation similar to the [join operator](joinoperator.md)
 with the following differences:
@@ -49,13 +48,14 @@ with the following differences:
   |Equality by name |*ColumnName*                                    |`where` *LeftTable*.*ColumnName* `==` *RightTable*.*ColumnName*|
   |Equality by value|`$left.`*LeftColumn* `==` `$right.`*RightColumn*|`where` `$left.`*LeftColumn* `==` `$right.`*RightColumn        |
 
-  **Note:** In case of 'equality by value', the column names *must* be qualified with the applicable owner table denoted by `$left` and `$right` notations.
+  > [!Note] 
+  > In case of 'equality by value', the column names *must* be qualified with the applicable owner table denoted by `$left` and `$right` notations.
 
 * `kind`: An optional instruction on how to treat rows in *LeftTable* that
-  have no match in *RightTable*. By default, `leftouter` is used which means
-  all those rows will appear in the output, with null values used for the
+  have no match in *RightTable*. By default, `leftouter` is used, which means
+  all those rows will appear in the output with null values used for the
   missing values of *RightTable* columns added by the operator. If `inner`
-  is used, such rows are omitted from the output. (Note that other kinds
+  is used, such rows are omitted from the output. (Other kinds
   of join are not supported by the `looku`p operator.)
   
 **Returns**
@@ -63,7 +63,7 @@ with the following differences:
 A table with:
 
 * A column for every column in each of the two tables, including the matching keys.
-  The columns of the right side will be automatically renamed if there are name clashes.
+  The columns of the right side will be automatically renamed if there are name conflicts.
 * A row for every match between the input tables. A match is a row selected from one table that has the same value for all the `on` fields as a row in the other table. 
 * The Attributes (lookup keys) will appear only once in the output table.
 
