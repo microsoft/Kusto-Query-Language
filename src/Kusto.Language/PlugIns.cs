@@ -390,6 +390,16 @@ namespace Kusto.Language
                  }),
                  new Parameter("Options", ScalarTypes.Dynamic));
 
+        public static readonly FunctionSymbol SchemaMerge =
+             new FunctionSymbol("schema_merge",
+                 new TableSymbol(new[] {
+                    new ColumnSymbol("ColumnName", ScalarTypes.String),
+                    new ColumnSymbol("ColumnOrdinal", ScalarTypes.Int),
+                    new ColumnSymbol("DataType", ScalarTypes.String),
+                    new ColumnSymbol("ColumnType", ScalarTypes.String),
+                 }),
+                 new Parameter("PreserveOrder", ScalarTypes.Bool));
+
         public static readonly IReadOnlyList<ColumnSymbol> NarrowColumns = new[]
         {
             new ColumnSymbol("Row", ScalarTypes.Long),

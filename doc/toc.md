@@ -70,6 +70,7 @@
 ### [python](pythonplugin.md)
 ### [R](rplugin.md)
 ### [rolling_percentile](rolling-percentile-plugin.md)
+### [schema_merge](schemamergeplugin.md)
 ### [sql_request](sqlrequestplugin.md)
 ### [sequence_detect](sequence-detect-plugin.md)
 ## [extend operator](extendoperator.md)
