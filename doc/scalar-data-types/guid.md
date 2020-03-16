@@ -5,6 +5,8 @@ value.
 
 > [!WARNING]
 > As of this writing, support for the `guid` type is incomplete.
+> The main gap is the lack of an index on columns of this type,
+> affecting the performance of queries that predicate over this type.
 > We strongly recommend that teams use values of type `string` instead.
 
 ## guid literals
