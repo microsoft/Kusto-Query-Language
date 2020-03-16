@@ -11,7 +11,7 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
 
 *T* `| make-series` [*MakeSeriesParamters*]
       [*Column* `=`] *Aggregation* [`default` `=` *DefaultValue*] [`,` ...]
-    `on` *AxisColumn* `from` *start* `to` *end* `step` *step* 
+    `on` *AxisColumn* [`from` *start*] [`to` *end*] `step` *step* 
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
@@ -21,8 +21,8 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
 * *DefaultValue:* Default value which will be used instead of absent values. If there is no row with specific values of *AxisColumn* and *GroupExpression* then in the results the corresponding element of the array will be assigned with a *DefaultValue*. If `default =` *DefaultValue* is omitted then 0 is assumed. 
 * *Aggregation:* A call to an [aggregation function](make-seriesoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](make-seriesoperator.md#list-of-aggregation-functions). Note that only aggregation functions that return numeric result can be used with `make-series` operator.
 * *AxisColumn:* A column on which the series will be ordered. It could be considered as timeline, but besides `datetime` any numeric types are accepted.
-* *start*: The low bound value of the *AxisColumn* for each the series will be built. *start*, *end* and *step* are used to build array of *AxisColumn* values within a given range and using specified *step*. All *Aggregation* values are ordered respectively to this array. This *AxisColumn* array is also the last output column in the output with the same name as *AxisColumn*.
-* *end*: The high bound (non-inclusive) value of the *AxisColumn*, the last index of the time series is smaller than this value (and will be *start* plus integer multiple of *step* that is smaller than *end*).
+* *start*: (optional) The low bound value of the *AxisColumn* for each the series will be built. *start*, *end* and *step* are used to build array of *AxisColumn* values within a given range and using specified *step*. All *Aggregation* values are ordered respectively to this array. This *AxisColumn* array is also the last output column in the output with the same name as *AxisColumn*. If a *start* value is not specified, the start is the first bin (step) which has data in each series.
+* *end*: (optional) The high bound (non-inclusive) value of the *AxisColumn*, the last index of the time series is smaller than this value (and will be *start* plus integer multiple of *step* that is smaller than *end*). If *end* value is not provided, it will be upper bound of the last bin (step) which has data per each series.
 * *step*: The difference between two consecutive elements of the *AxisColumn* array (i.e. the bin size).
 * *GroupExpression:* An expression over the columns, that provides a set of distinct values. Typically it's a column name that already provides a restricted set of values. 
 * *MakeSeriesParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value* 
