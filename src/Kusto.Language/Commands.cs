@@ -585,6 +585,17 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTablePolicyIngestionTime =
             new CommandSymbol("delete table policy ingestiontime", "delete table <table>:TableName policy ingestiontime");
         #endregion
+        
+        #region RowLevelSecurity
+        public static readonly CommandSymbol ShowTablePolicyRowLevelSecurity =
+            new CommandSymbol("show table policy row_level_security", "show table (<table> | '*'):TableName policy row_level_security", PolicyResult);
+
+        public static readonly CommandSymbol AlterTablePolicyRowLevelSecurity =
+            new CommandSymbol("alter table policy row_level_security", "alter table <table>:TableName policy row_level_security (enable | disable) <string>:Query", PolicyResult);
+
+        public static readonly CommandSymbol DeleteTablePolicyRowLevelSecurity =
+            new CommandSymbol("delete table policy row_level_security", "delete table <table>:TableName policy row_level_security");
+        #endregion
 
         #region Retention
         public static readonly CommandSymbol ShowTablePolicyRetention =
@@ -1435,6 +1446,11 @@ namespace Kusto.Language
                 AlterTablesPolicyIngestionTime,
                 ShowTablePolicyIngestionTime,
                 DeleteTablePolicyIngestionTime,
+
+                // RowLevelSecurity
+                ShowTablePolicyRowLevelSecurity,
+                AlterTablePolicyRowLevelSecurity,
+                DeleteTablePolicyRowLevelSecurity,
 
                 // Retention
                 ShowTablePolicyRetention,
