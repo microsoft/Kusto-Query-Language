@@ -328,6 +328,7 @@
 ## [unixtime_seconds_todatetime()](unixtime-seconds-todatetimefunction.md)
 ## [url_decode()](urldecodefunction.md)
 ## [url_encode()](urlencodefunction.md)
+## [url_encode_component()](urlencodecomponentfunction.md)
 ## [weekofyear()](weekofyearfunction.md)
 ## [welch_test()](welch-testfunction.md)
 ## [zip()](zipfunction.md)
