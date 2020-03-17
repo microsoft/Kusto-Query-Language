@@ -1331,6 +1331,13 @@ namespace Kusto.Language
         public static readonly CommandSymbol DropPretendExtentsByProperties =
             new CommandSymbol("drop-pretend extents by properties", $"drop-pretend extents {DropProperties}", DropExtentResult);
 
+        public static readonly CommandSymbol ShowVersion =
+            new CommandSymbol("show version", "show version",
+                new TableSymbol(
+                    new ColumnSymbol("BuildVersion", ScalarTypes.String),
+                    new ColumnSymbol("BuildTime", ScalarTypes.DateTime),
+                    new ColumnSymbol("ServiceType", ScalarTypes.String),
+                    new ColumnSymbol("ProductVersion", ScalarTypes.String)));
         #endregion
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
@@ -1609,6 +1616,7 @@ namespace Kusto.Language
                 //DropExtentsQuery,
                 //DropExtentsByProperties,
                 DropPretendExtentsByProperties,
+                ShowVersion,
                 #endregion
             };
     }
