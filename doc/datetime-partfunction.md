@@ -20,7 +20,7 @@ Possible values of `part`:
 - Year
 - Quarter
 - Month
-- WeekOfYear
+- week_of_year
 - Day
 - DayOfYear
 - Hour
@@ -36,12 +36,7 @@ An integer representing the extracted part.
 
 **Note**
 
-<!-- 
-23-Jan-2020: According to Omayer Gharra, the following should be added to this doc when the new function is created (the current WeekOfYear function does not comply with the ISO standard):
-
-`Week_Of_Year` returns the first week of a year (according to the ISO 8601 standard), which is the one that includes the first Thursday (https://en.wikipedia.org/wiki/ISO_8601#Week_dates)
--->
-`WeekOfYear` returns the first week of a year, which is the one that includes the first Wednesday.
+`week_of_year` returns an integer which represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday.
 
 **Examples**
 
@@ -52,7 +47,7 @@ print
 year = datetime_part("year", dt),
 quarter = datetime_part("quarter", dt),
 month = datetime_part("month", dt),
-weekOfYear = datetime_part("weekOfYear", dt),
+weekOfYear = datetime_part("week_of_year", dt),
 day = datetime_part("day", dt),
 dayOfYear = datetime_part("dayOfYear", dt),
 hour = datetime_part("hour", dt),
@@ -67,3 +62,7 @@ nanosecond = datetime_part("nanosecond", dt)
 |year|quarter|month|weekOfYear|day|dayOfYear|hour|minute|second|millisecond|microsecond|nanosecond|
 |---|---|---|---|---|---|---|---|---|---|---|---|
 |2017|4|10|44|30|303|1|2|3|765|765432|765432100|
+
+> [!NOTE]
+> `weekofyear` is an obsolete variant of `week_of_year` part. `weekofyear` was not ISO 8601 compliant; the first week of a year was defined as the week with the year's first Wednesday in it.
+`week_of_year` is ISO 8601 compliant; the first week of a year is defined as the week with the year's first Thursday in it. [For more information](https://en.wikipedia.org/wiki/ISO_8601#Week_dates).
