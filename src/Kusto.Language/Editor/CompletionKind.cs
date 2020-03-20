@@ -82,17 +82,22 @@ namespace Kusto.Language.Editor
         Table,
 
         /// <summary>
-        /// The name of a scalar function
+        /// The name of a built-in kusto language function.
         /// </summary>
-        ScalarFunction,
+        BuiltInFunction,
 
         /// <summary>
-        /// The name of a tabular function
+        /// The name of a user defined function declared locally in a query.
         /// </summary>
-        TabularFunction,
+        LocalFunction,
 
         /// <summary>
-        /// The name of an aggregate function
+        /// The name of a user defined function stored in a database.
+        /// </summary>
+        DatabaseFunction,
+
+        /// <summary>
+        /// The name of a kusto language aggregate function.
         /// </summary>
         AggregateFunction,
 

@@ -281,8 +281,9 @@ namespace Kusto.Language.Editor
                     }
                     return OrderingRank.Variable;
 
-                case CompletionKind.ScalarFunction:
-                case CompletionKind.TabularFunction:
+                case CompletionKind.BuiltInFunction:
+                case CompletionKind.LocalFunction:
+                case CompletionKind.DatabaseFunction:
                     return OrderingRank.Function;
 
                 case CompletionKind.ScalarInfix:
@@ -1576,8 +1577,9 @@ namespace Kusto.Language.Editor
             switch (item.Kind)
             {
                 case CompletionKind.Column:
-                case CompletionKind.ScalarFunction:
-                case CompletionKind.TabularFunction:
+                case CompletionKind.BuiltInFunction:
+                case CompletionKind.LocalFunction:
+                case CompletionKind.DatabaseFunction:
                 case CompletionKind.AggregateFunction:
                 case CompletionKind.Parameter:
                 case CompletionKind.Variable:
@@ -1928,12 +1930,30 @@ namespace Kusto.Language.Editor
                 case SymbolKind.Database:
                     return CompletionKind.Database;
                 case SymbolKind.Function:
+                    var fn = (FunctionSymbol)symbol;
+                    if (this.code.Globals.IsAggregateFunction(fn))
+                    {
+                        return CompletionKind.AggregateFunction;
+                    }
+                    else if (this.code.Globals.IsBuiltInFunction(fn))
+                    {
+                        return CompletionKind.BuiltInFunction;
+                    }
+                    else if (this.code.Globals.IsDatabaseFunction(fn))
+                    {
+                        return CompletionKind.DatabaseFunction;
+                    }
+                    else
+                    {
+                        return CompletionKind.LocalFunction;
+                    }
+
                 case SymbolKind.Pattern:
+                    return CompletionKind.LocalFunction;
+
                 case SymbolKind.Operator:
-                    return 
-                        this.code.Globals.GetAggregate(symbol.Name) == symbol ? CompletionKind.AggregateFunction
-                        : symbol.IsScalar ? CompletionKind.ScalarFunction 
-                        : CompletionKind.TabularFunction;
+                    return CompletionKind.BuiltInFunction;
+
                 case SymbolKind.Variable:
                     return GetVariableCompletionKind((VariableSymbol)symbol);
                 case SymbolKind.Parameter:
