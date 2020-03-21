@@ -1,4 +1,4 @@
-# Summarize operator
+# summarize operator
 
 Produces a table that aggregates the content of the input table.
 
