@@ -35,7 +35,7 @@ Where:
 | `scatterchart`     | Points graph. First column is x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `stackedareachart` | Stacked area graph. First column is x-axis, and should be a numeric column. Other numeric columns are y-axes. |
 | `table`            | Default - results are shown as a table.|
-| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to â€œgroupâ€ the numeric columns and create different lines in the chart (further string columns are ignored).|
+| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to "group" the numeric columns and create different lines in the chart (further string columns are ignored).|
 | `timepivot`        | Interactive navigation over the events time-line (pivoting on time axis)|
 
 ::: zone-end
@@ -50,12 +50,14 @@ Where:
 | `piechart`         | First column is color-axis, second column is numeric. |
 | `scatterchart`     | Points graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `table`            | Default - results are shown as a table.|
-| `timechart`        | Line graph. First column is the x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to â€œgroupâ€ the numeric columns and create different lines in the chart (further string columns are ignored).|
+| `timechart`        | Line graph. First column is x-axis, and should be datetime. Other (numeric) columns are y-axes. There is one string column whose values are used to "group" the numeric columns and create different lines in the chart (further string columns are ignored).|
 
 ::: zone-end
 
 * *PropertyName*/*PropertyValue* indicate additional information to use when rendering.
   All properties are optional. The supported properties are:
+
+::: zone pivot="azuredataexplorer"
 
 |*PropertyName*|*PropertyValue*                                                                   |
 |--------------|----------------------------------------------------------------------------------|
@@ -74,6 +76,19 @@ Where:
 |`ysplit`      |How to split multiple the visualization. See below.                               |
 |`ytitle`      |The title of the y-axis (of type `string`).                                       |
 |`anomalycolumns`|Property relevant only for `anomalychart`. Comma-delimited list of columns which will be considered as anomaly series and displayed as points on the chart|
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+|*PropertyName*|*PropertyValue*                                                                   |
+|--------------|----------------------------------------------------------------------------------|
+|`kind`        |Further elaboration of the visualization kind. See below.                         |
+|`series`      |Comma-delimited list of columns whose combined per-record values define the series that record belongs to.|
+|`title`       |The title of the visualization (of type `string`).                                |
+|`yaxis`       |How to scale the y-axis (`linear` or `log`).                                      |
+
+::: zone-end
 
 Some visualizations can be further elaborated by providing the `kind` property.
 These are:
@@ -95,6 +110,8 @@ These are:
 |`piechart`     |`map`              |Expected columns are [Longitude, Latitude] or GeoJSON point, color-axis and numeric. Supported in Kusto Explorer desktop.|
 |`scatterchart` |`map`              |Expected columns are [Longitude, Latitude] or GeoJSON point. Series column is optional. Supported in Kusto Explorer desktop.|
 
+::: zone pivot="azuredataexplorer"
+
 Some visualizations support splitting into multiple y-axis values:
 
 |`ysplit`  |Description                                                       |
@@ -103,7 +120,9 @@ Some visualizations support splitting into multiple y-axis values:
 |`axes`    |A single chart is displayed with multiple y-axes (one per series).|
 |`panels`  |One chart is rendered for each `ycolumn` value (up to some limit).|
 
-> [!NOTES]
+::: zone-end
+
+> [!NOTE]
 > The data model of the render operator looks at the tabular data as if it has
 three kinds of columns:
 >
