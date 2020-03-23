@@ -723,8 +723,14 @@ namespace Kusto.Language
         #endregion
 
         #region hash functions
-        public static readonly FunctionSymbol Crc32Hash =
-            new FunctionSymbol("__crc32_hash", ScalarTypes.Long,
+        public static readonly FunctionSymbol HashCrc32 =
+            new FunctionSymbol("__hash_crc32", ScalarTypes.Long,
+                new Parameter("source", ParameterTypeKind.NotDynamic),
+                new Parameter("mod", ParameterTypeKind.Integer),
+                new Parameter("seed", ParameterTypeKind.Integer)).Hide();
+
+        public static readonly FunctionSymbol HashManyCrc32 =
+            new FunctionSymbol("__hash_many_crc32", ScalarTypes.Long,
                 new Parameter("arg", ParameterTypeKind.Scalar, maxOccurring: 2))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
@@ -2007,13 +2013,14 @@ namespace Kusto.Language
 #endregion
 
 #region hash functions
-            Crc32Hash,
+            HashCrc32,
             HashDjb2,
             Hash,
             HashSha256,
             HashXXH64,
             HashCombine,
             HashMany,
+            HashManyCrc32,
             #endregion
 
 #region iif / case
