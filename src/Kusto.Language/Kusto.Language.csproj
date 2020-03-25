@@ -35,10 +35,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(KustoProps)' == 'true'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\Kusto.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <PropertyGroup>
     <GenerateDocumentation>true</GenerateDocumentation>
     <DocumentationFile>$(OutputPath)\$(AssemblyName).XML</DocumentationFile>

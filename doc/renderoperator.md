@@ -144,14 +144,9 @@ three kinds of columns:
   the result might translate into them guessing wrong. Try projecting-away such
   columns when that happens. 
 
-::: zone pivot="azuredataexplorer"
+**Example**
 
-**Examples**
-
-[Rendering examples in the tutorial](./tutorial.md#render-display-a-chart-or-table).
-
-[Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
-
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```
 range x from -2 to 2 step 0.1
 | extend sin = sin(x), cos = cos(x)
@@ -160,18 +155,12 @@ range x from -2 to 2 step 0.1
 | render linechart with  (ycolumns = sin, cos, series = x_sign, sum_sign)
 ```
 
+::: zone pivot="azuredataexplorer"
+
+[Rendering examples in the tutorial](./tutorial.md#render-display-a-chart-or-table).
+
+[Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
+
 ::: zone-end
-
 ::: zone pivot="azuremonitor"
-
-**Example**
-
-```
-range x from -2 to 2 step 0.1
-| extend sin = sin(x), cos = cos(x)
-| extend x_sign = iif(x > 0, "x_pos", "x_neg")
-| extend sum_sign = iif(sin + cos > 0, "sum_pos", "sum_neg")
-| render areachart with  (ycolumns = sin, cos, series = x_sign, sum_sign)
-```
-
 ::: zone-end

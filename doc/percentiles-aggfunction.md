@@ -76,6 +76,7 @@ You can use `summarize percentilesw(Duration, BucketSize, ...)` to calculates th
 percentiles in a "weighted" way - treating each value of Duration as if it was repeated
 BucketSize times in the input, without actually needing to materialize those records.
 
+Consider the following following example:
 A customer has a set of latency values in milliseconds:
 `{ 1, 1, 2, 2, 2, 5, 7, 7, 12, 12, 15, 15, 15, 18, 21, 22, 26, 35 }`.
 
