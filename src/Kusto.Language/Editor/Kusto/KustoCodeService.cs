@@ -22,6 +22,7 @@ namespace Kusto.Language.Editor
         private KustoCode lazyBoundCode;
         private Exception codeException;
         private IReadOnlyList<Diagnostic> lazyDiagnostics;
+        private IReadOnlyList<Diagnostic> lazyExtendedDiagnostics;
 
         private KustoCodeService(string text, GlobalState globals, KustoCode code)
             : base(text)
@@ -138,28 +139,51 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.lazyDiagnostics == null)
+            if (this.lazyDiagnostics == null
+                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
             {
-                if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
+                // have try-catch to keep editor from crashing from parser bugs
+                try
                 {
-                    // have try-catch to keep editor from crashing from parser bugs
-                    try
-                    {
-                        var ds = code.GetDiagnostics(cancellationToken);
-                        Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
-                    }
-                    catch (Exception)
-                    {
-                        Interlocked.CompareExchange(ref this.lazyDiagnostics, EmptyReadOnlyList<Diagnostic>.Instance, null);
-                    }
+                    var ds = code.GetDiagnostics(cancellationToken);
+                    Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
                 }
-                else
+                catch (Exception)
                 {
                     Interlocked.CompareExchange(ref this.lazyDiagnostics, EmptyReadOnlyList<Diagnostic>.Instance, null);
                 }
             }
 
-            return this.lazyDiagnostics;
+            return this.lazyDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+        }
+
+        public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default)
+        {
+            if (this.lazyExtendedDiagnostics == null
+                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
+            {
+                var ds = new List<Diagnostic>();
+
+                foreach (var analyzer in KustoAnalyzers.All)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    // have try-catch to keep editor from crashing from analyzer bugs
+                    try
+                    {
+                        var results = analyzer.Analyze(code, cancellationToken);
+                        ds.AddRange(results);
+                    }
+                    catch (Exception e)
+                    {
+                        ds.Add(DiagnosticFacts.AnalysisFailure(analyzer.Name, e.Message));
+                    }
+                }
+
+                Interlocked.CompareExchange(ref this.lazyExtendedDiagnostics, ds, null);
+            }
+
+            return this.lazyExtendedDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
         }
 
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))

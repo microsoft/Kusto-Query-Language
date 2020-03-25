@@ -34,7 +34,7 @@ Here's the result:
 |Count|
 |-----|
 |59066|
-	
+    
 [count operator](./countoperator.md).
 
 ## project: select a subset of columns
@@ -170,7 +170,7 @@ there's a row for each state, and a column for the count of rows in that state.
 There's a range of [aggregation functions](./summarizeoperator.md#list-of-aggregation-functions),
 and you can use several of
 them in one summarize operator to produce several computed columns. 
-For example, we could get the count of storms in each state and also unique number of storms per state, 
+For example, we could get the count of storms in each state and also a sum of the unique type of storms per state,  
 then we could use [top](./topoperator.md) to get the most storm-affected states:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -196,7 +196,7 @@ The result of a summarize has:
 
 ## Summarize by scalar values
 
-You can use scalar (numeric, time, or interval) values in the by clause, but you'll want to put the values into bins. 
+You can use scalar (numeric, time, or interval) values in the `by` clause, but you'll want to put the values into bins.  
 The [bin()](./binfunction.md) function is useful for this:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -281,7 +281,7 @@ Notice that `render timechart` uses the first column as the x-axis, and then dis
 
 How does activity vary over the average day?
 
-Count events by the time modulo one day, binned into hours:
+Count events by the time modulo one day, binned into hours. Note that we use `floor` instead of bin:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -345,11 +345,15 @@ StormEvents
 
 ![alt text](./images/tour/145.png "145")
 
-Assume you have a data that includes events marking the start and end of each session, with a unique id for each session. 
+## User session example of join
+
+This section does not use the `StormEvents` table.
+
+Assume you have data that includes events marking the start and end of each user  session, with a unique ID for each session. 
 
 How long does each user session last?
 
-By using extend to provide separate aliases for the two timestamps, you can then compute the session duration.
+By using `extend` to provide an alias for the two timestamps, you can then compute the session duration.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```
@@ -462,7 +466,7 @@ When you write a query of the style:
 Logs | where ...
 ```
 
-The table named Logs has to be in your default database. If you want to access table from another database use the following syntax:
+The table named Logs has to be in your default database. If you want to access tables from another database use the following syntax:
 
 <!-- csl -->
 ```

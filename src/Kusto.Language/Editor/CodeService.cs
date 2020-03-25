@@ -30,9 +30,16 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the diagnostics for the code.
         /// </summary>
-        /// <param name="waitForAnalysis">If false, do not require semantic analysis to be performed.</param>
+        /// <param name="waitForAnalysis">If false, only return pre-computed results if any.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets any extended diagnostics for the code.
+        /// </summary>
+        /// <param name="waitForAnalysis">If false, only return pre-computed results if any.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        public abstract IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

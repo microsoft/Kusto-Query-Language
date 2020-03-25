@@ -107,6 +107,19 @@ namespace Kusto.Language.Editor
             }
         }
 
+        public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
+        {
+            var result = _service.GetExtendedDiagnostics(waitForAnalysis, cancellationToken);
+            if (result.Count > 0 && _offset > 0)
+            {
+                return result.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
+            }
+            else
+            {
+                return result;
+            }
+        }
+
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
         {
             var result = _service.GetFormattedText(options, cursorPosition - _offset, cancellationToken);

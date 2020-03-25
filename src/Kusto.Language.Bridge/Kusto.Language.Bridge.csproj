@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath Condition="'$(KustoProps)' != 'true'">bin\Release\</OutputPath>
@@ -137,6 +137,21 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Editor\FormattingOptions.cs">
       <Link>Src\FormattingOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingContainsAnalyzer.cs">
+      <Link>Src\AvoidUsingContainsAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingShortStringComparisonAnalyzer.cs">
+      <Link>Src\AvoidUsingShortStringComparisonAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\NullAggregationAnalyzer.cs">
+      <Link>Src\NullAggregationAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\KustoAnalyzer.cs">
+      <Link>Src\KustoAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\KustoAnalyzers.cs">
+      <Link>Src\KustoAnalyzers.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Editor\Kusto\KustoClassifier.cs">
       <Link>Src\KustoClassifier.cs</Link>
@@ -423,30 +438,6 @@
     <Compile Include="..\Kusto.Language\Utils\UniqueNameTable.cs">
       <Link>Src\UniqueNameTable.cs</Link>
     </Compile>
-    <Compile Include="..\Kusto.Language\Analyzer\Rule.cs">
-      <Link>Src\Rule.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Analyzer\IRuleEngine.cs">
-      <Link>Src\IRuleEngine.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Analyzer\IRule.cs">
-      <Link>Src\IRule.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Analyzer\RuleEngine.cs">
-      <Link>Src\RuleEngine.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\CodeAnalyzerRules\AvoidUsingContainsRule.cs">
-      <Link>Src\AvoidUsingContainsRule.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\CodeAnalyzerRules\AvoidUsingShortStringComparisonRule.cs">
-      <Link>Src\AvoidUsingShortStringComparisonRule.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\CodeAnalyzerRules\KustoStaticRulesCollection.cs">
-      <Link>Src\KustoStaticRulesCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\CodeAnalyzerRules\NullAggregationDetector.cs">
-      <Link>Src\NullAggregationDetector.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -468,29 +459,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets" Condition="Exists('$(PackageRoot)\Bridge.Min.17.1.1\build\Bridge.Min.targets')" />
-  
   <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: ..\..\..\packages\Bridge.Min.17.1.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />
-
-    <BridgeCompilerTask
-      Assembly="@(IntermediateAssembly)"
-      AssemblyName="$(AssemblyName)"
-      AssembliesPath="$(OutDir)"
-      CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
-      Configuration="$(Configuration)"
-      DefineConstants="$(DefineConstants)"
-      OutDir="$(OutDir)"
-      OutputPath="$(OutputPath)"
-      OutputType="$(OutputType)"
-      Platform="$(Platform)"
-      ProjectPath="$(MSBuildProjectFullPath)"
-      RootNamespace="$(RootNamespace)"
-      Sources="@(Compile)" />
-
+    <BridgeCompilerTask Assembly="@(IntermediateAssembly)" AssemblyName="$(AssemblyName)" AssembliesPath="$(OutDir)" CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)" Configuration="$(Configuration)" DefineConstants="$(DefineConstants)" OutDir="$(OutDir)" OutputPath="$(OutputPath)" OutputType="$(OutputType)" Platform="$(Platform)" ProjectPath="$(MSBuildProjectFullPath)" RootNamespace="$(RootNamespace)" Sources="@(Compile)" />
     <Message Text="Patched Bridge done" Importance="high" />
   </Target>
-  
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
