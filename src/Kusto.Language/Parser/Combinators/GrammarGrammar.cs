@@ -136,6 +136,7 @@ namespace Kusto.Language.Parsing
                     separator: Token("|").Cast<object>(),
                     missingElement: () => null,
                     missingSeparator: () => null,
+                    endOfList: null,
                     oneOrMore: false,
                     allowTrailingSeparator: false,
                     producer: (IReadOnlyList<object> list) =>

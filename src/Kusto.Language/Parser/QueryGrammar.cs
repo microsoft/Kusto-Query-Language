@@ -338,7 +338,9 @@ namespace Kusto.Language.Parsing
             var SchemaMultipartType =
                     Rule(
                         Token(SyntaxKind.OpenParenToken),
-                        SeparatedList<Expression>(Rule(NameAndTypeDeclaration, nat => (Expression)nat), SyntaxKind.CommaToken, missingElement: MissingNameAndTypeDeclarationNode),
+                        CommaList<Expression>(
+                            Rule(NameAndTypeDeclaration, nat => (Expression)nat), 
+                            MissingNameAndTypeDeclarationNode),
                         RequiredToken(SyntaxKind.CloseParenToken),
 
                         (openParen, columns, closeParen) =>
@@ -467,7 +469,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         Token(SyntaxKind.TypeOfKeyword).Hide(),
                         RequiredToken(SyntaxKind.OpenParenToken),
-                        SeparatedList(TypeofElement, SyntaxKind.CommaToken, MissingTypeNode, oneOrMore: true),
+                        CommaList(TypeofElement, MissingTypeNode, oneOrMore: true),
                         RequiredToken(SyntaxKind.CloseParenToken),
                         (keyword, openParen, list, closeParen) =>
                             (Expression)new TypeOfLiteralExpression(keyword, openParen, list, closeParen)
@@ -521,7 +523,7 @@ namespace Kusto.Language.Parsing
             var JsonObject =
                 Rule(
                     Token(SyntaxKind.OpenBraceToken),
-                    SeparatedList(JsonPair, SyntaxKind.CommaToken, missingElement: MissingJsonPairNode),
+                    CommaList(JsonPair, MissingJsonPairNode),
                     RequiredToken(SyntaxKind.CloseBraceToken),
                     (openBrace, list, closeBrace) =>
                         (Expression)new JsonObjectExpression(openBrace, list, closeBrace))
@@ -530,7 +532,7 @@ namespace Kusto.Language.Parsing
             var JsonArray =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    SeparatedList(JsonValue, SyntaxKind.CommaToken, missingElement: MissingJsonValueNode),
+                    CommaList(JsonValue, MissingJsonValueNode),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, values, closeBracket) =>
                         (Expression)new JsonArrayExpression(openBracket, values, closeBracket))
@@ -613,7 +615,7 @@ namespace Kusto.Language.Parsing
             var RenameList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    SeparatedList(RenameName, SyntaxKind.CommaToken, MissingNameDeclarationNode, oneOrMore: true),
+                    CommaList(RenameName, MissingNameDeclarationNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, list, closeParen) =>
                         new RenameList(openParen, list, closeParen));
@@ -642,7 +644,7 @@ namespace Kusto.Language.Parsing
             var FunctionArgumentList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    SeparatedList(Argument, SyntaxKind.CommaToken, missingElement: MissingExpressionNode),
+                    CommaList(Argument, MissingExpressionNode),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, list, closeParen) => new ExpressionList(openParen, list, closeParen));
 
@@ -945,7 +947,7 @@ namespace Kusto.Language.Parsing
             var InOperatorExpressionList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    SeparatedList(Expression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(Expression, MissingExpressionNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, list, closeParen) =>
@@ -1107,7 +1109,7 @@ namespace Kusto.Language.Parsing
             var ExtendOperator =
                 Rule(
                     Token(SyntaxKind.ExtendKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    SeparatedList<Expression>(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(NamedExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, list) =>
                         (QueryOperator)new ExtendOperator(keyword, list))
                 .WithTag("<extend>");
@@ -1167,7 +1169,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.InKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(FindOperand, SyntaxKind.CommaToken, MissingExpressionNode, oneOrMore: true),
+                    CommaList(FindOperand, MissingExpressionNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (inKeyword, openParen, exprs, closeParen) =>
                         new FindInClause(inKeyword, openParen, exprs, closeParen));
@@ -1208,7 +1210,7 @@ namespace Kusto.Language.Parsing
                 First(
                     Rule(
                         Token(SyntaxKind.ProjectKeyword),
-                        SeparatedList(FindProjectColumn, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                        CommaList(FindProjectColumn, MissingExpressionNode, oneOrMore: true),
                         (token, list) => new FindProjectClause(token, list)),
                     Rule(Token(SyntaxKind.ProjectSmartKeyword),
                         (token) => new FindProjectClause(token, SyntaxList<SeparatedElement<Expression>>.Empty())));
@@ -1216,7 +1218,7 @@ namespace Kusto.Language.Parsing
             var FindProjectAwayClause =
                 Rule(
                     Token(SyntaxKind._ProjectAwayKeyword),
-                    SeparatedList(FindProjectColumn, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(FindProjectColumn, MissingExpressionNode, oneOrMore: true),
                     (token, list) => new FindProjectClause(token, list));
 
             var FindOperator =
@@ -1367,7 +1369,7 @@ namespace Kusto.Language.Parsing
             var JoinOnClause =
                 Rule(
                     Token(SyntaxKind.OnKeyword),
-                    SeparatedList(JoinOnExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(JoinOnExpression, MissingExpressionNode, oneOrMore: true),
                     (onKeyword, list) => (JoinConditionClause)new JoinOnClause(onKeyword, list));
 
             var JoinWhereClause =
@@ -1418,7 +1420,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.InKeyword),
                     RequiredToken(SyntaxKind.RangeKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, MissingExpressionNode),
+                    CommaList(NamedExpression, MissingExpressionNode),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (inKeyword, rangeKeyword, openParen, list, closeParen) =>
                         (MakeSeriesRangeClause)new MakeSeriesInRangeClause(inKeyword, rangeKeyword, new ExpressionList(openParen, list, closeParen)));
@@ -1455,7 +1457,7 @@ namespace Kusto.Language.Parsing
             var MakeSeriesByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, list) => new MakeSeriesByClause(keyword, list));
 
             var DefaultExpressionClause =
@@ -1662,21 +1664,21 @@ namespace Kusto.Language.Parsing
             var ProjectOperator =
                 Rule(
                     Token(SyntaxKind.ProjectKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, list) => (QueryOperator)new ProjectOperator(keyword, list))
                 .WithTag("<project>");
 
             var ProjectAwayOperator =
                 Rule(
                     Token(SyntaxKind.ProjectAwayKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    SeparatedList(SimpleOrWildcardedEntityReference, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode, oneOrMore: true),
                     (keyword, list) => (QueryOperator)new ProjectAwayOperator(keyword, list))
                 .WithTag("<project-away>");
 
             var ProjectRenameOperator =
                 Rule(
                     Token(SyntaxKind.ProjectRenameKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, list) => (QueryOperator)new ProjectRenameOperator(keyword, list))
                 .WithTag("<project-rename>");
 
@@ -1708,7 +1710,7 @@ namespace Kusto.Language.Parsing
             var ReduceByWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
-                    SeparatedList(ReduceByWithParameter, SyntaxKind.CommaToken, MissingNamedParameterNode),
+                    CommaList(ReduceByWithParameter, MissingNamedParameterNode),
                     (keyword, list) => new ReduceByWithClause(keyword, list));
 
             var ReduceByOperator =
@@ -1727,9 +1729,8 @@ namespace Kusto.Language.Parsing
             var SummarizeByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    SeparatedList(
+                    CommaList(
                         If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken))), NamedExpression),
-                        SyntaxKind.CommaToken,
                         missingElement: MissingExpressionNode,
                         oneOrMore: true),
                     (byKeyword, expressions) =>
@@ -1753,7 +1754,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DistinctKeyword, CompletionKind.QueryPrefix),
                     List(KnownQueryOperatorParameter),
-                    SeparatedList(First(StarExpression, UnnamedExpression), SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(First(StarExpression, UnnamedExpression), MissingExpressionNode, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new DistinctOperator(keyword, parameters, list))
                 .WithTag("<distinct>");
 
@@ -1804,7 +1805,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.OrderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                         Token(SyntaxKind.SortKeyword, CompletionKind.QueryPrefix, CompletionPriority.High)),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    SeparatedList(SortExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, byKeyword, list) =>
                         (QueryOperator)new SortOperator(keyword, byKeyword, list))
                 .WithTag("<sort>");
@@ -1822,7 +1823,7 @@ namespace Kusto.Language.Parsing
             var ProjectReorderOperator =
                 Rule(
                    Token(SyntaxKind.ProjectReorderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                   SeparatedList(ReorderExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                   CommaList(ReorderExpression, MissingExpressionNode, oneOrMore: true),
                    (keyword, list) => (QueryOperator)new ProjectReorderOperator(keyword, list))
                 .WithTag("<project-reorder>");
 
@@ -1903,7 +1904,7 @@ namespace Kusto.Language.Parsing
 
             var TopNestedOperator =
                 If(Token(SyntaxKind.TopNestedKeyword, CompletionKind.QueryPrefix),
-                    Rule(SeparatedList(TopNestedClause, SyntaxKind.CommaToken, MissingTopNestedClauseNode, oneOrMore: true),
+                    Rule(CommaList(TopNestedClause, MissingTopNestedClauseNode, oneOrMore: true),
                         list => (QueryOperator)new TopNestedOperator(list)))
                 .WithTag("<top-nested>");
 
@@ -1922,7 +1923,7 @@ namespace Kusto.Language.Parsing
                         NameDeclarationNamedParameterL(KustoFacts.UnionWithSourceProperties),
                         BooleanNamedParameterK(SyntaxKind.IsFuzzyKeyword),
                         QueryOperatorParameter)),
-                    SeparatedList<Expression>(UnionExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(UnionExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new UnionOperator(keyword, parameters, list))
                 .WithTag("<union>");
 
@@ -1938,7 +1939,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SerializeKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     List(KnownQueryOperatorParameter),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: false),
                     (keyword, parameters, exprs) =>
                         (QueryOperator)new SerializeOperator(keyword, parameters, exprs))
                 .WithTag("<serialize>");
@@ -2004,7 +2005,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.WithKeyword).Hide(),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(RenderProperty, SyntaxKind.CommaToken, MissingNamedParameterNode, oneOrMore: true),
+                    CommaList(RenderProperty, MissingNamedParameterNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (withKeyword, openParen, properties, closeParen) =>
@@ -2026,7 +2027,7 @@ namespace Kusto.Language.Parsing
             var PrintOperator =
                 Rule(
                     Token(SyntaxKind.PrintKeyword, CompletionKind.QueryPrefix),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, exprs) => (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
 
@@ -2219,7 +2220,7 @@ namespace Kusto.Language.Parsing
             this.FunctionParameters =
                 Rule(
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(FunctionParameter, SyntaxKind.CommaToken, missingElement: MissingFunctionParameterNode, oneOrMore: false),
+                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: false),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, parameters, closeParen) => new FunctionParameters(openParen, parameters, closeParen));
 
@@ -2312,7 +2313,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.DeclareKeyword, CompletionKind.QueryPrefix).Hide(),
                     RequiredToken(SyntaxKind.QueryParametersKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(FunctionParameter, SyntaxKind.CommaToken, missingElement: MissingFunctionParameterNode, oneOrMore: true),
+                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (declareKeyword, queryParametersKeyword, open, list, close) =>
                         (Statement)new QueryParametersStatement(declareKeyword, queryParametersKeyword, open, list, close));
@@ -2328,7 +2329,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.AccessKeyword),
                     RequiredToken(SyntaxKind.ToKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList<Expression>(Restriction, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(Restriction, MissingExpressionNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen) =>
                         (Statement)new RestrictStatement(restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen))
@@ -2368,7 +2369,7 @@ namespace Kusto.Language.Parsing
             var PatternMatch =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    SeparatedList<Expression>(PatternMatchValue, SyntaxKind.CommaToken, missingElement: MissingStringLiteralNode, oneOrMore: true),
+                    CommaList<Expression>(PatternMatchValue, MissingStringLiteralNode, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     Optional(PatternPathValue),
                     RequiredToken(SyntaxKind.EqualToken),
@@ -2406,7 +2407,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.EqualToken),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(NameAndTypeDeclaration, SyntaxKind.CommaToken, missingElement: MissingNameAndTypeDeclarationNode, oneOrMore: false),
+                    CommaList(NameAndTypeDeclaration, MissingNameAndTypeDeclarationNode, oneOrMore: false),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     Optional(PatternPathParameter),
                     RequiredToken(SyntaxKind.OpenBraceToken),
@@ -2447,7 +2448,7 @@ namespace Kusto.Language.Parsing
                     List(QueryOperatorParameter),
                     SchemaMultipartType,
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    SeparatedList(ConstantExpression, SyntaxKind.CommaToken, MissingExpressionNode, allowTrailingSeparator: true),
+                    CommaList(ConstantExpression, MissingExpressionNode, allowTrailingComma: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (keyword, parameters, schema, openBracket, values, closeBracket) =>
                         (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
@@ -2466,7 +2467,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.WithKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    SeparatedList(ExternalDataWithClauseNamedParameter, SyntaxKind.CommaToken, MissingNamedParameterNode),
+                    CommaList(ExternalDataWithClauseNamedParameter, MissingNamedParameterNode),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, openParen, list, closeParen) =>
                         new ExternalDataWithClause(keyword, openParen, list, closeParen));
@@ -2479,7 +2480,7 @@ namespace Kusto.Language.Parsing
                     List(QueryOperatorParameter),
                     SchemaMultipartType,
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    SeparatedList(Expression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, allowTrailingSeparator: true, oneOrMore: true),
+                    CommaList(Expression, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     Optional(ExternalDataWithClause),
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
@@ -2580,7 +2581,11 @@ namespace Kusto.Language.Parsing
 
             #region QueryBlock
             this.StatementList =
-                SeparatedList(Statement, SyntaxKind.SemicolonToken, missingElement: MissingStatementNode, allowTrailingSeparator: true);
+                SeparatedList(
+                    Statement, SyntaxKind.SemicolonToken, 
+                    missingElement: MissingStatementNode, 
+                    endOfList: EndOfText,
+                    allowTrailingSeparator: true);
 
             this.SkippedTokens =
                 If(AnyTokenButEnd,

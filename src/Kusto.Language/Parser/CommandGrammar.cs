@@ -146,6 +146,7 @@ namespace Kusto.Language.Parsing
                         q.Statement,      // all others are query statements
                         SyntaxKind.SemicolonToken,
                         MissingCommandStatementNode,
+                        endOfList: EndOfText,
                         oneOrMore: true,
                         allowTrailingSeparator: true),
                     Optional(q.SkippedTokens), // consumes all remaining tokens
@@ -668,7 +669,8 @@ namespace Kusto.Language.Parsing
                             elem.Parser,
                             sep.Parser,
                             elem.Missing,
-                            null, //sep.Missing,
+                            missingSeparator: null, //sep.Missing,
+                            endOfList: null, //notEndOfList
                             oneOrMore: false,
                             allowTrailingSeparator: false,
                             producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),
@@ -681,7 +683,8 @@ namespace Kusto.Language.Parsing
                             elem.Parser,
                             sep.Parser,
                             elem.Missing,
-                            null, //sep.Missing,
+                            missingSeparator: null,
+                            endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),

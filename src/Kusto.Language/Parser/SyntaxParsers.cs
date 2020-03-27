@@ -68,6 +68,12 @@ namespace Kusto.Language.Parsing
             Match(t => t.Kind != SyntaxKind.EndOfTextToken, t => SyntaxToken.From(t)).WithTag("<any!end>");
 
         /// <summary>
+        /// A parser that consumes only the end of text token.
+        /// </summary>
+        public static readonly Parser<LexicalToken> EndOfText =
+            Match(t => t.Kind == SyntaxKind.EndOfTextToken);
+
+        /// <summary>
         /// Gets the default tag to assign a token parser, based on the token's text.
         /// </summary>
         private static string GetDefaultTag(string text)
@@ -351,6 +357,7 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, TElement> primaryElementParser,
             SyntaxKind separatorKind,
             TElement missingElement,
+            Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
             where TElement : SyntaxElement
@@ -360,6 +367,7 @@ namespace Kusto.Language.Parsing
                 primaryElementParser.WithTag("..."),
                 separatorKind,
                 missingElement,
+                endOfList,
                 oneOrMore,
                 allowTrailingSeparator);
         }
@@ -372,6 +380,7 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, TElement> secondaryElementParser,
             SyntaxKind separatorKind,
             TElement missingElement,
+            Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
             where TElement : SyntaxElement
@@ -382,17 +391,41 @@ namespace Kusto.Language.Parsing
                 Rule(Token(separatorKind), e => (SyntaxElement)e),
                 () => missingElement.Clone(),
                 () => CreateMissingToken(separatorKind),
+                endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
-
                 MakeSeparatedList<TElement>);
+        }
+
+        /// <summary>
+        /// Determines if a typical comma separated list has ended
+        /// </summary>
+        public static Parser<LexicalToken> EndOfCommaList = Match(t =>
+            t.Kind == SyntaxKind.EndOfTextToken
+            || t.Kind == SyntaxKind.CloseParenToken
+            || t.Kind == SyntaxKind.CloseBracketToken
+            || t.Kind == SyntaxKind.CloseBraceToken
+            || t.Kind == SyntaxKind.BarToken
+            || t.Kind == SyntaxKind.SemicolonToken);
+
+        /// <summary>
+        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> CommaList<TElement>(
+            Parser<LexicalToken, TElement> elementParser,
+            TElement missingElement,
+            bool oneOrMore = false,
+            bool allowTrailingComma = false)
+            where TElement : SyntaxElement
+        {
+            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, EndOfCommaList, oneOrMore, allowTrailingComma);
         }
 
         /// <summary>
         /// Constructs a SyntaxList&lt;SeparatedElement&lt;TElement&gt;&gt; from a list of items and separators.
         /// </summary>
         public static SyntaxList<SeparatedElement<TElement>> MakeSeparatedList<TElement>(params SyntaxElement[] elements)
-            where TElement : SyntaxElement
+        where TElement : SyntaxElement
         {
             return MakeSeparatedList<TElement>((IReadOnlyList<SyntaxElement>)elements);
         }

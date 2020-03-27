@@ -919,6 +919,7 @@ namespace Kusto.Language.Parsing
         /// <param name="separator">The parser for the separator.</param>
         /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
         /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are no more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
         /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
@@ -927,6 +928,7 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TParser> separator,
             Func<TParser> missingElement,
             Func<TParser> missingSeparator,
+            Parser<TInput> endOfList,
             bool oneOrMore,
             bool allowTrailingSeparator,
             Func<IReadOnlyList<TParser>, TProducer> producer)
@@ -937,6 +939,7 @@ namespace Kusto.Language.Parsing
                 separator,
                 missingElement,
                 missingSeparator,
+                endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
                 producer);
@@ -950,6 +953,7 @@ namespace Kusto.Language.Parsing
         /// <param name="separator">The parser for the separator.</param>
         /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
         /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
         /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
@@ -959,6 +963,7 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TElement> separator,
             Func<TElement> missingElement, // optional
             Func<TElement> missingSeparator, // optional
+            Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
             Func<IReadOnlyList<TElement>, TList> producer)
@@ -979,12 +984,13 @@ namespace Kusto.Language.Parsing
                 if (allowTrailingSeparator)
                 {
                     var secondary = Sequence(separator, secondaryElement);
-                    if (missingSeparator != null)
+
+                    if (missingSeparator != null && endOfList != null)
                     {
                         secondary = First(
                             secondary,
                             // check for missing secondardy element between two separators
-                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
                     }
 
                     return Produce(
@@ -997,12 +1003,13 @@ namespace Kusto.Language.Parsing
                 else
                 {
                     var secondary = Sequence(separator, requiredSecondaryElement);
-                    if (missingSeparator != null)
+
+                    if (missingSeparator != null && endOfList != null)
                     {
                         secondary = First(
                             secondary,
                             // check for missing secondardy element between two separators
-                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
                     }
 
                     return Produce(
@@ -1017,12 +1024,13 @@ namespace Kusto.Language.Parsing
                 if (allowTrailingSeparator)
                 {
                     var secondary = Sequence(separator, secondaryElement);
-                    if (missingSeparator != null)
+
+                    if (missingSeparator != null && endOfList != null)
                     {
                         secondary = First(
                             secondary,
                             // check for missing secondardy element between two separators
-                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
                     }
 
                     return Optional(
@@ -1039,12 +1047,13 @@ namespace Kusto.Language.Parsing
                 else
                 {
                     var secondary = Sequence(separator, requiredSecondaryElement);
-                    if (missingSeparator != null)
+
+                    if (missingSeparator != null && endOfList != null)
                     {
                         secondary = First(
                             secondary,
                             // check for missing secondardy element between two separators
-                            If(secondaryElement, Sequence(requiredSeparator, secondaryElement)).Hide());
+                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
                     }
 
                     return Optional(

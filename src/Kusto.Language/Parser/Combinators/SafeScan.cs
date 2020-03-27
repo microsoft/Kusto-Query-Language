@@ -283,8 +283,16 @@ namespace Kusto.Language.Parsing
 
             public override Parser<TInput> VisitConvert<TOutput>(ConvertParser<TInput, TOutput> parser)
             {
-                state.InputLength = parser.Scan(source, state.InputStart);
-                return null;
+                if (state.State == 0)
+                {
+                    state.State = 1;
+                    return parser.Pattern;
+                }
+                else
+                {
+                    state.InputLength = state.LastResult;
+                    return null;
+                }
             }
 
             public override Parser<TInput> VisitFails(FailsParser<TInput> parser)
@@ -401,8 +409,12 @@ namespace Kusto.Language.Parsing
             {
                 if (state.State == 0)
                 {
-                    var length = parser.Test.Scan(source, state.InputStart);
-
+                    state.State = 1;
+                    return parser.Test;
+                }
+                else if (state.State == 1)
+                {
+                    var length = state.LastResult;
                     if (length < 0)
                     {
                         state.InputLength = length;
@@ -410,7 +422,7 @@ namespace Kusto.Language.Parsing
                     }
                     else
                     {
-                        state.State = 1;
+                        state.State = 2;
                         return parser.Parser;
                     }
                 }
@@ -425,8 +437,12 @@ namespace Kusto.Language.Parsing
             {
                 if (state.State == 0)
                 {
-                    var length = parser.Test.Scan(source, state.InputStart);
-
+                    state.State = 1;
+                    return parser.Test;
+                }
+                else if (state.State == 1)
+                {
+                    var length = state.LastResult;
                     if (length < 0)
                     {
                         state.InputLength = length;
@@ -434,7 +450,7 @@ namespace Kusto.Language.Parsing
                     }
                     else
                     {
-                        state.State = 1;
+                        state.State = 2;
                         return parser.Parser;
                     }
                 }
@@ -447,18 +463,21 @@ namespace Kusto.Language.Parsing
 
             public override Parser<TInput> VisitMap<TOutput>(MapParser<TInput, TOutput> parser)
             {
+                // safe to call scan here because map is limited.
                 state.InputLength = parser.Scan(source, state.InputStart);
                 return null;
             }
 
             public override Parser<TInput> VisitMatch(MatchParser<TInput> parser)
             {
+                // not proven safe here because scan of MatchParser is user defined
                 state.InputLength = parser.Scan(source, state.InputStart);
                 return null;
             }
 
             public override Parser<TInput> VisitMatch<TOutput>(MatchParser<TInput, TOutput> parser)
             {
+                // not proven safe here because scan of MatchParser is user defined
                 state.InputLength = parser.Scan(source, state.InputStart);
                 return null;
             }
