@@ -36,6 +36,14 @@ Output table schema is:
 |---|---|---|---|---|---|---|---|---|---|
 |type: as of *TimelineColumn*|same|long|long|double|double|double|..|..|..|
 
+* `from_TimelineColumn` - the cohort of new users. Metrics in this record refer to all users who were first seen in this period. The decision on 
+*first seen* takes into account all previous periods in the analysis period. 
+* `to_TimelineColumn` - the period being compared to. 
+* `dcount_new_values` - the number of distinct users in `to_TimelineColumn` which were not seen in *all* periods prior to and including `from_TimelineColumn`. 
+* `dcount_retained_values` - out of all new users, first seen in `from_TimelineColumn`, the number of distinct users which were seen in `to_TimelineCoumn`.
+* `dcount_churn_values` - out of all new users, first seen in `from_TimelineColumn`, the number of distinct users which were *not* seen in `to_TimelineCoumn`.
+* `retention_rate` - the percent of `dcount_retained_values` out of the cohort (users first seen in `from_TimelineColumn`).
+* `churn_rate` - the percent of `dcount_churn_values` out of the cohort (users first seen in `from_TimelineColumn`).
 
 **Notes**
 
@@ -44,6 +52,65 @@ For definitions of `Retention Rate` and `Churn Rate` - refer to **Notes** sectio
 
 
 **Examples**
+
+Let's take the following table as a sample data set which shows which users were seen on which days. The table was generated based on a source `Users` 
+table, as follows: 
+
+<!-- csl -->
+```
+Users | summarize tostring(make_set(user)) by bin(Timestamp, 1d) | order by Timestamp asc;
+```
+
+|Timestamp|set_user|
+|---|---|
+|2019-11-01 00:00:00.0000000|[0,2,3,4]|
+|2019-11-02 00:00:00.0000000|[0,1,3,4,5]|
+|2019-11-03 00:00:00.0000000|[0,2,4,5]|
+|2019-11-04 00:00:00.0000000|[0,1,2,3]|
+|2019-11-05 00:00:00.0000000|[0,1,2,3,4]|
+
+The output of the plugin for the original table is the following: 
+
+<!-- csl -->
+```
+let StartDate = datetime(2019-11-01 00:00:00);
+let EndDate = datetime(2019-11-07 00:00:00);
+Users 
+| evaluate new_activity_metrics(user, Timestamp, StartDate, EndDate-1tick, 1d) 
+| where from_Timestamp < datetime(2019-11-03 00:00:00.0000000)
+```
+
+|R|from_Timestamp|to_Timestamp|dcount_new_values|dcount_retained_values|dcount_churn_values|retention_rate|churn_rate|
+|---|---|---|---|---|---|---|---|
+|1|2019-11-01 00:00:00.0000000|2019-11-01 00:00:00.0000000|4|4|0|1|0|
+|2|2019-11-01 00:00:00.0000000|2019-11-02 00:00:00.0000000|2|3|1|0.75|0.25|
+|3|2019-11-01 00:00:00.0000000|2019-11-03 00:00:00.0000000|1|3|1|0.75|0.25|
+|4|2019-11-01 00:00:00.0000000|2019-11-04 00:00:00.0000000|1|3|1|0.75|0.25|
+|5|2019-11-01 00:00:00.0000000|2019-11-05 00:00:00.0000000|1|4|0|1|0|
+|6|2019-11-01 00:00:00.0000000|2019-11-06 00:00:00.0000000|0|0|4|0|1|
+|7|2019-11-02 00:00:00.0000000|2019-11-02 00:00:00.0000000|2|2|0|1|0|
+|8|2019-11-02 00:00:00.0000000|2019-11-03 00:00:00.0000000|0|1|1|0.5|0.5|
+|9|2019-11-02 00:00:00.0000000|2019-11-04 00:00:00.0000000|0|1|1|0.5|0.5|
+|10|2019-11-02 00:00:00.0000000|2019-11-05 00:00:00.0000000|0|1|1|0.5|0.5|
+|11|2019-11-02 00:00:00.0000000|2019-11-06 00:00:00.0000000|0|0|2|0|1|
+
+Let's take a closer look at a couple of records in the output: 
+* Record `R=3`, `from_TimelineColumn` = `2019-11-01`,  `to_TimelineColumn` = `2019-11-03`:
+    * The users considered for this record are all new users seen in 11/1. Since this is the 1st period, 
+    these are all users in that bin â€“ [0,2,3,4]
+    * `dcount_new_values` â€“ the number of users in 11/3 which werenâ€™t seen in 11/1. This includes a single user â€“ `5`. 
+    * `dcount_retained_values` â€“ out of all new users in 11/1, how many retained until 11/3? These are 3 (`[0,2,4]`), 
+    while `count_churn_values` is 1 (user=`3`). 
+    * `retention_rate` = 0.75 â€“ the 3 retained users out of the 4 new users that were 1st seen in 11/1. 
+
+* Record `R=9`, `from_TimelineColumn` = `2019-11-02`,  `to_TimelineColumn` = `2019-11-04`:
+    * This record focuses on the new users that were first seen in 11/2 â€“ users `1` and `5`. 
+    * `dcount_new_values` â€“ the number of users in 11/4 which werenâ€™t seen through all periods `T0 .. from_Timestamp`. Meaning, 
+    users which are seen in 11/4 but were not seen in either 11/1 and 11/2 â€“ there are no such users. 
+    * `dcount_retained_values` â€“ out of all new users in 11/2 (`[1,5]`), how many retained until 11/4? Thereâ€™s one such user (`[1]`), 
+    while count_churn_values is 1 (user `5`). 
+    * `retention_rate` is 0.5 â€“ the single user that was retained in 11/4 out of the 2 new ones in 11/2. 
+
 
 ### Weekly retention rate, and churn rate (single week)
 

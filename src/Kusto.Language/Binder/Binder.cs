@@ -2050,7 +2050,7 @@ namespace Kusto.Language.Binding
                 for (int i = 1; i < signatures.Count; i++)
                 {
                     var type = GetSignatureResult(signatures[i], arguments, argumentTypes).Type;
-                    if (!SymbolsAssignable(type, firstType))
+                    if (!SymbolsAssignable(firstType, type))
                     {
                         if (ArgumentsHaveErrorsOrUnknown(argumentTypes))
                         {
@@ -2551,20 +2551,21 @@ namespace Kusto.Language.Binding
                     var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
                     if (commonType != null)
                     {
-                        if (SymbolsAssignable(argumentType, commonType, Conversion.None))
+                        if (SymbolsAssignable(commonType, argumentType, Conversion.None))
                         {
                             return MatchKind.Exact;
                         }
-                        else if (SymbolsAssignable(argumentType, commonType, Conversion.Promotable))
+                        else if (SymbolsAssignable(commonType, argumentType, Conversion.Promotable))
                         {
                             return MatchKind.Promoted;
                         }
                         else if (AllowLooseParameterMatching(signature)
-                            && SymbolsAssignable(argumentType, commonType, Conversion.Compatible))
+                            && SymbolsAssignable(commonType, argumentType, Conversion.Compatible))
                         {
                             return MatchKind.Compatible;
                         }
-                        else if (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic && SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
+                        else if (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic
+                                 && SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
                         {
                             return MatchKind.Exact;
                         }
@@ -4264,11 +4265,11 @@ namespace Kusto.Language.Binding
 
 #region Symbol assignability
 
-        public static bool SymbolsAssignable(IReadOnlyList<TypeSymbol> parameterTypes, Symbol valueType, Conversion conversion = Conversion.None)
+        public static bool SymbolsAssignable(IReadOnlyList<TypeSymbol> targetTypes, Symbol sourceType, Conversion conversion = Conversion.None)
         {
-            for (int i = 0; i < parameterTypes.Count; i++)
+            for (int i = 0; i < targetTypes.Count; i++)
             {
-                if (SymbolsAssignable(parameterTypes[i], valueType, conversion))
+                if (SymbolsAssignable(targetTypes[i], sourceType, conversion))
                     return true;
             }
 
@@ -4278,45 +4279,45 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// True if a value of type <see cref="P:valueType"/> can be assigned to a parameter of type <see cref="P:parameterType"/>
         /// </summary>
-        public static bool SymbolsAssignable(Symbol parameterType, Symbol valueType, Conversion conversion = Conversion.None)
+        public static bool SymbolsAssignable(Symbol targetType, Symbol sourceType, Conversion conversion = Conversion.None)
         {
-            if (parameterType == valueType)
+            if (targetType == sourceType)
                 return true;
 
-            if (parameterType == null || valueType == null)
+            if (targetType == null || sourceType == null)
                 return false;
 
-            if (valueType == ScalarTypes.Unknown && parameterType.IsScalar)
+            if (sourceType == ScalarTypes.Unknown && targetType.IsScalar)
                 return true;
 
-            if (parameterType == ScalarTypes.Unknown && valueType.IsScalar)
+            if (targetType == ScalarTypes.Unknown && sourceType.IsScalar)
                 return true;
 
-            if (parameterType.Kind != valueType.Kind)
+            if (targetType.Kind != sourceType.Kind)
                 return false;
 
-            switch (parameterType.Kind)
+            switch (targetType.Kind)
             {
                 case SymbolKind.Column:
-                    var c1 = (ColumnSymbol)parameterType;
-                    var c2 = (ColumnSymbol)valueType;
-                    return c1.Name == c2.Name && SymbolsAssignable(c1.Type, c2.Type, conversion);
+                    var tarCol = (ColumnSymbol)targetType;
+                    var srcCol = (ColumnSymbol)sourceType;
+                    return tarCol.Name == srcCol.Name && SymbolsAssignable(tarCol.Type, srcCol.Type, conversion);
 
                 case SymbolKind.Tuple:
                 case SymbolKind.Group:
-                    return MembersEqual(parameterType, valueType);
+                    return MembersEqual(targetType, sourceType);
 
                 case SymbolKind.Table:
-                    return TablesAssignable((TableSymbol)parameterType, (TableSymbol)valueType);
+                    return TablesAssignable((TableSymbol)targetType, (TableSymbol)sourceType);
 
                 case SymbolKind.Scalar:
                     switch (conversion)
                     {
                         case Conversion.Promotable:
-                            return IsPromotable((TypeSymbol)valueType, (TypeSymbol)parameterType);
+                            return IsPromotable((TypeSymbol)sourceType, (TypeSymbol)targetType);
                         case Conversion.Compatible:
-                            return IsPromotable((TypeSymbol)valueType, (TypeSymbol)parameterType)
-                                || IsPromotable((TypeSymbol)parameterType, (TypeSymbol)valueType);
+                            return IsPromotable((TypeSymbol)sourceType, (TypeSymbol)targetType)
+                                || IsPromotable((TypeSymbol)targetType, (TypeSymbol)sourceType);
                         case Conversion.Any:
                             return true;
                         default:
@@ -4327,14 +4328,14 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        public static bool MembersEqual(Symbol symbol1, Symbol symbol2)
+        public static bool MembersEqual(Symbol target, Symbol source)
         {
-            if (symbol1.Members.Count != symbol2.Members.Count)
+            if (target.Members.Count != source.Members.Count)
                 return false;
 
-            for (int i = 0, n = symbol1.Members.Count; i < n; i++)
+            for (int i = 0, n = target.Members.Count; i < n; i++)
             {
-                if (!SymbolsAssignable(symbol1.Members[i], symbol2.Members[i]))
+                if (!SymbolsAssignable(target.Members[i], source.Members[i]))
                     return false;
             }
 
@@ -4344,14 +4345,14 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// True if a table value can be assigned to a parameter of a specific table type.
         /// </summary>
-        private static bool TablesAssignable(TableSymbol parameterType, TableSymbol valueType)
+        private static bool TablesAssignable(TableSymbol target, TableSymbol source)
         {
             // ensure that the value table has at least the columns specified for the parameter table.
 
-            foreach (var parameterColumn in parameterType.Columns)
+            foreach (var tarCol in target.Columns)
             {
-                if (!valueType.TryGetColumn(parameterColumn.Name, out var valueColumn)
-                    || !SymbolsAssignable(parameterColumn.Type, valueColumn.Type))
+                if (!source.TryGetColumn(tarCol.Name, out var valueColumn)
+                    || !SymbolsAssignable(tarCol.Type, valueColumn.Type))
                 {
                     return false;
                 }
@@ -4835,12 +4836,13 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsTypeOrDynamic(Expression expression, TypeSymbol type, bool canPromote, List<Diagnostic> diagnostics)
         {
-            var resultType = GetResultTypeOrError(expression);
+            var exprType = GetResultTypeOrError(expression);
 
-            if (SymbolsAssignable(type, resultType) || (canPromote && IsPromotable(resultType, type)) || SymbolsAssignable(ScalarTypes.Dynamic, resultType))
+            if (SymbolsAssignable(type, exprType, canPromote ? Conversion.Promotable : Conversion.None) 
+                || SymbolsAssignable(ScalarTypes.Dynamic, exprType))
                 return true;
 
-            if (!resultType.IsError)
+            if (!exprType.IsError)
             {
                 if (SymbolsAssignable(ScalarTypes.Dynamic, type))
                 {
@@ -4857,8 +4859,8 @@ namespace Kusto.Language.Binding
 
         private bool IsType(Expression expression, TypeSymbol type, Conversion conversionKind = Conversion.None)
         {
-            var resultType = GetResultTypeOrError(expression);
-            return SymbolsAssignable(resultType, type, conversionKind);
+            var exprType = GetResultTypeOrError(expression);
+            return SymbolsAssignable(type, exprType, conversionKind);
         }
 
         private bool CheckIsType(Expression expression, TypeSymbol type, Conversion conversionKind, List<Diagnostic> diagnostics)
@@ -4876,12 +4878,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsNotType(Expression expression, Symbol type, List<Diagnostic> diagnostics)
         {
-            var resultType = GetResultTypeOrError(expression);
+            var exprType = GetResultTypeOrError(expression);
 
-            if (resultType == ScalarTypes.Unknown)
+            if (exprType == ScalarTypes.Unknown)
                 return true;
 
-            if (!SymbolsAssignable(type, resultType))
+            if (!SymbolsAssignable(type, exprType))
                 return true;
 
             if (!GetResultTypeOrError(expression).IsError)
