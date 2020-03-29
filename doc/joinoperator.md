@@ -61,33 +61,59 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 
 **Returns**
 
-A table with:
+Output schema depends on the join flavor:
 
-* A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes.
-* A row for every match between the input tables. A match is a row selected from one table that has the same value for all the `on` fields as a row in the other table. 
+ * `kind=leftanti`, `kind=leftsemi`:
 
- * `kind` unspecified, `kind=innerunique`
+     The result table contains columns from the left side only.
+
+	 
+ * `kind=rightanti`, `kind=rightsemi`:
+
+     The result table contains columns from the right side only.
+
+	 
+*  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter`
+
+     A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes.
+
+	 
+Output records depends on the join flavor:
+
+ * `kind=leftanti`, `kind=leftantisemi`
+
+     Returns all the records from the left side that do not have matches from the right.	 
+	 
+ * `kind=rightanti`, `kind=rightantisemi`
+
+     Returns all the records from the right side that do not have matches from the left.  
+	  
+*  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter`, `kind=leftsemi`, `kind=rightsemi`
+
+    A row for every match between the input tables. A match is a row selected from one table that has the same value for all the `on` fields as a row in the other table with these constraints:
+
+   - `kind` unspecified, `kind=innerunique`
 
     Only one row from the left side is matched for each value of the `on` key. The output contains a row for each match of this row with rows from the right.
+	
+   - `kind=leftsemi`
+   
+	Returns all the records from the left side that have matches from the right.
+	
+   - `kind=rightsemi`
+   
+   	Returns all the records from the right side that have matches from the left.
 
- * `Kind=inner`
+   - `kind=inner`
  
-     There's a row in the output for every combination of matching rows from left and right.
+    There's a row in the output for every combination of matching rows from left and right.
 
- * `kind=leftouter` (or `kind=rightouter` or `kind=fullouter`)
+   - `kind=leftouter` (or `kind=rightouter` or `kind=fullouter`)
 
-     In addition to the inner matches, there's a row for every row on the left (and/or right), even if it has no match. In that case, the unmatched output cells contain nulls.
+    In addition to the inner matches, there's a row for every row on the left (and/or right), even if it has no match. In that case, the unmatched output cells contain nulls.
+	If there are several rows with the same values for those fields, you'll get rows for all the combinations.
 
- * `kind=leftanti` (or `kind=rightanti`)
-
-     Returns all the records from the left side that do not have matches from the right. The result table just has the columns from the left side. 
-     Equivalent to `kind=leftantisemi`.
-
- * `kind=leftsemi` (or `kind=rightsemi`)
-
-     Returns all the records from the left side that have matches from the right. The result table contains columns from the left side only. 
  
-If there are several rows with the same values for those fields, you'll get rows for all the combinations.
 
 **Tips**
 

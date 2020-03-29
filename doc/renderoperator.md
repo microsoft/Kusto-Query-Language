@@ -162,5 +162,3 @@ range x from -2 to 2 step 0.1
 [Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
 
 ::: zone-end
-::: zone pivot="azuremonitor"
-::: zone-end
