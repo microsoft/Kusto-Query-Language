@@ -685,6 +685,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PartitionOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PartitionSubquery, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PartitionQuery, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.PartitionScope, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseWhereOperator, "", SyntaxCategory.Node),
 

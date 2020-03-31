@@ -67,27 +67,27 @@ Output schema depends on the join flavor:
 
      The result table contains columns from the left side only.
 
-	 
+     
  * `kind=rightanti`, `kind=rightsemi`:
 
      The result table contains columns from the right side only.
 
-	 
+     
 *  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter`
 
      A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes.
 
-	 
+     
 Output records depends on the join flavor:
 
  * `kind=leftanti`, `kind=leftantisemi`
 
-     Returns all the records from the left side that do not have matches from the right.	 
-	 
+     Returns all the records from the left side that don't have matches from the right.     
+     
  * `kind=rightanti`, `kind=rightantisemi`
 
-     Returns all the records from the right side that do not have matches from the left.  
-	  
+     Returns all the records from the right side that don't have matches from the left.  
+      
 *  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter`, `kind=leftsemi`, `kind=rightsemi`
 
     A row for every match between the input tables. A match is a row selected from one table that has the same value for all the `on` fields as a row in the other table with these constraints:
@@ -95,14 +95,14 @@ Output records depends on the join flavor:
    - `kind` unspecified, `kind=innerunique`
 
     Only one row from the left side is matched for each value of the `on` key. The output contains a row for each match of this row with rows from the right.
-	
+    
    - `kind=leftsemi`
    
-	Returns all the records from the left side that have matches from the right.
-	
+    Returns all the records from the left side that have matches from the right.
+    
    - `kind=rightsemi`
    
-   	Returns all the records from the right side that have matches from the left.
+       Returns all the records from the right side that have matches from the left.
 
    - `kind=inner`
  
@@ -111,7 +111,7 @@ Output records depends on the join flavor:
    - `kind=leftouter` (or `kind=rightouter` or `kind=fullouter`)
 
     In addition to the inner matches, there's a row for every row on the left (and/or right), even if it has no match. In that case, the unmatched output cells contain nulls.
-	If there are several rows with the same values for those fields, you'll get rows for all the combinations.
+    If there are several rows with the same values for those fields, you'll get rows for all the combinations.
 
  
 
@@ -172,8 +172,8 @@ supports the following flavors of the join operator:
 
 ### inner and innerunique join operator flavors
 
--	When using **inner join flavor**, there will be a row in the output for every combination of matching rows from left and right without left keys deduplications. The output will be a cartesian product of left and right keys.
-	Example of **inner join**:
+-    When using **inner join flavor**, there will be a row in the output for every combination of matching rows from left and right without left keys deduplications. The output will be a cartesian product of left and right keys.
+    Example of **inner join**:
 
 <!-- csl-->
 ```
@@ -200,9 +200,9 @@ on key
 |1|val1.2|1|val1.4|
 |1|val1.1|1|val1.4|
 
--	Using **innerunique join flavor** will deduplicate keys from left side and there will be a row in the output from every combination of deduplicated left keys and right keys.
-	Example of **innerunique join** for the same datasets used above, Please note that **innerunique flavor** for this case may yield two possible outputs and both are correct.
-	In the first output, the join operator randomly picked the first key which appears in t1 with the value "val1.1" and matched it with t2 keys while in the second one, the join operator randomly picked the second key appears in t1 which has the value "val1.2" and matched it with t2 keys:
+-    Using **innerunique join flavor** will deduplicate keys from left side and there will be a row in the output from every combination of deduplicated left keys and right keys.
+    Example of **innerunique join** for the same datasets used above, Please note that **innerunique flavor** for this case may yield two possible outputs and both are correct.
+    In the first output, the join operator randomly picked the first key which appears in t1 with the value "val1.1" and matched it with t2 keys while in the second one, the join operator randomly picked the second key appears in t1 which has the value "val1.2" and matched it with t2 keys:
 
 <!-- csl-->
 ```
@@ -251,9 +251,9 @@ on key
 |1|val1.2|1|val1.4|
 
 
--	Kusto is optimized to push filters that come after the `join` towards the appropriate join side left or right when possible.
-	Sometimes, when the flavor used is **innerunique** and the filter can be propagated to the left side of the join, then it will be propagated automatically and the keys which applies to that filter will always appear in the output.
-	for example, using the example above and adding filter ` where value == "val1.2" ` will always give the second result and will never give the first result for the used datasets :
+-    Kusto is optimized to push filters that come after the `join` towards the appropriate join side left or right when possible.
+    Sometimes, when the flavor used is **innerunique** and the filter can be propagated to the left side of the join, then it will be propagated automatically and the keys which applies to that filter will always appear in the output.
+    for example, using the example above and adding filter ` where value == "val1.2" ` will always give the second result and will never give the first result for the used datasets :
 
 <!-- csl-->
 ```
@@ -345,7 +345,7 @@ X | join Y on Key
 |c|4|c|30|
 
 
-(Note that the keys 'a' and 'd' do not appear in the output, since there were no matching keys on both left and right sides). 
+(Note that the keys 'a' and 'd' don't appear in the output, since there were no matching keys on both left and right sides). 
  
 (Historically, this was the first implementation of the join supported by the initial version of Kusto; it is useful in the typical log/trace analysis scenarios where we want to correlate two events (each matching some filtering criterion) under the same correlation ID, and get back all appearances of the phenomenon we're looking for, ignoring multiple appearances of the contributing trace records.)
  
@@ -447,7 +447,7 @@ X | join kind=rightouter Y on Key
  
 ### Full outer join 
 
-Conceptually, a full outer join combines the effect of applying both left and right outer joins. Where records in the joined tables do not match, the result set will have NULL values for every column of the table that lacks a matching row. For those records that do match, a single row will be produced in the result set (containing fields populated from both tables). 
+Conceptually, a full outer join combines the effect of applying both left and right outer joins. Where records in the joined tables don't match, the result set will have NULL values for every column of the table that lacks a matching row. For those records that do match, a single row will be produced in the result set (containing fields populated from both tables). 
  
 <!-- csl -->
 ```
@@ -480,7 +480,7 @@ X | join kind=fullouter Y on Key
  
 ### Left anti join
 
-Left anti join returns all records from the left side that do not match any record from the right side. 
+Left anti join returns all records from the left side that don't match any record from the right side. 
  
 <!-- csl -->
 ```
@@ -509,7 +509,7 @@ Anti-join models the "NOT IN" query.
 
 ### Right anti join
 
-Right anti join returns all records from the right side that do not match any record from the left side. 
+Right anti join returns all records from the right side that don't match any record from the left side. 
  
 <!-- csl -->
 ```

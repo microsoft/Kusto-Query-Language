@@ -7039,12 +7039,79 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class PartitionQuery */
     
+    #region class PartitionScope
+    public sealed partial class PartitionScope : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.PartitionScope;
+        
+        public SyntaxToken InKeyword { get; }
+        
+        public Expression Expression { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="PartitionScope"/>.
+        /// </summary>
+        internal PartitionScope(SyntaxToken inKeyword, Expression expression, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.InKeyword = Attach(inKeyword);
+            this.Expression = Attach(expression);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return InKeyword;
+                case 1: return Expression;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(InKeyword);
+                case 1: return nameof(Expression);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitPartitionScope(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitPartitionScope(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new PartitionScope((SyntaxToken)InKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class PartitionScope */
+    
     #region class PartitionSubquery
     public sealed partial class PartitionSubquery : PartitionOperand
     {
         public override SyntaxKind Kind => SyntaxKind.PartitionSubquery;
         
-        public Expression ScopeExpression { get; }
+        public PartitionScope Scope { get; }
         
         public SyntaxToken OpenParen { get; }
         
@@ -7055,9 +7122,9 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="PartitionSubquery"/>.
         /// </summary>
-        internal PartitionSubquery(Expression scopeExpression, SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal PartitionSubquery(PartitionScope scope, SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
-            this.ScopeExpression = Attach(scopeExpression, optional: true);
+            this.Scope = Attach(scope, optional: true);
             this.OpenParen = Attach(openParen);
             this.Subquery = Attach(subquery);
             this.CloseParen = Attach(closeParen);
@@ -7070,7 +7137,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return ScopeExpression;
+                case 0: return Scope;
                 case 1: return OpenParen;
                 case 2: return Subquery;
                 case 3: return CloseParen;
@@ -7082,7 +7149,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(ScopeExpression);
+                case 0: return nameof(Scope);
                 case 1: return nameof(OpenParen);
                 case 2: return nameof(Subquery);
                 case 3: return nameof(CloseParen);
@@ -7105,7 +7172,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Scalar;
+                case 0: return CompletionHint.Syntax;
                 case 1: return CompletionHint.Syntax;
                 case 2: return CompletionHint.Query;
                 case 3: return CompletionHint.Syntax;
@@ -7124,7 +7191,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new PartitionSubquery((Expression)ScopeExpression?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Subquery?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionSubquery((PartitionScope)Scope?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Subquery?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class PartitionSubquery */
@@ -12142,6 +12209,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitParseWhereOperator(ParseWhereOperator node);
         public abstract void VisitPartitionOperator(PartitionOperator node);
         public abstract void VisitPartitionQuery(PartitionQuery node);
+        public abstract void VisitPartitionScope(PartitionScope node);
         public abstract void VisitPartitionSubquery(PartitionSubquery node);
         public abstract void VisitProjectOperator(ProjectOperator node);
         public abstract void VisitProjectAwayOperator(ProjectAwayOperator node);
@@ -12567,6 +12635,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitPartitionScope(PartitionScope node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitPartitionSubquery(PartitionSubquery node)
         {
             this.DefaultVisit(node);
@@ -12918,6 +12990,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitParseWhereOperator(ParseWhereOperator node);
         public abstract TResult VisitPartitionOperator(PartitionOperator node);
         public abstract TResult VisitPartitionQuery(PartitionQuery node);
+        public abstract TResult VisitPartitionScope(PartitionScope node);
         public abstract TResult VisitPartitionSubquery(PartitionSubquery node);
         public abstract TResult VisitProjectOperator(ProjectOperator node);
         public abstract TResult VisitProjectAwayOperator(ProjectAwayOperator node);
@@ -13340,6 +13413,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitPartitionQuery(PartitionQuery node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitPartitionScope(PartitionScope node)
         {
             return this.DefaultVisit(node);
         }

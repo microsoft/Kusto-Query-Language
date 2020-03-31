@@ -2,7 +2,7 @@
 
 Consumes the tabular data stream handed to the operator. 
 
-It is mostly used for triggering the query side-effect without actually returning
+The `consume` operator is mostly used for triggering the query side-effect without actually returning
 the results back to the caller.
 
 <!-- csl -->

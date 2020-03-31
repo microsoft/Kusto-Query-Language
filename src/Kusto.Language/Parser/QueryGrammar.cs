@@ -1296,7 +1296,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.InKeyword).Hide(),
                     Required(First(FunctionCall, DynamicLiteral), MissingExpression),
-                    (inKeyword, expr) => expr);
+                    (inKeyword, expr) => new PartitionScope(inKeyword, expr));
 
             var PartitionQueryExpression =
                Rule(
@@ -1312,8 +1312,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.OpenParenToken),
                     Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
-                    (scopeExpression, openParen, expr, closeParen) =>
-                        (PartitionOperand)new PartitionSubquery(scopeExpression, openParen, expr, closeParen));
+                    (scope, openParen, expr, closeParen) =>
+                        (PartitionOperand)new PartitionSubquery(scope, openParen, expr, closeParen));
 
             var UnscopedPartitionSubqueryExpression =
                 Rule(

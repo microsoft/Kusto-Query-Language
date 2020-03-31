@@ -1446,13 +1446,26 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "PartitionScope",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "PartitionScope",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "InKeyword", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "PartitionSubquery",
         Base = "PartitionOperand",
         Sealed = true,
         Kind = "PartitionSubquery",
         Properties = new GeneratedProperty[]
         {
-            new GeneratedProperty { Name = "ScopeExpression", Type = "Expression", Completion="Scalar", Optional=true },
+            new GeneratedProperty { Name = "Scope", Type = "PartitionScope", Completion="Syntax", Optional=true },
             new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
             new GeneratedProperty { Name = "Subquery", Type = "Expression", Completion="Query" },
             new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }

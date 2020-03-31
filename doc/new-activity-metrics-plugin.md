@@ -53,7 +53,7 @@ For definitions of `Retention Rate` and `Churn Rate` - refer to **Notes** sectio
 
 **Examples**
 
-Let's take the following table as a sample data set which shows which users were seen on which days. The table was generated based on a source `Users` 
+The following sample data set shows which users seen on which days. The table was generated based on a source `Users` 
 table, as follows: 
 
 <!-- csl -->
@@ -94,22 +94,22 @@ Users
 |10|2019-11-02 00:00:00.0000000|2019-11-05 00:00:00.0000000|0|1|1|0.5|0.5|
 |11|2019-11-02 00:00:00.0000000|2019-11-06 00:00:00.0000000|0|0|2|0|1|
 
-Let's take a closer look at a couple of records in the output: 
+The following is an analysis of a few records from the output: 
 * Record `R=3`, `from_TimelineColumn` = `2019-11-01`,  `to_TimelineColumn` = `2019-11-03`:
-    * The users considered for this record are all new users seen in 11/1. Since this is the 1st period, 
+    * The users considered for this record are all new users seen on 11/1. Since this is the first period, 
     these are all users in that bin â€“ [0,2,3,4]
-    * `dcount_new_values` â€“ the number of users in 11/3 which werenâ€™t seen in 11/1. This includes a single user â€“ `5`. 
-    * `dcount_retained_values` â€“ out of all new users in 11/1, how many retained until 11/3? These are 3 (`[0,2,4]`), 
-    while `count_churn_values` is 1 (user=`3`). 
-    * `retention_rate` = 0.75 â€“ the 3 retained users out of the 4 new users that were 1st seen in 11/1. 
+    * `dcount_new_values` â€“ the number of users on 11/3 who weren't seen on 11/1. This includes a single user â€“ `5`. 
+    * `dcount_retained_values` â€“ out of all new users on 11/1, how many were retained until 11/3? There are three (`[0,2,4]`), 
+    while `count_churn_values` is one (user=`3`). 
+    * `retention_rate` = 0.75 â€“ the three retained users out of the four new users who were first seen in 11/1. 
 
 * Record `R=9`, `from_TimelineColumn` = `2019-11-02`,  `to_TimelineColumn` = `2019-11-04`:
-    * This record focuses on the new users that were first seen in 11/2 â€“ users `1` and `5`. 
-    * `dcount_new_values` â€“ the number of users in 11/4 which werenâ€™t seen through all periods `T0 .. from_Timestamp`. Meaning, 
-    users which are seen in 11/4 but were not seen in either 11/1 and 11/2 â€“ there are no such users. 
-    * `dcount_retained_values` â€“ out of all new users in 11/2 (`[1,5]`), how many retained until 11/4? Thereâ€™s one such user (`[1]`), 
-    while count_churn_values is 1 (user `5`). 
-    * `retention_rate` is 0.5 â€“ the single user that was retained in 11/4 out of the 2 new ones in 11/2. 
+    * This record focuses on the new users who were first seen on 11/2 â€“ users `1` and `5`. 
+    * `dcount_new_values` â€“ the number of users on 11/4 who weren't seen through all periods `T0 .. from_Timestamp`. Meaning, 
+    users who are seen on 11/4 but who were not seen on either 11/1 or 11/2 â€“ there are no such users. 
+    * `dcount_retained_values` â€“ out of all new users on 11/2 (`[1,5]`), how many were retained until 11/4? There's one such user (`[1]`), 
+    while count_churn_values is one (user `5`). 
+    * `retention_rate` is 0.5 â€“ the single user that was retained on 11/4 out of the two new ones on 11/2. 
 
 
 ### Weekly retention rate, and churn rate (single week)

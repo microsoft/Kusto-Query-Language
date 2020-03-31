@@ -807,6 +807,11 @@ namespace Kusto.Language.Binding
                 return new SemanticInfo(resultType);
             }
 
+            public override SemanticInfo VisitPartitionScope(PartitionScope node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitJsonArrayExpression(JsonArrayExpression node)
             {
                 return LiteralDynamicInfo;

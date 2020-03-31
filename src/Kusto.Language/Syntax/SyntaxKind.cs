@@ -655,6 +655,7 @@
 
         PartitionSubquery,
         PartitionQuery,
+        PartitionScope,
         PartitionOperator,
         ParseOperator,
         ParseWhereOperator,
