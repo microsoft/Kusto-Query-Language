@@ -23,8 +23,8 @@ The plugin's runtime is hosted in [sandboxes](../concepts/sandboxes.md), running
   * `per_node`: If the query before the Python block is distributed, an instance of the script will run on each node over the data that it contains.
 * *external_artifacts*: An optional `dynamic` literal which is a property bag of name & URL pairs for artifacts that are accessible from cloud storage and can be made available for the script to use at runtime.
   * URLs referenced in this property bag are required to:
-    1. Be included in the cluster's [Callout policy](../management/calloutpolicy.md).
-    2. Being in a publicly available location, or provide the necessary credentials, as explained in [Storage connection strings](../api/connection-strings/storage).
+  * Be included in the cluster's [callout policy](../management/calloutpolicy.md).
+    2. Being in a publicly available location, or provide the necessary credentials, as explained in [Storage connection strings](../api/connection-strings/storage.md).
   * The artifacts are made available for the script to consume from a local temporary directory, `.\Temp`, and the names provided in the property bag are used as the local file names (see [example](#examples) below).
   * For more information, see [appendix](#appendix-installing-packages-for-the-python-plugin) below.
 
@@ -40,7 +40,7 @@ The following variables are reserved for interaction between Kusto query languag
 
 * The plugin is disabled by default.
 * Prerequisites for enabling the plugin are listed [here](../concepts/sandboxes.md#prerequisites).
-* The plugin can be enabled/disabled in the Azure portal, in the `Configuration` tab of your cluster.
+* Enable or disable the plugin in the [Azure portal in the **Configuration** tab of your cluster](https://docs.microsoft.com/azure/data-explorer/language-extensions).
 
 ## Notes and Limitations
 
@@ -56,8 +56,7 @@ The following variables are reserved for interaction between Kusto query languag
   * In both the above cases, it's recommended to verify that the volume and frequency of the ingestion, as well as the complexity and
     resources utilization of the Python logic are aligned with [sandbox limitations](../concepts/sandboxes.md#limitations), and the cluster's available resources.
     Failure to do so may result with [throttling errors](../concepts/sandboxes.md#errors).
-  * It is *not* possible to use the plugin in a query which is defined as part of an update policy, whose source table is ingested to 
-    using [*streaming* ingestion](../management/data-ingestion/streaming.md).
+  * It is *not* possible to use the plugin in a query which is defined as part of an update policy, whose source table is ingested using [streaming ingestion](https://docs.microsoft.com/azure/data-explorer/ingest-data-streaming).
 
 ## Examples
 
@@ -176,7 +175,7 @@ You can install packages by following these steps:
   
   b. Alter the cluster's [Callout policy](../management/calloutpolicy.md) to allow accessing that location.
     * This requires [AllDatabasesAdmin](../management/access-control/role-based-authorization.md) permissions.
-	* For example, to enable access to a blob located in https://artifcatswestus.blob.core.windows.net/python, the command to run is:
+    * For example, to enable access to a blob located in https://artifcatswestus.blob.core.windows.net/python, the command to run is:
 
       <!-- csl -->
       ```

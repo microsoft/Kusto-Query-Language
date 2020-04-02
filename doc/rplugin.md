@@ -3,6 +3,7 @@
 ::: zone pivot="azuredataexplorer"
 
 The R plugin runs a user-defined-function (UDF) using an R script. The R script gets tabular data as its input, and is expected to produce tabular output.
+The plugin's runtime is hosted in a [sandbox](../concepts/sandboxes.md), an isolated and secure environment running on the cluster's nodes.
 
 ### Syntax
 
@@ -76,15 +77,15 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
 
     <!-- csl -->
     ```    
-	.show operations
-	| where StartedOn > ago(1d) // Filtering out irrelevant records before invoking the plugin
-	| project d_seconds = Duration / 1s // Projecting only a subset of the necessary columns
-	| evaluate hint.distribution = per_node r( // Using per_node distribution, as the script's logic allows it
-		typeof(*, d2:double),
-		'result <- df\n'
-		'result$d2 <- df$d_seconds\n' // Negative example: this logic should have been written using Kusto's query language
-	  )
-	| summarize avg = avg(d2)
+    .show operations
+    | where StartedOn > ago(1d) // Filtering out irrelevant records before invoking the plugin
+    | project d_seconds = Duration / 1s // Projecting only a subset of the necessary columns
+    | evaluate hint.distribution = per_node r( // Using per_node distribution, as the script's logic allows it
+        typeof(*, d2:double),
+        'result <- df\n'
+        'result$d2 <- df$d_seconds\n' // Negative example: this logic should have been written using Kusto's query language
+      )
+    | summarize avg = avg(d2)
     ```
 
 ### Usage tips
