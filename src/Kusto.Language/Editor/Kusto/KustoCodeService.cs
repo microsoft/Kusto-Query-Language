@@ -160,7 +160,8 @@ namespace Kusto.Language.Editor
         public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default)
         {
             if (this.lazyExtendedDiagnostics == null
-                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
+                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
+                && waitForAnalysis)
             {
                 var ds = new List<Diagnostic>();
 
@@ -337,7 +338,7 @@ namespace Kusto.Language.Editor
                 // have try-catch to keep editor from crashing from parser bugs
                 try
                 {
-                    return new KustoQuickInfoBuilder(code).GetQuickInfo(position, cancellationToken);
+                    return new KustoQuickInfoBuilder(this, code).GetQuickInfo(position, cancellationToken);
                 }
                 catch (Exception)
                 {

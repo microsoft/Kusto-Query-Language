@@ -12,10 +12,12 @@ namespace Kusto.Language.Editor
 
     internal class KustoQuickInfoBuilder
     {
+        private readonly KustoCodeService _service;
         private readonly KustoCode _code;
 
-        public KustoQuickInfoBuilder(KustoCode code)
+        public KustoQuickInfoBuilder(KustoCodeService service, KustoCode code)
         {
+            _service = service;
             _code = code;
         }
 
@@ -257,9 +259,12 @@ namespace Kusto.Language.Editor
 
         private string GetDiagnosticInfo(int position, CancellationToken cancellationToken)
         {
+            var dx = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
+                .Concat(_service.GetExtendedDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
+
             StringBuilder builder = null;
 
-            foreach (var d in _code.GetDiagnostics(cancellationToken))
+            foreach (var d in dx)
             {
                 var end = d.End > d.Start ? d.End : d.End + 1;
                 if (position >= d.Start && position < end)

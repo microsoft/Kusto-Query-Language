@@ -147,26 +147,26 @@ namespace Kusto.Language
         /// <summary>
         /// A diagnostic that represents code that will fail to execute.
         /// </summary>
-        public static string Error = nameof(Error);
+        public const string Error = nameof(Error);
 
         /// <summary>
         /// A diagnostic that represents code that will execute but with possible unintended consequence.
         /// </summary>
-        public static string Warning = nameof(Warning);
+        public const string Warning = nameof(Warning);
 
         /// <summary>
         /// A diagnostic that represents a suggestion to improve the code.
         /// </summary>
-        public static string Suggestion = nameof(Suggestion);
+        public const string Suggestion = nameof(Suggestion);
 
         /// <summary>
         /// A diagnostic that represents information about the code.
         /// </summary>
-        public static string Information = nameof(Information);
+        public const string Information = nameof(Information);
 
         /// <summary>
         /// A diagnostic that is not meant to be relayed to the user.
         /// </summary>
-        public static string Hidden = nameof(Hidden);
+        public const string Hidden = nameof(Hidden);
     }
 }
