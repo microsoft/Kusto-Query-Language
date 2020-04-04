@@ -699,6 +699,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterColumnPolicyEncoding =
             new CommandSymbol("alter column policy encoding", "alter column <table_column>:ColumnName policy encoding <string>:EncodingPolicy", PolicyResult);
 
+        public static readonly CommandSymbol AlterColumnPolicyEncodingType =
+            new CommandSymbol("alter column policy encoding type", "alter column <table_column>:ColumnName policy encoding type '=' <string>:EncodingPolicyType", PolicyResult);
+
         public static readonly CommandSymbol AlterMergeDatabasePolicyEncoding =
             new CommandSymbol("alter-merge database policy encoding", "alter-merge database <database>:DatabaseName policy encoding <string>:EncodingPolicy", PolicyResult);
 
@@ -1492,6 +1495,7 @@ namespace Kusto.Language
                 AlterDatabasePolicyEncoding,
                 AlterTablePolicyEncoding,
                 AlterColumnPolicyEncoding,
+                AlterColumnPolicyEncodingType,
                 AlterMergeDatabasePolicyEncoding,
                 AlterMergeTablePolicyEncoding,
                 AlterMergeColumnPolicyEncoding,
