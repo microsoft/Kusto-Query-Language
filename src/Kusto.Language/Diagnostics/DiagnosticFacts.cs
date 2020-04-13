@@ -19,7 +19,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetUnexpectedCharacter(string text)
         {
-            return new Diagnostic("KUS002", $"Unexpected '{text}'");
+            return new Diagnostic("KUS002", $"Unexpected: '{text}'");
         }
 
         public static Diagnostic GetMalformedToken(string term)
@@ -39,14 +39,13 @@ namespace Kusto.Language
 
         public static Diagnostic GetTokenExpected(IReadOnlyList<SyntaxKind> kinds)
         {
-            var list = kinds.Select(k => k.GetText()).ToList().Join(", ", " or ");
-            return new Diagnostic("KUS005", $"Expected {list}");
+            return GetTokenExpected(kinds.Select(k => k.GetText()));
         }
 
-        public static Diagnostic GetTokenExpected(IReadOnlyList<string> texts)
+        public static Diagnostic GetTokenExpected(IEnumerable<string> texts)
         {
-            var list = texts.Join(", ", " or ");
-            return new Diagnostic("KUS005", $"Expected {list}");
+            var list = texts.Select(t => $"'{t}'").ToArray().Join(", ", " or ");
+            return new Diagnostic("KUS005", $"Expected: {list}");
         }
 
         public static Diagnostic GetTokenExpected(params string[] tokens)

@@ -12,38 +12,59 @@ namespace Kusto.Language
 
     public static class KustoFacts
     {
-        public static readonly IReadOnlyList<string> StorageTypes = new string[]
+        public static readonly IReadOnlyList<string> ParamTypes = new string[]
         {
             "bool",
             "boolean",
-            "int8",
-            "char",
-            "uint8",
-            "byte",
-            "int16",
-            "uint16",
-            "int",
-            "int32",
-            "uint",
-            "uint32",
-            "int64",
-            "long",
-            "uint64",
-            "ulong",
-            "single",
-            "float",
-            "real",
-            "double",
-            "string",
             "date",
             "datetime",
+            "decimal",
+            "double",
+            "dynamic",
+            "guid",
+            "int",
+            "int64",
+            "int8",
+            "long",
+            "real",
+            "string",
             "time",
             "timespan",
-            "guid",
-            "uniqueid",
-            "dynamic",
-            "decimal"
+            "uniqueid"
         };
+
+        public static readonly IReadOnlyList<string> ExtendedParamTypes = new string[]
+        {
+            "bool",
+            "boolean",
+            "date",
+            "datetime",
+            "decimal",
+            "double",
+            "dynamic",
+            "float",
+            "guid",
+            "int",
+            "int16",
+            "int32",
+            "int64",
+            "int8",
+            "long",
+            "real",
+            "decimal",
+            "single",
+            "time",
+            "timespan",
+            "uint",
+            "uint16",
+            "uint32",
+            "uint64",
+            "uint8",
+            "ulong",
+            "uniqueid"
+        };
+
+        public static readonly IReadOnlyList<string> StorageTypes = ExtendedParamTypes;
 
         public static readonly IReadOnlyList<string> ChartTypes = new string[]
         {

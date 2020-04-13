@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Editor
 {
@@ -48,11 +46,14 @@ namespace Kusto.Language.Editor
 
         private void Format(SyntaxNode node)
         {
-            IdentityFormattingRules(node);
+            // identify formatting rules for all nodes and tokens
+            IdentifyFormattingRules(node);
 
+            // write out text by applying the formatting rules
             WriteFormattedText(node, 0);
 
-            // fix up new position if not already done
+            // adjust cursor position if not already chosen,
+            // as it may need to move if it was inside the formatted area.
             if (_newCursorPosition == -1)
             {
                 if (_cursorPosition <= 0)
@@ -257,22 +258,32 @@ namespace Kusto.Language.Editor
 
         private void WriteIndentation(int indentation)
         {
+            while (indentation > s_Spaces.Length)
+            {
+                _builder.Append(s_Spaces);
+                indentation -= s_Spaces.Length;
+            }
+
             _builder.Append(s_Spaces, 0, Math.Min(indentation, s_Spaces.Length));
         }
         #endregion
 
         #region Identifying formatting rules
-        private void IdentityFormattingRules(SyntaxNode node)
+        /// <summary>
+        /// Identify formatting rules for all nodes and tokens.
+        /// </summary>
+        private void IdentifyFormattingRules(SyntaxNode node)
         {
             if (node != null)
             {
-                // visit children first so general token rules get added first
+                // visit children first so token rules (being more general) get added first
+                // and node rules (being more specific) get added later.
                 for (int i = 0; i < node.ChildCount; i++)
                 {
                     var child = node.GetChild(i);
                     if (child is SyntaxNode n)
                     {
-                        IdentityFormattingRules(n);
+                        IdentifyFormattingRules(n);
                     }
                     else if (child is SyntaxToken t)
                     {
@@ -526,6 +537,7 @@ namespace Kusto.Language.Editor
             }
         }
 
+#if false
         private void AddListElementRules<TElement>(SyntaxList<SeparatedElement<TElement>> list, SyntaxToken relativeTo)
             where TElement : SyntaxNode
         {
@@ -537,6 +549,7 @@ namespace Kusto.Language.Editor
                 AddRule(se.Element, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(list, inclusive: true)));
             }
         }
+#endif
 
         private static bool IsIdentifierOrKeyword(SyntaxToken token)
         {
@@ -871,7 +884,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the tokens of the node were originally or will end up on different lines.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool DidOrWillSpanMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
         {
@@ -885,7 +897,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the tokens will end up on different lines.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool WillSpanMultipleLines(SyntaxToken first, SyntaxToken last, bool inclusive = false, SyntaxToken excluded = null)
         {
@@ -916,7 +927,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the tokens of the node will end up on different lines.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool WillSpanMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
         {
@@ -932,7 +942,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the token's trivia will end up with at least one line break.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool WillHaveLineBreak(SyntaxToken token)
         {
@@ -948,7 +957,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the token's trivia definitely will have a line break added.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool WillHaveLineBreakAdded(SyntaxToken token)
         {
@@ -962,7 +970,6 @@ namespace Kusto.Language.Editor
 
         /// <summary>
         /// Returns true if the token's trivia will definitely have its line breaks removed.
-        /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
         private bool WillHaveLineBreakRemoved(SyntaxToken token)
         {

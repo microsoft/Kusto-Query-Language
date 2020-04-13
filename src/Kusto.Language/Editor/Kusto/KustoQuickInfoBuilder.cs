@@ -259,27 +259,25 @@ namespace Kusto.Language.Editor
 
         private string GetDiagnosticInfo(int position, CancellationToken cancellationToken)
         {
-            var dx = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
+            var diagnostics = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
                 .Concat(_service.GetExtendedDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
 
-            StringBuilder builder = null;
+            Diagnostic bestDx = null;
 
-            foreach (var d in dx)
+            foreach (var d in diagnostics)
             {
                 var end = d.End > d.Start ? d.End : d.End + 1;
                 if (position >= d.Start && position < end)
                 {
-                    if (builder == null)
-                        builder = new StringBuilder();
-
-                    if (builder.Length > 0)
-                        builder.AppendLine();
-
-                    builder.Append(d.Message);
+                    // a later matching diagnostic is better if it starts closer to the position
+                    if (bestDx == null || d.Start > bestDx.Start)
+                    {
+                        bestDx = d;
+                    }
                 }
             }
 
-            return builder?.ToString();
+            return bestDx?.Message;
         }
     }
 }

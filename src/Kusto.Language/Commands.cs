@@ -585,17 +585,6 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTablePolicyIngestionTime =
             new CommandSymbol("delete table policy ingestiontime", "delete table <table>:TableName policy ingestiontime");
         #endregion
-        
-        #region RowLevelSecurity
-        public static readonly CommandSymbol ShowTablePolicyRowLevelSecurity =
-            new CommandSymbol("show table policy row_level_security", "show table (<table> | '*'):TableName policy row_level_security", PolicyResult);
-
-        public static readonly CommandSymbol AlterTablePolicyRowLevelSecurity =
-            new CommandSymbol("alter table policy row_level_security", "alter table <table>:TableName policy row_level_security (enable | disable) <string>:Query", PolicyResult);
-
-        public static readonly CommandSymbol DeleteTablePolicyRowLevelSecurity =
-            new CommandSymbol("delete table policy row_level_security", "delete table <table>:TableName policy row_level_security");
-        #endregion
 
         #region Retention
         public static readonly CommandSymbol ShowTablePolicyRetention =
@@ -624,6 +613,17 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol DeleteDatabasePolicyRetention =
             new CommandSymbol("delete database policy retention", "delete database <database>:DatabaseName policy retention");
+        #endregion
+
+        #region RowLevelSecurity
+        public static readonly CommandSymbol ShowTablePolicyRowLevelSecurity =
+            new CommandSymbol("show table policy row_level_security", "show table (<table> | '*'):TableName policy row_level_security", PolicyResult);
+
+        public static readonly CommandSymbol AlterTablePolicyRowLevelSecurity =
+            new CommandSymbol("alter table policy row_level_security", "alter table <table>:TableName policy row_level_security (enable | disable) <string>:Query", PolicyResult);
+
+        public static readonly CommandSymbol DeleteTablePolicyRowLevelSecurity =
+            new CommandSymbol("delete table policy row_level_security", "delete table <table>:TableName policy row_level_security");
         #endregion
 
         #region RowOrder
@@ -657,7 +657,7 @@ namespace Kusto.Language
             new CommandSymbol("delete table policy update", "delete table <database_table>:TableName policy update");
         #endregion
 
-        #region IngestionBatching
+        #region Batch
         public static readonly CommandSymbol ShowDatabasePolicyIngestionBatching =
             new CommandSymbol("show database policy ingestionbatching", "show database <database>:DatabaseName policy ingestionbatching", PolicyResult);
 
@@ -747,6 +747,20 @@ namespace Kusto.Language
             new CommandSymbol("delete table policy merge", "delete table <database_table>:TableName policy merge");
         #endregion
 
+        #region Partitioning
+        public static readonly CommandSymbol ShowTablePolicyPartitioning =
+            new CommandSymbol("show table policy partitioning", "show table <table>:TableName policy partitioning", PolicyResult);
+
+        public static readonly CommandSymbol AlterTablePolicyPartitioning =
+            new CommandSymbol("alter table policy partitioning", "alter table <table>:TableName policy partitioning <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeTablePolicyPartitioning =
+            new CommandSymbol("alter-merge table policy partitioning", "alter-merge table <table>:TableName policy partitioning <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol DeleteTablePolicyPartitioning =
+            new CommandSymbol("delete table policy partitioning", "delete table <table>:TableName policy partitioning", PolicyResult);
+        #endregion
+
         #region RestrictedViewAccess
         public static readonly CommandSymbol ShowTablePolicyRestrictedViewAccess =
             new CommandSymbol("show table policy restricted_view_access", "show table (<database_table> | '*'):TableName policy restricted_view_access", PolicyResult);
@@ -834,6 +848,50 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteClusterPolicyStreamingIngestion =
             new CommandSymbol("delete cluster policy streamingingestion", "delete cluster policy streamingingestion");
 
+        #endregion
+
+        #region Callout
+        public static readonly CommandSymbol ShowClusterPolicyCallout =
+            new CommandSymbol("show cluster policy callout", PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyCallout =
+            new CommandSymbol("alter cluster policy callout", "alter cluster policy callout <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyCallout =
+            new CommandSymbol("alter-merge cluster policy callout", "alter-merge cluster policy callout <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol DeleteClusterPolicyCallout =
+                    new CommandSymbol("delete cluster policy callout", PolicyResult);
+        #endregion
+
+        #region Capacity
+        public static readonly CommandSymbol ShowClusterPolicyCapacity =
+            new CommandSymbol("show cluster policy capacity", PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyCapacity =
+            new CommandSymbol("alter cluster policy capacity", "alter cluster policy capacity <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyCapacity =
+            new CommandSymbol("alter-merge cluster policy capacity", "alter-merge cluster policy capacity <string>:Policy", PolicyResult);
+        #endregion
+
+        #region Query Throttling
+        public static readonly CommandSymbol ShowClusterPolicyQueryThrottling =
+            new CommandSymbol("show cluster policy querythrottling", PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyQueryThrottling =
+            new CommandSymbol("alter cluster policy querythrottling", "alter cluster policy querythrottling <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol DeleteClusterPolicyQueryThrottling =
+            new CommandSymbol("delete cluster policy querythrottling", PolicyResult);
+        #endregion
+
+        #region Query Limit
+        public static readonly CommandSymbol ShowClusterPolicyQueryLimit =
+            new CommandSymbol("show cluster policy querylimit", PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyQueryLimit =
+            new CommandSymbol("alter cluster policy querylimit", "alter cluster policy querylimit <string>:Policy", PolicyResult);
         #endregion
 
         #endregion
@@ -952,7 +1010,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol IngestInlineIntoTable =
             new CommandSymbol("ingest inline into table", $"ingest inline into! table <name>:TableName ('[' <bracketted_input_data>:Data ']' | {PropertyList} '<|'! <input_data>:Data | '<|' <input_data>:Data)",
                 new TableSymbol(
-                    new ColumnSymbol("ExtendId", ScalarTypes.Guid)));
+                    new ColumnSymbol("ExtentId", ScalarTypes.Guid)));
 
         private static readonly TableSymbol DataIngestionSetAppendResult =
             new TableSymbol(
@@ -1258,7 +1316,7 @@ namespace Kusto.Language
         #region Advanced Commands
         private static readonly TableSymbol ShowExtentsResults =
             new TableSymbol(
-                new ColumnSymbol("ExtendId", ScalarTypes.Guid),
+                new ColumnSymbol("ExtentId", ScalarTypes.Guid),
                 new ColumnSymbol("DatabaseName", ScalarTypes.String),
                 new ColumnSymbol("TableName", ScalarTypes.String),
                 new ColumnSymbol("MaxCreatedOn", ScalarTypes.DateTime),
@@ -1513,6 +1571,12 @@ namespace Kusto.Language
                 DeleteDatabasePolicyMerge,
                 DeleteTablePolicyMerge,
 
+                // Partitioning
+                ShowTablePolicyPartitioning,
+                AlterTablePolicyPartitioning,
+                AlterMergeTablePolicyPartitioning,
+                DeleteTablePolicyPartitioning,
+
                 // Restricted View Access
                 ShowTablePolicyRestrictedViewAccess,
                 AlterTablePolicyRestrictedViewAccess,
@@ -1548,6 +1612,26 @@ namespace Kusto.Language
                 DeleteDatabasePolicyStreamingIngestion,
                 DeleteTablePolicyStreamingIngestion,
                 DeleteClusterPolicyStreamingIngestion,
+
+                // Callout
+                ShowClusterPolicyCallout,
+                AlterClusterPolicyCallout,
+                AlterMergeClusterPolicyCallout,
+                DeleteClusterPolicyCallout,
+
+                // Capacity
+                ShowClusterPolicyCapacity,
+                AlterClusterPolicyCapacity,
+                AlterMergeClusterPolicyCapacity,
+
+                // Query Throttling
+                ShowClusterPolicyQueryThrottling,
+                AlterClusterPolicyQueryThrottling,
+                DeleteClusterPolicyQueryThrottling,
+
+                // Query Limit
+                ShowClusterPolicyQueryLimit,
+                AlterClusterPolicyQueryLimit,
                 #endregion
 
                 #region Security Role Commands

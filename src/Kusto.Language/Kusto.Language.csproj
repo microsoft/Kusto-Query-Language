@@ -15,8 +15,6 @@
     <AssemblyName>Kusto.Language</AssemblyName>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
-    <MinimalPlatformTarget Condition=" '$(MinimalPlatformTarget)' == '' ">4.6.2</MinimalPlatformTarget>
-    <TargetFrameworkVersion>$(MinimalPlatformTarget)</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' and '$(KustoProps)' != 'true'">
     <DebugSymbols>true</DebugSymbols>
