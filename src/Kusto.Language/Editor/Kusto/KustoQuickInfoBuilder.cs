@@ -37,7 +37,7 @@ namespace Kusto.Language.Editor
                 {
                     if (diagnosticInfo != null)
                     {
-                        return new QuickInfo($"{symbolInfo}\n\n{diagnosticInfo}");
+                        return new QuickInfo(symbolInfo, diagnosticInfo);
                     }
                     else
                     {
@@ -53,7 +53,7 @@ namespace Kusto.Language.Editor
             return QuickInfo.Empty;
         }
 
-        private string GetSymbolInfo(int position)
+        private QuickInfoItem GetSymbolInfo(int position)
         {
             var token = _code.Syntax.GetTokenAt(position);
             if (token != null)
@@ -81,7 +81,8 @@ namespace Kusto.Language.Editor
                             }
                             else if (expr.ResultType != null && expr.ResultType.IsScalar)
                             {
-                                return $"(literal) {expr.ResultType.Display}";
+                                //return $"(literal) {expr.ResultType.Display}";
+                                return new QuickInfoItem(QuickInfoKinds.Literal, expr.ResultType.Display);
                             }
                         }
 
@@ -97,27 +98,20 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        private string GetSymbolInfo(Symbol symbol, TypeSymbol type)
+        private QuickInfoItem GetSymbolInfo(Symbol symbol, TypeSymbol type)
         {
             if (type == ScalarTypes.Type)
             {
-                return $"(type) {symbol.Display}";
+                return new QuickInfoItem(QuickInfoKinds.Type, symbol.Display);
             }
 
             switch (symbol)
             {
                 case ColumnSymbol c:
-                    if (c.Type != ScalarTypes.Unknown)
-                    {
-                        return $"(column) {c.Name}: {c.Type.Display}";
-                    }
-                    else
-                    {
-                        return $"(column) {c.Name}";
-                    }
+                    return GetItem(QuickInfoKinds.Column, c.Name, c.Type);
 
                 case TableSymbol t:
-                    return $"(table) {t.Name}: {t.Display}";
+                    return GetItem(QuickInfoKinds.Table, t.Name, t);
 
                 case VariableSymbol v:
                     if (v.Type is FunctionSymbol
@@ -128,68 +122,74 @@ namespace Kusto.Language.Editor
                     }
                     else 
                     {
-                        var kind = (v.Type is ScalarSymbol ? "(scalar)" : "(variable)");
-                        if (v.Type != ScalarTypes.Unknown)
-                        {
-                            return $"{kind} {v.Name}: {v.Type.Display}";
-                        }
-                        else
-                        {
-                            return $"{kind} {v.Name}";
-                        }
+                        var kind = (v.Type is ScalarSymbol) ? QuickInfoKinds.Scalar : QuickInfoKinds.Variable;
+                        return GetItem(kind, v.Name, v.Type);
                     }
 
                 case FunctionSymbol f:
-                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
-                    {
-                        return $"(function) {f.GetDisplay(verbose: true)}: {type.Display}";
-                    }
-                    else
-                    {
-                        return $"(function) {f.GetDisplay(verbose: true)}";
-                    }
+                    var fkind = _code.Globals.IsBuiltInFunction(f) ? QuickInfoKinds.BuiltInFunction
+                              : _code.Globals.IsDatabaseFunction(f) ? QuickInfoKinds.DatabaseFunction
+                              : QuickInfoKinds.LocalFunction;
+
+                    return GetItem(fkind, f.Display, type);
 
                 case OperatorSymbol o:
-                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
-                    {
-                        return $"(operator) {o.Name}: {type.Display}";
-                    }
-                    else
-                    {
-                        return $"(operator) {o.Name}";
-                    }
+                    return GetItem(QuickInfoKinds.Operator, o.Name, type);
 
                 case PatternSymbol p:
-                    if (type != null && !type.IsError && type != ScalarTypes.Unknown)
-                    {
-                        return $"(pattern) {p.Display}: {type.Display}";
-                    }
-                    else
-                    {
-                        return $"(pattern) {p.Display}";
-                    }
+                    return GetItem(QuickInfoKinds.Pattern, p.Name, type);
 
                 case DatabaseSymbol d:
-                    return $"(database) {d.Name}";
+                    return GetItem(QuickInfoKinds.Database, d.Name, null);
 
                 case ClusterSymbol c:
-                    return $"(cluster) {c.Name}";
+                    return GetItem(QuickInfoKinds.Cluster, c.Name, null);
 
                 case ParameterSymbol p:
-                    return $"(parameter) {p.Display}";
+                    return GetItem(QuickInfoKinds.Parameter, p.Name, p.Type);
 
                 case TupleSymbol t:
-                    return $"(tuple) {t.Display}";
+                    return GetItem(QuickInfoKinds.Tuple, t.Name, t);
 
                 case GroupSymbol g:
-                    return string.Join("\n", g.Members.Select(m => GetSymbolInfo(m, null)));
+                    var gtext = string.Join("\n", g.Members.Select(m => GetSymbolInfo(m, null).Text));
+                    return new QuickInfoItem(QuickInfoKinds.Group, gtext);
 
                 default:
                     return null;
             }
         }
 
-        private string GetSyntaxInfo(int position)
+        private static QuickInfoItem GetItem(string kind, string name, TypeSymbol type)
+        {
+            var typeDisplay = GetTypeDisplay(type);
+            if (typeDisplay != null)
+            {
+                return new QuickInfoItem(kind, $"{name}: {typeDisplay}");
+            }
+            else
+            {
+                return new QuickInfoItem(kind, name);
+            }
+        }
+
+        private static string GetTypeDisplay(TypeSymbol type)
+        {
+            if (type == null || type == ScalarTypes.Unknown || type.IsError)
+            {
+                return null;
+            }
+            else if (type.IsTabular)
+            {
+                return "table";
+            }
+            else
+            {
+                return type.Display;
+            }
+        }
+
+        private QuickInfoItem GetSyntaxInfo(int position)
         {
 #if false
             var token = _code.Syntax.GetTokenAt(position);
@@ -257,7 +257,7 @@ namespace Kusto.Language.Editor
             return offset >= 0 ? offset : 0;
         }
 
-        private string GetDiagnosticInfo(int position, CancellationToken cancellationToken)
+        private QuickInfoItem GetDiagnosticInfo(int position, CancellationToken cancellationToken)
         {
             var diagnostics = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
                 .Concat(_service.GetExtendedDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
@@ -277,7 +277,27 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            return bestDx?.Message;
+            if (bestDx != null)
+            {
+                return new QuickInfoItem(GetQuickInfoKind(bestDx.Severity), bestDx.Message);
+            }
+
+            return null;
+        }
+
+        private static string GetQuickInfoKind(string severity)
+        {
+            switch (severity)
+            {
+                case DiagnosticSeverity.Error:
+                    return QuickInfoKinds.Error;
+                case DiagnosticSeverity.Warning:
+                    return QuickInfoKinds.Warning;
+                case DiagnosticSeverity.Suggestion:
+                    return QuickInfoKinds.Suggestion;
+                default:
+                    return QuickInfoKinds.Text;
+            }
         }
     }
 }
