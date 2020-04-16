@@ -1,12 +1,13 @@
-﻿using Kusto.Language.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Editor
 {
+    using Utils;
+
     public class QuickInfo
     {
         private string _text;
@@ -16,7 +17,7 @@ namespace Kusto.Language.Editor
         public QuickInfo(string text)
         {
             this._text = text;
-            this.Items = new[] { new QuickInfoItem(QuickInfoKinds.Text, text) };
+            this.Items = new[] { new QuickInfoItem(QuickInfoKind.Text, text) };
         }
 
         public QuickInfo(params QuickInfoItem[] items)
@@ -63,58 +64,193 @@ namespace Kusto.Language.Editor
             return sb.ToString();
         }
 
-        private static string GetKindText(string kind)
+        private static string GetKindText(QuickInfoKind kind)
         {
             switch (kind)
             {
-                case QuickInfoKinds.Text:
-                    return null;
-                case QuickInfoKinds.BuiltInFunction:
-                case QuickInfoKinds.DatabaseFunction:
-                case QuickInfoKinds.LocalFunction:
-                    return "function";
+                case QuickInfoKind.Text:
                 default:
-                    return kind.ToLower();
+                    return null;
+                case QuickInfoKind.Table:
+                    return "table";
+                case QuickInfoKind.Database:
+                    return "database";
+                case QuickInfoKind.Cluster:
+                    return "cluster";
+                case QuickInfoKind.Literal:
+                    return "literal";
+                case QuickInfoKind.Type:
+                    return "type";
+                case QuickInfoKind.Pattern:
+                    return "pattern";
+                case QuickInfoKind.Parameter:
+                    return "parameter";
+                case QuickInfoKind.Scalar:
+                    return "scalar";
+                case QuickInfoKind.Variable:
+                    return "variable";
+                case QuickInfoKind.LocalFunction:
+                case QuickInfoKind.BuiltInFunction:
+                case QuickInfoKind.DatabaseFunction:
+                    return "function";
+                case QuickInfoKind.Operator:
+                    return "operator";
             }
-        }
-   
+        }  
 
-        public static QuickInfo Empty = new QuickInfo(string.Empty);
+        public static QuickInfo Empty = new QuickInfo((IEnumerable<QuickInfoItem>)null);
     }
 
     public class QuickInfoItem
     {
-        public string Kind { get; }
+        public QuickInfoKind Kind { get; }
+        public IReadOnlyCollection<ClassifiedText> Parts { get; }
+
+        public QuickInfoItem(QuickInfoKind kind, string text)
+            : this(kind, new ClassifiedText(text))
+        {
+        }
+
+        public QuickInfoItem(QuickInfoKind kind, params ClassifiedText[] parts)
+            : this(kind, (IEnumerable<ClassifiedText>)parts)
+        {
+        }
+
+        public QuickInfoItem(QuickInfoKind kind, IEnumerable<ClassifiedText> parts)
+        {
+            this.Kind = kind;
+            this.Parts = parts.ToReadOnly();
+        }
+
+        private string _text;
+        public string Text
+        {
+            get
+            {
+                if (_text == null)
+                {
+                    _text = string.Concat(this.Parts.Select(s => s.Text));
+                }
+
+                return _text;
+            }
+        }
+    }
+
+    public enum QuickInfoKind
+    {
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is general text.
+        /// </summary>
+        Text,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is an error diagnostic.
+        /// </summary>
+        Error,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a warning diagnostic.
+        /// </summary>
+        Warning,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a suggestion diagnostic.
+        /// </summary>
+        Suggestion,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a column name reference.
+        /// </summary>
+        Column,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a table name reference.
+        /// </summary>
+        Table,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a database name reference.
+        /// </summary>
+        Database,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a cluster name reference.
+        /// </summary>
+        Cluster,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a literal value.
+        /// </summary>
+        Literal,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a scalar type name.
+        /// </summary>
+        Type,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a pattern name reference.
+        /// </summary>
+        Pattern,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a parameter name reference.
+        /// </summary>
+        Parameter,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a scalar variable name reference.
+        /// </summary>
+        Scalar,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a variable name reference.
+        /// </summary>
+        Variable,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a local function name reference.
+        /// </summary>
+        LocalFunction,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a built in function name reference.
+        /// </summary>
+        BuiltInFunction,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a database function name reference.
+        /// </summary>
+        DatabaseFunction,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a scalar operator reference.
+        /// </summary>
+        Operator,
+    }
+
+    public class ClassifiedText
+    {
+        /// <summary>
+        /// The <see cref="ClassificationKind"/> of the text.
+        /// </summary>
+        public ClassificationKind Kind { get; }
+
+        /// <summary>
+        /// The text itself.
+        /// </summary>
         public string Text { get; }
 
-        public QuickInfoItem(string kind, string text)
+        public ClassifiedText(string text)
+            : this(ClassificationKind.PlainText, text)
+        {
+        }
+
+        public ClassifiedText(ClassificationKind kind, string text)
         {
             this.Kind = kind;
             this.Text = text;
         }
-    }
-
-    public class QuickInfoKinds
-    {
-        public const string Text = nameof(Text);
-        public const string Error = nameof(Error);
-        public const string Warning = nameof(Warning);
-        public const string Suggestion = nameof(Suggestion);
-        public const string Column = nameof(Column);
-        public const string Table = nameof(Table);
-        public const string Database = nameof(Database);
-        public const string Cluster = nameof(Cluster);
-        public const string Literal = nameof(Literal);
-        public const string Type = nameof(Type);
-        public const string Pattern = nameof(Pattern);
-        public const string Parameter = nameof(Parameter);
-        public const string Scalar = nameof(Scalar);
-        public const string Variable = nameof(Variable);
-        public const string LocalFunction = nameof(LocalFunction);
-        public const string BuiltInFunction = nameof(BuiltInFunction);
-        public const string DatabaseFunction = nameof(DatabaseFunction);
-        public const string Operator = nameof(Operator);
-        public const string Tuple = nameof(Tuple);
-        public const string Group = nameof(Group);
     }
 }

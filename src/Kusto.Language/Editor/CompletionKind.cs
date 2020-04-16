@@ -125,5 +125,10 @@ namespace Kusto.Language.Editor
         /// The name of a materialized view
         /// </summary>
         MaterialiedView,
+
+        /// <summary>
+        /// The name of a scalar type
+        /// </summary>
+        ScalarType,
     }
 }

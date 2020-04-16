@@ -116,6 +116,16 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The text is a materialized view entity
         /// </summary>
-        MaterializedView
+        MaterializedView,
+
+        /// <summary>
+        /// A member of a table/tuple schema declaration
+        /// </summary>
+        SchemaMember,
+    
+        /// <summary>
+        /// A member of a function signature declaration
+        /// </summary>
+        SignatureParameter,
     }
 }

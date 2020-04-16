@@ -1167,14 +1167,20 @@ namespace Kusto.Language
             new CommandSymbol("show operations",
                 "show operations [(<guid>:OperationId | '(' { <guid>:OperationId, ',' }+ ')')]",
                 new TableSymbol(
-                    new ColumnSymbol("Id", ScalarTypes.String),
+                    new ColumnSymbol("OperationId", ScalarTypes.Guid),
                     new ColumnSymbol("Operation", ScalarTypes.String),
                     new ColumnSymbol("NodeId", ScalarTypes.String),
                     new ColumnSymbol("StartedOn", ScalarTypes.DateTime),
                     new ColumnSymbol("LastUpdatedOn", ScalarTypes.DateTime),
-                    new ColumnSymbol("Duration", ScalarTypes.DateTime),
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan),
                     new ColumnSymbol("State", ScalarTypes.String),
-                    new ColumnSymbol("Status", ScalarTypes.String)));
+                    new ColumnSymbol("Status", ScalarTypes.String),
+                    new ColumnSymbol("RootActivityId", ScalarTypes.Guid),
+                    new ColumnSymbol("ShouldRetry", ScalarTypes.Bool),
+                    new ColumnSymbol("Database", ScalarTypes.String),
+                    new ColumnSymbol("Principal", ScalarTypes.String),
+                    new ColumnSymbol("User", ScalarTypes.String),
+                    new ColumnSymbol("AdminEpochStartTime", ScalarTypes.DateTime)));
 
         public static readonly CommandSymbol ShowOperationDetails =
             new CommandSymbol("show operation details",
@@ -1193,7 +1199,11 @@ namespace Kusto.Language
                 new ColumnSymbol("OriginalEntityState", ScalarTypes.String),
                 new ColumnSymbol("UpdatedEntityState", ScalarTypes.String),
                 new ColumnSymbol("ChangeCommand", ScalarTypes.String),
-                new ColumnSymbol("Principal", ScalarTypes.String));
+                new ColumnSymbol("Principal", ScalarTypes.String),
+                new ColumnSymbol("RootActivityId", ScalarTypes.Guid),
+                new ColumnSymbol("ClientRequestId", ScalarTypes.String),
+                new ColumnSymbol("User", ScalarTypes.String),
+                new ColumnSymbol("OriginalEntityVersion", ScalarTypes.String));
 
         public static readonly CommandSymbol ShowJournal =
             new CommandSymbol("show journal", JournalResult);
@@ -1272,7 +1282,17 @@ namespace Kusto.Language
                     new ColumnSymbol("Text", ScalarTypes.String),
                     new ColumnSymbol("Database", ScalarTypes.String),
                     new ColumnSymbol("StartedOn", ScalarTypes.DateTime),
-                    new ColumnSymbol("LastUpdatedOn", ScalarTypes.DateTime)));
+                    new ColumnSymbol("LastUpdatedOn", ScalarTypes.DateTime),
+                    new ColumnSymbol("Duration", ScalarTypes.TimeSpan),
+                    new ColumnSymbol("State", ScalarTypes.String),
+                    new ColumnSymbol("RootActivityId", ScalarTypes.Guid),
+                    new ColumnSymbol("User", ScalarTypes.String),
+                    new ColumnSymbol("FailureReason", ScalarTypes.String),
+                    new ColumnSymbol("Application", ScalarTypes.String),
+                    new ColumnSymbol("Principal", ScalarTypes.String),
+                    new ColumnSymbol("TotalCpu", ScalarTypes.TimeSpan),
+                    new ColumnSymbol("ResourcesUtilization", ScalarTypes.Dynamic),
+                    new ColumnSymbol("ClientRequestProperties", ScalarTypes.Dynamic)));
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
             new CommandSymbol("show commands-and-queries", "show commands-and-queries",

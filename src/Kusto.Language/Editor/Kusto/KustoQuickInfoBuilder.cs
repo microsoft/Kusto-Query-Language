@@ -56,7 +56,7 @@ namespace Kusto.Language.Editor
         private QuickInfoItem GetSymbolInfo(int position)
         {
             var token = _code.Syntax.GetTokenAt(position);
-            if (token != null)
+            if (token != null && position >= token.TextStart)
             {
                 if (token.Parent is SyntaxNode node)
                 {
@@ -64,11 +64,7 @@ namespace Kusto.Language.Editor
 
                     if (node.ReferencedSymbol != null && expr != node)
                     {
-                        var info = GetSymbolInfo(node.ReferencedSymbol, null);
-                        if (info != null)
-                        {
-                            return info;
-                        }
+                        return GetSymbolInfo(node.ReferencedSymbol, null);
                     }
                     else if (expr != null)
                     {
@@ -81,16 +77,11 @@ namespace Kusto.Language.Editor
                             }
                             else if (expr.ResultType != null && expr.ResultType.IsScalar)
                             {
-                                //return $"(literal) {expr.ResultType.Display}";
-                                return new QuickInfoItem(QuickInfoKinds.Literal, expr.ResultType.Display);
+                                return GetSymbolInfo(expr.ResultType, expr.ResultType, QuickInfoKind.Literal);
                             }
                         }
 
-                        var info = GetSymbolInfo(expr.ReferencedSymbol, expr.ResultType);
-                        if (info != null)
-                        {
-                            return info;
-                        }
+                        return GetSymbolInfo(expr.ReferencedSymbol, expr.ResultType);
                     }
                 }
             }
@@ -98,94 +89,71 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        private QuickInfoItem GetSymbolInfo(Symbol symbol, TypeSymbol type)
+        private QuickInfoItem GetSymbolInfo(Symbol symbol, TypeSymbol type, QuickInfoKind? itemKind = null)
         {
-            if (type == ScalarTypes.Type)
+            if (symbol != null)
             {
-                return new QuickInfoItem(QuickInfoKinds.Type, symbol.Display);
-            }
+                var texts = new List<ClassifiedText>();
+                SymbolDisplay.GetSymbolDisplay(symbol, type, texts);
 
-            switch (symbol)
-            {
-                case ColumnSymbol c:
-                    return GetItem(QuickInfoKinds.Column, c.Name, c.Type);
+                if (itemKind == null)
+                    itemKind = GetItemKind(symbol);
 
-                case TableSymbol t:
-                    return GetItem(QuickInfoKinds.Table, t.Name, t);
-
-                case VariableSymbol v:
-                    if (v.Type is FunctionSymbol
-                        || v.Type is PatternSymbol
-                        || v.Type is TableSymbol)
-                    {
-                        return GetSymbolInfo(v.Type, type);
-                    }
-                    else 
-                    {
-                        var kind = (v.Type is ScalarSymbol) ? QuickInfoKinds.Scalar : QuickInfoKinds.Variable;
-                        return GetItem(kind, v.Name, v.Type);
-                    }
-
-                case FunctionSymbol f:
-                    var fkind = _code.Globals.IsBuiltInFunction(f) ? QuickInfoKinds.BuiltInFunction
-                              : _code.Globals.IsDatabaseFunction(f) ? QuickInfoKinds.DatabaseFunction
-                              : QuickInfoKinds.LocalFunction;
-
-                    return GetItem(fkind, f.Display, type);
-
-                case OperatorSymbol o:
-                    return GetItem(QuickInfoKinds.Operator, o.Name, type);
-
-                case PatternSymbol p:
-                    return GetItem(QuickInfoKinds.Pattern, p.Name, type);
-
-                case DatabaseSymbol d:
-                    return GetItem(QuickInfoKinds.Database, d.Name, null);
-
-                case ClusterSymbol c:
-                    return GetItem(QuickInfoKinds.Cluster, c.Name, null);
-
-                case ParameterSymbol p:
-                    return GetItem(QuickInfoKinds.Parameter, p.Name, p.Type);
-
-                case TupleSymbol t:
-                    return GetItem(QuickInfoKinds.Tuple, t.Name, t);
-
-                case GroupSymbol g:
-                    var gtext = string.Join("\n", g.Members.Select(m => GetSymbolInfo(m, null).Text));
-                    return new QuickInfoItem(QuickInfoKinds.Group, gtext);
-
-                default:
-                    return null;
-            }
-        }
-
-        private static QuickInfoItem GetItem(string kind, string name, TypeSymbol type)
-        {
-            var typeDisplay = GetTypeDisplay(type);
-            if (typeDisplay != null)
-            {
-                return new QuickInfoItem(kind, $"{name}: {typeDisplay}");
+                return new QuickInfoItem(itemKind.Value, texts);
             }
             else
-            {
-                return new QuickInfoItem(kind, name);
-            }
-        }
-
-        private static string GetTypeDisplay(TypeSymbol type)
-        {
-            if (type == null || type == ScalarTypes.Unknown || type.IsError)
             {
                 return null;
             }
-            else if (type.IsTabular)
+        }
+
+        private QuickInfoKind GetItemKind(Symbol symbol)
+        {
+            switch (symbol)
             {
-                return "table";
-            }
-            else
-            {
-                return type.Display;
+                case ClusterSymbol _:
+                    return QuickInfoKind.Cluster;
+                case ColumnSymbol _:
+                    return QuickInfoKind.Column;
+                case DatabaseSymbol _:
+                    return QuickInfoKind.Database;
+                case FunctionSymbol f:
+                    if (_code.Globals.IsBuiltInFunction(f))
+                    {
+                        return QuickInfoKind.BuiltInFunction;
+                    }
+                    else if (_code.Globals.IsDatabaseFunction(f))
+                    {
+                        return QuickInfoKind.DatabaseFunction;
+                    }
+                    else
+                    {
+                        return QuickInfoKind.LocalFunction;
+                    }
+                case OperatorSymbol _:
+                    return QuickInfoKind.Operator;
+                case ParameterSymbol _:
+                    return QuickInfoKind.Parameter;
+                case PatternSymbol _:
+                    return QuickInfoKind.Pattern;
+                case TableSymbol _:
+                    return QuickInfoKind.Table;
+                case VariableSymbol v:
+                    if (v.Type is FunctionSymbol
+                        || v.Type is PatternSymbol
+                        || v.Type is TableSymbol
+                        || v.Type is ScalarSymbol)
+                    {
+                        return GetItemKind(v.Type);
+                    }
+                    else
+                    {
+                        return QuickInfoKind.Variable;
+                    }
+                case ScalarSymbol s:
+                    return QuickInfoKind.Type;
+                default:
+                    return QuickInfoKind.Text;
             }
         }
 
@@ -285,18 +253,208 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        private static string GetQuickInfoKind(string severity)
+        private static QuickInfoKind GetQuickInfoKind(string severity)
         {
             switch (severity)
             {
                 case DiagnosticSeverity.Error:
-                    return QuickInfoKinds.Error;
+                    return QuickInfoKind.Error;
                 case DiagnosticSeverity.Warning:
-                    return QuickInfoKinds.Warning;
+                    return QuickInfoKind.Warning;
                 case DiagnosticSeverity.Suggestion:
-                    return QuickInfoKinds.Suggestion;
+                    return QuickInfoKind.Suggestion;
                 default:
-                    return QuickInfoKinds.Text;
+                    return QuickInfoKind.Text;
+            }
+        }
+    }
+
+    public static class SymbolDisplay
+    {
+        public static void GetSymbolDisplay(Symbol symbol, TypeSymbol type, List<ClassifiedText> texts)
+        {
+            if (symbol is GroupSymbol gs)
+            {
+                for (int i = 0; i < gs.Members.Count; i++)
+                {
+                    var subsym = gs.Members[i];
+                    if (i > 0)
+                        texts.Add(new ClassifiedText("\n"));
+                    // TODO: get the correct types for the sub symbols
+                    GetSymbolDisplay(subsym, null, texts);
+                }
+            }
+            else if (symbol is ScalarSymbol)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Identifier, symbol.Name));
+            }
+            else if (symbol is VariableSymbol v
+                && (v.Type is FunctionSymbol || v.Type is PatternSymbol))
+            {
+                GetSymbolDisplay(v.Type, type, texts);
+            }
+            else if (symbol != null)
+            {
+                var nameKind = GetNameClassificationKind(symbol);
+                texts.Add(new ClassifiedText(nameKind, symbol.Name));
+
+                if (symbol is FunctionSymbol fs)
+                {
+                    // TODO: have this use the correct signature?
+                    GetSignatureDisplay(fs.Signatures[0], texts);
+                }
+
+                if (type == null && symbol is VariableSymbol vs)
+                {
+                    type = vs.Type;
+                }
+
+                if (type != null && type != ScalarTypes.Unknown && !type.IsError)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ": "));
+                    GetTypeDisplay(type, texts);
+                }
+            }
+        }
+
+        private static ClassificationKind GetNameClassificationKind(Symbol symbol)
+        {
+            switch (symbol)
+            {
+                case ColumnSymbol _:
+                    return ClassificationKind.Column;
+                case DatabaseSymbol _:
+                    return ClassificationKind.Database;
+                case FunctionSymbol _:
+                    return ClassificationKind.Function;
+                case OperatorSymbol _:
+                    return ClassificationKind.MathOperator;
+                case ParameterSymbol _:
+                    return ClassificationKind.Parameter;
+                case PatternSymbol _:
+                    return ClassificationKind.Function; // TODO: need separate classification
+                case TableSymbol _:
+                    return ClassificationKind.Table;
+                case VariableSymbol _:
+                    return ClassificationKind.Variable;
+                case ScalarSymbol s:
+                    if (s == ScalarTypes.String)
+                    {
+                        return ClassificationKind.StringLiteral;
+                    }
+                    else
+                    {
+                        return ClassificationKind.Literal;
+                    }
+                default:
+                    return ClassificationKind.PlainText;
+            }
+        }
+
+        public static void GetSignatureDisplay(Signature sig, List<ClassifiedText> texts)
+        {
+            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "("));
+
+            for (int i = 0; i < sig.Parameters.Count; i++)
+            {
+                if (i > 0)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                }
+
+                var p = sig.Parameters[i];
+
+                if (p.IsOptional)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "["));
+                    texts.Add(new ClassifiedText(ClassificationKind.SignatureParameter, p.Name));
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "]"));
+                }
+                else
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.SignatureParameter, p.Name));
+                }
+            }
+
+            if (sig.HasRepeatableParameters)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+            }
+
+            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ")"));
+        }
+
+        private static readonly int MaxColumns = 7;
+
+        public static void GetTypeDisplay(TypeSymbol type, List<ClassifiedText> texts, bool useName = false)
+        {
+            if (type is TableSymbol ts)
+            {
+                if (useName && !string.IsNullOrEmpty(ts.Name))
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Table, ts.Name));
+                }
+                else
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "("));
+
+                    var maxCol = Math.Min(MaxColumns, ts.Columns.Count);
+                    for (int i = 0; i < maxCol; i++)
+                    {
+                        if (i > 0)
+                        {
+                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                        }
+
+                        var col = ts.Columns[i];
+                        texts.Add(new ClassifiedText(ClassificationKind.SchemaMember, col.Name));
+                    }
+
+                    if (maxCol < ts.Columns.Count)
+                    {
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+                    }
+
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ")"));
+                }
+            }
+            else if (type is TupleSymbol tus)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
+
+                var maxCol = Math.Min(MaxColumns, tus.Columns.Count);
+                for (int i = 0; i < maxCol; i++)
+                {
+                    if (i > 0)
+                    {
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                    }
+
+                    var col = tus.Columns[i];
+                    texts.Add(new ClassifiedText(ClassificationKind.Column, col.Name));
+                }
+
+                if (maxCol < tus.Columns.Count)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+                }
+
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
+            }
+            else if (type is ClusterSymbol cs)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Type, $"cluster('{cs.Name}')"));
+            }
+            else if (type is DatabaseSymbol db)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Type, $"database('{db.Name}')"));
+            }
+            else if (type != null)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Type, type.Display));
             }
         }
     }
