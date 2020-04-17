@@ -38,8 +38,16 @@ namespace Kusto.Language.Binding
 
             public override void VisitStarExpression(StarExpression node)
             {
-                // use dynamic type as union of all column types
-                _binder.SetSemanticInfo(node, new SemanticInfo(ScalarTypes.Dynamic));
+                if (node.Parent is BinaryExpression b)
+                {
+                    // use dynamic type as union of all column types
+                    _binder.SetSemanticInfo(node, new SemanticInfo(ScalarTypes.Dynamic));
+                }
+                else
+                {
+                    // stand alone asterisk equiv to 'true'
+                    _binder.SetSemanticInfo(node, new SemanticInfo(ScalarTypes.Bool));
+                }
             }
 
             public override void VisitLiteralExpression(LiteralExpression node)
