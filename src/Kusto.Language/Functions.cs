@@ -486,15 +486,16 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        #region IPv4 functions
         public static readonly FunctionSymbol ParseIPV4 =
             new FunctionSymbol("parse_ipv4", ScalarTypes.Long,
-                new Parameter("ipvb", ScalarTypes.String))
+                new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseIPV4Mask =
             new FunctionSymbol("parse_ipv4_mask", ScalarTypes.Long,
-                new Parameter("ipvb", ScalarTypes.String),
+                new Parameter("ip", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long))
             .Hide()
             .WithResultNameKind(ResultNameKind.None)
@@ -515,6 +516,43 @@ namespace Kusto.Language
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+        #endregion
+
+        #region IPv6 functions
+        public static readonly FunctionSymbol ParseIPV6 =
+            new FunctionSymbol("parse_ipv6", ScalarTypes.String,
+                new Parameter("ip", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: unhide post service deployment supporting these functions.
+
+        public static readonly FunctionSymbol ParseIPV6Mask =
+            new FunctionSymbol("parse_ipv6_mask", ScalarTypes.String,
+                new Parameter("ip", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long))
+            .Hide()
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: unhide post service deployment supporting these functions.
+
+        public static readonly FunctionSymbol Ipv6Compare =
+            new FunctionSymbol("ipv6_compare", ScalarTypes.Long,
+                new Parameter("ip1", ScalarTypes.String),
+                new Parameter("ip2", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: unhide post service deployment supporting these functions.
+
+        public static readonly FunctionSymbol Ipv6IsMatch =
+            new FunctionSymbol("ipv6_is_match", ScalarTypes.Bool,
+                new Parameter("ip1", ScalarTypes.String),
+                new Parameter("ip2", ScalarTypes.String),
+                new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: unhide post service deployment supporting these functions.
+        #endregion
 
         public static readonly FunctionSymbol ParsePath =
             new FunctionSymbol("parse_path", ScalarTypes.Dynamic,
@@ -2067,6 +2105,8 @@ namespace Kusto.Language
             ParseUrlQuery,
             ParseIPV4,
             ParseIPV4Mask,
+            ParseIPV6,
+            ParseIPV6Mask,
             ParsePath,
             ParseUserAgent,
             ParseVersion,
@@ -2279,9 +2319,11 @@ namespace Kusto.Language
             S2CellToCentralPoint,
             #endregion
 
-            #region ipv4 functions
+            #region ip-matching functions
             Ipv4Compare,
             Ipv4IsMatch,
+            Ipv6Compare,
+            Ipv6IsMatch,
             #endregion
 
             #region other
