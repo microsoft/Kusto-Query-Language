@@ -356,7 +356,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Doc = "The open parenthesis token.", Completion="Syntax"},
-            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Doc = "The list of expressions."},
+            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Doc = "The list of expressions.", Completion="Scalar"},
             new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Doc = "The close parenthesis token.", Completion="Syntax"}
         }
     },
@@ -415,7 +415,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "Left", Type = "Expression", Doc = "The left side expression."},
             new GeneratedProperty { Name = "Operator", Type = "SyntaxToken", Doc = "The in or !in keyword.", Completion="Syntax"},
-            new GeneratedProperty { Name = "Right", Type = "ExpressionList", Doc = "The list of expressions."}
+            new GeneratedProperty { Name = "Right", Type = "ExpressionList", Doc = "The list of expressions.", Completion="Syntax"}
         }
     },
 
@@ -429,7 +429,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "Left", Type = "Expression", Doc = "The left side expression."},
             new GeneratedProperty { Name = "Operator", Type = "SyntaxToken", Doc = "The has_any keyword.", Completion="Syntax"},
-            new GeneratedProperty { Name = "Right", Type = "ExpressionList", Doc = "The list of expressions."}
+            new GeneratedProperty { Name = "Right", Type = "ExpressionList", Doc = "The list of expressions.", Completion="Syntax"}
         }
     },
 
@@ -1185,7 +1185,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "InKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "RangeKeyword", Type = "SyntaxToken", Completion="Keyword" },
-            new GeneratedProperty { Name = "Arguments", Type = "ExpressionList", Completion="Scalar" }
+            new GeneratedProperty { Name = "Arguments", Type = "ExpressionList", Completion="Syntax" }
         }
     },
 

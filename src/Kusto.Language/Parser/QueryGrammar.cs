@@ -1417,13 +1417,15 @@ namespace Kusto.Language.Parsing
 
             var MakeSeriesInRangeClause =
                 Rule(
-                    RequiredToken(SyntaxKind.InKeyword),
-                    RequiredToken(SyntaxKind.RangeKeyword),
+                    RequiredToken(SyntaxKind.InKeyword, 
+                        new CompletionItem(CompletionKind.Keyword, "in range (start, stop, step)", "in range (", ")", "in")),
+                    RequiredToken(SyntaxKind.RangeKeyword, 
+                        new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     CommaList(NamedExpression, MissingExpressionNode),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (inKeyword, rangeKeyword, openParen, list, closeParen) =>
-                        (MakeSeriesRangeClause)new MakeSeriesInRangeClause(inKeyword, rangeKeyword, new ExpressionList(openParen, list, closeParen)));
+                        (MakeSeriesRangeClause)new MakeSeriesInRangeClause(inKeyword, rangeKeyword, new ExpressionList(openParen, list, closeParen))); ;
 
             var MakeSeriesFromClause =
                 Rule(
@@ -1441,18 +1443,19 @@ namespace Kusto.Language.Parsing
 
             var MakeSeriesStepClause =
               Rule(
-                  Token(SyntaxKind.StepKeyword),
+                  RequiredToken(SyntaxKind.StepKeyword),
                   Required(UnnamedExpression, MissingExpression),
                   (stepToken, stepEx) =>
                       new MakeSeriesStepClause(stepToken, stepEx));
 
             var MakeSeriesFromToStepClause =
-                Rule(
-                    Optional(MakeSeriesFromClause),
-                    Optional(MakeSeriesToClause),
-                    MakeSeriesStepClause,
-                    (fromClause, toClause, stepClause) =>
-                        (MakeSeriesRangeClause)new MakeSeriesFromToStepClause(fromClause, toClause, stepClause));                       
+                If(First(Token(SyntaxKind.FromKeyword), Token(SyntaxKind.ToKeyword), Token(SyntaxKind.StepKeyword)),
+                    Rule(
+                        Optional(MakeSeriesFromClause),
+                        Optional(MakeSeriesToClause),
+                        MakeSeriesStepClause,
+                        (fromClause, toClause, stepClause) =>
+                            (MakeSeriesRangeClause)new MakeSeriesFromToStepClause(fromClause, toClause, stepClause)));
 
             var MakeSeriesByClause =
                 Rule(

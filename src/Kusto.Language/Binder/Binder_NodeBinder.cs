@@ -2353,7 +2353,10 @@ namespace Kusto.Language.Binding
 
                         if (node.RangeClause is MakeSeriesInRangeClause inRangeClause)
                         {
-                            CheckArgumentCount(inRangeClause.Arguments.Expressions, 3, diagnostics);
+                            if (!inRangeClause.ContainsSyntaxDiagnostics)
+                            {
+                                CheckArgumentCount(inRangeClause.Arguments.Expressions, 3, diagnostics);
+                            }
 
                             if (inRangeClause.Arguments.Expressions.Count == 3)
                             {

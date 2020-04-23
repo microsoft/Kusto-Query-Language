@@ -124,7 +124,8 @@ namespace Kusto.Language.Binding
             {
                 base.VisitMakeSeriesOperator(node);
 
-                if (_position < node.OnClause.TextStart || _position >= node.End)
+                if (_position < node.OnClause.TextStart ||
+                    (node.OnClause.IsMissing && node.OnClause.End == node.End && _position >= node.End))
                 {
                     _binder._scopeKind = ScopeKind.Aggregate;
                 }

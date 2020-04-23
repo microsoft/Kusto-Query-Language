@@ -1620,6 +1620,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Scalar;
                 case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -1971,6 +1972,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -2056,6 +2058,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -5755,7 +5758,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Keyword;
-                case 2: return CompletionHint.Scalar;
+                case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }

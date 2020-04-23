@@ -145,7 +145,7 @@ namespace Kusto.Language.Syntax
         {
             for (SyntaxElement node = this; node != null; node = node.Parent)
             {
-                var sibling = node.GetNextSibling();
+                var sibling = node.GetNextSibling(includeZeroWidthTokens);
                 if (sibling != null)
                 {
                     if (sibling.IsToken)
@@ -166,7 +166,7 @@ namespace Kusto.Language.Syntax
         {
             for (SyntaxElement node = this; node != null; node = node.Parent)
             {
-                var sibling = node.GetPreviousSibling();
+                var sibling = node.GetPreviousSibling(includeZeroWidthTokens);
                 if (sibling != null)
                 {
                     if (sibling.IsToken)
