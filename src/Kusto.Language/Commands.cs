@@ -1430,6 +1430,15 @@ namespace Kusto.Language
                     new ColumnSymbol("BuildTime", ScalarTypes.DateTime),
                     new ColumnSymbol("ServiceType", ScalarTypes.String),
                     new ColumnSymbol("ProductVersion", ScalarTypes.String)));
+
+        public static readonly CommandSymbol ClearTableData =
+           new CommandSymbol("clear table data", "clear [async] table <table>:TableName data",
+               new TableSymbol(
+                   new ColumnSymbol("Status", ScalarTypes.String)));
+
+        public static readonly CommandSymbol TableStreamingIngestionSchemaCacheClear =
+           new CommandSymbol("clear table cache streamingingestion schema", "clear table <table>:TableName cache streamingingestion schema");
+
         #endregion
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
@@ -1741,6 +1750,8 @@ namespace Kusto.Language
                 //DropExtentsByProperties,
                 DropPretendExtentsByProperties,
                 ShowVersion,
+                ClearTableData,
+                TableStreamingIngestionSchemaCacheClear,
                 #endregion
             };
     }
