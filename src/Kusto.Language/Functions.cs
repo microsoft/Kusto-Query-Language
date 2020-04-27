@@ -1821,35 +1821,35 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol GeoDistance2Points =
             new FunctionSymbol("geo_distance_2points", ScalarTypes.Real,
-                new Parameter("p1_longitude", ScalarTypes.Real),
-                new Parameter("p1_latitude", ScalarTypes.Real),
-                new Parameter("p2_longitude", ScalarTypes.Real),
-                new Parameter("p2_latitude", ScalarTypes.Real))
+                new Parameter("p1_longitude", ParameterTypeKind.Number),
+                new Parameter("p1_latitude", ParameterTypeKind.Number),
+                new Parameter("p2_longitude", ParameterTypeKind.Number),
+                new Parameter("p2_latitude", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoDistancePointToLine =
             new FunctionSymbol("geo_distance_point_to_line", ScalarTypes.Real,
-                new Parameter("longitude", ScalarTypes.Real),
-                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
                 new Parameter("lineString", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInCircle =
             new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
-                new Parameter("p_longitude", ScalarTypes.Real),
-                new Parameter("p_latitude", ScalarTypes.Real),
-                new Parameter("pc_longitude", ScalarTypes.Real),
-                new Parameter("pc_latitude", ScalarTypes.Real),
-                new Parameter("c_radius", ScalarTypes.Real))
+                new Parameter("p_longitude", ParameterTypeKind.Number),
+                new Parameter("p_latitude", ParameterTypeKind.Number),
+                new Parameter("pc_longitude", ParameterTypeKind.Number),
+                new Parameter("pc_latitude", ParameterTypeKind.Number),
+                new Parameter("c_radius", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInPolygon =
             new FunctionSymbol("geo_point_in_polygon", ScalarTypes.Bool,
-                new Parameter("longitude", ScalarTypes.Real),
-                new Parameter("latitude", ScalarTypes.Real),
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -1857,7 +1857,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
             new FunctionSymbol("geo_polygon_to_s2cells", ScalarTypes.Dynamic,
                 new Parameter("polygon", ScalarTypes.Dynamic),
-                new Parameter("level", ScalarTypes.Long, minOccurring: 0))
+                new Parameter("level", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Hide();
@@ -1871,9 +1871,9 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol GeoPointToGeohash =
             new FunctionSymbol("geo_point_to_geohash", ScalarTypes.String,
-                new Parameter("longitude", ScalarTypes.Real),
-                new Parameter("latitude", ScalarTypes.Real),
-                new Parameter("accuracy", ScalarTypes.Long, minOccurring: 0))
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("accuracy", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -1885,9 +1885,9 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol GeoPointToS2Cell =
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
-                new Parameter("longitude", ScalarTypes.Real),
-                new Parameter("latitude", ScalarTypes.Real),
-                new Parameter("level", ScalarTypes.Long, minOccurring: 0))
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("level", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 

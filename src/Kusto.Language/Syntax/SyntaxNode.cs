@@ -79,6 +79,13 @@ namespace Kusto.Language.Syntax
         }
     }
 
+    public partial class TypeOfLiteralExpression
+    {
+        public override bool IsLiteral => true;
+
+        public override object LiteralValue => null;
+    }
+
     public partial class DynamicExpression
     {
         public override bool IsLiteral => true;
