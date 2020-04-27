@@ -50,23 +50,6 @@ namespace Kusto.Language.Syntax
         /// The value of the literal expression.
         /// </summary>
         public virtual object LiteralValue => null;
-
-        /// <summary>
-        /// True if the expression is the selector of a path or element expression.
-        /// </summary>
-        public bool IsSelector => this.IsPathSelector || this.IsElementSelector;
-
-        /// <summary>
-        /// True if the expression is the selector of a path expression (dotted path)
-        /// </summary>
-        public bool IsPathSelector =>
-                this.Parent is PathExpression pe && pe.Selector == this;
-
-        /// <summary>
-        /// True if the expression is the selector of an element expression
-        /// </summary>
-        public bool IsElementSelector =>
-                this.Parent is ElementExpression ee && ee.Selector == this;
     }
 
     public partial class LiteralExpression

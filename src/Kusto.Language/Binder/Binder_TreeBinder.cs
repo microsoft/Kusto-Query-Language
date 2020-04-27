@@ -83,25 +83,6 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
-            public override void VisitElementExpression(ElementExpression node)
-            {
-                node.Expression.Accept(this);
-
-                // result type of left-side expression is in scope for the element expression inside the brackets.
-                var oldPathScope = _binder._pathScope;
-                _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
-                try
-                {
-                    node.Selector.Accept(this);
-                }
-                finally
-                {
-                    _binder._pathScope = oldPathScope;
-                }
-
-                BindNode(node);
-            }
-
             public override void VisitPipeExpression(PipeExpression node)
             {
                 node.Expression.Accept(this); 

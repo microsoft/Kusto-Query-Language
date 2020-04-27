@@ -588,36 +588,45 @@ namespace Kusto.Language.Binding
                     return ErrorInfo;
                 }
 
-                if (node.IsElementSelector)
+                if (node.Parent is ElementExpression ee && ee.Selector == node)
                 {
                     // dynamic element access: path[selector]
 
-                    if (_binder._pathScope == null || _binder._pathScope.IsError)
+                    var collectionType = ee.Expression.ResultType;
+                    if (collectionType == null || collectionType.IsError)
                     {
                         return ErrorInfo;
                     }
-                    else if (_binder._pathScope != ScalarTypes.Dynamic
-                        && _binder._pathScope != ScalarTypes.Unknown)
+                    else if (collectionType == ScalarTypes.Dynamic)
                     {
-                        // only works for dynamic values
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(node));
+                        if (!IsInteger(selectorType) && !IsStringOrDynamic(selectorType))
+                        {
+                            // must be a integer array index or a string member name index (dynamic okay?)
+                            return new SemanticInfo(null, ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(node.Expression));
+                        }
+                        else
+                        {
+                            // you've successfully accessed an element of a dynamic value: you get another dynamic value.
+                            return new SemanticInfo(ScalarTypes.Dynamic);
+                        }
                     }
-                    else if (!IsInteger(selectorType) && !IsStringOrDynamic(selectorType))
+                    else if (collectionType == ScalarTypes.Unknown)
                     {
-                        // must be a integer array index or a string member name index (dynamic okay?)
-                        return new SemanticInfo(null, ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(node.Expression));
+                        // unknown is unknown
+                        return new SemanticInfo(ScalarTypes.Unknown);
                     }
                     else
                     {
-                        // you've successfully accessed an element of a dynamic value: you get another dynamic value.
-                        return new SemanticInfo(ScalarTypes.Dynamic);
+                        // element access only works for dynamic values
+                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(node));
                     }
                 }
-                else if (node.IsPathSelector)
+                else if (node.Parent is PathExpression pe && pe.Selector == node)
                 {
                     // bracketted member access: path.[selector]
 
-                    if (_binder._pathScope == null || _binder._pathScope.IsError)
+                    var containerType = pe.Expression.ResultType;
+                    if (containerType == null || containerType.IsError)
                     {
                         return ErrorInfo;
                     }
@@ -641,10 +650,15 @@ namespace Kusto.Language.Binding
                         // computed name lookup?? Is this valid here?
                         return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
                     }
-                    else if (_binder._pathScope == ScalarTypes.Dynamic || _binder._pathScope == ScalarTypes.Unknown)
+                    else if (containerType == ScalarTypes.Dynamic)
                     {
                         // dynamic name lookup, no need to bind
                         return new SemanticInfo(ScalarTypes.Dynamic);
+                    }
+                    else if (containerType == ScalarTypes.Unknown)
+                    {
+                        // unknown name lookup, no need to bind
+                        return new SemanticInfo(ScalarTypes.Unknown);
                     }
                     else
                     {
