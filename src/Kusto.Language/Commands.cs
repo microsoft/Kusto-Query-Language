@@ -319,6 +319,20 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTables =
             new CommandSymbol("show tables", "show tables ['(' { <table>:TableName, ',' }+ ')']", ShowTablesResult);
 
+        public static readonly CommandSymbol ShowTable =
+            new CommandSymbol("show table", "show table <table>:TableName", 
+                new TableSymbol(
+                    new ColumnSymbol("AttributeName", ScalarTypes.String),
+                    new ColumnSymbol("AttributeType", ScalarTypes.String),
+                    new ColumnSymbol("ExtentSize", ScalarTypes.Long),
+                    new ColumnSymbol("CompressionRatio", ScalarTypes.Real),
+                    new ColumnSymbol("IndexSize", ScalarTypes.Long),
+                    new ColumnSymbol("IndexSizePercent", ScalarTypes.Long),
+                    new ColumnSymbol("OriginalSize", ScalarTypes.Long),
+                    new ColumnSymbol("AttributeId", ScalarTypes.Guid),
+                    new ColumnSymbol("SharedIndexSize", ScalarTypes.Long),
+                    new ColumnSymbol("StorageEngineVersion", ScalarTypes.String)));
+
         public static readonly CommandSymbol ShowTablesDetails =
             new CommandSymbol("show tables details", "show tables ['(' { <table>:TableName, ',' }+ ')'] details", ShowTablesDetailsResult);
 
@@ -1470,6 +1484,7 @@ namespace Kusto.Language
 
                 // Tables
                 ShowTables,
+                ShowTable,
                 ShowTablesDetails,
                 ShowTableDetails,
                 ShowTableCslSchema,

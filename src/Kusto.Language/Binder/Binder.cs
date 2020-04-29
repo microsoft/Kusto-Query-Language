@@ -3802,7 +3802,7 @@ namespace Kusto.Language.Binding
                                     else
                                     {
                                         // not-declared so make unique column
-                                        builder.Add(col, doNotRepeat: doNotRepeat);
+                                        builder.Add(col, replace: isExtend, doNotRepeat: doNotRepeat);
                                     }
                                 }
 
@@ -3833,7 +3833,7 @@ namespace Kusto.Language.Binding
                         {
                             var name = GetFunctionResultName(f, null, _rowScope);
                             col = new ColumnSymbol(name ?? "Column1", columnType ?? GetResultTypeOrError(f));
-                            builder.Add(col, name ?? "Column");
+                            builder.Add(col, name ?? "Column", replace: isExtend);
                         }
                         break;
 
@@ -3882,7 +3882,7 @@ namespace Kusto.Language.Binding
                             {
                                 var name = GetExpressionResultName(expression, null);
                                 col = new ColumnSymbol(name ?? "Column1", columnType ?? GetResultTypeOrError(expression));
-                                builder.Add(col, name ?? "Column");
+                                builder.Add(col, name ?? "Column", replace: isExtend);
                             }
                         }
                         break;
