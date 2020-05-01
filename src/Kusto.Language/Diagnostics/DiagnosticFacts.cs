@@ -451,7 +451,7 @@ namespace Kusto.Language
             return new Diagnostic("KUS142", $"The name '{name}' does not refer to any known column, table, variable or function.");
         }
 
-        public static Diagnostic GetFunctionNotDefine(string name)
+        public static Diagnostic GetFunctionNotDefined(string name)
         {
             return new Diagnostic("KUS143", $"The function '{name}' is not defined.");
         }

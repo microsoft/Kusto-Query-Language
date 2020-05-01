@@ -918,9 +918,7 @@ namespace Kusto.Language.Binding
             SymbolMatch match,
             string name,
             IncludeFunctionKind include,
-            List<Symbol> functions,
-            List<Diagnostic> diagnostics = null,
-            SyntaxElement location = null)
+            List<Symbol> functions)
         {
             var allFunctions = s_symbolListPool.AllocateFromPool();
             try
@@ -929,9 +927,7 @@ namespace Kusto.Language.Binding
                     _scopeKind,
                     name,
                     include,
-                    allFunctions,
-                    diagnostics,
-                    location);
+                    allFunctions);
 
                 foreach (var fn in allFunctions)
                 {
@@ -951,9 +947,7 @@ namespace Kusto.Language.Binding
             ScopeKind kind,
             string name,
             IncludeFunctionKind include,
-            List<Symbol> functions,
-            List<Diagnostic> diagnostics = null, 
-            SyntaxElement location = null)
+            List<Symbol> functions)
         {
             if (_pathScope != null)
             {
@@ -980,11 +974,6 @@ namespace Kusto.Language.Binding
                             {
                                 GetFunctionsInScope(ScopeKind.Normal, name, include, functions);
                             }
-
-                            if (functions.Count == 0 && diagnostics != null)
-                            {
-                                diagnostics.Add(DiagnosticFacts.GetAggregateFunctionNotDefined(name).WithLocation(location));
-                            }
                         }
                         break;
 
@@ -999,18 +988,6 @@ namespace Kusto.Language.Binding
                             if (fn != null)
                             {
                                 functions.Add(fn);
-                            }
-                            else if (diagnostics != null)
-                            {
-                                // if it exists in the list of all plug-ins then it must be disabled.
-                                if (PlugIns.GetPlugIn(name) != null)
-                                {
-                                    diagnostics.Add(DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
-                                }
-                                else
-                                {
-                                    diagnostics.Add(DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
-                                }
                             }
                         }
                         break;
@@ -1034,25 +1011,19 @@ namespace Kusto.Language.Binding
 
                         if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.LocalFunctions) != 0)
                         {
-                            GetDeclaredFunctionsInScope(name, functions);
+                            GetLocalFunctionsInScope(name, functions);
                         }
 
                         if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.DatabaseFunctions) != 0 && _currentDatabase != null)
                         {
-                            var oldCount = functions.Count;
                             _currentDatabase.GetMembers(name, SymbolMatch.Function, functions);
-
-                            if (functions.Count == oldCount && diagnostics != null)
-                            {
-                                diagnostics.Add(DiagnosticFacts.GetScalarFunctionNotDefined(name).WithLocation(location));
-                            }
                         }
                         break;
                 }
             }
         }
 
-        private void GetDeclaredFunctionsInScope(string name, List<Symbol> functions)
+        private void GetLocalFunctionsInScope(string name, List<Symbol> functions)
         {
             var locals = s_symbolListPool.AllocateFromPool();
             try
@@ -1061,9 +1032,14 @@ namespace Kusto.Language.Binding
 
                 foreach (Symbol local in locals)
                 {
-                    if (GetResultType(local) is FunctionSymbol fn)
+                    var resultType = GetResultType(local);
+                    if (resultType is FunctionSymbol fn)
                     {
                         functions.Add(fn);
+                    }
+                    else if (resultType is PatternSymbol ps)
+                    {
+                        functions.Add(ps);
                     }
                 }
             }
@@ -1234,6 +1210,10 @@ namespace Kusto.Language.Binding
                         }
                     }
                 }
+                else if (IsFunctionCallName(location))
+                {
+                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                }
                 else
                 {
                     // first check binding against any columns in the row scope
@@ -1353,11 +1333,13 @@ namespace Kusto.Language.Binding
                         }
                         else
                         {
-                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetFunctionNotDefine(name).WithLocation(location));
+                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetFunctionNotDefined(name).WithLocation(location));
                         }
                     }
-
-                    return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
+                    else
+                    {
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
+                    }
                 }
                 else
                 {
