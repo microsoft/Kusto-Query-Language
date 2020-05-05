@@ -947,7 +947,8 @@ namespace Kusto.Language.Parsing
             var InOperatorExpressionList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    CommaList(Expression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(Expression, MissingExpressionNode, oneOrMore: true)
+                        .WithCompletionHint(CompletionHint.Scalar | CompletionHint.Tabular),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, list, closeParen) =>

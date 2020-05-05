@@ -2658,7 +2658,7 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryParameters(node.WithClause.Properties, s_RenderProperties, diagnostics);
                     }
 
-                    return new SemanticInfo(VoidSymbol.Instance, diagnostics);
+                    return new SemanticInfo(this.RowScopeOrEmpty, diagnostics);
                 }
                 finally
                 {
