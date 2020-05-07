@@ -320,6 +320,7 @@
         SealKeyword,
         SearchKeyword,
         SerializeKeyword,
+        ServicePointsKeyword,
         SetKeyword,
         SetOrAppendKeyword,
         SetOrReplaceKeyword,

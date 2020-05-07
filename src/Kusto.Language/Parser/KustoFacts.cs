@@ -127,6 +127,11 @@ namespace Kusto.Language
             "broadcast", "centralized", "shuffle"
         };
 
+        public static readonly IReadOnlyList<string> SummarizeHintStrategies = new string[]
+        {
+            "shuffle"
+        };
+
         public static readonly IReadOnlyList<string> DistributionHintStrategies = new string[]
         {
             "single", "per_node", "per_shard", "default"

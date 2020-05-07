@@ -351,6 +351,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.SealKeyword, "seal"),
                 new SyntaxData(SyntaxKind.SearchKeyword, "search"),
                 new SyntaxData(SyntaxKind.SerializeKeyword, "serialize"),
+                new SyntaxData(SyntaxKind.ServicePointsKeyword, "servicepoints"),
                 new SyntaxData(SyntaxKind.SetKeyword, "set"),
                 new SyntaxData(SyntaxKind.SetOrAppendKeyword, "set-or-append", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.SetOrReplaceKeyword, "set-or-replace", canBeIdentifier: true),

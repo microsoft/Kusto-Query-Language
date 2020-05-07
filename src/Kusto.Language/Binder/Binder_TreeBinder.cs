@@ -165,6 +165,28 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitJoinOnClause(JoinOnClause node)
+            {
+                for (int i = 0; i < node.Expressions.Count; i++)
+                {
+                    VisitJoinOnExpression(node.Expressions[i].Element);
+                }
+            }
+
+            private void VisitJoinOnExpression(Expression expr)
+            {
+                if (expr is BinaryExpression be && be.Kind == SyntaxKind.AndExpression)
+                {
+                    VisitJoinOnExpression(be.Left);
+                    VisitJoinOnExpression(be.Right);
+                    _binder.SetSemanticInfo(be, new SemanticInfo(ScalarTypes.Bool));
+                }
+                else
+                {
+                    expr.Accept(this);
+                }
+            }
+
             public override void VisitUnionOperator(UnionOperator node)
             {
                 var oldRowScope = _binder._rowScope;

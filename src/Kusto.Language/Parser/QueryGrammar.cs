@@ -1745,6 +1745,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SummarizeKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     List(First(
+                        TokenNamedParameterK(SyntaxKind.HintDotStrategyKeyword, KustoFacts.SummarizeHintStrategies),
                         NameReferenceNamedParameterK(SyntaxKind.HintDotShuffleKeyKeyword, expressionHint: CompletionHint.Column),
                         NumericNamedParameterK(SyntaxKind.HintDotNumPartitions),
                         KnownQueryOperatorParameter)),
