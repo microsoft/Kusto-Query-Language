@@ -17,7 +17,7 @@ namespace Kusto.Language.Editor
                 "KustoAvoidUsingShortStringComparison",
                 category: DiagnosticCategory.Performance,
                 severity: DiagnosticSeverity.Suggestion,
-                message: "Avoid using short strings (less than 4 characters) for string comparison operations.");
+                message: "Avoid using short strings (less than 4 characters) for string comparison operations (see: https://aka.ms/kusto.stringterms).");
 
         public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
         {

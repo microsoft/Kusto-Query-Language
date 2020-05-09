@@ -17,7 +17,7 @@ namespace Kusto.Language.Editor
                 DiagnosticCategory.Performance,
                 DiagnosticSeverity.Suggestion,
                 $"Avoid using the 'contains' operator as it has a high compute price." + Environment.NewLine +
-                $"Use the 'has' operator in cases when full term match is desired.");
+                $"Use the 'has' operator in cases when full term match is desired (see: https://aka.ms/kusto.stringterms).");
 
         public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
         {
