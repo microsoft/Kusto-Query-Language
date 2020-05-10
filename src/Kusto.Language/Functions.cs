@@ -1859,8 +1859,7 @@ namespace Kusto.Language
                 new Parameter("polygon", ScalarTypes.Dynamic),
                 new Parameter("level", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonValidate =
             new FunctionSymbol("__geo_polygon_validate", ScalarTypes.String,
