@@ -542,7 +542,7 @@ namespace Kusto.Language
                 @"create external table <name>:TableName '(' { <name>:ColumnName ':'! <type>:ColumnType, ',' }+ ')'
                     kind '=' (blob | adl):TableKind
                     [partition by! [format_datetime '='! <string>:DateTimePartitionFormat] bin! '(' <name>:BinColumn ',' <timespan>:BinValue ')']
-                    dataformat '='! (avro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
+                    dataformat '='! (avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
                     [with '('! { <name>:PropertyName '='! <value>:Value, ',' }+ ')'!]",
                 ExternalTableFullResult);
 
@@ -551,7 +551,7 @@ namespace Kusto.Language
                 @"alter external table <table>:TableName '(' { <name>:ColumnName ':'! <type>:ColumnType, ',' }+ ')'
                     kind '='! (blob | adl):TableKind
                     [partition by! [format_datetime '='! <string>:DateTimePartitionFormat] bin! '(' <column>:BinColumn ',' <timespan>:BinValue ')']
-                    dataformat '='! (avro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
+                    dataformat '='! (avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
                     [with '('! { <name>:PropertyName '='! <value>:Value, ',' }+ ')'!]",
                 ExternalTableFullResult);
         #endregion
