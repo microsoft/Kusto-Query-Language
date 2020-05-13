@@ -626,25 +626,18 @@ namespace Kusto.Language.Binding
 
                 node.InClause?.Accept(this);
 
-                var columns = s_columnListPool.AllocateFromPool();
-                try
+                // gather all columns to put in scope for condition
+                _binder._rowScope = oldRowScope;
+                _binder._rowScope = _binder.GetSearchColumnsTable(node);
+
+                if (this.predicateBinder == null)
                 {
-                    // gather all columns to put in scope for condition
-                    _binder._rowScope = _binder.GetSearchColumnsTable(node);
-
-                    if (this.predicateBinder == null)
-                    {
-                        this.predicateBinder = new SearchPredicateBinder(_binder, this);
-                    }
-
-                    node.Condition.Accept(this.predicateBinder);
-
-                    _binder._rowScope = oldRowScope;
+                    this.predicateBinder = new SearchPredicateBinder(_binder, this);
                 }
-                finally
-                {
-                    s_columnListPool.ReturnToPool(columns);
-                }
+
+                node.Condition.Accept(this.predicateBinder);
+
+                _binder._rowScope = oldRowScope;
 
                 BindNode(node);
             }

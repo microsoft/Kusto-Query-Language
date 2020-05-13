@@ -567,7 +567,7 @@ namespace Kusto.Language.Binding
 
         private Dictionary<TableSymbol, Dictionary<string, ColumnSymbol>> openColumns;
 
-        private ColumnSymbol GetOpenColumn(string name, TypeSymbol type, TableSymbol table)
+        private ColumnSymbol GetOpenColumn(string name, TableSymbol table)
         {
             if (openColumns == null)
             {
@@ -582,7 +582,7 @@ namespace Kusto.Language.Binding
 
             if (!columnMap.TryGetValue(name, out var column))
             {
-                column = new ColumnSymbol(name, type);
+                column = new ColumnSymbol(name, ScalarTypes.Unknown);
                 columnMap.Add(name, column);
             }
 
@@ -613,6 +613,25 @@ namespace Kusto.Language.Binding
             }
         }
 
+        public bool TryGetDeclaredOrInferredColumn(TableSymbol table, string name, out ColumnSymbol column)
+        {
+            if (table.GetFirstMember(name, SymbolMatch.Column) is ColumnSymbol c)
+            {
+                column = c;
+                return true;
+            }
+            else if (table.IsOpen)
+            {
+                column = GetOpenColumn(name, table);
+                return true;
+            }
+            else
+            {
+                column = null;
+                return false;
+            }
+        }
+
         private Dictionary<TableSymbol, TupleSymbol> tupleMap;
 
         /// <summary>
@@ -627,7 +646,7 @@ namespace Kusto.Language.Binding
 
             if (!tupleMap.TryGetValue(table, out var tuple))
             {
-                tuple = new TupleSymbol(GetDeclaredAndInferredColumns(table));
+                tuple = new TupleSymbol(table.Columns);
                 tupleMap.Add(table, tuple);
             }
 
@@ -661,6 +680,11 @@ namespace Kusto.Language.Binding
 
                 unifiedColumnsTable = new TableSymbol(columns);
 
+                if (tables.Any(t => t.IsOpen))
+                {
+                    unifiedColumnsTable = unifiedColumnsTable.Open();
+                }
+
                 if (cache)
                 {
                     _globalBindingCache.UnifiedNameColumnsMap[tables] = unifiedColumnsTable;
@@ -692,6 +716,11 @@ namespace Kusto.Language.Binding
 
                 unifiedColumnsTable = new TableSymbol(columns);
 
+                if (tables.Any(t => t.IsOpen))
+                {
+                    unifiedColumnsTable = unifiedColumnsTable.Open();
+                }
+
                 if (cache)
                 {
                     _globalBindingCache.UnifiedNameAndTypeColumnsMap[tables] = unifiedColumnsTable;
@@ -718,6 +747,12 @@ namespace Kusto.Language.Binding
 
                 commonColumnsTable = new TableSymbol(columns);
 
+                // since these are the common columns, open columns can only exist if all tables are open
+                if (tables.Count > 0 && tables.All(t => t.IsOpen))
+                {
+                    commonColumnsTable = commonColumnsTable.Open();
+                }
+
                 if (cache)
                 {
                     _globalBindingCache.CommonColumnsMap[tables] = commonColumnsTable;
@@ -726,9 +761,9 @@ namespace Kusto.Language.Binding
 
             return commonColumnsTable;
         }
-        #endregion
+#endregion
 
-        #region Symbols in scope
+#region Symbols in scope
         /// <summary>
         /// Gets all the symbols that are in scope at the text position.
         /// </summary>
@@ -1050,7 +1085,7 @@ namespace Kusto.Language.Binding
         }
 #endregion
 
-        #region Common definitions
+#region Common definitions
         private static ObjectPool<List<Symbol>> s_symbolListPool =
             new ObjectPool<List<Symbol>>(() => new List<Symbol>(), list => list.Clear());
 
@@ -1103,9 +1138,9 @@ namespace Kusto.Language.Binding
         private static readonly SemanticInfo UnknownInfo = new SemanticInfo(ScalarTypes.Unknown, isConstant: true);
         private static readonly SemanticInfo ErrorInfo = new SemanticInfo(ErrorSymbol.Instance);
         private static readonly SemanticInfo VoidInfo = new SemanticInfo(VoidSymbol.Instance);
-        #endregion
+#endregion
 
-        #region Name binding
+#region Name binding
         private static bool IsFunctionCallName(SyntaxNode name)
         {
             return name.Parent is FunctionCallExpression fn && fn.Name == name;
@@ -1143,14 +1178,17 @@ namespace Kusto.Language.Binding
             {
                 if (_pathScope == ScalarTypes.Dynamic)
                 {
+                    // any x.y where x is dynamic, is also dynamic
                     return LiteralDynamicInfo;
                 }
                 else if(_pathScope == ScalarTypes.Unknown)
                 {
+                    // any x.y where x is unknown, is also unknown (though probably dynamic)
                     return UnknownInfo;
                 }
                 else if (_pathScope == ErrorSymbol.Instance)
                 {
+                    // any x.y where is an error, is also an error
                     return ErrorInfo;
                 }
             }
@@ -1201,6 +1239,21 @@ namespace Kusto.Language.Binding
                             else if (_pathScope is ClusterSymbol cs && name == Functions.Database.Name)
                             {
                                 list.Add(Functions.Database);
+                            }
+                            else if (_rightRowScope != null 
+                                && location.Parent is PathExpression p 
+                                && p.Expression is NameReference nr)
+                            {
+                                if (nr.SimpleName == "$left" 
+                                    && TryGetDeclaredOrInferredColumn(_rowScope, name, out var leftCol))
+                                {
+                                    list.Add(leftCol);
+                                }
+                                else if (nr.SimpleName == "$right" 
+                                    && TryGetDeclaredOrInferredColumn(_rightRowScope, name, out var rightCol))
+                                {
+                                    list.Add(rightCol);
+                                }
                             }
                         }
                         else
@@ -1279,7 +1332,7 @@ namespace Kusto.Language.Binding
                     if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
                     {
                         // table is open, so create a dynamic column for the otherwise unbound name
-                        list.Add(GetOpenColumn(name, ScalarTypes.Unknown, _rowScope));
+                        list.Add(GetOpenColumn(name, _rowScope));
                     }
                 }
 
@@ -1364,7 +1417,7 @@ namespace Kusto.Language.Binding
         }
 #endregion
 
-        #region Operator binding
+#region Operator binding
         private SemanticInfo GetBinaryOperatorInfo(OperatorKind kind, Expression left, Expression right, SyntaxElement location)
         {
             return GetBinaryOperatorInfo(kind, left, GetResultTypeOrError(left), right, GetResultTypeOrError(right), location);
@@ -1591,7 +1644,7 @@ namespace Kusto.Language.Binding
         }
 #endregion
 
-        #region Signature binding
+#region Signature binding
         private void GetArgumentsAndTypes(
             FunctionCallExpression functionCall,
             List<Expression> arguments,
@@ -3177,23 +3230,13 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets the set of columns from the tables applicable to the find operator.
-        /// </summary>
-        private void GetFindColumns(FindOperator node, List<ColumnSymbol> columns)
-        {
-            var tables = GetFindTables(node);
-            var unifiedColumnsTable = GetTableOfColumnsUnifiedByName(tables);
-            columns.AddRange(unifiedColumnsTable.Columns);
-        }
-
-        /// <summary>
         /// Get the set of tables applicable to the find operator.
         /// </summary>
         private IReadOnlyList<TableSymbol> GetFindTables(FindOperator node)
         {
             if (node.InClause != null)
             {
-                return node.InClause.Expressions.Select(e => GetResultTypeOrError(e.Element)).OfType<TableSymbol>().ToReadOnly();
+                return GetReferencedTables(node.InClause.Expressions);
             }
             else
             {
@@ -3210,32 +3253,51 @@ namespace Kusto.Language.Binding
             {
                 return _rowScope;
             }
-
-            var tables = s_tableListPool.AllocateFromPool();
-            try
+            else
             {
-                if (_rowScope != null)
-                {
-                    tables.Add(_rowScope);
-                }
-
-                if (node.InClause != null)
-                {
-                    tables.AddRange(node.InClause.Expressions.Select(e => GetResultTypeOrError(e.Element)).OfType<TableSymbol>());
-                }
-
-                if (_rowScope == null && node.InClause == null)
-                {
-                    tables.AddRange(_currentDatabase.Tables);
-                }
+                var tables = GetSearchTables(node);
 
                 // access through cache
                 return GetTableOfColumnsUnifiedByNameAndType(tables);
             }
-            finally
+        }
+
+        /// <summary>
+        /// Gets the set of tables used by the search operator
+        /// </summary>
+        private IReadOnlyList<TableSymbol> GetSearchTables(SearchOperator node)
+        {
+            if (node.InClause != null)
             {
-                s_tableListPool.ReturnToPool(tables);
+                return GetReferencedTables(node.InClause.Expressions);
             }
+            else if (_rowScope != null)
+            {
+                return new[] { _rowScope };
+            }
+            else
+            {
+                return _currentDatabase.Tables;
+            }
+        }
+
+        private IReadOnlyList<TableSymbol> GetReferencedTables(SyntaxList<SeparatedElement<Expression>> list)
+        {
+            var tables = new List<TableSymbol>();
+
+            foreach (var x in list)
+            {
+                if (x.Element.ResultType is TableSymbol ts)
+                {
+                    tables.Add(ts);
+                }
+                else if (x.Element.ResultType is GroupSymbol gs)
+                {
+                    tables.AddRange(gs.Members.OfType<TableSymbol>());
+                }
+            }
+
+            return tables;
         }
 
         /// <summary>
@@ -3672,7 +3734,8 @@ namespace Kusto.Language.Binding
             TypeSymbol type;
 
             // look through ordered expressions to find column references
-            if (expression is OrderedExpression oe)
+            var oe = expression as OrderedExpression;
+            if (oe != null)
             {
                 expression = oe.Expression;
             }
@@ -3840,13 +3903,37 @@ namespace Kusto.Language.Binding
                         }
                         else if (rs is GroupSymbol group && isReorder)
                         {
-                            // add any columns referenced in group
-                            foreach (var m in group.Members)
+                            var members = s_symbolListPool.AllocateFromPool();
+                            try
                             {
-                                if (m is ColumnSymbol c)
+                                if (oe != null && oe.Ordering != null)
                                 {
-                                    builder.Add(c, doNotRepeat: true);
+                                    if (oe.Ordering.AscOrDescKeyword.Kind == SyntaxKind.DescKeyword)
+                                    {
+                                        members.AddRange(group.Members.OrderByDescending(m => m.Name));
+                                    }
+                                    else
+                                    {
+                                        members.AddRange(group.Members.OrderBy(m => m.Name));
+                                    }
                                 }
+                                else
+                                {
+                                    members.AddRange(group.Members);
+                                }
+
+                                // add any columns referenced in group
+                                foreach (var m in members)
+                                {
+                                    if (m is ColumnSymbol c)
+                                    {
+                                        builder.Add(c, doNotRepeat: true);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                s_symbolListPool.ReturnToPool(members);
                             }
                         }
                         else if (GetResultType(expression) is GroupSymbol g)
@@ -4057,9 +4144,9 @@ namespace Kusto.Language.Binding
 
             return null;
         }
-        #endregion
+#endregion
 
-        #region Other
+#region Other
         /// <summary>
         /// Gets the type referenced in the type expression.
         /// </summary>

@@ -9250,12 +9250,12 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.RenderNameList;
         
-        public SyntaxList<SeparatedElement<NameDeclaration>> Names { get; }
+        public SyntaxList<SeparatedElement<NameReference>> Names { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="RenderNameList"/>.
         /// </summary>
-        internal RenderNameList(SyntaxList<SeparatedElement<NameDeclaration>> names, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal RenderNameList(SyntaxList<SeparatedElement<NameReference>> names, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.Names = Attach(names);
             this.Init();
@@ -9292,7 +9292,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new RenderNameList((SyntaxList<SeparatedElement<NameDeclaration>>)Names?.Clone(), this.SyntaxDiagnostics);
+            return new RenderNameList((SyntaxList<SeparatedElement<NameReference>>)Names?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class RenderNameList */

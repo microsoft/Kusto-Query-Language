@@ -568,6 +568,11 @@ namespace Kusto.Language.Binding
                     {
                         return CreateSemanticInfo(new GroupSymbol(matchingList));
                     }
+                    else if (_binder._rowScope != null && _binder._rowScope.IsOpen)
+                    {
+                        // this might match zero or more columns from the row scope if it is open
+                        return CreateSemanticInfo(new GroupSymbol());
+                    }
                     else
                     {
                         return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(wc.Pattern.Text).WithLocation(node));
@@ -1140,11 +1145,11 @@ namespace Kusto.Language.Binding
                     if (node.AsIdentifier != null)
                     {
                         var name = node.AsIdentifier.Identifier.Text;
-                        return new SemanticInfo(RowScopeOrEmpty.WithColumns(new ColumnSymbol(name, ScalarTypes.Long)), diagnostics);
+                        return new SemanticInfo(new TableSymbol(new ColumnSymbol(name, ScalarTypes.Long)), diagnostics);
                     }
                     else
                     {
-                        return new SemanticInfo(RowScopeOrEmpty.WithColumns(new ColumnSymbol("Count", ScalarTypes.Long)), diagnostics);
+                        return new SemanticInfo(new TableSymbol(new ColumnSymbol("Count", ScalarTypes.Long)), diagnostics);
                     }
                 }
                 finally
@@ -1700,14 +1705,13 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
+                var tables = s_tableListPool.AllocateFromPool();
                 try
                 {
                     _binder.CheckQueryParameters(node.Parameters, s_SearchParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
                     columns.Add(new ColumnSymbol("$table", ScalarTypes.String));
-                    var searchColumns = _binder.GetSearchColumnsTable(node);
-                    columns.AddRange(searchColumns.Columns);
 
                     TableSymbol result;
                     if (node.InClause != null)
@@ -1721,6 +1725,9 @@ namespace Kusto.Language.Binding
                         }
                     }
 
+                    var searchColumnsTable = _binder.GetSearchColumnsTable(node);
+                    _binder.GetDeclaredAndInferredColumns(searchColumnsTable, columns);
+
                     if (_binder._rowScope != null)
                     {
                         // if no in-clause can be any position in pipe
@@ -1729,6 +1736,11 @@ namespace Kusto.Language.Binding
                     else
                     {
                         result = new TableSymbol(columns);
+                        
+                        if (searchColumnsTable.IsOpen)
+                        {
+                            result = result.Open();
+                        }
                     }
 
                     return new SemanticInfo(result, diagnostics);
@@ -1736,6 +1748,7 @@ namespace Kusto.Language.Binding
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_tableListPool.ReturnToPool(tables);
                     s_columnListPool.ReturnToPool(columns);
                 }
             }
@@ -1749,6 +1762,10 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
+                var refColumns = s_columnListPool.AllocateFromPool();
+                var refTables = s_tableListPool.AllocateFromPool();
+                var colNameMap = s_stringSetPool.AllocateFromPool();
+
                 try
                 {
                     _binder.CheckQueryParameters(node.Parameters, s_FindParameters, diagnostics);
@@ -1758,72 +1775,140 @@ namespace Kusto.Language.Binding
                     string sourceColumnName = (withSource != null) ? GetNameDeclarationName(withSource.Expression) ?? "source_" : "source_";
                     columns.Add(new ColumnSymbol(sourceColumnName, ScalarTypes.String));
 
-                    if (node.Project != null)
+                    var tables = _binder.GetFindTables(node);
+                    var resultIsOpen = tables.Any(t => t.IsOpen);
+                    var explicitPack = false;
+
+                    if (node.Project == null || node.Project.ProjectKeyword.Kind == SyntaxKind.ProjectSmartKeyword)
                     {
-                        if (node.Project.ProjectKeyword.Kind == SyntaxKind.ProjectSmartKeyword)
+                        // project-smart
+
+                        // only consider tables that have column references
+                        _binder.GetReferencedColumnsInTree(node.Condition, refColumns);
+
+                        if (tables.Count == 1)
                         {
-                            // project-smart
-                            // any column referenced in the predicate
-                            _binder.GetReferencedColumnsInTree(node.Condition, columns);
-
-                            // any column that is common to all tables
-                            var tables = _binder.GetFindTables(node);
-                            var commonColumnsTable = _binder.GetTableOfCommonColumns(tables);
-                            columns.AddRange(commonColumnsTable.Columns);
-
-                            columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
+                            // only one table
+                            refTables.AddRange(tables);
+                        }
+                        else if (ReferencesAllTables(node))
+                        {
+                            // * references all columns from all tables
+                            refTables.AddRange(tables);
                         }
                         else
                         {
-                            // regular project
-                            for (int i = 0; i < node.Project.Columns.Count; i++)
+                            // only include tables that have a column the same name as one
+                            // referenced in the condition
+                            foreach (var t in tables)
                             {
-                                var exp = node.Project.Columns[i].Element;
-
-                                switch (exp)
+                                foreach (var c in refColumns)
                                 {
-                                    case PackExpression _:
-                                        if (i == node.Project.Columns.Count - 1)
-                                        {
-                                            columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
-                                        }
-                                        else
-                                        {
-                                            diagnostics.Add(DiagnosticFacts.GetPackMustBeLastItemInList().WithLocation(exp));
-                                        }
+                                    // if the table has a column of the same name
+                                    if (t.IsOpen || t.TryGetColumn(c.Name, out _))
+                                    {
+                                        refTables.Add(t);
                                         break;
-
-                                    case TypedColumnReference tc:
-                                        _binder.CheckIsColumn(tc.Column, diagnostics);
-                                        if (_binder.GetReferencedSymbol(tc.Column) is ColumnSymbol c)
-                                        {
-                                            var type = _binder.GetTypeFromTypeExpression(tc.Type, diagnostics);
-                                            columns.Add(new ColumnSymbol(c.Name, type));
-                                        }
-                                        break;
-
-                                    case NameReference nr:
-                                        _binder.CheckIsColumn(nr, diagnostics);
-                                        if (_binder.GetReferencedSymbol(nr) is ColumnSymbol c2)
-                                        {
-                                            columns.Add(c2);
-                                        }
-                                        break;
+                                    }
                                 }
                             }
                         }
+
+                        // any column that is common to all referenced tables
+                        var commonColumnsTable = _binder.GetTableOfCommonColumns(refTables);
+                        columns.AddRange(commonColumnsTable.Columns);
+
+                        // any columns referenced explicitly in the predicate
+                        foreach (var c in refColumns)
+                        {
+                            if (!columns.Contains(c))
+                            {
+                                columns.Add(c);
+                            }
+                        }
+
+                        // check to see if there is a table that has extra columns that need to be packed
+                        foreach (var c in columns)
+                        {
+                            colNameMap.Add(c.Name);
+                        }
+
+                        var packExtraColumns = false;
+
+                        foreach (var t in refTables)
+                        {
+                            // if table is open, then we don't know what ends up in projected set at execution time
+                            if (t.IsOpen)
+                                continue;
+
+                            // if the table has more columns than end up in the projected set
+                            // then the rest will appear in a packed_ column
+                            foreach (var c in t.Columns)
+                            {
+                                if (!colNameMap.Contains(c.Name))
+                                {
+                                    packExtraColumns = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (packExtraColumns)
+                        {
+                            columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
+                        }
+
+                        UnifyColumnsWithSameNameAndType(columns);
                     }
                     else
                     {
-                        // no project clause, so use all columns from input tables
-                        _binder.GetFindColumns(node, columns);
+                        // explicit projection
+                        resultIsOpen = false;
+
+                        // regular project
+                        for (int i = 0; i < node.Project.Columns.Count; i++)
+                        {
+                            var exp = node.Project.Columns[i].Element;
+
+                            switch (exp)
+                            {
+                                case PackExpression _:
+                                    explicitPack = true;
+                                    if (i == node.Project.Columns.Count - 1)
+                                    {
+                                        columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
+                                    }
+                                    else
+                                    {
+                                        diagnostics.Add(DiagnosticFacts.GetPackMustBeLastItemInList().WithLocation(exp));
+                                    }
+                                    break;
+
+                                case TypedColumnReference tc:
+                                    _binder.CheckIsColumn(tc.Column, diagnostics);
+                                    if (_binder.GetReferencedSymbol(tc.Column) is ColumnSymbol c)
+                                    {
+                                        var type = _binder.GetTypeFromTypeExpression(tc.Type, diagnostics);
+                                        columns.Add(new ColumnSymbol(c.Name, type));
+                                    }
+                                    break;
+
+                                case NameReference nr:
+                                    _binder.CheckIsColumn(nr, diagnostics);
+                                    if (_binder.GetReferencedSymbol(nr) is ColumnSymbol c2)
+                                    {
+                                        columns.Add(c2);
+                                    }
+                                    break;
+                            }
+                        }
                     }
 
                     if (node.ProjectAway != null && node.ProjectAway.Columns.Count > 0)
                     {
                         if (node.ProjectAway.Columns[0].Element is StarExpression)
                         {
-                            columns.RemoveAll(c => c.Name != sourceColumnName && c.Name != "pack_");
+                            columns.RemoveAll(c => c.Name != sourceColumnName && (c.Name != "pack_" || !explicitPack));
                         }
                         else
                         {
@@ -1850,13 +1935,35 @@ namespace Kusto.Language.Binding
                     }
 
                     var resultTable = new TableSymbol(columns);
+
+                    if (resultIsOpen)
+                    {
+                        resultTable = resultTable.Open();
+                    }
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
+                    s_columnListPool.ReturnToPool(refColumns);
+                    s_tableListPool.ReturnToPool(refTables);
+                    s_stringSetPool.ReturnToPool(colNameMap);
                 }
+            }
+
+            private static bool ReferencesAllTables(FindOperator node)
+            {
+                if (node.Condition.GetFirstDescendantOrSelf<StarExpression>() != null)
+                    return true;
+
+                // any string literal at root or left/right of and/or is abbreviation of: * has <string-literal>
+                return node.Condition.GetFirstDescendantOrSelf<LiteralExpression>(lt =>
+                    lt.Kind == SyntaxKind.StringLiteralExpression
+                    && (lt.Parent == node
+                        || lt.Parent is BinaryExpression be &&
+                           (be.Kind == SyntaxKind.AndExpression || be.Kind == SyntaxKind.OrExpression))) != null;
             }
 
             private static readonly QueryParameterInfo[] s_FindParameters = new QueryParameterInfo[]
@@ -1897,14 +2004,20 @@ namespace Kusto.Language.Binding
 
                     var unifiedTable = _binder.GetTableOfColumnsUnifiedByNameAndType(tables);
 
-                    TableSymbol result = unifiedTable;
+                    var resultTable = unifiedTable;
+
                     if (columns.Count > 0)
                     {
                         columns.AddRange(unifiedTable.Columns);
-                        result = new TableSymbol(columns);
+                        resultTable = new TableSymbol(columns);
                     }
 
-                    return new SemanticInfo(result.Unsorted(), diagnostics);
+                    if (tables.Any(t => t.IsOpen))
+                    {
+                        resultTable = resultTable.Open();
+                    }
+
+                    return new SemanticInfo(resultTable.Unsorted(), diagnostics);
                 }
                 finally
                 {
@@ -1943,6 +2056,7 @@ namespace Kusto.Language.Binding
 
                     // figure out the result type
                     columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+                    var resultIsOpen = RowScopeOrEmpty.IsOpen;
 
                     var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null)
@@ -1951,12 +2065,19 @@ namespace Kusto.Language.Binding
                         // only add expr columns that were not equated to a source column via the join-on expression
                         exprColumns.RemoveAll(c => rightJoinColumns.Contains(c));
                         columns.AddRange(exprColumns);
+                        resultIsOpen |= exprTable.IsOpen;
                     }
 
                     MakeColumnNamesUnique(columns);
 
-                    var result = new TableSymbol(columns);
-                    return new SemanticInfo(result, diagnostics);
+                    var resultTable = new TableSymbol(columns);
+
+                    if (resultIsOpen)
+                    {
+                        resultTable = resultTable.Open();
+                    }
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -2025,11 +2146,13 @@ namespace Kusto.Language.Binding
                     var joinKindNode = node.Parameters.GetFirstDescendant<NamedParameter>(np => np.Name.SimpleName == "kind");
                     var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
 
+                    var resultIsOpen = false;
                     // if not explicitly a right-anti/semi join, then add left-side columns
                     if (!IsRightAntiOrSemiJoin(joinKind))
                     {
                         // add left-side columns
                         columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+                        resultIsOpen |= RowScopeOrEmpty.IsOpen;
                     }
 
                     var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
@@ -2037,12 +2160,19 @@ namespace Kusto.Language.Binding
                     {
                         // add right-side columns
                         _binder.GetDeclaredAndInferredColumns(exprTable, columns);
+                        resultIsOpen |= exprTable.IsOpen;
                     }
 
                     MakeColumnNamesUnique(columns);
 
-                    var result = new TableSymbol(columns);
-                    return new SemanticInfo(result, diagnostics);
+                    var resultTable = new TableSymbol(columns);
+
+                    if (resultIsOpen)
+                    {
+                        resultTable = resultTable.Open();
+                    }
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -2123,32 +2253,17 @@ namespace Kusto.Language.Binding
                 out ColumnSymbol leftColumn,
                 out ColumnSymbol rightColumn)
             {
-                leftColumn = null;
                 rightColumn = null;
 
-                var leftColumns = s_symbolListPool.AllocateFromPool();
-                var rightColumns = s_symbolListPool.AllocateFromPool();
-                try
+                if (_binder.TryGetDeclaredOrInferredColumn(RowScopeOrEmpty, name.SimpleName, out leftColumn)
+                    && _binder.TryGetDeclaredOrInferredColumn(RightRowScopeOrEmpty, name.SimpleName, out rightColumn))
                 {
-                    RowScopeOrEmpty.GetMembers(name.SimpleName, SymbolMatch.Column, leftColumns);
-                    RightRowScopeOrEmpty.GetMembers(name.SimpleName, SymbolMatch.Column, rightColumns);
-
-                    if (leftColumns.Count == 1 && rightColumns.Count == 1)
-                    {
-                        leftColumn = (ColumnSymbol)leftColumns[0];
-                        rightColumn = (ColumnSymbol)rightColumns[0];
-                        return true;
-                    }
-                    else
-                    {
-                        diagnostics.Add(DiagnosticFacts.GetColumnMustExistOnBothSidesOfJoin(name.SimpleName).WithLocation(name));
-                        return false;
-                    }
+                    return true;
                 }
-                finally
+                else
                 {
-                    s_symbolListPool.ReturnToPool(leftColumns);
-                    s_symbolListPool.ReturnToPool(rightColumns);
+                    diagnostics.Add(DiagnosticFacts.GetColumnMustExistOnBothSidesOfJoin(name.SimpleName).WithLocation(name));
+                    return false;
                 }
             }
 
@@ -2614,7 +2729,7 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryParameters(node.With.Parameters, s_ReduceWithParameters, diagnostics);
                     }
 
-                    var resultType = RowScopeOrEmpty.WithColumns(s_ReduceColumns).Unsorted();
+                    var resultType = new TableSymbol(s_ReduceColumns);
                     return new SemanticInfo(resultType, diagnostics);
                 }
                 finally
@@ -2644,6 +2759,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitRenderOperator(RenderOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -2655,11 +2771,13 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryParameters(node.WithClause.Properties, s_RenderProperties, diagnostics);
                     }
 
-                    return new SemanticInfo(this.RowScopeOrEmpty, diagnostics);
+                    _binder.GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
+                    return new SemanticInfo(this.RowScopeOrEmpty.WithColumns(columns));
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
                 }
             }
 

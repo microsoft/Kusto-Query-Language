@@ -1973,7 +1973,7 @@ namespace Kusto.Language.Parsing
                 .WithTag("<invoke>");
 
             var RenderNameListName =
-                If(Not(Token(KustoFacts.ChartProperties)), SimpleNameDeclaration);
+                If(Not(Token(KustoFacts.ChartProperties)), SimpleNameReference);
 
             var RenderNameList =
                 Rule(
@@ -1984,7 +1984,7 @@ namespace Kusto.Language.Parsing
                                 Sequence(
                                     Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),
                                     Rule(RenderNameListName, l => (SyntaxElement)l)))),
-                        elements => MakeSeparatedList<NameDeclaration>(elements)),
+                        elements => MakeSeparatedList<NameReference>(elements)),
                     list => (Expression)new RenderNameList(list));
 
             var RenderProperty =

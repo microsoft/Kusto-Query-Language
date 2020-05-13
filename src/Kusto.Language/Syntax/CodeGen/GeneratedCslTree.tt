@@ -1887,7 +1887,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Kind = "RenderNameList",
         Properties = new GeneratedProperty[]
         {
-            new GeneratedProperty { Name = "Names", Type = "SyntaxList<SeparatedElement<NameDeclaration>>" },
+            new GeneratedProperty { Name = "Names", Type = "SyntaxList<SeparatedElement<NameReference>>" },
         }
     },
 
