@@ -224,12 +224,12 @@ namespace Kusto.Language.Binding
             {
                 base.VisitLookupOperator(node);
 
-                if (_position < node.LookupClause.TextStart)
+                if (node.LookupClause.IsMissing || _position < node.LookupClause.TextStart)
                 {
                     // no row scope
                     _binder._rowScope = null;
                 }
-                else
+                else if (_position >= node.LookupClause.TextStart)
                 {
                     // this.position >= node.LookupClause.TextStart
                     _binder._rightRowScope = node.Expression.ResultType as TableSymbol;
