@@ -141,6 +141,11 @@ namespace Kusto.Language.Binding
         private DatabaseSymbol _currentDatabase;
 
         /// <summary>
+        /// The function being declared.
+        /// </summary>
+        private FunctionSymbol _currentFunction;
+
+        /// <summary>
         /// All symbol declared locally within the query appear in the local scope.
         /// These are symbols declared by let statements or the as query operator.
         /// Local scopes may be nested within other local scopes.
@@ -202,6 +207,7 @@ namespace Kusto.Language.Binding
             GlobalState globals,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
+            FunctionSymbol currentFunction,
             LocalScope outerScope,
             GlobalBindingCache globalBindingCache,
             LocalBindingCache localBindingCache,
@@ -211,6 +217,7 @@ namespace Kusto.Language.Binding
             _globals = globals;
             _currentCluster = currentCluster ?? globals.Cluster;
             _currentDatabase = currentDatabase ?? globals.Database;
+            _currentFunction = currentFunction;
             _globalBindingCache = globalBindingCache ?? new GlobalBindingCache();
             _localBindingCache = localBindingCache ?? new LocalBindingCache();
             _localScope = new LocalScope(outerScope);
@@ -237,6 +244,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // currentFunction
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache,
@@ -277,6 +285,7 @@ namespace Kusto.Language.Binding
             Binder outer,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
+            FunctionSymbol currentFunction,
             LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
@@ -284,6 +293,7 @@ namespace Kusto.Language.Binding
                 outer._globals,
                 currentCluster ?? outer._currentCluster,
                 currentDatabase ?? outer._currentDatabase,
+                currentFunction,
                 outerScope,
                 outer._globalBindingCache,
                 outer._localBindingCache,
@@ -335,6 +345,7 @@ namespace Kusto.Language.Binding
                     globals,
                     currentCluster,
                     currentDatabase,
+                    signature.Symbol as FunctionSymbol, // currentFunction
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
@@ -776,6 +787,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // currentFunction
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
@@ -799,6 +811,7 @@ namespace Kusto.Language.Binding
                     globals,
                     globals.Cluster,
                     globals.Database,
+                    null, // currentFunction
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
@@ -1146,14 +1159,40 @@ namespace Kusto.Language.Binding
             return name.Parent is FunctionCallExpression fn && fn.Name == name;
         }
 
-        private static bool IsInvocableFunctionName(SyntaxNode name)
+        private static bool IsInvocableFunctionName(string name, SyntaxNode location)
         {
-            return name.GetFirstAncestor<CustomCommand>() == null;
+            // its either not part of a control command,
+            // or its part of a control command that defines the body of a function
+            return location.GetFirstAncestor<CustomCommand>() == null
+                || location.GetFirstAncestor<FunctionBody>() != null;
         }
 
-        private static bool IsPossibleInvocableFunctionWithoutArgumentList(SyntaxNode name)
+        private static bool IsPossibleInvocableFunctionWithoutArgumentList(string name, SyntaxNode location)
         {
-            return !IsFunctionCallName(name) && IsInvocableFunctionName(name);
+            return !IsFunctionCallName(location)
+                && IsInvocableFunctionName(name, location);
+        }
+
+        private bool IsNameOfDatabaseFunctionBeingDeclared(string name, SyntaxNode location)
+        {
+            // this is a name reference inside a function body that is part of a control command
+            if (location.GetFirstAncestor<CustomCommand>() != null
+                && location.GetFirstAncestor<FunctionBody>() != null)
+            {
+                // somewhere else there is a name that is the function being declared
+                var functionName = location.Root.GetFirstDescendant<Name>(nd => nd.Parent.NameInParent == "FunctionName");
+                return functionName != null && functionName.SimpleName == name;
+            }
+            else if (_currentFunction != null 
+                && _currentFunction.Name == name
+                && IsDatabaseFunction(_currentFunction))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private static bool IsEvaluateFunctionName(SyntaxNode name)
@@ -1207,6 +1246,12 @@ namespace Kusto.Language.Binding
             try
             {
                 bool allowZeroArgumentInvocation = false;
+
+                // don't match the database function that is being declared (if any)
+                if (IsNameOfDatabaseFunctionBeingDeclared(name, location))
+                {
+                    match &= ~SymbolMatch.Function;
+                }
 
                 if (_pathScope != null)
                 {
@@ -1286,12 +1331,12 @@ namespace Kusto.Language.Binding
                     {
                         _localScope.GetSymbols(name, match, list);
 
-                        // user defined functions do not require argument list if it has not arguments
+                        // user defined functions do not require argument list if it has no arguments
                         allowZeroArgumentInvocation = list.Count > 0;
                     }
 
                     // look for zero-argument functions
-                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location) && (match & SymbolMatch.Function) != 0)
+                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(name, location) && (match & SymbolMatch.Function) != 0)
                     {
                         // database functions only (locally defined functions are already handled above)
                         GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
@@ -1342,7 +1387,7 @@ namespace Kusto.Language.Binding
                     var resultType = GetResultType(item);
 
                     // check for zero-parameter function invocation not part of a function call node
-                    if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(location))
+                    if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(name, location))
                     {
                         var sig = fn.Signatures.FirstOrDefault(s => s.MinArgumentCount == 0);
                         if (sig != null && allowZeroArgumentInvocation)
@@ -2851,7 +2896,7 @@ namespace Kusto.Language.Binding
                             var isDatabaseFunction = IsDatabaseFunction(signature);
                             var currentDatabase = isDatabaseFunction ? _globals.GetDatabase((FunctionSymbol)signature.Symbol) : null;
                             var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
-                            BindExpansion(expansion, this, currentCluster, currentDatabase, outerScope, callSiteInfo.Locals);
+                            BindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals);
                             SetSignatureBindingInfo(signature, expansion);
                         }
                     }
@@ -2874,13 +2919,6 @@ namespace Kusto.Language.Binding
             finally
             {
                 _localBindingCache.SignaturesComputingExpansion.Remove(signature);
-            }
-
-            // Determines if the signature is from a database function
-            bool IsDatabaseFunction(Signature sig)
-            {
-                // user functions have existing declaration syntax
-                return sig.Declaration == null;
             }
 
             // Tries to get the expansion from global or local cache.
@@ -2910,6 +2948,18 @@ namespace Kusto.Language.Binding
                     _localBindingCache.CallSiteToExpansionMap.Add(callsite, expansion);
                 }
             }
+        }
+
+        // Determines if the signature is from a database function
+        private static bool IsDatabaseFunction(Signature sig)
+        {
+            // user functions have existing declaration syntax
+            return sig.Declaration == null;
+        }
+
+        private static bool IsDatabaseFunction(FunctionSymbol function)
+        {
+            return function.Signatures.Count == 1 && IsDatabaseFunction(function.Signatures[0]);
         }
 
         internal void SetSignatureBindingInfo(Signature signature, FunctionBody body)

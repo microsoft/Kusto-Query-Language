@@ -345,6 +345,7 @@
         TagsKeyword,
         TakeKeyword,
         TempStorageKeyword,
+        ThreadPoolsKeyword,
         ThresholdKeyword,
         ThrowKeyword,
         TimeoutKeyword,

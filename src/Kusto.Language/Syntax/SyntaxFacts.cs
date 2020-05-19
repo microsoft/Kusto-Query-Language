@@ -376,6 +376,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.TagsKeyword, "tags", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.TakeKeyword, "take"),
                 new SyntaxData(SyntaxKind.TempStorageKeyword, "tempstorage", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.ThreadPoolsKeyword, "threadpools"),
                 new SyntaxData(SyntaxKind.ThresholdKeyword, "threshold", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ThrowKeyword, "throw"),
                 new SyntaxData(SyntaxKind.TimeoutKeyword, "timeout", canBeIdentifier: true),
