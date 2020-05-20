@@ -719,16 +719,6 @@ namespace Kusto.Language.Parsing
                                 SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))))
                 .WithTag("<wildcard>");
 
-            var Conditioned =
-                Rule(
-                    Token(SyntaxKind.QuestionToken),
-                    RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(NamedExpression, MissingExpression),
-                    RequiredToken(SyntaxKind.CloseParenToken),
-                    (question, openParen, expr, closeParen) =>
-                        (Expression)new ConditionedExpression(question, openParen, expr, closeParen))
-                .WithTag("<conditioned>");
-
             var InvocationExpression =
                 First(
                     Rule(
@@ -744,7 +734,15 @@ namespace Kusto.Language.Parsing
             var BrackettedPathElementSelector =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    Required(First(WildcardedNameReference, Conditioned, InvocationExpression).Hide(), MissingNameReference),
+                    Required(First(WildcardedNameReference, InvocationExpression).Hide(), MissingNameReference),
+                    RequiredToken(SyntaxKind.CloseBracketToken),
+                    (openBracket, expr, closeBracket) =>
+                        (Expression)new BrackettedExpression(openBracket, expr, closeBracket));
+
+            var BrackettedPostPathElementSelector =
+                Rule(
+                    Token(SyntaxKind.OpenBracketToken),
+                    Required(UnnamedExpression, MissingNameReference),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, expr, closeBracket) =>
                         (Expression)new BrackettedExpression(openBracket, expr, closeBracket));
@@ -834,9 +832,9 @@ namespace Kusto.Language.Parsing
 
                         _left =>
                             First(
-                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(First(BarePathElementSelector, BrackettedPostPathElementSelector), MissingNameReference),
                                     (left, dot, selector) => (Expression)new PathExpression(left, dot, selector)),
-                                Rule(_left, BrackettedPathElementSelector,
+                                Rule(_left, BrackettedPostPathElementSelector,
                                     (left, right) => (Expression)new ElementExpression(left, right)))));
 
             var RequiredFunctionCallOrPath =

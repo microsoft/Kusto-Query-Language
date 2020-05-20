@@ -616,22 +616,6 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
-        Name = "ConditionedExpression",
-        Doc = "",
-        Base = "Expression",
-        Sealed = true,
-        Kind = "ConditionedExpression",
-        Properties = new GeneratedProperty[]
-        {
-            new GeneratedProperty { Name = "QuestionMark", Type = "SyntaxToken", Completion="Syntax"},
-            new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" },
-            new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
-        }
-    },
-
-    new GeneratedCslNodeClass
-    {
         Name = "PathExpression",
         Doc = "",
         Base = "Expression",

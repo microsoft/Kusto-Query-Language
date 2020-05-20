@@ -537,22 +537,40 @@ namespace Kusto.Language
         public static readonly CommandSymbol DropExternalTable =
             new CommandSymbol("drop external table", "drop external table <name>:TableName", ExternalTableFullResult);
 
+        private static readonly string CreateOrAlterExternalTableGrammar =
+            @"external table <name>:TableName '(' { <name>:ColumnName ':'! <type>:ColumnType, ',' }+ ')'
+              kind '='! (blob | adl):TableKind
+              [partition by!
+               (
+                {(format_datetime '='! <string>:DateTimeFormat bin '('! <name>:DateTimeColumn ',' <timespan>:BinValue ')'
+                  | bin '('! <name>:DateTimeColumn ',' <timespan>:BinValue ')'
+                  | [<string>:StringPartitionPrefix] (<name>:StringColumn | hash '('! <name>:StringColumn ',' <long>:HashMod ')') [<string>:StringPartitionSuffix]), ','}+
+               |
+                '('
+                 {<name>:PartitionName ':'!
+                  (string:PartitionType ['=' <name>:StringColumn]
+                   | datetime:PartitionType ['=' 
+                     (<name>:DateTimeColumn 
+                      | bin:PartitionFunction '('! <name>:DateTimeColumn ',' <timespan>:BinValue ')'
+                      | (startofday | startofweek | startofmonth | startofyear):PartitionFunction '('! <name>:DateTimeColumn ')')]
+                   | long:PartitionType '='! hash:PartitionFunction '(' <name>:StringColumn ',' <long>:HashMod ')'), ','}+
+                ')'
+                [pathformat '='! '(' 
+                 [<string>:PathSeparator]
+                 { (<name>:PartitionName | datetime_pattern '('! <string>:DateTimeFormat ',' <name>:PartitionName ')')
+                  [<string>:PathSeparator] }+ ')']
+               )
+              ]
+              dataformat '='! (avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile):DataFormatKind
+              '(' { <string>:StorageConnectionString, ',' }+ ')'
+              [with '('! { <name>:PropertyName '='! <value>:Value, ',' }+ ')']";
+
         public static readonly CommandSymbol CreateExternalTable =
-            new CommandSymbol("create external table",
-                @"create external table <name>:TableName '(' { <name>:ColumnName ':'! <type>:ColumnType, ',' }+ ')'
-                    kind '=' (blob | adl):TableKind
-                    [partition by! [format_datetime '='! <string>:DateTimePartitionFormat] bin! '(' <name>:BinColumn ',' <timespan>:BinValue ')']
-                    dataformat '='! (avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
-                    [with '('! { <name>:PropertyName '='! <value>:Value, ',' }+ ')'!]",
+            new CommandSymbol("create external table", "create " + CreateOrAlterExternalTableGrammar,
                 ExternalTableFullResult);
 
         public static readonly CommandSymbol AlterExternalTable =
-            new CommandSymbol("alter external table",
-                @"alter external table <table>:TableName '(' { <name>:ColumnName ':'! <type>:ColumnType, ',' }+ ')'
-                    kind '='! (blob | adl):TableKind
-                    [partition by! [format_datetime '='! <string>:DateTimePartitionFormat] bin! '(' <column>:BinColumn ',' <timespan>:BinValue ')']
-                    dataformat '='! (avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile):DataFormatKind '(' { <string>:StorageConnectionString, ',' }+ ')'
-                    [with '('! { <name>:PropertyName '='! <value>:Value, ',' }+ ')'!]",
+            new CommandSymbol("alter external table", "alter " + CreateOrAlterExternalTableGrammar,
                 ExternalTableFullResult);
         #endregion
         #endregion

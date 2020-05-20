@@ -641,11 +641,6 @@ namespace Kusto.Language.Binding
                         // wildcard binding was already figured out, so just pass it along
                         return new SemanticInfo(_binder.GetReferencedSymbol(nr), _binder.GetResultTypeOrError(nr));
                     }
-                    else if (node.Expression is ConditionedExpression ce)
-                    {
-                        // not implemented yet
-                        return ErrorInfo;
-                    }
                     else if (selectorType != ScalarTypes.String)
                     {
                         return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
@@ -679,11 +674,6 @@ namespace Kusto.Language.Binding
                     {
                         // legal for things like [TableName*] for unions and joins, etc
                         return new SemanticInfo(_binder.GetReferencedSymbol(nr), _binder.GetResultTypeOrError(nr));
-                    }
-                    else if (node.Expression is ConditionedExpression ce)
-                    {
-                        // not implemented yet
-                        return ErrorInfo;
                     }
                     else if (selectorType != ScalarTypes.String)
                     {
@@ -750,12 +740,6 @@ namespace Kusto.Language.Binding
             }
 
             public override SemanticInfo VisitAtExpression(AtExpression node)
-            {
-                // TODO:
-                return null;
-            }
-
-            public override SemanticInfo VisitConditionedExpression(ConditionedExpression node)
             {
                 // TODO:
                 return null;

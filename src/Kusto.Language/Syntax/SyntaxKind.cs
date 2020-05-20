@@ -511,7 +511,6 @@
         ToScalarExpression,
         ToTableExpression,
         BrackettedExpression,
-        ConditionedExpression,
         PipeExpression,
         NamedParameter,
         DataScopeExpression,

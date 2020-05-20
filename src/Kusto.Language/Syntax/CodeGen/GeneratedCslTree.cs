@@ -3024,85 +3024,6 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class BrackettedExpression */
     
-    #region class ConditionedExpression
-    public sealed partial class ConditionedExpression : Expression
-    {
-        public override SyntaxKind Kind => SyntaxKind.ConditionedExpression;
-        
-        public SyntaxToken QuestionMark { get; }
-        
-        public SyntaxToken OpenParen { get; }
-        
-        public Expression Expression { get; }
-        
-        public SyntaxToken CloseParen { get; }
-        
-        /// <summary>
-        /// Constructs a new instance of <see cref="ConditionedExpression"/>.
-        /// </summary>
-        internal ConditionedExpression(SyntaxToken questionMark, SyntaxToken openParen, Expression expression, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
-        {
-            this.QuestionMark = Attach(questionMark);
-            this.OpenParen = Attach(openParen);
-            this.Expression = Attach(expression);
-            this.CloseParen = Attach(closeParen);
-            this.Init();
-        }
-        
-        public override int ChildCount => 4;
-        
-        public override SyntaxElement GetChild(int index)
-        {
-            switch (index)
-            {
-                case 0: return QuestionMark;
-                case 1: return OpenParen;
-                case 2: return Expression;
-                case 3: return CloseParen;
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        public override string GetName(int index)
-        {
-            switch (index)
-            {
-                case 0: return nameof(QuestionMark);
-                case 1: return nameof(OpenParen);
-                case 2: return nameof(Expression);
-                case 3: return nameof(CloseParen);
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        protected override CompletionHint GetCompletionHintCore(int index)
-        {
-            switch (index)
-            {
-                case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Scalar;
-                case 3: return CompletionHint.Syntax;
-                default: return CompletionHint.Inherit;
-            }
-        }
-        
-        public override void Accept(SyntaxVisitor visitor)
-        {
-            visitor.VisitConditionedExpression(this);
-        }
-        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-        {
-            return visitor.VisitConditionedExpression(this);
-        }
-        
-        protected override SyntaxElement CloneCore()
-        {
-            return new ConditionedExpression((SyntaxToken)QuestionMark?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
-        }
-    }
-    #endregion /* class ConditionedExpression */
-    
     #region class PathExpression
     public sealed partial class PathExpression : Expression
     {
@@ -12160,7 +12081,6 @@ namespace Kusto.Language.Syntax
         public abstract void VisitRenameList(RenameList node);
         public abstract void VisitCompoundNamedExpression(CompoundNamedExpression node);
         public abstract void VisitBrackettedExpression(BrackettedExpression node);
-        public abstract void VisitConditionedExpression(ConditionedExpression node);
         public abstract void VisitPathExpression(PathExpression node);
         public abstract void VisitElementExpression(ElementExpression node);
         public abstract void VisitPipeExpression(PipeExpression node);
@@ -12427,10 +12347,6 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitBrackettedExpression(BrackettedExpression node)
-        {
-            this.DefaultVisit(node);
-        }
-        public override void VisitConditionedExpression(ConditionedExpression node)
         {
             this.DefaultVisit(node);
         }
@@ -12941,7 +12857,6 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitRenameList(RenameList node);
         public abstract TResult VisitCompoundNamedExpression(CompoundNamedExpression node);
         public abstract TResult VisitBrackettedExpression(BrackettedExpression node);
-        public abstract TResult VisitConditionedExpression(ConditionedExpression node);
         public abstract TResult VisitPathExpression(PathExpression node);
         public abstract TResult VisitElementExpression(ElementExpression node);
         public abstract TResult VisitPipeExpression(PipeExpression node);
@@ -13208,10 +13123,6 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitBrackettedExpression(BrackettedExpression node)
-        {
-            return this.DefaultVisit(node);
-        }
-        public override TResult VisitConditionedExpression(ConditionedExpression node)
         {
             return this.DefaultVisit(node);
         }

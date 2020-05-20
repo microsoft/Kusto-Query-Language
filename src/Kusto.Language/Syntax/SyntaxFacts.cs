@@ -520,7 +520,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ToScalarExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ToTableExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BrackettedExpression, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.ConditionedExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.RangeOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PipeExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NamedParameter, "", SyntaxCategory.Node),
