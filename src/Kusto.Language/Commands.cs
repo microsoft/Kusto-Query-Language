@@ -926,6 +926,16 @@ namespace Kusto.Language
             new CommandSymbol("alter cluster policy querylimit", "alter cluster policy querylimit <string>:Policy", PolicyResult);
         #endregion
 
+        #region Multi Database Admins
+        public static readonly CommandSymbol ShowClusterPolicyMultiDatabaseAdmins =
+            new CommandSymbol("show cluster policy multidatabaseadmins", PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyMultiDatabaseAdmins =
+            new CommandSymbol("alter cluster policy multidatabaseadmins", "alter cluster policy multidatabaseadmins <string>:Policy", PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyMultiDatabaseAdmins =
+            new CommandSymbol("alter-merge cluster policy multidatabaseadmins", "alter-merge cluster policy multidatabaseadmins <string>:Policy", PolicyResult);
+        #endregion
         #endregion
 
         #region Security Role Commands
@@ -1713,6 +1723,11 @@ namespace Kusto.Language
                 // Query Limit
                 ShowClusterPolicyQueryLimit,
                 AlterClusterPolicyQueryLimit,
+
+                // Multi Database Admins
+                ShowClusterPolicyMultiDatabaseAdmins,
+                AlterClusterPolicyMultiDatabaseAdmins,
+                AlterMergeClusterPolicyMultiDatabaseAdmins,
                 #endregion
 
                 #region Security Role Commands

@@ -799,23 +799,12 @@ namespace Kusto.Language.Editor
                     }
                 }
 
-                // examples
                 HashSet<string> examples = null;
+                var possibleParameters = new List<Parameter>();
 
                 foreach (var sig in signatures)
                 {
-                    Parameter p = null;
-
-                    if (name != null)
-                    {
-                         p = sig.GetParameter(name);
-                    }
-                    else if (argumentIndex < arguments.Count)
-                    {
-                        var argParams = sig.GetArgumentParameters(arguments);
-                        p = argParams[argumentIndex];
-                    }
-
+                    // check for special cases
                     if (argumentIndex == 0)
                     {
                         switch (sig.ReturnKind)
@@ -896,14 +885,34 @@ namespace Kusto.Language.Editor
                         }
                     }
 
-                    if (p != null && p.Examples.Count > 0)
-                    {
-                        if (examples == null)
-                            examples = new HashSet<string>();
+                    // check for examples
+                    possibleParameters.Clear();
 
-                        foreach (var ex in p.Examples)
+                    if (name != null)
+                    {
+                        possibleParameters.Add(sig.GetParameter(name));
+                    }
+                    else if (argumentIndex < arguments.Count)
+                    {
+                        var argParams = sig.GetArgumentParameters(arguments);
+                        possibleParameters.Add(argParams[argumentIndex]);
+                    }
+                    else
+                    {
+                        sig.GetPossibleParameters(argumentIndex, arguments.Count, possibleParameters);
+                    }
+
+                    foreach (var p in possibleParameters)
+                    {
+                        if (p.Examples.Count > 0)
                         {
-                            examples.Add(ex);
+                            if (examples == null)
+                                examples = new HashSet<string>();
+
+                            foreach (var ex in p.Examples)
+                            {
+                                examples.Add(ex);
+                            }
                         }
                     }
                 }
