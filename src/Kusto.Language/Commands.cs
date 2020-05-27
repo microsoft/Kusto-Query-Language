@@ -532,7 +532,7 @@ namespace Kusto.Language
             new CommandSymbol("show external table schema", "show external table <name>:TableName schema as (json | csl)", ExternalTableSchemaResult);
 
         public static readonly CommandSymbol ShowExternalTableArtifacts =
-            new CommandSymbol("show external table artifacts", "show external table <name>:TableName artifacts", ExternalTableArtifactsResult);
+            new CommandSymbol("show external table artifacts", "show external table <name>:TableName artifacts [limit <long>:LimitCount]", ExternalTableArtifactsResult);
 
         public static readonly CommandSymbol DropExternalTable =
             new CommandSymbol("drop external table", "drop external table <name>:TableName", ExternalTableFullResult);

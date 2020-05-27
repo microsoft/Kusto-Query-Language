@@ -1248,6 +1248,14 @@ namespace Kusto.Language
                 new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol BagMerge =
+            new FunctionSymbol("bag_merge", ScalarTypes.Dynamic,
+                new Parameter("bag", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         #endregion
 
         #region digest / series functions
@@ -2221,6 +2229,7 @@ namespace Kusto.Language
             SetUnion,
             SetIntersect,
             SetDifference,
+            BagMerge,
 #endregion
 
 #region digest / series functions
