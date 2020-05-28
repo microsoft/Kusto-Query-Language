@@ -103,6 +103,7 @@ namespace Kusto.Language.Editor
                         case SyntaxKind.ColonToken:
                         case SyntaxKind.BarToken:
                         case SyntaxKind.EqualToken:
+                        case SyntaxKind.FatArrowToken:
                         case SyntaxKind.CloseParenToken: // some clauses end in ) but there is more to go
                             return true;
                     }

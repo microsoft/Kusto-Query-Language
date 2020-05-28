@@ -11575,6 +11575,604 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class JoinWhereClause */
     
+    #region class ScanOperator
+    public sealed partial class ScanOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanOperator;
+        
+        public SyntaxToken ScanKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        public ScanOrderByClause OrderByClause { get; }
+        
+        public ScanPartitionByClause PartitionByClause { get; }
+        
+        public ScanDeclareClause DeclareClause { get; }
+        
+        public SyntaxToken WithKeyword { get; }
+        
+        public SyntaxToken OpenParenToken { get; }
+        
+        public SyntaxList<ScanStep> Steps { get; }
+        
+        public SyntaxToken CloseParenToken { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanOperator"/>.
+        /// </summary>
+        internal ScanOperator(SyntaxToken scanKeyword, SyntaxList<NamedParameter> parameters, ScanOrderByClause orderByClause, ScanPartitionByClause partitionByClause, ScanDeclareClause declareClause, SyntaxToken withKeyword, SyntaxToken openParenToken, SyntaxList<ScanStep> steps, SyntaxToken closeParenToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ScanKeyword = Attach(scanKeyword);
+            this.Parameters = Attach(parameters);
+            this.OrderByClause = Attach(orderByClause, optional: true);
+            this.PartitionByClause = Attach(partitionByClause, optional: true);
+            this.DeclareClause = Attach(declareClause, optional: true);
+            this.WithKeyword = Attach(withKeyword);
+            this.OpenParenToken = Attach(openParenToken, optional: true);
+            this.Steps = Attach(steps);
+            this.CloseParenToken = Attach(closeParenToken, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 9;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ScanKeyword;
+                case 1: return Parameters;
+                case 2: return OrderByClause;
+                case 3: return PartitionByClause;
+                case 4: return DeclareClause;
+                case 5: return WithKeyword;
+                case 6: return OpenParenToken;
+                case 7: return Steps;
+                case 8: return CloseParenToken;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ScanKeyword);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(OrderByClause);
+                case 3: return nameof(PartitionByClause);
+                case 4: return nameof(DeclareClause);
+                case 5: return nameof(WithKeyword);
+                case 6: return nameof(OpenParenToken);
+                case 7: return nameof(Steps);
+                case 8: return nameof(CloseParenToken);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                case 3:
+                case 4:
+                case 6:
+                case 8:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
+                case 5: return CompletionHint.Keyword;
+                case 6: return CompletionHint.Syntax;
+                case 7: return CompletionHint.Syntax;
+                case 8: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanOperator((SyntaxToken)ScanKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (ScanOrderByClause)OrderByClause?.Clone(), (ScanPartitionByClause)PartitionByClause?.Clone(), (ScanDeclareClause)DeclareClause?.Clone(), (SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParenToken?.Clone(), (SyntaxList<ScanStep>)Steps?.Clone(), (SyntaxToken)CloseParenToken?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanOperator */
+    
+    #region class ScanDeclareClause
+    public sealed partial class ScanDeclareClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanDeclareClause;
+        
+        public SyntaxToken DeclareKeyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxList<SeparatedElement<NameAndTypeDeclaration>> Declarations { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanDeclareClause"/>.
+        /// </summary>
+        internal ScanDeclareClause(SyntaxToken declareKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<NameAndTypeDeclaration>> declarations, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.DeclareKeyword = Attach(declareKeyword);
+            this.OpenParen = Attach(openParen);
+            this.Declarations = Attach(declarations);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return DeclareKeyword;
+                case 1: return OpenParen;
+                case 2: return Declarations;
+                case 3: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(DeclareKeyword);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(Declarations);
+                case 3: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanDeclareClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanDeclareClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanDeclareClause((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Declarations?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanDeclareClause */
+    
+    #region class ScanOrderByClause
+    public sealed partial class ScanOrderByClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanOrderByClause;
+        
+        public SyntaxToken OrderKeyword { get; }
+        
+        public SyntaxToken ByKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanOrderByClause"/>.
+        /// </summary>
+        internal ScanOrderByClause(SyntaxToken orderKeyword, SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OrderKeyword = Attach(orderKeyword);
+            this.ByKeyword = Attach(byKeyword);
+            this.Expressions = Attach(expressions);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OrderKeyword;
+                case 1: return ByKeyword;
+                case 2: return Expressions;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OrderKeyword);
+                case 1: return nameof(ByKeyword);
+                case 2: return nameof(Expressions);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Keyword;
+                case 2: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanOrderByClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanOrderByClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanOrderByClause((SyntaxToken)OrderKeyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanOrderByClause */
+    
+    #region class ScanPartitionByClause
+    public sealed partial class ScanPartitionByClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanPartitionByClause;
+        
+        public SyntaxToken PartitionKeyword { get; }
+        
+        public SyntaxToken ByKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanPartitionByClause"/>.
+        /// </summary>
+        internal ScanPartitionByClause(SyntaxToken partitionKeyword, SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PartitionKeyword = Attach(partitionKeyword);
+            this.ByKeyword = Attach(byKeyword);
+            this.Expressions = Attach(expressions);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PartitionKeyword;
+                case 1: return ByKeyword;
+                case 2: return Expressions;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PartitionKeyword);
+                case 1: return nameof(ByKeyword);
+                case 2: return nameof(Expressions);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Keyword;
+                case 2: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanPartitionByClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanPartitionByClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanPartitionByClause((SyntaxToken)PartitionKeyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanPartitionByClause */
+    
+    #region class ScanStep
+    public sealed partial class ScanStep : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanStep;
+        
+        public SyntaxToken StepKeyword { get; }
+        
+        public NameDeclaration Name { get; }
+        
+        public SyntaxToken OptionalKeyword { get; }
+        
+        public SyntaxToken ColonToken { get; }
+        
+        public Expression Predicate { get; }
+        
+        public ScanComputationClause ComputationClause { get; }
+        
+        public SyntaxToken SemicolonToken { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanStep"/>.
+        /// </summary>
+        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken colonToken, Expression predicate, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.StepKeyword = Attach(stepKeyword);
+            this.Name = Attach(name);
+            this.OptionalKeyword = Attach(optionalKeyword, optional: true);
+            this.ColonToken = Attach(colonToken);
+            this.Predicate = Attach(predicate);
+            this.ComputationClause = Attach(computationClause, optional: true);
+            this.SemicolonToken = Attach(semicolonToken);
+            this.Init();
+        }
+        
+        public override int ChildCount => 7;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return StepKeyword;
+                case 1: return Name;
+                case 2: return OptionalKeyword;
+                case 3: return ColonToken;
+                case 4: return Predicate;
+                case 5: return ComputationClause;
+                case 6: return SemicolonToken;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(StepKeyword);
+                case 1: return nameof(Name);
+                case 2: return nameof(OptionalKeyword);
+                case 3: return nameof(ColonToken);
+                case 4: return nameof(Predicate);
+                case 5: return nameof(ComputationClause);
+                case 6: return nameof(SemicolonToken);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                case 5:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Keyword;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Scalar;
+                case 5: return CompletionHint.Syntax;
+                case 6: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanStep(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanStep(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanStep((SyntaxToken)StepKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)OptionalKeyword?.Clone(), (SyntaxToken)ColonToken?.Clone(), (Expression)Predicate?.Clone(), (ScanComputationClause)ComputationClause?.Clone(), (SyntaxToken)SemicolonToken?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanStep */
+    
+    #region class ScanComputationClause
+    public sealed partial class ScanComputationClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanComputationClause;
+        
+        public SyntaxToken ArrowToken { get; }
+        
+        public SyntaxList<SeparatedElement<ScanAssignment>> ScanComputation { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanComputationClause"/>.
+        /// </summary>
+        internal ScanComputationClause(SyntaxToken arrowToken, SyntaxList<SeparatedElement<ScanAssignment>> scanComputation, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ArrowToken = Attach(arrowToken);
+            this.ScanComputation = Attach(scanComputation);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ArrowToken;
+                case 1: return ScanComputation;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ArrowToken);
+                case 1: return nameof(ScanComputation);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Column;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanComputationClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanComputationClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanComputationClause((SyntaxToken)ArrowToken?.Clone(), (SyntaxList<SeparatedElement<ScanAssignment>>)ScanComputation?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanComputationClause */
+    
+    #region class ScanAssignment
+    public sealed partial class ScanAssignment : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanAssignment;
+        
+        public NameReference Name { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public Expression Expression { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanAssignment"/>.
+        /// </summary>
+        internal ScanAssignment(NameReference name, SyntaxToken equalToken, Expression expression, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Name = Attach(name);
+            this.EqualToken = Attach(equalToken);
+            this.Expression = Attach(expression);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Name;
+                case 1: return EqualToken;
+                case 2: return Expression;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Name);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(Expression);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Column;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanAssignment(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanAssignment(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ScanAssignment((NameReference)Name?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ScanAssignment */
+    
     #region class CommandWithClause
     public abstract partial class CommandWithClause : Clause
     {
@@ -12191,6 +12789,13 @@ namespace Kusto.Language.Syntax
         public abstract void VisitLookupOperator(LookupOperator node);
         public abstract void VisitJoinOnClause(JoinOnClause node);
         public abstract void VisitJoinWhereClause(JoinWhereClause node);
+        public abstract void VisitScanOperator(ScanOperator node);
+        public abstract void VisitScanDeclareClause(ScanDeclareClause node);
+        public abstract void VisitScanOrderByClause(ScanOrderByClause node);
+        public abstract void VisitScanPartitionByClause(ScanPartitionByClause node);
+        public abstract void VisitScanStep(ScanStep node);
+        public abstract void VisitScanComputationClause(ScanComputationClause node);
+        public abstract void VisitScanAssignment(ScanAssignment node);
         public abstract void VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract void VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract void VisitUnknownCommand(UnknownCommand node);
@@ -12790,6 +13395,34 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitScanOperator(ScanOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanDeclareClause(ScanDeclareClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanOrderByClause(ScanOrderByClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanPartitionByClause(ScanPartitionByClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanStep(ScanStep node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanComputationClause(ScanComputationClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitScanAssignment(ScanAssignment node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitCommandWithValueClause(CommandWithValueClause node)
         {
             this.DefaultVisit(node);
@@ -12967,6 +13600,13 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitLookupOperator(LookupOperator node);
         public abstract TResult VisitJoinOnClause(JoinOnClause node);
         public abstract TResult VisitJoinWhereClause(JoinWhereClause node);
+        public abstract TResult VisitScanOperator(ScanOperator node);
+        public abstract TResult VisitScanDeclareClause(ScanDeclareClause node);
+        public abstract TResult VisitScanOrderByClause(ScanOrderByClause node);
+        public abstract TResult VisitScanPartitionByClause(ScanPartitionByClause node);
+        public abstract TResult VisitScanStep(ScanStep node);
+        public abstract TResult VisitScanComputationClause(ScanComputationClause node);
+        public abstract TResult VisitScanAssignment(ScanAssignment node);
         public abstract TResult VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract TResult VisitUnknownCommand(UnknownCommand node);
@@ -13563,6 +14203,34 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitJoinWhereClause(JoinWhereClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanOperator(ScanOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanDeclareClause(ScanDeclareClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanOrderByClause(ScanOrderByClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanPartitionByClause(ScanPartitionByClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanStep(ScanStep node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanComputationClause(ScanComputationClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanAssignment(ScanAssignment node)
         {
             return this.DefaultVisit(node);
         }

@@ -225,6 +225,10 @@ namespace Kusto.Language.Binding
             _cancellationToken = cancellationToken;
         }
 
+        public TableSymbol RowScopeOrEmpty => _rowScope ?? TableSymbol.Empty;
+
+        public TableSymbol RightRowScopeOrEmpty => _rightRowScope ?? TableSymbol.Empty;
+
         /// <summary>
         /// Do semantic analysis over the syntax tree.
         /// </summary>
@@ -657,7 +661,7 @@ namespace Kusto.Language.Binding
 
             if (!tupleMap.TryGetValue(table, out var tuple))
             {
-                tuple = new TupleSymbol(table.Columns);
+                tuple = new TupleSymbol(table.Columns, table);
                 tupleMap.Add(table, tuple);
             }
 
@@ -855,7 +859,22 @@ namespace Kusto.Language.Binding
                 }
 
                 // any columns or tables from left-hand side?
-                if (memberMatch != 0)
+                if ((memberMatch & SymbolMatch.Column) != 0)
+                {
+                    if (_pathScope is TableSymbol table && table.IsOpen)
+                    {
+                        list.AddRange(GetDeclaredAndInferredColumns(table));
+                    }
+                    else if (_pathScope is TupleSymbol tuple && tuple.RelatedTable != null && tuple.RelatedTable.IsOpen)
+                    {
+                        list.AddRange(GetDeclaredAndInferredColumns(tuple.RelatedTable));
+                    }
+                    else
+                    {
+                        _pathScope.GetMembers(memberMatch, list);
+                    }
+                }
+                else if (memberMatch != 0)
                 {
                     _pathScope.GetMembers(memberMatch, list);
                 }
@@ -1285,20 +1304,12 @@ namespace Kusto.Language.Binding
                             {
                                 list.Add(Functions.Database);
                             }
-                            else if (_rightRowScope != null 
-                                && location.Parent is PathExpression p 
-                                && p.Expression is NameReference nr)
+                            else if (_pathScope is TupleSymbol tuple 
+                                && tuple.RelatedTable != null 
+                                && tuple.RelatedTable.IsOpen
+                                && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
                             {
-                                if (nr.SimpleName == "$left" 
-                                    && TryGetDeclaredOrInferredColumn(_rowScope, name, out var leftCol))
-                                {
-                                    list.Add(leftCol);
-                                }
-                                else if (nr.SimpleName == "$right" 
-                                    && TryGetDeclaredOrInferredColumn(_rightRowScope, name, out var rightCol))
-                                {
-                                    list.Add(rightCol);
-                                }
+                                list.Add(col);
                             }
                         }
                         else
@@ -3172,31 +3183,29 @@ namespace Kusto.Language.Binding
             scope.AddSymbol(GetReferencedSymbol(statement.Name));
         }
 
-        private void AddDeclarationsToLocalScope(LocalScope scope, SyntaxList<SeparatedElement<FunctionParameter>> declarations)
+        private void AddDeclarationsToLocalScope(SyntaxList<SeparatedElement<FunctionParameter>> declarations)
         {
             for (int i = 0, n = declarations.Count; i < n; i++)
             {
                 var d = declarations[i].Element;
-                AddDeclarationToLocalScope(scope, d.NameAndType);
+                AddDeclarationToLocalScope(d.NameAndType.Name);
             }
         }
 
-        private void AddDeclarationsToLocalScope(LocalScope scope, SyntaxList<SeparatedElement<NameAndTypeDeclaration>> declarations)
+        private void AddDeclarationsToLocalScope(SyntaxList<SeparatedElement<NameAndTypeDeclaration>> declarations)
         {
             for (int i = 0, n = declarations.Count; i < n; i++)
             {
                 var d = declarations[i].Element;
-                AddDeclarationToLocalScope(scope, d);
+                AddDeclarationToLocalScope(d.Name);
             }
         }
 
-        private void AddDeclarationToLocalScope(LocalScope scope, NameAndTypeDeclaration declaration, List<Diagnostic> diagnostics = null)
+        private void AddDeclarationToLocalScope(SyntaxNode node)
         {
-            // referenced symbol should already be bound
-            var symbol = GetReferencedSymbol(declaration.Name);
-            if (symbol != null)
+            if (node.ReferencedSymbol is Symbol s)
             {
-                scope.AddSymbol(symbol); 
+                _localScope.AddSymbol(s);
             }
         }
 
@@ -3232,6 +3241,75 @@ namespace Kusto.Language.Binding
             {
                 var symbol = new ParameterSymbol(name, type);
                 SetSemanticInfo(node.Name, new SemanticInfo(symbol, type));
+            }
+        }
+
+        private void BindColumnDeclarations(SyntaxList<SeparatedElement<NameAndTypeDeclaration>> parameters)
+        {
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var p = parameters[i].Element;
+                BindColumnDeclaration(p);
+            }
+        }
+
+        private void BindColumnDeclaration(NameAndTypeDeclaration node)
+        {
+            var name = node.Name.SimpleName;
+            var type = GetTypeFromTypeExpression(node.Type);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                var symbol = new ColumnSymbol(name, type);
+                SetSemanticInfo(node.Name, new SemanticInfo(symbol, type));
+            }
+        }
+
+        private TupleSymbol GetScanStepTuple(ScanOperator node)
+        {
+            var columns = s_columnListPool.AllocateFromPool();
+            try
+            {
+                GetDeclaredAndInferredColumns(_rowScope, columns);
+
+                if (node.DeclareClause != null)
+                {
+                    foreach (var elem in node.DeclareClause.Declarations)
+                    {
+                        if (elem.Element.Name.ReferencedSymbol is ColumnSymbol c)
+                        {
+                            columns.Add(c);
+                        }
+                    }
+                }
+
+                return new TupleSymbol(columns, relatedTable: _rowScope);
+            }
+            finally
+            {
+                s_columnListPool.ReturnToPool(columns);
+            }
+        }
+
+        private void BindStepDeclarations(ScanOperator node)
+        {
+            var stepTuple = GetScanStepTuple(node);
+
+            foreach (var step in node.Steps)
+            {
+                var name = step.Name.SimpleName;
+                var local = new VariableSymbol(name, stepTuple);
+                SetSemanticInfo(step.Name, new SemanticInfo(local, stepTuple));
+            }
+        }
+
+        private void AddStepDeclarationsToLocalScope(ScanOperator node)
+        {
+            var stepTuple = GetScanStepTuple(node);
+
+            foreach (var step in node.Steps)
+            {
+                AddDeclarationToLocalScope(step.Name);
             }
         }
 

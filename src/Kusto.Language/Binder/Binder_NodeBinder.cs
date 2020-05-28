@@ -24,9 +24,9 @@ namespace Kusto.Language.Binding
                 _binder = binder;
             }
 
-            public TableSymbol RowScopeOrEmpty => _binder._rowScope ?? TableSymbol.Empty;
+            public TableSymbol RowScopeOrEmpty => _binder.RowScopeOrEmpty;
 
-            public TableSymbol RightRowScopeOrEmpty => _binder._rightRowScope ?? TableSymbol.Empty;
+            public TableSymbol RightRowScopeOrEmpty => _binder.RightRowScopeOrEmpty;
 
 
             #region declarations
@@ -2954,9 +2954,84 @@ namespace Kusto.Language.Binding
                 new ColumnSymbol("ColumnType", ScalarTypes.String));
 
             private static readonly SemanticInfo s_GetSchemaInfo = new SemanticInfo(s_GetSchemaSchema);
-#endregion
 
-#region clauses 
+
+            public override SemanticInfo VisitScanOperator(ScanOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    // TODO: check other clauses here
+
+                    _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, columns);
+
+                    if (node.DeclareClause != null)
+                    {
+                        foreach (var element in node.DeclareClause.Declarations)
+                        {
+                            var decl = element.Element;
+                            columns.Add(new ColumnSymbol(decl.Name.SimpleName, GetDeclaredType(decl.Type)));
+                        }
+                    }
+                    
+                    var matchIdParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == KustoFacts.ScanOperatorWithMatchIdProperty);
+                    var matchIdColumnName = (matchIdParam != null && matchIdParam.Expression is NameDeclaration matchNd) ? matchNd.SimpleName : "match_id";
+                    columns.Add(new ColumnSymbol(matchIdColumnName, ScalarTypes.Long));
+
+                    var stepNameParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == KustoFacts.ScanOperatorWithStepNameProperty);
+                    var stepColumnName = (stepNameParam != null && stepNameParam.Expression is NameDeclaration stepNd) ? stepNd.SimpleName : "step";
+                    columns.Add(new ColumnSymbol(stepColumnName, ScalarTypes.String));
+
+                    var resultTable = new TableSymbol(columns);
+                    if (RowScopeOrEmpty.IsOpen)
+                    {
+                        resultTable = resultTable.Open();
+                    }
+
+                    return new SemanticInfo(resultTable, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
+                }
+            }
+
+            public override SemanticInfo VisitScanOrderByClause(ScanOrderByClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitScanPartitionByClause(ScanPartitionByClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitScanDeclareClause(ScanDeclareClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitScanAssignment(ScanAssignment node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitScanStep(ScanStep node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitScanComputationClause(ScanComputationClause node)
+            {
+                return null;
+            }
+            #endregion
+
+            #region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
             // typically handled by the parent node's visit method.
 

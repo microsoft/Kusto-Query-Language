@@ -497,7 +497,6 @@ namespace Kusto.Language
             new FunctionSymbol("parse_ipv4_mask", ScalarTypes.Long,
                 new Parameter("ip", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long))
-            .Hide()
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -523,17 +522,14 @@ namespace Kusto.Language
             new FunctionSymbol("parse_ipv6", ScalarTypes.String,
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // TODO: unhide post service deployment supporting these functions.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseIPV6Mask =
             new FunctionSymbol("parse_ipv6_mask", ScalarTypes.String,
                 new Parameter("ip", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long))
-            .Hide()
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // TODO: unhide post service deployment supporting these functions.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv6Compare =
             new FunctionSymbol("ipv6_compare", ScalarTypes.Long,
@@ -541,8 +537,7 @@ namespace Kusto.Language
                 new Parameter("ip2", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // TODO: unhide post service deployment supporting these functions.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv6IsMatch =
             new FunctionSymbol("ipv6_is_match", ScalarTypes.Bool,
@@ -550,8 +545,7 @@ namespace Kusto.Language
                 new Parameter("ip2", ScalarTypes.String),
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // TODO: unhide post service deployment supporting these functions.
+            .ConstantFoldable();
         #endregion
 
         public static readonly FunctionSymbol ParsePath =

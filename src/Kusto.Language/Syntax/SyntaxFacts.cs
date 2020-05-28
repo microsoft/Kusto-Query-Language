@@ -277,6 +277,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.OlderKeyword, "older", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.OnKeyword, "on"),
                 new SyntaxData(SyntaxKind.OperationsKeyword, "operations", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.OptionalKeyword, "optional", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.OrKeyword, "or", opKind: OperatorKind.Or),
                 new SyntaxData(SyntaxKind.OrderKeyword, "order"),
                 new SyntaxData(SyntaxKind.OthersKeyword, "others", canBeIdentifier: true),
@@ -345,6 +346,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.SandboxesKeyword, "sandboxes"),
                 new SyntaxData(SyntaxKind.SampleKeyword, "sample"),
                 new SyntaxData(SyntaxKind.SampleDistinctKeyword, "sample-distinct"),
+                new SyntaxData(SyntaxKind.ScanKeyword, "scan", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.SaveKeyword, "save", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.SchemaKeyword, "schema", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ScriptKeyword, "script", canBeIdentifier: true),
@@ -476,6 +478,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.BangTildeToken, "!~", SyntaxCategory.Operator, OperatorKind.BangTilde),
                 new SyntaxData(SyntaxKind.AtToken, "@", SyntaxCategory.Punctuation),
                 new SyntaxData(SyntaxKind.QuestionToken, "?", SyntaxCategory.Punctuation),
+                new SyntaxData(SyntaxKind.FatArrowToken, "=>", SyntaxCategory.Punctuation),
 
                 // literal tokens
                 new SyntaxData(SyntaxKind.StringLiteralToken, "", SyntaxCategory.Literal),
@@ -708,6 +711,14 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.SampleOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.SampleDistinctOperator, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.ScanOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanOrderByClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanPartitionByClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanDeclareClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanStep, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanComputationClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanAssignment, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.SearchOperator, "", SyntaxCategory.Node),
 

@@ -17,10 +17,13 @@ namespace Kusto.Language.Symbols
 
         public override SymbolKind Kind => SymbolKind.Tuple;
 
-        public TupleSymbol(IEnumerable<ColumnSymbol> columns)
+        public TableSymbol RelatedTable { get; }
+
+        public TupleSymbol(IEnumerable<ColumnSymbol> columns, TableSymbol relatedTable = null)
             : base("tuple")
         {
             this.Columns = columns.ToReadOnly();
+            this.RelatedTable = relatedTable;
         }
 
         public TupleSymbol(params ColumnSymbol[] columns)
@@ -30,7 +33,7 @@ namespace Kusto.Language.Symbols
 
         public TupleSymbol WithColumns(IEnumerable<ColumnSymbol> columns)
         {
-            return new TupleSymbol(columns);
+            return new TupleSymbol(columns, this.RelatedTable);
         }
 
         public override Tabularity Tabularity => Tabularity.Scalar;

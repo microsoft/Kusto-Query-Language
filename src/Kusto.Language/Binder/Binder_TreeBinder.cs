@@ -497,7 +497,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder.BindParameterDeclarations(node.Parameters);
-                    _binder.AddDeclarationsToLocalScope(_binder._localScope, node.Parameters);
+                    _binder.AddDeclarationsToLocalScope(node.Parameters);
                 }
                 finally
                 {
@@ -510,16 +510,37 @@ namespace Kusto.Language.Binding
                 base.VisitQueryParametersStatement(node);
 
                 // declare all query parameters in the local scope
-                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                _binder.BindParameterDeclarations(node.Parameters);
+                _binder.AddDeclarationsToLocalScope(node.Parameters);
+            }
+
+            public override void VisitScanOperator(ScanOperator node)
+            {
+                node.Parameters.Accept(this);
+                node.OrderByClause?.Accept(this);
+                node.PartitionByClause?.Accept(this);
+
+                var oldLocalScope = _binder._localScope;
+                _binder._localScope = new LocalScope(oldLocalScope);
                 try
                 {
-                    _binder.BindParameterDeclarations(node.Parameters);
-                    _binder.AddDeclarationsToLocalScope(_binder._localScope, node.Parameters);
+                    if (node.DeclareClause != null)
+                    {
+                        _binder.BindColumnDeclarations(node.DeclareClause.Declarations);
+                        _binder.AddDeclarationsToLocalScope(node.DeclareClause.Declarations);
+                    }
+
+                    _binder.BindStepDeclarations(node);
+                    _binder.AddStepDeclarationsToLocalScope(node);
+
+                    node.Steps.Accept(this);
                 }
                 finally
                 {
-                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    _binder._localScope = oldLocalScope;
                 }
+
+                BindNode(node);
             }
 
             public override void VisitPatternStatement(PatternStatement node)
@@ -554,11 +575,11 @@ namespace Kusto.Language.Binding
                     _binder._localScope = new LocalScope(oldLocalScope);
 
                     // add bound parameter symbols to scope
-                    _binder.AddDeclarationsToLocalScope(_binder._localScope, node.Parameters);
+                    _binder.AddDeclarationsToLocalScope(node.Parameters);
 
                     if (node.PathParameter != null)
                     {
-                        _binder.AddDeclarationToLocalScope(_binder._localScope, node.PathParameter.Parameter);
+                        _binder.AddDeclarationToLocalScope(node.PathParameter.Parameter.Name);
                     }
 
                     // parameters in scope while bindng pattern match bodies

@@ -2343,6 +2343,120 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         }
     },
 
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanOperator",
+        Doc = "",
+        Base = "QueryOperator",
+        Sealed = true,
+        Kind = "ScanOperator",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ScanKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="Syntax" },
+            new GeneratedProperty { Name = "OrderByClause", Type = "ScanOrderByClause", Optional=true, Completion="Syntax" },
+            new GeneratedProperty { Name = "PartitionByClause", Type = "ScanPartitionByClause", Optional=true, Completion="Syntax" },
+            new GeneratedProperty { Name = "DeclareClause", Type = "ScanDeclareClause", Optional=true, Completion="Syntax" },
+            new GeneratedProperty { Name = "WithKeyword", Type="SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "OpenParenToken", Type = "SyntaxToken", Optional=true, Completion="Syntax" },
+            new GeneratedProperty { Name = "Steps", Type = "SyntaxList<ScanStep>", Completion="Syntax" },
+            new GeneratedProperty { Name = "CloseParenToken", Type = "SyntaxToken", Optional=true, Completion="Syntax" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanDeclareClause",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanDeclareClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "DeclareKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Declarations", Type = "SyntaxList<SeparatedElement<NameAndTypeDeclaration>>", Completion="Syntax" },
+            new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanOrderByClause",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanOrderByClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "OrderKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "ByKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Scalar" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanPartitionByClause",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanPartitionByClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "PartitionKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "ByKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Scalar" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanStep",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanStep",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "StepKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Name", Type = "NameDeclaration", Completion="Syntax" },
+            new GeneratedProperty { Name = "OptionalKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
+            new GeneratedProperty { Name = "ColonToken", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Predicate", Type="Expression", Completion="Scalar" },
+            new GeneratedProperty { Name = "ComputationClause", Type="ScanComputationClause", Optional=true, Completion="Syntax" },
+            new GeneratedProperty { Name = "SemicolonToken", Type = "SyntaxToken", Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanComputationClause",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanComputationClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ArrowToken", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "ScanComputation", Type = "SyntaxList<SeparatedElement<ScanAssignment>>", Completion="Column" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
+        Name = "ScanAssignment",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanAssignment",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "Name", Type = "NameReference", Completion="Column" },
+            new GeneratedProperty { Name = "EqualToken", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Expression", Type = "Expression", Completion="Scalar" },
+        }
+    },
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //  Commands
     //

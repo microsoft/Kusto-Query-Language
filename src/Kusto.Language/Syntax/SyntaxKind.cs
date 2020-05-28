@@ -246,6 +246,7 @@
         OnKeyword,
         OlderKeyword,
         OperationsKeyword,
+        OptionalKeyword,
         OrKeyword,
         OrderKeyword,
         OthersKeyword,
@@ -315,6 +316,7 @@
         SandboxKeyword,
         SandboxesKeyword,
         SaveKeyword,
+        ScanKeyword,
         SchemaKeyword,
         ScriptKeyword,
         SealKeyword,
@@ -445,6 +447,7 @@
         BangTildeToken,
         AtToken,
         QuestionToken,
+        FatArrowToken,
 
         // literal tokens
         BooleanLiteralToken,
@@ -679,6 +682,14 @@
 
         SampleOperator,
         SampleDistinctOperator,
+
+        ScanOperator,
+        ScanOrderByClause,
+        ScanPartitionByClause,
+        ScanDeclareClause,
+        ScanStep,
+        ScanComputationClause,
+        ScanAssignment,
 
         SerializeOperator,
 

@@ -1830,6 +1830,74 @@ namespace Kusto.Language.Parsing
                    (keyword, list) => (QueryOperator)new ProjectReorderOperator(keyword, list))
                 .WithTag("<project-reorder>");
 
+
+            var ScanAssignment =
+                Rule(SimpleNameReference, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, MissingExpression),
+                    (name, equals, expr) =>
+                        new ScanAssignment((NameReference)name, equals, expr))
+                .WithTag("<assignment>");
+
+            var ScanComputationClause =
+                Rule(
+                    Token(SyntaxKind.FatArrowToken),
+                    CommaList(ScanAssignment, MissingScanAssignmentNode, oneOrMore: true),
+                    (token, list) => new ScanComputationClause(token, list));
+
+            var ScanStep =
+                Rule(
+                    Token(SyntaxKind.StepKeyword),
+                    Required(RenameName, MissingNameDeclaration), // name
+                    Optional(Token(SyntaxKind.OptionalKeyword)),
+                    RequiredToken(SyntaxKind.ColonToken),
+                    Required(UnnamedExpression, MissingExpression),
+                    Optional(ScanComputationClause),
+                    RequiredToken(SyntaxKind.SemicolonToken),
+                    (step, name, optional, colon, predicate, computation, semi) =>
+                        new ScanStep(step, name, optional, colon, predicate, computation, semi));
+
+            var ScanOrderByClause =
+                Rule(
+                    Token(SyntaxKind.OrderKeyword),
+                    RequiredToken(SyntaxKind.ByKeyword),
+                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
+                    (order, by, list) =>
+                        new ScanOrderByClause(order, by, list));
+
+            var ScanPartitionByClause =
+                Rule(
+                    Token(SyntaxKind.PartitionKeyword),
+                    RequiredToken(SyntaxKind.ByKeyword),
+                    CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true),
+                    (partition, by, list) =>
+                        new ScanPartitionByClause(partition, by, list));
+
+            var ScanDeclareClause =
+                Rule(
+                    Token(SyntaxKind.DeclareKeyword),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    CommaList(NameAndTypeDeclaration, MissingNameAndTypeDeclarationNode, oneOrMore: true),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (declare, open, list, close) => new ScanDeclareClause(declare, open, list, close));
+
+            var ScanOperator =
+                Rule(
+                    Token(SyntaxKind.ScanKeyword).Hide(), // private while this is alpha
+                    List(First(
+                        TokenNamedParameter("kind", KustoFacts.ScanOperatorKinds),
+                        NameDeclarationNamedParameter(KustoFacts.ScanOperatorWithMatchIdProperty),
+                        NameDeclarationNamedParameter(KustoFacts.ScanOperatorWithStepNameProperty),
+                        QueryOperatorParameter)),
+                    Optional(ScanOrderByClause),
+                    Optional(ScanPartitionByClause),
+                    Optional(ScanDeclareClause),
+                    RequiredToken(SyntaxKind.WithKeyword,
+                        new CompletionItem(CompletionKind.Syntax, "with", "with (", ")")),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    List(ScanStep),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (scan, parameters, orderBy, partitionBy, declare, with, openParen, steps, closeParen) =>
+                        (QueryOperator)new ScanOperator(scan, parameters, orderBy, partitionBy, declare, with, openParen, steps, closeParen));
+
             var TopHittersByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
@@ -2084,7 +2152,8 @@ namespace Kusto.Language.Parsing
                     RenderOperator,
                     AsOperator,
                     SerializeOperator,
-                    InvokeOperator);
+                    InvokeOperator,
+                    ScanOperator);
 
             var AllQueryOperator =
                 First(PrePipeQueryOperator, PostPipeQueryOperator);
@@ -2115,6 +2184,7 @@ namespace Kusto.Language.Parsing
                     AsOperator,
                     InvokeOperator,
                     ExecuteAndCacheOperator,
+                    ScanOperator,
                     AllQueryOperator.Hide()); // allow other query operators to parser, but fail in binding
 
             ForkPipeExpressionCore =
@@ -2151,6 +2221,7 @@ namespace Kusto.Language.Parsing
                     AsOperator,
                     InvokeOperator,
                     ExecuteAndCacheOperator,
+                    ScanOperator,
                     AllQueryOperator.Hide()); // allow all query operators to parse, but fail later in binding
 
             PartitionPipeExpressionCore =
@@ -2185,9 +2256,9 @@ namespace Kusto.Language.Parsing
 
             ExpressionCore =
                 PipeExpression;
-            #endregion
+#endregion
 
-            #region Statements
+#region Statements
             var AliasStatement =
                 Rule(
                     Token(SyntaxKind.AliasKeyword, CompletionKind.QueryPrefix).Hide(),
@@ -2580,9 +2651,9 @@ namespace Kusto.Language.Parsing
                     RestrictStatement,
                     QueryStatement)
                 .WithTag("<statement>");
-            #endregion
+#endregion
 
-            #region QueryBlock
+#region QueryBlock
             this.StatementList =
                 SeparatedList(
                     Statement, SyntaxKind.SemicolonToken, 
@@ -2605,10 +2676,10 @@ namespace Kusto.Language.Parsing
 
                     (statements, skipped, end) =>
                         new QueryBlock(statements, skipped, end));
-            #endregion
+#endregion
         }
 
-        #region Missing Elements
+#region Missing Elements
         public static readonly NameDeclaration MissingNameDeclarationNode =
             new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
 
@@ -2629,6 +2700,26 @@ namespace Kusto.Language.Parsing
 
         public static readonly Func<Expression> MissingExpression =
             () => (Expression)MissingExpressionNode.Clone();
+
+        public static readonly NamedExpression MissingNamedExpressionNode =
+            new SimpleNamedExpression(
+                new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)), 
+                new[] { DiagnosticFacts.GetMissingName() });
+
+        public static readonly Func<NamedExpression> MissingNamedExpression =
+            () => (NamedExpression)MissingNamedExpressionNode.Clone();
+
+        public static readonly ScanAssignment MissingScanAssignmentNode =
+            new ScanAssignment(
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.EqualEqualToken),
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                new[] { DiagnosticFacts.GetMissingName() });
+
+        public static readonly Func<ScanAssignment> MissingScanAssignment =
+            () => (ScanAssignment)MissingScanAssignmentNode.Clone();
 
         public static readonly Expression MissingValueNode =
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingValue() });
@@ -2847,9 +2938,9 @@ namespace Kusto.Language.Parsing
 
         public static Func<Expression> MissingTokenLiteral(params string[] tokens) =>
             MissingTokenLiteral((IReadOnlyList<string>)tokens);
-        #endregion
+#endregion
 
-        #region other
+#region other
         private static Parser<LexicalToken, NameDeclaration> AsIdentifierNameDeclaration(Parser<LexicalToken, SyntaxToken> tokenParser) =>
             Rule(tokenParser, (keyword) => new NameDeclaration(keyword));
 
@@ -2961,6 +3052,6 @@ namespace Kusto.Language.Parsing
                 expressionHint);
 
         // keep this blank line separation before the #endregion to keep BRIDGE.Net from crashing
-        #endregion
+#endregion
     }
 }

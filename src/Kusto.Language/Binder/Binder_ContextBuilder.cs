@@ -162,7 +162,7 @@ namespace Kusto.Language.Binding
                         }
                         else if (se.Element is QueryParametersStatement qps)
                         {
-                            _binder.AddDeclarationsToLocalScope(_binder._localScope, qps.Parameters);
+                            _binder.AddDeclarationsToLocalScope(qps.Parameters);
                         }
                         else if (se.Element is PatternStatement ps)
                         {
@@ -186,7 +186,7 @@ namespace Kusto.Language.Binding
                     (_position < node.Body.End
                      || node.Body.CloseBrace.IsMissing && _position <= node.Body.End + 1))
                 {
-                    _binder.AddDeclarationsToLocalScope(_binder._localScope, node.Parameters.Parameters);
+                    _binder.AddDeclarationsToLocalScope(node.Parameters.Parameters);
                 }
             }
 
@@ -196,11 +196,11 @@ namespace Kusto.Language.Binding
 
                 if (_position > node.Patterns.TextStart)
                 {
-                    _binder.AddDeclarationsToLocalScope(_binder._localScope, node.Parameters);
+                    _binder.AddDeclarationsToLocalScope(node.Parameters);
 
                     if (node.PathParameter != null)
                     {
-                        _binder.AddDeclarationToLocalScope(_binder._localScope, node.PathParameter.Parameter);
+                        _binder.AddDeclarationToLocalScope(node.PathParameter.Parameter.Name);
                     }
                 }
             }
@@ -302,6 +302,17 @@ namespace Kusto.Language.Binding
                     {
                         _binder._localScope.AddSymbol(column);
                     }
+                }
+            }
+
+            public override void VisitScanOperator(ScanOperator node)
+            {
+                base.VisitScanOperator(node);
+
+                if (_position > node.WithKeyword.TextStart && node.DeclareClause != null)
+                {
+                    _binder.AddDeclarationsToLocalScope(node.DeclareClause.Declarations);
+                    _binder.AddStepDeclarationsToLocalScope(node);
                 }
             }
 

@@ -261,6 +261,15 @@ namespace Kusto.Language
             SyntaxKind.ExecuteAndCacheOperator
         };
 
+        public static readonly IReadOnlyList<string> ScanOperatorKinds = new string[]
+        {
+            "partial",
+            "full"
+        };
+
+        public static readonly string ScanOperatorWithMatchIdProperty = "with_match_id";
+        public static readonly string ScanOperatorWithStepNameProperty = "with_step_name";
+
         /// <summary>
         /// True if the text can an identifier in all places that declare or reference names.
         /// </summary>
