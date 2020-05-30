@@ -2374,7 +2374,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "DeclareKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "OpenParen", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "Declarations", Type = "SyntaxList<SeparatedElement<NameAndTypeDeclaration>>", Completion="Syntax" },
+            new GeneratedProperty { Name = "Declarations", Type = "SyntaxList<SeparatedElement<FunctionParameter>>", Completion="Syntax" },
             new GeneratedProperty { Name = "CloseParen", Type = "SyntaxToken", Completion="Syntax" }
         }
     },
@@ -2422,7 +2422,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
             new GeneratedProperty { Name = "Name", Type = "NameDeclaration", Completion="Syntax" },
             new GeneratedProperty { Name = "OptionalKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
             new GeneratedProperty { Name = "ColonToken", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "Predicate", Type="Expression", Completion="Scalar" },
+            new GeneratedProperty { Name = "Condition", Type="Expression", Completion="Scalar" },
             new GeneratedProperty { Name = "ComputationClause", Type="ScanComputationClause", Optional=true, Completion="Syntax" },
             new GeneratedProperty { Name = "SemicolonToken", Type = "SyntaxToken", Completion="Syntax" }
         }
@@ -2438,7 +2438,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "ArrowToken", Type = "SyntaxToken", Completion="Syntax" },
-            new GeneratedProperty { Name = "ScanComputation", Type = "SyntaxList<SeparatedElement<ScanAssignment>>", Completion="Column" },
+            new GeneratedProperty { Name = "Assignments", Type = "SyntaxList<SeparatedElement<ScanAssignment>>", Completion="Column" },
         }
     },
 

@@ -86,6 +86,7 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, Expression> PartitionPipeExpressionCore = null;
             Parser<LexicalToken, Statement> LetStatementCore = null;
             Parser<LexicalToken, Statement> DeclareQueryParametersStatementCore = null;
+            Parser<LexicalToken, FunctionParameter> FunctionParameterCore = null;
 
             this.Expression =
                 Forward(() => ExpressionCore)
@@ -142,6 +143,10 @@ namespace Kusto.Language.Parsing
             var DeclareQueryParametersStatement =
                 Forward(() => DeclareQueryParametersStatementCore)
                 .WithTag("<query-parameters>");
+
+            var FunctionParameter =
+                Forward(() => FunctionParameterCore)
+                .WithTag("<function-parameter>");
             #endregion
 
             #region Names
@@ -1859,7 +1864,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.OrderKeyword),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionKeyword, SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (order, by, list) =>
                         new ScanOrderByClause(order, by, list));
 
@@ -1867,7 +1872,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.PartitionKeyword),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (partition, by, list) =>
                         new ScanPartitionByClause(partition, by, list));
 
@@ -1875,9 +1880,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DeclareKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(NameAndTypeDeclaration, MissingNameAndTypeDeclarationNode, oneOrMore: true),
+                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: true, endKinds: new[] { SyntaxKind.WithKeyword } ),
                     RequiredToken(SyntaxKind.CloseParenToken),
-                    (declare, open, list, close) => new ScanDeclareClause(declare, open, list, close));
+                    (declare, open, declarations, close) => new ScanDeclareClause(declare, open, declarations, close));
 
             var ScanOperator =
                 Rule(
@@ -2285,7 +2290,7 @@ namespace Kusto.Language.Parsing
                     Required(First(ConstantExpression, NameTokenLiteral), MissingExpression),
                     (equalToken, value) => new DefaultValueDeclaration(equalToken, value));
 
-            var FunctionParameter =
+            FunctionParameterCore =
                 Rule(
                     NameAndTypeDeclaration,
                     Optional(DefaultValueDeclaration),

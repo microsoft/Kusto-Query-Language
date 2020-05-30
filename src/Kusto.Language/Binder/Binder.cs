@@ -3244,7 +3244,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void BindColumnDeclarations(SyntaxList<SeparatedElement<NameAndTypeDeclaration>> parameters)
+        private void BindColumnDeclarations(SyntaxList<SeparatedElement<FunctionParameter>> parameters)
         {
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -3253,15 +3253,15 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void BindColumnDeclaration(NameAndTypeDeclaration node)
+        private void BindColumnDeclaration(FunctionParameter node)
         {
-            var name = node.Name.SimpleName;
-            var type = GetTypeFromTypeExpression(node.Type);
+            var name = node.NameAndType.Name.SimpleName;
+            var type = GetTypeFromTypeExpression(node.NameAndType.Type);
 
             if (!string.IsNullOrEmpty(name))
             {
                 var symbol = new ColumnSymbol(name, type);
-                SetSemanticInfo(node.Name, new SemanticInfo(symbol, type));
+                SetSemanticInfo(node.NameAndType.Name, new SemanticInfo(symbol, type));
             }
         }
 
@@ -3276,7 +3276,7 @@ namespace Kusto.Language.Binding
                 {
                     foreach (var elem in node.DeclareClause.Declarations)
                     {
-                        if (elem.Element.Name.ReferencedSymbol is ColumnSymbol c)
+                        if (elem.Element.NameAndType.Name.ReferencedSymbol is ColumnSymbol c)
                         {
                             columns.Add(c);
                         }

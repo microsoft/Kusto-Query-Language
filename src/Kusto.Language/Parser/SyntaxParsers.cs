@@ -445,10 +445,19 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, TElement> elementParser,
             TElement missingElement,
             bool oneOrMore = false,
-            bool allowTrailingComma = false)
+            bool allowTrailingComma = false,
+            IEnumerable<SyntaxKind> endKinds = null)
             where TElement : SyntaxElement
         {
-            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, EndOfCommaList, oneOrMore, allowTrailingComma);
+            Parser<LexicalToken> endOfList = EndOfCommaList;
+
+            if (endKinds != null)
+            {
+                var hash = new HashSet<SyntaxKind>(endKinds);
+                endOfList = First(EndOfCommaList, Match(t => hash.Contains(t.Kind)));
+            }
+
+            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
         }
 
         /// <summary>

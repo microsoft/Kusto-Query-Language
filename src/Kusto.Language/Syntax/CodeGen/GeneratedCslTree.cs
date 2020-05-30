@@ -11708,14 +11708,14 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OpenParen { get; }
         
-        public SyntaxList<SeparatedElement<NameAndTypeDeclaration>> Declarations { get; }
+        public SyntaxList<SeparatedElement<FunctionParameter>> Declarations { get; }
         
         public SyntaxToken CloseParen { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="ScanDeclareClause"/>.
         /// </summary>
-        internal ScanDeclareClause(SyntaxToken declareKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<NameAndTypeDeclaration>> declarations, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ScanDeclareClause(SyntaxToken declareKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<FunctionParameter>> declarations, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DeclareKeyword = Attach(declareKeyword);
             this.OpenParen = Attach(openParen);
@@ -11773,7 +11773,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new ScanDeclareClause((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Declarations?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ScanDeclareClause((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<FunctionParameter>>)Declarations?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class ScanDeclareClause */
@@ -11937,7 +11937,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken ColonToken { get; }
         
-        public Expression Predicate { get; }
+        public Expression Condition { get; }
         
         public ScanComputationClause ComputationClause { get; }
         
@@ -11946,13 +11946,13 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="ScanStep"/>.
         /// </summary>
-        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken colonToken, Expression predicate, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken colonToken, Expression condition, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.StepKeyword = Attach(stepKeyword);
             this.Name = Attach(name);
             this.OptionalKeyword = Attach(optionalKeyword, optional: true);
             this.ColonToken = Attach(colonToken);
-            this.Predicate = Attach(predicate);
+            this.Condition = Attach(condition);
             this.ComputationClause = Attach(computationClause, optional: true);
             this.SemicolonToken = Attach(semicolonToken);
             this.Init();
@@ -11968,7 +11968,7 @@ namespace Kusto.Language.Syntax
                 case 1: return Name;
                 case 2: return OptionalKeyword;
                 case 3: return ColonToken;
-                case 4: return Predicate;
+                case 4: return Condition;
                 case 5: return ComputationClause;
                 case 6: return SemicolonToken;
                 default: throw new ArgumentOutOfRangeException();
@@ -11983,7 +11983,7 @@ namespace Kusto.Language.Syntax
                 case 1: return nameof(Name);
                 case 2: return nameof(OptionalKeyword);
                 case 3: return nameof(ColonToken);
-                case 4: return nameof(Predicate);
+                case 4: return nameof(Condition);
                 case 5: return nameof(ComputationClause);
                 case 6: return nameof(SemicolonToken);
                 default: throw new ArgumentOutOfRangeException();
@@ -12028,7 +12028,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new ScanStep((SyntaxToken)StepKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)OptionalKeyword?.Clone(), (SyntaxToken)ColonToken?.Clone(), (Expression)Predicate?.Clone(), (ScanComputationClause)ComputationClause?.Clone(), (SyntaxToken)SemicolonToken?.Clone(), this.SyntaxDiagnostics);
+            return new ScanStep((SyntaxToken)StepKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)OptionalKeyword?.Clone(), (SyntaxToken)ColonToken?.Clone(), (Expression)Condition?.Clone(), (ScanComputationClause)ComputationClause?.Clone(), (SyntaxToken)SemicolonToken?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class ScanStep */
@@ -12040,15 +12040,15 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken ArrowToken { get; }
         
-        public SyntaxList<SeparatedElement<ScanAssignment>> ScanComputation { get; }
+        public SyntaxList<SeparatedElement<ScanAssignment>> Assignments { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="ScanComputationClause"/>.
         /// </summary>
-        internal ScanComputationClause(SyntaxToken arrowToken, SyntaxList<SeparatedElement<ScanAssignment>> scanComputation, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ScanComputationClause(SyntaxToken arrowToken, SyntaxList<SeparatedElement<ScanAssignment>> assignments, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.ArrowToken = Attach(arrowToken);
-            this.ScanComputation = Attach(scanComputation);
+            this.Assignments = Attach(assignments);
             this.Init();
         }
         
@@ -12059,7 +12059,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return ArrowToken;
-                case 1: return ScanComputation;
+                case 1: return Assignments;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12069,7 +12069,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(ArrowToken);
-                case 1: return nameof(ScanComputation);
+                case 1: return nameof(Assignments);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12095,7 +12095,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new ScanComputationClause((SyntaxToken)ArrowToken?.Clone(), (SyntaxList<SeparatedElement<ScanAssignment>>)ScanComputation?.Clone(), this.SyntaxDiagnostics);
+            return new ScanComputationClause((SyntaxToken)ArrowToken?.Clone(), (SyntaxList<SeparatedElement<ScanAssignment>>)Assignments?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class ScanComputationClause */

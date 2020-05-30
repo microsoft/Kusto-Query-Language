@@ -2973,7 +2973,7 @@ namespace Kusto.Language.Binding
                         foreach (var element in node.DeclareClause.Declarations)
                         {
                             var decl = element.Element;
-                            columns.Add(new ColumnSymbol(decl.Name.SimpleName, GetDeclaredType(decl.Type)));
+                            columns.Add(new ColumnSymbol(decl.NameAndType.Name.SimpleName, GetDeclaredType(decl.NameAndType.Type)));
                         }
                     }
                     
