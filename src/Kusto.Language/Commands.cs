@@ -16,8 +16,9 @@ namespace Kusto.Language
                 new ColumnSymbol("IsCurrent", ScalarTypes.Bool),
                 new ColumnSymbol("DatabaseAccessMode", ScalarTypes.String),
                 new ColumnSymbol("PrettyName", ScalarTypes.String),
-                new ColumnSymbol("CurrentUseIsUnrestrictedViewer", ScalarTypes.Bool),
-                new ColumnSymbol("DatabaseId", ScalarTypes.Guid));
+                new ColumnSymbol("ReservedSlot1", ScalarTypes.Bool),
+                new ColumnSymbol("DatabaseId", ScalarTypes.Guid),
+                new ColumnSymbol("InTransitionTo", ScalarTypes.String));
 
         private static readonly TableSymbol ShowDatabaseDetailsResults =
             new TableSymbol(
