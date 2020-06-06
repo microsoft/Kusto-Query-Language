@@ -587,10 +587,10 @@ namespace Kusto.Language
 
         #region Caching
         public static readonly CommandSymbol ShowDatabasePolicyCaching =
-            new CommandSymbol("show database policy caching", "show database <database> policy caching", PolicyResult);
+            new CommandSymbol("show database policy caching", "show database (<database> | '*'):DatabaseName policy caching", PolicyResult);
 
         public static readonly CommandSymbol ShowTablePolicyCaching =
-            new CommandSymbol("show table policy caching", "show table <database_table> policy caching", PolicyResult);
+            new CommandSymbol("show table policy caching", "show table (<database_table> | '*'):TableName policy caching", PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyCaching =
             new CommandSymbol("alter database policy caching", "alter database <database> policy caching hot '=' <timespan>:Timespan", PolicyResult);
@@ -692,10 +692,10 @@ namespace Kusto.Language
 
         #region Batch
         public static readonly CommandSymbol ShowDatabasePolicyIngestionBatching =
-            new CommandSymbol("show database policy ingestionbatching", "show database <database>:DatabaseName policy ingestionbatching", PolicyResult);
+            new CommandSymbol("show database policy ingestionbatching", "show database (<database> | '*'):DatabaseName policy ingestionbatching", PolicyResult);
 
         public static readonly CommandSymbol ShowTablePolicyIngestionBatching =
-            new CommandSymbol("show table policy ingestionbatching", "show table <database_table>:TableName policy ingestionbatching", PolicyResult);
+            new CommandSymbol("show table policy ingestionbatching", "show table (<database_table> | '*'):TableName policy ingestionbatching", PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyIngestionBatching =
             new CommandSymbol("alter database policy ingestionbatching", "alter database <database>:DatabaseName policy ingestionbatching <string>:IngestionBatchingPolicy", PolicyResult);
@@ -782,7 +782,7 @@ namespace Kusto.Language
 
         #region Partitioning
         public static readonly CommandSymbol ShowTablePolicyPartitioning =
-            new CommandSymbol("show table policy partitioning", "show table <table>:TableName policy partitioning", PolicyResult);
+            new CommandSymbol("show table policy partitioning", "show table (<database_table> | '*'):TableName policy partitioning", PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyPartitioning =
             new CommandSymbol("alter table policy partitioning", "alter table <table>:TableName policy partitioning <string>:Policy", PolicyResult);
@@ -829,7 +829,7 @@ namespace Kusto.Language
 
         #region Sharding
         public static readonly CommandSymbol ShowDatabasePolicySharding =
-            new CommandSymbol("show database policy sharding", "show database <database>:DatabaseName policy sharding", PolicyResult);
+            new CommandSymbol("show database policy sharding", "show database (<database> | '*'):DatabaseName policy sharding", PolicyResult);
 
         public static readonly CommandSymbol ShowTablePolicySharding =
             new CommandSymbol("show table policy sharding", "show table (<database_table> | '*'):TableName policy sharding", PolicyResult);

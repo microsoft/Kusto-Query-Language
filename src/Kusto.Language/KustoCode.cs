@@ -46,6 +46,11 @@ namespace Kusto.Language
         public GlobalState Globals { get; }
 
         /// <summary>
+        /// The deepest node depth of the syntax tree.
+        /// </summary>
+        public int MaxDepth { get; }
+
+        /// <summary>
         /// The tokens produced by the lexer.
         /// These are kept around to make reparsing faster, and are used by completion.
         /// </summary>
@@ -61,7 +66,21 @@ namespace Kusto.Language
         /// </summary>
         private readonly LocalBindingCache localCache;
 
-        private KustoCode(string text, string kind, GlobalState globals, Parser<LexicalToken> grammar, SyntaxNode syntax, bool hasSemantics, LexicalToken[] lexerTokens, LocalBindingCache localCache)
+        /// <summary>
+        /// The maximum depth of nodes a syntax tree can have before it is considered non-analyzable.
+        /// </summary>
+        public static readonly int MaxAnalyzableSyntaxDepth = 500;
+
+        private KustoCode(
+            string text, 
+            string kind, 
+            GlobalState globals, 
+            Parser<LexicalToken> grammar, 
+            SyntaxNode syntax, 
+            bool hasSemantics, 
+            LexicalToken[] lexerTokens, 
+            LocalBindingCache localCache, 
+            int maxDepth)
         {
             this.Text = text;
             this.Kind = kind;
@@ -71,6 +90,7 @@ namespace Kusto.Language
             this.HasSemantics = hasSemantics;
             this.lexerTokens = lexerTokens;
             this.localCache = localCache;
+            this.MaxDepth = maxDepth;
         }
 
         /// <summary>
@@ -130,16 +150,69 @@ namespace Kusto.Language
                     break;
             }
 
+            var maxDepth = ComputeMaxDepth(syntax);
+            var isAnalyzable = maxDepth <= MaxAnalyzableSyntaxDepth;
+
+            syntax.InitializeTriviaStarts();
+
             LocalBindingCache localCache = null;
 
-            if (analyze)
+            if (analyze && isAnalyzable)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 localCache = new LocalBindingCache();
                 Binder.Bind(syntax, globals, localCache, null, cancellationToken);
             }
 
-            return new KustoCode(text, kind, globals, grammar, syntax, analyze, tokens, localCache);
+            return new KustoCode(text, kind, globals, grammar, syntax, analyze && isAnalyzable, tokens, localCache, maxDepth);
+        }
+
+        /// <summary>
+        /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
+        /// </summary>
+        private static int ComputeMaxDepth(SyntaxElement root)
+        {
+            var node = root;
+            var childIndex = 0;
+            var depth = root.Depth;
+            var maxDepth = depth;
+
+            while (node != null)
+            {
+                if (childIndex < node.ChildCount)
+                {
+                    // walk down
+                    var child = node.GetChild(childIndex);
+                    if (child != null)
+                    {
+                        node = child;
+                        childIndex = 0;
+                        depth++;
+
+                        if (depth > maxDepth)
+                        {
+                            maxDepth = depth;
+                        }
+                    }
+                    else
+                    {
+                        childIndex++;
+                    }
+                }
+                else if (node == root)
+                {
+                    break;
+                }
+                else
+                {
+                    // walk up
+                    childIndex = node.IndexInParent + 1;
+                    node = node.Parent;
+                    depth--;
+                }
+            }
+
+            return maxDepth;
         }
 
         /// <summary>
@@ -212,8 +285,8 @@ namespace Kusto.Language
                 var include = DiagnosticsInclude.Syntactic | DiagnosticsInclude.Semantic;
 
 #if false
-                // eable this allow diagnostics from function body expansion to be included to help debugging.
-                include |= DiagnosticsInclude.Expansion;
+            // eable this allow diagnostics from function body expansion to be included to help debugging.
+            include |= DiagnosticsInclude.Expansion;
 #endif
                 var diagnostics = this.Syntax.GetContainedDiagnostics(include, cancellationToken);
                 Interlocked.CompareExchange(ref this.diagnostics, diagnostics, null);

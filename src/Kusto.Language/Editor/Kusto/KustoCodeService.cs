@@ -48,11 +48,24 @@ namespace Kusto.Language.Editor
         public override string Kind => this.kind;
 
         /// <summary>
+        /// Returns true if the text appears parsable
+        /// </summary>
+        private static bool CanBeParsed(string text) => text.Length <= UInt16.MaxValue;
+
+        /// <summary>
+        /// Determines if the parsed syntax can be analyzed
+        /// </summary>
+        private static bool CanBeAnalyzed(KustoCode code) => code.MaxDepth <= KustoCode.MaxAnalyzableSyntaxDepth;
+
+        /// <summary>
         /// Gets the <see cref="KustoCode"/> for the text without waiting for semantic analysis.
         /// </summary>
         private bool TryGetBoundOrUnboundCode(CancellationToken cancellationToken, bool waitForAnalysis, out KustoCode code)
         {
-            if (this.lazyUnboundCode == null && this.codeException == null && waitForAnalysis)
+            if (this.lazyUnboundCode == null 
+                && this.codeException == null 
+                && waitForAnalysis
+                && CanBeParsed(this.Text))
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -86,7 +99,10 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool TryGetBoundCode(CancellationToken cancellationToken, bool waitForAnalysis, out KustoCode code)
         {
-            if (this.lazyBoundCode == null && this.codeException == null && waitForAnalysis)
+            if (this.lazyBoundCode == null 
+                && this.codeException == null 
+                && waitForAnalysis
+                && CanBeParsed(this.Text))
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -140,7 +156,8 @@ namespace Kusto.Language.Editor
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.lazyDiagnostics == null
-                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
+                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
+                && CanBeAnalyzed(code))
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -161,7 +178,8 @@ namespace Kusto.Language.Editor
         {
             if (this.lazyExtendedDiagnostics == null
                 && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
-                && waitForAnalysis)
+                && waitForAnalysis
+                && CanBeAnalyzed(code))
             {
                 var ds = new List<Diagnostic>();
 
@@ -298,7 +316,8 @@ namespace Kusto.Language.Editor
 
         public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 try
                 {
@@ -315,7 +334,8 @@ namespace Kusto.Language.Editor
 
         public override CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, true, out var code) && code.HasSemantics)
+            if (this.TryGetBoundCode(cancellationToken, true, out var code) 
+                && CanBeAnalyzed(code))
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -333,7 +353,8 @@ namespace Kusto.Language.Editor
 
         public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
@@ -375,7 +396,8 @@ namespace Kusto.Language.Editor
 
         public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 try
                 {
@@ -391,7 +413,8 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<ClusterReference> GetClusterReferences(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 try
                 {
@@ -471,7 +494,8 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 try
                 {
@@ -582,12 +606,15 @@ namespace Kusto.Language.Editor
 
         public override FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code)
+                && CanBeAnalyzed(code))
             {
                 return KustoFormatter.GetFormattedText(code.Syntax, options, cursorPosition);
             }
-
-            return new FormattedText(this.Text, cursorPosition);
+            else
+            {
+                return new FormattedText(this.Text, cursorPosition);
+            }
         }
     }
 }

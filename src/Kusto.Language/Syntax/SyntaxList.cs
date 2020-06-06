@@ -28,7 +28,6 @@ namespace Kusto.Language.Syntax
             Init();
 
             this.fullWidth = this.ComputeFullWidth();
-            Ensure.AreEqual(this.fullWidth, this.ToString().Length);
         }
 
         public override SyntaxKind Kind => SyntaxKind.List;

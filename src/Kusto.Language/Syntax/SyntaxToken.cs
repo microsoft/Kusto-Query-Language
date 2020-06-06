@@ -74,21 +74,17 @@ namespace Kusto.Language.Syntax
 
         public override string ToString(IncludeTrivia includeTrivia)
         {
-            if (string.IsNullOrEmpty(this.Trivia))
+            if (!string.IsNullOrEmpty(this.Trivia) && includeTrivia == IncludeTrivia.All)
+            {
+                return this.Trivia + this.Text;
+            }
+            else
             {
                 return this.Text;
             }
-
-            switch (includeTrivia)
-            {
-                case IncludeTrivia.All:
-                    return this.Trivia + this.Text;
-                default:
-                    return this.Text;
-            }
         }
 
-        protected override void Write(StringBuilder builder, IncludeTrivia includeTrivia, int initialTriviaStart)
+        internal void Write(StringBuilder builder, IncludeTrivia includeTrivia, int initialTriviaStart)
         {
             if (!string.IsNullOrEmpty(this.Trivia))
             {
@@ -143,20 +139,7 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxToken GetNextToken(bool includeZeroWidthTokens = false)
         {
-            for (SyntaxElement node = this; node != null; node = node.Parent)
-            {
-                var sibling = node.GetNextSibling(includeZeroWidthTokens);
-                if (sibling != null)
-                {
-                    if (sibling.IsToken)
-                        return (SyntaxToken)sibling;
-                    var first = sibling.GetFirstToken(includeZeroWidthTokens);
-                    if (first != null)
-                        return first;
-                }
-            }
-
-            return null;
+            return GetNextToken(null, this, includeZeroWidthTokens);
         }
 
         /// <summary>
@@ -164,20 +147,7 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxToken GetPreviousToken(bool includeZeroWidthTokens = false)
         {
-            for (SyntaxElement node = this; node != null; node = node.Parent)
-            {
-                var sibling = node.GetPreviousSibling(includeZeroWidthTokens);
-                if (sibling != null)
-                {
-                    if (sibling.IsToken)
-                        return (SyntaxToken)sibling;
-                    var last = sibling.GetLastToken(includeZeroWidthTokens);
-                    if (last != null)
-                        return last;
-                }
-            }
-
-            return null;
+            return GetPreviousToken(null, this, includeZeroWidthTokens);
         }
 
         public static SyntaxToken From(Parsing.LexicalToken token, Diagnostic diagnostic = null)

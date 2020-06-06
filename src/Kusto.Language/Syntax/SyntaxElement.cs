@@ -34,7 +34,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// For debugger display only.
         /// </summary>
-        private string DebugText => this.ToString(IncludeTrivia.Minimal);
+        private string DebugText => this.ToString(IncludeTrivia.Minimal, maxLength: 100);
 
         #region initialization
         protected SyntaxElement(IReadOnlyList<Diagnostic> diagnostics)
@@ -248,7 +248,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Child Index in parent.
         /// </summary>
-        protected short IndexInParent { get; private set; }
+        public short IndexInParent { get; private set; }
 
         /// <summary>
         /// The number of immediate child elements this element has.
@@ -291,6 +291,7 @@ namespace Kusto.Language.Syntax
                 {
                     var child = this.GetChild(n);
 
+                    // TODO: redo this to not be recursive
                     if (child != null && (child.IsMissing || child.HasMissingChildren()))
                         return true;
                 }
@@ -453,27 +454,7 @@ namespace Kusto.Language.Syntax
         public TElement GetFirstDescendant<TElement>(Func<TElement, bool> predicate = null)
             where TElement : SyntaxElement
         {
-            for (int i = 0; i < this.ChildCount; i++)
-            {
-                var child = this.GetChild(i);
-                if (child != null)
-                {
-                    if (child is TElement ce)
-                    {
-                        if (predicate == null || predicate(ce))
-                            return ce;
-                    }
-
-                    if (child is SyntaxNode cn)
-                    {
-                        var result = child.GetFirstDescendant(predicate);
-                        if (result != null)
-                            return result;
-                    }
-                }
-            }
-
-            return null;
+            return GetFirstDescendant(this, predicate, includeSelf: false);
         }
 
         /// <summary>
@@ -482,12 +463,21 @@ namespace Kusto.Language.Syntax
         public TElement GetFirstDescendantOrSelf<TElement>(Func<TElement, bool> predicate = null)
             where TElement : SyntaxElement
         {
-            if (this is TElement te && (predicate == null || predicate(te)))
+            return GetFirstDescendant(this, predicate, includeSelf: true);
+        }
+
+        private static TElement GetFirstDescendant<TElement>(SyntaxElement element, Func<TElement, bool> predicate, bool includeSelf)
+            where TElement : SyntaxElement
+        {
+            foreach (var e in new DescendantsEnumerable(element, includeSelf))
             {
-                return te;
+                if (e is TElement ce && (predicate == null || predicate(ce)))
+                {
+                    return ce;
+                }
             }
 
-            return GetFirstDescendant(predicate);
+            return null;
         }
 
         /// <summary>
@@ -496,39 +486,7 @@ namespace Kusto.Language.Syntax
         public IReadOnlyList<TElement> GetDescendants<TElement>(Func<TElement, bool> predicate = null)
             where TElement : SyntaxElement
         {
-            var list = GetDescendants(this, predicate, null);
-            return list != null ? list.ToReadOnly() : EmptyReadOnlyList<TElement>.Instance;
-        }
-
-        /// <summary>
-        /// Gets the descendants of the specified element that match the specified type and predicate.
-        /// </summary>
-        private static List<TElement> GetDescendants<TElement>(SyntaxElement element, Func<TElement, bool> predicate, List<TElement> list)
-            where TElement : SyntaxElement
-        {
-            for (int i = 0; i < element.ChildCount; i++)
-            {
-                var child = element.GetChild(i);
-                if (child != null)
-                {
-                    if (child is TElement ce && (predicate == null || predicate(ce)))
-                    {
-                        if (list == null)
-                        {
-                            list = new List<TElement>();
-                        }
-
-                        list.Add(ce);
-                    }
-
-                    if (child is SyntaxNode cn)
-                    {
-                        list = GetDescendants(child, predicate, list);
-                    }
-                }
-            }
-
-            return list;
+            return GetDescendants(this, predicate, includeSelf: false);
         }
 
         /// <summary>
@@ -537,16 +495,118 @@ namespace Kusto.Language.Syntax
         public IReadOnlyList<TElement> GetDescendantsOrSelf<TElement>(Func<TElement, bool> predicate = null)
             where TElement : SyntaxElement
         {
+            return GetDescendants(this, predicate, includeSelf: true);
+        }
+
+        /// <summary>
+        /// Gets the descendants of the specified element that match the specified type and predicate.
+        /// </summary>
+        private static IReadOnlyList<TElement> GetDescendants<TElement>(
+            SyntaxElement element, 
+            Func<TElement, bool> predicate, 
+            bool includeSelf)
+            where TElement : SyntaxElement
+        {
             List<TElement> list = null;
 
-            if (this is TElement te && (predicate == null || predicate(te)))
+            foreach (var e in new DescendantsEnumerable(element, includeSelf))
             {
-                list = new List<TElement>() { te };
-            }
+                if (e is TElement ce && (predicate == null || predicate(ce)))
+                {
+                    // only allocate list if there is a match
+                    if (list == null)
+                    {
+                        list = new List<TElement>();
+                    }
 
-            list = GetDescendants(this, predicate, list);
+                    list.Add(ce);
+                }
+            };
 
             return list != null ? list.ToReadOnly() : EmptyReadOnlyList<TElement>.Instance;
+        }
+
+        private struct DescendantsEnumerable // : IEnumerable<SyntaxElement>, IEnumerable
+        {
+            private readonly SyntaxElement _root;
+            private readonly bool _includeSelf;
+
+            public DescendantsEnumerable(SyntaxElement root, bool includeSelf = true)
+            {
+                _root = root;
+                _includeSelf = includeSelf;
+            }
+
+            public Enumerator GetEnumerator()
+            {
+                return new Enumerator(_root, _includeSelf);
+            }
+
+            public struct Enumerator // : IEnumerator<SyntaxElement>, IEnumerator
+            {
+                private readonly SyntaxElement _root;
+                private readonly bool _includeSelf;
+                private SyntaxElement _node;
+                private int _childIndex;
+
+                internal Enumerator(SyntaxElement root, bool includeSelf)
+                {
+                    _root = root;
+                    _includeSelf = includeSelf;
+                    _node = null;
+                    _childIndex = 0;
+                }
+
+                public SyntaxElement Current => _node;
+
+                public bool MoveNext()
+                {
+                    if (_node == null && _childIndex == 0)
+                    {
+                        _node = _root;
+
+                        if (_includeSelf)
+                            return true;
+                    }
+
+                    while (_node != null)
+                    {
+                        if (_childIndex < _node.ChildCount)
+                        {
+                            // walk down
+                            var child = _node.GetChild(_childIndex);
+                            if (child != null)
+                            {
+                                _node = child;
+                                _childIndex = 0;
+                                return true;
+                            }
+                            else
+                            {
+                                _childIndex++;
+                            }
+                        }
+                        else if (_node == _root)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            // walk up
+                            _childIndex = _node.IndexInParent + 1;
+                            _node = _node.Parent;
+                        }
+                    }
+
+                    return false;
+                }
+
+#if false
+            object IEnumerator.Current => this.Current;
+            void IEnumerator.Reset() { _node = null; _childIndex = 0; }
+            void IDisposable.Dispose() { }
+#endif
+            }
         }
 
         /// <summary>
@@ -556,63 +616,101 @@ namespace Kusto.Language.Syntax
         {
             var tokens = new List<SyntaxToken>();
 
-            this.WalkTokens(this.TriviaStart, this.End, t =>
+            SyntaxToken token = null;
+            while ((token = GetNextToken(this, token, includeZeroWidthTokens)) != null)
             {
-                if (t.FullWidth > 0 || includeZeroWidthTokens)
-                {
-                    tokens.Add(t);
-                }
-            });
+                tokens.Add(token);
+            }
 
             return tokens.ToReadOnly();
         }
 
         /// <summary>
-        /// Enumerates the tokens in lexical order and invokes the action for all the tokens 
+        /// Invokes the action for each token contained by this <see cref="SyntaxElement"/>
+        /// </summary>
+        public void WalkTokens(Action<SyntaxToken> action)
+        {
+            WalkTokens(this.TriviaStart, this.End, action);
+        }
+
+        /// <summary>
+        /// Invokes the action for each token contained by this <see cref="SyntaxElement"/>
         /// between the <see cref="p:start"/> and <see cref="p:end"/> text position.
         /// </summary>
         public void WalkTokens(int start, int end, Action<SyntaxToken> action)
         {
-            for (int i = 0, n = this.ChildCount; i < n; i++)
+            for (var token = this.GetTokenAt(start);
+                token != null && token.TriviaStart < end;
+                token = token.GetNextToken())
             {
-                var child = this.GetChild(i);
-                if (child != null && Overlaps(start, end, child.TriviaStart, child.End))
+                action(token);
+            }
+        }
+
+        /// <summary>
+        /// Invokes the action for the element and its descendants, in lexical order, top down.
+        /// </summary>
+        /// <param name="action">The action that is invoked for each <see cref="SyntaxElement"/></param>
+        public void WalkElements(Action<SyntaxElement> action)
+        {
+            Walk(this, action);
+        }
+
+        /// <summary>
+        /// Walks this element and its descendants in lexical order, invoking the actions for each <see cref="SyntaxElement"/> including the root element.
+        /// </summary>
+        /// <param name="root">The root element of the walk. The walk includes this element and any descendant elements.</param>
+        /// <param name="fnBefore">An optional function that is invoked for each element before any child elements are visited.</param>
+        /// <param name="fnAfter">An optional function that is invoked for each element after any child elements have been visited.</param>
+        /// <param name="fnDescend">An optional function that determines whether the children of an element are visited.</param>
+        public static void Walk(
+            SyntaxElement root, 
+            Action<SyntaxElement> fnBefore = null, 
+            Action<SyntaxElement> fnAfter = null,
+            Func<SyntaxElement, bool> fnDescend = null)
+        {
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+
+            var node = root;
+            var childIndex = 0;
+
+            // the root before walking children
+            fnBefore?.Invoke(root);
+
+            while (node != null)
+            {
+                if (childIndex < node.ChildCount && (fnDescend == null || fnDescend(node)))
                 {
-                    if (child.IsToken)
+                    // walk down
+                    var child = node.GetChild(childIndex);
+                    if (child != null)
                     {
-                        action((SyntaxToken)child);
+                        node = child;
+                        childIndex = 0;
+
+                        // before walking children
+                        fnBefore?.Invoke(node);
                     }
                     else
                     {
-                        child.WalkTokens(start, end, action);
+                        childIndex++;
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Enumerates the sub-elements in lexical order, bottom up, invoking the action for each element including this element.
-        /// </summary>
-        public void WalkElements(Action<SyntaxElement> action)
-        {
-            for (int i = 0, n = this.ChildCount; i < n; i++)
-            {
-                var child = this.GetChild(i);
-                if (child != null)
+                else
                 {
-                    child.WalkElements(action);
+                    // after walking children
+                    fnAfter?.Invoke(node);
+
+                    // stop if we are done with root node
+                    if (node == root)
+                        break;
+
+                    // walk up
+                    childIndex = node.IndexInParent + 1;
+                    node = node.Parent;
                 }
             }
-
-            action(this);
-        }
-
-        /// <summary>
-        /// Returns true if the range (startA, endA) overlaps (startB, endB)
-        /// </summary>
-        private static bool Overlaps(int startA, int endA, int startB, int endB)
-        {
-            return Math.Max(startA, startB) < Math.Min(endA, endB);
         }
 
         /// <summary>
@@ -656,26 +754,7 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxToken GetFirstToken(bool includeZeroWidthTokens = false)
         {
-            for (int i = 0, n = this.ChildCount; i < n; i++)
-            {
-                var child = this.GetChild(i);
-                if (child != null)
-                {
-                    if (child.IsToken)
-                    {
-                        if (includeZeroWidthTokens || child.FullWidth > 0)
-                            return (SyntaxToken)child;
-                    }
-                    else
-                    {
-                        var first = child.GetFirstToken(includeZeroWidthTokens);
-                        if (first != null)
-                            return first;
-                    }
-                }
-            }
-
-            return null;
+            return GetNextToken(this, null, includeZeroWidthTokens);
         }
 
         /// <summary>
@@ -683,22 +762,81 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxToken GetLastToken(bool includeZeroWidthTokens = false)
         {
-            for (int i = this.ChildCount - 1; i >= 0; i--)
+            return GetPreviousToken(this, null, includeZeroWidthTokens);
+        }
+
+        protected static SyntaxToken GetNextToken(SyntaxElement root, SyntaxToken token, bool includeZeroWidthTokens)
+        {
+            var node = token != null ? token.Parent : root;
+            var childIndex = token != null ? token.IndexInParent + 1: 0;
+
+            while (node != null)
             {
-                var child = this.GetChild(i);
-                if (child != null)
+                if (childIndex < node.ChildCount)
                 {
-                    if (child.IsToken)
+                    var child = node.GetChild(childIndex);
+                    if (child != null)
                     {
-                        if (includeZeroWidthTokens || child.FullWidth > 0)
-                            return (SyntaxToken)child;
+                        node = child;
+                        childIndex = 0;
+
+                        if (node is SyntaxToken t && (includeZeroWidthTokens || t.FullWidth > 0))
+                        {
+                            return t;
+                        }
                     }
                     else
                     {
-                        var first = child.GetLastToken(includeZeroWidthTokens);
-                        if (first != null)
-                            return first;
+                        childIndex++;
                     }
+                }
+                else if (node == root)
+                {
+                    return null;
+                }
+                else
+                {
+                    childIndex = node.IndexInParent + 1;
+                    node = node.Parent;
+                }
+            }
+
+            return null;
+        }
+
+        protected static SyntaxToken GetPreviousToken(SyntaxElement root, SyntaxToken token, bool includeZeroWidthTokens)
+        {
+            var node = token != null ? token.Parent : root;
+            var childIndex = token != null ? token.IndexInParent - 1 : root.ChildCount - 1;
+
+            while (node != null)
+            {
+                if (childIndex >= 0)
+                {
+                    var child = node.GetChild(childIndex);
+                    if (child != null)
+                    {
+                        node = child;
+                        childIndex = node.ChildCount - 1;
+
+                        if (node is SyntaxToken t && (includeZeroWidthTokens || t.FullWidth > 0))
+                        {
+                            return t;
+                        }
+                    }
+                    else
+                    {
+                        childIndex--;
+                    }
+                }
+                else if (node == root)
+                {
+                    return null;
+                }
+                else
+                {
+                    childIndex = node.IndexInParent - 1;
+                    node = node.Parent;
                 }
             }
 
@@ -770,14 +908,50 @@ namespace Kusto.Language.Syntax
 
             return parent as SyntaxNode;
         }
-        #endregion
+#endregion
 
-        #region bounds
+#region bounds
         /// <summary>
         /// The position in the source of the start of the leading trivia.
         /// </summary>
-        public int TriviaStart => 
-            this.Parent == null ? this.OffsetInParent : this.Parent.TriviaStart + this.OffsetInParent;
+        public int TriviaStart => _triviaStart >= 0 ? _triviaStart : ComputeTriviaStart();
+
+        /// <summary>
+        /// The position in the source of the start of the leading trivia.
+        /// </summary>
+        private int _triviaStart = -1;
+
+        internal void InitializeTriviaStarts()
+        {
+            foreach (var element in new DescendantsEnumerable(this.Root, includeSelf: true))
+            {
+                System.Diagnostics.Debug.Assert(element.Parent == null || element.Parent._triviaStart >= 0);
+                element._triviaStart = (element.Parent?._triviaStart ?? 0) + element.OffsetInParent;
+            }
+        }
+
+        protected int ComputeTriviaStart()
+        {
+            if (this.Parent == null)
+            {
+                return 0;
+            }
+            else if (this.Parent.Parent == null)
+            {
+                return this.OffsetInParent;
+            }
+            else
+            {
+                var totalOffset = 0;
+
+                for (var node = this; node != null; node = node.Parent)
+                {
+                    totalOffset += node.OffsetInParent;
+                }
+
+                return totalOffset;
+            }
+        }
 
         /// <summary>
         /// The full width (in characters) of this element including leading trivia.
@@ -825,18 +999,18 @@ namespace Kusto.Language.Syntax
         /// The offset in characters of this element from the start of the parent element.
         /// </summary>
         protected int OffsetInParent { get; private set; }
-        #endregion
+#endregion
 
-        #region clone
+#region clone
         /// <summary>
         /// Creates a copy of this <see cref="SyntaxElement"/>
         /// </summary>
         public SyntaxElement Clone() => CloneCore();
 
         protected abstract SyntaxElement CloneCore();
-        #endregion
+#endregion
 
-        #region ToString
+#region ToString
         public override string ToString()
         {
             return this.ToString(IncludeTrivia.All);
@@ -844,23 +1018,19 @@ namespace Kusto.Language.Syntax
 
         public virtual string ToString(IncludeTrivia includeTrivia)
         {
+            return ToString(includeTrivia, maxLength: -1);
+        }
+
+        protected virtual string ToString(IncludeTrivia includeTrivia, int maxLength)
+        {
             var builder = new StringBuilder();
-            this.Write(builder, includeTrivia, this.TriviaStart);
+            var start = this.TriviaStart;
+            var end = maxLength == -1 ? this.End : Math.Min(this.TriviaStart + maxLength, this.End);
+            this.WalkTokens(start, end, tok => tok.Write(builder, includeTrivia, start));
             return builder.ToString();
         }
 
-        protected virtual void Write(StringBuilder builder, IncludeTrivia includeTrivia, int initialTriviaStart)
-        {
-            for (int i = 0, n = this.ChildCount; i < n; i++)
-            {
-                var child = this.GetChild(i);
-                if (child != null)
-                {
-                    child.Write(builder, includeTrivia, initialTriviaStart);
-                }
-            }
-        }
-        #endregion
+#endregion
     }
 
     public enum IncludeTrivia

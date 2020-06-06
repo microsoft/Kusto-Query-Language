@@ -63,7 +63,7 @@ namespace Kusto.Language.Syntax
         }
 
         protected static void GatherDiagnostics(
-            SyntaxElement element,
+            SyntaxElement root,
             List<Diagnostic> diagnostics,
             DiagnosticsInclude include,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -73,44 +73,43 @@ namespace Kusto.Language.Syntax
             bool includeSemantic = (include & DiagnosticsInclude.Semantic) != 0;
             bool includeExpansion = (include & DiagnosticsInclude.Expansion) != 0;
 
-            if (element.HasSyntaxDiagnostics && includeSyntax)
-            {
-                // each syntax diagnostic is located at the element that carries it.
-                diagnostics.AddRange(element.SyntaxDiagnostics.Select(d => d.HasLocation ? d : SetLocation(d, element)));
-            }
+            var fnDescend = (include == DiagnosticsInclude.Syntactic)
+                ? (Func<SyntaxElement, bool>)((SyntaxElement e) => e.ContainsSyntaxDiagnostics)
+                : null;
 
-            if (includeSemantic && element is SyntaxNode node && node.SemanticDiagnostics.Count > 0)
-            {
-                diagnostics.AddRange(node.SemanticDiagnostics);
-            }
-
-            if (includeSemantic || (includeSyntax && element.ContainsSyntaxDiagnostics))
-            {
-                for (int i = 0, n = element.ChildCount; i < n; i++)
+            SyntaxElement.Walk(root, 
+                fnBefore: element =>
                 {
-                    var child = element.GetChild(i);
-                    if (child != null)
+                    if (element.HasSyntaxDiagnostics && includeSyntax)
                     {
-                        GatherDiagnostics(child, diagnostics, include, cancellationToken);
+                        // each syntax diagnostic is located at the element that carries it.
+                        diagnostics.AddRange(element.SyntaxDiagnostics.Select(d => d.HasLocation ? d : SetLocation(d, element)));
                     }
-                }
-            }
 
-            if (includeExpansion && element is Expression expr && expr.GetExpansion() is SyntaxNode expansion)
-            {
-                var originalCount = diagnostics.Count;
-                GatherDiagnostics(expansion, diagnostics, include, cancellationToken);
-
-                if (diagnostics.Count > originalCount)
+                    if (includeSemantic && element is SyntaxNode node && node.SemanticDiagnostics.Count > 0)
+                    {
+                        diagnostics.AddRange(node.SemanticDiagnostics);
+                    }
+                }, 
+                fnAfter: element =>
                 {
-                    var name = expr.ReferencedSymbol?.Name ?? "<unknown>";
-                    var location = expr is FunctionCallExpression fc ? fc.Name : expr;
-                    var errors = diagnostics[originalCount].Message;
-                    var dx = DiagnosticFacts.GetErrorInExpansion(name, errors).WithLocation(location);
-                    diagnostics.SetCount(originalCount);
-                    diagnostics.Add(dx);
-                }
-            }
+                    if (includeExpansion && element is Expression expr && expr.GetExpansion() is SyntaxNode expansion)
+                    {
+                        var originalCount = diagnostics.Count;
+                        GatherDiagnostics(expansion, diagnostics, include, cancellationToken);
+
+                        if (diagnostics.Count > originalCount)
+                        {
+                            var name = expr.ReferencedSymbol?.Name ?? "<unknown>";
+                            var location = expr is FunctionCallExpression fc ? fc.Name : expr;
+                            var errors = diagnostics[originalCount].Message;
+                            var dx = DiagnosticFacts.GetErrorInExpansion(name, errors).WithLocation(location);
+                            diagnostics.SetCount(originalCount);
+                            diagnostics.Add(dx);
+                        }
+                    }
+                },
+                fnDescend: fnDescend);
         }
 
         private static Diagnostic SetLocation(Diagnostic d, SyntaxElement location)

@@ -24,7 +24,6 @@ namespace Kusto.Language.Syntax
         {
             base.Init();
             this.fullWidth = this.ComputeFullWidth();
-            //Ensure.AreEqual(this.fullWidth, this.ToString().Length);
         }
 
         public override int FullWidth => this.fullWidth;
