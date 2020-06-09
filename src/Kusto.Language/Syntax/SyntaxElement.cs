@@ -923,11 +923,13 @@ namespace Kusto.Language.Syntax
 
         internal void InitializeTriviaStarts()
         {
-            foreach (var element in new DescendantsEnumerable(this.Root, includeSelf: true))
-            {
-                System.Diagnostics.Debug.Assert(element.Parent == null || element.Parent._triviaStart >= 0);
-                element._triviaStart = (element.Parent?._triviaStart ?? 0) + element.OffsetInParent;
-            }
+            SyntaxElement.Walk(
+                this.Root,
+                fnBefore: element =>
+                {
+                    System.Diagnostics.Debug.Assert(element.Parent == null || element.Parent._triviaStart >= 0);
+                    element._triviaStart = (element.Parent?._triviaStart ?? 0) + element.OffsetInParent;
+                });
         }
 
         protected int ComputeTriviaStart()

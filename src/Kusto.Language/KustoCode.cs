@@ -172,45 +172,18 @@ namespace Kusto.Language
         /// </summary>
         private static int ComputeMaxDepth(SyntaxElement root)
         {
-            var node = root;
-            var childIndex = 0;
-            var depth = root.Depth;
-            var maxDepth = depth;
+            var maxDepth = 0;
+            var depth = 0;
 
-            while (node != null)
-            {
-                if (childIndex < node.ChildCount)
+            SyntaxElement.Walk(
+                root,
+                fnBefore: e =>
                 {
-                    // walk down
-                    var child = node.GetChild(childIndex);
-                    if (child != null)
-                    {
-                        node = child;
-                        childIndex = 0;
-                        depth++;
-
-                        if (depth > maxDepth)
-                        {
-                            maxDepth = depth;
-                        }
-                    }
-                    else
-                    {
-                        childIndex++;
-                    }
-                }
-                else if (node == root)
-                {
-                    break;
-                }
-                else
-                {
-                    // walk up
-                    childIndex = node.IndexInParent + 1;
-                    node = node.Parent;
-                    depth--;
-                }
-            }
+                    depth++;
+                    if (depth > maxDepth)
+                        maxDepth = depth;
+                },
+                fnAfter: e => depth--);
 
             return maxDepth;
         }
