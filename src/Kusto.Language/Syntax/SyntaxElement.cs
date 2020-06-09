@@ -714,7 +714,7 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Gets the next <see cref="SyntaxElement"/> sibling of this element.
+        /// Gets the next <see cref="SyntaxElement"/> sibling of this element or null if there is no next sibling.
         /// </summary>
         public SyntaxElement GetNextSibling(bool includeZeroWidthElements = false)
         {
@@ -732,7 +732,7 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Gets the previous <see cref="SyntaxElement"/> sibling of this element.
+        /// Gets the previous <see cref="SyntaxElement"/> sibling of this element or null if there is no previous sibling.
         /// </summary>
         public SyntaxElement GetPreviousSibling(bool includeZeroWidthElements = false)
         {
@@ -846,7 +846,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Gets the token at the specified position in the source text.
         /// If the position is within trivia, it will find the next token after the trivia.
-        /// If the position is past the width of the tree, it will find the last token.
+        /// If the position is past the end of the tree, it will return the last token.
         /// </summary>
         public SyntaxToken GetTokenAt(int position)
         {
@@ -1020,15 +1020,27 @@ namespace Kusto.Language.Syntax
 
         public virtual string ToString(IncludeTrivia includeTrivia)
         {
-            return ToString(includeTrivia, maxLength: -1);
+            return ToString(includeTrivia, Int32.MaxValue);
         }
 
-        protected virtual string ToString(IncludeTrivia includeTrivia, int maxLength)
+        public string ToString(IncludeTrivia includeTrivia, int maxLength)
         {
             var builder = new StringBuilder();
             var start = this.TriviaStart;
-            var end = maxLength == -1 ? this.End : Math.Min(this.TriviaStart + maxLength, this.End);
-            this.WalkTokens(start, end, tok => tok.Write(builder, includeTrivia, start));
+
+            this.WalkTokens(token =>
+            {
+                if (builder.Length < maxLength)
+                {
+                    token.Write(builder, includeTrivia, start);
+                }
+            });
+
+            if (builder.Length > maxLength)
+            {
+                builder.Length = maxLength;
+            }
+            
             return builder.ToString();
         }
 
