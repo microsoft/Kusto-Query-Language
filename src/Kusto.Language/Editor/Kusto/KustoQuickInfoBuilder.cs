@@ -152,6 +152,8 @@ namespace Kusto.Language.Editor
                     }
                 case ScalarSymbol s:
                     return QuickInfoKind.Type;
+                case CommandSymbol cs:
+                    return QuickInfoKind.Command;
                 default:
                     return QuickInfoKind.Text;
             }
@@ -314,6 +316,29 @@ namespace Kusto.Language.Editor
                     texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ": "));
                     GetTypeDisplay(type, texts);
                 }
+
+                var description = GetDescription(symbol);
+                if (!string.IsNullOrEmpty(description))
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Comment, "\n\n" + description));
+                }
+            }
+        }
+
+        private static string GetDescription(Symbol symbol)
+        {
+            switch (symbol)
+            {
+                case TableSymbol t:
+                    return t.Description;
+                case ColumnSymbol c:
+                    return c.Description;
+                case ParameterSymbol p:
+                    return p.Description;
+                case FunctionSymbol f:
+                    return f.Description;
+                default:
+                    return "";
             }
         }
 
@@ -337,6 +362,8 @@ namespace Kusto.Language.Editor
                     return ClassificationKind.Table;
                 case VariableSymbol _:
                     return ClassificationKind.Variable;
+                case CommandSymbol _:
+                    return ClassificationKind.Command;
                 case ScalarSymbol s:
                     if (s == ScalarTypes.String)
                     {

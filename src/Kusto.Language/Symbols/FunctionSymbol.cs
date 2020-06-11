@@ -77,15 +77,28 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public IReadOnlyList<Signature> Signatures { get; }
 
+        /// <summary>
+        /// The description of the function.
+        /// </summary>
+        public string Description { get; }
+
         private readonly bool hidden;
         private readonly bool constantFoldable;
         private readonly ResultNameKind resultNameKind;
         private readonly string resultNamePrefix;
 
-        private FunctionSymbol(string name, IEnumerable<Signature> signatures, bool hidden, bool constantFoldable, ResultNameKind resultNameKind, string resultNamePrefix)
+        private FunctionSymbol(
+            string name, 
+            IEnumerable<Signature> signatures, 
+            bool hidden, 
+            bool constantFoldable, 
+            ResultNameKind resultNameKind, 
+            string resultNamePrefix,
+            string description)
             : base(name)
         {
             this.Signatures = signatures.ToReadOnly();
+            this.Description = description ?? "";
 
             foreach (var signature in this.Signatures)
             {
@@ -98,8 +111,8 @@ namespace Kusto.Language.Symbols
             this.resultNamePrefix = resultNamePrefix;
         }
 
-        public FunctionSymbol(string name, IEnumerable<Signature> signatures)
-            : this(name, signatures, hidden: false, constantFoldable: false, resultNameKind: ResultNameKind.Default, resultNamePrefix: null)
+        public FunctionSymbol(string name, IEnumerable<Signature> signatures, string description = null)
+            : this(name, signatures, hidden: false, constantFoldable: false, resultNameKind: ResultNameKind.Default, resultNamePrefix: null, description: description)
         {
         }
 
@@ -108,8 +121,8 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public FunctionSymbol(string name, TypeSymbol returnType, IReadOnlyList<Parameter> parameters)
-            : this(name, new[] { new Signature(returnType, parameters) })
+        public FunctionSymbol(string name, TypeSymbol returnType, IReadOnlyList<Parameter> parameters, string description = null)
+            : this(name, new[] { new Signature(returnType, parameters) }, description)
         {
         }
 
@@ -148,8 +161,8 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public FunctionSymbol(string name, string body, Tabularity tabularity, IReadOnlyList<Parameter> parameters)
-            : this(name, new[] { new Signature(body, tabularity, parameters) })
+        public FunctionSymbol(string name, string body, Tabularity tabularity, IReadOnlyList<Parameter> parameters, string description = null)
+            : this(name, new[] { new Signature(body, tabularity, parameters) }, description)
         {
         }
 
@@ -158,8 +171,8 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public FunctionSymbol(string name, string body, IReadOnlyList<Parameter> parameters)
-            : this(name, new[] { new Signature(body, Tabularity.Unknown, parameters) })
+        public FunctionSymbol(string name, string body, IReadOnlyList<Parameter> parameters, string description = null)
+            : this(name, new[] { new Signature(body, Tabularity.Unknown, parameters) }, description)
         {
         }
 
@@ -183,7 +196,14 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public FunctionSymbol Hide()
         {
-            return new FunctionSymbol(this.Name, this.Signatures, hidden: true, constantFoldable: this.constantFoldable, resultNameKind: this.resultNameKind, resultNamePrefix: this.resultNamePrefix);
+            return new FunctionSymbol(
+                this.Name, 
+                this.Signatures, 
+                hidden: true, 
+                constantFoldable: this.constantFoldable, 
+                resultNameKind: this.resultNameKind, 
+                resultNamePrefix: this.resultNamePrefix,
+                description: this.Description);
         }
 
         public override bool IsHidden => this.hidden || base.IsHidden;
@@ -193,7 +213,14 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public FunctionSymbol ConstantFoldable()
         {
-            return new FunctionSymbol(this.Name, this.Signatures, hidden: this.hidden, constantFoldable: true, resultNameKind: this.resultNameKind, resultNamePrefix: this.resultNamePrefix);
+            return new FunctionSymbol(
+                this.Name, 
+                this.Signatures, 
+                hidden: this.hidden, 
+                constantFoldable: true, 
+                resultNameKind: this.resultNameKind, 
+                resultNamePrefix: this.resultNamePrefix,
+                description: this.Description);
         }
 
         /// <summary>
@@ -213,7 +240,14 @@ namespace Kusto.Language.Symbols
         {
             if (this.ResultNamePrefix != resultNamePrefix)
             {
-                return new FunctionSymbol(this.Name, this.Signatures, hidden: this.hidden, constantFoldable: this.constantFoldable, resultNameKind: this.resultNameKind, resultNamePrefix: resultNamePrefix);
+                return new FunctionSymbol(
+                    this.Name, 
+                    this.Signatures, 
+                    hidden: this.hidden, 
+                    constantFoldable: this.constantFoldable, 
+                    resultNameKind: this.resultNameKind, 
+                    resultNamePrefix: resultNamePrefix,
+                    description: this.Description);
             }
             else
             {
@@ -228,7 +262,36 @@ namespace Kusto.Language.Symbols
         {
             if (this.ResultNameKind != kind)
             {
-                return new FunctionSymbol(this.Name, this.Signatures, hidden: this.hidden, constantFoldable: this.constantFoldable, resultNameKind: kind, resultNamePrefix: this.resultNamePrefix);
+                return new FunctionSymbol(
+                    this.Name, 
+                    this.Signatures, 
+                    hidden: this.hidden, 
+                    constantFoldable: this.constantFoldable, 
+                    resultNameKind: kind, 
+                    resultNamePrefix: this.resultNamePrefix,
+                    description: this.Description);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="FunctionSymbol"/> with the specified description.
+        /// </summary>
+        public FunctionSymbol WithDescription(string description)
+        {
+            if (this.Description != description)
+            {
+                return new FunctionSymbol(
+                    this.Name,
+                    this.Signatures,
+                    hidden: this.hidden,
+                    constantFoldable: this.constantFoldable,
+                    resultNameKind: this.resultNameKind,
+                    resultNamePrefix: this.resultNamePrefix,
+                    description: description);
             }
             else
             {

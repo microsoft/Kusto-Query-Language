@@ -228,6 +228,11 @@ namespace Kusto.Language.Editor
         /// The <see cref="QuickInfoItem"/> is a scalar operator reference.
         /// </summary>
         Operator,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a control command
+        /// </summary>
+        Command
     }
 
     public class ClassifiedText

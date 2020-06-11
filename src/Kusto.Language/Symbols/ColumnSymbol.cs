@@ -11,14 +11,23 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class ColumnSymbol : Symbol
     {
+        /// <summary>
+        /// The type of the column.
+        /// </summary>
         public TypeSymbol Type { get; }
+
+        /// <summary>
+        /// The description of the column.
+        /// </summary>
+        public string Description { get; }
 
         public override SymbolKind Kind => SymbolKind.Column;
 
-        public ColumnSymbol(string name, TypeSymbol type)
+        public ColumnSymbol(string name, TypeSymbol type, string description = null)
             : base(name)
         {
             this.Type = type ?? throw new ArgumentNullException(nameof(type));
+            this.Description = description ?? "";
         }
 
         public override Tabularity Tabularity => Tabularity.Scalar;
@@ -30,7 +39,7 @@ namespace Kusto.Language.Symbols
         {
             if (name != this.Name)
             {
-                return new ColumnSymbol(name, this.Type);
+                return new ColumnSymbol(name, this.Type, this.Description);
             }
             else
             {
@@ -45,7 +54,22 @@ namespace Kusto.Language.Symbols
         {
             if (type != this.Type)
             {
-                return new ColumnSymbol(this.Name, type);
+                return new ColumnSymbol(this.Name, type, this.Description);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="ColumnSymbol"/> with the specified description.
+        /// </summary>
+        public ColumnSymbol WithDescription(string description)
+        {
+            if (description != this.Description)
+            {
+                return new ColumnSymbol(this.Name, this.Type, description);
             }
             else
             {

@@ -84,6 +84,11 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public Expression DefaultValue { get; }
 
+        /// <summary>
+        /// The descripton of the parameter.
+        /// </summary>
+        public string Description { get; }
+
         private static readonly IReadOnlyList<object> NoValues = EmptyReadOnlyList<object>.Instance;
 
         private static readonly IReadOnlyList<string> NoExamples = EmptyReadOnlyList<string>.Instance;
@@ -99,7 +104,8 @@ namespace Kusto.Language.Symbols
             string defaultValueIndicator,
             int minOccurring,
             int maxOccurring,
-            Expression defaultValue)
+            Expression defaultValue,
+            string description)
         {
             if (typeKind == ParameterTypeKind.Declared)
             {
@@ -124,6 +130,7 @@ namespace Kusto.Language.Symbols
             this.MaxOccurring = defaultValue != null ? 1 : maxOccurring;
             this.DefaultValueIndicator = defaultValueIndicator;
             this.DefaultValue = defaultValue;
+            this.Description = description ?? "";
         }
 
         public Parameter(
@@ -136,7 +143,8 @@ namespace Kusto.Language.Symbols
             string defaultValueIndicator = null,
             int minOccurring = 1, 
             int maxOccurring = 1,
-            Expression defaultValue = null)
+            Expression defaultValue = null,
+            string description = null)
             : this(
                   name, 
                   typeKind, 
@@ -148,7 +156,8 @@ namespace Kusto.Language.Symbols
                   defaultValueIndicator, 
                   minOccurring, 
                   maxOccurring, 
-                  defaultValue)
+                  defaultValue,
+                  description)
         {
         }
 
@@ -162,7 +171,8 @@ namespace Kusto.Language.Symbols
             string defaultValueIndicator = null,
             int minOccurring = 1,
             int maxOccurring = 1,
-            Expression defaultValue = null)
+            Expression defaultValue = null,
+            string description = null)
             : this(
                   name, 
                   ParameterTypeKind.Declared, 
@@ -174,7 +184,8 @@ namespace Kusto.Language.Symbols
                   defaultValueIndicator, 
                   minOccurring, 
                   maxOccurring, 
-                  defaultValue)
+                  defaultValue,
+                  description)
         {
         }
 
@@ -188,7 +199,8 @@ namespace Kusto.Language.Symbols
             string defaultValueIndicator = null,
             int minOccurring = 1,
             int maxOccurring = 1,
-            Expression defaultValue = null)
+            Expression defaultValue = null,
+            string description = null)
             : this(
                   name, 
                   ParameterTypeKind.Declared, 
@@ -200,18 +212,19 @@ namespace Kusto.Language.Symbols
                   defaultValueIndicator, 
                   minOccurring, 
                   maxOccurring, 
-                  defaultValue)
+                  defaultValue,
+                  description)
         {
         }
 
         public Parameter(string name, TypeSymbol type)
-            : this(name, ParameterTypeKind.Declared, new[] { type }, ArgumentKind.Expression, null, null, false, null, 1, 1, null)
+            : this(name, ParameterTypeKind.Declared, new[] { type }, ArgumentKind.Expression, null, null, false, null, 1, 1, null, null)
         {
         }
 
         public static Parameter From(ParameterSymbol parameter, bool isOptional = false, Expression defaultValue = null)
         {
-            return new Parameter(parameter.Name, parameter.Type, minOccurring: isOptional ? 0 : 1, defaultValue: defaultValue);
+            return new Parameter(parameter.Name, parameter.Type, minOccurring: isOptional ? 0 : 1, defaultValue: defaultValue, description: parameter.Description);
         }
 
         /// <summary>

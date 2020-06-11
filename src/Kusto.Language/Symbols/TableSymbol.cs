@@ -18,6 +18,11 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public IReadOnlyList<ColumnSymbol> Columns { get; }
 
+        /// <summary>
+        /// The description of the table.
+        /// </summary>
+        public string Description { get; }
+
         [Flags]
         private enum TableState : ushort
         {
@@ -34,30 +39,31 @@ namespace Kusto.Language.Symbols
         /// </summary>
         private readonly TableState state;
 
-        private TableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns)
+        private TableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
             : base(name)
         {
             this.state = state;
             this.Columns = columns.ToReadOnly();
+            this.Description = description ?? "";
         }
 
-        private TableSymbol(TableState state, IEnumerable<ColumnSymbol> columns)
-            : this("", state, columns)
+        private TableSymbol(TableState state, IEnumerable<ColumnSymbol> columns, string description)
+            : this("", state, columns, description)
         {
         }
 
-        public TableSymbol(string name, IEnumerable<ColumnSymbol> columns)
-            : this(name, TableState.None, columns)
+        public TableSymbol(string name, IEnumerable<ColumnSymbol> columns, string description = null)
+            : this(name, TableState.None, columns, description)
         {
         }
 
         public TableSymbol(string name, params ColumnSymbol[] columns)
-            : this(name, TableState.None, columns)
+            : this(name, TableState.None, columns, null)
         {
         }
 
         public TableSymbol(IEnumerable<ColumnSymbol> columns)
-            : this("", TableState.None, columns)
+            : this("", TableState.None, columns, null)
         {
         }
 
@@ -124,7 +130,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithName(string name)
         {
-            return new TableSymbol(name ?? "", this.state, this.Columns);
+            return new TableSymbol(name, this.state, this.Columns, this.Description);
         }
 
         /// <summary>
@@ -132,7 +138,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithColumns(IEnumerable<ColumnSymbol> columns)
         {
-            return new TableSymbol(this.state, columns);
+            return new TableSymbol(this.state, columns, "");
         }
 
         /// <summary>
@@ -148,7 +154,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol AddColumns(IEnumerable<ColumnSymbol> columns)
         {
-            return new TableSymbol(this.state, this.Columns.Concat(columns));
+            return new TableSymbol(this.state, this.Columns.Concat(columns), "");
         }
 
         /// <summary>
@@ -160,11 +166,19 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// Creates a new <see cref="TableSymbol"/> with the specified description.
+        /// </summary>
+        public TableSymbol WithDescripton(string description)
+        {
+            return new TableSymbol(this.Name, this.state, this.Columns, this.Description);
+        }
+
+        /// <summary>
         /// Creates a new <see cref="TableSymbol"/> that has the serialized state.
         /// </summary>
         public TableSymbol Serialized()
         {
-            return new TableSymbol(this.state | TableState.Serialized, this.Columns);
+            return new TableSymbol(this.state | TableState.Serialized, this.Columns, "");
         }
 
         /// <summary>
@@ -172,7 +186,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol Sorted()
         {
-            return new TableSymbol(this.state | TableState.Sorted, this.Columns);
+            return new TableSymbol(this.state | TableState.Sorted, this.Columns, "");
         }
 
         /// <summary>
@@ -180,7 +194,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol Unsorted()
         {
-            return new TableSymbol(this.state & ~TableState.Sorted, this.Columns);
+            return new TableSymbol(this.state & ~TableState.Sorted, this.Columns, "");
         }
 
         /// <summary>
@@ -188,7 +202,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol Open()
         {
-            return new TableSymbol(this.state | TableState.Open, this.Columns);
+            return new TableSymbol(this.state | TableState.Open, this.Columns, "");
         }
 
         /// <summary>
@@ -196,7 +210,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol External()
         {
-            return new TableSymbol(this.Name, this.state | TableState.External, this.Columns);
+            return new TableSymbol(this.Name, this.state | TableState.External, this.Columns, this.Description);
         }
 
         /// <summary>
@@ -204,7 +218,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol MaterializedView()
         {
-            return new TableSymbol(this.Name, this.state | TableState.MaterializedView, this.Columns);
+            return new TableSymbol(this.Name, this.state | TableState.MaterializedView, this.Columns, this.Description);
         }
 
         private Dictionary<string, ColumnSymbol> lazyColumnMap;

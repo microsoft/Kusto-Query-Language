@@ -13,12 +13,15 @@ namespace Kusto.Language.Symbols
     {
         public TypeSymbol Type { get; }
 
+        public string Description { get; }
+
         public override SymbolKind Kind => SymbolKind.Parameter;
 
-        public ParameterSymbol(string name, TypeSymbol type)
+        public ParameterSymbol(string name, TypeSymbol type, string description = null)
             : base(name)
         {
             this.Type = type;
+            this.Description = description ?? "";
         }
 
         public override Tabularity Tabularity => this.Type.Tabularity;
