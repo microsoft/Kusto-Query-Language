@@ -1247,7 +1247,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowOperationDetails =
             new CommandSymbol("show operation details",
                 "show operation <guid>:OperationId details",
-                new TableSymbol().Open()); // schema depends on operation
+                new TableSymbol().WithIsOpen(true)); // schema depends on operation
 
         private static readonly TableSymbol JournalResult =
             new TableSymbol(

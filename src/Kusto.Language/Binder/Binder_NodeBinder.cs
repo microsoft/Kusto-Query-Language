@@ -779,7 +779,9 @@ namespace Kusto.Language.Binding
                 {
                     if (resultType is TableSymbol table)
                     {
-                        resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table)).WithName(node.NameEquals.Name.SimpleName);
+                        resultType = new TableSymbol(_binder.GetDeclaredAndInferredColumns(table))
+                            .WithInheritableProperties(table)
+                            .WithName(node.NameEquals.Name.SimpleName);
                     }
                 }
 
@@ -792,7 +794,8 @@ namespace Kusto.Language.Binding
 
                 if (resultType is TableSymbol table)
                 {
-                    resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
+                    resultType = new TableSymbol(_binder.GetDeclaredAndInferredColumns(table))
+                        .WithInheritableProperties(table);
                 }
 
                 return new SemanticInfo(resultType);
@@ -804,7 +807,8 @@ namespace Kusto.Language.Binding
 
                 if (resultType is TableSymbol table)
                 {
-                    resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
+                    resultType = new TableSymbol(_binder.GetDeclaredAndInferredColumns(table))
+                        .WithInheritableProperties(table);
                 }
 
                 return new SemanticInfo(resultType);
@@ -1054,8 +1058,9 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
-                    // does not change table shape or state
-                    var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+                    var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1072,7 +1077,10 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
 
-                    var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty)).Unsorted();
+                    var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1089,7 +1097,10 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
 
-                    var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty)).Unsorted();
+                    var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1109,7 +1120,10 @@ namespace Kusto.Language.Binding
 
                     var name = GetExpressionResultName(node.OfExpression, "Column1");
 
-                    var result = RowScopeOrEmpty.WithColumns(new ColumnSymbol(name, _binder.GetResultTypeOrError(node.OfExpression))).Unsorted();
+                    var result = new TableSymbol(new ColumnSymbol(name, _binder.GetResultTypeOrError(node.OfExpression)))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
                     return new SemanticInfo(result, diagnostics);
                 }
                 finally
@@ -1152,7 +1166,10 @@ namespace Kusto.Language.Binding
 
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
 
-                    return new SemanticInfo(RowScopeOrEmpty.WithColumns(builder.GetProjection()), diagnostics);
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1182,7 +1199,7 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    var resultType = RowScopeOrEmpty.WithColumns(columns);
+                    var resultType = new TableSymbol(columns).WithInheritableProperties(RowScopeOrEmpty);
                     var info = new SemanticInfo(resultType, diagnostics);
                     return info;
                 }
@@ -1204,9 +1221,10 @@ namespace Kusto.Language.Binding
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), declare: true, doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, isRename: true);
 
-                    var resultType = RowScopeOrEmpty.WithColumns(builder.GetProjection());
-                    var info = new SemanticInfo(resultType, diagnostics);
-                    return info;
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1232,7 +1250,10 @@ namespace Kusto.Language.Binding
                     }
 
                     // Even that column order changes - it doesn't really matter right now
-                    var resultTable = RowScopeOrEmpty.WithColumns(builder.GetProjection()).Sorted();
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsOpen(true);
+
                     var info = new SemanticInfo(resultTable, diagnostics);
                     return info;
                 }
@@ -1255,7 +1276,9 @@ namespace Kusto.Language.Binding
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, isExtend: true);
 
-                    var resultType = RowScopeOrEmpty.WithColumns(builder.GetProjection());
+                    var resultType = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     var info = new SemanticInfo(resultType, diagnostics);
                     return info;
                 }
@@ -1285,9 +1308,11 @@ namespace Kusto.Language.Binding
                     // all columns corresponding to aggregate expressions
                     _binder.CreateProjectionColumns(node.Aggregates, builder, diagnostics, aggregates: true);
 
-                    var resultType = RowScopeOrEmpty.WithColumns(builder.GetProjection()).Unsorted();
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
 
-                    return new SemanticInfo(resultType, diagnostics);
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1312,7 +1337,12 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
-                    return new SemanticInfo(RowScopeOrEmpty.WithColumns(builder.GetProjection()).Unsorted(), diagnostics);
+                    
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1332,7 +1362,10 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsScalar(node.ByExpression, diagnostics);
 
                     // does not change table shape
-                    var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty)).Sorted();
+                    var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(true);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1364,7 +1397,11 @@ namespace Kusto.Language.Binding
                         builder.Add(new ColumnSymbol("approximate_count_" + GetExpressionResultName(node.OfExpression), ScalarTypes.Long));
                     }
 
-                    return new SemanticInfo(RowScopeOrEmpty.WithColumns(builder.GetProjection()).Sorted(), diagnostics);
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(true);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1409,7 +1446,11 @@ namespace Kusto.Language.Binding
                         columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(byName), _binder.GetResultTypeOrError(clause.ByExpression)));
                     }
 
-                    return new SemanticInfo(RowScopeOrEmpty.WithColumns(columns).Sorted(), diagnostics);
+                    var resultTable = new TableSymbol(columns)
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(true);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -1452,7 +1493,9 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     // execute and cache doesn't change anything?
-                    var resultTable = RowScopeOrEmpty.WithName("");
+                    var resultTable = new TableSymbol(RowScopeOrEmpty.Columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1523,8 +1566,10 @@ namespace Kusto.Language.Binding
                         _binder.CheckIsScalar(expr, diagnostics);
                     }
 
-                    // does not change row shape
-                    var resultTable = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty)).Sorted();
+                    var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(true);
+
                     return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
@@ -1544,7 +1589,10 @@ namespace Kusto.Language.Binding
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
 
-                    var resultType = RowScopeOrEmpty.WithColumns(builder.GetProjection()).Serialized();
+                    var resultType = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSerialized(true);
+
                     var info = new SemanticInfo(resultType, diagnostics);
                     return info;
                 }
@@ -1562,7 +1610,11 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryParameters(node.Parameters, s_AsParameters, diagnostics);
-                    return new SemanticInfo(RowScopeOrEmpty.WithName(""));
+                    
+                    var resultTable = new TableSymbol(RowScopeOrEmpty.Columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    return new SemanticInfo(resultTable);
                 }
                 finally
                 {
@@ -1593,7 +1645,7 @@ namespace Kusto.Language.Binding
                         if (tableType != null)
                         {
                             var name = tables.Count == 0 ? "Results" : "Results_" + (tables.Count + 1);
-                            var table = tableType.WithColumns(_binder.GetDeclaredAndInferredColumns(tableType)).WithName(name);
+                            var table = new TableSymbol(name, _binder.GetDeclaredAndInferredColumns(tableType)).WithInheritableProperties(tableType);
                             tables.Add(table);
                         }
                     }
@@ -1661,7 +1713,10 @@ namespace Kusto.Language.Binding
                         return new SemanticInfo(RowScopeOrEmpty, diagnostics);
                     }
 
-                    var result = RowScopeOrEmpty.WithColumns(_binder.GetDeclaredAndInferredColumns(tableType)).Unsorted();
+                    var result = new TableSymbol(_binder.GetDeclaredAndInferredColumns(tableType))
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
                     return new SemanticInfo(result, diagnostics);
                 }
                 finally
@@ -1715,16 +1770,14 @@ namespace Kusto.Language.Binding
                     if (_binder._rowScope != null)
                     {
                         // if no in-clause can be any position in pipe
-                        result = _binder._rowScope.WithColumns(columns).Unsorted();
+                        result = new TableSymbol(columns)
+                            .WithInheritableProperties(_binder._rowScope)
+                            .WithIsSorted(false);
                     }
                     else
                     {
-                        result = new TableSymbol(columns);
-                        
-                        if (searchColumnsTable.IsOpen)
-                        {
-                            result = result.Open();
-                        }
+                        result = new TableSymbol(columns)
+                            .WithIsOpen(searchColumnsTable.IsOpen);
                     }
 
                     return new SemanticInfo(result, diagnostics);
@@ -1918,12 +1971,7 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    var resultTable = new TableSymbol(columns);
-
-                    if (resultIsOpen)
-                    {
-                        resultTable = resultTable.Open();
-                    }
+                    var resultTable = new TableSymbol(columns).WithIsOpen(resultIsOpen);
 
                     return new SemanticInfo(resultTable, diagnostics);
                 }
@@ -1998,10 +2046,10 @@ namespace Kusto.Language.Binding
 
                     if (tables.Any(t => t.IsOpen))
                     {
-                        resultTable = resultTable.Open();
+                        resultTable = resultTable.WithIsOpen(true);
                     }
 
-                    return new SemanticInfo(resultTable.Unsorted(), diagnostics);
+                    return new SemanticInfo(resultTable.WithIsSorted(false), diagnostics);
                 }
                 finally
                 {
@@ -2054,12 +2102,7 @@ namespace Kusto.Language.Binding
 
                     MakeColumnNamesUnique(columns);
 
-                    var resultTable = new TableSymbol(columns);
-
-                    if (resultIsOpen)
-                    {
-                        resultTable = resultTable.Open();
-                    }
+                    var resultTable = new TableSymbol(columns).WithIsOpen(resultIsOpen);
 
                     return new SemanticInfo(resultTable, diagnostics);
                 }
@@ -2131,6 +2174,7 @@ namespace Kusto.Language.Binding
                     var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
 
                     var resultIsOpen = false;
+
                     // if not explicitly a right-anti/semi join, then add left-side columns
                     if (!IsRightAntiOrSemiJoin(joinKind))
                     {
@@ -2149,12 +2193,7 @@ namespace Kusto.Language.Binding
 
                     MakeColumnNamesUnique(columns);
 
-                    var resultTable = new TableSymbol(columns);
-
-                    if (resultIsOpen)
-                    {
-                        resultTable = resultTable.Open();
-                    }
+                    var resultTable = new TableSymbol(columns).WithIsOpen(resultIsOpen);
 
                     return new SemanticInfo(resultTable, diagnostics);
                 }
@@ -2405,11 +2444,12 @@ namespace Kusto.Language.Binding
                         var name = GetExpressionResultName(expr);
                         var tableName = i == 0 ? "Facet" : "Facet_" + (i + 1);
 
-                        var table = RowScopeOrEmpty.WithColumns(
-                            new ColumnSymbol(name, _binder.GetResultTypeOrError(expr)),
-                            new ColumnSymbol("count_" + name, ScalarTypes.Long))
-                            .Unsorted()
-                            .WithName(tableName);
+                        var table = new TableSymbol(
+                                tableName,
+                                new ColumnSymbol(name, _binder.GetResultTypeOrError(expr)),
+                                new ColumnSymbol("count_" + name, ScalarTypes.Long))
+                            .WithInheritableProperties(RowScopeOrEmpty)
+                            .WithIsSorted(false);
 
                         tables.Add(table);
                     }
@@ -2490,7 +2530,10 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    var resultType = RowScopeOrEmpty.WithColumns(builder.GetProjection()).Unsorted();
+                    var resultType = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty)
+                        .WithIsSorted(false);
+
                     return new SemanticInfo(resultType, diagnostics);
                 }
                 finally
@@ -2533,7 +2576,9 @@ namespace Kusto.Language.Binding
                         _binder.CheckIsInteger(node.RowLimitClause.RowLimit, diagnostics);
                     }
 
-                    var result = RowScopeOrEmpty.WithColumns(builder.GetProjection());
+                    var result = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     return new SemanticInfo(result, diagnostics);
                 }
                 finally
@@ -2604,7 +2649,9 @@ namespace Kusto.Language.Binding
 
                     // ignore Subquery value here (see TreeBinder)
                     // return info for type flowing into subquery
-                    var result = RowScopeOrEmpty.WithColumns(builder.GetProjection());
+                    var result = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     return new SemanticInfo(result, diagnostics);
                 }
                 finally
@@ -2644,7 +2691,8 @@ namespace Kusto.Language.Binding
                     var resultType = _binder.GetResultTypeOrError(node.Expression);
                     if (resultType is TableSymbol table)
                     {
-                        resultType = table.WithColumns(_binder.GetDeclaredAndInferredColumns(table));
+                        resultType = new TableSymbol(_binder.GetDeclaredAndInferredColumns(table))
+                            .WithInheritableProperties(table);
                     }
 
                     return new SemanticInfo(resultType, diagnostics);
@@ -2756,7 +2804,11 @@ namespace Kusto.Language.Binding
                     }
 
                     _binder.GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
-                    return new SemanticInfo(this.RowScopeOrEmpty.WithColumns(columns));
+
+                    var resultTable = new TableSymbol(columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -2885,7 +2937,9 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    var result = RowScopeOrEmpty.WithColumns(columns);
+                    var result = new TableSymbol(columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
                     return new SemanticInfo(result, diagnostics);
                 }
                 finally
@@ -2985,11 +3039,8 @@ namespace Kusto.Language.Binding
                     var stepColumnName = (stepNameParam != null && stepNameParam.Expression is NameDeclaration stepNd) ? stepNd.SimpleName : "step";
                     columns.Add(new ColumnSymbol(stepColumnName, ScalarTypes.String));
 
-                    var resultTable = new TableSymbol(columns);
-                    if (RowScopeOrEmpty.IsOpen)
-                    {
-                        resultTable = resultTable.Open();
-                    }
+                    var resultTable = new TableSymbol(columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
 
                     return new SemanticInfo(resultTable, diagnostics);
                 }

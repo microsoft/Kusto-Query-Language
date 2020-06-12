@@ -126,23 +126,52 @@ namespace Kusto.Language.Symbols
         public bool IsMaterializedView => (this.state & TableState.MaterializedView) != 0;
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with the specified name.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified name.
         /// </summary>
         public TableSymbol WithName(string name)
         {
-            return new TableSymbol(name, this.state, this.Columns, this.Description);
+            if (this.Name != (name ?? ""))
+            {
+                return new TableSymbol(name, this.state, this.Columns, this.Description);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with the specified columns.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified description.
+        /// </summary>
+        public TableSymbol WithDescripton(string description)
+        {
+            if (this.Description != (description ?? ""))
+            {
+                return new TableSymbol(this.Name, this.state, this.Columns, this.Description);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified columns.
         /// </summary>
         public TableSymbol WithColumns(IEnumerable<ColumnSymbol> columns)
         {
-            return new TableSymbol(this.state, columns, "");
+            if (this.Columns != columns)
+            {
+                return new TableSymbol(this.Name, this.state, columns, this.Description);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with the specified columns.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified columns.
         /// </summary>
         public TableSymbol WithColumns(params ColumnSymbol[] columns)
         {
@@ -150,15 +179,18 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with additional columns.
+        /// Returns a version of this <see cref="TableSymbol"/> with additional columns.
         /// </summary>
         public TableSymbol AddColumns(IEnumerable<ColumnSymbol> columns)
         {
-            return new TableSymbol(this.state, this.Columns.Concat(columns), "");
+            if (columns == null)
+                throw new ArgumentNullException(nameof(columns));
+
+            return new TableSymbol(this.Name, this.state, this.Columns.Concat(columns), this.Description);
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with additional columns.
+        /// Returns a version of this <see cref="TableSymbol"/> with additional columns.
         /// </summary>
         public TableSymbol AddColumns(params ColumnSymbol[] columns)
         {
@@ -166,59 +198,77 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> with the specified description.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified state.
         /// </summary>
-        public TableSymbol WithDescripton(string description)
+        private TableSymbol WithState(TableState newState)
         {
-            return new TableSymbol(this.Name, this.state, this.Columns, this.Description);
+            if (this.state != newState)
+            {
+                return new TableSymbol(this.Name, newState, this.Columns, this.Description);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that has the serialized state.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified <see cref="IsSerialized"/> property.
         /// </summary>
-        public TableSymbol Serialized()
+        public TableSymbol WithIsSerialized(bool isSerialized)
         {
-            return new TableSymbol(this.state | TableState.Serialized, this.Columns, "");
+            return WithState(isSerialized ? (this.state | TableState.Serialized) : (this.state & ~TableState.Serialized));
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that has the sorted state.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified <see cref="IsSorted"/> property.
         /// </summary>
-        public TableSymbol Sorted()
+        public TableSymbol WithIsSorted(bool isSorted)
         {
-            return new TableSymbol(this.state | TableState.Sorted, this.Columns, "");
+            return WithState(isSorted ? (this.state | TableState.Sorted) : (this.state & ~TableState.Sorted));
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that does not have the sorted state.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified <see cref="IsOpen"/> property.
         /// </summary>
-        public TableSymbol Unsorted()
+        public TableSymbol WithIsOpen(bool isOpen)
         {
-            return new TableSymbol(this.state & ~TableState.Sorted, this.Columns, "");
+            return WithState(isOpen ? (this.state | TableState.Open) : (this.state & ~TableState.Open));
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that contains an explicit list of columns plus any unspecified column referenced by a query.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified <see cref="IsExternal"/> property.
         /// </summary>
-        public TableSymbol Open()
+        public TableSymbol WithIsExternal(bool isExternal)
         {
-            return new TableSymbol(this.state | TableState.Open, this.Columns, "");
+            return WithState(isExternal ? (this.state | TableState.External) : (this.state & ~TableState.External));
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that is considered external.
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified <see cref="IsMaterializedView"/> property.
         /// </summary>
-        public TableSymbol External()
+        public TableSymbol WithIsMaterializedView(bool isMaterializedView)
         {
-            return new TableSymbol(this.Name, this.state | TableState.External, this.Columns, this.Description);
+            return WithState(isMaterializedView ? (this.state | TableState.MaterializedView) : (this.state & ~TableState.MaterializedView));
         }
 
         /// <summary>
-        /// Creates a new <see cref="TableSymbol"/> that is considered a materialized view.
+        /// The state flags that are inheritable via <see cref="WithInheritableProperties(TableSymbol)"/>
         /// </summary>
-        public TableSymbol MaterializedView()
+        private static readonly TableState InheritableState =
+            TableState.Serialized | TableState.Sorted | TableState.Open;
+
+        /// <summary>
+        /// Returns a version of this <see cref="TableSymbol"/> with the same inheritable state properties as the specified table;
+        /// IsSerialized, IsSorted, and IsOpen.
+        /// </summary>
+        public TableSymbol WithInheritableProperties(TableSymbol table)
         {
-            return new TableSymbol(this.Name, this.state | TableState.MaterializedView, this.Columns, this.Description);
+            if (table == null)
+                throw new ArgumentNullException(nameof(table));
+
+            var newState = (table.state & ~InheritableState) | (table.state & InheritableState);
+            return WithState(newState);
         }
 
         private Dictionary<string, ColumnSymbol> lazyColumnMap;

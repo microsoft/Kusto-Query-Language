@@ -207,7 +207,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol AutoCluster =
             new FunctionSymbol("autocluster",
-                (table, args) => table.WithColumns(AutoClusterColumns.Concat(table.Columns)),
+                (table, args) => new TableSymbol(AutoClusterColumns.Concat(table.Columns)).WithInheritableProperties(table),
                 Tabularity.Tabular,
                 new Parameter("SizeWeight", ScalarTypes.Real, defaultValueIndicator: "~", minOccurring: 0),
                 new Parameter("WeightColumn", ParameterTypeKind.Scalar, ArgumentKind.Column, defaultValueIndicator: "~", minOccurring: 0),
@@ -216,7 +216,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol BagUnpack =
              new FunctionSymbol("bag_unpack",
-                 (table, args) => table.WithColumns(table.Columns.Where(c => args.Count == 0 || c != args[0].ReferencedSymbol)).Open(),
+                 (table, args) => new TableSymbol(table.Columns.Where(c => args.Count == 0 || c != args[0].ReferencedSymbol)).WithInheritableProperties(table).WithIsOpen(true),
                  Tabularity.Tabular,
                  new Parameter("column", ScalarTypes.Dynamic, ArgumentKind.Column),
                  new Parameter("column_prefix", ScalarTypes.String, ArgumentKind.LiteralNotEmpty, minOccurring: 0));
@@ -229,7 +229,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Basket =
              new FunctionSymbol("basket",
-                 (table, args) => table.WithColumns(BasketColumns.Concat(table.Columns)),
+                 (table, args) => new TableSymbol(BasketColumns.Concat(table.Columns)).WithInheritableProperties(table),
                  Tabularity.Tabular,
                  new Parameter("Threshold", ScalarTypes.Real, defaultValueIndicator: "~", minOccurring: 0),
                  new Parameter("WeightColumn", ParameterTypeKind.Scalar, ArgumentKind.Column, defaultValueIndicator: "~", minOccurring: 0),
@@ -238,7 +238,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol CosmosdbSqlRequest =
              new FunctionSymbol("cosmosdb_sql_request",
-                 (table, args) => new TableSymbol().Open(), // the schema comes from the cosmos database at runtime
+                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
                  Tabularity.Tabular,
                  new Parameter("endpoint", ScalarTypes.String),
                  new Parameter("authorization_string", ScalarTypes.String),
@@ -249,7 +249,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DCountIntersect =
              new FunctionSymbol("dcount_intersect",
-                 (table, args) => table.AddColumns(args.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long))),
+                 (table, args) => new TableSymbol(table.Columns.Concat(args.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long)))).WithInheritableProperties(table),
                  Tabularity.Tabular,
                  new Parameter("hll", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: MaxRepeat));
 
@@ -264,7 +264,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DiffPatterns =
              new FunctionSymbol("diffpatterns",
-                 (table, args) => table.WithColumns(DiffPatternsColumns.Concat(table.Columns)),
+                 (table, args) => new TableSymbol(DiffPatternsColumns.Concat(table.Columns)).WithInheritableProperties(table),
                  Tabularity.Tabular,
                  new Parameter("SplitColumn", ParameterTypeKind.Scalar, ArgumentKind.Column),
                  new Parameter("SplitValueA", ScalarTypes.String),
@@ -282,14 +282,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExecuteShowCommand =
              new FunctionSymbol("execute_show_command",
-                 (table, args) => new TableSymbol().Open(), // depends on contents of command string
+                 (table, args) => new TableSymbol().WithIsOpen(true), // depends on contents of command string
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("command", ScalarTypes.String));
 
         public static readonly FunctionSymbol ExecuteQuery =
              new FunctionSymbol("execute_query",
-                 (table, args) => new TableSymbol().Open(), // depends on contents of command string
+                 (table, args) => new TableSymbol().WithIsOpen(true), // depends on contents of command string
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("query", ScalarTypes.String));
@@ -297,7 +297,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExternalDatatable =
              new FunctionSymbol("external_datatable",
                  new Signature(
-                     (table, args) => new TableSymbol().Open(), // depends on the data sent from the client
+                     (table, args) => new TableSymbol().WithIsOpen(true), // depends on the data sent from the client
                     Tabularity.Tabular));
 
 #if false   // problem with multiple repeating parameters
@@ -434,7 +434,7 @@ namespace Kusto.Language
                      }
 
                      // pivot table is open because it has additional columns based on data values
-                     return new TableSymbol(columns).Open();
+                     return new TableSymbol(columns).WithIsOpen(true);
                  },
                  Tabularity.Tabular,
                  new Parameter("pivotColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
@@ -451,7 +451,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol CSharp =
              new FunctionSymbol("csharp",
-                 (table, args) => new TableSymbol().Open(), // TODO: can we parse the output schema argument?
+                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
@@ -459,7 +459,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Python =
              new FunctionSymbol("python",
-                 (table, args) => new TableSymbol().Open(), // TODO: can we parse the output schema argument?
+                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
@@ -467,7 +467,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol R =
              new FunctionSymbol("r",
-                 (table, args) => new TableSymbol().Open(), // TODO: can we parse the output schema argument?
+                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
@@ -536,7 +536,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SqlRequest =
              new FunctionSymbol("sql_request",
-                 (table, args) => new TableSymbol().Open(), // the schema comes from the database at runtime
+                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
                  Tabularity.Tabular,
                  new Parameter("ConnectionString", ScalarTypes.String),
                  new Parameter("SqlQuery", ScalarTypes.String));

@@ -703,8 +703,12 @@ namespace Kusto.Language.Binding
                             builder.Add(col, replace: true);
                         }
                     }
+                   
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(_binder.RowScopeOrEmpty);
 
-                    var applyInfo = new SemanticInfo(_binder._rowScope.WithColumns(builder.GetProjection()), info.Diagnostics);
+                    var applyInfo = new SemanticInfo(resultTable, info.Diagnostics);
+
                     _binder.SetSemanticInfo(node, applyInfo);
                 }
                 finally

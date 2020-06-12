@@ -573,7 +573,7 @@ namespace Kusto.Language.Binding
 
             if (!map.TryGetValue(name, out var table))
             {
-                table = new TableSymbol(name).Open();
+                table = new TableSymbol(name).WithIsOpen(true);
                 map.Add(name, table);
             }
 
@@ -693,12 +693,7 @@ namespace Kusto.Language.Binding
 
                 Binder.UnifyColumnsWithSameName(columns);
 
-                unifiedColumnsTable = new TableSymbol(columns);
-
-                if (tables.Any(t => t.IsOpen))
-                {
-                    unifiedColumnsTable = unifiedColumnsTable.Open();
-                }
+                unifiedColumnsTable = new TableSymbol(columns).WithIsOpen(tables.Any(t => t.IsOpen));
 
                 if (cache)
                 {
@@ -729,12 +724,7 @@ namespace Kusto.Language.Binding
 
                 Binder.UnifyColumnsWithSameNameAndType(columns);
 
-                unifiedColumnsTable = new TableSymbol(columns);
-
-                if (tables.Any(t => t.IsOpen))
-                {
-                    unifiedColumnsTable = unifiedColumnsTable.Open();
-                }
+                unifiedColumnsTable = new TableSymbol(columns).WithIsOpen(tables.Any(t => t.IsOpen));
 
                 if (cache)
                 {
@@ -765,7 +755,7 @@ namespace Kusto.Language.Binding
                 // since these are the common columns, open columns can only exist if all tables are open
                 if (tables.Count > 0 && tables.All(t => t.IsOpen))
                 {
-                    commonColumnsTable = commonColumnsTable.Open();
+                    commonColumnsTable = commonColumnsTable.WithIsOpen(true);
                 }
 
                 if (cache)
@@ -1838,7 +1828,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        return TableSymbol.Empty.Open();
+                        return TableSymbol.Empty.WithIsOpen(true);
                     }
 
                 case ReturnTypeKind.Parameter0ExternalTable:
@@ -1849,7 +1839,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        return TableSymbol.Empty.Open();
+                        return TableSymbol.Empty.WithIsOpen(true);
                     }
                 case ReturnTypeKind.Parameter0MaterializedView:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
@@ -1859,7 +1849,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        return TableSymbol.Empty.Open();
+                        return TableSymbol.Empty.WithIsOpen(true);
                     }
                 case ReturnTypeKind.Custom:
                     return signature.CustomReturnType(_rowScope ?? TableSymbol.Empty, arguments, signature) ?? ErrorSymbol.Instance;
