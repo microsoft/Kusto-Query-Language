@@ -601,7 +601,7 @@ namespace Kusto.Language
                             Language.Aggregates.All, null,
                             Language.PlugIns.All, null,
                             Language.Operators.All, null,
-                            Language.Commands.All, null, null,
+                            Language.EngineCommands.All, null, null,
                             NoParameters),
                         null);
                 }

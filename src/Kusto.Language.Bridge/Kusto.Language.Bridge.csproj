@@ -39,6 +39,9 @@
     <Compile Include="..\Kusto.Language\Aggregates.cs">
       <Link>Src\Aggregates.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\AriaBridgeCommands.cs">
+      <Link>Src\AriaBridgeCommands.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Binder\Binder.cs">
       <Link>Src\Binder.cs</Link>
     </Compile>
@@ -60,8 +63,11 @@
     <Compile Include="..\Kusto.Language\Binder\ProjectionBuilder.cs">
       <Link>Src\ProjectionBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Kusto.Language\Commands.cs">
-      <Link>Src\Commands.cs</Link>
+    <Compile Include="..\Kusto.Language\ClusterManagerCommands.cs">
+      <Link>Src\ClusterManagerCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\DataManagerCommands.cs">
+      <Link>Src\DataManagerCommands.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Diagnostics\Diagnostic.cs">
       <Link>Src\Diagnostic.cs</Link>
@@ -200,6 +206,9 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Editor\UnknownCodeService.cs">
       <Link>Src\UnknownCodeService.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\EngineCommands.cs">
+      <Link>Src\EngineCommands.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\FunctionHelpers.cs">
       <Link>Src\FunctionHelpers.cs</Link>

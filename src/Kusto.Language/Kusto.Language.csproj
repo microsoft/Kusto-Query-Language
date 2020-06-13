@@ -51,8 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregates.cs" />
+    <Compile Include="AriaBridgeCommands.cs" />
     <Compile Include="Binder\ProjectionBuilder.cs" />
     <Compile Include="Binder\Binder_SearchPredicateBinder.cs" />
+    <Compile Include="ClusterManagerCommands.cs" />
+    <Compile Include="DataManagerCommands.cs" />
     <Compile Include="Editor\BrackettingStyle.cs" />
     <Compile Include="Editor\ClassificationKind.cs" />
     <Compile Include="Editor\ClassificationResult.cs" />
@@ -121,7 +124,7 @@
     <Compile Include="Symbols\ClusterSymbol.cs" />
     <Compile Include="Symbols\ColumnSymbol.cs" />
     <Compile Include="Symbols\CombineKind.cs" />
-    <Compile Include="Commands.cs" />
+    <Compile Include="EngineCommands.cs" />
     <Compile Include="Symbols\CommandSymbol.cs" />
     <Compile Include="Symbols\DatabaseSymbol.cs" />
     <Compile Include="Symbols\ErrorSymbol.cs" />

@@ -4,7 +4,7 @@ namespace Kusto.Language
 {
     using Symbols;
 
-    public static class Commands
+    public static class EngineCommands
     {
         #region Schema Commands
         #region Databases
