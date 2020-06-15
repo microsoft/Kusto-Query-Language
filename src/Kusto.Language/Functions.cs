@@ -151,6 +151,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol ParseCommandLine =
+            new FunctionSymbol("parse_command_line", ScalarTypes.Dynamic,
+                new Parameter("command", ParameterTypeKind.Scalar),
+                new Parameter("parser", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // slneimer: unhide after 18/Jun/2020
+
         public static readonly FunctionSymbol Extract =
             new FunctionSymbol("extract",
                 new Signature(ScalarTypes.String,
@@ -1247,8 +1255,7 @@ namespace Kusto.Language
             new FunctionSymbol("bag_merge", ScalarTypes.Dynamic,
                 new Parameter("bag", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         #endregion
 
@@ -1807,19 +1814,6 @@ namespace Kusto.Language
 #endregion
 
         #region geospatial functions
-        public static readonly FunctionSymbol Point =
-            new FunctionSymbol("point", ScalarTypes.Dynamic,
-                new Parameter("latitude", ParameterTypeKind.Number),
-                new Parameter("longitude", ParameterTypeKind.Number))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
-
-        public static readonly FunctionSymbol Distance =
-            new FunctionSymbol("distance", ScalarTypes.Real,
-                new Parameter("point1", ScalarTypes.Dynamic),
-                new Parameter("point2", ScalarTypes.Dynamic))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
 
         public static readonly FunctionSymbol GeoDistance2Points =
             new FunctionSymbol("geo_distance_2points", ScalarTypes.Real,
@@ -2049,6 +2043,7 @@ namespace Kusto.Language
             IndexOfRegex,
             Reverse,
             Split,
+            ParseCommandLine,
             Extract,
             ExtractAll_Depricated,
             ExtractAll,
@@ -2307,8 +2302,6 @@ namespace Kusto.Language
 #endregion
 
 #region geospatial functions
-            Point,
-            Distance,
             GeoDistance2Points,
             GeoDistancePointToLine,
             GeoPointInCircle,
