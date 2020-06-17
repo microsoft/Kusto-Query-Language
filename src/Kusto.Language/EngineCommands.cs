@@ -573,6 +573,21 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterExternalTable =
             new CommandSymbol("alter external table", "alter " + CreateOrAlterExternalTableGrammar,
                 ExternalTableFullResult);
+
+        public static readonly CommandSymbol CreateExternalTableMapping =
+            new CommandSymbol("create external table mapping", "create external table <name>:TableName (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
+
+        public static readonly CommandSymbol AlterExternalTableMapping =
+            new CommandSymbol("alter external table mapping", "alter external table <table>:TableName (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName <string>:MappingFormat", TableIngestionMappingResult);
+
+        public static readonly CommandSymbol ShowExternalTableMappings =
+            new CommandSymbol("show external table mappings", "show external table <table>:TableName (csv | json | avro | parquet | orc):MappingKind mappings", TableIngestionMappingResult);
+
+        public static readonly CommandSymbol ShowExternalTableMapping =
+            new CommandSymbol("show external table mapping", "show external table <table>:TableName (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName", TableIngestionMappingResult);
+
+        public static readonly CommandSymbol DropExternalTableMapping =
+            new CommandSymbol("drop external table mapping", "drop external table <table>:TableName (csv | json | avro | parquet | orc):MappingKind mapping <string>:MappingName");
         #endregion
         #endregion
 
@@ -1583,6 +1598,11 @@ namespace Kusto.Language
                 DropExternalTable,
                 CreateExternalTable,
                 AlterExternalTable,
+                CreateExternalTableMapping,
+                AlterExternalTableMapping,
+                ShowExternalTableMapping,
+                ShowExternalTableMappings,
+                DropExternalTableMapping,
                 #endregion
 
                 #region Policy Commands

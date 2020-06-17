@@ -144,4 +144,19 @@ namespace Kusto.Language.Syntax
 
         public static SyntaxList<TElement> Empty() => new SyntaxList<TElement>(new TElement[0]);
     }
+
+    public static class SyntaxListExtensions
+    {
+        /// <summary>
+        /// Gets the first <see cref="NamedParameter"/> with the specified name or null if none match.
+        /// </summary>
+        public static NamedParameter GetByName(this SyntaxList<NamedParameter> list, string name) =>
+            list.FirstOrDefault(np => np.Name.SimpleName == name);
+
+        /// <summary>
+        /// Gets the first <see cref="NamedParameter"/> with one of the specified names or null if none match any of the names.
+        /// </summary>
+        public static NamedParameter GetByName(this SyntaxList<NamedParameter> list, IReadOnlyList<string> names) =>
+            list.FirstOrDefault(np => names.Contains(np.Name.SimpleName));
+    }
 }

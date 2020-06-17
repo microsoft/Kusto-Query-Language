@@ -670,6 +670,18 @@ namespace Kusto.Language
             return new Diagnostic("KUS203", $"Failure in analysis '{analyzerName}': {message}");
         }
 
+        public static Diagnostic GetNameDoesNotReferToAnyKnownTable(string name)
+        {
+            return new Diagnostic("KUS204", $"The name '{name}' does not refer to any known table, tabular variable or function.");
+        }
+
+        public static Diagnostic GetFuzzyUnionOperandNotDefined(string name)
+        {
+            return new Diagnostic("KUS205", 
+                $"The fuzzy union operand '{name}' does not refer to any known table, tabular variable or function.")
+                .WithSeverity(DiagnosticSeverity.Warning);
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -1808,7 +1808,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryParameters(node.Parameters, s_FindParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
-                    var withSource = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.FindWithSourceProperty);
+                    var withSource = node.Parameters.GetByName(KustoFacts.FindWithSourceProperty);
                     string sourceColumnName = (withSource != null) ? GetNameDeclarationName(withSource.Expression) ?? "source_" : "source_";
                     columns.Add(new ColumnSymbol(sourceColumnName, ScalarTypes.String));
 
@@ -2012,7 +2012,7 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckQueryParameters(node.Parameters, s_UnionParameters, diagnostics);
 
-                    var withSourceParameter = node.Parameters.FirstOrDefault(p => KustoFacts.UnionWithSourceProperties.Contains(p.Name.SimpleName));
+                    var withSourceParameter = node.Parameters.GetByName(KustoFacts.UnionWithSourceProperties);
                     if (withSourceParameter != null)
                     {
                         var name = GetNameDeclarationName(withSourceParameter.Expression);
@@ -2062,7 +2062,7 @@ namespace Kusto.Language.Binding
             private static readonly QueryParameterInfo[] s_UnionParameters = new QueryParameterInfo[]
             {
                 new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.UnionKinds),
-                new QueryParameterInfo(new []{ "withsource", "with_source" }, QueryParameterKind.NameDeclaration),
+                new QueryParameterInfo(KustoFacts.UnionWithSourceProperties, QueryParameterKind.NameDeclaration),
                 new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.IsFuzzyKeyword), QueryParameterKind.BoolLiteral)
             };
 
@@ -2170,7 +2170,7 @@ namespace Kusto.Language.Binding
                             break;
                     }
 
-                    var joinKindNode = node.Parameters.GetFirstDescendant<NamedParameter>(np => np.Name.SimpleName == "kind");
+                    var joinKindNode = node.Parameters.GetByName("kind");
                     var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
 
                     var resultIsOpen = false;
@@ -2564,7 +2564,7 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, isReplace: true, columnType: type);
                     }
 
-                    var itemIndex = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.MvExpandWithItemIndexProperty);
+                    var itemIndex = node.Parameters.GetByName(KustoFacts.MvExpandWithItemIndexProperty);
                     if (itemIndex != null)
                     {
                         var indexName = GetNameDeclarationName(itemIndex.Expression);
@@ -2635,7 +2635,7 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, isReplace: true);
                     }
 
-                    var itemIndex = node.Parameters.FirstOrDefault(p => p.Name.SimpleName == KustoFacts.MvApplyWithItemIndexProperty);
+                    var itemIndex = node.Parameters.GetByName(KustoFacts.MvApplyWithItemIndexProperty);
                     if (itemIndex != null)
                     {
                         var indexName = GetNameDeclarationName(itemIndex.Expression);

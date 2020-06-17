@@ -190,15 +190,18 @@ namespace Kusto.Language.Binding
             public override void VisitUnionOperator(UnionOperator node)
             {
                 var oldRowScope = _binder._rowScope;
+                _binder._rowScope = null;
                 try
                 {
                     // union operator expressions do not bind to row scope columns (they are only tables)
-                    base.VisitUnionOperator(node);
+                    VisitChildren(node);
                 }
                 finally
                 {
                     _binder._rowScope = oldRowScope;
                 }
+
+                BindNode(node);
             }
 
             public override void VisitSummarizeOperator(SummarizeOperator node)
@@ -392,7 +395,7 @@ namespace Kusto.Language.Binding
                 BindNode(node);
 
                 // copy final semantic info of function call to name node, unless binding the name was an error
-                if (!_binder.GetResultTypeOrError(node.Name).IsError)
+                if (node.Name.ResultType == null || !node.Name.ResultType.IsError)
                 {
                     var fcInfo = _binder.GetSemanticInfo(node);
                     _binder.SetSemanticInfo(node.Name, new SemanticInfo(fcInfo?.ReferencedSymbol, fcInfo?.ResultType));

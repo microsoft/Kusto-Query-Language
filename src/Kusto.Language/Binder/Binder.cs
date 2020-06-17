@@ -1236,7 +1236,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (_pathScope == ErrorSymbol.Instance)
                 {
-                    // any x.y where is an error, is also an error
+                    // any x.y where x is an error, is also an error
                     return ErrorInfo;
                 }
             }
@@ -1413,36 +1413,70 @@ namespace Kusto.Language.Binding
                     {
                         if (_globals.GetAggregate(name) != null && _scopeKind != ScopeKind.Aggregate)
                         {
-                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetAggregateNotAllowedInThisContext(name).WithLocation(location));
+                            return new SemanticInfo(
+                                ErrorSymbol.Instance,
+                                DiagnosticFacts.GetAggregateNotAllowedInThisContext(name).WithLocation(location));
                         }
                         else if (_globals.GetPlugIn(name) != null && _scopeKind != ScopeKind.PlugIn)
                         {
-                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPluginNotAllowedInThisContext(name).WithLocation(location));
+                            return new SemanticInfo(
+                                ErrorSymbol.Instance,
+                                DiagnosticFacts.GetPluginNotAllowedInThisContext(name).WithLocation(location));
                         }
                         else if (IsEvaluateFunctionName(location))
                         {
                             if (PlugIns.GetPlugIn(name) != null)
                             {
-                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
+                                return new SemanticInfo(
+                                    ErrorSymbol.Instance,
+                                    DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
                             }
                             else
                             {
-                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
+                                return new SemanticInfo(
+                                    ErrorSymbol.Instance,
+                                    DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
                             }
+                        }
+                        else if (IsFuzzyUnionOperand(location))
+                        {
+                            return null;
                         }
                         else
                         {
-                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetFunctionNotDefined(name).WithLocation(location));
+                            return new SemanticInfo(
+                                ErrorSymbol.Instance,
+                                DiagnosticFacts.GetFunctionNotDefined(name).WithLocation(location));
+                        }
+                    }
+                    else if (IsInTabularContext(location))
+                    {
+                        if (IsFuzzyUnionOperand(location))
+                        {
+                            return new SemanticInfo(
+                                new TableSymbol().WithIsOpen(true),
+                                DiagnosticFacts.GetFuzzyUnionOperandNotDefined(name).WithLocation(location));
+                        }
+                        else
+                        {
+                            return new SemanticInfo(
+                                new TableSymbol().WithIsOpen(true),
+                                DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
                         }
                     }
                     else
                     {
-                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
+                        return new SemanticInfo(
+                            ErrorSymbol.Instance,
+                            DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
                     }
                 }
                 else
                 {
-                    return new SemanticInfo(new GroupSymbol(list.ToList()), ErrorSymbol.Instance, DiagnosticFacts.GetNameRefersToMoreThanOneItem(name).WithLocation(location));
+                    return new SemanticInfo(
+                        new GroupSymbol(list.ToList()),
+                        ErrorSymbol.Instance,
+                        DiagnosticFacts.GetNameRefersToMoreThanOneItem(name).WithLocation(location));
                 }
             }
             finally
@@ -1461,9 +1495,86 @@ namespace Kusto.Language.Binding
                 }
             }
         }
-#endregion
 
-#region Operator binding
+        /// <summary>
+        /// Determine if the element (a name) is in a known tabular context
+        /// </summary>
+        private static bool IsInTabularContext(SyntaxElement element)
+        {
+            // if function call name, look further up to determine context
+            if (element.Parent is FunctionCallExpression fc 
+                && fc.Name == element)
+            {
+                element = element.Parent;
+            }
+
+            // if inside parenthesis or part of a list, look further up
+            while (element.Parent is ParenthesizedExpression
+                || element.Parent is SyntaxList
+                || element.Parent is SeparatedElement)
+            {
+                element = element.Parent;
+            }
+
+            if (element.Parent != null)
+            {
+                // if x | op then x is expected to be tabular
+                if (element.Parent is PipeExpression pe && pe.Expression == element)
+                {
+                    return true;
+                }
+
+                // use completion hint to help us determine is context is tabular
+                var hint = element.Parent.GetCompletionHint(element.IndexInParent);
+
+                if (hint == Editor.CompletionHint.Table
+                    || hint == Editor.CompletionHint.Tabular)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determine if the element is the operand of a fuzzy union
+        /// </summary>
+        private static bool IsFuzzyUnionOperand(SyntaxElement element)
+        {
+            if (element.Parent is FunctionCallExpression fc && fc.Name == element)
+            {
+                element = element.Parent;
+            }
+
+            while (element.Parent is ParenthesizedExpression
+                || element.Parent is SyntaxList
+                || element.Parent is SeparatedElement)
+            {
+                element = element.Parent;
+            }
+
+            var context = element.Parent;
+
+            if (context != null)
+            {
+                if (context is PipeExpression pe && pe.Expression == element)
+                {
+                    context = pe.Operator;
+                }
+
+                if (context is UnionOperator uo)
+                {
+                    var np = uo.Parameters.GetByName(KustoFacts.UnionIsFuzzyProperty);
+                    return np != null && np.Expression.ConstantValue is bool b && b;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Operator binding
         private SemanticInfo GetBinaryOperatorInfo(OperatorKind kind, Expression left, Expression right, SyntaxElement location)
         {
             return GetBinaryOperatorInfo(kind, left, GetResultTypeOrError(left), right, GetResultTypeOrError(right), location);
@@ -2674,7 +2785,20 @@ namespace Kusto.Language.Binding
             }
             else if (!symbol.IsError)
             {
-                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameIsNotAFunction(functionCall.Name.SimpleName).WithLocation(functionCall.Name));
+                if (symbol is TableSymbol && IsInTabularContext(functionCall) && IsFuzzyUnionOperand(functionCall))
+                {
+                    return functionCall.Name.GetSemanticInfo();
+                }
+                else
+                {
+                    return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameIsNotAFunction(functionCall.Name.SimpleName).WithLocation(functionCall.Name));
+                }
+            }
+            else if (IsFuzzyUnionOperand(functionCall))
+            {
+                return new SemanticInfo(
+                    new TableSymbol().WithIsOpen(true),
+                    DiagnosticFacts.GetFuzzyUnionOperandNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
             }
             else
             {

@@ -853,6 +853,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol HashMd5 =
+          new FunctionSymbol("hash_md5", ScalarTypes.String,
+              new Parameter("source", ParameterTypeKind.NotDynamic))
+          .WithResultNameKind(ResultNameKind.None)
+          .ConstantFoldable()
+          .Hide(); // Unhide by June 30 2020
+
         public static readonly FunctionSymbol HashCombine =
           new FunctionSymbol("hash_combine", ScalarTypes.Long,
                   new Parameter("source", ParameterTypeKind.Scalar, minOccurring: 2, maxOccurring: MaxRepeat))
@@ -2147,6 +2154,7 @@ namespace Kusto.Language
             HashDjb2,
             Hash,
             HashSha256,
+            HashMd5,
             HashXXH64,
             HashCombine,
             HashMany,

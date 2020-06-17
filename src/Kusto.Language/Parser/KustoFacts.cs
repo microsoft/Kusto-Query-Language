@@ -164,6 +164,8 @@ namespace Kusto.Language
             "withsource", "with_source"
         };
 
+        public static string UnionIsFuzzyProperty => SyntaxFacts.GetText(SyntaxKind.IsFuzzyKeyword);
+
         public static readonly IReadOnlyList<string> UnionKinds = new string[]
         {
             "inner", "outer"
