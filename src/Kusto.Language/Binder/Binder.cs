@@ -221,7 +221,7 @@ namespace Kusto.Language.Binding
             _globalBindingCache = globalBindingCache ?? new GlobalBindingCache();
             _localBindingCache = localBindingCache ?? new LocalBindingCache();
             _localScope = new LocalScope(outerScope);
-            _semanticInfoSetter = semanticInfoSetter;
+            _semanticInfoSetter = semanticInfoSetter ?? DefaultSetSemanticInfo;
             _cancellationToken = cancellationToken;
         }
 
@@ -239,8 +239,6 @@ namespace Kusto.Language.Binding
             Action<SyntaxNode, SemanticInfo> semanticInfoSetter = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            semanticInfoSetter = semanticInfoSetter ?? DefaultSetSemanticInfo;
-
             var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
             lock (bindingCache)
             {
@@ -254,7 +252,9 @@ namespace Kusto.Language.Binding
                     localBindingCache,
                     semanticInfoSetter: semanticInfoSetter,
                     cancellationToken: cancellationToken);
+
                 var treeBinder = new TreeBinder(binder);
+
                 root.Accept(treeBinder);
             }
         }
@@ -337,7 +337,10 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the computed return type for functions specified with a body or declaration.
         /// </summary>
-        public static TypeSymbol GetComputedReturnType(Signature signature, GlobalState globals)
+        public static TypeSymbol GetComputedReturnType(
+            Signature signature,
+            GlobalState globals,
+            IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
             var currentDatabase = globals.GetDatabase((FunctionSymbol)signature.Symbol);
             var currentCluster = globals.GetCluster(currentDatabase);
@@ -355,7 +358,8 @@ namespace Kusto.Language.Binding
                     localBindingCache: null,
                     semanticInfoSetter: null, 
                     cancellationToken: default(CancellationToken));
-                return binder.GetComputedSignatureResult(signature).Type;
+
+                return binder.GetComputedSignatureResult(signature, null, argumentTypes).Type;
             }
         }
 
@@ -403,7 +407,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        #region Semantic Info accessors
+#region Semantic Info accessors
         private SemanticInfo GetSemanticInfo(SyntaxNode node)
         {
             return node?.GetSemanticInfo();
@@ -428,9 +432,9 @@ namespace Kusto.Language.Binding
 
         private bool GetIsConstant(Expression expression) =>
             GetSemanticInfo(expression)?.IsConstant ?? false;
-        #endregion
+#endregion
 
-        #region Symbol access/caching
+#region Symbol access/caching
         /// <summary>
         /// Gets the cluster for the specified name, or an empty open cluster.
         /// </summary>
@@ -1572,9 +1576,9 @@ namespace Kusto.Language.Binding
 
             return false;
         }
-        #endregion
+#endregion
 
-        #region Operator binding
+#region Operator binding
         private SemanticInfo GetBinaryOperatorInfo(OperatorKind kind, Expression left, Expression right, SyntaxElement location)
         {
             return GetBinaryOperatorInfo(kind, left, GetResultTypeOrError(left), right, GetResultTypeOrError(right), location);
@@ -1850,11 +1854,17 @@ namespace Kusto.Language.Binding
             IReadOnlyList<Expression> arguments,
             IReadOnlyList<TypeSymbol> argumentTypes)
         {
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
+
+            if (argumentTypes == null)
+                throw new ArgumentNullException(nameof(argumentTypes));
+
             var argumentParameters = s_parameterListPool.AllocateFromPool();
             try
             {
                 signature.GetArgumentParameters(arguments, argumentParameters);
-                return GetSignatureResult(signature, argumentParameters, arguments, argumentTypes);
+                return GetSignatureResult(signature, arguments, argumentTypes, argumentParameters);
             }
             finally
             {
@@ -1867,10 +1877,20 @@ namespace Kusto.Language.Binding
         /// </summary>
         private SignatureResult GetSignatureResult(
             Signature signature,
-            List<Parameter> argumentParameters,
             IReadOnlyList<Expression> arguments,
-            IReadOnlyList<TypeSymbol> argumentTypes)
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            IReadOnlyList<Parameter> argumentParameters
+            )
         {
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
+
+            if (argumentTypes == null)
+                throw new ArgumentNullException(nameof(argumentTypes));
+
+            if (argumentParameters == null)
+                throw new ArgumentNullException(nameof(argumentParameters));
+
             switch (signature.ReturnKind)
             {
                 case ReturnTypeKind.Declared:
@@ -1881,37 +1901,38 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0:
                     var iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    return iArg >= 0 ? argumentTypes[iArg] : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter1:
                     iArg = argumentParameters.IndexOf(signature.Parameters[1]);
-                    return iArg >= 0 ? argumentTypes[iArg] : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter2:
                     iArg = argumentParameters.IndexOf(signature.Parameters[2]);
-                    return iArg >= 0 ? argumentTypes[iArg] : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.ParameterN:
                     iArg = argumentParameters.IndexOf(signature.Parameters[signature.Parameters.Count - 1]);
-                    return iArg >= 0 ? argumentTypes[iArg] : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.ParameterNLiteral:
                     iArg = argumentParameters.IndexOf(signature.Parameters[signature.Parameters.Count - 1]);
-                    return iArg >= 0 ? GetTypeOfType(arguments[iArg]) : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < arguments.Count ? GetTypeOfType(arguments[iArg]) : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Promoted:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    return iArg >= 0 ? Promote(argumentTypes[iArg]) : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? Promote(argumentTypes[iArg]) : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Common:
-                    return GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes) ?? ErrorSymbol.Instance;
+                    return GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
                     return GetWidestArgumentType(signature, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Cluster:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var clusterName))
+                    if (iArg >= 0 && iArg < arguments.Count 
+                        && TryGetLiteralStringValue(arguments[iArg], out var clusterName))
                     {
                         return GetCluster(clusterName);
                     }
@@ -1922,7 +1943,8 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Database:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var databaseName))
+                    if (iArg >= 0 && iArg < arguments.Count 
+                        && TryGetLiteralStringValue(arguments[iArg], out var databaseName))
                     {
                         return GetDatabase(databaseName);
                     }
@@ -1933,7 +1955,8 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Table:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var tableName))
+                    if (iArg >= 0 && iArg < arguments.Count 
+                        && TryGetLiteralStringValue(arguments[iArg], out var tableName))
                     {
                         return GetTableFunctionResult(tableName);
                     }
@@ -1944,7 +1967,8 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0ExternalTable:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var externalTableName))
+                    if (iArg >= 0 && iArg < arguments.Count 
+                        && TryGetLiteralStringValue(arguments[iArg], out var externalTableName))
                     {
                         return GetExternalTableFunctionResult(externalTableName);
                     }
@@ -1954,7 +1978,8 @@ namespace Kusto.Language.Binding
                     }
                 case ReturnTypeKind.Parameter0MaterializedView:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && TryGetLiteralStringValue(arguments[iArg], out var materializedViewName))
+                    if (iArg >= 0 && iArg < arguments.Count 
+                        && TryGetLiteralStringValue(arguments[iArg], out var materializedViewName))
                     {
                         return GetMaterializedViewFunctionResult(materializedViewName);
                     }
@@ -2130,7 +2155,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Promotes a type to its most general form.  int -> long, decimal -> real
         /// </summary>
-        private static TypeSymbol Promote(TypeSymbol symbol)
+        public static TypeSymbol Promote(TypeSymbol symbol)
         {
             if (symbol == ScalarTypes.Int)
             {
@@ -2150,7 +2175,7 @@ namespace Kusto.Language.Binding
         /// Gets the widest numeric type of the argument types.
         /// The widest type is the one that can contain the values of all the other types:
         /// </summary>
-        private static TypeSymbol GetWidestArgumentType(Signature signature, IReadOnlyList<TypeSymbol> argumentTypes)
+        public static TypeSymbol GetWidestArgumentType(Signature signature, IReadOnlyList<TypeSymbol> argumentTypes)
         {
             ScalarSymbol widestType = null;
 
@@ -2173,7 +2198,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the common argument type for arguments corresponding to parameters constrained to specific <see cref="ParameterTypeKind"/>.CommonXXX values.
         /// </summary>
-        private static TypeSymbol GetCommonArgumentType(Signature signature, IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
+        public static TypeSymbol GetCommonArgumentType(IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<TypeSymbol> argumentTypes)
         {
             TypeSymbol commonType = null;
             var hadUnknown = false;
@@ -2740,7 +2765,7 @@ namespace Kusto.Language.Binding
                 case ParameterTypeKind.CommonNumber:
                 case ParameterTypeKind.CommonSummable:
                 case ParameterTypeKind.CommonScalarOrDynamic:
-                    var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
+                    var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                     if (commonType != null)
                     {
                         if (SymbolsAssignable(commonType, argumentType, Conversion.None))
@@ -3018,8 +3043,9 @@ namespace Kusto.Language.Binding
 
                         if (expansion != null)
                         {
-                            var isDatabaseFunction = IsDatabaseFunction(signature);
-                            var currentDatabase = isDatabaseFunction ? _globals.GetDatabase((FunctionSymbol)signature.Symbol) : null;
+                            var function = signature.Symbol as FunctionSymbol;
+                            var isDatabaseFunction = IsDatabaseFunction(function);
+                            var currentDatabase = isDatabaseFunction ? _globals.GetDatabase(function) : null;
                             var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
                             BindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals);
                             SetSignatureBindingInfo(signature, expansion);
@@ -3061,7 +3087,7 @@ namespace Kusto.Language.Binding
                     return;
 
                 // only add database functions that are variable in nature to global cache
-                var shouldCacheGlobally = IsDatabaseFunction(callsite.Signature)
+                var shouldCacheGlobally = IsDatabaseFunction(callsite.Signature.Symbol as FunctionSymbol)
                     && callsite.Signature.FunctionBodyFacts != FunctionBodyFacts.None;
 
                 if (shouldCacheGlobally)
@@ -3075,16 +3101,15 @@ namespace Kusto.Language.Binding
             }
         }
 
-        // Determines if the signature is from a database function
-        private static bool IsDatabaseFunction(Signature sig)
+        /// <summary>
+        /// True if the function is declared as part of database known to the current <see cref="GlobalState"/>
+        /// </summary>
+        private bool IsDatabaseFunction(FunctionSymbol function)
         {
-            // user functions have existing declaration syntax
-            return sig.Declaration == null;
-        }
-
-        private static bool IsDatabaseFunction(FunctionSymbol function)
-        {
-            return function.Signatures.Count == 1 && IsDatabaseFunction(function.Signatures[0]);
+            return function.Signatures.Count == 1               // db functions only have one signature
+                && function.Signatures[0].Declaration == null   // they don't have syntax trees (yet)
+                && function.Signatures[0].Body != null          // they do have a body as text
+                && _globals.IsDatabaseFunction(function);       // and they are known by the global state
         }
 
         internal void SetSignatureBindingInfo(Signature signature, FunctionBody body)
@@ -3114,22 +3139,35 @@ namespace Kusto.Language.Binding
             var argumentParameters = s_parameterListPool.AllocateFromPool();
             try
             {
-                signature.GetArgumentParameters(arguments, argumentParameters);
+                if (arguments != null)
+                {
+                    signature.GetArgumentParameters(arguments, argumentParameters);
+                }
+                else if (argumentTypes != null)
+                {
+                    signature.GetArgumentParameters(argumentTypes.Count, argumentParameters);
+                }
 
                 foreach (var p in signature.Parameters)
                 {
-                    var argIndex = arguments != null ? argumentParameters.IndexOf(p) : -1;
+                    var argIndex = argumentParameters != null ? argumentParameters.IndexOf(p) : -1;
 
-                    if (argIndex >= 0)
+                    if (argIndex >= 0 && arguments != null & argIndex < arguments.Count)
                     {
                         var arg = arguments[argIndex];
-                        var argType = argumentTypes != null ? argumentTypes[argIndex] : arg.ResultType;
+
+                        var argType = argumentTypes != null && argIndex < argumentTypes.Count 
+                            ? argumentTypes[argIndex] 
+                            : arg.ResultType;
+
                         var isLiteral = Binding.Binder.TryGetLiteralValue(arg, out var literalValue);
                         locals.Add(new VariableSymbol(p.Name, argType, isLiteral, literalValue));
                     }
                     else
                     {
-                        var type = GetRepresentativeType(p);
+                        var type = argIndex >= 0 && argumentTypes != null && argIndex < argumentTypes.Count 
+                            ? argumentTypes[argIndex] 
+                            : GetRepresentativeType(p);
 
                         var isConstant = p.IsOptional && p.DefaultValue != null;
                         object constantValue = null;
@@ -5746,7 +5784,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonScalar:
                             if (CheckIsScalar(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
+                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
@@ -5757,7 +5795,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonScalarOrDynamic:
                             if (CheckIsScalar(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
+                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsTypeOrDynamic(argument, commonType, true, diagnostics);
@@ -5768,7 +5806,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonNumber:
                             if (CheckIsNumber(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
+                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
@@ -5779,7 +5817,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonSummable:
                             if (CheckIsSummable(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(signature, argumentParameters, arguments, argumentTypes);
+                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);

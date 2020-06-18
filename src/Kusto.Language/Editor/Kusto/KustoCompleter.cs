@@ -1016,7 +1016,7 @@ namespace Kusto.Language.Editor
             if (argumentIndex > 0)
             {
                 var argumentParameters = signature.GetArgumentParameters(arguments);
-                var unnamedArgumentParameters = signature.GetArgumentParameters(arguments, allowNamedArguments: false);
+                var unnamedArgumentParameters = signature.GetArgumentParameters(arguments, respectNamedArguments: false);
 
                 for (int i = 0; i < argumentIndex; i++)
                 {

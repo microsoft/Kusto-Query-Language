@@ -346,10 +346,13 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Builds a list of parameters as associated with the specified arguments.
         /// </summary>
-        public List<Parameter> GetArgumentParameters(IReadOnlyList<Expression> arguments, bool? allowNamedArguments = null)
+        public List<Parameter> GetArgumentParameters(IReadOnlyList<Expression> arguments, bool? respectNamedArguments = null)
         {
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
+
             var argumentParameters = new List<Parameter>();
-            GetArgumentParameters(arguments, argumentParameters, allowNamedArguments);
+            GetArgumentParameters(arguments, argumentParameters, respectNamedArguments);
             return argumentParameters;
         }
 
@@ -358,12 +361,36 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public void GetArgumentParameters(IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool? respectNamedArguments = null)
         {
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
+
+            if (argumentParameters == null)
+                throw new ArgumentNullException(nameof(argumentParameters));
+
+            this.GetArgumentParameters(arguments.Count, arguments, argumentParameters, respectNamedArguments);
+        }
+
+        /// <summary>
+        /// Builds a list of parameters as associated with the specified number of arguments.
+        /// </summary>
+        public void GetArgumentParameters(int nArguments, List<Parameter> argumentParameters)
+        {
+            if (argumentParameters == null)
+                throw new ArgumentNullException(nameof(argumentParameters));
+
+            this.GetArgumentParameters(nArguments, null, argumentParameters);
+        }
+
+        /// <summary>
+        /// Builds a list of parameters as associated with the specified arguments.
+        /// </summary>
+        private void GetArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool? respectNamedArguments = null)
+        {
             bool namedArgumentsAllowed = respectNamedArguments ?? AllowsNamedArguments;
 
-            if (this.CustomArgumentParametersBuilder != null)
+            if (this.CustomArgumentParametersBuilder != null && arguments != null)
             {
                 this.CustomArgumentParametersBuilder(this, arguments, argumentParameters);
-                return;
             }
             else if (this.HasRepeatableParameters)
             {
@@ -376,9 +403,9 @@ namespace Kusto.Language.Symbols
                 var totalRepeatingArguments = Math.Max(repeatingArgumentGroups * numberOfRepeatingParameters, minRepeatingArguments);
                 var lastRepeatingArgument = firstRepeatingArgument + totalRepeatingArguments;
 
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < nArguments; i++)
                 {
-                    if (namedArgumentsAllowed && arguments[i] is SimpleNamedExpression sn)
+                    if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
                     {
                         argumentParameters.Add(GetParameter(sn.Name.SimpleName));
                     }
@@ -402,9 +429,9 @@ namespace Kusto.Language.Symbols
             }
             else
             {
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < nArguments; i++)
                 {
-                    if (namedArgumentsAllowed && arguments[i] is SimpleNamedExpression sn)
+                    if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
                     {
                         argumentParameters.Add(GetParameter(sn.Name.SimpleName));
                     }
@@ -561,15 +588,160 @@ namespace Kusto.Language.Symbols
                 builder.Append(", ...");
             }
 
-            return $"{Symbol.Name}({builder.ToString()}) => {this.ReturnTypeDisplay}";
+            return $"{Symbol.Name}({builder}) => {this.ReturnTypeDisplay}";
+        }
+
+        /// <summary>
+        /// Gets the return type for the function as best as can be determined without specific call site arguments.
+        /// </summary>
+        /// <param name="globals">The <see cref="GlobalState"/> in context for any computations made in determining the return type.</param>
+        public TypeSymbol GetReturnType(GlobalState globals)
+        {
+            if (globals == null)
+                throw new ArgumentNullException(nameof(globals));
+
+            switch (this.ReturnKind)
+            {
+                case ReturnTypeKind.Declared:
+                    return this.DeclaredReturnType;
+
+                case ReturnTypeKind.Computed:
+                    return Binding.Binder.GetComputedReturnType(this, globals);
+
+                case ReturnTypeKind.Parameter0Cluster:
+                    return new ClusterSymbol("", null, isOpen: true);
+
+                case ReturnTypeKind.Parameter0Database:
+                    return new DatabaseSymbol("", null, isOpen: true);
+
+                case ReturnTypeKind.Parameter0Table:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                case ReturnTypeKind.Parameter0ExternalTable:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                case ReturnTypeKind.Parameter0MaterializedView:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                default:
+                    return this.Tabularity == Tabularity.Tabular
+                        ? TableSymbol.Empty.WithIsOpen(true)
+                        : (TypeSymbol)ScalarTypes.Unknown;
+            }
+        }
+
+        private static readonly ObjectPool<List<Parameter>> s_parameterListPool =
+            new ObjectPool<List<Parameter>>(() => new List<Parameter>(), list => list.Clear());
+
+        /// <summary>
+        /// Gets the return type for the function as best as can be determined with a set of hypothetical argument types.
+        /// </summary>
+        /// <param name="globals">The <see cref="GlobalState"/> in context for any computations made in determining the return type.</param>
+        /// <param name="argumentTypes">A list of types for hypothetical arguments.</param>
+        public TypeSymbol GetReturnType(GlobalState globals, IReadOnlyList<TypeSymbol> argumentTypes)
+        {
+            if (globals == null)
+                throw new ArgumentNullException(nameof(globals));
+
+            if (argumentTypes == null)
+                throw new ArgumentNullException(nameof(argumentTypes));
+
+            var argumentParameters = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                this.GetArgumentParameters(argumentTypes.Count, argumentParameters);
+                return GetReturnType(globals, argumentTypes, argumentParameters);
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(argumentParameters);
+            }
+        }
+
+        /// <summary>
+        /// Gets the return type for the function as best as can be determined with a set of hypothetical argument types
+        /// and corresponding their parameters.
+        /// </summary>
+        /// <param name="globals">The <see cref="GlobalState"/> in context for any computations made in determining the return type.</param>
+        /// <param name="argumentTypes">A list of types for hypothetical arguments.</param>
+        /// <param name="argumentParameters">A list of the parameters associated with each hypothetical argument.</param>
+        public TypeSymbol GetReturnType(
+            GlobalState globals,
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            IReadOnlyList<Parameter> argumentParameters)
+        {
+            if (globals == null)
+                throw new ArgumentNullException(nameof(globals));
+
+            if (argumentParameters == null)
+                throw new ArgumentNullException(nameof(argumentParameters));
+
+            if (argumentTypes == null)
+                throw new ArgumentNullException(nameof(argumentTypes));
+
+            switch (this.ReturnKind)
+            {
+                case ReturnTypeKind.Declared:
+                    return this.DeclaredReturnType;
+
+                case ReturnTypeKind.Computed:
+                    return Binding.Binder.GetComputedReturnType(this, globals, argumentTypes);
+
+                case ReturnTypeKind.Parameter0:
+                    var iArg = argumentParameters.IndexOf(this.Parameters[0]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Parameter1:
+                    iArg = argumentParameters.IndexOf(this.Parameters[1]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Parameter2:
+                    iArg = argumentParameters.IndexOf(this.Parameters[2]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.ParameterN:
+                    iArg = argumentParameters.IndexOf(this.Parameters[this.Parameters.Count - 1]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Parameter0Promoted:
+                    iArg = argumentParameters.IndexOf(this.Parameters[0]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? Binding.Binder.Promote(argumentTypes[iArg]) : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Common:
+                    return Binding.Binder.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Widest:
+                    return Binding.Binder.GetWidestArgumentType(this, argumentTypes) ?? ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Parameter0Cluster:
+                    return new ClusterSymbol("", null, isOpen: true);
+
+                case ReturnTypeKind.Parameter0Database:
+                    return new DatabaseSymbol("", null, isOpen: true);
+
+                case ReturnTypeKind.Parameter0Table:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                case ReturnTypeKind.Parameter0ExternalTable:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                case ReturnTypeKind.Parameter0MaterializedView:
+                    return TableSymbol.Empty.WithIsOpen(true);
+
+                default:
+                    return this.Tabularity == Tabularity.Tabular
+                        ? TableSymbol.Empty.WithIsOpen(true)
+                        : (TypeSymbol)ScalarTypes.Unknown;
+            }
         }
 
         /// <summary>
         /// Determines the tabularity of signatures with computed return types.
         /// </summary>
+        /// <param name="globals">The <see cref="GlobalState"/> in context for any computations made in determining the tabularity.</param>
         public void ComputeTabularity(GlobalState globals)
         {
-            if (this.ReturnKind != ReturnTypeKind.Custom || _tabularity != Tabularity.Unknown)
+            if (this.ReturnKind != ReturnTypeKind.Computed || _tabularity != Tabularity.Unknown)
                 return;
 
             var type = Binding.Binder.GetComputedReturnType(this, globals);
@@ -587,15 +759,31 @@ namespace Kusto.Language.Symbols
             }
         }
 
+        /// <summary>
+        /// Facts determined about the function body when analyzed
+        /// </summary>
         internal FunctionBodyFacts? FunctionBodyFacts { get; set; }
+
+        /// <summary>
+        /// The computed return type is saved here when it is determined to be fixed relative to argument values.
+        /// </summary>
         internal TypeSymbol NonVariableComputedReturnType { get; set; }
 
+        /// <summary>
+        /// True if the signature has a variable return type (is dependant on argument values)
+        /// </summary>
         internal bool HasVariableReturnType =>
             FunctionBodyFacts != null && (FunctionBodyFacts & Symbols.FunctionBodyFacts.VariableReturn) != 0;
 
+        /// <summary>
+        /// True if the function body has a call to the cluster method, or a function invoked within that does
+        /// </summary>
         internal bool HasClusterCall =>
             FunctionBodyFacts != null && (FunctionBodyFacts & Symbols.FunctionBodyFacts.Cluster) != 0;
 
+        /// <summary>
+        /// True if the function body has a call to the database method, or a function invoked within that does
+        /// </summary>
         internal bool HasDatabaseCall =>
             FunctionBodyFacts != null && (FunctionBodyFacts & Symbols.FunctionBodyFacts.Database) != 0;
     }
@@ -606,27 +794,27 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The function body does not have any known special conditions.
         /// </summary>
-        None                = 0b_0000_0000,
+        None = 0b_0000_0000,
 
         /// <summary>
         /// The function body or any of its dependencies includes a call to the cluster() function.
         /// </summary>
-        Cluster             = 0b_0000_0001,
+        Cluster = 0b_0000_0001,
 
         /// <summary>
         /// The function body or any of its dependencies includes a call to the database() function.
         /// </summary>
-        Database            = 0b_0000_0010,
+        Database = 0b_0000_0010,
 
         /// <summary>
         /// The function body or any of its dependencies includes an unqualified call to the table() function.
         /// </summary>
-        Table               = 0b_0000_0100,
+        Table = 0b_0000_0100,
 
         /// <summary>
         /// The function body or any of its dependencies includes a qualified call to the table() function.
         /// </summary>
-        QualifiedTable      = 0b_0000_1000,
+        QualifiedTable = 0b_0000_1000,
 
         /// <summary>
         /// The function body or any of its dependencies includes a call to the external_table() function.

@@ -307,6 +307,14 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => this.Signatures[0].Tabularity;
 
         /// <summary>
+        /// Gets the return type for the function as best as can be determined without specific call site arguments.
+        /// </summary>
+        public TypeSymbol GetReturnType(GlobalState globals)
+        {
+            return this.Signatures[0].GetReturnType(globals);
+        }
+
+        /// <summary>
         /// The minimum number of arguments that this function requires.
         /// </summary>
         public int MinArgumentCount

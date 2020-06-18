@@ -76,6 +76,20 @@ namespace Kusto.Language.Utils
             return false;
         }
 
+        /// <summary>
+        /// Return the index of the item in the list or -1 if not found.
+        /// </summary>
+        public static int IndexOf<T>(this IReadOnlyList<T> list, T item)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (EqualityComparer<T>.Default.Equals(item, list[i]))
+                    return i;
+            }
+
+            return -1;
+        }
+
         internal static void RemoveAll<T>(this List<T> list, Func<T, bool> selector)
         {
             for (int i = list.Count - 1; i >= 0; i--)
