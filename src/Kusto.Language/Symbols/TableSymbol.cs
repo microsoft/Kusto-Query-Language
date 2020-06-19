@@ -57,6 +57,11 @@ namespace Kusto.Language.Symbols
         {
         }
 
+        public TableSymbol(string name, string schema, string description = null)
+            : this(name, TableSymbol.From(schema).Columns, description)
+        {
+        }
+
         public TableSymbol(string name, params ColumnSymbol[] columns)
             : this(name, TableState.None, columns, null)
         {

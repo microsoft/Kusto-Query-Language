@@ -1172,7 +1172,13 @@ namespace Kusto.Language.Binding
             return name.Parent is FunctionCallExpression fn && fn.Name == name;
         }
 
-        private static bool IsInvocableFunctionName(string name, SyntaxNode location)
+        public bool IsInsideFunctionDeclaration(SyntaxNode location)
+        {
+            return location.GetFirstAncestor<CustomCommand>() != null
+                || this._currentFunction != null;
+        }
+
+        private static bool IsInvocableFunctionName(SyntaxNode location)
         {
             // its either not part of a control command,
             // or its part of a control command that defines the body of a function
@@ -1180,32 +1186,10 @@ namespace Kusto.Language.Binding
                 || location.GetFirstAncestor<FunctionBody>() != null;
         }
 
-        private static bool IsPossibleInvocableFunctionWithoutArgumentList(string name, SyntaxNode location)
+        private static bool IsPossibleInvocableFunctionWithoutArgumentList(SyntaxNode location)
         {
             return !IsFunctionCallName(location)
-                && IsInvocableFunctionName(name, location);
-        }
-
-        private bool IsNameOfDatabaseFunctionBeingDeclared(string name, SyntaxNode location)
-        {
-            // this is a name reference inside a function body that is part of a control command
-            if (location.GetFirstAncestor<CustomCommand>() != null
-                && location.GetFirstAncestor<FunctionBody>() != null)
-            {
-                // somewhere else there is a name that is the function being declared
-                var functionName = location.Root.GetFirstDescendant<Name>(nd => nd.Parent.NameInParent == "FunctionName");
-                return functionName != null && functionName.SimpleName == name;
-            }
-            else if (_currentFunction != null 
-                && _currentFunction.Name == name
-                && IsDatabaseFunction(_currentFunction))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                && IsInvocableFunctionName(location);
         }
 
         private static bool IsEvaluateFunctionName(SyntaxNode name)
@@ -1260,67 +1244,85 @@ namespace Kusto.Language.Binding
             {
                 bool allowZeroArgumentInvocation = false;
 
-                // don't match the database function that is being declared (if any)
-                if (IsNameOfDatabaseFunctionBeingDeclared(name, location))
+                if (IsFunctionCallName(location))
                 {
-                    match &= ~SymbolMatch.Function;
-                }
-
-                if (_pathScope != null)
-                {
-                    if (!(_pathScope is TableSymbol) || IsInCommand(location))
+                    if (_pathScope is DatabaseSymbol ds)
                     {
-                        _pathScope.GetMembers(name, match, list);
-
-                        if (list.Count == 0)
+                        if (name == Functions.Table.Name)
                         {
-                            if (_pathScope is DatabaseSymbol ds)
-                            {
-                                if (name == Functions.Table.Name)
-                                {
-                                    list.Add(Functions.Table);
-                                }
-                                else if (name == Functions.ExternalTable.Name)
-                                {
-                                    list.Add(Functions.ExternalTable);
-                                }
-                                else if (name == Functions.MaterializedView.Name)
-                                {
-                                    list.Add(Functions.MaterializedView);
-                                }
-                                else if (ds.IsOpen)
-                                {
-                                    var table = GetOpenTable(name, ds);
-                                    return new SemanticInfo(table, table);
-                                }
-                            }
-                            else if (_pathScope is ClusterSymbol cs && name == Functions.Database.Name)
-                            {
-                                list.Add(Functions.Database);
-                            }
-                            else if (_pathScope is TupleSymbol tuple 
-                                && tuple.RelatedTable != null 
-                                && tuple.RelatedTable.IsOpen
-                                && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
-                            {
-                                list.Add(col);
-                            }
+                            list.Add(Functions.Table);
+                        }
+                        else if (name == Functions.ExternalTable.Name)
+                        {
+                            list.Add(Functions.ExternalTable);
+                        }
+                        else if (name == Functions.MaterializedView.Name)
+                        {
+                            list.Add(Functions.MaterializedView);
                         }
                         else
                         {
-                            // database functions do not require argument list if it has zero arguments.
-                            allowZeroArgumentInvocation = true;
+                            _pathScope.GetMembers(name, SymbolMatch.Function, list);
                         }
                     }
-                }
-                else if (IsFunctionCallName(location))
-                {
-                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                    else if (_pathScope is ClusterSymbol cs && name == Functions.Database.Name)
+                    {
+                        list.Add(Functions.Database);
+                    }
+                    else
+                    {
+                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                    }
                 }
                 else
                 {
-                    // first check binding against any columns in the row scope
-                    if (_rowScope != null)
+                    // don't match the database functions that have same name as database tables
+                    // if we are inside declaration of a database function
+                    if (IsInsideFunctionDeclaration(location) &&
+                        _currentDatabase.GetAnyTable(name) != null)
+                    {
+                        match &= ~SymbolMatch.Function;
+                    }
+
+                    if (_pathScope != null)
+                    {
+                        if (_pathScope is TupleSymbol tuple
+                            && tuple.RelatedTable != null
+                            && tuple.RelatedTable.IsOpen
+                            && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
+                        {
+                            list.Add(col);
+                        }
+                        else if (_pathScope is DatabaseSymbol ds)
+                        {
+                            // first look for functions
+                            _pathScope.GetMembers(name, match & SymbolMatch.Function, list);
+                            RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
+
+                            // database functions don't require argument lists to invoke
+                            allowZeroArgumentInvocation = list.Count > 0;
+
+                            if (list.Count == 0)
+                            {
+                                // next look for anything else (tables)
+                                _pathScope.GetMembers(name, match & ~SymbolMatch.Function, list);
+                            }
+
+                            // otherwise this is possible an open table
+                            if (list.Count == 0 && ds.IsOpen)
+                            {
+                                var table = GetOpenTable(name, ds);
+                                return new SemanticInfo(table, table);
+                            }
+                        }
+                        else if (!(_pathScope is TableSymbol) || IsInCommand(location))
+                        {
+                            _pathScope.GetMembers(name, match, list);
+                        }
+                    }
+
+                    // check binding against any columns in the row scope
+                    if (list.Count == 0 && _rowScope != null)
                     {
                         _rowScope.GetMembers(name, match, list);
                     }
@@ -1341,20 +1343,12 @@ namespace Kusto.Language.Binding
                     }
 
                     // look for zero-argument functions
-                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(name, location) && (match & SymbolMatch.Function) != 0)
+                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location) 
+                        && (match & SymbolMatch.Function) != 0)
                     {
                         // database functions only (locally defined functions are already handled above)
                         GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
-
-                        // remove any function that cannot be called with zero arguments
-                        for (int i = list.Count - 1; i >= 0; i--)
-                        {
-                            var fn = list[i] as FunctionSymbol;
-                            if (fn == null || fn.MinArgumentCount > 0)
-                            {
-                                list.RemoveAt(i);
-                            }
-                        }
+                        RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
 
                         // database functions do not require argument list if it has zero arguments.
                         allowZeroArgumentInvocation = list.Count > 0;
@@ -1392,7 +1386,7 @@ namespace Kusto.Language.Binding
                     var resultType = GetResultType(item);
 
                     // check for zero-parameter function invocation not part of a function call node
-                    if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(name, location))
+                    if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(location))
                     {
                         var sig = fn.Signatures.FirstOrDefault(s => s.MinArgumentCount == 0);
                         if (sig != null && allowZeroArgumentInvocation)
@@ -1486,6 +1480,17 @@ namespace Kusto.Language.Binding
             finally
             {
                 s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private static void RemoveFunctionsThatCannotBeInvokedWithZeroArgs(List<Symbol> list)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i] is FunctionSymbol fn && fn.MinArgumentCount > 0)
+                {
+                    list.RemoveAt(i);
+                }
             }
         }
 

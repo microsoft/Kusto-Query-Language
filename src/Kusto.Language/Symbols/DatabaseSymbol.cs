@@ -134,6 +134,14 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// Gets the table, external table or materialized view with the specified name.
+        /// </summary>
+        public TableSymbol GetAnyTable(string name)
+        {
+            return GetTable(name) ?? GetExternalTable(name) ?? GetMaterializedView(name);
+        }
+
+        /// <summary>
         /// Gets the external table with the specified name or returns null.
         /// </summary>
         public TableSymbol GetExternalTable(string name)
