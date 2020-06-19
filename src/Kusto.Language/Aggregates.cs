@@ -190,7 +190,7 @@ namespace Kusto.Language
             new FunctionSymbol("make_list_with_nulls", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("list");            
+            .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeSet_Depricated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,
@@ -202,8 +202,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol MakeSet =
             new FunctionSymbol("make_set", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar),
-                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("ignoreNulls", ScalarTypes.Bool, minOccurring: 0))
+                new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set");
 
