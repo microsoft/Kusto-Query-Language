@@ -191,6 +191,7 @@
     <Compile Include="Utils\ListExtensions.cs" />
     <Compile Include="Utils\ObjectPool.cs" />
     <Compile Include="Utils\Optional.cs" />
+    <Compile Include="Utils\SafeList.cs" />
     <Compile Include="Utils\StringTable.cs" />
     <Compile Include="Syntax\SyntaxVisitor.cs" />
     <Compile Include="Utils\TextKeyedDictionary.cs" />

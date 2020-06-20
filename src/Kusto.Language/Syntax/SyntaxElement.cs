@@ -469,11 +469,44 @@ namespace Kusto.Language.Syntax
         private static TElement GetFirstDescendant<TElement>(SyntaxElement element, Func<TElement, bool> predicate, bool includeSelf)
             where TElement : SyntaxElement
         {
-            foreach (var e in new DescendantsEnumerable(element, includeSelf))
+            if (includeSelf && element is TElement telem && (predicate == null || predicate(telem)))
             {
-                if (e is TElement ce && (predicate == null || predicate(ce)))
+                return telem;
+            }
+
+            var root = element;
+            var childIndex = 0;
+
+            while (element != null)
+            {
+                if (childIndex < element.ChildCount)
                 {
-                    return ce;
+                    // walk down
+                    var child = element.GetChild(childIndex);
+                    if (child != null)
+                    {
+                        element = child;
+                        childIndex = 0;
+
+                        if (element is TElement telem2 && (predicate == null || predicate(telem2)))
+                        {
+                            return telem2;
+                        }
+                    }
+                    else
+                    {
+                        childIndex++;
+                    }
+                }
+                else if (element == root)
+                {
+                    break;
+                }
+                else
+                {
+                    // walk up
+                    childIndex = element.IndexInParent + 1;
+                    element = element.Parent;
                 }
             }
 
@@ -509,104 +542,50 @@ namespace Kusto.Language.Syntax
         {
             List<TElement> list = null;
 
-            foreach (var e in new DescendantsEnumerable(element, includeSelf))
+            if (includeSelf && element is TElement telem && (predicate == null || predicate(telem)))
             {
-                if (e is TElement ce && (predicate == null || predicate(ce)))
-                {
-                    // only allocate list if there is a match
-                    if (list == null)
-                    {
-                        list = new List<TElement>();
-                    }
+                list = list ?? new List<TElement>();
+                list.Add(telem);
+            }
 
-                    list.Add(ce);
+            var root = element;
+            var childIndex = 0;
+
+            while (element != null)
+            {
+                if (childIndex < element.ChildCount)
+                {
+                    // walk down
+                    var child = element.GetChild(childIndex);
+                    if (child != null)
+                    {
+                        element = child;
+                        childIndex = 0;
+
+                        if (element is TElement telem2 && (predicate == null || predicate(telem2)))
+                        {
+                            list = list ?? new List<TElement>();
+                            list.Add(telem2);
+                        }
+                    }
+                    else
+                    {
+                        childIndex++;
+                    }
                 }
-            };
+                else if (element == root)
+                {
+                    break;
+                }
+                else
+                {
+                    // walk up
+                    childIndex = element.IndexInParent + 1;
+                    element = element.Parent;
+                }
+            }
 
             return list != null ? list.ToReadOnly() : EmptyReadOnlyList<TElement>.Instance;
-        }
-
-        private struct DescendantsEnumerable // : IEnumerable<SyntaxElement>, IEnumerable
-        {
-            private readonly SyntaxElement _root;
-            private readonly bool _includeSelf;
-
-            public DescendantsEnumerable(SyntaxElement root, bool includeSelf = true)
-            {
-                _root = root;
-                _includeSelf = includeSelf;
-            }
-
-            public Enumerator GetEnumerator()
-            {
-                return new Enumerator(_root, _includeSelf);
-            }
-
-            public struct Enumerator // : IEnumerator<SyntaxElement>, IEnumerator
-            {
-                private readonly SyntaxElement _root;
-                private readonly bool _includeSelf;
-                private SyntaxElement _node;
-                private int _childIndex;
-
-                internal Enumerator(SyntaxElement root, bool includeSelf)
-                {
-                    _root = root;
-                    _includeSelf = includeSelf;
-                    _node = null;
-                    _childIndex = 0;
-                }
-
-                public SyntaxElement Current => _node;
-
-                public bool MoveNext()
-                {
-                    if (_node == null && _childIndex == 0)
-                    {
-                        _node = _root;
-
-                        if (_includeSelf)
-                            return true;
-                    }
-
-                    while (_node != null)
-                    {
-                        if (_childIndex < _node.ChildCount)
-                        {
-                            // walk down
-                            var child = _node.GetChild(_childIndex);
-                            if (child != null)
-                            {
-                                _node = child;
-                                _childIndex = 0;
-                                return true;
-                            }
-                            else
-                            {
-                                _childIndex++;
-                            }
-                        }
-                        else if (_node == _root)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            // walk up
-                            _childIndex = _node.IndexInParent + 1;
-                            _node = _node.Parent;
-                        }
-                    }
-
-                    return false;
-                }
-
-#if false
-            object IEnumerator.Current => this.Current;
-            void IEnumerator.Reset() { _node = null; _childIndex = 0; }
-            void IDisposable.Dispose() { }
-#endif
-            }
         }
 
         /// <summary>

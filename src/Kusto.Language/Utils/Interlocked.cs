@@ -6,22 +6,44 @@ namespace Kusto.Language.Utils
 {
     public static class Interlocked
     {
+        /// <summary>
+        /// Compares two values, and if they are equal replaces with the new value. 
+        /// Returns the original value.
+        /// </summary>
         public static T CompareExchange<T>(ref T value, T newValue, T comparand)
             where T : class
         {
 #if !BRIDGE
             return System.Threading.Interlocked.CompareExchange(ref value, newValue, comparand);
 #else
-            if (value == comparand)
+            var original = value;
+
+            if (original == comparand)
             {
-                var original = value;
                 value = newValue;
-                return original;
             }
-            else 
+
+            return original;
+#endif
+        }
+
+        /// <summary>
+        /// Compares two values, and if they are equal replaces with the new value. 
+        /// Returns the original value.
+        /// </summary>
+        public static int CompareExchange(ref int value, int newValue, int comparand)
+        {
+#if !BRIDGE
+            return System.Threading.Interlocked.CompareExchange(ref value, newValue, comparand);
+#else
+            var original = value;
+
+            if (original == comparand)
             {
-                return value;
+                value = newValue;
             }
+
+            return original;
 #endif
         }
 

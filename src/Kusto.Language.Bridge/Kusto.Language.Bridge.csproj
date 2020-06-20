@@ -438,6 +438,9 @@
     <Compile Include="..\Kusto.Language\Utils\Optional.cs">
       <Link>Src\Optional.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Utils\SafeList.cs">
+      <Link>Src\SafeList.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Utils\StringTable.cs">
       <Link>Src\StringTable.cs</Link>
     </Compile>
