@@ -5,6 +5,9 @@ Kusto Query Language is a simple yet powerful language to query structured, semi
 ## Content
 This repo contains a C# parser and a semantic analyzer as well as a translator project that generates the same libraries in Java Script. See [usage examples](src/Kusto.Language/readme.md)
 
+## API Package
+This source code is also available as a [package on nuget.org](https://www.nuget.org/packages/Microsoft.Azure.Kusto.Language/)
+
 ## Query Editor
 If you need to provide a query authoring experience for the language, consider using the [Kusto language plugin for the Monaco Editor](https://github.com/Azure/monaco-kusto)
 
