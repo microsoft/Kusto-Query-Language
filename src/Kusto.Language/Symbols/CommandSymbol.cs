@@ -15,23 +15,63 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public string Grammar { get; }
 
+        private string resultSchema;
+        private TableSymbol resultType;
+
         /// <summary>
-        /// The result type of this command.
+        /// The language declaration of the result schema: (col:type, ...)
         /// </summary>
-        public TypeSymbol Type { get; }
+        public string ResultSchema
+        {
+            get
+            {
+                if (this.resultSchema == null && this.resultType != null)
+                {
+                    this.resultSchema = this.resultType.Display;
+                }
+
+                return this.resultSchema;
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="TableSymbol"/> describing the result schema.
+        /// </summary>
+        public TableSymbol ResultType
+        {
+            get
+            {
+                if (this.resultType == null && this.resultSchema != null)
+                {
+                    if (this.resultSchema == "()"
+                        || this.resultSchema == "(*)")
+                    {
+                        this.resultType = new TableSymbol().WithIsOpen(true);
+                    }
+                    else
+                    {
+                        this.resultType = TableSymbol.From(this.resultSchema);
+                    }
+                }
+
+                return this.resultType;
+            }
+        }
 
         public override SymbolKind Kind => SymbolKind.Command;
 
-        public CommandSymbol(string name, string grammar, TypeSymbol type = null)
+        public CommandSymbol(string name, string grammar, TableSymbol resultType)
             : base(name)
         {
             this.Grammar = grammar;
-            this.Type = type ?? VoidSymbol.Instance;
+            this.resultType = resultType;
         }
 
-        public CommandSymbol(string grammar, TypeSymbol type = null)
-            : this(grammar, grammar, type)
+        public CommandSymbol(string name, string grammar, string resultSchema)
+            : base(name)
         {
+            this.Grammar = grammar;
+            this.resultSchema = resultSchema;
         }
     }
 }

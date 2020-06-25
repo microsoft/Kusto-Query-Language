@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kusto.Language.Symbols;
+using Kusto.Language.Syntax;
+using Kusto.Language.Utils;
 
 namespace Kusto.Language.Binding
 {
-    using Symbols;
-    using Syntax;
-    using Utils;
-
     internal partial class Binder
     {
         /// <summary>
@@ -753,6 +752,60 @@ namespace Kusto.Language.Binding
                         node.Statements[i].Element.Accept(this);
                     }
                 }
+            }
+
+            public override void VisitToScalarExpression(ToScalarExpression node)
+            {
+                node.KindParameter?.Accept(this);
+
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = null;
+                try
+                {
+                    node.Expression?.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
+            }
+
+            public override void VisitToTableExpression(ToTableExpression node)
+            {
+                node.KindParameter?.Accept(this);
+
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = null;
+                try
+                {
+                    node.Expression?.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
+            }
+
+            public override void VisitInExpression(InExpression node)
+            {
+                node?.Left.Accept(this);
+
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = null;
+                try
+                {
+                    node?.Right.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
             }
         }
     }

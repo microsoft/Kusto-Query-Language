@@ -346,6 +346,7 @@
         TablesKeyword,
         TagsKeyword,
         TakeKeyword,
+        TcpConnectionsKeyword,
         TempStorageKeyword,
         ThreadPoolsKeyword,
         ThresholdKeyword,

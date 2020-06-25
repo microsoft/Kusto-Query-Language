@@ -377,6 +377,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.TablesKeyword, "tables", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.TagsKeyword, "tags", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.TakeKeyword, "take"),
+                new SyntaxData(SyntaxKind.TcpConnectionsKeyword, "tcpconnections", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.TempStorageKeyword, "tempstorage", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ThreadPoolsKeyword, "threadpools"),
                 new SyntaxData(SyntaxKind.ThresholdKeyword, "threshold", canBeIdentifier: true),

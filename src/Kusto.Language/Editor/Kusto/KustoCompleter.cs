@@ -637,6 +637,15 @@ namespace Kusto.Language.Editor
                 match |= GetSymbolMatch(hint);
             }
 
+            // special case for parenthesis; get hint from outside
+            while (contextNode is ParenthesizedExpression && contextNode.Parent != null)
+            {
+                var hint = GetCompletionHint(contextNode.Parent, contextNode.IndexInParent);
+                match |= GetSymbolMatch(hint);
+                position = contextNode.TextStart;
+                contextNode = contextNode.Parent;
+            }
+
             var grammarMatch = GetSymbolMatchFromGrammar(position);
             match |= grammarMatch;
 

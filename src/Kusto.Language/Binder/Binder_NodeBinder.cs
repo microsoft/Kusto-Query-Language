@@ -3356,7 +3356,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitCustomCommand(CustomCommand node)
             {
                 var commandSymbol = _binder._globals.GetCommand(node.CommandKind);
-                return new SemanticInfo(commandSymbol, commandSymbol.Type);
+                return new SemanticInfo(commandSymbol, commandSymbol.ResultType);
             }
 
             public override SemanticInfo VisitUnknownCommand(UnknownCommand node)

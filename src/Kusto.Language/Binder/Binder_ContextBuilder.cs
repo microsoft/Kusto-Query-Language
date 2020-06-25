@@ -327,6 +327,28 @@ namespace Kusto.Language.Binding
                     _binder._rowScope = (TableSymbol)nearestTableRef.ReferencedSymbol;
                 }
             }
+
+            public override void VisitInExpression(InExpression node)
+            {
+                base.VisitInExpression(node);
+
+                if (_position >= node.Operator.End)
+                {
+                    _binder._rowScope = null;
+                }
+            }
+
+            public override void VisitToScalarExpression(ToScalarExpression node)
+            {
+                base.VisitToScalarExpression(node);
+                _binder._rowScope = null;
+            }
+
+            public override void VisitToTableExpression(ToTableExpression node)
+            {
+                base.VisitToTableExpression(node);
+                _binder._rowScope = null;
+            }
         }
 
         class AsContextBuilder : DefaultSyntaxVisitor
