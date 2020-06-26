@@ -4372,7 +4372,7 @@ namespace Kusto.Language.Binding
             {
                 case NameReference n:
                     return n.SimpleName;
-                case BrackettedExpression be
+                case BracketedExpression be
                     when be.Expression.Kind == SyntaxKind.StringLiteralExpression
                         || be.Expression.Kind == SyntaxKind.CompoundStringLiteralExpression:
                     return (string)be.Expression.LiteralValue;

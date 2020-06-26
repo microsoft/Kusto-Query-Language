@@ -1160,7 +1160,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol IngestInlineIntoTable =
             new CommandSymbol(nameof(IngestInlineIntoTable),
-                $"ingest inline into! table <name>:TableName ('[' <bracketted_input_data>:Data ']' | {PropertyList} '<|'! <input_data>:Data | '<|' <input_data>:Data)",
+                $"ingest inline into! table <name>:TableName ('[' <bracketed_input_data>:Data ']' | {PropertyList} '<|'! <input_data>:Data | '<|' <input_data>:Data)",
                 "(ExtentId: guid)");
 
         private static readonly string DataIngestionSetAppendResult =

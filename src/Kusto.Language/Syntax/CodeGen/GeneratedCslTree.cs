@@ -576,13 +576,13 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class TokenName */
     
-    #region class BrackettedName
+    #region class BracketedName
     /// <summary>
-    /// A node in the kusto syntax that represents a bracketted name.
+    /// A node in the kusto syntax that represents a bracketed name.
     /// </summary>
-    public sealed partial class BrackettedName : Name
+    public sealed partial class BracketedName : Name
     {
-        public override SyntaxKind Kind => SyntaxKind.BrackettedName;
+        public override SyntaxKind Kind => SyntaxKind.BracketedName;
         
         /// <summary>
         /// The open bracket token.
@@ -600,9 +600,9 @@ namespace Kusto.Language.Syntax
         public SyntaxToken CloseBracket { get; }
         
         /// <summary>
-        /// Constructs a new instance of <see cref="BrackettedName"/>.
+        /// Constructs a new instance of <see cref="BracketedName"/>.
         /// </summary>
-        internal BrackettedName(SyntaxToken openBracket, Expression name, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal BracketedName(SyntaxToken openBracket, Expression name, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.OpenBracket = Attach(openBracket);
             this.Name = Attach(name);
@@ -647,19 +647,19 @@ namespace Kusto.Language.Syntax
         
         public override void Accept(SyntaxVisitor visitor)
         {
-            visitor.VisitBrackettedName(this);
+            visitor.VisitBracketedName(this);
         }
         public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
-            return visitor.VisitBrackettedName(this);
+            return visitor.VisitBracketedName(this);
         }
         
         protected override SyntaxElement CloneCore()
         {
-            return new BrackettedName((SyntaxToken)OpenBracket?.Clone(), (Expression)Name?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new BracketedName((SyntaxToken)OpenBracket?.Clone(), (Expression)Name?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
         }
     }
-    #endregion /* class BrackettedName */
+    #endregion /* class BracketedName */
     
     #region class BracedName
     /// <summary>
@@ -2951,10 +2951,10 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class CompoundNamedExpression */
     
-    #region class BrackettedExpression
-    public sealed partial class BrackettedExpression : Expression
+    #region class BracketedExpression
+    public sealed partial class BracketedExpression : Expression
     {
-        public override SyntaxKind Kind => SyntaxKind.BrackettedExpression;
+        public override SyntaxKind Kind => SyntaxKind.BracketedExpression;
         
         public SyntaxToken OpenBracket { get; }
         
@@ -2963,9 +2963,9 @@ namespace Kusto.Language.Syntax
         public SyntaxToken CloseBracket { get; }
         
         /// <summary>
-        /// Constructs a new instance of <see cref="BrackettedExpression"/>.
+        /// Constructs a new instance of <see cref="BracketedExpression"/>.
         /// </summary>
-        internal BrackettedExpression(SyntaxToken openBracket, Expression expression, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal BracketedExpression(SyntaxToken openBracket, Expression expression, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.OpenBracket = Attach(openBracket);
             this.Expression = Attach(expression);
@@ -3010,19 +3010,19 @@ namespace Kusto.Language.Syntax
         
         public override void Accept(SyntaxVisitor visitor)
         {
-            visitor.VisitBrackettedExpression(this);
+            visitor.VisitBracketedExpression(this);
         }
         public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
-            return visitor.VisitBrackettedExpression(this);
+            return visitor.VisitBracketedExpression(this);
         }
         
         protected override SyntaxElement CloneCore()
         {
-            return new BrackettedExpression((SyntaxToken)OpenBracket?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new BracketedExpression((SyntaxToken)OpenBracket?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
         }
     }
-    #endregion /* class BrackettedExpression */
+    #endregion /* class BracketedExpression */
     
     #region class PathExpression
     public sealed partial class PathExpression : Expression
@@ -12649,7 +12649,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitBadQueryOperator(BadQueryOperator node);
         public abstract void VisitCompoundStringLiteralExpression(CompoundStringLiteralExpression node);
         public abstract void VisitTokenName(TokenName node);
-        public abstract void VisitBrackettedName(BrackettedName node);
+        public abstract void VisitBracketedName(BracketedName node);
         public abstract void VisitBracedName(BracedName node);
         public abstract void VisitWildcardedName(WildcardedName node);
         public abstract void VisitNameDeclaration(NameDeclaration node);
@@ -12678,7 +12678,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitSimpleNamedExpression(SimpleNamedExpression node);
         public abstract void VisitRenameList(RenameList node);
         public abstract void VisitCompoundNamedExpression(CompoundNamedExpression node);
-        public abstract void VisitBrackettedExpression(BrackettedExpression node);
+        public abstract void VisitBracketedExpression(BracketedExpression node);
         public abstract void VisitPathExpression(PathExpression node);
         public abstract void VisitElementExpression(ElementExpression node);
         public abstract void VisitPipeExpression(PipeExpression node);
@@ -12835,7 +12835,7 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
-        public override void VisitBrackettedName(BrackettedName node)
+        public override void VisitBracketedName(BracketedName node)
         {
             this.DefaultVisit(node);
         }
@@ -12951,7 +12951,7 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
-        public override void VisitBrackettedExpression(BrackettedExpression node)
+        public override void VisitBracketedExpression(BracketedExpression node)
         {
             this.DefaultVisit(node);
         }
@@ -13460,7 +13460,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitBadQueryOperator(BadQueryOperator node);
         public abstract TResult VisitCompoundStringLiteralExpression(CompoundStringLiteralExpression node);
         public abstract TResult VisitTokenName(TokenName node);
-        public abstract TResult VisitBrackettedName(BrackettedName node);
+        public abstract TResult VisitBracketedName(BracketedName node);
         public abstract TResult VisitBracedName(BracedName node);
         public abstract TResult VisitWildcardedName(WildcardedName node);
         public abstract TResult VisitNameDeclaration(NameDeclaration node);
@@ -13489,7 +13489,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitSimpleNamedExpression(SimpleNamedExpression node);
         public abstract TResult VisitRenameList(RenameList node);
         public abstract TResult VisitCompoundNamedExpression(CompoundNamedExpression node);
-        public abstract TResult VisitBrackettedExpression(BrackettedExpression node);
+        public abstract TResult VisitBracketedExpression(BracketedExpression node);
         public abstract TResult VisitPathExpression(PathExpression node);
         public abstract TResult VisitElementExpression(ElementExpression node);
         public abstract TResult VisitPipeExpression(PipeExpression node);
@@ -13646,7 +13646,7 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
-        public override TResult VisitBrackettedName(BrackettedName node)
+        public override TResult VisitBracketedName(BracketedName node)
         {
             return this.DefaultVisit(node);
         }
@@ -13762,7 +13762,7 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
-        public override TResult VisitBrackettedExpression(BrackettedExpression node)
+        public override TResult VisitBracketedExpression(BracketedExpression node)
         {
             return this.DefaultVisit(node);
         }

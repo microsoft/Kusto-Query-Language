@@ -488,7 +488,7 @@ namespace Kusto.Language.Editor
                     }
                     break;
 
-                case BrackettedExpression be:
+                case BracketedExpression be:
                     if (be.Parent is ElementExpression)
                     {
                         // no space between expression and open bracket

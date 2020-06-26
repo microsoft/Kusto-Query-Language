@@ -557,7 +557,7 @@ namespace Kusto.Language.Editor
                     return new CompletionItem(CompletionKind.Database, d.Name, editName);
 
                 case ClusterSymbol cl:
-                    return new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBrackettedName(cl.Name));
+                    return new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBracketedName(cl.Name));
 
                 default:
                     return new CompletionItem(kind, symbol.Name, editName);

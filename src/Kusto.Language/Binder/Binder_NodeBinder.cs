@@ -514,7 +514,7 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
-            public override SemanticInfo VisitBrackettedName(BrackettedName node)
+            public override SemanticInfo VisitBracketedName(BracketedName node)
             {
                 // handled by parent node
                 return null;
@@ -538,7 +538,7 @@ namespace Kusto.Language.Binding
                 {
                     case TokenName _:
                         return _binder.BindName(node.SimpleName, node.Match, node);
-                    case BrackettedName _:
+                    case BracketedName _:
                         return _binder.BindName(node.SimpleName, node.Match, node);
                     case WildcardedName wc:
                         return VisitWildcardedNameReference(node, wc);
@@ -585,7 +585,7 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            public override SemanticInfo VisitBrackettedExpression(BrackettedExpression node)
+            public override SemanticInfo VisitBracketedExpression(BracketedExpression node)
             {
                 var selectorType = _binder.GetResultTypeOrError(node.Expression);
                 if (selectorType.IsError)
@@ -628,7 +628,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (node.Parent is PathExpression pe && pe.Selector == node)
                 {
-                    // bracketted member access: path.[selector]
+                    // bracketed member access: path.[selector]
 
                     var containerType = pe.Expression.ResultType;
                     if (containerType == null || containerType.IsError)
@@ -668,7 +668,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    // unqualified bracketted expression: column or table name:  [selector]
+                    // unqualified bracketed expression: column or table name:  [selector]
 
                     if (node.Expression is NameReference nr && nr.Name is WildcardedName wc)
                     {
@@ -2353,7 +2353,7 @@ namespace Kusto.Language.Binding
                     case NameReference nr:
                         return nr.SimpleName;
 
-                    case BrackettedExpression br:
+                    case BracketedExpression br:
                         if (br.Expression.Kind == SyntaxKind.StringLiteralExpression
                             || br.Expression.Kind == SyntaxKind.CompoundStringLiteralExpression)
                         {
@@ -2884,7 +2884,7 @@ namespace Kusto.Language.Binding
                                 {
                                     var prevPart = patterns[i - 1];
                                     if (prevPart.Kind == SyntaxKind.NameDeclaration
-                                        || prevPart.Kind == SyntaxKind.BrackettedExpression
+                                        || prevPart.Kind == SyntaxKind.BracketedExpression
                                         || (prevPart is NameAndTypeDeclaration nat
                                             && nat.Type is PrimitiveTypeExpression pt
                                             && Binder.GetType(pt) == ScalarTypes.String))

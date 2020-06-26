@@ -500,7 +500,7 @@
 
         // names
         TokenName,
-        BrackettedName,
+        BracketedName,
         BracedName, // client parameters
         WildcardedName,
         NameDeclaration,
@@ -514,7 +514,7 @@
         FunctionCallExpression,
         ToScalarExpression,
         ToTableExpression,
-        BrackettedExpression,
+        BracketedExpression,
         PipeExpression,
         NamedParameter,
         DataScopeExpression,

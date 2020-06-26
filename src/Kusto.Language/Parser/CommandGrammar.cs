@@ -310,7 +310,7 @@ namespace Kusto.Language.Parsing
             var Name =
                 First(
                     q.IdentifierName,
-                    q.BrackettedName,
+                    q.BracketedName,
                     q.BracedName,
                     StringName)
                     .WithTag("<name>");
@@ -529,15 +529,15 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(CompletionHint.None),
                     () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
 
-            var BrackettedInputTextTokens =
+            var BracketedInputTextTokens =
                 ZeroOrMore(Not(Token("]")));
 
-            var BrackettedInputText =
-                Convert(BrackettedInputTextTokens, InputTextBuilder);
+            var BracketedInputText =
+                Convert(BracketedInputTextTokens, InputTextBuilder);
 
-            var KustoBrackettedInputText =
+            var KustoBracketedInputText =
                 new ParserInfo(
-                    BrackettedInputText.Cast<SyntaxElement>(),
+                    BracketedInputText.Cast<SyntaxElement>(),
                     new CustomElementDescriptor(CompletionHint.None),
                     () => (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken));
 
@@ -568,7 +568,7 @@ namespace Kusto.Language.Parsing
                         case "function_declaration": return KustoFunctionDeclaration;
                         case "input_query": return KustoCommandInputInfo;
                         case "input_data": return KustoInputText;
-                        case "bracketted_input_data": return KustoBrackettedInputText;
+                        case "bracketed_input_data": return KustoBracketedInputText;
                         default: return null;
                     }
                 },

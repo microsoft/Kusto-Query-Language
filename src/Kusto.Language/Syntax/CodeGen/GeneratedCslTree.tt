@@ -153,11 +153,11 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
-        Name = "BrackettedName",
-        Doc = "A node in the kusto syntax that represents a bracketted name.",
+        Name = "BracketedName",
+        Doc = "A node in the kusto syntax that represents a bracketed name.",
         Base = "Name",
         Sealed = true,
-        Kind = "BrackettedName",
+        Kind = "BracketedName",
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OpenBracket", Type = "SyntaxToken", Doc = "The open bracket token.", Completion="Syntax"},
@@ -601,11 +601,11 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
-        Name = "BrackettedExpression",
+        Name = "BracketedExpression",
         Doc = "",
         Base = "Expression",
         Sealed = true,
-        Kind = "BrackettedExpression",
+        Kind = "BracketedExpression",
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "OpenBracket", Type = "SyntaxToken", Completion="Syntax"},

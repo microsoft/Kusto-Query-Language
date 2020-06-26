@@ -509,7 +509,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.CustomNode, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.TokenName, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.BrackettedName, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.BracketedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BracedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.WildcardedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NameDeclaration, "", SyntaxCategory.Node),
@@ -523,7 +523,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.FunctionCallExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ToScalarExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ToTableExpression, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.BrackettedExpression, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.BracketedExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.RangeOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PipeExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NamedParameter, "", SyntaxCategory.Node),

@@ -52,7 +52,7 @@ namespace Kusto.Language.Editor
             {
                 GetRelatedBrackets(token, elements);
             }
-            else if (IsNameReferenceOrDeclaration(token))
+            else if (IsPartOfNameReferenceOrDeclaration(token))
             {
                 GetRelatedNameReferencesAndDeclarations(token, elements, options);
             }
@@ -72,7 +72,7 @@ namespace Kusto.Language.Editor
 
         private bool IsRelatable(SyntaxToken token)
         {
-            return IsBracket(token) || IsNameReferenceOrDeclaration(token);
+            return IsBracket(token) || IsPartOfNameReferenceOrDeclaration(token);
         }
 
         private bool IsBracket(SyntaxToken token)
@@ -81,11 +81,12 @@ namespace Kusto.Language.Editor
             {
                 case "{":
                 case "}":
-                case "[":
-                case "]":
                 case "(":
                 case ")":
                     return true;
+                case "[":
+                case "]":
+                    return !IsPartOfNameReferenceOrDeclaration(token);
                 default:
                     return false;
             }
@@ -150,9 +151,10 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public bool IsNameReferenceOrDeclaration(SyntaxToken token)
+        private static bool IsPartOfNameReferenceOrDeclaration(SyntaxToken token)
         {
-            return token.Parent is Name n && (n.Parent is NameReference || n.Parent is NameDeclaration);
+            var name = token.Parent.GetFirstAncestorOrSelf<Name>();
+            return name != null && (name.Parent is NameReference || name.Parent is NameDeclaration);
         }
 
         public void GetRelatedNameReferencesAndDeclarations(SyntaxToken token, List<RelatedElement> elements, FindRelatedOptions options)
@@ -193,7 +195,6 @@ namespace Kusto.Language.Editor
         private static bool AreSymbolsEqual(Symbol symbol, SyntaxElement element, FindRelatedOptions options)
         {
             var canSee = (options & FindRelatedOptions.SeeThroughVariables) != 0;
-
             return (element is NameReference n && (n.ReferencedSymbol == symbol || (canSee && n.ReferencedSymbol == Symbol.GetExpressionResultType(symbol))))
                 || (element is NameDeclaration d && (d.ReferencedSymbol == symbol || (canSee && Symbol.GetExpressionResultType(d.ReferencedSymbol) == symbol)));
         }

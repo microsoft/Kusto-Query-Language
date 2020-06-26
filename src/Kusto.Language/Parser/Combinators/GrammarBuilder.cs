@@ -72,7 +72,7 @@ namespace Kusto.Language.Parsing
 
             private void WriteOptional(Parser<TInput> parser)
             {
-                this.WriteBracketted("[", "]", parser);
+                this.WriteBracketed("[", "]", parser);
             }
 
             private void WriteRequired(Parser<TInput> parser)
@@ -96,12 +96,12 @@ namespace Kusto.Language.Parsing
 
             private void WriteZeroOrMore(Parser<TInput> parser)
             {
-                this.WriteBracketted("{", "}", parser);
+                this.WriteBracketed("{", "}", parser);
             }
 
             private void WriteOneOrMore(Parser<TInput> parser)
             {
-                this.WriteBracketted("{", "}+", parser);
+                this.WriteBracketed("{", "}+", parser);
             }
 
             private void WriteSeparated(string separator, IReadOnlyList<Parser<TInput>> parsers)
@@ -154,7 +154,7 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            private void WriteBracketted(string startBracket, string endBracket, Parser<TInput> parser, Action<Parser<TInput>, Builder<TInput>> action = null)
+            private void WriteBracketed(string startBracket, string endBracket, Parser<TInput> parser, Action<Parser<TInput>, Builder<TInput>> action = null)
             {
                 var nestedBuilder = new Builder<TInput>(this.showRequired);
                 nestedBuilder.Visit(parser);
@@ -203,7 +203,7 @@ namespace Kusto.Language.Parsing
 
             public override void VisitFails(FailsParser<TInput> parser)
             {
-                WriteBracketted("fails(", ")", parser.Pattern);
+                WriteBracketed("fails(", ")", parser.Pattern);
             }
 
             public override void VisitFirst<TOutput>(FirstParser<TInput, TOutput> parser)
@@ -248,7 +248,7 @@ namespace Kusto.Language.Parsing
 
             public override void VisitNot(NotParser<TInput> parser)
             {
-                WriteBracketted("not(", ")", parser.Pattern);
+                WriteBracketed("not(", ")", parser.Pattern);
             }
 
             public override void VisitOneOrMore(OneOrMoreParser<TInput> parser)

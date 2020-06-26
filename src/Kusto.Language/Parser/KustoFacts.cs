@@ -297,16 +297,16 @@ namespace Kusto.Language
         {
             if (!CanBeIdentifier(name))
             {
-                return GetBrackettedName(name);
+                return GetBracketedName(name);
             }
 
             return name;
         }
 
         /// <summary>
-        /// Convert name to bracketted form: name -> ['name']
+        /// Convert name to bracketed form: name -> ['name']
         /// </summary>
-        public static string GetBrackettedName(string name)
+        public static string GetBracketedName(string name)
         {
             return "[" + GetStringLiteral(name) + "]";
         }

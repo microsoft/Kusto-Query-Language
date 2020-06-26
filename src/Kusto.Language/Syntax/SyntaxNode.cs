@@ -140,7 +140,7 @@ namespace Kusto.Language.Syntax
         public override string SimpleName => this.Name.ValueText;
     }
 
-    public partial class BrackettedName
+    public partial class BracketedName
     {
         public override string SimpleName => (this.Name.LiteralValue as string) ?? "";
     }

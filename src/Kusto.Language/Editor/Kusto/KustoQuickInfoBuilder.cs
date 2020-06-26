@@ -70,7 +70,7 @@ namespace Kusto.Language.Editor
                     {
                         if (expr.IsLiteral)
                         {
-                            if (expr.Parent is BrackettedExpression br)
+                            if (expr.Parent is BracketedExpression br)
                             {
                                 // special case for ['column name']
                                 expr = br;
