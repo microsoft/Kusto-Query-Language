@@ -503,6 +503,7 @@
         BracketedName,
         BracedName, // client parameters
         WildcardedName,
+        BracketedWildcardedName,
         NameDeclaration,
         NameReference,
 

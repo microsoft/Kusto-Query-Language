@@ -532,6 +532,12 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitBracketedWildcardedName(BracketedWildcardedName node)
+            {
+                // handled by parent node
+                return null;
+            }
+
             public override SemanticInfo VisitNameReference(NameReference node)
             {
                 switch (node.Name)
@@ -541,7 +547,9 @@ namespace Kusto.Language.Binding
                     case BracketedName _:
                         return _binder.BindName(node.SimpleName, node.Match, node);
                     case WildcardedName wc:
-                        return VisitWildcardedNameReference(node, wc);
+                        return VisitWildcardedNameReference(node, wc.Pattern);
+                    case BracketedWildcardedName bwc:
+                        return VisitWildcardedNameReference(node, bwc.Pattern);
                     case BracedName _:
                         // client parameter does not bind to anything
                         return new SemanticInfo(ScalarTypes.Unknown);
@@ -550,7 +558,7 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private SemanticInfo VisitWildcardedNameReference(NameReference node, WildcardedName wc)
+            private SemanticInfo VisitWildcardedNameReference(NameReference node, SyntaxToken pattern)
             {
                 var list = s_symbolListPool.AllocateFromPool();
                 var matchingList = s_symbolListPool.AllocateFromPool();
@@ -558,7 +566,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder.GetSymbolsInContext(node, SymbolMatch.Table | SymbolMatch.Column | SymbolMatch.Local, IncludeFunctionKind.All, list);
-                    GetWildcardSymbols(wc.Pattern.Text, list, matchingList);
+                    GetWildcardSymbols(pattern.Text, list, matchingList);
 
                     if (matchingList.Count == 1)
                     {
@@ -575,7 +583,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(wc.Pattern.Text).WithLocation(node));
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern.Text).WithLocation(node));
                     }
                 }
                 finally
@@ -587,108 +595,80 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitBracketedExpression(BracketedExpression node)
             {
-                var selectorType = _binder.GetResultTypeOrError(node.Expression);
-                if (selectorType.IsError)
+                if (node.Parent is ElementExpression ee && ee.Selector == node)
+                {
+                    // element selector: container[indexer]
+                    return GetElementExpressionInfo(ee.Expression, node);
+                }
+                else if (node.Parent is PathExpression pe && pe.Selector == node)
+                {
+                    // path selector: container.[indexer] 
+                    // treat same as element selector
+                    return GetElementExpressionInfo(pe.Expression, node);
+                }
+                else
+                {
+                    // unqualified bracketed expression -- this might happen in a partially typed case
+                    // or an incorrectly typed case:  [foo]  when they meant to type ['foo']
+                    var indexerType = _binder.GetResultTypeOrError(node.Expression);
+
+                    if (indexerType.IsError)
+                    {
+                        return ErrorInfo;
+                    }
+
+                    if (indexerType != ScalarTypes.String)
+                    {
+                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
+                    }
+                    else if (!node.Expression.IsLiteral)
+                    {
+                        // computed name lookup?? Is this valid here?
+                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
+                    }
+                    else
+                    {
+                        // we should never reach here, but if we do then treat it like a valid name reference
+                        return _binder.BindName((string)node.Expression.LiteralValue, SymbolMatch.Default, node.Expression);
+                    }
+                }
+            }
+
+            private SemanticInfo GetElementExpressionInfo(Expression collection, BracketedExpression selector)
+            {
+                var indexerType = _binder.GetResultTypeOrError(selector.Expression);
+                if (indexerType.IsError)
                 {
                     return ErrorInfo;
                 }
 
-                if (node.Parent is ElementExpression ee && ee.Selector == node)
+                var collectionType = collection.ResultType;
+                if (collectionType == null || collectionType.IsError)
                 {
-                    // dynamic element access: path[selector]
-
-                    var collectionType = ee.Expression.ResultType;
-                    if (collectionType == null || collectionType.IsError)
+                    return ErrorInfo;
+                }
+                else if (collectionType == ScalarTypes.Dynamic)
+                {
+                    if (!IsInteger(indexerType) && !IsStringOrDynamic(indexerType))
                     {
-                        return ErrorInfo;
-                    }
-                    else if (collectionType == ScalarTypes.Dynamic)
-                    {
-                        if (!IsInteger(selectorType) && !IsStringOrDynamic(selectorType))
-                        {
-                            // must be a integer array index or a string member name index (dynamic okay?)
-                            return new SemanticInfo(null, ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(node.Expression));
-                        }
-                        else
-                        {
-                            // you've successfully accessed an element of a dynamic value: you get another dynamic value.
-                            return new SemanticInfo(ScalarTypes.Dynamic);
-                        }
-                    }
-                    else if (collectionType == ScalarTypes.Unknown)
-                    {
-                        // unknown is unknown
-                        return new SemanticInfo(ScalarTypes.Unknown);
+                        // must be a integer array index or a string member name index (dynamic okay?)
+                        return new SemanticInfo(null, ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
                     }
                     else
                     {
-                        // element access only works for dynamic values
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(node));
-                    }
-                }
-                else if (node.Parent is PathExpression pe && pe.Selector == node)
-                {
-                    // bracketed member access: path.[selector]
-
-                    var containerType = pe.Expression.ResultType;
-                    if (containerType == null || containerType.IsError)
-                    {
-                        return ErrorInfo;
-                    }
-                    else if (node.Expression is NameReference nr && nr.Name is WildcardedName wc)
-                    {
-                        // legal for things like database('x').[TableNames*] for unions and joins, etc
-                        // wildcard binding was already figured out, so just pass it along
-                        return new SemanticInfo(_binder.GetReferencedSymbol(nr), _binder.GetResultTypeOrError(nr));
-                    }
-                    else if (selectorType != ScalarTypes.String)
-                    {
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
-                    }
-                    else if (!node.Expression.IsLiteral)
-                    {
-                        // computed name lookup?? Is this valid here?
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
-                    }
-                    else if (containerType == ScalarTypes.Dynamic)
-                    {
-                        // dynamic name lookup, no need to bind
+                        // you've successfully accessed an element of a dynamic value: you get another dynamic value.
                         return new SemanticInfo(ScalarTypes.Dynamic);
                     }
-                    else if (containerType == ScalarTypes.Unknown)
-                    {
-                        // unknown name lookup, no need to bind
-                        return new SemanticInfo(ScalarTypes.Unknown);
-                    }
-                    else
-                    {
-                        // use binder to find the member
-                        return _binder.BindName((string)node.Expression.LiteralValue, SymbolMatch.Default, node.Expression);
-                    }
+                }
+                else if (collectionType == ScalarTypes.Unknown)
+                {
+                    // unknown is unknown
+                    return new SemanticInfo(ScalarTypes.Unknown);
                 }
                 else
                 {
-                    // unqualified bracketed expression: column or table name:  [selector]
-
-                    if (node.Expression is NameReference nr && nr.Name is WildcardedName wc)
-                    {
-                        // legal for things like [TableName*] for unions and joins, etc
-                        return new SemanticInfo(_binder.GetReferencedSymbol(nr), _binder.GetResultTypeOrError(nr));
-                    }
-                    else if (selectorType != ScalarTypes.String)
-                    {
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
-                    }
-                    else if (!node.Expression.IsLiteral)
-                    {
-                        // computed name lookup?? Is this valid here?
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
-                    }
-                    else
-                    {
-                        // use binder to find the member
-                        return _binder.BindName((string)node.Expression.LiteralValue, SymbolMatch.Default, node.Expression);
-                    }
+                    // element access only works for dynamic values
+                    return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(selector));
                 }
             }
 
@@ -703,17 +683,17 @@ namespace Kusto.Language.Binding
                 // same as selector (without repeating diagnostics)
                 return new SemanticInfo(_binder.GetReferencedSymbol(node.Selector), _binder.GetResultTypeOrError(node.Selector));
             }
-            #endregion
+#endregion
 
-            #region function calls
+#region function calls
             public override SemanticInfo VisitFunctionCallExpression(FunctionCallExpression node)
             {
                 return _binder.BindFunctionCallOrPattern(node);
             }
 
-            #endregion
+#endregion
 
-            #region other nodes
+#region other nodes
             public override SemanticInfo VisitParenthesizedExpression(ParenthesizedExpression node)
             {
                 return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Expression));
@@ -1007,9 +987,9 @@ namespace Kusto.Language.Binding
                 // handled by VisitMaterializedViewCombineExpression
                 return null;
             }
-            #endregion
+#endregion
 
-            #region query operators
+#region query operators
             /// <summary>
             /// True if the query operator is on the right hand side of a pipe expression.
             /// </summary>
@@ -3080,9 +3060,9 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-            #endregion
+#endregion
 
-            #region clauses 
+#region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
             // typically handled by the parent node's visit method.
 

@@ -155,6 +155,11 @@ namespace Kusto.Language.Syntax
         public override string SimpleName => this.Pattern.ValueText;
     }
 
+    public partial class BracketedWildcardedName
+    {
+        public override string SimpleName => this.Pattern.ValueText;
+    }
+
     public partial class NamedParameter
     {
         public override CompletionHint GetCompletionHint(int index)

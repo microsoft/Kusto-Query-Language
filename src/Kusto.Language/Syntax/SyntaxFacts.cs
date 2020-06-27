@@ -512,6 +512,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.BracketedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BracedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.WildcardedName, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.BracketedWildcardedName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NameDeclaration, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NameReference, "", SyntaxCategory.Node),
 

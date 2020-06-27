@@ -693,12 +693,14 @@ namespace Kusto.Language.Parsing
             var AtTokenSelector =
                 Rule(Token(SyntaxKind.AtToken), token => (Expression)new AtExpression(token));
 
+            // note: bare means non-bracketed
             var BarePathElementSelector =
                 First(
                     AtTokenSelector,
                     IdentifierNameReference,
                     KeywordNameReference,
-                    ClientParameterReference);
+                    ClientParameterReference
+                    );
 
             // wild cards can use any keyword (but will need an asterisk somewhere)
             var ScanWildcard =
@@ -715,6 +717,13 @@ namespace Kusto.Language.Parsing
                                 || t.Kind.GetCategory() == SyntaxCategory.Keyword)
                                 && t.Trivia.Length == 0)));
 
+            var WildcardedIdentifier =
+                Convert(
+                    ScanWildcard.Hide(),
+                    (IReadOnlyList<LexicalToken> list) =>
+                        SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
+                .WithTag("<wildcard>");
+
             var WildcardedNameReference =
                 Convert(
                     ScanWildcard.Hide(),
@@ -723,6 +732,20 @@ namespace Kusto.Language.Parsing
                             new WildcardedName(
                                 SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))))
                 .WithTag("<wildcard>");
+
+            var ScanBracketedWildcardName =
+                And(
+                    Token(SyntaxKind.OpenBracketToken),
+                    ScanWildcard);
+
+            var BracketedWildcardedNameReference =
+                Rule(
+                    Token(SyntaxKind.OpenBracketToken),
+                    WildcardedIdentifier,
+                    RequiredToken(SyntaxKind.CloseBracketToken),
+                    (open, wildcard, close) =>
+                        (Expression)new NameReference(new BracketedWildcardedName(open, wildcard, close)))
+                .WithTag("<bracketed-wildcard>");
 
             var InvocationExpression =
                 First(
@@ -736,15 +759,7 @@ namespace Kusto.Language.Parsing
                         (op, expr) => (Expression)new PrefixUnaryExpression(SyntaxKind.UnaryPlusExpression, op, expr)),
                     FunctionCallOrPath);
 
-            var BracketedPathElementSelector =
-                Rule(
-                    Token(SyntaxKind.OpenBracketToken),
-                    Required(First(WildcardedNameReference, InvocationExpression).Hide(), MissingNameReference),
-                    RequiredToken(SyntaxKind.CloseBracketToken),
-                    (openBracket, expr, closeBracket) =>
-                        (Expression)new BracketedExpression(openBracket, expr, closeBracket));
-
-            var BracketedPostPathElementSelector =
+            var BracketedExpression =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
                     Required(UnnamedExpression, MissingNameReference),
@@ -752,19 +767,21 @@ namespace Kusto.Language.Parsing
                     (openBracket, expr, closeBracket) =>
                         (Expression)new BracketedExpression(openBracket, expr, closeBracket));
 
+            var BracketedPathElementSelector =
+                First(
+                    If(ScanBracketedName, BracketedNameReference),
+                    If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
+                    BracketedExpression);
+
             var PathElementSelector =
                 First(
                     BarePathElementSelector,
-                    If(ScanBracketedName, BracketedNameReference),
                     BracketedPathElementSelector);
 
             var BracketedEntityNamePathElementSelector =
-                Rule(
-                    Token(SyntaxKind.OpenBracketToken),
-                    Required(First(WildcardedNameReference, StringLiteral), MissingNameReference),
-                    RequiredToken(SyntaxKind.CloseBracketToken),
-                    (openBracket, expr, closeBracket) =>
-                        (Expression)new BracketedExpression(openBracket, expr, closeBracket));
+                First(
+                    If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
+                    BracketedNameReference);
 
             var EntityPathExpression =
                 ApplyZeroOrMore(
@@ -791,6 +808,12 @@ namespace Kusto.Language.Parsing
                     SimpleNameReference)
                 .WithTag("<simple-or-wildcarded-entity>");
 
+            var WildcardedEntityReferencePathSelector =
+                First(
+                    WildcardedNameReference,
+                    BarePathElementSelector,
+                    BracketedEntityNamePathElementSelector);
+
             var WildcardedEntityReference =
                 First(
                     WildcardedNameReference,
@@ -801,7 +824,7 @@ namespace Kusto.Language.Parsing
                                 Rule(
                                     _left,
                                     Token(SyntaxKind.DotToken),
-                                    Required(First(WildcardedNameReference, BarePathElementSelector, BracketedEntityNamePathElementSelector), MissingNameReference),
+                                    Required(WildcardedEntityReferencePathSelector, MissingNameReference),
                                     (path, dot, selector) =>
                                         (Expression)new PathExpression(path, dot, selector)))))
                 .WithTag("<wildcarded-entity>");
@@ -838,9 +861,9 @@ namespace Kusto.Language.Parsing
 
                         _left =>
                             First(
-                                Rule(_left, Token(SyntaxKind.DotToken), Required(First(BarePathElementSelector, BracketedPostPathElementSelector), MissingNameReference),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
                                     (left, dot, selector) => (Expression)new PathExpression(left, dot, selector)),
-                                Rule(_left, BracketedPostPathElementSelector,
+                                Rule(_left, BracketedExpression,
                                     (left, right) => (Expression)new ElementExpression(left, right)))));
 
             var RequiredFunctionCallOrPath =

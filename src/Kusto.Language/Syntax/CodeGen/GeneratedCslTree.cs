@@ -787,6 +787,85 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class WildcardedName */
     
+    #region class BracketedWildcardedName
+    public sealed partial class BracketedWildcardedName : Name
+    {
+        public override SyntaxKind Kind => SyntaxKind.BracketedWildcardedName;
+        
+        /// <summary>
+        /// The open bracket token.
+        /// </summary>
+        public SyntaxToken OpenBracket { get; }
+        
+        public SyntaxToken Pattern { get; }
+        
+        /// <summary>
+        /// The close bracket token.
+        /// </summary>
+        public SyntaxToken CloseBracket { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="BracketedWildcardedName"/>.
+        /// </summary>
+        internal BracketedWildcardedName(SyntaxToken openBracket, SyntaxToken pattern, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OpenBracket = Attach(openBracket);
+            this.Pattern = Attach(pattern);
+            this.CloseBracket = Attach(closeBracket);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OpenBracket;
+                case 1: return Pattern;
+                case 2: return CloseBracket;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OpenBracket);
+                case 1: return nameof(Pattern);
+                case 2: return nameof(CloseBracket);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitBracketedWildcardedName(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitBracketedWildcardedName(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new BracketedWildcardedName((SyntaxToken)OpenBracket?.Clone(), (SyntaxToken)Pattern?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class BracketedWildcardedName */
+    
     #region class NameDeclaration
     /// <summary>
     /// A node in the Kusto syntax that represents a name declaration.
@@ -12652,6 +12731,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitBracketedName(BracketedName node);
         public abstract void VisitBracedName(BracedName node);
         public abstract void VisitWildcardedName(WildcardedName node);
+        public abstract void VisitBracketedWildcardedName(BracketedWildcardedName node);
         public abstract void VisitNameDeclaration(NameDeclaration node);
         public abstract void VisitNameReference(NameReference node);
         public abstract void VisitLiteralExpression(LiteralExpression node);
@@ -12844,6 +12924,10 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitWildcardedName(WildcardedName node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitBracketedWildcardedName(BracketedWildcardedName node)
         {
             this.DefaultVisit(node);
         }
@@ -13463,6 +13547,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitBracketedName(BracketedName node);
         public abstract TResult VisitBracedName(BracedName node);
         public abstract TResult VisitWildcardedName(WildcardedName node);
+        public abstract TResult VisitBracketedWildcardedName(BracketedWildcardedName node);
         public abstract TResult VisitNameDeclaration(NameDeclaration node);
         public abstract TResult VisitNameReference(NameReference node);
         public abstract TResult VisitLiteralExpression(LiteralExpression node);
@@ -13655,6 +13740,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitWildcardedName(WildcardedName node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitBracketedWildcardedName(BracketedWildcardedName node)
         {
             return this.DefaultVisit(node);
         }

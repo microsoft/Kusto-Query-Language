@@ -196,6 +196,21 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "BracketedWildcardedName",
+        Doc = "",
+        Base = "Name",
+        Sealed = true,
+        Kind = "BracketedWildcardedName",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "OpenBracket", Type = "SyntaxToken", Doc = "The open bracket token.", Completion="Syntax"},
+            new GeneratedProperty { Name = "Pattern", Type = "SyntaxToken", Completion="Syntax"},
+            new GeneratedProperty { Name = "CloseBracket", Type = "SyntaxToken", Doc = "The close bracket token.", Completion="Syntax"}
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "NameDeclaration",
         Doc = "A node in the Kusto syntax that represents a name declaration.",
         Base = "Expression",
