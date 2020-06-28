@@ -156,8 +156,7 @@ namespace Kusto.Language
                 new Parameter("command", ParameterTypeKind.Scalar),
                 new Parameter("parser", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // slneimer: unhide after 18/Jun/2020
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Extract =
             new FunctionSymbol("extract",
