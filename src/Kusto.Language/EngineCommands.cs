@@ -1315,7 +1315,10 @@ namespace Kusto.Language
                     new ColumnSymbol("DataPartitioningLoadFactor", ScalarTypes.Real),
                     new ColumnSymbol("DataPartitioningOperationsInProgress", ScalarTypes.Long),
                     new ColumnSymbol("MinPartitioningPercentageInSingleTable", ScalarTypes.Real),
-                    new ColumnSymbol("TableWithMinPartitioningPercentage", ScalarTypes.String)));
+                    new ColumnSymbol("TableWithMinPartitioningPercentage", ScalarTypes.String),
+                    new ColumnSymbol("V2DataCapacityFactor", ScalarTypes.Real),
+                    new ColumnSymbol("V3DataCapacityFactor", ScalarTypes.Real),
+                    new ColumnSymbol("TargetDiskCacheShardsPercentage", ScalarTypes.Real)));
 
         public static readonly CommandSymbol ShowCapacity =
             new CommandSymbol(nameof(ShowCapacity),
