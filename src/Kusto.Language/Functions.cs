@@ -1863,6 +1863,22 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoPolygonDensify =
+            new FunctionSymbol("geo_polygon_densify", ScalarTypes.Dynamic,
+                new Parameter("polygon", ScalarTypes.Dynamic),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineDensify =
+            new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
+                new Parameter("lineString", ScalarTypes.Dynamic),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonValidate =
             new FunctionSymbol("__geo_polygon_validate", ScalarTypes.String,
                 new Parameter("polygon", ScalarTypes.Dynamic))
@@ -2314,10 +2330,12 @@ namespace Kusto.Language
             GeoPointInCircle,
             GeoPointInPolygon,
             GeoPolygonToS2Cells,
+            GeoPolygonDensify,
             GeoPolygonValidate,
             GeoPointToGeohash,
             GeohashToCentralPoint,
             GeoPointToS2Cell,
+            GeoLineDensify,
             S2CellToCentralPoint,
             #endregion
 
