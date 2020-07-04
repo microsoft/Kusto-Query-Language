@@ -467,7 +467,11 @@ namespace Kusto.Language.Binding
                 base.VisitLetStatement(node);
 
                 TryGetLiteralValue(node.Expression, out var literalValue);
-                var local = new VariableSymbol(node.Name.SimpleName, _binder.GetResultTypeOrError(node.Expression), _binder.GetIsConstant(node.Expression), literalValue);
+
+                var exprType = _binder.GetResultTypeOrError(node.Expression);
+                Symbol local = (exprType is FunctionSymbol)
+                    ? exprType
+                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, _binder.GetIsConstant(node.Expression), literalValue);
 
                 // put local symbol definition on name
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));

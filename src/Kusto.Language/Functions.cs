@@ -856,8 +856,7 @@ namespace Kusto.Language
           new FunctionSymbol("hash_md5", ScalarTypes.String,
               new Parameter("source", ParameterTypeKind.NotDynamic))
           .WithResultNameKind(ResultNameKind.None)
-          .ConstantFoldable()
-          .Hide(); // Unhide by June 30 2020
+          .ConstantFoldable();
 
         public static readonly FunctionSymbol HashCombine =
           new FunctionSymbol("hash_combine", ScalarTypes.Long,

@@ -902,8 +902,12 @@ namespace Kusto.Language.Binding
                             }
                         }
 
+                        var localMatch = match;
+                        if ((include & IncludeFunctionKind.LocalFunctions) == 0)
+                            localMatch &= ~SymbolMatch.Function;
+
                         // local symbols
-                        _localScope.GetSymbols(match, list);
+                        _localScope.GetSymbols(localMatch, list);
 
                         // get any built-in functions
                         if ((match & SymbolMatch.Function) != 0 && (include & IncludeFunctionKind.BuiltInFunctions) != 0)
@@ -1021,17 +1025,25 @@ namespace Kusto.Language.Binding
                     case ScopeKind.Aggregate:
                         if (name == null)
                         {
-                            functions.AddRange(_globals.Aggregates);
+                            if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
+                            {
+                                functions.AddRange(_globals.Aggregates);
+                            }
+
                             GetFunctionsInScope(ScopeKind.Normal, name, include, functions);
                         }
                         else
                         {
-                            var fn = _globals.GetAggregate(name);
-                            if (fn != null)
+                            if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
                             {
-                                functions.Add(fn);
+                                var fn = _globals.GetAggregate(name);
+                                if (fn != null)
+                                {
+                                    functions.Add(fn);
+                                }
                             }
-                            else
+
+                            if (functions.Count == 0)
                             {
                                 GetFunctionsInScope(ScopeKind.Normal, name, include, functions);
                             }
@@ -1039,16 +1051,19 @@ namespace Kusto.Language.Binding
                         break;
 
                     case ScopeKind.PlugIn:
-                        if(name == null)
+                        if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
                         {
-                            functions.AddRange(_globals.PlugIns);
-                        }
-                        else
-                        {
-                            var fn = _globals.GetPlugIn(name);
-                            if (fn != null)
+                            if (name == null)
                             {
-                                functions.Add(fn);
+                                functions.AddRange(_globals.PlugIns);
+                            }
+                            else
+                            {
+                                var fn = _globals.GetPlugIn(name);
+                                if (fn != null)
+                                {
+                                    functions.Add(fn);
+                                }
                             }
                         }
                         break;
@@ -1089,18 +1104,29 @@ namespace Kusto.Language.Binding
             var locals = s_symbolListPool.AllocateFromPool();
             try
             {
-                _localScope.GetSymbols(name, SymbolMatch.Local, locals);
+                _localScope.GetSymbols(name, SymbolMatch.Local | SymbolMatch.Function, locals);
 
                 foreach (Symbol local in locals)
                 {
-                    var resultType = GetResultType(local);
-                    if (resultType is FunctionSymbol fn)
+                    if (local is FunctionSymbol fs)
                     {
-                        functions.Add(fn);
+                        functions.Add(fs);
                     }
-                    else if (resultType is PatternSymbol ps)
+                    else if (local is PatternSymbol ps)
                     {
                         functions.Add(ps);
+                    }
+                    else if (local is VariableSymbol vs)
+                    {
+                        var resultType = GetResultType(local);
+                        if (resultType is FunctionSymbol lfs)
+                        {
+                            functions.Add(lfs);
+                        }
+                        else if (resultType is PatternSymbol lps)
+                        {
+                            functions.Add(lps);
+                        }
                     }
                 }
             }
