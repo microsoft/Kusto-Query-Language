@@ -11,8 +11,22 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// Detects expressions in aggregation context that may result in null
     /// </summary>
-    internal sealed class NullAggregationDetector : KustoAnalyzer
+    internal sealed class NullAggregationAnalyzer : KustoAnalyzer
     {
+        private static readonly Diagnostic _diagnostic = new Diagnostic(
+                "KustoNullAggregation",
+                category: DiagnosticCategory.Correctness,
+                severity: DiagnosticSeverity.Warning,
+                message:
+                $"If any of the columns referenced in 'aggregate(<left> <op> <right>)' contains nulls, significant values might not be included due to scalar arithmetic null propagation rules."
+                + Environment.NewLine +
+                $"Consider rewriting it as 'aggregate(<left>) <op> aggregate(<right>)'.");
+
+        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        {
+            return new[] { _diagnostic };
+        }
+
         public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
         {
             var diagnostics = new List<Diagnostic>();
@@ -42,11 +56,8 @@ namespace Kusto.Language.Editor
             var right = binaryExpression.Right.ToString();
             var op = binaryExpression.Operator.Text;
 
-            return new Diagnostic(
-                "KustoNullAggregation",
-                category: DiagnosticCategory.Correctness,
-                severity: DiagnosticSeverity.Warning,
-                message:
+            return _diagnostic
+                .WithMessage(
                 $"If any of the columns referenced in '{fc.ToString()}' contains nulls, significant values might not be included due to scalar arithmetic null propagation rules."
                 + Environment.NewLine +
                 $"Consider rewriting it as '{fc.Name}({left}) {op} {fc.Name}({right})'.")

@@ -56,6 +56,7 @@
     <Compile Include="Binder\Binder_SearchPredicateBinder.cs" />
     <Compile Include="ClusterManagerCommands.cs" />
     <Compile Include="DataManagerCommands.cs" />
+    <Compile Include="Editor\AnalyzerInfo.cs" />
     <Compile Include="Editor\BrackettingStyle.cs" />
     <Compile Include="Editor\ClassificationKind.cs" />
     <Compile Include="Editor\ClassificationResult.cs" />
@@ -66,6 +67,8 @@
     <Compile Include="Editor\FormattedText.cs" />
     <Compile Include="Editor\FormattingOptions.cs" />
     <Compile Include="Editor\Kusto\Analyzers\AvoidUsingContainsAnalyzer.cs" />
+    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingIsNullStringComparisonAnalyzer.cs" />
+    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingToBoolOnNumericsAnalyzer.cs" />
     <Compile Include="Editor\Kusto\Analyzers\AvoidUsingShortStringComparisonAnalyzer.cs" />
     <Compile Include="Editor\Kusto\Analyzers\NullAggregationAnalyzer.cs" />
     <Compile Include="Editor\Kusto\KustoAnalyzer.cs" />

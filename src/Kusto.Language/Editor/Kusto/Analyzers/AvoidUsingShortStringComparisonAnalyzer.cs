@@ -10,14 +10,19 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// Analyzer for detecting usage of short string comparisons
     /// </summary>
-    internal class AvoidUsingShortStringComparisonRule : KustoAnalyzer
+    internal class AvoidUsingShortStringComparisonAnalyzer : KustoAnalyzer
     {
         private static readonly Diagnostic _diagnostic =
             new Diagnostic(
-                "KustoAvoidUsingShortStringComparison",
+                "AvoidUsingShortStringComparison",
                 category: DiagnosticCategory.Performance,
                 severity: DiagnosticSeverity.Suggestion,
                 message: "Avoid using short strings (less than 4 characters) for string comparison operations (see: https://aka.ms/kusto.stringterms).");
+
+        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        {
+            return new[] { _diagnostic };
+        }
 
         public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
         {

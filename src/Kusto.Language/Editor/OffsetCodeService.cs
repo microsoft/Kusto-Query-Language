@@ -107,9 +107,12 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
+        public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
+            IReadOnlyList<string> analyzers,
+            bool waitForAnalysis,
+            CancellationToken cancellationToken)
         {
-            var result = _service.GetExtendedDiagnostics(waitForAnalysis, cancellationToken);
+            var result = _service.GetAnalyzerDiagnostics(analyzers, waitForAnalysis, cancellationToken);
             if (result.Count > 0 && _offset > 0)
             {
                 return result.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
@@ -118,6 +121,11 @@ namespace Kusto.Language.Editor
             {
                 return result;
             }
+        }
+
+        public override IReadOnlyList<AnalyzerInfo> GetAnalyzers()
+        {
+            return _service.GetAnalyzers();
         }
 
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)

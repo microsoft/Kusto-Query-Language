@@ -174,7 +174,10 @@ namespace Kusto.Language.Editor
             return this.lazyDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
         }
 
-        public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default)
+        public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
+            IReadOnlyList<string> analyzers = null,
+            bool waitForAnalysis = true,
+            CancellationToken cancellationToken = default)
         {
             if (this.lazyExtendedDiagnostics == null
                 && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
@@ -186,6 +189,9 @@ namespace Kusto.Language.Editor
                 foreach (var analyzer in KustoAnalyzers.All)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
+
+                    if (analyzers != null && !analyzers.Contains(analyzer.Name))
+                        continue;
 
                     // have try-catch to keep editor from crashing from analyzer bugs
                     try
@@ -203,6 +209,18 @@ namespace Kusto.Language.Editor
             }
 
             return this.lazyExtendedDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+        }
+
+        private static IReadOnlyList<AnalyzerInfo> _analyzers;
+
+        public override IReadOnlyList<AnalyzerInfo> GetAnalyzers()
+        {
+            if (_analyzers == null)
+            {
+                _analyzers = KustoAnalyzers.All.Select(a => new AnalyzerInfo(a.Name, a.Diagnostics)).ToReadOnly();
+            }
+
+            return _analyzers;
         }
 
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))

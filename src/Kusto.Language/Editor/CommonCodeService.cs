@@ -34,9 +34,14 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<Diagnostic>.Instance;
         }
 
-        public override IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken = default)
+        public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(IReadOnlyList<string> analyzers, bool waitForAnalysis, CancellationToken cancellationToken = default)
         {
             return EmptyReadOnlyList<Diagnostic>.Instance;
+        }
+
+        public override IReadOnlyList<AnalyzerInfo> GetAnalyzers()
+        {
+            return EmptyReadOnlyList<AnalyzerInfo>.Instance;
         }
 
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange, bool waitForAnalysis, CancellationToken cancellationToken)

@@ -230,7 +230,7 @@ namespace Kusto.Language.Editor
         private QuickInfoItem GetDiagnosticInfo(int position, CancellationToken cancellationToken)
         {
             var diagnostics = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
-                .Concat(_service.GetExtendedDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
+                .Concat(_service.GetAnalyzerDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
 
             Diagnostic bestDx = null;
 

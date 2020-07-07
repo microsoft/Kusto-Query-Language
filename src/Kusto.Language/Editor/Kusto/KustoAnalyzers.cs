@@ -13,16 +13,24 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidUsingContains =
             new AvoidUsingContainsAnalyzer();
 
+        public static readonly KustoAnalyzer AvoidUsingIsNullStringComparison =
+            new AvoidUsingIsNullStringComparisonAnalyzer();
+
+        public static readonly KustoAnalyzer AvoidUsingToBoolOnNumerics =
+            new AvoidUsingToBoolOnNumericsAnalyzer();
+
         public static readonly KustoAnalyzer AvoidUsingShortStringComparision =
-            new AvoidUsingShortStringComparisonRule();
+            new AvoidUsingShortStringComparisonAnalyzer();
 
         public static readonly KustoAnalyzer NullAggregation =
-            new NullAggregationDetector();
+            new NullAggregationAnalyzer();
 
         public static IReadOnlyList<KustoAnalyzer> All =
              new KustoAnalyzer[]
              {
                  AvoidUsingContains,
+                 AvoidUsingIsNullStringComparison,
+                 AvoidUsingToBoolOnNumerics,
                  AvoidUsingShortStringComparision,
                  NullAggregation,
              }

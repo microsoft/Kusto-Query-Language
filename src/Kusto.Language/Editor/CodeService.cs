@@ -35,11 +35,20 @@ namespace Kusto.Language.Editor
         public abstract IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Gets any extended diagnostics for the code.
+        /// Gets any additional diagnostics for the code.
         /// </summary>
+        /// <param name="analyzers">An optional list of analyzers to use. If null, all known analyzers are used.</param>
         /// <param name="waitForAnalysis">If false, only return pre-computed results if any.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
-        public abstract IReadOnlyList<Diagnostic> GetExtendedDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
+            IReadOnlyList<string> analyzers = null,
+            bool waitForAnalysis = true,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets the list of information about the analyzers available via this <see cref="CodeService"/>.
+        /// </summary>
+        public abstract IReadOnlyList<AnalyzerInfo> GetAnalyzers();
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

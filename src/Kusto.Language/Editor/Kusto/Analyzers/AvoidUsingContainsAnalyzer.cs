@@ -13,11 +13,16 @@ namespace Kusto.Language.Editor
     {
         private static readonly Diagnostic _diagnostic =
             new Diagnostic(
-                "KustoAvoidUsingContains",
+                "AvoidUsingContains",
                 DiagnosticCategory.Performance,
                 DiagnosticSeverity.Suggestion,
                 $"Avoid using the 'contains' operator as it has a high compute price." + Environment.NewLine +
                 $"Use the 'has' operator in cases when full term match is desired (see: https://aka.ms/kusto.stringterms).");
+
+        protected override IEnumerable<Diagnostic> GetDiagnostics()
+        {
+            return new[] { _diagnostic };
+        }
 
         public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
         {
