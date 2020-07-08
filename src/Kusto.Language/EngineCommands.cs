@@ -1359,13 +1359,13 @@ namespace Kusto.Language
 
         private static readonly string QueryResults =
             "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Durantion: timespan, " +
-            "State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, " + 
-            "Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic)";
+            "State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, " +
+            "Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)";
 
         public static readonly CommandSymbol ShowQueries =
             new CommandSymbol(nameof(ShowQueries),
                 "show queries",
-                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic)");
+                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowRunningQueries =
             new CommandSymbol(nameof(ShowRunningQueries), 
@@ -1400,7 +1400,7 @@ namespace Kusto.Language
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " + 
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " + 
                 "User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, " + 
-                "ResourceUtilization: dynamic, ClientRequestProperties: dynamic)");
+                "ResourceUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
             new CommandSymbol(nameof(ShowCommandsAndQueries),
@@ -1408,7 +1408,7 @@ namespace Kusto.Language
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " +
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " +
                 "User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, " +
-                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentStatistics: dynamic, ResultSetStatistics: dynamic)");
+                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowIngestionFailures =
             new CommandSymbol(nameof(ShowIngestionFailures),

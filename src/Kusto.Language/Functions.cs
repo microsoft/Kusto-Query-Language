@@ -439,6 +439,21 @@ namespace Kusto.Language
                 new Parameter("base64_string_decodced_as_array", ScalarTypes.Dynamic))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol ZlibDecompressString =
+            new FunctionSymbol("zlib_decompress_from_base64_string", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO unhide and document once released
+
+        public static readonly FunctionSymbol ZlibCompressString =
+            new FunctionSymbol("zlib_compress_to_base64_string", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO unhide and document once released
+
         #endregion
 
         #region parsing functions
@@ -2109,6 +2124,8 @@ namespace Kusto.Language
             Base64EncodeFromArray,
             Base64DecodeString,
             Base64DecodeToString,
+            ZlibDecompressString,
+            ZlibCompressString,
             #endregion
 
 #region parsing functions
