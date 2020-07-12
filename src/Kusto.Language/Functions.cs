@@ -1882,16 +1882,14 @@ namespace Kusto.Language
                 new Parameter("polygon", ScalarTypes.Dynamic),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineDensify =
             new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
                 new Parameter("lineString", ScalarTypes.Dynamic),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonValidate =
             new FunctionSymbol("__geo_polygon_validate", ScalarTypes.String,
