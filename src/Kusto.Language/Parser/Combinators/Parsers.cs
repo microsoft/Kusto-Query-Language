@@ -129,28 +129,28 @@ namespace Kusto.Language.Parsing
 
         /// <summary>
         /// A parser that forwards to a deferred parser.
-        /// This parse is typically used to resolve cycles in grammar.
+        /// This parser is typically used to resolve cycles in grammar.
         /// </summary>
         public static Parser<TInput, TOutput> Forward<TOutput>(Func<Parser<TInput, TOutput>> deferredParser) =>
             new ForwardParser<TInput, TOutput>(deferredParser);
 
         /// <summary>
-        /// A parser that produces the result of the specified parser only if the scanner first succeeds.
-        /// None of the successfully scanned input items are consumed. The parser starts from the same initial input item as the scanner.
+        /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
+        /// None of the input items are consumed the test scan.
         /// </summary>
         public static Parser<TInput, TOutput> If<TOutput>(Parser<TInput> test, Parser<TInput, TOutput> parser) =>
             new IfParser<TInput, TOutput>(test, parser);
 
         /// <summary>
-        /// A parser that produces the result of the specified parser only if the scanner first succeeds.
-        /// None of the successfully scanned input items are consumed. The parser starts from the same initial input item as the scanner.
+        /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
+        /// None of the input items are consumed the test scan.
         /// </summary>
         public static RightParser<TInput, TOutput> If<TOutput>(Parser<TInput> test, RightParser<TInput, TOutput> parser) =>
             new RightParser<TInput, TOutput>(new IfParser<TInput, TOutput>(test, parser.Parser));
 
         /// <summary>
-        /// A parser that produces the result of the specified parser only if the scanner first succeeds.
-        /// None of the successfully scanned input items are consumed. The parser starts from the same initial input item as the scanner.
+        /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
+        /// None of the input items are consumed the test scan.
         /// </summary>
         public static Parser<TInput> If(Parser<TInput> test, Parser<TInput> parser) =>
             new IfParser<TInput>(test, parser);

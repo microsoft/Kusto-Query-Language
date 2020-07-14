@@ -28,8 +28,8 @@ namespace Kusto.Language.Parsing
     // e ?          optional element
     // e *          zero or more of the same element
     // e +          one or more of the same element
-    // e : tag      element with tag 
-    // e : 'tag'    element with tag
+    // tag = e      element with tag
+    // 'tag' = e    element with tag
     // [ a ]        optional alternation
     // { a }        zero or more alternations
     // { a }*       zero or more alternations
@@ -127,7 +127,7 @@ namespace Kusto.Language.Parsing
             var sequence = Produce(
                 OneOrMore(element),
                 (IReadOnlyList<TResult> list) =>
-                    list.Count == 0 ? list[0] : createSequence(list.ToList()))
+                    list.Count == 1 ? list[0] : createSequence(list.ToList()))
                 .WithTag("<sequence>");
 
             var alternation =
@@ -141,13 +141,13 @@ namespace Kusto.Language.Parsing
                     allowTrailingSeparator: false,
                     producer: (IReadOnlyList<object> list) =>
                     {
-                        if (list.Count > 1)
+                        if (list.Count == 1)
                         {
-                            return createAlternation(list.OfType<TResult>().ToArray());
+                            return (TResult)list[0];
                         }
                         else
                         {
-                            return (TResult)list[0];
+                            return createAlternation(list.OfType<TResult>().ToArray());
                         }
                     }).WithTag("<alternation>");
 
@@ -199,10 +199,11 @@ namespace Kusto.Language.Parsing
                     grouped)        // ( ... )
                     .WithTag("<element>");
 
+            // allow for some postfix abbreviations here
             var postfixPrimary =
                 First(
-                    optional,
-                    repeatition,
+                    optional,       // [a]
+                    repeatition,    // {a}
 
                     ApplyOptional(
                         primaryElement,
@@ -228,24 +229,19 @@ namespace Kusto.Language.Parsing
                                     .WithTag("<one-or-more>")
                                     )));
 
-            // either id=elem or elem:id
+            // allow for tag=elem
             var taggedPrimary =
                 First(
-                    Rule(Identifier, Token("="), postfixPrimary,
-                        (id, eq, elem) => createTagged(elem, id)),
+                    If(And(Identifier, Token("=")),
+                        Rule(Identifier, Token("="), postfixPrimary,
+                            (id, eq, elem) => createTagged(elem, id))),
 
-                    Rule(StringLiteral, Token("="), postfixPrimary,
-                        (str, eq, elem) => createTagged(elem, KustoFacts.GetStringLiteralValue(str))),
+                    If(And(StringLiteral, Token("=")),
+                        Rule(StringLiteral, Token("="), postfixPrimary,
+                            (str, eq, elem) => createTagged(elem, KustoFacts.GetStringLiteralValue(str)))),
 
-                    ApplyOptional(
-                        postfixPrimary,
-                        _left =>
-                            First(
-                                Rule(_left, Token(":"), Identifier,
-                                    (left, colon, id) => createTagged(left, id)),
-                                Rule(_left, Token(":"), StringLiteral,
-                                    (left, colon, str) => createTagged(left, KustoFacts.GetStringLiteralValue(str)))))
-                    .WithTag("<tagged>"));
+                    postfixPrimary
+                    );
 
             elementCore = taggedPrimary;
 

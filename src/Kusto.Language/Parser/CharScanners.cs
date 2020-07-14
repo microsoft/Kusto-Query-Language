@@ -8,10 +8,14 @@ namespace Kusto.Language.Parsing
     using Utils;
     using static Parsers<char>;
 
+    /// <summary>
+    /// A predifined set of common character parsers that produce no output.
+    /// These are typically used to do look-ahead scanning.
+    /// </summary>
     public static class CharScanners
     {
         /// <summary>
-        /// A scanner for matching the specified text characters in sequence.
+        /// A parser that matches a sequence of text characters.
         /// </summary>
         public static Parser<char> Chars(string text, bool ignoreCase = false)
         {
@@ -24,15 +28,17 @@ namespace Kusto.Language.Parsing
             {
                 var lower = text.ToLower();
                 var upper = text.ToUpper();
+
                 return Match((source, start) =>
                 {
-                    var textSource = source as TextSource;
+                    // check for quick string comparison
                     if (source is TextSource ts)
                     {
                         return ts.Matches(start, text, ignoreCase: true) ? text.Length : -1;
                     }
                     else
                     {
+                        // otherwise do it the hard way
                         for (int i = 0; i < text.Length; i++)
                         {
                             var ch = source.Peek(start + i);
@@ -48,13 +54,14 @@ namespace Kusto.Language.Parsing
             {
                 return Match((source, start) =>
                 {
-                    var textSource = source as TextSource;
+                    // check for quick string comparison
                     if (source is TextSource ts)
                     {
                         return ts.Matches(start, text) ? text.Length : -1;
                     }
                     else
                     {
+                        // otherwise do it the hard way
                         for (int i = 0; i < text.Length; i++)
                         {
                             if (source.Peek(start + i) != text[i])
@@ -67,46 +74,43 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        //public static Parser<char> Chars(string text, bool ignoreCase = false) =>
-        //    And(text.Select(c => Char(c, ignoreCase)).ToArray()).WithTag($"'{text}'");
-
         /// <summary>
-        /// A scanner for matching a single character.
+        /// A parser that matches a single character.
         /// </summary>
         public static Parser<char> Char(char ch, bool ignoreCase = false) =>
             (ignoreCase)
-                ? MatchCharIgnoreCase(ch, char.ToUpper(ch), char.ToLower(ch)).WithTag($"'{ch.ToString()}'")
-                : Match(c => c == ch).WithTag($"'{ch.ToString()}'");
+                ? MatchCharIgnoreCase(ch, char.ToUpper(ch), char.ToLower(ch)).WithTag($"'{ch}'")
+                : Match(c => c == ch).WithTag($"'{ch}'");
 
         private static Parser<char> MatchCharIgnoreCase(char ch, char chUpper, char chLower) =>
             Match(c => c == ch || c == chUpper || c == chLower);
 
         /// <summary>
-        /// A scanner that scans a single letter
+        /// A parser that matches a single letter.
         /// </summary>
         public static Parser<char> Letter =
             Match(TextFacts.IsLetter).WithTag("<letter>");
 
         /// <summary>
-        /// A scanner that scans a single digit
+        /// A parser that matches a single digit.
         /// </summary>
         public static Parser<char> Digit =
             Match(TextFacts.IsDigit).WithTag("<digit>");
 
         /// <summary>
-        /// A scanner that scans a single hexadecimal digit
+        /// A parser that matches a single hexadecimal digit.
         /// </summary>
         public static Parser<char> HexDigit =
             Match(TextFacts.IsHexDigit).WithTag("<hex-digit>");
 
         /// <summary>
-        /// A scanner that scans a single whitespace character.
+        /// A parser that matches a single whitespace character.
         /// </summary>
         public static Parser<char> Whitespace =
             Match(TextFacts.IsWhitespace).WithTag("<whitespace>");
 
         /// <summary>
-        /// A scanner that scans a line break.
+        /// A parser that matches a line break.
         /// </summary>
         public static Parser<char> LineBreak =
             Or(
