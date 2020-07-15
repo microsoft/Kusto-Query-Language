@@ -1294,6 +1294,12 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol DynamicToJson =
+            new FunctionSymbol("dynamic_to_json", ScalarTypes.String,
+                new Parameter("dynamic", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 1))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable().Hide(); // TODO: unhide after released
+
         #endregion
 
         #region digest / series functions
@@ -2273,6 +2279,7 @@ namespace Kusto.Language
             SetIntersect,
             SetDifference,
             BagMerge,
+            DynamicToJson,
 #endregion
 
 #region digest / series functions

@@ -1321,7 +1321,8 @@ namespace Kusto.Language
                     new ColumnSymbol("CurrentDiskCacheShardsPercentage", ScalarTypes.Real),
                     new ColumnSymbol("TargetDiskCacheShardsPercentage", ScalarTypes.Real),
                     new ColumnSymbol("MaterializedViewsInProgress", ScalarTypes.Long),
-                    new ColumnSymbol("DataPartitioningOperationsInProgress", ScalarTypes.Real)));
+                    new ColumnSymbol("DataPartitioningOperationsInProgress", ScalarTypes.Real),
+                    new ColumnSymbol("IngestionCapacityUtilization", ScalarTypes.Real)));
 
         public static readonly CommandSymbol ShowCapacity =
             new CommandSymbol(nameof(ShowCapacity),
