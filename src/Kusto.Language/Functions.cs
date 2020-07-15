@@ -522,6 +522,23 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol FormatIPV4 =
+            new FunctionSymbol("format_ipv4", ScalarTypes.String,
+                 new Parameter("ip", ParameterTypeKind.Scalar), // TODO: restrict to String, Int or Long
+                new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // Unhide on Aug-01-2020
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol FormatIPV4Mask =
+            new FunctionSymbol("format_ipv4_mask", ScalarTypes.String,
+                new Parameter("ip", ParameterTypeKind.Scalar), // TODO: restrict to String, Int or Long
+                new Parameter("prefix", ScalarTypes.Long))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // Unhide on Aug-01-2020
+            .ConstantFoldable();
+
+
         public static readonly FunctionSymbol Ipv4Compare  =
             new FunctionSymbol("ipv4_compare", ScalarTypes.Long,
                 new Parameter("ip1", ScalarTypes.String),
@@ -2360,6 +2377,12 @@ namespace Kusto.Language
             Ipv6IsMatch,
             #endregion
 
+            #region formatting functions
+            FormatIPV4,
+            FormatIPV4Mask,
+            FormatBytes,
+            #endregion
+
             #region other
             CurrentClusterEndpoint,
             CurrentDatabase,
@@ -2375,7 +2398,6 @@ namespace Kusto.Language
             CursorBeforeOrAt,
             CursorCurrent,
             CursorCurrent2,
-            FormatBytes,
             InternalFunnelCompletion,
             RowNumber,
             RowCumSum,
