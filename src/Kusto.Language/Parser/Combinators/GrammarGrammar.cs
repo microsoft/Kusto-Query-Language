@@ -131,23 +131,23 @@ namespace Kusto.Language.Parsing
                 .WithTag("<sequence>");
 
             var alternation =
-                SeparatedList(
-                    element: sequence.Cast<object>(),
-                    separator: Token("|").Cast<object>(),
+                List(
+                    elementParser: sequence,
+                    separatorParser: Token("|"),
                     missingElement: () => null,
                     missingSeparator: () => null,
                     endOfList: null,
                     oneOrMore: false,
                     allowTrailingSeparator: false,
-                    producer: (IReadOnlyList<object> list) =>
+                    producer: list =>
                     {
                         if (list.Count == 1)
                         {
-                            return (TResult)list[0];
+                            return (TResult)list[0].Element;
                         }
                         else
                         {
-                            return createAlternation(list.OfType<TResult>().ToArray());
+                            return createAlternation(list.Select(eas => eas.Element).OfType<TResult>().ToArray());
                         }
                     }).WithTag("<alternation>");
 

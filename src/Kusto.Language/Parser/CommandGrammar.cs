@@ -143,8 +143,8 @@ namespace Kusto.Language.Parsing
                 Rule(
                     SeparatedList(
                         commandStatement, // first one is a command statement
-                        q.Statement,      // all others are query statements
                         SyntaxKind.SemicolonToken,
+                        q.Statement,      // all others elements are query statements
                         MissingCommandStatementNode,
                         endOfList: EndOfText,
                         oneOrMore: true,
@@ -673,21 +673,22 @@ namespace Kusto.Language.Parsing
 
                 createZeroOrMoreSeparated: (elem, sep) =>
                     new ParserInfo(
-                        SeparatedList<SyntaxElement, SyntaxElement>(
+                        OList(
                             elem.Parser,
                             sep.Parser,
+                            elem.Parser,
                             elem.Missing,
                             missingSeparator: null, //sep.Missing,
                             endOfList: null, //notEndOfList
                             oneOrMore: false,
                             allowTrailingSeparator: false,
-                            producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),
+                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: false),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>[] { })),
 
                 createOneOrMoreSeparated: (elem, sep) =>
                     new ParserInfo(
-                        SeparatedList<SyntaxElement, SyntaxElement>(
+                        OList(
                             elem.Parser,
                             sep.Parser,
                             elem.Missing,
@@ -695,7 +696,7 @@ namespace Kusto.Language.Parsing
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
-                            producer: elements => MakeSeparatedList<SyntaxElement>(elements.ToArray())),
+                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: false),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new[] { new SeparatedElement<SyntaxElement>(elem.Missing()) }))
                 );

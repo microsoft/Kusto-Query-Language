@@ -41,6 +41,12 @@ namespace Kusto.Language
         public bool HasSemantics { get; }
 
         /// <summary>
+        /// The resulting <see cref="TypeSymbol"/> of the query or control command in the code.
+        /// This value is only available when semantic analysis has been performed.
+        /// </summary>
+        public TypeSymbol ResultType { get; }
+
+        /// <summary>
         /// The <see cref="GlobalState"/> used during parsing and semantic analysis.
         /// </summary>
         public GlobalState Globals { get; }
@@ -78,6 +84,7 @@ namespace Kusto.Language
             Parser<LexicalToken> grammar, 
             SyntaxNode syntax, 
             bool hasSemantics, 
+            TypeSymbol resultType,
             LexicalToken[] lexerTokens, 
             LocalBindingCache localCache, 
             int maxDepth)
@@ -88,6 +95,7 @@ namespace Kusto.Language
             this.Grammar = grammar;
             this.Syntax = syntax;
             this.HasSemantics = hasSemantics;
+            this.ResultType = resultType;
             this.lexerTokens = lexerTokens;
             this.localCache = localCache;
             this.MaxDepth = maxDepth;
@@ -157,14 +165,49 @@ namespace Kusto.Language
 
             LocalBindingCache localCache = null;
 
+            TypeSymbol resultType = null;
             if (analyze && isAnalyzable)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 localCache = new LocalBindingCache();
                 Binder.Bind(syntax, globals, localCache, null, cancellationToken);
+                resultType = DetermineResultType(syntax);
             }
 
-            return new KustoCode(text, kind, globals, grammar, syntax, analyze && isAnalyzable, tokens, localCache, maxDepth);
+            return new KustoCode(text, kind, globals, grammar, syntax, analyze && isAnalyzable, resultType, tokens, localCache, maxDepth);
+        }
+
+        /// <summary>
+        /// Determines the result type of a query or control command block.
+        /// </summary>
+        private static TypeSymbol DetermineResultType(SyntaxNode root)
+        {
+            SyntaxList<SeparatedElement<Statement>> statements;
+
+            switch (root)
+            {
+                case QueryBlock qb:
+                    statements = qb.Statements;
+                    break;
+
+                case CommandBlock cb:
+                    statements = cb.Statements;
+                    break;
+
+                default:
+                    return null;
+            }
+
+            // get the last expression's type
+            if (statements.Count > 0
+                && statements[statements.Count - 1].Element is ExpressionStatement es)
+            {
+                return es.Expression.ResultType;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

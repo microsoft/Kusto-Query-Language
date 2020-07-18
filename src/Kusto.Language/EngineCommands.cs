@@ -1318,8 +1318,8 @@ namespace Kusto.Language
                     new ColumnSymbol("TableWithMinPartitioningPercentage", ScalarTypes.String),
                     new ColumnSymbol("V2DataCapacityFactor", ScalarTypes.Real),
                     new ColumnSymbol("V3DataCapacityFactor", ScalarTypes.Real),
-                    new ColumnSymbol("CurrentDiskCacheShardsPercentage", ScalarTypes.Real),
-                    new ColumnSymbol("TargetDiskCacheShardsPercentage", ScalarTypes.Real),
+                    new ColumnSymbol("CurrentDiskCacheShardsPercentage", ScalarTypes.Int),
+                    new ColumnSymbol("TargetDiskCacheShardsPercentage", ScalarTypes.Int),
                     new ColumnSymbol("MaterializedViewsInProgress", ScalarTypes.Long),
                     new ColumnSymbol("DataPartitioningOperationsInProgress", ScalarTypes.Real),
                     new ColumnSymbol("IngestionCapacityUtilization", ScalarTypes.Real)));

@@ -394,8 +394,8 @@ namespace Kusto.Language.Parsing
         {
             return SeparatedList(
                 primaryElementParser,
-                primaryElementParser.WithTag("..."),
                 separatorKind,
+                primaryElementParser.WithTag("..."),
                 missingElement,
                 endOfList,
                 oneOrMore,
@@ -407,19 +407,19 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
             Parser<LexicalToken, TElement> primaryElementParser,
-            Parser<LexicalToken, TElement> secondaryElementParser,
             SyntaxKind separatorKind,
+            Parser<LexicalToken, TElement> secondaryElementParser,
             TElement missingElement,
             Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
             where TElement : SyntaxElement
         {
-            return SeparatedList<SyntaxElement, SyntaxList<SeparatedElement<TElement>>>(
-                Rule(primaryElementParser, e => (SyntaxElement)e),
-                Rule(secondaryElementParser, e => (SyntaxElement)e),
-                Rule(Token(separatorKind), e => (SyntaxElement)e),
-                () => missingElement.Clone(),
+            return OList(
+                primaryElementParser,
+                Token(separatorKind),
+                secondaryElementParser,
+                () => (TElement)missingElement.Clone(),
                 () => CreateMissingToken(separatorKind),
                 endOfList,
                 oneOrMore,

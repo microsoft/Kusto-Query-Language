@@ -56,7 +56,7 @@ namespace Kusto.Language.Parsing
             new BestParser<TInput, TOutput>(parsers);
 
         /// <summary>
-        /// A parser that yields the result of the parser that consumed the most input items.
+        /// A parser that yields the result of the parser that produced the best output item.
         /// </summary>
         public static Parser<TInput, TOutput> Best<TOutput>(Parser<TInput, TOutput>[] parsers, Func<TOutput, TOutput, int> fnBetter) =>
             new BestParser<TInput, TOutput>(parsers, fnBetter);
@@ -83,7 +83,26 @@ namespace Kusto.Language.Parsing
         /// A parser that converts all the successfully scanned input characters into a single output item.
         /// </summary>
         public static Parser<char, TOutput> Convert<TOutput>(Parser<char> pattern, Func<string, TOutput> producer) =>
-            Parsers<char>.Convert(pattern, (Source<char> source, int start, int length) => producer(((TextSource)source).PeekText(start, length)));
+            Parsers<char>.Convert(pattern, (Source<char> source, int start, int length) => 
+            {
+                // check for TextSource to do it the easy way
+                if (source is TextSource ts)
+                {
+                    return producer(ts.PeekText(start, length));
+                }
+                else
+                {
+                    // otherwise, do it the hard way
+                    var builder = new System.Text.StringBuilder();
+                    
+                    for (int i = 0; i < length; i++)
+                    {
+                        builder.Append(source.Peek(start + i));
+                    }
+                    
+                    return producer(builder.ToString());
+                }
+            });
 
         /// <summary>
         /// A parser that converts all the successfully scanned input items into a single output item.
@@ -136,21 +155,18 @@ namespace Kusto.Language.Parsing
 
         /// <summary>
         /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
-        /// None of the input items are consumed the test scan.
         /// </summary>
         public static Parser<TInput, TOutput> If<TOutput>(Parser<TInput> test, Parser<TInput, TOutput> parser) =>
             new IfParser<TInput, TOutput>(test, parser);
 
         /// <summary>
         /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
-        /// None of the input items are consumed the test scan.
         /// </summary>
         public static RightParser<TInput, TOutput> If<TOutput>(Parser<TInput> test, RightParser<TInput, TOutput> parser) =>
             new RightParser<TInput, TOutput>(new IfParser<TInput, TOutput>(test, parser.Parser));
 
         /// <summary>
         /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
-        /// None of the input items are consumed the test scan.
         /// </summary>
         public static Parser<TInput> If(Parser<TInput> test, Parser<TInput> parser) =>
             new IfParser<TInput>(test, parser);
@@ -158,27 +174,359 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Creates a parser that parses a list of elements.
         /// </summary>
+        /// <param name="elementParser">The parser for each element.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="producer">A function that converts the series of elements into the produced value.</param>
         public static Parser<TInput, TProducer> List<TElement, TProducer>(
-            Parser<TInput, TElement> element,
+            Parser<TInput, TElement> elementParser,
+            bool oneOrMore,
+            Func<IReadOnlyList<TElement>, TProducer> producer)
+        {
+            return List(
+                elementParser, 
+                missingElement: null, 
+                oneOrMore: oneOrMore, 
+                producer: producer);
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements.
+        /// </summary>
+        /// <param name="elementParser">The parser for each element.</param>
+        /// <param name="missingElement">An optional function that constructs a new element to be used when an expected element is missing.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="producer">A function that converts the series of elements into the produced value.</param>
+        public static Parser<TInput, TProducer> List<TElement, TProducer>(
+            Parser<TInput, TElement> elementParser,
             Func<TElement> missingElement,
             bool oneOrMore,
             Func<IReadOnlyList<TElement>, TProducer> producer)
         {
-            Ensure.IsTrue(missingElement != null || oneOrMore == false);
-
-            if (oneOrMore && missingElement != null)
+            if (oneOrMore)
             {
-                var requiredElement = Required(element, missingElement);
+                if (missingElement != null)
+                {
+                    var requiredElement = Required(elementParser, missingElement);
 
-                return Produce(
-                    Sequence(
-                        requiredElement,
-                        ZeroOrMore(element)),
-                    producer);
+                    return Produce(
+                        Sequence(
+                            requiredElement,
+                            ZeroOrMore(elementParser)),
+                        producer);
+                }
+                else
+                {
+                    return OneOrMore(elementParser, producer);
+                }
             }
             else
             {
-                return ZeroOrMore(element, producer);
+                return ZeroOrMore(elementParser, producer);
+            }
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="elementParser">The parser for each element.</param>
+        /// <param name="separatorParser">The parser for each separator.</param>
+        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are no more elements.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> OList<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> elementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            Func<TElement> missingElement,
+            Func<TSeparator> missingSeparator,
+            Parser<TInput> endOfList,
+            bool oneOrMore,
+            bool allowTrailingSeparator,
+            Func<IReadOnlyList<object>, TProducer> producer)
+        {
+            return OList(
+                elementParser,
+                separatorParser,
+                elementParser,
+                missingElement,
+                missingSeparator,
+                endOfList,
+                oneOrMore,
+                allowTrailingSeparator,
+                producer);
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="primaryElementParser">The parser for the primary element.</param>
+        /// <param name="separatorParser">The parser for each separator.</param>
+        /// <param name="secondaryElementParser">The parser for any element after the first separator.</param>
+        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> OList<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> primaryElementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            Parser<TInput, TElement> secondaryElementParser,
+            Func<TElement> missingElement, // optional
+            Func<TSeparator> missingSeparator, // optional
+            Parser<TInput> endOfList, // optional
+            bool oneOrMore,
+            bool allowTrailingSeparator,
+            Func<IReadOnlyList<object>, TProducer> producer)
+        {
+            Ensure.ArgumentNotNull(primaryElementParser, nameof(primaryElementParser));
+            Ensure.ArgumentNotNull(separatorParser, nameof(separatorParser));
+
+            if (secondaryElementParser == null)
+                secondaryElementParser = primaryElementParser;
+
+            var requiredPrimaryElementParser = missingElement != null ? Required(primaryElementParser, missingElement) : primaryElementParser;
+            var requiredSecondaryElementParser = missingElement != null ? Required(secondaryElementParser, missingElement) : secondaryElementParser;
+            var requiredSeparatorParser = missingSeparator != null ? Required(separatorParser, missingSeparator) : separatorParser;
+            Func<TProducer> emptyList = () => producer(new object[] { });
+
+            if (oneOrMore)
+            {
+                if (allowTrailingSeparator)
+                {
+                    var secondaryParser = Sequence(separatorParser, secondaryElementParser);
+
+                    if (missingSeparator != null && endOfList != null)
+                    {
+                        secondaryParser = First(
+                            secondaryParser,
+                            // check for missing secondardy element between two separators
+                            If(Not(endOfList), Sequence(requiredSeparatorParser, secondaryElementParser)).Hide());
+                    }
+
+                    return Produce(
+                        Sequence(
+                            requiredPrimaryElementParser,
+                            ZeroOrMore(secondaryParser),
+                            Optional(separatorParser)),
+                        producer);
+                }
+                else
+                {
+                    var secondaryParser = Sequence(separatorParser, requiredSecondaryElementParser);
+
+                    if (missingSeparator != null && endOfList != null)
+                    {
+                        secondaryParser = First(
+                            secondaryParser,
+                            // check for missing secondardy element between two separators
+                            If(Not(endOfList), Sequence(requiredSeparatorParser, secondaryElementParser)).Hide());
+                    }
+
+                    return Produce(
+                        Sequence(
+                            requiredPrimaryElementParser,
+                            ZeroOrMore(secondaryParser)),
+                        producer);
+                }
+            }
+            else
+            {
+                if (allowTrailingSeparator)
+                {
+                    var secondaryParser = Sequence(separatorParser, secondaryElementParser);
+
+                    if (missingSeparator != null && endOfList != null)
+                    {
+                        secondaryParser = First(
+                            secondaryParser,
+                            // check for missing secondardy element between two separators
+                            If(Not(endOfList), Sequence(requiredSeparatorParser, secondaryElementParser)).Hide());
+                    }
+
+                    return Optional(
+                        Produce(
+                            Sequence(
+                                First(
+                                    If(separatorParser, requiredPrimaryElementParser).Hide(), // check for missing primary element
+                                    primaryElementParser),
+                                ZeroOrMore(secondaryParser),
+                                Optional(separatorParser)),
+                            producer),
+                        emptyList);
+                }
+                else
+                {
+                    var secondaryParser = Sequence(separatorParser, requiredSecondaryElementParser);
+
+                    if (missingSeparator != null && endOfList != null)
+                    {
+                        secondaryParser = First(
+                            secondaryParser,
+                            // check for missing secondardy element between two separators
+                            If(Not(endOfList), Sequence(requiredSeparatorParser, secondaryElementParser)).Hide());
+                    }
+
+                    return Optional(
+                        Produce(
+                            Sequence(
+                                First(
+                                    If(separatorParser, requiredPrimaryElementParser).Hide(), // check for missing primary element
+                                    primaryElementParser),
+                                ZeroOrMore(secondaryParser)),
+                            producer),
+                        emptyList);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="elementParser">The parser for the primary element.</param>
+        /// <param name="separatorParser">The parser for each separator.</param>
+        /// <param name="secondaryElementParser">The parser for any elements after the first separator.</param>
+        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> List<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> elementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            Parser<TInput, TElement> secondaryElementParser,
+            Func<TElement> missingElement, // optional
+            Func<TSeparator> missingSeparator, // optional
+            Parser<TInput> endOfList, // optional
+            bool oneOrMore,
+            bool allowTrailingSeparator,
+            Func<IReadOnlyList<ElementAndSeparator<TElement, TSeparator>>, TProducer> producer)
+        {
+            return OList(
+                elementParser,
+                separatorParser,
+                secondaryElementParser,
+                missingElement,
+                missingSeparator,
+                endOfList,
+                oneOrMore,
+                allowTrailingSeparator,
+                list => ElementAndSeparatorProducer<TElement, TSeparator, TProducer>.Produce(list, producer)
+                );
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="elementParser">The parser for the primary element.</param>
+        /// <param name="separatorParser">The parser for the separator.</param>
+        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> List<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> elementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            Func<TElement> missingElement, // optional
+            Func<TSeparator> missingSeparator, // optional
+            Parser<TInput> endOfList, // optional
+            bool oneOrMore,
+            bool allowTrailingSeparator,
+            Func<IReadOnlyList<ElementAndSeparator<TElement, TSeparator>>, TProducer> producer)
+        {
+            return List(
+                elementParser,
+                separatorParser,
+                elementParser,
+                missingElement,
+                missingSeparator,
+                endOfList,
+                oneOrMore,
+                allowTrailingSeparator,
+                producer);
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="elementParser">The parser for the primary element.</param>
+        /// <param name="separatorParser">The parser for the separator.</param>
+        /// <param name="secondaryElementParser">The parser for any elements after the first separator.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> List<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> elementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            Parser<TInput, TElement> secondaryElementParser,
+            bool oneOrMore,
+            Func<IReadOnlyList<ElementAndSeparator<TElement, TSeparator>>, TProducer> producer)
+        {
+            return List(
+                elementParser,
+                separatorParser,
+                secondaryElementParser,
+                missingElement: null,
+                missingSeparator: null,
+                endOfList: null,
+                oneOrMore: oneOrMore,
+                allowTrailingSeparator: false,
+                producer: producer);
+        }
+
+        /// <summary>
+        /// Creates a parser that parses a list of elements and separators.
+        /// </summary>
+        /// <param name="elementParser">The parser for the primary element.</param>
+        /// <param name="separatorParser">The parser for the separator.</param>
+        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
+        /// <param name="producer">A function that converts the series of elements and separators into the produced value.</param>
+        public static Parser<TInput, TProducer> List<TElement, TSeparator, TProducer>(
+            Parser<TInput, TElement> elementParser,
+            Parser<TInput, TSeparator> separatorParser,
+            bool oneOrMore,
+            Func<IReadOnlyList<ElementAndSeparator<TElement, TSeparator>>, TProducer> producer)
+        {
+            return List(
+                elementParser,
+                separatorParser,
+                elementParser,
+                missingElement: null,
+                missingSeparator: null,
+                endOfList: null,
+                oneOrMore: oneOrMore,
+                allowTrailingSeparator: false,
+                producer: producer);
+        }
+
+        private class ElementAndSeparatorProducer<TElement, TSeparator, TProducer>
+        {
+            private static readonly ObjectPool<List<ElementAndSeparator<TElement, TSeparator>>> listPool =
+                new ObjectPool<List<ElementAndSeparator<TElement, TSeparator>>>(
+                    () => new List<ElementAndSeparator<TElement, TSeparator>>(), list => list.Clear());
+
+            public static TProducer Produce(IReadOnlyList<object> output, Func<IReadOnlyList<ElementAndSeparator<TElement, TSeparator>>, TProducer> producer)
+            {
+                var list = listPool.AllocateFromPool();
+                try
+                {
+                    for (int i = 0; i < output.Count; i += 2)
+                    {
+                        var element = (TElement)output[i];
+                        var separator = (i < output.Count - 1) ? (TSeparator)output[i + 1] : default(TSeparator);
+                        list.Add(new ElementAndSeparator<TElement, TSeparator>(element, separator));
+                    }
+
+                    return producer(list);
+                }
+                finally
+                {
+                    listPool.ReturnToPool(list);
+                }
             }
         }
 
@@ -205,6 +553,120 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<TInput> Match(SourceConsumer<TInput> consumer) =>
             new MatchParser<TInput>(consumer);
+
+        /// <summary>
+        /// A parser that consumes one matching input item.
+        /// </summary>
+        public static Parser<TInput> Match(TInput item) =>
+            Match(item, EqualityComparer<TInput>.Default);
+
+        /// <summary>
+        /// A parser that consumes one matching input item.
+        /// </summary>
+        public static Parser<TInput> Match(TInput item, EqualityComparer<TInput> comparer) =>
+            Match(i => comparer.Equals(i, item));
+
+        /// <summary>
+        /// A parser that consumes one or more sequential matching input items.
+        /// </summary>
+        public static Parser<TInput> Match(IReadOnlyList<TInput> items) =>
+            Match(items, EqualityComparer<TInput>.Default);
+
+        /// <summary>
+        /// A parser that consumes one or more sequential matching input items.
+        /// </summary>
+        public static Parser<TInput> Match(IReadOnlyList<TInput> items, EqualityComparer<TInput> comparer) =>
+            new MatchParser<TInput>(
+                (source, start) =>
+                {
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        if (source.IsEnd(start + i))
+                            return ~i;
+
+                        if (!comparer.Equals(items[i], source.Peek(start + i)))
+                            return ~i;
+                    }
+
+                    return items.Count;
+                });
+
+        /// <summary>
+        /// A parser that consumes a matching character.
+        /// </summary>
+        public static Parser<char> Match(char ch, bool ignoreCase = false)
+        {
+            if (ignoreCase)
+            {
+                var chUpper = char.ToUpper(ch);
+                var chLower = char.ToLower(ch);
+                return Parsers<char>.Match(c => c == ch || c == chUpper || c == chLower);
+            }
+            else
+            {
+                return Parsers<char>.Match(c => c == ch);
+            }
+        }
+
+        /// <summary>
+        /// A parser that consumes one or more sequential matching characters.
+        /// </summary>
+        public static Parser<char> Match(string text, bool ignoreCase = false)
+        {
+            if (text.Length == 1)
+            {
+                return Match(text[0], ignoreCase);
+            }
+
+            if (ignoreCase)
+            {
+                var lower = text.ToLower();
+                var upper = text.ToUpper();
+
+                return Parsers<char>.Match((source, start) =>
+                {
+                    // check for quick string comparison
+                    if (source is TextSource ts)
+                    {
+                        return ts.Matches(start, text, ignoreCase: true) ? text.Length : -1;
+                    }
+                    else
+                    {
+                        // otherwise do it the hard way
+                        for (int i = 0; i < text.Length; i++)
+                        {
+                            var ch = source.Peek(start + i);
+                            if (ch != lower[i] && ch != upper[i])
+                                return ~i;
+                        }
+
+                        return text.Length;
+                    }
+                });
+            }
+            else
+            {
+                return Parsers<char>.Match((source, start) =>
+                {
+                    // check for quick string comparison
+                    if (source is TextSource ts)
+                    {
+                        return ts.Matches(start, text) ? text.Length : -1;
+                    }
+                    else
+                    {
+                        // otherwise do it the hard way
+                        for (int i = 0; i < text.Length; i++)
+                        {
+                            if (source.Peek(start + i) != text[i])
+                                return ~i;
+                        }
+
+                        return text.Length;
+                    }
+                });
+            }
+        }
 
         /// <summary>
         /// A parser that producers a single output value from a single input value if it matches the predicate.
@@ -280,6 +742,12 @@ namespace Kusto.Language.Parsing
         {
             return (list, start) => ElementProducer<TElement, TOutput>.Produce(list, start, producer);
         }
+
+        /// <summary>
+        /// A parser that combines one or more values produced by a single parser into a new value.
+        /// </summary>
+        private static Parser<TInput, TOutput> Produce<TElement, TOutput>(Parser<TInput> parser, Func<List<object>, int, TOutput> producer) =>
+            new ProduceParser<TInput, TOutput>(parser, producer);
 
         private class ElementProducer<TElement, TProducer>
         {
@@ -913,163 +1381,6 @@ namespace Kusto.Language.Parsing
                     }));
 
         /// <summary>
-        /// Creates a parser that parses a list of elements and separators.
-        /// </summary>
-        /// <param name="element">The parser for the element.</param>
-        /// <param name="separator">The parser for the separator.</param>
-        /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
-        /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
-        /// <param name="endOfList">An optional parser that quickly determines if there are no more elements.</param>
-        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
-        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
-        /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
-        public static Parser<TInput, TProducer> SeparatedList<TParser, TProducer>(
-            Parser<TInput, TParser> element,
-            Parser<TInput, TParser> separator,
-            Func<TParser> missingElement,
-            Func<TParser> missingSeparator,
-            Parser<TInput> endOfList,
-            bool oneOrMore,
-            bool allowTrailingSeparator,
-            Func<IReadOnlyList<TParser>, TProducer> producer)
-        {
-            return SeparatedList(
-                element,
-                element,
-                separator,
-                missingElement,
-                missingSeparator,
-                endOfList,
-                oneOrMore,
-                allowTrailingSeparator,
-                producer);
-        }
-
-        /// <summary>
-        /// Creates a parser that parses a list of elements and separators.
-        /// </summary>
-        /// <param name="primaryElement">The parser for the primary element.</param>
-        /// <param name="secondaryElement">The parser for any element after the first. If null, then it will use the primary element parser.</param>
-        /// <param name="separator">The parser for the separator.</param>
-        /// <param name="missingElement">A function that constructs a new element to be used when the element is missing (between two separators). This parameter is optional.</param>
-        /// <param name="missingSeparator">A function that constructs a new separator instance to be used when the separator is missing (between two elements). This parameter is optional.</param>
-        /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
-        /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
-        /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
-        /// <param name="producer">A function that converts the series of elements and separators into a <see cref="P:TList"/></param>
-        public static Parser<TInput, TList> SeparatedList<TElement, TList>(
-            Parser<TInput, TElement> primaryElement,
-            Parser<TInput, TElement> secondaryElement,
-            Parser<TInput, TElement> separator,
-            Func<TElement> missingElement, // optional
-            Func<TElement> missingSeparator, // optional
-            Parser<TInput> endOfList, // optional
-            bool oneOrMore,
-            bool allowTrailingSeparator,
-            Func<IReadOnlyList<TElement>, TList> producer)
-        {
-            Ensure.ArgumentNotNull(primaryElement, nameof(primaryElement));
-            Ensure.ArgumentNotNull(separator, nameof(separator));
-
-            if (secondaryElement == null)
-                secondaryElement = primaryElement;
-
-            var requiredPrimaryElement = missingElement != null ? Required(primaryElement, missingElement) : primaryElement;
-            var requiredSecondaryElement = missingElement != null ? Required(secondaryElement, missingElement) : secondaryElement;
-            var requiredSeparator = missingSeparator != null ? Required(separator, missingSeparator) : separator;
-            Func<TList> emptyList = () => producer(new TElement[] { });
-
-            if (oneOrMore)
-            {
-                if (allowTrailingSeparator)
-                {
-                    var secondary = Sequence(separator, secondaryElement);
-
-                    if (missingSeparator != null && endOfList != null)
-                    {
-                        secondary = First(
-                            secondary,
-                            // check for missing secondardy element between two separators
-                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
-                    }
-
-                    return Produce(
-                        Sequence(
-                            requiredPrimaryElement,
-                            ZeroOrMore(secondary),
-                            Optional(separator)),
-                        producer);
-                }
-                else
-                {
-                    var secondary = Sequence(separator, requiredSecondaryElement);
-
-                    if (missingSeparator != null && endOfList != null)
-                    {
-                        secondary = First(
-                            secondary,
-                            // check for missing secondardy element between two separators
-                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
-                    }
-
-                    return Produce(
-                        Sequence(
-                            requiredPrimaryElement,
-                            ZeroOrMore(secondary)),
-                        producer);
-                }
-            }
-            else
-            {
-                if (allowTrailingSeparator)
-                {
-                    var secondary = Sequence(separator, secondaryElement);
-
-                    if (missingSeparator != null && endOfList != null)
-                    {
-                        secondary = First(
-                            secondary,
-                            // check for missing secondardy element between two separators
-                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
-                    }
-
-                    return Optional(
-                        Produce(
-                            Sequence(
-                                First(
-                                    If(separator, requiredPrimaryElement).Hide(), // check for missing primary element
-                                    primaryElement),
-                                ZeroOrMore(secondary),
-                                Optional(separator)),
-                            producer),
-                        emptyList);
-                }
-                else
-                {
-                    var secondary = Sequence(separator, requiredSecondaryElement);
-
-                    if (missingSeparator != null && endOfList != null)
-                    {
-                        secondary = First(
-                            secondary,
-                            // check for missing secondardy element between two separators
-                            If(Not(endOfList), Sequence(requiredSeparator, secondaryElement)).Hide());
-                    }
-
-                    return Optional(
-                        Produce(
-                            Sequence(
-                                First(
-                                    If(separator, requiredPrimaryElement).Hide(), // check for missing primary element
-                                    primaryElement),
-                                ZeroOrMore(secondary)),
-                            producer),
-                        emptyList);
-                }
-            }
-        }
-
-        /// <summary>
         /// A parser that parsers a sequence of values into the output.
         /// If any parser in the sequence fails, then this parser fails.
         /// </summary>
@@ -1081,6 +1392,12 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<char, string> Text(Parser<char> pattern) =>
             Parsers<char>.Convert(pattern, (Source<char> source, int start, int length) => ((TextSource)source).PeekText(start, length));
+
+        /// <summary>
+        /// A parser that consumes the matching text characters and produces the same text string.
+        /// </summary>
+        public static Parser<char, string> Text(string text) =>
+            Parsers<char>.Convert(Match(text), text);
 
         /// <summary>
         /// A parser that converts all the successfully scanned input characters into a single output string and its starting offset.
@@ -1103,12 +1420,30 @@ namespace Kusto.Language.Parsing
         public static Parser<TInput> ZeroOrMore(Parser<TInput> parser) =>
             new ZeroOrMoreParser<TInput>(parser);
 
+
         /// <summary>
         /// A parser that parses zero or one value from the specified parser.
         /// </summary>
         public static Parser<TInput> ZeroOrOne(Parser<TInput> parser) =>
             new ZeroOrMoreParser<TInput>(parser, zeroOrOne: true);
     }
+
+    public struct ElementAndSeparator<TElement, TSeparator>
+    {
+        public TElement Element { get; }
+        public TSeparator Separator { get; }
+
+        public ElementAndSeparator(TElement element, TSeparator separator = default(TSeparator))
+        {
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+
+            this.Element = element;
+            this.Separator = separator;
+        }
+    }
+
+#region Parsers
 
     public class MatchParser<TInput> : Parser<TInput>
     {
@@ -2932,4 +3267,6 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitSequence(SequenceParser<TInput> parser);
         public abstract TResult VisitZeroOrMore(ZeroOrMoreParser<TInput> parser);
     }
+
+#endregion
 }
