@@ -494,5 +494,4 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets" Condition="Exists('..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets')" />
 </Project>
