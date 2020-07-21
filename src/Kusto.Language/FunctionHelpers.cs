@@ -17,33 +17,28 @@ namespace Kusto.Language
         /// </summary>
         public const int MaxRepeat = short.MaxValue;
 
+        private static readonly ObjectPool<List<Parameter>> s_parameterListPool =
+            new ObjectPool<List<Parameter>>(() => new List<Parameter>(), list => list.Clear());
+
         public static TupleSymbol MakePrefixedTuple(Signature signature, string parameterName, IReadOnlyList<Expression> args, TupleSymbol baseTuple)
         {
             var functionPrefix = ((FunctionSymbol)signature.Symbol).ResultNamePrefix ?? signature.Symbol.Name;
-            var argumentPrefix = GetReferencedColumn(signature, parameterName, args)?.Name ?? "";
-            return new TupleSymbol(baseTuple.Columns.Select(c => new ColumnSymbol(GetPrefixedName(functionPrefix, argumentPrefix, c.Name), c.Type)));
+            var argumentPrefix = GetExpressionResultName(GetArgument(args, signature, parameterName));
+            return new TupleSymbol(baseTuple.Columns.Select(c => new ColumnSymbol(MakeColumnName(functionPrefix, argumentPrefix, c.Name), c.Type)));
         }
 
         /// <summary>
-        /// Converts a column name into a prefixed column name with potentially both a prefix for the function and a prefix for a column referenced by an argument.
+        /// Makes a column name by joining multiple parts using underscores.
         /// </summary>
-        public static string GetPrefixedName(string functionPrefix, string argumentPrefix, string name)
+        public static string MakeColumnName(params string[] nameParts)
         {
-            if (functionPrefix != null && argumentPrefix != null)
+            if (nameParts.Length == 1)
             {
-                return $"{functionPrefix}_{argumentPrefix}_{name}";
-            }
-            else if (functionPrefix != null)
-            {
-                return $"{functionPrefix}_{name}";
-            }
-            else if (argumentPrefix != null)
-            {
-                return $"{argumentPrefix}_{name}";
+                return nameParts[0];
             }
             else
             {
-                return name;
+                return string.Join("_", nameParts.Where(p => p != null));
             }
         }
 
@@ -69,106 +64,86 @@ namespace Kusto.Language
             }
         }
 
-
-
         /// <summary>
-        /// Adds columns to the columns collection for each column referenced by arguments associated with the specified parameter.
-        /// The column's name is the name of the column referenced by the argument expression.
-        /// The column's type is either the argument's type or the explicit type if specified.
+        /// Adds the column referenced by the argument corresponding to the specified parameter to the list.
         /// </summary>
-        public static void AddReferencedColumns(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Expression> args, TypeSymbol type = null)
+        public static void AddReferencedColumn(List<ColumnSymbol> columns, IReadOnlyList<Expression> args, Signature signature, string parameterName)
         {
-            var parameter = signature.GetParameter(parameterName);
-            var argumentParameters = signature.GetArgumentParameters(args);
-            GetArgumentRange(argumentParameters, parameter, out var start, out var length);
-
-            for (int argIndex = start; argIndex >= 0 && argIndex < start + length; argIndex++)
+            var arg = GetArgument(args, signature, parameterName);
+            if (arg != null && arg.ReferencedSymbol is ColumnSymbol cs)
             {
-                var arg = args[argIndex];
-
-                if (arg.ReferencedSymbol is ColumnSymbol c)
-                {
-                    if (type != null && c.Type != type)
-                    {
-                        c = new ColumnSymbol(c.Name, type);
-                    }
-
-                    columns.Add(c);
-                }
+                columns.Add(cs);
             }
         }
 
         /// <summary>
-        /// Adds the column to the columns collection referenced by the argument associated with the specified parameter.
-        /// The column's name is the name of the column referenced by the argument expression or the explicit name if specified.
-        /// The column's type is either the argument's type or the explicit type if specified.
+        /// Adds the columns referenced by the arguments corresponding to the specified parameter to the list.
         /// </summary>
-        public static void AddReferencedColumn(List<ColumnSymbol> columns, Signature signature, string parameterName, IReadOnlyList<Expression> args, string name = null, TypeSymbol type = null)
+        public static void AddReferencedColumns(List<ColumnSymbol> columns, IReadOnlyList<Expression> args, Signature signature, string parameterName)
         {
-            var parameter = signature.GetParameter(parameterName);
-            var argumentParameters = signature.GetArgumentParameters(args);
-            var argIndex = argumentParameters.IndexOf(parameter);
-
-            if (argIndex >= 0 && argIndex < args.Count)
-            {
-                var arg = args[argIndex];
-
-                if (arg.ReferencedSymbol is ColumnSymbol c)
-                {
-                    if (type != null && c.Type != type)
-                    {
-                        c = new ColumnSymbol(c.Name, type);
-                    }
-
-                    if (name != null && c.Name != name)
-                    {
-                        c = new ColumnSymbol(name, c.Type);
-                    }
-
-                    columns.Add(c);
-                }
-            }
+            columns.AddRange(
+                GetArguments(args, signature, parameterName)
+                .Where(a => a.ReferencedSymbol is ColumnSymbol)
+                .Select(a => a.ReferencedSymbol as ColumnSymbol));
         }
 
         /// <summary>
-        /// Gets the column referenced in an argument to the function corresponding to a specific parameter.
+        /// Gets the first argument associated with the parameter, or null if no parameter is associated with the specified arguments.
         /// </summary>
-        public static ColumnSymbol GetReferencedColumn(Signature signature, string parameterName, IReadOnlyList<Expression> args)
-        {
-            var parameter = signature.GetParameter(parameterName);
-            var argumentParameters = signature.GetArgumentParameters(args);
-            var argIndex = argumentParameters.IndexOf(parameter);
-
-            if (argIndex >= 0 && argIndex < args.Count)
-            {
-                var arg = args[argIndex];
-
-                if (arg.ReferencedSymbol is ColumnSymbol c)
-                {
-                    return c;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the first argument associated with the parameter
-        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="signature">The signature of the function.</param>
+        /// <param name="parameterName">The name of the parameter.</param>
         public static Expression GetArgument(IReadOnlyList<Expression> args, Signature signature, string parameterName)
         {
             var p = signature.GetParameter(parameterName);
             if (p != null)
             {
-                var argumentParameters = signature.GetArgumentParameters(args);
-                var argIndex = argumentParameters.IndexOf(p);
-                if (argIndex >= 0 && argIndex < args.Count)
+                var argumentParameters = s_parameterListPool.AllocateFromPool();
+                try
                 {
-                    return args[argIndex];
+                    signature.GetArgumentParameters(args, argumentParameters);
+                    var argIndex = argumentParameters.IndexOf(p);
+                    if (argIndex >= 0 && argIndex < args.Count)
+                    {
+                        return args[argIndex];
+                    }
+                }
+                finally
+                {
+                    s_parameterListPool.ReturnToPool(argumentParameters);
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the arguments for the specified parameter.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="signature">The signature of the function.</param>
+        /// <param name="parameterName">The name of the parameter.</param>
+        public static IEnumerable<Expression> GetArguments(IReadOnlyList<Expression> args, Signature signature, string parameterName)
+        {
+            var parameter = signature.GetParameter(parameterName);
+            if (parameter != null)
+            {
+                var argumentParameters = s_parameterListPool.AllocateFromPool();
+                try
+                {
+                    signature.GetArgumentParameters(args, argumentParameters);
+
+                    for (int i = 0; i < argumentParameters.Count; i++)
+                    {
+                        if (argumentParameters[i] == parameter)
+                            yield return args[i];
+                    }
+                }
+                finally
+                {
+                    s_parameterListPool.ReturnToPool(argumentParameters);
+                }
+            }
         }
 
         /// <summary>

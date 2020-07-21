@@ -16,8 +16,8 @@ namespace Kusto.Language
             new FunctionSymbol("active_users_count",
                 (table, args, signature) => {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline
-                    AddReferencedColumns(cols, signature, "Dimension", args); // dimensions
+                    AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline
+                    AddReferencedColumns(cols, args, signature, "Dimension"); // dimensions
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     return new TableSymbol(cols);
                 },
@@ -38,8 +38,8 @@ namespace Kusto.Language
                 (table, args, signature) =>
                 {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline column
-                    AddReferencedColumns(cols, signature, "Dimension", args); // dimension columns
+                    AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
+                    AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
                     cols.Add(new ColumnSymbol("count", ScalarTypes.Long));
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     cols.Add(new ColumnSymbol("new_dcount", ScalarTypes.Long));
@@ -61,7 +61,7 @@ namespace Kusto.Language
                     (table, args, signature) =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline column
+                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
                         cols.Add(new ColumnSymbol("dcount_activities_inner", ScalarTypes.Long)); // inner activity
                         cols.Add(new ColumnSymbol("dcount_activities_outer", ScalarTypes.Long)); // outer activity
                         cols.Add(new ColumnSymbol("activity_ratio", ScalarTypes.Real));
@@ -76,8 +76,8 @@ namespace Kusto.Language
                     (table, args, signature) =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline column
-                        AddReferencedColumns(cols, signature, "Dimension", args); // dimension columns
+                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
+                        AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
                         cols.Add(new ColumnSymbol("dcount_activities_inner", ScalarTypes.Long)); // inner activity
                         cols.Add(new ColumnSymbol("dcount_activities_outer", ScalarTypes.Long)); // outer activity
                         cols.Add(new ColumnSymbol("activity_ratio", ScalarTypes.Real));
@@ -98,8 +98,8 @@ namespace Kusto.Language
                 new Signature(
                     (table, args, signature) => {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline columns
-                        AddReferencedColumns(cols, signature, "Dimension", args); // dimension columns
+                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
+                        AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
                         cols.Add(new ColumnSymbol("dcount_values", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("dcount_newvalues", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("retention_rate", ScalarTypes.Real));
@@ -116,7 +116,7 @@ namespace Kusto.Language
                 new Signature(
                     (table, args, signature) => {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, signature, "TimelineColumn", args); // timeline columns
+                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
                         cols.Add(new ColumnSymbol("dcount_values", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("dcount_newvalues", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("retention_rate", ScalarTypes.Real));
@@ -147,14 +147,16 @@ namespace Kusto.Language
                      (table, args, signature) =>
                      {
                          var cols = new List<ColumnSymbol>();
-                         var tCol = GetReferencedColumn(signature, "TimelineColumn", args); // timeline column
-                         if (tCol != null)
+
+                         var timelineArg = GetArgument(args, signature, "TimelineColumn"); // timeline column
+                         if (timelineArg != null)
                          {
-                             cols.Add(new ColumnSymbol("from_" + tCol.Name, tCol.Type));
-                             cols.Add(new ColumnSymbol("to_" + tCol.Name, tCol.Type));
+                             var timelineArgName = GetExpressionResultName(timelineArg);
+                             cols.Add(new ColumnSymbol(MakeColumnName("from", timelineArgName), timelineArg.ResultType));
+                             cols.Add(new ColumnSymbol(MakeColumnName("to", timelineArgName), timelineArg.ResultType));
                          }
 
-                         AddReferencedColumns(cols, signature, "Dimension", args); // dimension columns
+                         AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
 
                          cols.Add(new ColumnSymbol("dcount_new_values", ScalarTypes.Long));
                          cols.Add(new ColumnSymbol("dcount_retained_values", ScalarTypes.Long));
@@ -313,9 +315,15 @@ namespace Kusto.Language
                 {
                     // only declare first table, as additional schema is not useful to intellisense
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, signature, "TimelineColumn", args);
-                    AddReferencedColumn(cols, signature, "StateColumn", args, "prev");
-                    AddReferencedColumn(cols, signature, "StateColumn", args, "next");
+                    AddReferencedColumn(cols, args, signature, "TimelineColumn");
+
+                    var stateArg = GetArgument(args, signature, "StateColumn");
+                    if (stateArg != null)
+                    {
+                        cols.Add(new ColumnSymbol("prev", stateArg.ResultType));
+                        cols.Add(new ColumnSymbol("next", stateArg.ResultType));
+                    }
+
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     cols.Add(new ColumnSymbol("samples", ScalarTypes.Dynamic));
                     return new TableSymbol(cols);
@@ -334,8 +342,14 @@ namespace Kusto.Language
             new FunctionSymbol("funnel_sequence_completion",
                 (table, args, signature) => {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, signature, "TimelineColumn", args);
-                    AddReferencedColumn(cols, signature, "StateColumn", args, type: ScalarTypes.String);
+                    AddReferencedColumn(cols, args, signature, "TimelineColumn");
+
+                    var stateArg = GetArgument(args, signature, "StateColumn");
+                    if (stateArg != null)
+                    {
+                        cols.Add(new ColumnSymbol(GetExpressionResultName(stateArg), ScalarTypes.String));
+                    }
+
                     cols.Add(new ColumnSymbol("Period", ScalarTypes.TimeSpan));
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     return new TableSymbol(cols);
@@ -478,8 +492,8 @@ namespace Kusto.Language
                  (table, args, signature) =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, signature, "IndexColumn", args);
-                     AddReferencedColumns(cols, signature, "Dimension", args);
+                     AddReferencedColumn(cols, args, signature, "IndexColumn");
+                     AddReferencedColumns(cols, args, signature, "Dimension");
                      var binsPerWindow = GetArgument(args, signature, "BinsPerWindow")?.LiteralValue?.ToString() ?? "0";
                      var percentile = GetArgument(args, signature, "Percentile")?.LiteralValue?.ToString() ?? "0";
                      var valueColumn = GetArgument(args, signature, "ValueColumn")?.ReferencedSymbol as ColumnSymbol;
@@ -500,8 +514,8 @@ namespace Kusto.Language
                  (table, args, signature) =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, signature, "TimelineColumn", args);
-                     AddReferencedColumns(cols, signature, "Dimension", args);
+                     AddReferencedColumn(cols, args, signature, "TimelineColumn");
+                     AddReferencedColumns(cols, args, signature, "Dimension");
                      cols.Add(new ColumnSymbol("count_sessions", ScalarTypes.Long));
                      return new TableSymbol(cols);
                  },
@@ -514,13 +528,69 @@ namespace Kusto.Language
                  new Parameter("LookBackWindow", ParameterTypeKind.Summable, ArgumentKind.Constant),
                  new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat));
 
+
+        private static readonly Parameter SD_TimelineColumn = new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column);
+        private static readonly Parameter SD_MaxSequenceStepWindows = new Parameter("MaxSeqeunceStepWindow", ParameterTypeKind.Summable, ArgumentKind.Constant);
+        private static readonly Parameter SD_MaxSequenceSpan = new Parameter("MaxSequenceSpan", ParameterTypeKind.Summable, ArgumentKind.Constant);
+        private static readonly Parameter SD_Expr = new Parameter("Expr", ScalarTypes.Bool, ArgumentKind.Expression, minOccurring: 1, maxOccurring: MaxRepeat);
+        private static readonly Parameter SD_Dimension = new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat);
+
+        public static readonly FunctionSymbol SequenceDetect =
+             new FunctionSymbol("sequence_detect",
+                 new Signature(
+                     (table, args, signature) =>
+                     {
+                         var cols = new List<ColumnSymbol>();
+
+                         AddReferencedColumns(cols, args, signature, SD_Dimension.Name);
+
+                         var timelineArg = GetArgument(args, signature, SD_TimelineColumn.Name);
+                         if (timelineArg != null)
+                         {
+                             var timelineArgName = GetExpressionResultName(timelineArg);
+
+                             cols.AddRange(GetArguments(args, signature, SD_Expr.Name).Select(a =>
+                                new ColumnSymbol(MakeColumnName(GetExpressionResultName(a), timelineArgName), timelineArg.ResultType)));
+                         }
+
+                         cols.Add(new ColumnSymbol("Duration", ScalarTypes.TimeSpan));
+                         return new TableSymbol(cols);
+                     },
+                     Tabularity.Tabular,
+                     SD_TimelineColumn,
+                     SD_MaxSequenceStepWindows,
+                     SD_MaxSequenceSpan,
+                     SD_Expr,
+                     SD_Dimension)
+                 .WithArgumentParametersBuilder((sig, args, list) =>
+                 {
+                     list.Add(SD_TimelineColumn);
+                     list.Add(SD_MaxSequenceStepWindows);
+                     list.Add(SD_MaxSequenceSpan);
+                     list.Add(SD_Expr); // first expr required
+
+                     int i = list.Count;
+
+                     // any following bool args are also expr args
+                     for (;  i < args.Count && args[i].ResultType == ScalarTypes.Bool; i++)
+                     {
+                         list.Add(SD_Expr);
+                     }
+
+                     // all remaining args are dimensions
+                     for (;  i < args.Count; i++)
+                     {
+                         list.Add(SD_Dimension);
+                     }
+                 }));
+
         public static readonly FunctionSymbol SlidingWindowCounts =
              new FunctionSymbol("sliding_window_counts",
                  (table, args, signature) =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, signature, "TimelineColumn", args);
-                     AddReferencedColumns(cols, signature, "Dimension", args);
+                     AddReferencedColumn(cols, args, signature, "TimelineColumn");
+                     AddReferencedColumns(cols, args, signature, "Dimension");
                      cols.Add(new ColumnSymbol("Count", ScalarTypes.Long));
                      cols.Add(new ColumnSymbol("Dcount", ScalarTypes.Long));
                      return new TableSymbol(cols);
@@ -573,6 +643,7 @@ namespace Kusto.Language
             R,
             RollingPercentile,
             SessionCount,
+            SequenceDetect,
             SlidingWindowCounts,
             SqlRequest
         };
