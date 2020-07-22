@@ -1032,6 +1032,43 @@ namespace Kusto.Language
 
         #endregion
 
+        #region Diagnostics
+        public static readonly CommandSymbol ShowDatabasePolicyDiagnostics =
+            new CommandSymbol(nameof(ShowDatabasePolicyDiagnostics),
+                "show database DatabaseName=<database> policy diagnostics",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowClusterPolicyDiagnostics =
+            new CommandSymbol(nameof(ShowClusterPolicyDiagnostics),
+                "show cluster policy diagnostics",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterDatabasePolicyDiagnostics =
+            new CommandSymbol(nameof(AlterDatabasePolicyDiagnostics),
+                "alter database DatabaseName=<database> policy diagnostics PolicyName=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeDatabasePolicyDiagnostics =
+            new CommandSymbol(nameof(AlterMergeDatabasePolicyDiagnostics),
+                "alter-merge database DatabaseName=<database> policy diagnostics PolicyName=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyDiagnostics =
+            new CommandSymbol(nameof(AlterClusterPolicyDiagnostics),
+                "alter cluster policy diagnostics PolicyName=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyDiagnostics =
+            new CommandSymbol(nameof(AlterMergeClusterPolicyDiagnostics),
+                "alter-merge cluster policy diagnostics PolicyName=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyDiagnostics =
+            new CommandSymbol(nameof(DeleteDatabasePolicyDiagnostics),
+                "delete database DatabaseName=<database> policy diagnostics",
+                PolicyResult);
+        #endregion
+
         #endregion
 
         #region Security Role Commands
@@ -1747,6 +1784,15 @@ namespace Kusto.Language
                 ShowClusterPolicyMultiDatabaseAdmins,
                 AlterClusterPolicyMultiDatabaseAdmins,
                 AlterMergeClusterPolicyMultiDatabaseAdmins,
+
+                // Diagnostics Settings
+                ShowDatabasePolicyDiagnostics,
+                ShowClusterPolicyDiagnostics,
+                AlterDatabasePolicyDiagnostics,
+                AlterClusterPolicyDiagnostics,
+                DeleteDatabasePolicyDiagnostics,
+                AlterMergeDatabasePolicyDiagnostics,
+                AlterMergeClusterPolicyDiagnostics,
                 #endregion
 
                 #region Security Role Commands
