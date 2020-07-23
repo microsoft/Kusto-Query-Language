@@ -1390,6 +1390,17 @@ namespace Kusto.Language
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol SeriesFft =
+            new FunctionSymbol("series_fft",
+                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                    new TupleSymbol(
+                        new ColumnSymbol("real", ScalarTypes.Dynamic),
+                        new ColumnSymbol("imag", ScalarTypes.Dynamic))),                    
+                Tabularity.Scalar,
+                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0))
+            .Hide();
+       
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
                 (table, args, sig) => MakePrefixedTuple(sig, "series", args,
@@ -2294,6 +2305,7 @@ namespace Kusto.Language
             SeriesFir,
             SeriesStats,
             SeriesStatsDynamic,
+            SeriesFft,
             SeriesFitLine,
             SeriesFitLineDynamic,
             SeriesFit2Lines,
