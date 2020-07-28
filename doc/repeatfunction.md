@@ -1,3 +1,14 @@
+---
+title: repeat() - Azure Data Explorer | Microsoft Docs
+description: This article describes repeat() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # repeat()
 
 Generates a dynamic array holding a series of equal values.
@@ -17,7 +28,6 @@ If *count* is less than zero, a null value is returned.
 
 The following example returns `[1, 1, 1]`:
 
-<!-- csl -->
-```
+```kusto
 T | extend r = repeat(1, 3)
 ```

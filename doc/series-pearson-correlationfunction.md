@@ -1,3 +1,14 @@
+---
+title: series_pearson_correlation() - Azure Data Explorer
+description: This article describes series_pearson_correlation() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/31/2019
+---
 # series_pearson_correlation()
 
 Calculates the pearson correlation coefficient of two numeric series inputs.
@@ -19,7 +30,7 @@ The calculated Pearson correlation coefficient between the two inputs. Any non-n
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range s1 from 1 to 5 step 1 | extend s2 = 2*s1 // Perfect correlation
 | summarize s1 = make_list(s1), s2 = make_list(s2)
 | extend correlation_coefficient = series_pearson_correlation(s1,s2)
@@ -28,4 +39,3 @@ range s1 from 1 to 5 step 1 | extend s2 = 2*s1 // Perfect correlation
 |s1|s2|correlation_coefficient|
 |---|---|---|
 |[1,2,3,4,5]|[2,4,6,8,10]|1|
-

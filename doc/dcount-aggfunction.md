@@ -1,59 +1,62 @@
+---
+title: dcount() (aggregation function) - Azure Data Explorer
+description: This article describes dcount() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # dcount() (aggregation function)
 
-Returns an estimate for the number of distinct values taken by a scalar expression in the summary group.
+Returns an estimate for the number of distinct values that are taken by a scalar expression in the summary group.
 
 **Syntax**
 
-... `|` `summarize` `dcount` `(`*Expr* [`,` *Accuracy*]`)` ...
+... `|` `summarize` `dcount` `(`*`Expr`*[, *`Accuracy`*]`)` ...
 
 **Arguments**
 
 * *Expr*: A scalar expression whose distinct values are to be counted.
-* *Accuracy*: An optional `int` literal that defines the requested estimation
-  accuracy. See below for supported values. If unspecified, the default value
+* *Accuracy*: An optional `int` literal that defines the requested estimation accuracy. See below for supported values. If unspecified, the default value
   `1` is used.
 
 **Returns**
 
-Returns an estimate of the number of distinct values of *Expr* in the group.
+Returns an estimate of the number of distinct values of *`Expr`* in the group.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 PageViewLog | summarize countries=dcount(country) by continent
 ```
 
-![alt text](./images/aggregations/dcount.png "dcount")
+:::image type="content" source="images/dcount-aggfunction/dcount.png" alt-text="D count":::
 
 **Notes**
 
-The `dcount()` aggregation function is primarily useful for estimating the
-cardinality of huge sets. It trades performance for accuracy, and therefore may
-return a result that varies between executions (order of
-inputs may have an effect on its output).
+The `dcount()` aggregation function is primarily useful for estimating the cardinality of huge sets. It trades performance for accuracy, and may return a result that varies between executions. The order of inputs may have an effect on its output.
 
-To get an accurate count of distinct values of `V` grouped by `G`:
+Get an exact count of distinct values of `V` grouped by `G`.
 
-<!-- csl -->
-```
+```kusto
 T | summarize by V, G | summarize count() by G
 ```
 
-This calculation will require much internal memory since distinct values of `V` are multiplied by the number of distinct values of `G`;
-Therefore, it may result in memory errors or large execution times. `dcount()`provides a fast and reliable alternative:
+This calculation requires a great amount of internal memory, since distinct values of `V` are multiplied by the number of distinct values of `G`.
+It may result in memory errors or large execution times. 
+`dcount()`provides a fast and reliable alternative:
 
-<!-- csl -->
-```
+```kusto
 T | summarize dcount(B) by G | count
 ```
 
 ## Estimation accuracy
 
-The `dcount()` aggregate function uses a variant of the
-[HyperLogLog (HLL) algorithm](https://en.wikipedia.org/wiki/HyperLogLog),
-which does a stochastic estimation of set cardinality. The algorithm provides
-a "knob" that can be used to balance accuracy and execution time / memory size:
+The `dcount()` aggregate function uses a variant of the [HyperLogLog (HLL) algorithm](https://en.wikipedia.org/wiki/HyperLogLog),
+which does a stochastic estimation of set cardinality. The algorithm provides a "knob" that can be used to balance accuracy and execution time per memory size:
 
 |Accuracy|Error (%)|Entry count   |
 |--------|---------|--------------|
@@ -64,19 +67,15 @@ a "knob" that can be used to balance accuracy and execution time / memory size:
 |       4|      0.2|2<sup>18</sup>|
 
 > [!NOTE]
-> The "entry count" column is the number of 1-byte counters in the HLL
-implementation.
+> The "entry count" column is the number of 1-byte counters in the HLL implementation.
 
-The algorithm includes some provisions for doing a perfect count (zero error)
-if the set cardinality is small enough (1000 values when the accuracy level is `1`,
-and 8000 values if the accuracy level is `2`).
+The algorithm includes some provisions for doing a perfect count (zero error), if the set cardinality is small enough:
+* When the accuracy level is `1`, 1000 values are returned
+* When the accuracy level is `2`, 8000 values are returned
 
-The error bound is probabilistic, not a theoretical bound. The value
-is the standard deviation of error distribution (the sigma), and 99.7%
-of the estimations will have a relative error of under 3 times sigma.
+The error bound is probabilistic, not a theoretical bound. The value is the standard deviation of error distribution (the sigma), and 99.7% of the estimations will have a relative error of under 3 x sigma.
 
-The following depicts the probability distribution function of the relative
-estimation error (in percentages) for all supported accuracy settings:
+The following image shows the probability distribution function of the relative
+estimation error, in percentages, for all supported accuracy settings:
 
-![alt text](./images/aggregations/hll-error-distribution.png "hll-error-distribution")
-
+:::image type="content" border="false" source="images/dcount-aggfunction/hll-error-distribution.png" alt-text="hll error distribution":::

@@ -1,3 +1,14 @@
+---
+title: make_list_if() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes make_list_if() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # make_list_if() (aggregation function)
 
 Returns a `dynamic` (JSON) array of all the values of *Expr* in the group, for which *Predicate* evaluates to `true`.
@@ -22,8 +33,7 @@ If the input to the `summarize` operator is sorted, the order of elements in the
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 let T = datatable(name:string, day_of_birth:long)
 [
    "John", 9,

@@ -1,3 +1,14 @@
+---
+title: minif() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes minif() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # minif() (aggregation function)
 
 Returns the minimum value across the group for which *Predicate* evaluates to `true`.
@@ -21,8 +32,7 @@ The minimum value of *Expr* across the group for which *Predicate* evaluates to 
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 100 step 1
 | summarize minif(x, x > 50)
 ```

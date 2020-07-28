@@ -1,8 +1,21 @@
+---
+title: render operator - Azure Data Explorer
+description: This article describes render operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/29/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # render operator
 
 Instructs the user agent to render the results of the query in a particular way.
 
-```
+```kusto
 range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 ```
 
@@ -23,7 +36,7 @@ Where:
 
 |*Visualization*     |Description|
 |--------------------|-|
-| `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
+| `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-out-of-your-data-in-kusto-with-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
 | `areachart`        | Area graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `barchart`         | First column is the x-axis and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
 | `card`             | First result record is treated as set of scalar values and shows as a card. |
@@ -147,7 +160,7 @@ three kinds of columns:
 **Example**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 range x from -2 to 2 step 0.1
 | extend sin = sin(x), cos = cos(x)
 | extend x_sign = iif(x > 0, "x_pos", "x_neg")
@@ -159,6 +172,6 @@ range x from -2 to 2 step 0.1
 
 [Rendering examples in the tutorial](./tutorial.md#render-display-a-chart-or-table).
 
-[Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-using-machine-learning)
+[Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-with-machine-learning)
 
 ::: zone-end

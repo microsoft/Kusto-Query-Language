@@ -1,3 +1,14 @@
+---
+title: parse_user_agent() - Azure Data Explorer | Microsoft Docs
+description: This article describes parse_user_agent() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/19/2020
+---
 # parse_user_agent()
 
 Interprets a user-agent string, which identifies the user's browser and provides certain system details to servers hosting the websites the user visits. The result is returned as [`dynamic`](./scalar-data-types/dynamic.md). 
@@ -31,8 +42,7 @@ If queries with this function are frequently used, you may want to pre-create th
  
 **Example**
 
-<!-- csl -->
-```
+```kusto
 print useragent = "Mozilla/5.0 (Windows; U; en-US) AppleWebKit/531.9 (KHTML, like Gecko) AdobeAIR/2.5.1"
 | extend x = parse_user_agent(useragent, "browser") 
 ```
@@ -48,8 +58,7 @@ Expected result is a dynamic object:
   }
 }
 
-<!-- csl -->
-```
+```kusto
 print useragent = "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN81-3/10.0.032 Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413 (KHTML, like Gecko) Safari/4"
 | extend x = parse_user_agent(useragent, dynamic(["browser","os","device"])) 
 ```

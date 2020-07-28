@@ -1,3 +1,14 @@
+---
+title: range operator - Azure Data Explorer
+description: This article describes range operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # range operator
 
 Generates a single-column table of values.
@@ -28,7 +39,7 @@ whose values are *start*, *start* `+` *step*, ... up to and until *stop*.
 A table of midnight at the past seven days. The bin (floor) function reduces each time to the start of the day.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 range LastWeek from ago(7d) to now() step 1d
 ```
 
@@ -44,15 +55,14 @@ A table with a single column called `Steps`
 whose type is `long` and whose values are `1`, `4`, and `7`.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 range Steps from 1 to 8 step 3
 ```
 
 The next example shows how the `range` operator can be used to create
 a small, ad-hoc, dimension table which is then used to introduce zeros where the source data has no values.
 
-<!-- csl -->
-```
+```kusto
 range TIMESTAMP from ago(4h) to now() step 1m
 | join kind=fullouter
   (Traces

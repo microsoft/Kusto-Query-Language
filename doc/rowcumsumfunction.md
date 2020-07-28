@@ -1,3 +1,14 @@
+---
+title: row_cumsum() - Azure Data Explorer | Microsoft Docs
+description: This article describes row_cumsum() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # row_cumsum()
 
 Calculates the cumulative sum of a column in a [serialized row set](./windowsfunctions.md#serialized-row-set).
@@ -23,8 +34,7 @@ The function returns the cumulative sum of its argument.
 The following example shows how to calculate the cumulative sum of the first
 few even integers.
 
-<!-- csl -->
-```
+```kusto
 datatable (a:long) [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 ]
@@ -43,8 +53,7 @@ a    | cs
 This example shows how to calculate the cumulative sum (here, of `salary`)
 when the data is partitioned (here, by `name`):
 
-<!-- csl --->
-```
+```kusto
 datatable (name:string, month:int, salary:long)
 [
     "Alice", 1, 1000,

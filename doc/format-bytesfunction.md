@@ -1,9 +1,19 @@
+---
+title: format_bytes() - Azure Data Explorer
+description: This article describes format_bytes() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # format_bytes()
 
 Formats a number as a string representing data size in bytes.
 
-<!-- csl -->
-```
+```kusto
 format_bytes(1024) == '1 KB'"
 ```
 
@@ -24,7 +34,7 @@ The string with the format result.
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print 
 v1 = format_bytes(564),
 v2 = format_bytes(10332, 1),

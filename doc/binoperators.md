@@ -1,4 +1,15 @@
-# Bitwise (Binary) Operators
+---
+title: Bitwise (Binary) Operators - Azure Data Explorer | Microsoft Docs
+description: This article describes Bitwise (Binary) Operators in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
+# Bitwise (binary) operators
 
 Kusto supports a number of bitwise (binary) operators between integers:
 

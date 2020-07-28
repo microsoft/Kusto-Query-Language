@@ -1,9 +1,19 @@
+---
+title: welch_test() - Azure Data Explorer
+description: This article describes welch_test() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # welch_test()
 
 Computes the p_value of the [Welch-test function](https://en.wikipedia.org/wiki/Welch%27s_t-test)
 
-<!-- csl -->
-```
+```kusto
 // s1, s2 values are from https://en.wikipedia.org/wiki/Welch%27s_t-test
 print
     s1 = dynamic([27.5, 21.0, 19.0, 23.6, 17.0, 17.9, 16.9, 20.1, 21.9, 22.6, 23.1, 19.6, 19.0, 21.7, 21.4]),
@@ -21,23 +31,18 @@ print
 
 **Arguments**
 
-* *mean1*: Expression that represents the mean (average) value of the 1st series
-* *variance1*:  Expression that represents the variance value of the 1st series
-* *count1*:  Expression that represents the count of values in the 1st series
-* *mean2*: Expression that represents the mean (average) value of the 2nd series
-* *variance2*:  Expression that represents the variance value of the 2nd series
-* *count2*:  Expression that represents the count of values in the 2nd series
+* *mean1*: Expression that represents the mean (average) value of the first series
+* *variance1*:  Expression that represents the variance value of the first series
+* *count1*:  Expression that represents the count of values in the first series
+* *mean2*: Expression that represents the mean (average) value of the second series
+* *variance2*:  Expression that represents the variance value of the second series
+* *count2*:  Expression that represents the count of values in the second series
 
 **Returns**
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Welch%27s_t-test):
 
-In statistics, Welch's t-test, or unequal variances t-test, is a two-sample location test 
-which is used to test the hypothesis that two populations have equal means. Welch's t-test 
-is an adaptation of Student's t-test, that is, it has been derived with the help of Student's 
-t-test and is more reliable when the two samples have unequal variances and unequal sample
-sizes. These tests are often referred to as "unpaired" or "independent samples" t-tests, 
-as they are typically applied when the statistical units underlying the two samples
-being compared are non-overlapping. Given that Welch's t-test has been less popular than 
-Student's t-test and may be less familiar to readers, a more informative name is "Welch's 
-unequal variances t-test" or "unequal variances t-test" for brevity.
+In statistics, Welch's t-test is a two-sample location test that's used to test the hypothesis that two populations have equal means. 
+Welch's t-test is an adaptation of Student's t-test, and is more reliable when the two samples have unequal variances and unequal sample sizes. These tests are often referred to as "unpaired" or "independent samples" t-tests. 
+The tests are typically applied when the statistical units underlying the two samples being compared are non-overlapping. 
+Welch's t-test is less popular than Student's t-test, and may be less familiar to readers. The test is also called "Welch's unequal variances t-test", or "unequal variances t-test".

@@ -1,3 +1,14 @@
+---
+title: ceiling() - Azure Data Explorer | Microsoft Docs
+description: This article describes ceiling() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # ceiling()
 
 Calculates the smallest integer greater than, or equal to, the specified numeric expression.
@@ -16,8 +27,7 @@ Calculates the smallest integer greater than, or equal to, the specified numeric
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 print c1 = ceiling(-1.1), c2 = ceiling(0), c3 = ceiling(0.9)
 ```
 

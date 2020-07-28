@@ -1,9 +1,19 @@
+---
+title: diffpatterns_text plugin - Azure Data Explorer
+description: This article describes diffpatterns_text plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # diffpatterns_text plugin
 
 Compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate diffpatterns_text(TextColumn, BooleanCondition)
 ```
 
@@ -11,7 +21,7 @@ The `diffpatterns_text` returns a set of text patterns that capture different po
 
 **Syntax**
 
-`T | evaluate diffpatterns_text(`TextColumn, BooleanCondition [, MinTokens,Â Threshold , MaxTokens]`)` 
+`T | evaluate diffpatterns_text(`TextColumn, BooleanCondition [, MinTokens, Threshold , MaxTokens]`)` 
 
 **Required Arguments**
 
@@ -21,7 +31,7 @@ The `diffpatterns_text` returns a set of text patterns that capture different po
     
 * BooleanCondition - *Boolean expression*
 
-    Defines how to generate the two record subsets to compare to the input table. The algorithm splits the query into two data sets, â€œTrueâ€ and â€œFalseâ€ according to the condition, then analyzes the (text) differences between them. 
+    Defines how to generate the two record subsets to compare to the input table. The algorithm splits the query into two data sets, “True” and “False” according to the condition, then analyzes the (text) differences between them. 
 
 **Optional Arguments**
 
@@ -55,12 +65,13 @@ The result of diffpatterns_text returns the following columns:
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents     
 | where EventNarrative != "" and monthofyear(StartTime) > 1 and monthofyear(StartTime) < 9
 | where EventType == "Drought" or EventType == "Extreme Cold/Wind Chill"
 | evaluate diffpatterns_text(EpisodeNarrative, EventType == "Extreme Cold/Wind Chill", 2)
 ```
+
 |Count_of_True|Count_of_False|Percent_of_True|Percent_of_False|Pattern|
 |---|---|---|---|---|
 |11|0|6.29|0|Winds shifting northwest in * wake * a surface trough brought heavy lake effect snowfall downwind * Lake Superior from|

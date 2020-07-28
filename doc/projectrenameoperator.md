@@ -1,9 +1,19 @@
+---
+title: project-rename operator - Azure Data Explorer
+description: This article describes project-rename operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # project-rename operator
 
 Renames columns in the result output.
 
-<!-- csl -->
-```
+```kusto
 T | project-rename new_column_name = column_name
 ```
 
@@ -25,7 +35,7 @@ A table that has the columns in the same order as in an existing table, with col
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print a='a', b='b', c='c'
 |  project-rename new_b=b, new_a=a
 ```

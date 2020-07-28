@@ -1,3 +1,14 @@
+---
+title: The real data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The real data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # The real data type
 
 The `real` data type represents a 64-bit wide, double-precision, floating-point number.

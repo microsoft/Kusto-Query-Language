@@ -1,3 +1,14 @@
+---
+title: dcountif() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes dcountif() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # dcountif() (aggregation function)
 
 Returns an estimate of the number of distinct values of *Expr* of rows for which *Predicate* evaluates to `true`. 
@@ -27,8 +38,7 @@ Returns an estimate of the number of distinct values of *Expr*  of rows for whic
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 PageViewLog | summarize countries=dcountif(country, country startswith "United") by continent
 ```
 

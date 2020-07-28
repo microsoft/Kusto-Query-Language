@@ -1,3 +1,14 @@
+---
+title: count() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes count() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: alexans
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 06/21/2020
+---
 # count() (aggregation function)
 
 Returns a count of the records per summarization group (or in total, if summarization is done without grouping).
@@ -13,3 +24,21 @@ summarize `count()`
 **Returns**
 
 Returns a count of the records per summarization group (or in total, if summarization is done without grouping).
+
+**Example**
+
+Counting events in states starting with letter `W`:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+StormEvents
+| where State startswith "W"
+| summarize Count=count() by State
+```
+
+|State|Count|
+|---|---|
+|WEST VIRGINIA|757|
+|WYOMING|396|
+|WASHINGTON|261|
+|WISCONSIN|1850|

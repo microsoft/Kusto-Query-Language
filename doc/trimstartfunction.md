@@ -1,3 +1,14 @@
+---
+title: trim_start() - Azure Data Explorer | Microsoft Docs
+description: This article describes trim_start() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # trim_start()
 
 Removes leading match of the specified regular expression.
@@ -19,8 +30,7 @@ Removes leading match of the specified regular expression.
 
 Statement bellow trims *substring*  from the start of *string_to_trim*:
 
-<!-- csl -->
-```
+```kusto
 let string_to_trim = @"https://bing.com";
 let substring = "https://";
 print string_to_trim = string_to_trim,trimmed_string = trim_start(substring,string_to_trim)
@@ -32,8 +42,7 @@ print string_to_trim = string_to_trim,trimmed_string = trim_start(substring,stri
 
 Next statement trims all non-word characters from the beginning of the string:
 
-<!-- csl -->
-```
+```kusto
 range x from 1 to 5 step 1
 | project str = strcat("-  ","Te st",x,@"// $")
 | extend trimmed_str = trim_start(@"[^\w]+",str)

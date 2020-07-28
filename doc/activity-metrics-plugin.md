@@ -1,10 +1,20 @@
+---
+title: activity_metrics plugin - Azure Data Explorer | Microsoft Docs
+description: This article describes activity_metrics plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # activity_metrics plugin
 
 Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) based on the current period window vs. previous period window 
 (unlike [activity_counts_metrics plugin](activity-counts-metrics-plugin.md) in which every time window is compared to *all* previous time windows).
 
-<!-- csl -->
-```
+```kusto
 T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
@@ -83,7 +93,7 @@ Derived from the definition of `Churn Rate` and `Retention Rate`, the following 
 The next query calculates retention and churn rate for week-over-week window.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
 let _end = datetime(2017-05-31);
@@ -123,17 +133,14 @@ range _day from _start to _end  step 1d
 |2017-05-22 00:00:00.0000000|0.199122325836533|0.800877674163467|
 |2017-05-29 00:00:00.0000000|0.063468992248062|0.936531007751938|
 
-
-![alt text](images/queries/activity-metrics-churn-and-retention.png "activity-metrics-churn-and-retention")
-
+:::image type="content" source="images/activity-metrics-plugin/activity-metrics-churn-and-retention.png" border="false" alt-text="Activity metrics churn and retention":::
 
 ### Distinct values and distinct 'new' values 
 
 The next query calculates distinct values and 'new' values (ids that didn't appear in previous time window) for week-over-week window.
 
-
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
 let _end = datetime(2017-05-31);
@@ -173,4 +180,4 @@ range _day from _start to _end  step 1d
 |2017-05-22 00:00:00.0000000|1740|1017|
 |2017-05-29 00:00:00.0000000|960|756|
 
-![alt text](images/queries/activity-metrics-dcount-and-dcount-newvalues.png "activity-metrics-dcount-and-dcount-newvalues")
+:::image type="content" source="images/activity-metrics-plugin/activity-metrics-dcount-and-dcount-newvalues.png" border="false" alt-text="Activity metrics dcount and dcount new values":::

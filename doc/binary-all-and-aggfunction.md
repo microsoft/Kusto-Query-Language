@@ -1,3 +1,14 @@
+---
+title: binary_all_and() (aggregation function) - Azure Data Explorer
+description: This article describes binary_all_and() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/24/2020
+---
 # binary_all_and() (aggregation function)
 
 Accumulates values using the binary `AND` operation per summarization group (or in total, if summarization is done without grouping).
@@ -21,7 +32,7 @@ Returns a value that is aggregated using the binary `AND` operation over records
 Producing 'cafe-food' using binary `AND` operations:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(num:long)
 [
   0xFFFFFFFF, 

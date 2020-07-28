@@ -1,36 +1,48 @@
+---
+title: tdigest() (aggregation function) - Azure Data Explorer
+description: This article describes tdigest() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 12/10/2019
+---
 # tdigest() (aggregation function)
 
-Calculates the Intermediate results of [`percentiles()`](percentiles-aggfunction.md) across the group. 
+Calculates the intermediate results of [`percentiles()`](percentiles-aggfunction.md) across the group.
 
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md).
+> [!NOTE]
+> Can only be used in context of aggregation, inside [summarize](summarizeoperator.md).
 
-Read more about the [underlying algorithm (T-Digest) and the estimated error](percentiles-aggfunction.md#estimation-error-in-percentiles).
+For more information, see the [underlying algorithm (T-Digest) and the estimated error](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
 **Syntax**
 
-`summarize` `tdigest(`*Expr* [`,` *WeightExpr*]`)`
+`summarize` `tdigest`(*`Expr`* [`,` *`WeightExpr`*])
 
 **Arguments**
 
-* *Expr*: Expression that will be used for aggregation calculation. 
-* *WeightExpr*: Expression that will be used as the weight of values for aggregation calculation.
+* *Expr*: Expression that is used for aggregation calculation.
+* *WeightExpr*: Expression that is used as the weight of values for the aggregation calculation.
 
 	
 **Returns**
 
-The Intermediate results of weighted percentiles of *Expr* across the group.
+The Intermediate results of weighted percentiles of `*Expr*` across the group.
  
  
 **Tips**
 
-1) You may use the aggregation function [tdigest_merge()](tdigest-merge-aggfunction.md) to merge the output of tdigest again across another group.
+* Use the aggregation function [tdigest_merge()](tdigest-merge-aggfunction.md) to merge the output of `tdigest` again across another group.
 
-2) You may use the function [percentile_tdigest()] (percentile-tdigestfunction.md) to calculate the percentile/percentilew of the tdigest results.
+* Use the function [percentile_tdigest()](percentile-tdigestfunction.md) to calculate the percentile/percentilew of the `tdigest` results.
 
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | summarize tdigest(DamageProperty) by State
 ```

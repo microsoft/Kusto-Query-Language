@@ -1,3 +1,14 @@
+---
+title: iif() - Azure Data Explorer | Microsoft Docs
+description: This article describes iif() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # iif()
 
 Evaluates the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to `true` (second) or `false` (third).
@@ -21,8 +32,7 @@ or the value of *ifFalse* otherwise.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 T 
 | extend day = iif(floor(Timestamp, 1d)==floor(now(), 1d), "today", "anotherday")
 ```

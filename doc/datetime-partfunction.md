@@ -1,9 +1,19 @@
+---
+title: datetime_part() - Azure Data Explorer | Microsoft Docs
+description: This article describes datetime_part() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/18/2020
+---
 # datetime_part()
 
 Extracts the requested date part as an integer value.
 
-<!--csl-->
-```
+```kusto
 datetime_part("Day",datetime(2015-12-14))
 ```
 
@@ -40,8 +50,7 @@ An integer representing the extracted part.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 let dt = datetime(2017-10-30 01:02:03.7654321); 
 print 
 year = datetime_part("year", dt),

@@ -1,119 +1,121 @@
+---
+title: Let statement - Azure Data Explorer
+description: This article describes the Let statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # Let statement
 
-Let statements bind names to expressions. For the rest of the scope in which
-the let statement appears (global scope or in a function body scope), the name
-can be used to refer to its bound value. If that name was previously bound to
-another value, the "innermost" let statement binding is used.
+Let statements bind names to expressions. 
+For the rest of the scope, where the let statement appears, the name can be used to refer to its bound value. The let statement may be within a global scope or a function body scope.
+If that name was previously bound to another value, the "innermost" let statement binding is used.
 
-Let statements improve modularity and reuse, as they allow one to break a
-potentially complex expression into multiple parts, each
-bound to a name through the let statement, and compose them together. They
-can also be used to create user-defined functions and views (expressions over tables whose results look
-like a new table).
+Let statements improve modularity and reuse, since they let you break a potentially complex expression into multiple parts.
+Each part is bound to a name through the let statement, and together they compose the whole. 
+They can also be used to create user-defined functions and views. The views are expressions over tables whose results look like a new table.
 
-Names bound by let statements must be valid entity names.
+> [!NOTE]
+> Names bound by let statements must be valid entity names.
 
 Expressions bound by let statements can be:
-* Of scalar type
-* Of tabular type
+* Scalar types
+* Tabular types
 * User-defined functions (lambdas)
 
-**Syntax**
+## Syntax
 
 `let` *Name* `=` *ScalarExpression* | *TabularExpression* | *FunctionDefinitionExpression*
 
-* *Name*: The name to bind. The name must be a valid entity name,
-  and entity name escaping (e.g., `["Name with spaces"]`) is allowed. 
-* *ScalarExpression*: An expression with a scalar result whose value will
-  be bound to the name. For example: `let one=1;`.
-* *TabularExpression*: An expression with a tabular result whose value will
-  be bound to the name. For example: `Logs | where Timestamp > ago(1h)`.
-* *FunctionDefinitionExpression*: An expression that yields a lambda (an
-  anonymous function declaration) which is to be bound to the name.
-  For example: `let f=(a:int, b:string) { strcat(b, ":", a) }`.
+|Field  |Definition  |Example  |
+|---------|---------|---------|
+|*Name*   | The name to bind. The name must be a valid entity name.    |Entity name escaping, such as `["Name with spaces"]`, is permitted.      |
+|*ScalarExpression*     |  An expression with a scalar result whose value is bound to the name.  | `let one=1;`  |
+|*TabularExpression*    | An expression with a tabular result whose value is bound to the name.   | `Logs | where Timestamp > ago(1h)`    |
+|*FunctionDefinitionExpression*   | An expression that yields a lambda, an anonymous function declaration that is to be bound to the name.   |  `let f=(a:int, b:string) { strcat(b, ":", a) }`  |
 
-Lambda expressions have the following syntax:
+
+### Lambda expressions syntax
 
 [`view`] `(`[*TabularArguments*][`,`][*ScalarArguments*]`)` `{` *FunctionBody* `}`
 
 `TabularArguments` - [*TabularArgName* `:` `(`[*AtrName* `:` *AtrType*] [`,` ... ]`)`] [`,` ... ][`,`]
 
- or:			   - [*TabularArgName* `:` `(` `*` `)`]
+ or:
+
+ [*TabularArgName* `:` `(` `*` `)`]
 
 `ScalarArguments` - [*ArgName* `:` *ArgType*] [`,` ... ]
 
-* `view` may appear only in a parameterless lambda (one that has no arguments)
-  and indicates that the bound name will be included when "all tables" are
-  queries (for example, when using `union *`).
-* *TabularArguments* are the list of the formal tabular expression arguments.
-  Each argument has:
-  * *TabularArgName* - the name of the formal tabular argument. The name then may appear
-  in the *FunctionBody* and is bound to a particular value when the lambda is
-  invoked. 
-  * Table schema definition - a list of attributes with their types
-  (AtrName : AtrType).
-  The tabular expression that is used in the lambda invocation must have all
-  these attributes with the matching types, but is not limited to them. 
-  '(*)' can be used as the tabular expression. In this case any tabular expression 
-  can be used in the lambda invocation and none of its columns can be accessed
-  in the lambda expression.
-  All tabular arguments should appear before the scalar arguments.
-* *ScalarArguments* are the list of the formal scalar arguments. 
-  Each argument has:
-  * *ArgName* - the name of the formal scalar argument. The name then may appear
-  in the *FunctionBody* and is bound to a particular value when the lambda is
-  invoked.  
-  * *ArgType* - the type of the formal scalar argument. Currently only the following
-  types are supported as a lambda argument type: `bool`, `string`, `long`,
-  `datetime`, `timespan`, `real`, and `dynamic` (and aliases to these types).
 
-**Multiple and nested let statements**
+|Field  |Definition  |Example  |
+|---------|---------|---------|
+| **view** | May appear only in a parameterless lambda, that has no arguments. It indicates that the bound name will be included when "all tables" are queries. | For example, when using `union *`.|
+| ***TabularArguments*** | The list of the formal tabular expression arguments. 
+| Each tabular argument has:||
+|<ul><li> *TabularArgName*</li></ul> | The name of the formal tabular argument. The name may appear in the *FunctionBody* and is bound to a particular value when the lambda is invoked. ||
+|<ul><li>Table schema definition </li></ul> | A list of attributes with their types| AtrName : AtrType|
+| ***ScalarArguments*** | The list of the formal scalar arguments. 
+|Each scalar argument has:||
+|<ul><li>*ArgName*</li></ul> | The name of the formal scalar argument. The name may appear in the *FunctionBody* and is bound to a particular value when the lambda is invoked.  |
+| <ul><li>*ArgType* </li></ul>| The type of the formal scalar argument. | Currently only the following types are supported as a lambda argument type: `bool`, `string`, `long`, `datetime`, `timespan`, `real`, and `dynamic` (and aliases to these types).
 
-Multiple let statements can be used with `;` delimiter between them as shown in the following example.
-The last statement must be a valid query expression: 
+> [!NOTE]
+>The tabular expression that is used in the lambda invocation must include (but is not limited to) all the attributes with the matching types.
+>
+>`(*)` can be used as the tabular expression. 
+>
+> Any tabular expression can be used in the lambda invocation and none of its columns can be accessed in the lambda expression. 
+>
+> All tabular arguments should appear before the scalar arguments.
 
-<!-- csl -->
-```
+## Multiple and nested let statements
+
+Multiple let statements can be used with the semicolon, `;`, delimiter between them, like in the following example.
+
+> [!NOTE]
+> The last statement must be a valid query expression. 
+
+```kusto
 let start = ago(5h); 
 let period = 2h; 
 T | where Time > start and Time < start + period | ...
 ```
 
-Nested let statements are allowed and can be used inside a lambda expression.
-Let statements and Arguments are visible in the current and inner scope of the Function body.
+Nested let statements are permitted, and can be used inside a lambda expression.
+Let statements and arguments are visible in the current and inner scope of the function body.
 
-<!-- csl -->
+```kusto
+let start_time = ago(5h); 
+let end_time = start_time + 2h; 
+T | where Time > start_time and Time < end_time | ...
 ```
-let start = ago(5h); 
-let period = 2h; 
-T | where Time > start and Time < start + period | ...
-```
 
-**Examples**
+## Examples
 
-### Using let to define constants
+### Use let function to define constants
 
-The following example binds the name `x` to the scalar literal `1`,
-and then uses it in a tabular expression statement:
+The following example binds the name `x` to the scalar literal `1`, and then uses it in a tabular expression statement.
 
-<!-- csl -->
-```
+```kusto
 let x = 1;
 range y from x to x step x
 ```
 
-Same example, but in this case - the name of the let statement is given using `['name']` notion:
+This example is similar to the previous one, only the name of the let statement is given using the `['name']` notion.
 
-<!-- csl -->
-```
+```kusto
 let ['x'] = 1;
 range y from x to x step x
 ```
 
-Yet another example that uses let for scalar values:
+### Use let for scalar values
 
-<!-- csl -->
-```
+```kusto
 let n = 10;  // number
 let place = "Dallas";  // string
 let cutoff = ago(62d); // datetime
@@ -123,24 +125,23 @@ Events
 | take n
 ```
 
-### Using multiple let statements
+### Use multiple let statements
 
-The following example defines two let statements where one statement (`foo2`) uses another (`foo1`).
+This example defines two let statements where one statement (`foo2`) uses another (`foo1`).
 
-<!-- csl -->
-```
+```kusto
 let foo1 = (_start:long, _end:long, _step:long) { range x from _start to _end step _step};
 let foo2 = (_step:long) { foo1(1, 100, _step)};
 foo2(2) | count
 // Result: 50
 ```
 
-### Using materialize function
+### Use materialize function
 
-[`materialize`](materializefunction.md) function allows caching sub-query results during the time of query execution. 
+The [`materialize`](materializefunction.md) function lets you cache subquery results during the time of query execution. 
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let totalPagesPerDay = PageViews
 | summarize by Page, Day = startofday(Timestamp)
 | summarize count() by Day;
@@ -161,8 +162,6 @@ on Page
     totalPagesPerDay
 on $left.Day1 == $right.Day
 | project Day1, Day2, Percentage = count_*100.0/count_1
-
-
 ```
 
 |Day1|Day2|Percentage|

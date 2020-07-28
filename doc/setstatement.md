@@ -1,3 +1,16 @@
+---
+title: Set statement - Azure Data Explorer | Microsoft Docs
+description: This article describes Set statement in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # Set statement
 
 ::: zone pivot="azuredataexplorer"
@@ -20,8 +33,7 @@ statements that trail them in the program order.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 set querytrace;
 Events | take 100
 ```
@@ -30,6 +42,6 @@ Events | take 100
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

@@ -1,9 +1,19 @@
+---
+title: take operator - Azure Data Explorer | Microsoft Docs
+description: This article describes take operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # take operator
 
 Return up to the specified number of rows.
 
-<!-- csl -->
-```
+```kusto
 T | take 5
 ```
 
@@ -23,7 +33,7 @@ the source data is sorted.
 when browsing data interactively, but be aware that it doesn't guarantee any consistency
 in its results when executing multiple times, even if the data set hasn't changed.
 
-Even is the number of rows returned by the query is not explicitly limited
+Even if the number of rows returned by the query isn't explicitly limited
 by the query (no `take` operator is used), Kusto limits that number by default.
 Please see [Kusto query limits](../concepts/querylimits.md) for details.
 

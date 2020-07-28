@@ -1,3 +1,14 @@
+---
+title: search operator - Azure Data Explorer | Microsoft Docs
+description: This article describes search operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # search operator
 
 The search operator provides a multi-table/multi-column search experience.
@@ -68,7 +79,7 @@ and views of the database in scope.
   | 5|`search "err*"`                        |`where * hasprefix "err"`              ||
   | 6|`search "*err"`                        |`where * hassuffix "err"`              ||
   | 7|`search "*err*"`                       |`where * contains "err"`               ||
-  | 8|`search "Lab*PC"`                      |`where * matches regex @"\bLab\w*PC\b"`||
+  | 8|`search "Lab*PC"`                      |`where * matches regex @"\bLab.*PC\b"`||
   | 9|`search *`                             |`where 0==0`                           ||
   |10|`search col matches regex "..."`       |`where col matches regex "..."`        ||
   |11|`search kind=case_sensitive`           |                                       |All string comparisons are case-sensitive|
@@ -86,8 +97,7 @@ and views of the database in scope.
 
 ## Examples
 
-<!-- csl -->
-```
+```kusto
 // 1. Simple term search over all unrestricted tables and views of the database in scope
 search "billg"
 
@@ -119,4 +129,3 @@ union C*, TF | search "billg" or "davec" or "steveb"
   |--|-------------------------------------------------------------------------------------|----------------------------------------------|------------------------------------------------------------------------|
   | 1| Prefer to use a single `search` operator over several consecutive `search` operators|`search "billg" and ("steveb" or "satyan")`   |<code>search "billg" &#124; search "steveb" or "satyan"<code>           ||
   | 2| Prefer to filter inside the `search` operator                                       |`search "billg" and "steveb"`                 |<code>search * &#124; where * has "billg" and * has "steveb"<code>      ||
-

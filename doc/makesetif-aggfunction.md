@@ -1,3 +1,14 @@
+---
+title: make_set_if() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes make_set_if() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # make_set_if() (aggregation function)
 
 Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes in the group, for which *Predicate* evaluates to `true`.
@@ -28,8 +39,7 @@ The array's sort order is undefined.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 let T = datatable(name:string, day_of_birth:long)
 [
    "John", 9,

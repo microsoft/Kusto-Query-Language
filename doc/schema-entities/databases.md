@@ -1,3 +1,14 @@
+---
+title: Databases - Azure Data Explorer | Microsoft Docs
+description: This article describes Databases in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/30/2019
+---
 # Databases
 
 Kusto follows a relation model of storing the data where upper-level entity is a `database`. 

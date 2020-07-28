@@ -1,9 +1,19 @@
+---
+title: tobool() - Azure Data Explorer
+description: This article describes tobool() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # tobool()
 
 Converts input to boolean (signed 8-bit) representation.
 
-<!-- csl -->
-```
+```kusto
 tobool("true") == true
 tobool("false") == false
 tobool(1) == true
@@ -22,5 +32,4 @@ tobool(123) == true
 **Returns**
 
 If conversion is successful, result will be a boolean.
-If conversion is not successful, result will be `null`.
- 
+If conversion isn't successful, result will be `null`.

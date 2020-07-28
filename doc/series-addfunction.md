@@ -1,3 +1,14 @@
+---
+title: series_add() - Azure Data Explorer
+description: This article describes series_add() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_add()
 
 Calculates the element-wise addition of two numeric series inputs.
@@ -17,7 +28,7 @@ Dynamic array of calculated element-wise add operation between the two inputs. A
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
 | extend z = y * 2

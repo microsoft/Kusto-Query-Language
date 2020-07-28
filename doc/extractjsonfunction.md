@@ -1,11 +1,21 @@
+---
+title: extractjson() - Azure Data Explorer | Microsoft Docs
+description: This article describes extractjson() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # extractjson()
 
 Get a specified element out of a JSON text using a path expression. 
 
 Optionally convert the extracted string to a specific type.
 
-<!-- csl -->
-```
+```kusto
 extractjson("$.hosts[1].AvailableMB", EventText, typeof(int))
 ```
 
@@ -26,8 +36,7 @@ This function performs a JsonPath query into dataSource which contains a valid J
 
 The `[`bracket`]` notatation and dot (`.`) notation are equivalent:
 
-<!-- csl -->
-```
+```kusto
 T 
 | extend AvailableMB = extractjson("$.hosts[1].AvailableMB", EventText, typeof(int)) 
 

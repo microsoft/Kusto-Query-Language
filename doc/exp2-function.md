@@ -1,3 +1,14 @@
+---
+title: exp2() - Azure Data Explorer | Microsoft Docs
+description: This article describes exp2() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # exp2()
 
 The base-2 exponential function of x, which is 2 raised to the power x: 2^x.  

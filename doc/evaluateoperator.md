@@ -1,12 +1,23 @@
-# evaluate plugin operator
+---
+title: evaluate plugin operator - Azure Data Explorer | Microsoft Docs
+description: This article describes evaluate plugin operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: alexans
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/30/2019
+---
+# evaluate operator plugins
 
 Invokes a service-side query extension (plugin).
 
 The `evaluate` operator is a tabular operator that provides the ability to
 invoke query language extensions known as **plugins**. Plugins can be enabled
-or disabled (unlike other language constructs which are always available),
-and are not "bound" by the relational nature of the language (for example, they may
-not have a predefined, statically-determined, output schema).
+or disabled (unlike other language constructs, which are always available),
+and aren't "bound" by the relational nature of the language (for example, they may
+not have a predefined, statically determined, output schema).
 
 **Syntax** 
 
@@ -19,21 +30,25 @@ Where:
 * *PluginName* is the mandatory name of the plugin being invoked.
 * *PluginArg1*, ... are the optional arguments to the plugin.
 * *evaluateParameters*: Zero or more (space-separated) parameters in the form of
-  *Name* `=` *Value* that control the behavior of the evaluate operation and execution plan. The following parameters are supported: 
+  *Name* `=` *Value* that control the behavior of the evaluate operation and execution plan. Each plugin may decide differently how to handle each parameter. Refer to each plugin's documentation for specific behavior.  
+
+The following parameters are supported: 
 
   |Name                |Values                           |Description                                |
   |--------------------|---------------------------------|-------------------------------------------|
-  |`hint.distribution` |`single`, `per_node`, `per_shard`| [Distribution hints](#distribution-hints) |
+  |`hint.distribution` |`single`, `per_node`, `per_shard`| [Distribution hints](#distributionhints) |
+  |`hint.pass_filters` |`true`, `false`| Allow `evaluate` operator to passthrough any matching filters before the plugin. Filter is considered as 'matched' if it refers to a column existing before the `evaluate` operator. Default: `false` |
+  |`hint.pass_filters_column` |*column_name*| Allow plugin operator to passthrough filters referring to *column_name* before the plugin. Parameter can be used multiple times with different column names. |
 
 **Notes**
 
 * Syntactically, `evaluate` behaves similarly
 to the [invoke operator](./invokeoperator.md), which invokes tabular functions.
 * Plugins provided through the evaluate operator aren't bound by the regular rules of query execution or argument evaluation.
-Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data (for example, [bag_unpack plugin](./bag-unpackplugin.md)) can't be used
+* Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data (for example, [bag_unpack plugin](./bag-unpackplugin.md) and [pivot plugin](./pivotplugin.md)) can't be used
 when performing cross-cluster queries.
 
-## Distribution hints
+<a id="distributionhints"/> **Distribution hints** </a>
 
 Distribution hints specify how the plugin execution will be distributed across multiple cluster nodes. Each plugin may implement a different support for the distribution. The plugin's documentation specifies the distribution options supported by the plugin.
 

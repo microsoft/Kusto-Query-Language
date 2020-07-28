@@ -1,3 +1,14 @@
+---
+title: max() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes max() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # max() (aggregation function)
 
 Returns the maximum value across the group. 

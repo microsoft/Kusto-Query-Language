@@ -1,9 +1,19 @@
+---
+title: top operator - Azure Data Explorer | Microsoft Docs
+description: This article describes top operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # top operator
 
 Returns the first *N* records sorted by the specified columns.
 
-<!-- csl -->
-```
+```kusto
 T | top 5 by Name desc nulls last
 ```
 

@@ -1,3 +1,14 @@
+---
+title: The datetime data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The datetime data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # The datetime data type
 
 The `datetime` (`date`) data type represents an instant in time, typically expressed as a date and time of day.

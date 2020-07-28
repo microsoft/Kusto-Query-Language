@@ -1,3 +1,14 @@
+---
+title: geo_distance_2points() - Azure Data Explorer
+description: This article describes geo_distance_2points() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mbrichko
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/11/2020
+---
 # geo_distance_2points()
 
 Calculates the shortest distance between two geospatial coordinates on Earth.
@@ -24,10 +35,11 @@ The shortest distance, in meters, between two geographic locations on Earth. If 
 **Examples**
 
 The following example finds the shortest distance between Seattle and Los Angeles.
-![Distance between Seattle and Los Angeles](./images/queries/geo/distance_2points_seattle_los_angeles.png)
+
+:::image type="content" source="images/geo-distance-2points-function/distance_2points_seattle_los_angeles.png" alt-text="Distance between Seattle and Los Angeles":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275287, 34.019056)
 ```
 
@@ -36,9 +48,11 @@ print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275
 | 1546754.35197381   |
 
 Here is an approximation of shortest path from Seattle to London. The line consists of coordinates along the LineString and within 500 meters from it.
-![Seattle to London LineString](./images/queries/geo/line_seattle_london.png)
+
+:::image type="content" source="images/geo-distance-2points-function/line_seattle_london.png" alt-text="Seattle to London LineString":::
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 range i from 1 to 1000000 step 1
 | project lng = rand() * real(-122), lat = rand() * 90
 | where lng between(real(-122) .. 0) and lat between(47 .. 90)
@@ -47,8 +61,9 @@ range i from 1 to 1000000 step 1
 ```
 
 The following example finds all rows in which the shortest distance between two coordinates is between 1 and 11 meters.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents
 | extend distance_1_to_11m = geo_distance_2points(BeginLon, BeginLat, EndLon, EndLat)
 | where distance_1_to_11m between (1 .. 11)
@@ -61,8 +76,9 @@ StormEvents
 | 7.92153588248414  |
 
 The following example returns a null result because of the invalid coordinate input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print distance = geo_distance_2points(300,1,1,1)
 ```
 

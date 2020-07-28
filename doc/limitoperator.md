@@ -1,9 +1,19 @@
+---
+title: limit operator - Azure Data Explorer | Microsoft Docs
+description: This article describes limit operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # limit operator
 
 Return up to the specified number of rows.
 
-<!-- csl -->
-```
+```kusto
 T | limit 5
 ```
 

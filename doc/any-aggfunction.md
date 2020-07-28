@@ -1,3 +1,14 @@
+---
+title: any() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes any() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # any() (aggregation function)
 
 Arbitrarily chooses one record for each group in a [summarize operator](summarizeoperator.md),
@@ -38,27 +49,24 @@ over a single record (per distinct group).
 
 Show Random Continent:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(Continent)
 ```
 
-![alt text](./images/aggregations/any1.png "any1")
+:::image type="content" source="images/aggfunction/any1.png" alt-text="Any 1":::
 
 Show all the details for a random record:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(*)
 ```
 
-![alt text](./images/aggregations/any2.png "any2")
+:::image type="content" source="images/aggfunction/any2.png" alt-text="Any 2":::
 
 Show all the details for each random continent:
 
-<!-- csl -->
-```
+```kusto
 Continents | summarize any(*) by Continent
 ```
 
-![alt text](./images/aggregations/any3.png "any3")
+:::image type="content" source="images/aggfunction/any3.png" alt-text="Any 3":::

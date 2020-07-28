@@ -1,9 +1,19 @@
+---
+title: tohex() - Azure Data Explorer | Microsoft Docs
+description: This article describes tohex() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # tohex()
 
 Converts input to a hexadecimal string.
 
-<!-- csl -->
-```
+```kusto
 tohex(256) == '100'
 tohex(-256) == 'ffffffffffffff00' // 64-bit 2's complement of -256
 tohex(toint(-256), 8) == 'ffffff00' // 32-bit 2's complement of -256

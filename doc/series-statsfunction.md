@@ -1,3 +1,14 @@
+---
+title: series_stats() - Azure Data Explorer
+description: This article describes series_stats() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/10/2020
+---
 # series_stats()
 
 `series_stats()` returns statistics for a series in multiple columns.  
@@ -30,7 +41,7 @@ Returns the following columns: m (min) and mi (min_idx).
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
 | project series_stats(x)
 
@@ -39,4 +50,3 @@ print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29])
 |series_stats_x_min|series_stats_x_min_idx|series_stats_x_max|series_stats_x_max_idx|series_stats_x_avg|series_stats_x_stdev|series_stats_x_variance|
 |---|---|---|---|---|---|---|
 |2|8|87|3|32.8|28.5036338535483|812.457142857143|
-

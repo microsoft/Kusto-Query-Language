@@ -1,9 +1,19 @@
+---
+title: session_count plugin - Azure Data Explorer
+description: This article describes session_count plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # session_count plugin
 
 Calculates sessions count based on ID column over a timeline.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate session_count(id, datetime_column, startofday(ago(30d)), startofday(now()), 1min, 30min, dim1, dim2, dim3)
 ```
 
@@ -15,11 +25,11 @@ T | evaluate session_count(id, datetime_column, startofday(ago(30d)), startofday
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
-* *TimelineColumn*: The name of the column that represent timeline.
+* *TimelineColumn*: The name of the column that represents the timeline.
 * *Start*: Scalar with value of the analysis start period.
 * *End*: Scalar with value of the analysis end period.
 * *Bin*:  scalar constant value of session analysis step period.
-* *LookBackWindow*: scalar constant value representing session lookback period. If the id from `IdColumn` appears in a time window within `LookBackWindow` - the session is considered to be an existing, if it does not - the session is considered to be new.
+* *LookBackWindow*: scalar constant value representing session lookback period. If the ID from `IdColumn` appears in a time window within `LookBackWindow`, the session is considered to be an existing one. If the ID doesn't appear, then the session is considered to be new.
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the session count calculation.
 
 **Returns**
@@ -35,19 +45,18 @@ Output table schema is:
 
 **Examples**
 
-
-For the sake of the example, we will make data deterministic - a table with two columns:
+For this example, the data is deterministic, and we use a table with two columns:
 - Timeline: a running number from 1 to 10,000
 - Id: Id of the user from 1 to 50
 
-`Id` appear at the specific `Timeline` slot if it is a divider of `Timeline` (Timeline % Id == 0).
+`Id` appears at the specific `Timeline` slot if it's a divider of `Timeline` (Timeline % Id == 0).
 
-This means that event with `Id==1` will appear at any `Timeline` slot, event with `Id==2` at every second `Timeline` slot, and so on.
+An event with `Id==1` will appear at any `Timeline` slot, an event with `Id==2` at every second `Timeline` slot, and so on.
 
 Here are few 20 lines of the data:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let _data = range Timeline from 1 to 10000 step 1
 | extend __key = 1
 | join kind=inner (range Id from 1 to 50 step 1 | extend __key=1) on __key
@@ -87,7 +96,7 @@ Let's define a session in next terms: session considered to be active as long as
 The next query shows the count of active sessions according to the definition above.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let _data = range Timeline from 1 to 9999 step 1
 | extend __key = 1
 | join kind=inner (range Id from 1 to 50 step 1 | extend __key=1) on __key
@@ -99,4 +108,4 @@ _data
 | render linechart 
 ```
 
-![alt text](./images/queries/example-session-count.png "example-session-count")
+:::image type="content" source="images/session-count-plugin/example-session-count.png" alt-text="Example session count" border="false":::

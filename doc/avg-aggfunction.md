@@ -1,3 +1,14 @@
+---
+title: avg() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes avg() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 09/26/2019
+---
 # avg() (aggregation function)
 
 Calculates the average of *Expr* across the group. 

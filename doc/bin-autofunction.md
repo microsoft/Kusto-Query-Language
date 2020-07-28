@@ -1,3 +1,14 @@
+---
+title: bin_auto() - Azure Data Explorer | Microsoft Docs
+description: This article describes bin_auto() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # bin_auto()
 
 Rounds values down to a fixed-size "bin", with control over the bin size and starting point provided by a query property.
@@ -23,8 +34,7 @@ will be translated into itself.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 set query_bin_auto_size=1h;
 set query_bin_auto_at=datetime(2017-01-01 00:05);
 range Timestamp from datetime(2017-01-01 00:05) to datetime(2017-01-01 02:00) step 1m

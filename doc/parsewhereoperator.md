@@ -1,10 +1,21 @@
+---
+title: parse-where operator - Azure Data Explorer
+description: This article describes the parse-where operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: alexans
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/12/2020
+---
 # parse-where operator
 
-Evaluates a string expression and parses its value into one or more calculated columns. The result is only the successfully parsed strings.
-See [parse](parseoperator.md) operator which produces nulls for unsuccessfully parsed strings.
+Evaluates a string expression, and parses its value into one or more calculated columns. The result is only the successfully parsed strings. 
 
-<!-- csl -->
-```
+See [parse operator](parseoperator.md), which produces nulls for unsuccessfully parsed strings.
+
+```kusto
 T | parse-where Text with "ActivityName=" name ", ActivityType=" type
 ```
 
@@ -16,48 +27,46 @@ T | parse-where Text with "ActivityName=" name ", ActivityType=" type
 
 * *T*: The input table.
 
-* kind: 
+* *kind*: 
 
-	* simple (the default) : StringConstant is a regular string value and the match is strict which means that all string delimiters should appear in the parsed string and all extended columns must match the required types.
+	* *simple* (default): StringConstant is a regular string value, and the match is strict. All string delimiters should appear in the parsed string, and all extended columns must match the required types.
 		
-	* regex : StringConstant may be a regular expression and the match is strict which means that all string delimiters (which can be a regex for this mode) should appear in the parsed string and all extended columns must match the required types.
+	* *regex*: StringConstant may be a regular expression, and the match is strict. All string delimiters should appear in the parsed string, and all extended columns must match the required types. String delimiters can be a regex for this mode.
 	
-	* flags : Flags to be used in regex mode like `U` (Ungreedy), `m` (multi-line mode), `s` (match new line `\n`), `i` (case-insensitive) and more in [RE2 flags](re2.md).
+	* *flags*: Flags to be used in regex mode:  `U` (Ungreedy), `m` (multi-line mode), `s` (match new line `\n`), `i` (case-insensitive), More flags can be found in [RE2 flags](re2.md).
 		
 * *Expression*: An expression that evaluates to a string.
 
-* *ColumnName:* The name of a column to assign a value (taken out
-  of the string expression) to. 
+* *ColumnName:* The name of a column that is assigned to a value that was taken out of the string expression. 
   
-* *ColumnType:* should be Optional scalar type that indicates the type to convert the value to (by default it is string type).
+* *ColumnType:* should be an optional scalar type that indicates the type to convert the value to. The default is string type.
 
 **Returns**
 
-The input table, extended according to the list of columns that are
-provided to the operator.
-Only successfully parsed strings will be in the output. strings that don't match the pattern will be filtered-out.
+The input table, which is extended according to the list of columns that are provided to the operator.
+
+> [!Note] 
+> Only successfully parsed strings will be in the output. Strings that don't match the pattern will be filtered out.
 
 **Tips**
 
-* `parse-where` parses the strings in the same way that [parse](parseoperator.md) but in addition filters-out strings that were not parsed successfully.
+* `parse-where` parses the strings in the same way as [parse](parseoperator.md), and filters out strings that were not parsed successfully.
 
-* Use [`project`](projectoperator.md) if you also want to drop or rename some columns.
+* Use [project](projectoperator.md) if you also want to drop or rename some columns.
 
-* Use * in the pattern in order to skip junk values (can't be used after string column)
+* Use * in the pattern to skip junk values. This value can't be used after string column.
 
-* The parse pattern may start with *ColumnName* and not only with *StringConstant*. 
+* The parse pattern may start with *ColumnName*, in addition to *StringConstant*. 
 
-* If the parsed *Expression* is not of type string , it will be converted to type string.
+* If the parsed *Expression* isn't of type string, it will be converted to type string.
 
-* If regex mode is used, there is an option to add regex flags in order to control the whole regex used in parse.
+* If regex mode is used, you can add regex flags to control the whole regex used in parse.
 
-* In regex mode, parse will translate the pattern to a regex and use [RE2 syntax](re2.md) in order to do the matching using numbered captured groups which 
-  are handled internally.
+* In regex mode, parse will translate the pattern to a regex and use [RE2 syntax](re2.md) in order to do the matching using numbered captured groups that are handled internally.
   
-  So for example, this parse statement :
+  For example, this parse statement:
   
-	<!-- csl -->
-	```
+	```kusto
 	parse-where kind=regex Col with * <regex1> var1:string <regex2> var2:long
 	```
 
@@ -69,25 +78,20 @@ Only successfully parsed strings will be in the output. strings that don't match
 		
 	- `long` was translated to `\-\d+`.
 
-**Examples**
+## Examples
 
-The `parse-where` operator provides a streamlined way to `extend` a table
-by using multiple `extract` applications on the same `string` expression.
-This is most useful when the table has a `string` column that contains
-several values that you want to break into individual columns, such as a
-column that was produced by a developer trace ("`printf`"/"`Console.WriteLine`")
-statement.
+The `parse-where` operator provides a streamlined way to `extend` a table by using multiple `extract` applications on the same `string` expression. This is most useful when the table has a `string` column that contains several values that you want to break into individual columns. For example, you can break up a column that was produced by a developer trace ("`printf`"/"`Console.WriteLine`") statement.
 
-In the example below, assume that the column `EventText` of table `Traces` contains
-strings of the form `Event: NotifySliceRelease (resourceName={0}, totalSlices= {1}, sliceNumber={2}, lockTime={3}, releaseTime={4}, previousLockTime={5})`.
-The operation below will extend the table with 6 columns: `resourceName` , `totalSlices`, `sliceNumber`, `lockTime `, `releaseTime`, `previouLockTime`, 
- `Month` and `Day`. 
+### Using `parse`
 
-Here, few strings doesn't have a full match.
-Using `parse`, the calculated columns will have nulls:
+In the example below, the column `EventText` of table `Traces` contains strings of the form `Event: NotifySliceRelease (resourceName={0}, totalSlices= {1}, sliceNumber={2}, lockTime={3}, releaseTime={4}, previousLockTime={5})`. The operation below will extend the table with six columns: `resourceName` , `totalSlices`, `sliceNumber`, `lockTime `, `releaseTime`, `previouLockTime`, `Month`, and `Day`. 
+
+A few of the strings don't have a full match.
+
+Using `parse`, the calculated columns will have nulls.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let Traces = datatable(EventText:string)
 [
 "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=27, sliceNumber=invalid_number, lockTime=02/17/2016 08:40:01, releaseTime=02/17/2016 08:40:01, previousLockTime=02/17/2016 08:39:01)",
@@ -98,10 +102,10 @@ let Traces = datatable(EventText:string)
 ];
 Traces  
 | parse EventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previouLockTime:date ")" *  
-| project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previouLockTime
+| project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previousLockTime
 ```
 
-|resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previouLockTime|
+|resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|
 |||||||
 |||||||
@@ -109,11 +113,12 @@ Traces
 |PipelineScheduler|27|20|02/17/2016 08:40:01|2016-02-17 08:40:01.0000000|2016-02-17 08:39:01.0000000|
 |PipelineScheduler|27|22|02/17/2016 08:41:01|2016-02-17 08:41:00.0000000|2016-02-17 08:40:01.0000000|
 
+### Using `parse-where` 
 
-Using `parse-where` will filter-out  unsuccessfully parsed strings from the result:
+Using 'parse-where' will filter-out unsuccessfully parsed strings from the result.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let Traces = datatable(EventText:string)
 [
 "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=27, sliceNumber=invalid_number, lockTime=02/17/2016 08:40:01, releaseTime=02/17/2016 08:40:01, previousLockTime=02/17/2016 08:39:01)",
@@ -123,22 +128,22 @@ let Traces = datatable(EventText:string)
 "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=invalid_number, sliceNumber=16, lockTime=02/17/2016 08:41:00, releaseTime=02/17/2016 08:41:00, previousLockTime=02/17/2016 08:40:00)"
 ];
 Traces  
-| parse-where EventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previouLockTime:date ")" *  
-| project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previouLockTime
+| parse-where EventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previousLockTime:date ")" *  
+| project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previousLockTime
 ```
 
-|resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previouLockTime|
+|resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|
 |PipelineScheduler|27|20|02/17/2016 08:40:01|2016-02-17 08:40:01.0000000|2016-02-17 08:39:01.0000000|
 |PipelineScheduler|27|22|02/17/2016 08:41:01|2016-02-17 08:41:00.0000000|2016-02-17 08:40:01.0000000|
 
 
-for regex mode using regex flags:
+### Regex mode using regex flags
 
-if we are interested in getting the resouceName and totalSlices  and we use this query:
+To get the resourceName and totalSlices, use the following query:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let Traces = datatable(EventText:string)
 [
 "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=non_valid_integer, sliceNumber=11, lockTime=02/17/2016 08:40:01, releaseTime=02/17/2016 08:40:01, previousLockTime=02/17/2016 08:39:01)",
@@ -152,13 +157,16 @@ Traces
 | project resourceName, totalSlices
 ```
 
-In the above query we don't get any result since the default mode is case-sensitive so none of the strings was parsed successfully.
+### `parse-where` with case-insensitive regex flag
 
-in order to get the required result, we may run the `parse-where` with case-insensitive (`i`) regex flag.
-Note that only 3 strings will be parsed sucessfully and therefore the result is 3 records (some totalSlices holds invalid integers): 
+In the above query, the default mode was case-sensitive, so the strings were parsed successfully. No result was obtained.
+
+To get the required result, run `parse-where` with a case-insensitive (`i`) regex flag.
+
+Only three strings will be parsed successfully, so the result is three records (some totalSlices hold invalid integers).
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let Traces = datatable(EventText:string)
 [
 "Event: NotifySliceRelease (resourceName=PipelineScheduler, totalSlices=non_valid_integer, sliceNumber=11, lockTime=02/17/2016 08:40:01, releaseTime=02/17/2016 08:40:01, previousLockTime=02/17/2016 08:39:01)",
@@ -177,6 +185,3 @@ Traces
 |PipelineScheduler|27|
 |PipelineScheduler|27|
 |PipelineScheduler|27|
-
-
-

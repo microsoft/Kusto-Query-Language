@@ -1,3 +1,14 @@
+---
+title: The bool data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The bool data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # The bool data type
 
 The `bool` (`boolean`) data type can have one of two states: `true` or `false`

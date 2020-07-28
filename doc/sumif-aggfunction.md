@@ -1,3 +1,14 @@
+---
+title: sumif() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes sumif() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # sumif() (aggregation function)
 
 Returns a sum of *Expr* for which *Predicate* evaluates to `true`.
@@ -19,13 +30,9 @@ summarize `sumif(`*Expr*`,`*Predicate*`)`
 
 The sum value of *Expr* for which *Predicate* evaluates to `true`.
 
-> [!TIP]
-> Use `summarize sumif(expr, filter)` instead of `where filter | summarize sum(expr)`
-
 **Example**
 
-<!-- csl -->
-```
+```kusto
 let T = datatable(name:string, day_of_birth:long)
 [
    "John", 9,

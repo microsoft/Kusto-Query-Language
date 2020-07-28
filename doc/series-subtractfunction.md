@@ -1,3 +1,14 @@
+---
+title: series_subtract() - Azure Data Explorer
+description: This article describes series_subtract() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # series_subtract()
 
 Calculates the element-wise subtraction of two numeric series inputs.
@@ -17,7 +28,7 @@ Dynamic array of calculated element-wise subtract operation between the two inpu
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
 | extend z = y * 2

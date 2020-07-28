@@ -1,3 +1,14 @@
+---
+title: log() - Azure Data Explorer | Microsoft Docs
+description: This article describes log() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 08/11/2019
+---
 # log()
 
 `log()` returns the natural logarithm function.  

@@ -1,11 +1,23 @@
+---
+title: database() (scope function) - Azure Data Explorer | Microsoft Docs
+description: This article describes database() (scope function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # database() (scope function)
 
 ::: zone pivot="azuredataexplorer"
 
 Changes the reference of the query to a specific database within the cluster scope. 
 
-<!--- csl --->
-```
+```kusto
 database('Sample').StormEvents
 cluster('help').database('Sample').StormEvents
 ```
@@ -27,8 +39,7 @@ cluster('help').database('Sample').StormEvents
 
 ### Use database() to access table of other database. 
 
-<!-- csl -->
-```
+```kusto
 database('Samples').StormEvents | count
 ```
 
@@ -41,8 +52,7 @@ database('Samples').StormEvents | count
 The same query as above can be rewritten to use inline function (let statement) that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-<!-- csl -->
-```
+```kusto
 let foo = (dbName:string)
 {
     database(dbName).StormEvents | count
@@ -59,8 +69,7 @@ foo('help')
 The same query as above can be rewritten to be used in a function that 
 receives a parameter `dbName` - which is passed into the database() function.
 
-<!-- csl -->
-```
+```kusto
 .create function foo(dbName:string)
 {
     database(dbName).StormEvents | count
@@ -73,6 +82,6 @@ receives a parameter `dbName` - which is passed into the database() function.
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

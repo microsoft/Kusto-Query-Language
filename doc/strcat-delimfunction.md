@@ -1,17 +1,28 @@
+---
+title: strcat_delim() - Azure Data Explorer
+description: This article describes strcat_delim() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # strcat_delim()
 
 Concatenates between 2 and 64 arguments, with delimiter, provided as first argument.
 
- * In case if arguments are not of string type, they will be forcibly converted to string.
+ * If arguments aren't of string type, they'll be forcibly converted to string.
 
 **Syntax**
 
-`strcat_delim(`*delimiter*,*argument1*,*argument2* [, *argumentN*]`)`
+`strcat_delim(`*delimiter*, *argument1*, *argument2*[ , *argumentN*]`)`
 
 **Arguments**
 
 * *delimiter*: string expression, which will be used as separator.
-* *argument1* ... *argumentN* : expressions to be concatenated.
+* *argument1* ... *argumentN*: Expressions to be concatenated.
 
 **Returns**
 
@@ -19,8 +30,7 @@ Arguments, concatenated to a single string with *delimiter*.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 print st = strcat_delim('-', 1, '2', 'A', 1s)
 
 ```

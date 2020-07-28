@@ -1,3 +1,14 @@
+---
+title: pack_all() - Azure Data Explorer | Microsoft Docs
+description: This article describes pack_all() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # pack_all()
 
 Creates a `dynamic` object (property bag) from all the columns of the tabular expression.
@@ -5,6 +16,10 @@ Creates a `dynamic` object (property bag) from all the columns of the tabular ex
 **Syntax**
 
 `pack_all()`
+
+**Notes**
+
+The representation of the returned object isn't guaranteed to be byte-level-compatible between runs. For example, properties that appear in the bag may appear in a different order.
 
 **Examples**
 
@@ -17,11 +32,17 @@ Given a table SmsMessages
 |555-555-1212 |555-555-1234 | 32 
 
 The following query:
-<!-- csl -->
-```
-SmsMessages | extend Packed=pack_all()
-``` 
 
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+datatable(SourceNumber:string,TargetNumber:string,CharsCount:long)
+[
+'555-555-1234','555-555-1212',46,
+'555-555-1234','555-555-1213',50,
+'555-555-1212','555-555-1234',32
+]
+| extend Packed=pack_all()
+```
 Returns:
 
 |TableName |SourceNumber |TargetNumber | Packed

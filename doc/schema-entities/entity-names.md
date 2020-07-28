@@ -1,3 +1,14 @@
+---
+title: Entity names - Azure Data Explorer | Microsoft Docs
+description: This article describes Entity names in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/24/2019
+---
 # Entity names
 
 Kusto entities (databases, tables, columns, and stored functions; clusters
@@ -67,7 +78,6 @@ Alternatively, one might want to choose entity names that are guaranteed to neve
 The Kusto query language reserves all identifiers that start or end with a
 sequence of two underscore characters (`__`); users cannot define such names
 for their own use.
-
 
 
 

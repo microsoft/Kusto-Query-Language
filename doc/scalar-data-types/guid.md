@@ -1,3 +1,14 @@
+---
+title: The guid data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The guid data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/15/2020
+---
 # The guid data type
 
 The `guid` (`uuid`, `uniqueid`) data type represents a 128-bit globally-unique
@@ -13,8 +24,7 @@ value.
 
 To represent a literal of type `guid`, use the following format:
 
-<!-- csl -->
-```
+```kusto
 guid(74be27de-1e4e-49d9-b579-fe0b331d3642)
 ```
 

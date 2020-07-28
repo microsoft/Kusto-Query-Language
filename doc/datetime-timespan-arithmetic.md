@@ -1,3 +1,14 @@
+---
+title: Datetime / timespan arithmetic - Azure Data Explorer | Microsoft Docs
+description: This article describes Datetime / timespan arithmetic in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 11/27/2019
+---
 # Datetime / timespan arithmetic
 
 Kusto supports performing arithmetic operations on values of types `datetime`
@@ -35,8 +46,7 @@ is a system for describing a point in time as the number of seconds that have el
 If your data includes representation of Unix time as an integer, or you require converting to it,
 the following functions are available:
 
-<!--csl -->
-```
+```kusto
 let fromUnixTime = (t:long)
 { 
     datetime(1970-01-01) + t * 1sec 
@@ -48,8 +58,7 @@ print result = fromUnixTime(1546897531)
 |---------------------------|
 |2019-01-07 21:45:31.0000000|
 
-<!--csl -->
-```
+```kusto
 let toUnixTime = (dt:datetime) 
 { 
     (dt - datetime(1970-01-01)) / 1s 

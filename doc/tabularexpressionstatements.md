@@ -1,3 +1,14 @@
+---
+title: Tabular expression statements - Azure Data Explorer | Microsoft Docs
+description: This article describes Tabular expression statements in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # Tabular expression statements
 
 The tabular expression statement is what people usually have in mind when they
@@ -21,8 +32,7 @@ current database), the first operator is `where` (which filter out records
 from its input according to some per-record predicate), and the second operator
 is `count` (which counts the number of records in its input data set):
 
-<!-- csl -->
-```
+```kusto
 Logs | where Timestamp > ago(1d) | count
 ```
 
@@ -30,8 +40,7 @@ In the following more complex example, the `join` operator is used to combine
 records from two input data sets: one which is a filter on the `Logs` table,
 and another which is a filter on the `Events` table.
 
-<!-- csl -->
-```
+```kusto
 Logs 
 | where Timestamp > ago(1d) 
 | join 

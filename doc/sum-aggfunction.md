@@ -1,3 +1,14 @@
+---
+title: sum() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes sum() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # sum() (aggregation function)
 
 Calculates the sum of *Expr* across the group. 

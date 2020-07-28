@@ -1,3 +1,14 @@
+---
+title: array_rotate_left() - Azure Data Explorer
+description: This article describes array_rotate_left() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 08/11/2019
+---
 # array_rotate_left()
 
 `array_rotate_left()` rotates values inside an array to the left.
@@ -26,7 +37,7 @@ Dynamic array containing the same amount of the elements as in original array, w
 * Rotating to the left by two positions:
 
     <!-- csl: https://help.kusto.windows.net:443/Samples -->
-    ```
+    ```kusto
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, 2)
     ```
@@ -38,7 +49,7 @@ Dynamic array containing the same amount of the elements as in original array, w
 * Rotating to the right by two positions by using negative rotate_count value:
 
     <!-- csl: https://help.kusto.windows.net:443/Samples -->
-    ```
+    ```kusto
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, -2)
     ```

@@ -1,8 +1,19 @@
+---
+title: geo_point_to_s2cell() - Azure Data Explorer
+description: This article describes geo_point_to_s2cell() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mbrichko
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/04/2020
+---
 # geo_point_to_s2cell()
 
 Calculates the S2 cell token string value for a geographic location.
 
-For more information about S2 Cells, click [here](http://s2geometry.io/devguide/s2cell_hierarchy).
+Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierarchy).
 
 **Syntax**
 
@@ -10,26 +21,26 @@ For more information about S2 Cells, click [here](http://s2geometry.io/devguide/
 
 **Arguments**
 
-* *longitude*: Longitude value of a geographic location. Longitude x will be considered valid if x is a real number and x is in range [-180, +180]. 
-* *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in in range [-90, +90]. 
-* *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0,30]. If unspecified, the default value `11` is used.
+* *longitude*: Longitude value of a geographic location. Longitude *x* will be considered valid if *x* is a real number and *x* is in the range [-180, +180]. 
+* *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in the range [-90, +90]. 
+* *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
 
 **Returns**
 
-The S2 Cell Token string value of a given geographic location. If the coordinate or level are invalid, the query will produce an empty result.
+The S2 cell token string value of a given geographic location. If the coordinates or levels are invalid, the query will produce an empty result.
 
 > [!NOTE]
 >
-> * S2Cell can be a useful geospatial clustering tool.
-> * S2Cell has 31 levels of hierarchy with area coverage ranging from 85,011,012.19kmÂ² at the highest level 0 to 00.44cmÂ² at the lowest level 30.
-> * S2Cell preserves the cell center well during level increase from 0 to 30.
-> * S2Cell is a cell on a sphere surface and it's edges are geodesics.
-> * Invoking the [geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md) function on a s2cell token string that was calculated on longitude x and latitude y won't necessarily return x and y.
-> * It's possible that two geographic locations are very close to each other but have different S2 Cell tokens.
+> * S2 cell can be a useful geospatial clustering tool.
+> * S2 cell has 31 levels of hierarchy with area coverage ranging from 85,011,012.19km² at the highest level 0 to 00.44cm² at the lowest level 30.
+> * S2 cell preserves the cell center well during level increase from 0 to 30.
+> * S2 cell is a cell on a spherical surface and its edges are geodesics.
+> * Invoking the [geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md) function on an S2 cell token string that was calculated on longitude x and latitude y won't necessarily return x and y.
+> * It's possible that two geographic locations are very close to each other but have different S2 cell tokens.
 
-**S2 Cell approximate area coverage per level value**
+**S2 cell approximate area coverage per level value**
 
-For every level, the size of the s2cell is similar but not exactly equal. Nearby cells size tend to be more equal.
+For every level, the size of the S2 cell is similar but not exactly equal. Nearby cell sizes tend to be more equal.
 
 |Level|Minimum random cell edge length (UK)|Maximum random cell edge length (US)|
 |--|--|--|
@@ -65,16 +76,18 @@ For every level, the size of the s2cell is similar but not exactly equal. Nearby
 |29|12 mm|18 mm|
 |30|6 mm|9 mm|
 
-The table source can be found [here](http://s2geometry.io/resources/s2cell_statistics).
+The table source can be found [in this S2 cell statistical resource](https://s2geometry.io/resources/s2cell_statistics).
 
 See also [geo_point_to_geohash()](geo-point-to-geohash-function.md).
 
 **Examples**
 
 US storm events aggregated by s2cell.
-![US S2Cell](./images/queries/geo/s2cell.png)
+
+:::image type="content" source="images/geo-point-to-s2cell-function/s2cell.png" alt-text="US s2cell":::
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents
 | project BeginLon, BeginLat
 | summarize by hash=geo_point_to_s2cell(BeginLon, BeginLat, 5)
@@ -83,7 +96,7 @@ StormEvents
 ```
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 ```
 
@@ -91,9 +104,10 @@ print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 |--------|
 | 88d9b  |
 
-The following example finds groups of coordinates. Every pair of coordinates in the group reside in s2cell with maximum area of 1632.45 kmÂ².
+The following example finds groups of coordinates. Every pair of coordinates in the group resides in the S2 cell with a maximum area of 1632.45 km².
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(location_id:string, longitude:real, latitude:real)
 [
   "A", 10.1234, 53,
@@ -111,8 +125,9 @@ datatable(location_id:string, longitude:real, latitude:real)
 | 47ae3  | 1     | ["C"]     |
 
 The following example produces an empty result because of the invalid coordinate input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print s2cell = geo_point_to_s2cell(300,1,8)
 ```
 
@@ -121,8 +136,9 @@ print s2cell = geo_point_to_s2cell(300,1,8)
 |        |
 
 The following example produces an empty result because of the invalid level input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print s2cell = geo_point_to_s2cell(1,1,35)
 ```
 
@@ -131,8 +147,9 @@ print s2cell = geo_point_to_s2cell(1,1,35)
 |        |
 
 The following example produces an empty result because of the invalid level input.
+
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print s2cell = geo_point_to_s2cell(1,1,int(null))
 ```
 

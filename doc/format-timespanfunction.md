@@ -1,9 +1,19 @@
+---
+title: format_timespan() - Azure Data Explorer
+description: This article describes format_timespan() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # format_timespan()
 
 Formats a timespan according to the provided format.
 
-<!-- csl -->
-```
+```kusto
 format_timespan(time(14.02:03:04.12345), 'h:m:s.fffffff') == "2:3:4.1234500"
 ```
 
@@ -67,7 +77,7 @@ Format specifier can include following delimeters characters:
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let t = time(29.09:00:05.12345);
 print 
 v1=format_timespan(t, 'dd.hh:mm:ss:FF'),
@@ -77,4 +87,3 @@ v2=format_timespan(t, 'ddd.h:mm:ss [fffffff]')
 |v1|v2|
 |---|---|
 |29.09:00:05:12|029.9:00:05 [1234500]|
-

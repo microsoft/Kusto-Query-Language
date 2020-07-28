@@ -1,9 +1,19 @@
+---
+title: countof() - Azure Data Explorer | Microsoft Docs
+description: This article describes countof() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # countof()
 
 Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches do not.
 
-<!-- csl -->
-```
+```kusto
 countof("The cat sat on the mat", "at") == 3
 countof("The cat sat on the mat", @"\b.at\b", "regex") == 3
 ```

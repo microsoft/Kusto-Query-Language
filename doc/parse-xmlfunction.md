@@ -1,3 +1,14 @@
+---
+title: parse_xml() - Azure Data Explorer | Microsoft Docs
+description: This article describes parse_xml() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # parse_xml()
 
 Interprets a `string` as a XML value, converts the value to a JSON and returns the value as `dynamic`.
@@ -38,7 +49,7 @@ XML                                |JSON                                        
 In the following example, when `context_custom_metrics` is a `string`
 that looks like this: 
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <duration>
     <value>118.0</value>
@@ -52,7 +63,8 @@ that looks like this:
 ```
 
 then the following CSL Fragment translates the XML to the following JSON:
-```
+
+```json
 {
     "duration": {
         "value": 118.0,
@@ -70,8 +82,7 @@ and retrieves the value of the `duration` slot
 in the object, and from that it retrieves two slots, `duration.value` and
  `duration.min` (`118.0` and `110.0`, respectively).
 
-<!-- csl -->
-```
+```kusto
 T
 | extend d=parse_xml(context_custom_metrics) 
 | extend duration_value=d.duration.value, duration_min=d["duration"]["min"]

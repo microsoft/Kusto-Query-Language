@@ -1,9 +1,19 @@
+---
+title: project-reorder operator - Azure Data Explorer
+description: This article describes project-reorder operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # project-reorder operator
 
 Reorders columns in the result output.
 
-<!-- csl -->
-```
+```kusto
 T | project-reorder Col2, Col1, Col* asc
 ```
 
@@ -35,7 +45,7 @@ A table that contains columns in the order specified by the operator arguments. 
 Reorder a table with three columns (a, b, c) so the second column (b) will appear first.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print a='a', b='b', c='c'
 |  project-reorder b
 ```
@@ -47,7 +57,7 @@ print a='a', b='b', c='c'
 Reorder columns of a table so that columns starting with `a` will appear before other columns.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print b = 'b', a2='a2', a3='a3', a1='a1'
 |  project-reorder a* asc
 ```

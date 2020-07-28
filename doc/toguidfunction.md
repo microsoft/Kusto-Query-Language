@@ -1,9 +1,19 @@
+---
+title: toguid() - Azure Data Explorer | Microsoft Docs
+description: This article describes toguid() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # toguid()
 
 Converts input to [`guid`](./scalar-data-types/guid.md) representation.
 
-<!-- csl -->
-```
+```kusto
 toguid("70fc66f7-8279-44fc-9092-d364d70fce44") == guid("70fc66f7-8279-44fc-9092-d364d70fce44")
 ```
 

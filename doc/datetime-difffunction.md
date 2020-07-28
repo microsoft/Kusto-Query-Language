@@ -1,3 +1,14 @@
+---
+title: datetime_diff() - Azure Data Explorer | Microsoft Docs
+description: This article describes datetime_diff() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # datetime_diff()
 
 Calculates calendarian difference between two [datetime](./scalar-data-types/datetime.md) values.
@@ -31,8 +42,7 @@ An integer, which represents amount of `periods` in the result of subtraction (`
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 print
 year = datetime_diff('year',datetime(2017-01-01),datetime(2000-12-31)),
 quarter = datetime_diff('quarter',datetime(2017-07-01),datetime(2017-03-30)),
@@ -50,7 +60,6 @@ nanosecond = datetime_diff('nanosecond',datetime(2017-10-30 23:00:00.0000000),da
 |year|quarter|month|week|day|hour|minute|second|millisecond|microsecond|nanosecond|
 |---|---|---|---|---|---|---|---|---|---|---|
 |17|2|13|5|29|2|5|10|100|100|-700|
-
 
 
 

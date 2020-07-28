@@ -1,28 +1,35 @@
-# Joining within time window
+---
+title: Joining within time window - Azure Data Explorer
+description: This article describes Joining within time window in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
+# Time window join
 
-It is often useful to join between two large data sets on some high-cardinality key
-(such as an operation ID or a session ID) and further limit the right-hand-side (`$right`)
-records that need to be matched for each left-hand-side (`$left`) record by adding
-a restriction on the "time-distance" between `datetime` columns on the left and on the
-right. This differs from
-usual Kusto join operation as, in addition to the "equi-join" part (matching the high-cardinality
-key or the left and right data sets), the system can also apply a distance function
-and use it to speed-up the join considerably. Note that a distance function does not
-behave like equality (that is, when both `dist(x,y)` and `dist(y,z)` are true it does
-not follow that `dist(x,z)` is also true.)
-*Internally, we sometimes refer to this as "diagonal join".*
+It's often useful to join between two large data sets on some high-cardinality key, such as an operation ID or a session ID, and further limit the right-hand-side ($right) records that need to match up with each left-hand-side ($left) record by adding a restriction on the "time-distance" between datetime columns on the left and on the right.
 
-For example, assume that we want to identify event sequences within a relatively small
-time window. To demonstrate this example, assume we have a table `T` with the following
-schema:
+The function is useful in a join, like in the following scenario:
+* Join between two large data sets according to some high-cardinality key, such as an operation ID or a session ID.
+* Limit the right-hand-side ($right) records that need to match up with each left-hand-side ($left) record, by adding a restriction on the "time-distance" between datetime columns on the left and on the right.
 
-- `SessionId`: A column of type `string` with correlation IDs.
-- `EventType`: A column of type `string` that identifies the event type of the record.
-- `Timestamp`: A column of type `datetime` indicating when the event described
-  by the record happened.
+The above operation differs from the usual Kusto join operation, since for the *`equi-join`* part of matching the high-cardinality key between the left and right data sets, the system can also apply a distance function and use it to considerably speed up the join.
+
+> [!NOTE]
+> A distance function doesn't behave like equality (that is, when both dist(x,y) and dist(y,z) are true it doesn't follow that dist(x,z) is also true.) Internally, we sometimes refer to this as "diagonal join".
+
+For example, if you want to identify event sequences within a relatively small time window, assume that you have a table `T` with the following schema:
+
+* `SessionId`: A column of type `string` with correlation IDs.
+* `EventType`: A column of type `string` that identifies the event type of the record.
+* `Timestamp`: A column of type `datetime` indicates when the event described by the record happened.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let T = datatable(SessionId:string, EventType:string, Timestamp:datetime)
 [
     '0', 'A', datetime(2017-10-01 00:00:00),
@@ -47,17 +54,17 @@ T
 
 **Problem statement**
 
-We want our query to answer the following question:
+Our query should answer the following question:
 
    Find all the session IDs in which event type `A` was followed by an
-   event type `B` within `1min` time window.
+   event type `B` within a `1min` time window.
 
-(In the sample data above, the only such session ID is `0`.)
+> [!NOTE]
+> In the sample data above, the only such session ID is `0`.
 
-Semantically, the following query answers this question, albeit inefficiently:
+Semantically, the following query answers this question, albeit inefficiently.
 
-<!-- csl -->
-```
+```kusto
 T 
 | where EventType == 'A'
 | project SessionId, Start=Timestamp
@@ -79,14 +86,11 @@ T
 To optimize this query, we can rewrite it as described below
 so that the time window is expressed as a join key.
 
-**Rewriting the query to account for the time window**
+**Rewrite the query to account for the time window**
 
-The idea is to rewrite the query so that the `datetime` values are
-"discretized" into buckets whose size is half the size of the time window.
-We can then use Kusto's equi-join to compare those bucket IDs.
+Rewrite the query so that the `datetime` values are "discretized" into buckets whose size is half the size of the time window. Use Kusto's *`equi-join`* to compare those bucket IDs.
 
-<!-- csl -->
-```
+```kusto
 let lookupWindow = 1min;
 let lookupBin = lookupWindow / 2.0; // lookup bin = equal to 1/2 of the lookup window
 T 
@@ -115,11 +119,10 @@ T
 |---|---|---|
 |0|2017-10-01 00:00:00.0000000|2017-10-01 00:01:00.0000000|
 
-
 **Runnable query reference (with table inlined)**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let T = datatable(SessionId:string, EventType:string, Timestamp:datetime)
 [
     '0', 'A', datetime(2017-10-01 00:00:00),
@@ -155,10 +158,10 @@ T
 
 **50M data query**
 
-The next query emulates data set of 50M records and ~10M IDs and runs the query with the technique described above.
+The next query emulates a data set of 50M records and ~10M IDs and runs the query with the technique described above.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let T = range x from 1 to 50000000 step 1
 | extend SessionId = rand(10000000), EventType = rand(3), Time=datetime(2017-01-01)+(x * 10ms)
 | extend EventType = case(EventType <= 1, "A",

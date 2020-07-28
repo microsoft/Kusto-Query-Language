@@ -1,3 +1,14 @@
+---
+title: binary_all_xor() (aggregation function) - Azure Data Explorer
+description: This article describes binary_all_xor() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/06/2020
+---
 # binary_all_xor() (aggregation function)
 
 Accumulates values using the binary `XOR` operation per summarization group (or in total, if summarization is done without grouping).
@@ -21,7 +32,7 @@ Returns a value that is aggregated using the binary `XOR` operation over records
 Producing 'cafe-food' using binary `XOR` operations:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(num:long)
 [
   0x44404440,

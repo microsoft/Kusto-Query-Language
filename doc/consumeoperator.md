@@ -1,3 +1,14 @@
+---
+title: consume operator - Azure Data Explorer | Microsoft Docs
+description: This article describes consume operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/30/2020
+---
 # consume operator
 
 Consumes the tabular data stream handed to the operator. 
@@ -5,8 +16,7 @@ Consumes the tabular data stream handed to the operator.
 The `consume` operator is mostly used for triggering the query side-effect without actually returning
 the results back to the caller.
 
-<!-- csl -->
-```
+```kusto
 T | consume
 ```
 

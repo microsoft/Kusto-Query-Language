@@ -1,9 +1,19 @@
+---
+title: top-hitters operator - Azure Data Explorer | Microsoft Docs
+description: This article describes top-hitters operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # top-hitters operator
 
 Returns an approximation of the first *N* results (assuming skewed distribution of the input).
 
-<!-- csl -->
-```
+```kusto
 T | top-hitters 25 of Page by Views 
 ```
 
@@ -30,7 +40,7 @@ The approximation of the the top-hitters is based on the [Count-Min-Sketch](http
 
 The next example shows how to find top-5  languages with most pages in Wikipedia (accessed after during April 2016). 
 
-```
+```kusto
 PageViews
 | where Timestamp > datetime(2016-04-01) and Timestamp < datetime(2016-05-01) 
 | top-hitters 5 of Language 
@@ -49,7 +59,7 @@ PageViews
 The next example shows how to find most viewed English pages of Wikipedia of the year 2016. 
 The query uses 'Views' (integer number) to calculate page popularity (number of views). 
 
-```
+```kusto
 PageViews
 | where Timestamp > datetime(2016-01-01)
 | where Language == "en"

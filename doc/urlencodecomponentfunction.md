@@ -1,3 +1,14 @@
+---
+title: url_encode_component() - Azure Data Explorer | Microsoft Docs
+description: This article describes url_encode_component() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/17/2020
+---
 # url_encode_component()
 
 The function converts characters of the input URL into a format that can be transmitted over the Internet. 
@@ -19,8 +30,7 @@ URL (string) converted into a format that can be transmitted over the Internet.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 let url = @'https://www.bing.com/hello word/';
 print original = url, encoded = url_encode_component(url)
 ```

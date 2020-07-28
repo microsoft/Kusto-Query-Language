@@ -1,3 +1,14 @@
+---
+title: The long data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The long data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # The long data type
 
 The `long` data type represents a signed, 64-bit wide, integer.

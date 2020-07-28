@@ -1,9 +1,19 @@
+---
+title: hourofday() - Azure Data Explorer | Microsoft Docs
+description: This article describes hourofday() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # hourofday()
 
 Returns the integer number representing the hour number of the given date
 
-<!-- csl -->
-```
+```kusto
 hourofday(datetime(2015-12-14 18:54)) == 18
 ```
 

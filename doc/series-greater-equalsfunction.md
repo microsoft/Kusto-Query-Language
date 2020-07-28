@@ -1,3 +1,14 @@
+---
+title: series_greater_equals() - Azure Data Explorer
+description: This article describes series_greater_equals() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 04/01/2020
+---
 # series_greater_equals()
 
 Calculates the element-wise greater or equals (`>=`) logic operation of two numeric series inputs.
@@ -17,7 +28,7 @@ Dynamic array of booleans containing the calculated element-wise greater or equa
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 print s1 = dynamic([1,2,4]), s2 = dynamic([4,2,1])
 | extend s1_greater_equals_s2 = series_greater_equals(s1, s2)
 ```

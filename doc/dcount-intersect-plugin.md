@@ -1,12 +1,23 @@
+---
+title: dcount_intersect plugin - Azure Data Explorer
+description: This article describes dcount_intersect plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # dcount_intersect plugin
 
-Calculates intersection between N sets based on hll values (N in range of [2..16]), and returns N dcount values.
+Calculates intersection between N sets based on `hll` values (N in range of [2..16]), and returns N `dcount` values.
 
 Given sets S<sub>1</sub>, S<sub>2</sub>, .. S<sub>n</sub> - returns values will be representing distinct counts of:  
-S<sub>1</sub>, S<sub>1</sub> âˆ© S<sub>2</sub>,  
-S<sub>1</sub> âˆ© S<sub>2</sub> âˆ© S<sub>3</sub>,  
+S<sub>1</sub>, S<sub>1</sub> ∩ S<sub>2</sub>,  
+S<sub>1</sub> ∩ S<sub>2</sub> ∩ S<sub>3</sub>,  
 ... ,  
-S<sub>1</sub> âˆ© S<sub>2</sub> âˆ© ... âˆ© S<sub>n</sub>
+S<sub>1</sub> ∩ S<sub>2</sub> ∩ ... ∩ S<sub>n</sub>
 
     T | evaluate dcount_intersect(hll_1, hll_2, hll_3)
 
@@ -17,17 +28,17 @@ S<sub>1</sub> âˆ© S<sub>2</sub> âˆ© ... âˆ© S<sub>n</sub>
 **Arguments**
 
 * *T*: The input tabular expression.
-* *hll_i*: the values of set S<sub>i</sub> calculated with [hll()](./hll-aggfunction.md) function.
+* *hll_i*: the values of set S<sub>i</sub> calculated with [`hll()`](./hll-aggfunction.md) function.
 
 **Returns**
 
-Returns a table with N dcount values (per column columns, representing sets intersections).
-Column names are s0, s1, ... (till n-1).
+Returns a table with N `dcount` values (per column, representing set intersections).
+Column names are s0, s1, ... (until n-1).
 
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 // Generate numbers from 1 to 100
 range x from 1 to 100 step 1
 | extend isEven = (x % 2 == 0), isMod3 = (x % 3 == 0), isMod5 = (x % 5 == 0)

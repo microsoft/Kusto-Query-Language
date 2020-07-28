@@ -1,3 +1,14 @@
+---
+title: Numerical operators - Azure Data Explorer | Microsoft Docs
+description: This article describes Numerical operators in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # Numerical operators
 
 The types `int`, `long`, and `real` represent numerical types.
@@ -27,8 +38,7 @@ Thus, the modulo of two numbers, *N* % *D*, is such that:
 
 For example, the following query:
 
-<!-- csl -->
-```
+```kusto
 print plusPlus = 14 % 12, minusPlus = -14 % 12, plusMinus = 14 % -12, minusMinus = -14 % -12
 ```
 

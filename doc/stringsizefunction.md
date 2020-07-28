@@ -1,3 +1,14 @@
+---
+title: string_size() - Azure Data Explorer | Microsoft Docs
+description: This article describes string_size() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # string_size()
 
 Returns the size, in bytes, of the input string.
@@ -16,8 +27,7 @@ Returns the length, in bytes, of the input string.
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 print size = string_size("hello")
 ```
 
@@ -25,9 +35,8 @@ print size = string_size("hello")
 |---|
 |5|
 
-<!-- csl -->
-```
-print size = string_size("â’¦â’°â’®â’¯â’ª")
+```kusto
+print size = string_size("⒦⒰⒮⒯⒪")
 ```
 
 |size|

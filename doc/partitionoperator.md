@@ -1,3 +1,14 @@
+---
+title: partition operator - Azure Data Explorer
+description: This article describes partition operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # partition operator
 
 The partition operator partitions its input table into multiple sub-tables
@@ -5,8 +16,7 @@ according to the values of the specified column, executes a sub-query over each
 sub-table, and produces a single output table that is the union of the results
 of all sub-queries. 
 
-<!-- csl -->
-```
+```kusto
 T | partition by Col1 ( top 10 by MaxValue )
 
 T | partition by Col1 { U | where Col2=toscalar(Col1) }
@@ -62,7 +72,7 @@ At some cases - it is more performant and easier to write query using `partition
 The next example runs a sub-query calculating `summarize` and `top` for-each of States starting with `W`: (WYOMING, WASHINGTON, WEST VIRGINIA, WISCONSIN)
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | where State startswith 'W'
 | partition by State 
@@ -94,7 +104,7 @@ data partitions in a map/reduce style. The example below shows how to create a
 manual distribution of aggregation over 10 partitions.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | extend p = hash(EventId, 10)
 | partition by p
@@ -119,7 +129,7 @@ The following example shows how query can be partitioned into N=10 partitions,
 where each partition calculates its own Count, and all later summarized into TotalCount.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let N = 10;                 // Number of query-partitions
 range p from 0 to N-1 step 1  // 
 | partition by p            // Run the sub-query partitioned 
@@ -141,8 +151,7 @@ range p from 0 to N-1 step 1  //
 The following example shows how one can use the [as operator](asoperator.md) to
 give a "name" to each data partition and then reuse that name within the subquery:
 
-<!-- csl -->
-```
+```kusto
 T
 | partition by Dim
 (
@@ -157,7 +166,7 @@ The same technique can be applied with much more complex subqueries. To simplify
 the syntax, one can wrap the subquery in a function call:
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let partition_function = (T:(Source:string)) 
 {
     T

@@ -1,3 +1,16 @@
+---
+title: cursor_before_or_at() - Azure Data Explorer | Microsoft Docs
+description: This article describes cursor_before_or_at() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/19/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # cursor_before_or_at()
 
 ::: zone pivot="azuredataexplorer"
@@ -30,6 +43,6 @@ This function can only be invoked on records of a table which has the
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

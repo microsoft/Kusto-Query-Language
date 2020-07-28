@@ -1,3 +1,14 @@
+---
+title: Time Series Analysis  - Azure Data Explorer | Microsoft Docs
+description: This article describes Time Series Analysis  in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 05/06/2019
+---
 # Time Series Analysis 
 
 The Kusto query language offers support in series as a native data type.

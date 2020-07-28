@@ -1,3 +1,14 @@
+---
+title: facet operator - Azure Data Explorer | Microsoft Docs
+description: This article describes facet operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # facet operator
 
 Returns a set of tables, one for each specified column.
@@ -19,8 +30,7 @@ Multiple tables: one for the `with` clause, and one for each column.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 MyTable 
 | facet by city, eventType 
     with (where timestamp > ago(7d) | take 1000)

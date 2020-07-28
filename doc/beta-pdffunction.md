@@ -1,9 +1,19 @@
+---
+title: beta_pdf() - Azure Data Explorer
+description: This article describes beta_pdf() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # beta_pdf()
 
 Returns the probability density beta function.
 
-<!-- csl -->
-```
+```kusto
 beta_pdf(0.2, 10.0, 50.0)
 ```
 
@@ -27,14 +37,14 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 If any argument is nonnumeric, beta_pdf() returns null value.
 
-If x â‰¤ 0 or 1 â‰¤ x, beta_pdf() returns NaN value.
+If x ≤ 0 or 1 ≤ x, beta_pdf() returns NaN value.
 
-If alpha â‰¤ 0 or beta â‰¤ 0, beta_pdf() returns the NaN value.
+If alpha ≤ 0 or beta ≤ 0, beta_pdf() returns the NaN value.
 
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(x:double, alpha:double, beta:double, comment:string)
 [
     0.5, 10.0, 20.0, "Valid input",

@@ -1,3 +1,16 @@
+---
+title: cursor_current(), current_cursor() - Azure Data Explorer | Microsoft Docs
+description: This article describes cursor_current(), current_cursor() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 12/10/2019
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # cursor_current(), current_cursor()
 
 ::: zone pivot="azuredataexplorer"
@@ -23,6 +36,6 @@ details on database cursors.
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

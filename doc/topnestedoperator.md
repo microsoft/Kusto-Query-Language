@@ -1,68 +1,111 @@
+---
+title: top-nested operator - Azure Data Explorer
+description: This article describes top-nested operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # top-nested operator
 
-Produces hierarchical top results, where each level is a drill-down based on previous level values. 
+Produces a hierarchical aggregation and top values selection, where each level is a refinement of the previous one.
 
-<!-- csl -->
-```
+```kusto
 T | top-nested 3 of Location with others="Others" by sum(MachinesNumber), top-nested 4 of bin(Timestamp,5m) by sum(MachinesNumber)
 ```
 
-It is useful for dashboard visualization scenarios, or when it is necessary to answer to a question that 
-sounds like: "find what are top-N values of K1 (using some aggregation); for each of them, find what are the top-M values of K2 (using another aggregation); ..."
+The `top-nested` operator accepts tabular data as input, and one or more aggregation clauses.
+The first aggregation clause (left-most) subdivides the input records into partitions, according
+to the unique values of some expression over those records. The clause then keeps a certain number of records
+that maximize or minimize this expression over the records. The next aggregation clause then
+applies a similar function, in a nested fashion. Each following clause is applied to the partition produced
+by the previous clause. This process continues for all aggregation clauses.
+
+For example, the `top-nested` operator can be used to answer the following question: "For a table containing sales
+figures, such as country, salesperson, and amount sold: what are the top five countries by sales? What are the top three salespeople in each of these countries?"
 
 **Syntax**
 
-*T* `|` `top-nested` [*N1*] `of` *Expression1* [`with others=` *ConstExpr1*] `by` [*AggName1* `=`] *Aggregation1* [`asc` | `desc`] [`,`...]
+*T* `|` `top-nested` *TopNestedClause2* [`,` *TopNestedClause2*...]
+
+Where *TopNestedClause* has the following syntax:
+
+[*N*] `of` [*`ExprName`* `=`] *`Expr`* [`with` `others` `=` *`ConstExpr`*] `by` [*`AggName`* `=`] *`Aggregation`* [`asc` | `desc`]
 
 **Arguments**
 
-for each top-nested rule:
-* *N1*: The number of top values to return for each hierarchy level. Optional (if omitted, all distinct values will be returned).
-* *Expression1*: An expression by which to select the top values. Typically it's either a column name in *T*, or some binning operation (e.g., `bin()`) on such a column. 
-* *ConstExpr1*: If specified, then for the applicable nesting level, an additional row will be appended that holds the aggregated result for the other values that are not included in the top values.
-* *Aggregation1*: A call to an aggregation function which may be one of:
-  [sum()](sum-aggfunction.md),
-  [count()](count-aggfunction.md),
-  [max()](max-aggfunction.md),
-  [min()](min-aggfunction.md),
-  [dcount()](dcountif-aggfunction.md),
-  [avg()](avg-aggfunction.md),
-  [percentile()](percentiles-aggfunction.md),
-  [percentilew()](percentiles-aggfunction.md),
-  or any algebric combination of these aggregations.
-* `asc` or `desc` (the default) may appear to control whether selection is actually from the "bottom" or "top" of the range.
+For each *TopNestedClause*:
+
+* *`N`*: A literal of type `long` indicating how many top values to return
+  for this hierarchy level.
+  If omitted, all distinct values will be returned.
+
+* *`ExprName`*: If specified, sets the name of the output column corresponding
+  to the values of *`Expr`*.
+
+* *`Expr`*: An expression over the input record indicating which value to return
+  for this hierarchy level.
+  Typically it's a column reference for the tabular input (*T*), or some
+  calculation (such as `bin()`) over such a column.
+
+* *`ConstExpr`*: If specified, for each hierarchy level, 1 record will be added
+  with the value that is the aggregation over all records that didn't
+  "make it to the top".
+
+* *`AggName`*: If specified, this identifier sets the column name
+  in the output for the value of *Aggregation*.
+
+* *`Aggregation`*: A numeric expression indicating the aggregation to apply
+  to all records sharing the same value of *`Expr`*. The value of this aggregation
+  determines which of the resulting records are "top".
+  
+  The following aggregation functions are supported:
+   * [sum()](sum-aggfunction.md),
+   * [count()](count-aggfunction.md),
+   * [max()](max-aggfunction.md),
+   * [min()](min-aggfunction.md),
+   * [dcount()](dcountif-aggfunction.md),
+   * [avg()](avg-aggfunction.md),
+   * [percentile()](percentiles-aggfunction.md), and
+   * [percentilew()](percentiles-aggfunction.md). Any algebraic combination of the aggregations is also supported.
+
+* `asc` or `desc` (the default) may appear to control whether selection is actually from the "bottom" or "top" of the range of aggregated values.
 
 **Returns**
 
-Hierarchial table which includes input columns and for each one a new column is produced to include result of the Aggregation for the same level for each element.
-The columns are arranged in the same order of the input columns and the new produced column will be close to the aggregated column. 
-Each record has a hierarchial structure where each value is selected after applying all the previous top-nested rules on all the previous levels and then applying the current level's rule on this output.
-This means that the top n values for level i are calculated for each value in level i - 1.
- 
-**Tips**
+This operator returns a table that has two columns for each aggregation clause:
 
-* Use columns renaming in for *Aggregation* results: T | top-nested 3 of Location by MachinesNumberForLocation = sum(MachinesNumber) ... .
+* One column holds the distinct values of the clause's *`Expr`* calculation (having the
+  column name *ExprName* if specified)
 
-* The number of records returned might be quite large; up to (*N1*+1) \* (*N2*+1) \* ... \* (*Nm*+1) (where m is the number of the levels and *Ni* is the top count for level i).
+* One column holds the result of the *Aggregation*
+  calculation (having the column name *AggregationName* if specified)
 
-* The Aggregation must receive a numeric column with aggregation function which is one of the mentioned above.
+**Comments**
 
-* Use the `with others=` option in order to get the aggregated value of all other values that was not top N values in some level.
+Input columns that aren't specified as *`Expr`* values aren't outputted.
+To get all values at a certain level, add an aggregation count that:
 
-* If you are not interested in getting `with others=` for some level, null values will be appended (for the aggreagated column and the level key, see example below).
+* Omits the value of *N*
+* Uses the column name as the value of *`Expr`*
+* Uses `Ignore=max(1)` as the aggregation, and then ignore (or project-away)
+   the column `Ignore`.
 
+The number of records may grow exponentially with the number of aggregation clauses
+((N1+1) \* (N2+1) \* ...). Record growth is even faster if no *N* limit is specified. Take into account that this operator may consume a considerable amount of resources.
 
-* It is possible to return additional columns for the selected top-nested candidates by appending additional top-nested statements like these (see examples below):
+If the distribution of the aggregation is considerably non-uniform,
+limit the number of distinct values to return (by using *N*) and use the
+`with others=` *ConstExpr* option to get an indication for the "weight" of all other
+cases.
 
-<!-- csl -->
-```
-top-nested 2 of ...., ..., ..., top-nested of <additionalRequiredColumn1> by max(1), top-nested of <additionalRequiredColumn2> by max(1)
-```
-
-**Example**
+**Examples**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | top-nested 2 of State by sum(BeginLat),
   top-nested 3 of Source by sum(BeginLat),
@@ -78,11 +121,10 @@ StormEvents
 |TEXAS|123400.5101|Law Enforcement|37228.5966|PERRYTON|289.3178|
 |TEXAS|123400.5101|Trained Spotter|13997.7124|CLAUDE|421.44|
 
-
-* With others example:
+Use the option 'with others':
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | top-nested 2 of State with others = "All Other States" by sum(BeginLat),
   top-nested 3 of Source by sum(BeginLat),
@@ -109,11 +151,10 @@ StormEvents
 |TEXAS|123400.5101|||All Other End Locations|58523.2932000001|
 |All Other States|1149279.5923|||All Other End Locations|1149279.5923|
 
-
-The following query shows the same results for the first level used in the example above:
+The following query shows the same results for the first level used in the example above.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
  StormEvents
  | where State !in ('TEXAS', 'KANSAS')
  | summarize sum(BeginLat)
@@ -124,10 +165,10 @@ The following query shows the same results for the first level used in the examp
 |1149279.5923|
 
 
-Requesting another column (EventType) to the top-nested result: 
+Request another column (EventType) to the top-nested result.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | top-nested 2 of State by sum(BeginLat),    top-nested 2 of Source by sum(BeginLat),    top-nested 1 of EndLocation by sum(BeginLat), top-nested of EventType  by tmp = max(1)
 | project-away tmp
@@ -146,10 +187,10 @@ StormEvents
 |TEXAS|123400.5101|Law Enforcement|37228.5966|PERRYTON|289.3178|Flood|
 |TEXAS|123400.5101|Law Enforcement|37228.5966|PERRYTON|289.3178|Flash Flood|
 
-In order to sort the result by the last nested level (in this example by EndLocation) and give an index sort order for each value in this level (per group) :
+Give an index sort order for each value in this level (per group) to sort the result by the last nested level (in this example by EndLocation):
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | top-nested 2 of State  by sum(BeginLat),    top-nested 2 of Source by sum(BeginLat),    top-nested 4 of EndLocation by  sum(BeginLat)
 | order by State , Source, aggregated_EndLocation
@@ -158,7 +199,7 @@ StormEvents
 | mv-expand EndLocations, endLocationSums, indicies
 ```
 
-|State|Source|EndLocations|endLocationSums|indicies|
+|State|Source|EndLocations|endLocationSums|indices|
 |---|---|---|---|---|
 |TEXAS|Trained Spotter|CLAUDE|421.44|0|
 |TEXAS|Trained Spotter|AMARILLO|316.8892|1|

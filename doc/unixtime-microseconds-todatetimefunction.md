@@ -1,3 +1,14 @@
+---
+title: unixtime_microseconds_todatetime() - Azure Data Explorer
+description: This article describes unixtime_microseconds_todatetime() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 11/27/2019
+---
 # unixtime_microseconds_todatetime()
 
 Converts unix-epoch microseconds to UTC datetime.
@@ -23,7 +34,7 @@ If the conversion is successful, the result will be a [datetime](./scalar-data-t
 **Example**
 
 <!-- csl: https://help.kusto.windows.net/Samples  -->
-```
+```kusto
 print date_time = unixtime_microseconds_todatetime(1546300800000000)
 ```
 

@@ -1,3 +1,14 @@
+---
+title: The decimal data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The decimal data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # The decimal data type
 
 The `decimal` data type represents a 128-bit wide, decimal number.

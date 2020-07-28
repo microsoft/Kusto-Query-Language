@@ -1,9 +1,19 @@
+---
+title: week_of_year() - Azure Data Explorer | Microsoft Docs
+description: This article describes week_of_year() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/18/2020
+---
 # week_of_year()
 
 Returns an integer which represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday, according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Week_dates).
 
-<!-- csl -->
-```
+```kusto
 week_of_year(datetime("2015-12-14"))
 ```
 

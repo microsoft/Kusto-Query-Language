@@ -1,3 +1,16 @@
+---
+title: extent_tags() - Azure Data Explorer | Microsoft Docs
+description: This article describes extent_tags() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # extent_tags()
 
 ::: zone pivot="azuredataexplorer"
@@ -23,8 +36,7 @@ column `ActivityId`. It demonstrates that some query operators (here,
 the `where` operator, but this is also true for `extend` and `project`)
 preserve the information about the data shard hosting the record.
 
-<!-- csl -->
-```
+```kusto
 T
 | where Timestamp > ago(1h)
 | where ActivityId == 'dd0595d4-183e-494e-b88e-54c52fe90e5a'
@@ -36,8 +48,7 @@ The following example shows how to obtain a count of all records from the
 last hour, which are stored in extents which are tagged with the tag `MyTag`
 (and potentially other tags), but not tagged with the tag `drop-by:MyOtherTag`.
 
-<!-- csl -->
-```
+```kusto
 T
 | where Timestamp > ago(1h)
 | extend Tags = extent_tags()
@@ -49,6 +60,6 @@ T
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

@@ -1,8 +1,19 @@
+---
+title: geo_geohash_to_central_point() - Azure Data Explorer
+description: This article describes geo_geohash_to_central_point() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: mbrichko
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 01/27/2020
+---
 # geo_geohash_to_central_point()
 
-Calculates the geospatial coordinates that represent the center of a Geohash rectangular area.
+Calculates the geospatial coordinates that represent the center of a geohash rectangular area.
 
-For more information about Geohash, see [Wikipedia](https://en.wikipedia.org/wiki/Geohash).  
+Read more about [`geohash`](https://en.wikipedia.org/wiki/Geohash).  
 
 **Syntax**
 
@@ -22,7 +33,7 @@ The geospatial coordinate values in [GeoJSON Format](https://tools.ietf.org/html
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print point = geo_geohash_to_central_point("sunny")
 | extend coordinates = point.coordinates
 | extend longitude = coordinates[0], latitude = coordinates[1]
@@ -35,7 +46,7 @@ print point = geo_geohash_to_central_point("sunny")
 The following example returns a null result because of the invalid geohash input.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print geohash = geo_geohash_to_central_point("a")
 ```
 
@@ -45,10 +56,10 @@ print geohash = geo_geohash_to_central_point("a")
 
 ## Example: Creating location deep-links for Bing Maps
 
-You can use the Geohash value to create a deep-link URL to Bing Maps by pointing to the Geohash center point:
+You can use the geohash value to create a deep-link URL to Bing Maps by pointing to the geohash center point:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 // Use string concatenation to create Bing Map deep-link URL from a geo-point
 let point_to_map_url = (_point:dynamic, _title:string) 
 {

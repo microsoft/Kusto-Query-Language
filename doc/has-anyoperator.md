@@ -1,9 +1,19 @@
+---
+title: has_any operator - Azure Data Explorer
+description: This article describes has_any operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 08/11/2019
+---
 # has_any operator
 
 `has_any` operator filters based on the provided set of values.
 
-<!--- csl --->
-```
+```kusto
 Table1 | where col has_any ('value1', 'value2')
 ```
 
@@ -33,7 +43,7 @@ Rows in *T* for which the predicate is `true`
 **A simple usage of `has_any` operator:**  
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 StormEvents 
 | where State has_any ("CAROLINA", "DAKOTA", "NEW") 
 | summarize count() by State
@@ -54,7 +64,7 @@ StormEvents
 **Using dynamic array:**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 let states = dynamic(['south', 'north']);
 StormEvents 
 | where State has_any (states)

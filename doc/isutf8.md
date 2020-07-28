@@ -1,9 +1,19 @@
+---
+title: isutf8() - Azure Data Explorer | Microsoft Docs
+description: This article describes isutf8() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # isutf8()
 
 Returns `true` if the argument is a valid utf8 string.
     
-<!-- csl -->
-```
+```kusto
 isutf8("some string") == true
 ```
 
@@ -17,8 +27,7 @@ Indicates whether the argument is a valid utf8 string.
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 T
 | where isutf8(fieldName)
 | count

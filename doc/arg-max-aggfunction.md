@@ -1,3 +1,14 @@
+---
+title: arg_max() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes arg_max() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 10/23/2018
+---
 # arg_max() (aggregation function)
 
 Finds a row in the group that maximizes *ExprToMaximize*, and returns the value of *ExprToReturn* (or `*` to return the entire row).

@@ -1,6 +1,17 @@
+---
+title: set_union() - Azure Data Explorer
+description: This article describes set_union() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 06/02/2019
+---
 # set_union()
 
-Returns a `dynamic` (JSON) array of the set of all distinct values that are in any of arrays - (arr1 âˆª arr2 âˆª ...).
+Returns a `dynamic` array of the set of all distinct values that are in any of arrays - (arr1 ∪ arr2 ∪ ...).
 
 **Syntax**
 
@@ -17,7 +28,7 @@ Returns a dynamic array of the set of all distinct values that are in any of arr
 **Example**
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
 | extend z = y * 2

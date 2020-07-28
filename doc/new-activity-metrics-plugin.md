@@ -1,11 +1,21 @@
+---
+title: new_activity_metrics plugin - Azure Data Explorer
+description: This article describes new_activity_metrics plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/30/2020
+---
 # new_activity_metrics plugin
 
 Calculates useful activity metrics (distinct count values, distinct count of new values, retention rate, and churn rate) for the cohort of `New Users`. 
 Each cohort of `New Users` (all users which were 1st seen in time window) is compared to all prior cohorts. 
 Comparison takes into account *all* previous time windows. For example, in the record for from=T2 and to=T3, 
 the distinct count of users will be all users in T3 who were not seen in both T1 and T2. 
-<!-- csl -->
-```
+```kusto
 T | evaluate new_activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
@@ -56,8 +66,7 @@ For definitions of `Retention Rate` and `Churn Rate` - refer to **Notes** sectio
 The following sample data set shows which users seen on which days. The table was generated based on a source `Users` 
 table, as follows: 
 
-<!-- csl -->
-```
+```kusto
 Users | summarize tostring(make_set(user)) by bin(Timestamp, 1d) | order by Timestamp asc;
 ```
 
@@ -71,8 +80,7 @@ Users | summarize tostring(make_set(user)) by bin(Timestamp, 1d) | order by Time
 
 The output of the plugin for the original table is the following: 
 
-<!-- csl -->
-```
+```kusto
 let StartDate = datetime(2019-11-01 00:00:00);
 let EndDate = datetime(2019-11-07 00:00:00);
 Users 
@@ -97,19 +105,19 @@ Users
 The following is an analysis of a few records from the output: 
 * Record `R=3`, `from_TimelineColumn` = `2019-11-01`,  `to_TimelineColumn` = `2019-11-03`:
     * The users considered for this record are all new users seen on 11/1. Since this is the first period, 
-    these are all users in that bin â€“ [0,2,3,4]
-    * `dcount_new_values` â€“ the number of users on 11/3 who weren't seen on 11/1. This includes a single user â€“ `5`. 
-    * `dcount_retained_values` â€“ out of all new users on 11/1, how many were retained until 11/3? There are three (`[0,2,4]`), 
+    these are all users in that bin – [0,2,3,4]
+    * `dcount_new_values` – the number of users on 11/3 who weren't seen on 11/1. This includes a single user – `5`. 
+    * `dcount_retained_values` – out of all new users on 11/1, how many were retained until 11/3? There are three (`[0,2,4]`), 
     while `count_churn_values` is one (user=`3`). 
-    * `retention_rate` = 0.75 â€“ the three retained users out of the four new users who were first seen in 11/1. 
+    * `retention_rate` = 0.75 – the three retained users out of the four new users who were first seen in 11/1. 
 
 * Record `R=9`, `from_TimelineColumn` = `2019-11-02`,  `to_TimelineColumn` = `2019-11-04`:
-    * This record focuses on the new users who were first seen on 11/2 â€“ users `1` and `5`. 
-    * `dcount_new_values` â€“ the number of users on 11/4 who weren't seen through all periods `T0 .. from_Timestamp`. Meaning, 
-    users who are seen on 11/4 but who were not seen on either 11/1 or 11/2 â€“ there are no such users. 
-    * `dcount_retained_values` â€“ out of all new users on 11/2 (`[1,5]`), how many were retained until 11/4? There's one such user (`[1]`), 
+    * This record focuses on the new users who were first seen on 11/2 – users `1` and `5`. 
+    * `dcount_new_values` – the number of users on 11/4 who weren't seen through all periods `T0 .. from_Timestamp`. Meaning, 
+    users who are seen on 11/4 but who were not seen on either 11/1 or 11/2 – there are no such users. 
+    * `dcount_retained_values` – out of all new users on 11/2 (`[1,5]`), how many were retained until 11/4? There's one such user (`[1]`), 
     while count_churn_values is one (user `5`). 
-    * `retention_rate` is 0.5 â€“ the single user that was retained on 11/4 out of the two new ones on 11/2. 
+    * `retention_rate` is 0.5 – the single user that was retained on 11/4 out of the two new ones on 11/2. 
 
 
 ### Weekly retention rate, and churn rate (single week)
@@ -118,7 +126,7 @@ The next query calculates a retention and churn rate for week-over-week window f
 (users that arrived on the first week).
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-05-01);
 let _end = datetime(2017-05-31);
@@ -147,7 +155,7 @@ The next query calculates retention and churn rate for week-over-week window for
 example calculated the statistics for a single week - the below produces NxN table for each from/to combination.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-05-01);
 let _end = datetime(2017-05-31);
@@ -188,7 +196,7 @@ the `New Users` cohort (all IDs that do not appear in this set are `New Users`).
 query examines the retention behavior of the `New Users` during the analysis period.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _lookback = datetime(2017-02-01);
 let _start = datetime(2017-05-01);
@@ -212,4 +220,3 @@ _data
 |2017-05-01 00:00:00.0000000|2017-05-15 00:00:00.0000000|0.257142857142857|
 |2017-05-01 00:00:00.0000000|2017-05-22 00:00:00.0000000|0.296326530612245|
 |2017-05-01 00:00:00.0000000|2017-05-29 00:00:00.0000000|0.0587755102040816|
-

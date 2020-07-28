@@ -1,3 +1,14 @@
+---
+title: min() (aggregation function) - Azure Data Explorer | Microsoft Docs
+description: This article describes min() (aggregation function) in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 07/24/2019
+---
 # min() (aggregation function)
 
 Returns the minimum value across the group. 

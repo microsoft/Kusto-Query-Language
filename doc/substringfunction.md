@@ -1,11 +1,21 @@
+---
+title: substring() - Azure Data Explorer | Microsoft Docs
+description: This article describes substring() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # substring()
 
 Extracts a substring from a source string starting from some index to the end of the string.
 
 Optionally, the length of the requested substring can be specified.
 
-<!-- csl -->
-```
+```kusto
 substring("abcdefg", 1, 2) == "bc"
 ```
 
@@ -29,8 +39,7 @@ A substring from the given string. The substring starts at startingIndex (zero-b
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 substring("123456", 1)        // 23456
 substring("123456", 2, 2)     // 34
 substring("ABCD", 0, 2)       // AB

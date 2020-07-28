@@ -1,3 +1,14 @@
+---
+title: unixtime_seconds_todatetime() - Azure Data Explorer
+description: This article describes unixtime_seconds_todatetime() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 11/25/2019
+---
 # unixtime_seconds_todatetime()
 
 Converts unix-epoch seconds to UTC datetime.
@@ -23,7 +34,7 @@ If the conversion is successful, the result will be a [datetime](./scalar-data-t
 **Example**
 
 <!-- csl: https://help.kusto.windows.net/Samples  -->
-```
+```kusto
 print date_time = unixtime_seconds_todatetime(1546300800)
 ```
 

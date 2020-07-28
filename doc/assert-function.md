@@ -1,3 +1,14 @@
+---
+title: assert() - Azure Data Explorer
+description: This article describes assert() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 09/26/2019
+---
 # assert()
 
 Checks for a condition. If the condition is false, outputs error messages and fails the query.
@@ -26,7 +37,7 @@ Checks for a condition. If the condition is false, outputs error messages and fa
 The following query defines a function `checkLength()` that checks input string length, and uses `assert` to validate input length parameter (checks that it is greater than zero).
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let checkLength = (len:long, s:string)
 {
     assert(len > 0, "Length must be greater than zero") and 
@@ -47,7 +58,7 @@ Running this query yields an error:
 Example of running with valid `len` input:
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 let checkLength = (len:long, s:string)
 {
     assert(len > 0, "Length must be greater than zero") and strlen(s) > len

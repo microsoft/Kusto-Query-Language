@@ -1,22 +1,32 @@
+---
+title: tostring() - Azure Data Explorer
+description: This article describes tostring() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # tostring()
 
 Converts input to a string representation.
 
-<!-- csl -->
-```
+```kusto
 tostring(123) == "123"
 ```
 
 **Syntax**
 
-`tostring(`*Expr*`)`
+`tostring(`*`Expr`*`)`
 
 **Arguments**
 
-* *Expr*: Expression that will be converted to string. 
+* *`Expr`*: Expression that will be converted to string. 
 
 **Returns**
 
-If *Expr* value is non-null result will be a string representation of *Expr*.
-If *Expr* value is null, result will be empty string.
+If the *`Expr`* value is non-null, the result will be a string representation of *`Expr`*.
+If the *`Expr`* value is null, the result will be an empty string.
  

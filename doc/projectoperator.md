@@ -1,11 +1,21 @@
-# Project operator
+---
+title: Project operator - Azure Data Explorer | Microsoft Docs
+description: This article describes Project operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
+# project operator
 
 Select the columns to include, rename or drop, and insert new computed columns. 
 
 The order of the columns in the result is specified by the order of the arguments. Only the columns specified in the arguments are included in the result. Any other columns in the input are dropped.  (See also `extend`.)
 
-<!-- csl -->
-```
+```kusto
 T | project cost=price*quantity, price
 ```
 
@@ -34,8 +44,7 @@ A table that has the columns named as arguments, and as many rows as the input t
 The following example shows several kinds of manipulations that can be done
 using the `project` operator. The input table `T` has three columns of type `int`: `A`, `B`, and `C`. 
 
-<!-- csl -->
-```
+```kusto
 T
 | project
     X=C,                       // Rename column C to X

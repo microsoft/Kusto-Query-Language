@@ -1,3 +1,14 @@
+---
+title: fork operator - Azure Data Explorer | Microsoft Docs
+description: This article describes fork operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # fork operator
 
 Runs multiple consumer operators in parallel.
@@ -32,8 +43,7 @@ The input stream will be cached by materialize and then the cached expression ca
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 KustoLogs
 | where Timestamp > ago(1h)
 | fork

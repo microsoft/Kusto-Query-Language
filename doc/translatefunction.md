@@ -1,3 +1,14 @@
+---
+title: translate() - Azure Data Explorer | Microsoft Docs
+description: This article describes translate() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/11/2019
+---
 # translate()
 
 Replaces a set of characters ('searchList') with another set of characters ('replacementList') in a given a string.

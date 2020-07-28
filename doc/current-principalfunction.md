@@ -1,8 +1,21 @@
+---
+title: current_principal() - Azure Data Explorer
+description: This article describes current_principal() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 12/10/2019
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
+---
 # current_principal()
 
 ::: zone pivot="azuredataexplorer"
 
-Returns the current principal name running the query.
+Returns the current principal name that runs the query.
 
 **Syntax**
 
@@ -10,14 +23,14 @@ Returns the current principal name running the query.
 
 **Returns**
 
-The current principal fully-qualified-name (FQN) as a `string`.  
-The string is formed as:  
+The current principal fully qualified name (FQN) as a `string`.  
+The string format is:  
 *PrinciplaType*`=`*PrincipalId*`;`*TenantId*
 
 **Example**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 print fqn=current_principal()
 ```
 
@@ -29,6 +42,6 @@ print fqn=current_principal()
 
 ::: zone pivot="azuremonitor"
 
-This isn't supported in Azure Monitor
+This capability isn't supported in Azure Monitor
 
 ::: zone-end

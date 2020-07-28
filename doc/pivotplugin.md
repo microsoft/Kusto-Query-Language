@@ -1,11 +1,21 @@
+---
+title: pivot plugin - Azure Data Explorer
+description: This article describes pivot plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # pivot plugin
 
 Rotates a table by turning the unique values from one column in the input table into multiple columns
 in the output table, and performs aggregations where they are required on any remaining column values 
 that are wanted in the final output.
 
-<!-- csl -->
-```
+```kusto
 T | evaluate pivot(PivotColumn)
 ```
 
@@ -16,7 +26,7 @@ T | evaluate pivot(PivotColumn)
 **Arguments**
 
 * *pivotColumn*: The column to rotate. each unique value from this column will be a column in the output table.
-* *aggregation function*: (optional) aggregates multiple rows in the input table to a single row in the output table. Currently supported functions: `min()`, `max()`, `any()`, `sum()`, `dcount()`, `avg()`, `stdev()`, `variance()`, and `count()` (default is `count()`).
+* *aggregation function*: (optional) aggregates multiple rows in the input table to a single row in the output table. Currently supported functions: `min()`, `max()`, `any()`, `sum()`, `dcount()`, `avg()`, `stdev()`, `variance()`, `make_list()`, `make_bag()`, `make_set()`, `count()` (default is `count()`).
 * *column1*, *column2*, ...: (optional) column names. The output table will contain an additional column per each specified column. default: all columns other than the pivoted column and the aggregation column.
 
 **Returns**
@@ -34,7 +44,7 @@ The output schema of the `pivot` plugin is based on the data and therefore query
 For each EventType and States starting with 'AL', count the number of events of this type in this state.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents
 | project State, EventType 
 | where State startswith "AL" 
@@ -55,7 +65,7 @@ StormEvents
 For each EventType and States starting with 'AR', display the total number of direct deaths.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | project State, EventType, DeathsDirect 
@@ -78,7 +88,7 @@ StormEvents
 Result is identical to previous example.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | project State, EventType, DeathsDirect 
@@ -101,7 +111,7 @@ StormEvents
 For each event type, source and state, sum the number of direct deaths.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 StormEvents 
 | where State startswith "AR" 
 | where DeathsDirect > 0

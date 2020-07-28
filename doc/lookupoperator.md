@@ -1,10 +1,20 @@
+---
+title: lookup operator - Azure Data Explorer | Microsoft Docs
+description: This article describes lookup operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 03/12/2020
+---
 # lookup operator
 
 The `lookup` operator extends the columns of a fact table with values
 looked-up in a dimension table.
 
-<!-- csl -->
-```
+```kusto
 FactTable | lookup kind=leftouter (DimensionTable) on CommonColumn, $left.Col1 == $right.Col2
 ```
 
@@ -77,8 +87,7 @@ A table with:
 
 **Examples**
 
-<!-- csl -->
-```
+```kusto
 let FactTable=datatable(Row:string,Personal:string,Family:string) [
   "1", "Bill",   "Gates",
   "2", "Bill",   "Clinton",

@@ -1,9 +1,19 @@
+---
+title: rand() - Azure Data Explorer | Microsoft Docs
+description: This article describes rand() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # rand()
 
 Returns a random number.
 
-<!-- csl -->
-```
+```kusto
 rand()
 rand(1000)
 ```

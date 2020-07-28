@@ -1,8 +1,19 @@
+---
+title: series_outliers() - Azure Data Explorer
+description: This article describes series_outliers() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/20/2019
+---
 # series_outliers()
 
 Scores anomaly points in a series.
 
-Takes an expression containing dynamic numerical array as input and generates a dynamic numeric array of the same length. Each value of the array indicates a score of possible anomaly using [Tukey's test](https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test). A value greater than 1.5 or less than -1.5 indicates a rise or decline anomaly respectively in the same element of the input.   
+The function takes an expression with a dynamic numerical array as input, and generates a dynamic numeric array of the same length. Each value of the array indicates a score of a possible anomaly, using ["Tukey's test"](https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test). A value greater than 1.5 in the same element of the input indicates a rise or decline anomaly. A value less than -1.5, indicates a decline anomaly.
 
 **Syntax**
 
@@ -10,11 +21,11 @@ Takes an expression containing dynamic numerical array as input and generates a 
 
 **Arguments**
 
-* *x*: Dynamic array cell which is an array of numeric values
-* *kind*: Algorithm of outlier detection. Currently supports `"tukey"` (traditional Tukey) and  `"ctukey"` (custom Tukey). Default is `"ctukey"`
-* *ignore_val*: numeric value indicating missing values in the series, default is double(null). The score of nulls and ignore values is set to `0`.
-* *min_percentile*: for calulation of the normal inter quantile range, default is 10, custom values supported are in range `[2.0, 98.0]` (`ctukey` only) 
-* *max_percentile*: same, default is 90, custom values supported are in range `[2.0, 98.0]` (ctukey only) 
+* *x*: Dynamic array cell that is an array of numeric values
+* *kind*: Algorithm of outlier detection. Currently supports `"tukey"` (traditional "Tukey") and  `"ctukey"` (custom "Tukey"). Default is `"ctukey"`
+* *ignore_val*: Numeric value indicating missing values in the series. Default is double(null). The score of nulls and ignore values is set to `0`
+* *min_percentile*: For calculating the normal inter-quantile range. Default is 10, custom values supported are in range `[2.0, 98.0]` (`ctukey` only)
+* *max_percentile*: same, default is 90, custom values supported are in range `[2.0, 98.0]` (ctukey only)
 
 The following table describes differences between `"tukey"` and `"ctukey"`:
 
@@ -23,16 +34,15 @@ The following table describes differences between `"tukey"` and `"ctukey"`:
 | `"tukey"` | 25% / 75%              | No                             |
 | `"ctukey"`| 10% / 90%              | Yes                            |
 
-
 > [!TIP]
-> The most convenient way of using this function is applying it to the results of [make-series](make-seriesoperator.md) operator.
+> The best way to use this function is to apply it to the results of the [make-series](make-seriesoperator.md) operator.
 
 **Example**
 
-Suppose you have a time series with some noise that creates outliers and you would like to replace those outliers (noise) with the average value, you could use series_outliers() to detect the outliers then replace them:
+A time series with some noise creates outliers. If you would like to replace those outliers (noise) with the average value, use series_outliers() to detect the outliers, and then replace them.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 range x from 1 to 100 step 1 
 | extend y=iff(x==20 or x==80, 10*rand()+10+(50-x)/2, 10*rand()+10) // generate a sample series with outliers at x=20 and x=80
 | summarize x=make_list(x),series=make_list(y)
@@ -42,4 +52,4 @@ range x from 1 to 100 step 1
 | render linechart
 ``` 
 
-![alt text](./Images/samples/series-outliers.png "series-outliers")
+:::image type="content" source="images/series-outliersfunction/series-outliers.png" alt-text="Series outliers" border="false":::

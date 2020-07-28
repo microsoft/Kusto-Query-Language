@@ -1,3 +1,14 @@
+---
+title: Logical (binary) operators - Azure Data Explorer | Microsoft Docs
+description: This article describes Logical (binary) operators in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 11/14/2018
+---
 # Logical (binary) operators
 
 The following logical operators are supported between two values of the `bool`

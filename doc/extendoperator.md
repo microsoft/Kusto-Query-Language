@@ -1,9 +1,19 @@
+---
+title: extend operator - Azure Data Explorer | Microsoft Docs
+description: This article describes extend operator in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # extend operator
 
 Create calculated columns and append them to the result set.
 
-<!-- csl -->
-```
+```kusto
 T | extend duration = endTime - startTime
 ```
 
@@ -36,8 +46,7 @@ A copy of the input tabular result set, such that:
 
 **Example**
 
-<!-- csl -->
-```
+```kusto
 Logs
 | extend
     Duration = CreatedOn - CompletedOn

@@ -1,3 +1,14 @@
+---
+title: The timespan data type - Azure Data Explorer | Microsoft Docs
+description: This article describes The timespan data type in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # The timespan data type
 
 The `timespan` (`time`) data type represents a  time interval.
@@ -33,8 +44,7 @@ fractional number of times one value can fit the other.
 
 The following example calculates how many seconds are in a day in several ways:
 
-<!-- csl -->
-```
+```kusto
 print
     result1 = 1d / 1s,
     result2 = time(1d) / time(1s),

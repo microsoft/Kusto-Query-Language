@@ -1,3 +1,14 @@
+---
+title: Columns - Azure Data Explorer | Microsoft Docs
+description: This article describes Columns in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # Columns
 
 Every [table](tables.md) in Kusto, and every tabular data stream, is a rectangular grid
@@ -24,8 +35,7 @@ the tabular data stream and its value is returned as the results of the query.
 Note in particular how the column `c` is referenced by name without a need to
 reference its container (indeed, that container has no name):
 
-<!-- csl -->
-```
+```kusto
 datatable (c:int) [int(-1), 0, 1, 2, 3]
 | where c*c >= 2
 | as Result

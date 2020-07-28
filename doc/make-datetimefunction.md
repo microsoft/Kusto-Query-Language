@@ -1,9 +1,19 @@
+---
+title: make_datetime() - Azure Data Explorer | Microsoft Docs
+description: This article describes make_datetime() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # make_datetime()
 
 Creates a [datetime](./scalar-data-types/datetime.md) scalar value from the specified date and time.
 
-<!-- csl -->
-```
+```kusto
 make_datetime(2017,10,01,12,10) == datetime(2017-10-01 12:10)
 ```
 
@@ -30,8 +40,7 @@ If creation is successful, result will be a [datetime](./scalar-data-types/datet
  
 **Example**
 
-<!-- csl -->
-```
+```kusto
 print year_month_day = make_datetime(2017,10,01)
 ```
 
@@ -42,8 +51,7 @@ print year_month_day = make_datetime(2017,10,01)
 
 
 
-<!-- csl -->
-```
+```kusto
 print year_month_day_hour_minute = make_datetime(2017,10,01,12,10)
 ```
 
@@ -54,13 +62,11 @@ print year_month_day_hour_minute = make_datetime(2017,10,01,12,10)
 
 
 
-<!-- csl -->
-```
+```kusto
 print year_month_day_hour_minute_second = make_datetime(2017,10,01,12,11,0.1234567)
 ```
 
 |year_month_day_hour_minute_second|
 |---|
 |2017-10-01 12:11:00.1234567|
-
 

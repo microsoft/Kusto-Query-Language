@@ -1,9 +1,19 @@
+---
+title: ago() - Azure Data Explorer | Microsoft Docs
+description: This article describes ago() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # ago()
 
 Subtracts the given timespan from the current UTC clock time.
 
-<!-- csl -->
-```
+```kusto
 ago(1h)
 ago(1d)
 ```
@@ -29,7 +39,6 @@ for all instantiations.
 
 All rows with a timestamp in the past hour:
 
-<!-- csl -->
-```
+```kusto
 T | where Timestamp > ago(1h)
 ```

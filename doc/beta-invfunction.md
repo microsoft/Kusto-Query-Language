@@ -1,9 +1,19 @@
+---
+title: beta_inv() - Azure Data Explorer | Microsoft Docs
+description: This article describes beta_inv() in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # beta_inv()
 
 Returns the inverse of the beta cumulative probability beta density function.
 
-<!-- csl -->
-```
+```kusto
 beta_inv(0.1, 10.0, 50.0)
 ```
 
@@ -29,16 +39,16 @@ The beta distribution can be used in project planning to model probable completi
 
 If any argument is nonnumeric, beta_inv() returns null value.
 
-If alpha â‰¤ 0 or beta â‰¤ 0, beta_inv() returns the null value.
+If alpha ≤ 0 or beta ≤ 0, beta_inv() returns the null value.
 
-If probability â‰¤ 0 or probability > 1, beta_inv() returns the NaN value.
+If probability ≤ 0 or probability > 1, beta_inv() returns the NaN value.
 
 Given a value for probability, beta_inv() seeks that value x such that beta_cdf(x, alpha, beta) = probability.
 
 **Examples**
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(p:double, alpha:double, beta:double, comment:string)
 [
     0.1, 10.0, 20.0, "Valid input",

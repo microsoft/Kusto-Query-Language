@@ -1,11 +1,21 @@
+---
+title: activity_engagement plugin - Azure Data Explorer
+description: This article describes activity_engagement plugin in Azure Data Explorer.
+services: data-explorer
+author: orspod
+ms.author: orspodek
+ms.reviewer: rkarlin
+ms.service: data-explorer
+ms.topic: reference
+ms.date: 02/13/2020
+---
 # activity_engagement plugin
 
 Calculates activity engagement ratio based on ID column over a sliding timeline window.
 
 activity_engagement plugin can be used for calculating DAU/WAU/MAU (daily/weekly/monthly activities).
 
-<!-- csl -->
-```
+```kusto
 T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 ```
 
@@ -42,7 +52,7 @@ Output table schema is:
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-01-31);
@@ -57,14 +67,14 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-![alt text](./images/queries/activity-engagement-dau-wau.png "activity-engagement-dau-wau")
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-wau.png" border="false" alt-text="Activity engagement dau wau":::
 
 ### DAU/MAU calculation
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-05-31);
@@ -79,14 +89,14 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-![alt text](./images/queries/activity-engagement-dau-mau.png "activity-engagement-dau-mau")
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau.png" border="false" alt-text="Activity engagement dau mau":::
 
 ### DAU/MAU calculation with additional dimensions
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data with additional dimension (`mod3`).
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
-```
+```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
 let _end = datetime(2017-05-31);
@@ -102,4 +112,4 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-![alt text](./images/queries/activity-engagement-dau-mau-mod3.png "activity-engagement-dau-mau-mod3")
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau-mod3.png" border="false" alt-text="Activity engagement dau mau mod 3":::
