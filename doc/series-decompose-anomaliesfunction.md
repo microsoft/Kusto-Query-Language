@@ -16,11 +16,11 @@ For more information, see [series_decompose()](series-decomposefunction.md).
 
 The function takes an expression containing a series (dynamic numerical array) as input, and extracts anomalous points with scores.
 
-**Syntax**
+## Syntax
 
 `series_decompose_anomalies (`*Series* `[, ` *Threshold*`,` *Seasonality*`,` *Trend*`, ` *Test_points*`, ` *AD_method*`,` *Seasonality_threshold* `])`
 
-**Arguments**
+## Arguments
 
 * *Series*: Dynamic array cell that is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators
 * *Threshold*: Anomaly threshold, default 1.5 (k value) for detecting mild or stronger anomalies

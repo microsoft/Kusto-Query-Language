@@ -20,16 +20,16 @@ Null values, a null bin size, or a negative bin size will result in null.
 
 Alias to `floor()` function.
 
-**Syntax**
+## Syntax
 
 `bin(`*value*`,`*roundTo*`)`
 
-**Arguments**
+## Arguments
 
 * *value*: A number, date, or timespan. 
 * *roundTo*: The "bin size". A number, date or timespan that divides *value*. 
 
-**Returns**
+## Returns
 
 The nearest multiple of *roundTo* below *value*.  
  
@@ -37,7 +37,7 @@ The nearest multiple of *roundTo* below *value*.
 (toint((value/roundTo))) * roundTo`
 ```
 
-**Examples**
+## Examples
 
 Expression | Result
 ---|---

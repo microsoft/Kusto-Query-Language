@@ -24,11 +24,11 @@ let options = dynamic({
 evaluate infer_storage_schema(options)
 ```
 
-**Syntax**
+## Syntax
 
 `evaluate` `infer_storage_schema(` *Options* `)`
 
-**Arguments**
+## Arguments
 
 A single *Options* argument is a constant value of type `dynamic` that holds
 a property bag specifying properties of the request:
@@ -41,7 +41,7 @@ a property bag specifying properties of the request:
 |`FileNamePrefix`|No|Only scan files starting with this prefix. It's not required, but specifying it may speed up the process|
 |`Mode`|No|Schema inference strategy, one of: `any`, `last`, `all`. Infer data schema from any (first found) file, from last written file, or from all files respectively. The default value is `last`.|
 
-**Returns**
+## Returns
 
 The `infer_storage_schema` plugin returns a single result table containing a single row/column holding CSL schema string.
 
@@ -50,7 +50,7 @@ The `infer_storage_schema` plugin returns a single result table containing a sin
 > * Schema inference strategy 'all' is a very "expensive" operation, as it implies reading from *all* artifacts found and merging their schema.
 > * Some returned types may not be the actual ones as a result of wrong type guess (or, as a result of schema merge process). This is why you should review the result carefully before creating an external table.
 
-**Example**
+## Example
 
 ```kusto
 let options = dynamic({

@@ -17,14 +17,14 @@ Returns a result of the bitwise `xor` operation of the two values.
 binary_xor(x,y)
 ```
 
-**Syntax**
+## Syntax
 
 `binary_xor(`*num1*`,` *num2* `)`
 
-**Arguments**
+## Arguments
 
 * *num1*, *num2*: long numbers.
 
-**Returns**
+## Returns
 
 Returns logical XOR operation on a pair of numbers: num1 ^ num2.

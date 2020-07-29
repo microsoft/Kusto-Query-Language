@@ -17,14 +17,14 @@ Reverses the value of its `bool` argument.
 not(false) == true
 ```
 
-**Syntax**
+## Syntax
 
 `not(`*expr*`)`
 
-**Arguments**
+## Arguments
 
 * *expr*: A `bool` expression to be reversed.
 
-**Returns**
+## Returns
 
 Returns the reversed logical value of its `bool` argument.

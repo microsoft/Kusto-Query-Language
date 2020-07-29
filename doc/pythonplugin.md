@@ -130,7 +130,7 @@ print "This is an example for using 'external_artifacts'"
     * You can also use the [partition operator](partitionoperator.md) for partitioning the input data set.
 * Use Kusto's query language whenever possible, to implement the logic of your Python script.
 
-    **Example**
+    ## Example
 
     ```kusto    
     .show operations
@@ -158,7 +158,7 @@ print "This is an example for using 'external_artifacts'"
      * Double quote characters (`"`) for Python string literals in Python scripts
 * Use the [`externaldata` operator](externaldata-operator.md) to obtain the content of a script that you've stored in an external location, such as Azure Blob storage.
   
-    **Example**
+    ## Example
 
     ```kusto
     let script = 

@@ -18,11 +18,11 @@ zone_pivot_groups: kql-flavors
 Retrieves the current value of the cursor of the database in scope. (The names `cursor_current`
 and `current_cursor` are synonyms.)
 
-**Syntax**
+## Syntax
 
 `cursor_current()`
 
-**Returns**
+## Returns
 
 Returns a single value of type `string` which encodes the current value of the
 cursor of the database in scope.

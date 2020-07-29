@@ -14,21 +14,21 @@ ms.date: 02/13/2020
 Takes a column name as a string and a default value. Returns a reference to the column if it exists, 
 otherwise - returns the default value.
 
-**Syntax**
+## Syntax
 
 `column_ifexists(`*columnName*`, `*defaultValue*)
 
-**Arguments**
+## Arguments
 
 * *columnName*: The name of the column
 * *defaultValue*: The value to use if the column doesn't exist in the context that the function was used in.
 				  This value can be any scalar expression (e.g. a reference to another column).
 
-**Returns**
+## Returns
 
 If *columnName* exists, then the column it refers to. Otherwise - *defaultValue*.
 
-**Examples**
+## Examples
 
 ```kusto
 .create function with (docstring = "Wraps a table query that allows querying the table even if columnName doesn't exist ", folder="My Functions")

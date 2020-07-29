@@ -18,11 +18,11 @@ Calculates useful activity metrics (distinct count values, distinct count of new
 T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `activity_metrics(`*IdColumn*`,` *TimelineColumn*`,` [*Start*`,` *End*`,`] *Window* [`,` *dim1*`,` *dim2*`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
@@ -32,7 +32,7 @@ T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startof
 * *Window*: Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string which is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md)/[startofyear](startofyearfunction.md) accordingly. 
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
 
-**Returns**
+## Returns
 
 Returns a table that has the distinct count values, distinct count of new values, retention rate, and churn rate for each timeline period and for each existing dimensions combination.
 
@@ -86,7 +86,7 @@ Derived from the definition of `Churn Rate` and `Retention Rate`, the following 
     [Retention rate] = 100.0% - [Churn Rate]
 
 
-**Examples**
+## Examples
 
 ### Weekly retention rate, and churn rate
 

@@ -15,23 +15,23 @@ Returns a `dynamic` (JSON) array of all the values of *Expr* in the group, for w
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` `make_list_if(`*Expr*, *Predicate* [`,` *MaxSize*]`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation.
 * *Predicate*: Predicate that has to evaluate to `true`, in order for *Expr* to be added to the result.
 * *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
 
-**Returns**
+## Returns
 
 Returns a `dynamic` (JSON) array of all the values of *Expr* in the group, for which *Predicate* evaluates to `true`.
 If the input to the `summarize` operator is not sorted, the order of elements in the resulting array is undefined.
 If the input to the `summarize` operator is sorted, the order of elements in the resulting array tracks that of the input.
 
-**Example**
+## Example
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)

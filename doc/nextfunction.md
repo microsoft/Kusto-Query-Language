@@ -14,7 +14,7 @@ ms.date: 02/13/2020
 Returns the value of a column in a row that it at some offset following the
 current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
-**Syntax**
+## Syntax
 
 `next(column)`
 
@@ -22,7 +22,7 @@ current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
 `next(column, offset, default_value)`
 
-**Arguments**
+## Arguments
 
 * `column`: the column to get the values from.
 
@@ -31,7 +31,7 @@ current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 * `default_value`: the default value to be used when there is no next rows to take the value from. When no default value is specified, null is used.
 
 
-**Examples**
+## Examples
 ```kusto
 Table | serialize | extend nextA = next(A,1)
 | extend diff = A - nextA

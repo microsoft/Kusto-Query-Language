@@ -15,22 +15,22 @@ Calculates the geospatial coordinates that represent the center of a geohash rec
 
 Read more about [`geohash`](https://en.wikipedia.org/wiki/Geohash).  
 
-**Syntax**
+## Syntax
 
 `geo_geohash_to_central_point(`*geohash*`)`
 
-**Arguments**
+## Arguments
 
 *geohash*: Geohash string value as it was calculated by [geo_point_to_geohash()](geo-point-to-geohash-function.md). The geohash string can be 1 to 18 characters.
 
-**Returns**
+## Returns
 
 The geospatial coordinate values in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If the geohash is invalid, the query will produce a null result.
 
 > [!NOTE]
 > The GeoJSON format specifies longitude first and latitude second.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

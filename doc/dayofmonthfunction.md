@@ -17,14 +17,14 @@ Returns the integer number representing the day number of the given month
 dayofmonth(datetime(2015-12-14)) == 14
 ```
 
-**Syntax**
+## Syntax
 
 `dayofmonth(`*a_date*`)`
 
-**Arguments**
+## Arguments
 
 * `a_date`: A `datetime`.
 
-**Returns**
+## Returns
 
 `day number` of the given month.

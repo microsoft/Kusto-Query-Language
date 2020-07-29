@@ -13,7 +13,7 @@ ms.date: 02/13/2020
 
 `row_window_session()` calculates session start values of a column in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
-**Syntax**
+## Syntax
 
 `row_window_session` `(` *`Expr`* `,` *`MaxDistanceFromFirst`* `,` *`MaxDistanceBetweenNeighbors`* [`,` *`Restart`*] `)`
 
@@ -33,7 +33,7 @@ ms.date: 02/13/2020
 * *Restart* is an optional scalar expression of type `boolean`. If specified,
   every value that evaluates to `true` will immediately restart the session.
 
-**Returns**
+## Returns
 
 The function returns the values at the beginning of each session.
 
@@ -58,7 +58,7 @@ a logical OR one of the following conditions:
 * If the value of *`Expr`* equals or exceeds the previous value of *`Expr`*
   plus *`MaxDistanceBetweenNeighbors`*.
 
-**Examples**
+## Examples
 
 The following example shows how to calculate the session start values for a table
 with two columns: an `ID` column that identifies a sequence, and a `Timestamp`

@@ -20,11 +20,11 @@ the results back to the caller.
 T | consume
 ```
 
-**Syntax**
+## Syntax
 
 `consume` [`decodeblocks` `=` *DecodeBlocks*]
 
-**Arguments**
+## Arguments
 
 * *DecodeBlocks*: A constant Boolean value. If set to `true`, or if the request
   property `perftrace` is set to `true`, the `consume` operator will not just

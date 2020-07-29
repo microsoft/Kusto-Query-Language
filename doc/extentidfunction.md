@@ -19,16 +19,16 @@ Returns a unique identifier that identifies the data shard ("extent") that the c
 
 Applying this function to calculated data that isn't attached to a data shard returns an empty guid (all zeros).
 
-**Syntax**
+## Syntax
 
 `extent_id()`
 
-**Returns**
+## Returns
 
 A value of type `guid` that identifies the current record's data shard,
 or an empty guid (all zeros).
 
-**Example**
+## Example
 
 The following example shows how to get a list of all the data shards
 that have records from an hour ago with a specific value for the

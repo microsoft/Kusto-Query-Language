@@ -13,19 +13,19 @@ ms.date: 10/23/2018
 
 Packs all input values into a dynamic array.
 
-**Syntax**
+## Syntax
 
 `pack_array(`*Expr1*`[`,` *Expr2*]`)`
 
-**Arguments**
+## Arguments
 
 * *Expr1...N*: Input expressions to be packed into a dynamic array.
 
-**Returns**
+## Returns
 
 Dynamic array which includes the values of Expr1, Expr2, ... , ExprN.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

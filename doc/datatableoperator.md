@@ -18,11 +18,11 @@ Returns a table whose schema and values are defined in the query itself.
 > [!NOTE]
 > This operator doesn't have a pipeline input.
 
-**Syntax**
+## Syntax
 
 `datatable` `(` *ColumnName* `:` *ColumnType* [`,` ...] `)` `[` *ScalarValue* [`,` *ScalarValue* ...] `]`
 
-**Arguments**
+## Arguments
 
 ::: zone pivot="azuredataexplorer"
 
@@ -43,11 +43,11 @@ Returns a table whose schema and values are defined in the query itself.
 
 ::: zone-end
 
-**Returns**
+## Returns
 
 This operator returns a data table of the given schema and data.
 
-**Example**
+## Example
 
 ```kusto
 datatable (Date:datetime, Event:string)

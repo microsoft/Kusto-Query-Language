@@ -17,11 +17,11 @@ Returns an estimate for the specified percentile of the *ValueColumn* population
 T | evaluate rolling_percentile(ValueColumn, Percentile, IndexColumn, BinSize, BinsPerWindow)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `rolling_percentile(`*ValueColumn*`,` *Percentile*`,` *IndexColumn*`,` *BinSize*`,` *BinsPerWindow*  [`,` *dim1*`,` *dim2*`,` ...] `)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *ValueColumn*: The name of the column with values to calculate the percentile of. 
@@ -31,7 +31,7 @@ T | evaluate rolling_percentile(ValueColumn, Percentile, IndexColumn, BinSize, B
 * *BinsPerWindow*: Scalar with number of bins included in each window.
 * *dim1*, *dim2*, ... : (optional) list of the dimensions columns to slice by.
 
-**Returns**
+## Returns
 
 Returns a table with a row per each bin (and combination of dimensions if specified) that has the rolling percentile of values in the window ending at the bin (inclusive). distinct count values, distinct count of new values, aggregated distinct count for each 
 time window.
@@ -43,7 +43,7 @@ Output table schema is:
 |---|---|---|---|---|
 
 
-**Examples**
+## Examples
 
 ### Rolling 3-day median value per day 
 

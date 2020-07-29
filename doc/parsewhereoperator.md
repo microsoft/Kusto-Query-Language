@@ -19,11 +19,11 @@ See [parse operator](parseoperator.md), which produces nulls for unsuccessfully 
 T | parse-where Text with "ActivityName=" name ", ActivityType=" type
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| parse-where` [`kind=regex` [`flags=regex_flags`] |`simple`] *Expression* `with` `*` (*StringConstant* *ColumnName* [`:` *ColumnType*]) `*`...
 
-**Arguments**
+## Arguments
 
 * *T*: The input table.
 
@@ -41,7 +41,7 @@ T | parse-where Text with "ActivityName=" name ", ActivityType=" type
   
 * *ColumnType:* should be an optional scalar type that indicates the type to convert the value to. The default is string type.
 
-**Returns**
+## Returns
 
 The input table, which is extended according to the list of columns that are provided to the operator.
 

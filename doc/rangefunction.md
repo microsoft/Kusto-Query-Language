@@ -13,11 +13,11 @@ ms.date: 02/13/2020
 
 Generates a dynamic array holding a series of equally-spaced values.
 
-**Syntax**
+## Syntax
 
 `range(`*start*`,` *stop*[`,` *step*]`)` 
 
-**Arguments**
+## Arguments
 
 * *start*: The value of the first element in the resulting array. 
 * *stop*: The value of the last element in the resulting array,
@@ -27,7 +27,7 @@ array and within an integer multiple of *step* from *start*.
 the array. 
 The default value for *step* is `1` for numeric and `1h` for `timespan` or `datetime`
 
-**Examples**
+## Examples
 
 The following example returns `[1, 4, 7]`:
 

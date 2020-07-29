@@ -22,11 +22,11 @@ database('Sample').StormEvents
 cluster('help').database('Sample').StormEvents
 ```
 
-**Syntax**
+## Syntax
 
 `database(`*stringConstant*`)`
 
-**Arguments**
+## Arguments
 
 * *stringConstant*: Name of the database that is referenced. Database identified can be either `DatabaseName` or `PrettyName`. Argument has to be _constant_ prior of query execution, i.e. cannot come from sub-query evaluation.
 

@@ -19,17 +19,17 @@ that are wanted in the final output.
 T | evaluate pivot(PivotColumn)
 ```
 
-**Syntax**
+## Syntax
 
 `T | evaluate pivot(`*pivotColumn*`[, `*aggregationFunction*`] [,`*column1* `[,`*column2* ... `]])`
 
-**Arguments**
+## Arguments
 
 * *pivotColumn*: The column to rotate. each unique value from this column will be a column in the output table.
 * *aggregation function*: (optional) aggregates multiple rows in the input table to a single row in the output table. Currently supported functions: `min()`, `max()`, `any()`, `sum()`, `dcount()`, `avg()`, `stdev()`, `variance()`, `make_list()`, `make_bag()`, `make_set()`, `count()` (default is `count()`).
 * *column1*, *column2*, ...: (optional) column names. The output table will contain an additional column per each specified column. default: all columns other than the pivoted column and the aggregation column.
 
-**Returns**
+## Returns
 
 Pivot returns the rotated table with specified columns (*column1*, *column2*, ...) plus all unique values of the pivot columns. Each cell for the pivoted columns will contain the aggregate function computation.
 
@@ -37,7 +37,7 @@ Pivot returns the rotated table with specified columns (*column1*, *column2*, ..
 
 The output schema of the `pivot` plugin is based on the data and therefore query may produce different schema for any two runs. This also means that query that is referencing unpacked columns may become 'broken' at any time. Due to this reason - it is not advised to use this plugin for automation jobs.
 
-**Examples**
+## Examples
 
 ### Pivot by a column
 

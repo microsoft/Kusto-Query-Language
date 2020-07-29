@@ -15,11 +15,11 @@ Binds a name to the operator's input tabular expression, thus allowing the query
 to reference the value of the tabular expression multiple times without breaking
 the query and binding a name through the [let statement](letstatement.md).
 
-**Syntax**
+## Syntax
 
 *T* `|` `as` [`hint.materialized` `=` `true`] *Name*
 
-**Arguments**
+## Arguments
 
 * *T*: A tabular expression.
 * *Name*: A temporary name for the tabular expression.
@@ -37,7 +37,7 @@ the query and binding a name through the [let statement](letstatement.md).
   outer tabular input (`$left`) can also be used in the join's tabular inner input
   (`$right`).
 
-**Examples**
+## Examples
 
 ```kusto
 // 1. In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'

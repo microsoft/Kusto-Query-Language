@@ -21,11 +21,11 @@ ipv6_is_match('fe80::85d:e82c:9446:7994/127', 'fe80::85d:e82c:9446:7995/127') ==
 ipv6_is_match('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == true
 ```
 
-**Syntax**
+## Syntax
 
 `ipv6_is_match(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
 
-**Arguments**
+## Arguments
 
 * *Expr1*, *Expr2*: A string expression representing an IPv6 or IPv4 address. IPv6 and IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
 * *PrefixMask*: An integer from 0 to 128 representing the number of most-significant bits that are taken into account.
@@ -35,10 +35,10 @@ ipv6_is_match('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == tr
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
 The IP address to the LEFT of the slash (`/`) is the base IP address. The number (1 to 127) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
 
-**Example**:
+## Example:
 fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 
-**Returns**
+## Returns
 
 * `true`: If the long representation of the first IPv6/IPv4 string argument is equal to the second IPv6/IPv4 string argument.
 * `false`: Otherwise.

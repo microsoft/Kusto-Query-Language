@@ -17,15 +17,15 @@ Converts input to [`guid`](./scalar-data-types/guid.md) representation.
 toguid("70fc66f7-8279-44fc-9092-d364d70fce44") == guid("70fc66f7-8279-44fc-9092-d364d70fce44")
 ```
 
-**Syntax**
+## Syntax
 
 `toguid(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be converted to [`guid`](./scalar-data-types/guid.md) scalar. 
 
-**Returns**
+## Returns
 
 If conversion is successful, result will be a [`guid`](./scalar-data-types/guid.md) scalar.
 If conversion is not successful, result will be `null`.

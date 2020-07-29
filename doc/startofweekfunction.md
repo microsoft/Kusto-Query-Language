@@ -15,20 +15,20 @@ Returns the start of the week containing the date, shifted by an offset, if prov
 
 Start of the week is considered to be a Sunday.
 
-**Syntax**
+## Syntax
 
 `startofweek(`*date* [`,`*offset*]`)`
 
-**Arguments**
+## Arguments
 
 * `date`: The input date.
 * `offset`: An optional number of offset weeks from the input date (integer, default - 0).
 
-**Returns**
+## Returns
 
 A datetime representing the start of the week for the given *date* value, with the offset, if specified.
 
-**Example**
+## Example
 
 ```kusto
   range offset from -1 to 1 step 1

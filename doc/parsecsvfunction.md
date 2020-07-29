@@ -17,15 +17,15 @@ Splits a given string representing a single record of comma-separated values and
 parse_csv("aaa,bbb,ccc") == ["aaa","bbb","ccc"]
 ```
 
-**Syntax**
+## Syntax
 
 `parse_csv(`*source*`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The source string representing a single record of comma-separated values.
 
-**Returns**
+## Returns
 
 A string array that contains the split values.
 
@@ -34,7 +34,7 @@ A string array that contains the split values.
 Embedded line feeds, commas, and quotes may be escaped using the double quotation mark ('"'). 
 This function doesn't support multiple records per row (only the first record is taken).
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

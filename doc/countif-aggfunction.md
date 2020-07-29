@@ -17,15 +17,15 @@ Returns a count of rows for which *Predicate* evaluates to `true`.
 
 See also - [count()](count-aggfunction.md) function, which counts rows without predicate expression.
 
-**Syntax**
+## Syntax
 
 summarize `countif(`*Predicate*`)`
 
-**Arguments**
+## Arguments
 
 * *Predicate*: Expression that will be used for aggregation calculation. 
 
-**Returns**
+## Returns
 
 Returns a count of rows for which *Predicate* evaluates to `true`.
 

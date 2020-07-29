@@ -15,17 +15,17 @@ Calculates the S2 cell token string value for a geographic location.
 
 Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierarchy).
 
-**Syntax**
+## Syntax
 
 `geo_point_to_s2cell(`*longitude*`, `*latitude*`, `*level*`)`
 
-**Arguments**
+## Arguments
 
 * *longitude*: Longitude value of a geographic location. Longitude *x* will be considered valid if *x* is a real number and *x* is in the range [-180, +180]. 
 * *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in the range [-90, +90]. 
 * *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
 
-**Returns**
+## Returns
 
 The S2 cell token string value of a given geographic location. If the coordinates or levels are invalid, the query will produce an empty result.
 
@@ -80,7 +80,7 @@ The table source can be found [in this S2 cell statistical resource](https://s2g
 
 See also [geo_point_to_geohash()](geo-point-to-geohash-function.md).
 
-**Examples**
+## Examples
 
 US storm events aggregated by s2cell.
 

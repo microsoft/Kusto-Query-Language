@@ -21,17 +21,17 @@ If *probability* = `beta_cdf(`*x*,...`)`, then `beta_inv(`*probability*,...`)` =
 
 The beta distribution is commonly used to study variation in the percentage of something across samples, such as the fraction of the day people spend watching television.
 
-**Syntax**
+## Syntax
 
 `beta_cdf(`*x*`, `*alpha*`, `*beta*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A value at which to evaluate the function.
 * *alpha*: A parameter of the distribution.
 * *beta*: A parameter of the distribution.
 
-**Returns**
+## Returns
 
 * The [cumulative beta distribution function](https://en.wikipedia.org/wiki/Beta_distribution#Cumulative_distribution_function).
 
@@ -43,7 +43,7 @@ If x < 0 or x > 1, beta_cdf() returns NaN value.
 
 If alpha ≤ 0 or beta ≤ 0, beta_cdf() returns the NaN value.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

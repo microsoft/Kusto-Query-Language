@@ -17,7 +17,7 @@ Filters a record set based on the provided set of values.
 Table1 | where col in ('value1', 'value2')
 ```
 
-**Syntax**
+## Syntax
 
 *Case-sensitive syntax:*
 
@@ -35,14 +35,14 @@ Table1 | where col in ('value1', 'value2')
 *T* `|` `where` *col* `!in~` `(`*list of scalar expressions*`)`  
 *T* `|` `where` *col* `!in~` `(`*tabular expression*`)`   
 
-**Arguments**
+## Arguments
 
 * *T* - The tabular input whose records are to be filtered.
 * *col* - The column to filter.
 * *list of expressions* - A comma-separated list of tabular, scalar, or literal expressions.
 * *tabular expression* - A tabular expression that has a set of values. If the expression has multiple columns, the first column is used.
 
-**Returns**
+## Returns
 
 Rows in *T* for which the predicate is `true`.
 

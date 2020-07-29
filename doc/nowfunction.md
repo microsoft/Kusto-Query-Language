@@ -19,21 +19,21 @@ now()
 now(-2d)
 ```
 
-**Syntax**
+## Syntax
 
 `now(`[*offset*]`)`
 
-**Arguments**
+## Arguments
 
 * *offset*: A `timespan`, added to the current UTC clock time. Default: 0.
 
-**Returns**
+## Returns
 
 The current UTC clock time as a `datetime`.
 
 `now()` + *offset* 
 
-**Example**
+## Example
 
 Determines the interval since the event identified by the predicate:
 

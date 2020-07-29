@@ -13,21 +13,21 @@ ms.date: 02/13/2020
 
 Returns an estimate for the number of distinct values that are taken by a scalar expression in the summary group.
 
-**Syntax**
+## Syntax
 
 ... `|` `summarize` `dcount` `(`*`Expr`*[, *`Accuracy`*]`)` ...
 
-**Arguments**
+## Arguments
 
 * *Expr*: A scalar expression whose distinct values are to be counted.
 * *Accuracy*: An optional `int` literal that defines the requested estimation accuracy. See below for supported values. If unspecified, the default value
   `1` is used.
 
-**Returns**
+## Returns
 
 Returns an estimate of the number of distinct values of *`Expr`* in the group.
 
-**Example**
+## Example
 
 ```kusto
 PageViewLog | summarize countries=dcount(country) by continent

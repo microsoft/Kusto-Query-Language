@@ -13,15 +13,15 @@ ms.date: 02/13/2020
 
 Returns whether input is an infinite (positive or negative) value.  
 
-**Syntax**
+## Syntax
 
 `isinf(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number.
 
-**Returns**
+## Returns
 
 A non-zero value (true) if x is a positive or negative infinite; and zero (false) otherwise.
 
@@ -31,7 +31,7 @@ A non-zero value (true) if x is a positive or negative infinite; and zero (false
 * For checking if value is finite, see [isfinite()](isfinitefunction.md).
 * For checking if value is NaN (Not-a-Number), see [isnan()](isnanfunction.md).
 
-**Example**
+## Example
 
 ```kusto
 range x from -1 to 1 step 1

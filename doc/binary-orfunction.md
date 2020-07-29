@@ -17,14 +17,14 @@ Returns a result of the bitwise `or` operation of the two values.
 binary_or(x,y)
 ```
 
-**Syntax**
+## Syntax
 
 `binary_or(`*num1*`,` *num2* `)`
 
-**Arguments**
+## Arguments
 
 * *num1*, *num2*: long numbers.
 
-**Returns**
+## Returns
 
 Returns logical OR operation on a pair of numbers: num1 | num2.

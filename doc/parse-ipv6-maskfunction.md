@@ -18,11 +18,11 @@ parse_ipv6_mask("127.0.0.1", 24) == '0000:0000:0000:0000:0000:ffff:7f00:0000'
 parse_ipv6_mask(":fe80::85d:e82c:9446:7994", 120) == 'fe80:0000:0000:0000:085d:e82c:9446:7900'
 ```
 
-**Syntax**
+## Syntax
 
 `parse_ipv6_mask(`*`Expr`*`, `*`PrefixMask`*`)`
 
-**Arguments**
+## Arguments
 
 * *`Expr`*: String expression representing IPv6/IPv4 network address that will be converted to canonical IPv6 representation. String may include net-mask using [IP-prefix notation](#ip-prefix-notation).
 * *`PrefixMask`*: An integer from 0 to 128 representing the number of most-significant bits that are taken into account.
@@ -32,12 +32,12 @@ parse_ipv6_mask(":fe80::85d:e82c:9446:7994", 120) == 'fe80:0000:0000:0000:085d:e
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
 The IP address to the LEFT of the slash (`/`) is the base IP address. The number (1 to 127) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
-**Returns**
+## Returns
 
 If conversion is successful, the result will be a string representing a canonical IPv6 network address.
 If conversion isn't successful, the result will be `null`.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

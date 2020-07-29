@@ -13,15 +13,15 @@ ms.date: 03/11/2020
 
 Encodes a base64 string from a bytes array.
 
-**Syntax**
+## Syntax
 
 `base64_encode_fromarray(`*BytesArray*`)`
 
-**Arguments**
+## Arguments
 
 * *BytesArray*: Input bytes array to be encoded into base64 string.
 
-**Returns**
+## Returns
 
 Returns the base64 string encoded from the bytes array.
 
@@ -29,7 +29,7 @@ Returns the base64 string encoded from the bytes array.
 * For encoding strings to base64 string see [base64_encode_tostring()](base64_encode_tostringfunction.md)
 * This function is the inverse of [base64_decode_toarray()](base64_decode_toarrayfunction.md)
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

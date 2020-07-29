@@ -15,7 +15,7 @@ Get the month number (1-12) from a datetime.
 
 Another alias: monthoyear()
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

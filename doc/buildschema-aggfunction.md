@@ -15,15 +15,15 @@ Returns the minimal schema that admits all values of *DynamicExpr*.
 
 * Can be used only in context of aggregation, inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 summarize `buildschema(`*DynamicExpr*`)`
 
-**Arguments**
+## Arguments
 
 * *DynamicExpr*: Expression that is used for the aggregation calculation. The parameter column type must be `dynamic`. 
 
-**Returns**
+## Returns
 
 The maximum value of *`Expr`* across the group.
 
@@ -32,7 +32,7 @@ The maximum value of *`Expr`* across the group.
 > *Is your `json_column` a string rather than a dynamic object?* 
 > then use `buildschema(parsejson(json_column))`.
 
-**Example**
+## Example
 
 Assume the input column has three dynamic values.
 

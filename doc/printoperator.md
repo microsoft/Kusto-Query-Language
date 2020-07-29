@@ -18,20 +18,20 @@ Outputs single-row with one or more scalar expressions.
 print x=1, s=strcat("Hello", ", ", "World!")
 ```
 
-**Syntax**
+## Syntax
 
 `print` [*ColumnName* `=`] *ScalarExpression* [',' ...]
 
-**Arguments**
+## Arguments
 
 * *ColumnName*: An option name to assign to the output's singular column.
 * *ScalarExpression*: A scalar expression to evaluate.
 
-**Returns**
+## Returns
 
 A single-column, single-row, table whose single cell has the value of the evaluated *ScalarExpression*.
 
-**Examples**
+## Examples
 
 The `print` operator is useful as a quick way to evaluate one or more
 scalar expressions and make a single-row table out of the resulting values.

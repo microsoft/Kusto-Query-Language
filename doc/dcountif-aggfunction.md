@@ -17,11 +17,11 @@ Returns an estimate of the number of distinct values of *Expr* of rows for which
 
 Read about the [estimation accuracy](dcount-aggfunction.md#estimation-accuracy).
 
-**Syntax**
+## Syntax
 
 summarize `dcountif(`*Expr*, *Predicate*, [`,` *Accuracy*]`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation.
 * *Predicate*: Expression that will be used to filter rows.
@@ -32,11 +32,11 @@ summarize `dcountif(`*Expr*, *Predicate*, [`,` *Accuracy*]`)`
     * `3` = extra accurate and slow calculation; about 0.28% error.
     * `4` = super accurate and slowest calculation; about 0.2% error.
 	
-**Returns**
+## Returns
 
 Returns an estimate of the number of distinct values of *Expr*  of rows for which *Predicate* evaluates to `true` in the group. 
 
-**Example**
+## Example
 
 ```kusto
 PageViewLog | summarize countries=dcountif(country, country startswith "United") by continent

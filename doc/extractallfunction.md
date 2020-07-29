@@ -18,11 +18,11 @@ Optionally, retrieve a subset of matching groups.
 print extract_all(@"(\d+)", "a set of numbers: 123, 567 and 789") // results with the dynamic array ["123", "567", "789"]
 ```
 
-**Syntax**
+## Syntax
 
 `extract_all(`*regex*`,` [*captureGroups*`,`] *text*`)`
 
-**Arguments**
+## Arguments
 
 |Argument        |Description                                  |Required or Optional  |
 |----------------|---------------------------------------------|----------------------|
@@ -30,7 +30,7 @@ print extract_all(@"(\d+)", "a set of numbers: 123, 567 and 789") // results wit
 |captureGroups   |A dynamic array constant that indicates the capture group to extract. Valid values are from 1 to the number of capturing groups in the regular expression. Named capture groups are allowed as well (See [Examples](#examples))|Optional         |
 |text            |A `string` to search                         |Required              |
 
-**Returns**
+## Returns
 
 * If *regex* finds a match in *text*: Returns dynamic array including all matches against the indicated capture groups *captureGroups*, or all of capturing groups in the *regex*.
 * If number of *captureGroups* is 1: The returned array has a single dimension of matched values.

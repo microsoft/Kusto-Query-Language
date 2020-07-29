@@ -20,11 +20,11 @@ ipv4_is_match('192.168.1.1/24', '192.168.1.255/24') == true
 ipv4_is_match('192.168.1.1', '192.168.1.255', 24) == true
 ```
 
-**Syntax**
+## Syntax
 
 `ipv4_is_match(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
 
-**Arguments**
+## Arguments
 
 * *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
 * *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
@@ -35,7 +35,7 @@ IP addresses can be defined with `IP-prefix notation` using a slash (`/`) charac
 **Example:**
 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
-**Returns**
+## Returns
 
 * `true`: If the long representation of the first IPv4 string argument is equal to the second IPv4 string argument.
 *  `false`: Otherwise.

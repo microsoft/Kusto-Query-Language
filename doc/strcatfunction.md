@@ -15,19 +15,19 @@ Concatenates between 1 and 64 arguments.
 
 * If the arguments aren't of string type, they'll be forcibly converted to string.
 
-**Syntax**
+## Syntax
 
 `strcat(`*argument1*, *argument2*[, *argumentN*]`)`
 
-**Arguments**
+## Arguments
 
 * *argument1* ... *argumentN*: Expressions to be concatenated.
 
-**Returns**
+## Returns
 
 Arguments, concatenated to a single string.
 
-**Examples**
+## Examples
   
    ```kusto
 print str = strcat("hello", " ", "world")

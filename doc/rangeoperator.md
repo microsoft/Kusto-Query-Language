@@ -15,11 +15,11 @@ Generates a single-column table of values.
 
 Notice that it doesn't have a pipeline input. 
 
-**Syntax**
+## Syntax
 
 `range` *columnName* `from` *start* `to` *stop* `step` *step*
 
-**Arguments**
+## Arguments
 
 * *columnName*: The name of the single column in the output table.
 * *start*: The smallest value in the output.
@@ -29,12 +29,12 @@ on the highest value, if *step* steps over this value).
 
 The arguments must be numeric, date or timespan values. They can't reference the columns of any table. (If you want to compute the range based on an input table, use the range function, maybe with the mv-expand operator.) 
 
-**Returns**
+## Returns
 
 A table with a single column called *columnName*,
 whose values are *start*, *start* `+` *step*, ... up to and until *stop*.
 
-**Example**  
+## Example  
 
 A table of midnight at the past seven days. The bin (floor) function reduces each time to the start of the day.
 

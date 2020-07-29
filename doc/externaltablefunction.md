@@ -17,11 +17,11 @@ References an external table by name.
 external_table('StormEvent')
 ```
 
-**Syntax**
+## Syntax
 
 `external_table` `(` *TableName* [`,` *MappingName* ] `)`
 
-**Arguments**
+## Arguments
 
 * *TableName*: The name of the external table being queried.
   Must be a string literal referencing an external table of kind

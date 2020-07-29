@@ -17,11 +17,11 @@ Returns the first *N* records sorted by the specified columns.
 T | top 5 by Name desc nulls last
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| top` *NumberOfRows* `by` *Expression* [`asc` | `desc`] [`nulls first` | `nulls last`]
 
-**Arguments**
+## Arguments
 
 * *NumberOfRows*: The number of rows of *T* to return. You can specify any numeric expression.
 * *Expression*: A scalar expression by which to sort. The type of the values must be numeric, date, time or string.

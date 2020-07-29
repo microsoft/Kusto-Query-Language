@@ -19,21 +19,21 @@ Optionally, a specific substring can be returned if exists.
 split("aaa_bbb_ccc", "_") == ["aaa","bbb","ccc"]
 ```
 
-**Syntax**
+## Syntax
 
 `split(`*source*`,` *delimiter* [`,` *requestedIndex*]`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The source string that will be split according to the given delimiter.
 * *delimiter*: The delimiter that will be used in order to split the source string.
 * *requestedIndex*: An optional zero-based index `int`. If provided, the returned string array will contain the requested substring if exists. 
 
-**Returns**
+## Returns
 
 A string array that contains the substrings of the given source string that are delimited by the given delimiter.
 
-**Examples**
+## Examples
 
 ```kusto
 print

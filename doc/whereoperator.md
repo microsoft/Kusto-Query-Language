@@ -19,16 +19,16 @@ T | where fruit=="apple"
 
 **Alias** `filter`
 
-**Syntax**
+## Syntax
 
 *T* `| where` *Predicate*
 
-**Arguments**
+## Arguments
 
 * *T*: The tabular input whose records are to be filtered.
 * *Predicate*: A `boolean` [expression](./scalar-data-types/bool.md) over the columns of *T*. It's evaluated for each row in *T*.
 
-**Returns**
+## Returns
 
 Rows in *T* for which *Predicate* is `true`.
 
@@ -53,7 +53,7 @@ To get the fastest performance:
 
 For more information, see the summary of [available String operators](./datatypes-string-operators.md) and the summary of [available Numerical operators](./numoperators.md).
 
-**Example**
+## Example
 
 ```kusto
 Traces
@@ -67,7 +67,7 @@ come from a source called `MyCluster`, and have two columns of the same value.
 
 Notice that we put the comparison between two columns last, as it can't use the index and forces a scan.
 
-**Example**
+## Example
 
 ```kusto
 Traces | where * has "Kusto"

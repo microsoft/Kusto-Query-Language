@@ -17,11 +17,11 @@ Calculates sessions count based on ID column over a timeline.
 T | evaluate session_count(id, datetime_column, startofday(ago(30d)), startofday(now()), 1min, 30min, dim1, dim2, dim3)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `session_count(`*IdColumn*`,` *TimelineColumn*`,` *Start*`,` *End*`,` *Bin*`,` *LookBackWindow* [`,` *dim1*`,` *dim2*`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
@@ -32,7 +32,7 @@ T | evaluate session_count(id, datetime_column, startofday(ago(30d)), startofday
 * *LookBackWindow*: scalar constant value representing session lookback period. If the ID from `IdColumn` appears in a time window within `LookBackWindow`, the session is considered to be an existing one. If the ID doesn't appear, then the session is considered to be new.
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the session count calculation.
 
-**Returns**
+## Returns
 
 Returns a table that has the session count values for each timeline period and for each existing dimensions combination.
 
@@ -43,7 +43,7 @@ Output table schema is:
 |type: as of *TimelineColumn*|..|..|..|long|
 
 
-**Examples**
+## Examples
 
 For this example, the data is deterministic, and we use a table with two columns:
 - Timeline: a running number from 1 to 10,000

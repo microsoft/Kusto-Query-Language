@@ -13,11 +13,11 @@ ms.date: 02/13/2020
 
 Calculates a new [datetime](./scalar-data-types/datetime.md) from a specified datepart multiplied by a specified amount, added to a specified [datetime](./scalar-data-types/datetime.md).
 
-**Syntax**
+## Syntax
 
 `datetime_add(`*period*`,`*amount*`,`*datetime*`)`
 
-**Arguments**
+## Arguments
 
 * `period`: [string](./scalar-data-types/string.md). 
 * `amount`: [integer](./scalar-data-types/int.md).
@@ -36,11 +36,11 @@ Possible values of *period*:
 - Microsecond
 - Nanosecond
 
-**Returns**
+## Returns
 
 A date after a certain time/date interval has been added.
 
-**Examples**
+## Examples
 
 ```kusto
 print  year = datetime_add('year',1,make_datetime(2017,1,1)),

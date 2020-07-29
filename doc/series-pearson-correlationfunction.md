@@ -15,19 +15,19 @@ Calculates the pearson correlation coefficient of two numeric series inputs.
 
 See: [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient).
 
-**Syntax**
+## Syntax
 
 `series_pearson_correlation(`*Series1*`,` *Series2*`)`
 
-**Arguments**
+## Arguments
 
 * *Series1, Series2*: Input numeric arrays for calculating the correlation coefficient. All arguments must be dynamic arrays of the same length. 
 
-**Returns**
+## Returns
 
 The calculated Pearson correlation coefficient between the two inputs. Any non-numeric element or non-existing element (arrays of different sizes) yields a `null` result.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

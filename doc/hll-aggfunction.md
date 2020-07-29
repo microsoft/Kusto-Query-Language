@@ -15,11 +15,11 @@ Calculates the Intermediate results of [`dcount`](dcount-aggfunction.md) across 
 
 Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accuracy](dcount-aggfunction.md#estimation-accuracy).
 
-**Syntax**
+## Syntax
 
 `summarize hll(`*`Expr`* `[,` *`Accuracy`*`])`
 
-**Arguments**
+## Arguments
 
 * *`Expr`*: Expression that will be used for aggregation calculation. 
 * *`Accuracy`*, if specified, controls the balance between speed and accuracy.
@@ -32,7 +32,7 @@ Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accu
   |`3` | high | slow | 0.28% |
   |`4` | extra high | slowest | 0.2% |
 	
-**Returns**
+## Returns
 
 The Intermediate results of distinct count of *`Expr`* across the group.
  
@@ -42,7 +42,7 @@ The Intermediate results of distinct count of *`Expr`* across the group.
 
 1. You may use the function [`dcount_hll`](dcount-hllfunction.md), which will calculate the `dcount` from `hll` / `hll_merge` aggregation functions.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

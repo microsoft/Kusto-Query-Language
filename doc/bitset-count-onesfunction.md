@@ -17,19 +17,19 @@ Returns the number of set bits in the binary representation of a number.
 bitset_count_ones(42)
 ```
 
-**Syntax**
+## Syntax
 
 `bitset_count_ones(`*num1*``)`
 
-**Arguments**
+## Arguments
 
 * *num1*: long or integer number.
 
-**Returns**
+## Returns
 
 Returns the number of set bits in the binary representation of a number.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

@@ -15,15 +15,15 @@ Returns the minimum value across the group.
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` `min(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation. 
 
-**Returns**
+## Returns
 
 The minimum value of *Expr* across the group.
  

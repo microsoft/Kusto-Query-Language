@@ -15,16 +15,16 @@ Creates a `dynamic` object (property bag) from a list of names and values.
 
 Alias to `pack_dictionary()` function.
 
-**Syntax**
+## Syntax
 
 `pack(`*key1*`,` *value1*`,` *key2*`,` *value2*`,... )`
 
-**Arguments**
+## Arguments
 
 * An alternating list of keys and values (the total length of the list must be even)
 * All keys must be non-empty constant strings
 
-**Examples**
+## Examples
 
 The following example returns `{"Level":"Information","ProcessID":1234,"Data":{"url":"www.bing.com"}}`:
 

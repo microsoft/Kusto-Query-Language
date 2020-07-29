@@ -13,16 +13,16 @@ ms.date: 02/13/2020
 
 Returns the network endpoint (DNS name) of the current cluster being queried.
 
-**Syntax**
+## Syntax
 
 `current_cluster_endpoint()`
 
-**Returns**
+## Returns
 
 The network endpoint (DNS name) of the current cluster being queried,
 as a value of type `string`.
 
-**Example**
+## Example
 
 ```kusto
 print strcat("This query executed on: ", current_cluster_endpoint())

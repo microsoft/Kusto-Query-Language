@@ -13,11 +13,11 @@ ms.date: 06/06/2020
 
 Allows caching a subquery result during the time of query execution in a way that other subqueries can reference the partial result.
  
-**Syntax**
+## Syntax
 
 `materialize(`*expression*`)`
 
-**Arguments**
+## Arguments
 
 * *expression*: Tabular expression to be evaluated and cached during query execution.
 

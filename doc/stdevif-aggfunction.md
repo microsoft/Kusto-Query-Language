@@ -15,20 +15,20 @@ Calculates the [stdev](stdev-aggfunction.md) of *Expr* across the group for whic
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 summarize `stdevif(`*Expr*`, `*Predicate*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation. 
 * *Predicate*:  predicate that if true, the *Expr* calculated value will be added to the standard deviation.
 
-**Returns**
+## Returns
 
 The standard deviation value of *Expr* across the group where *Predicate* evaluates to `true`.
  
-**Examples**
+## Examples
 
 ```kusto
 range x from 1 to 100 step 1

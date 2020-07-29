@@ -15,11 +15,11 @@ Finds a row in the group that minimizes *ExprToMinimize*, and returns the value 
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` [`(`*NameExprToMinimize* `,` *NameExprToReturn* [`,` ...] `)=`] `arg_min` `(`*ExprToMinimize*, `*` | *ExprToReturn*  [`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *ExprToMinimize*: Expression that will be used for aggregation calculation. 
 * *ExprToReturn*: Expression that will be used for returning the value when *ExprToMinimize* is
@@ -27,11 +27,11 @@ Finds a row in the group that minimizes *ExprToMinimize*, and returns the value 
 * *NameExprToMinimize*: An optional name for the result column representing *ExprToMinimize*.
 * *NameExprToReturn*: Additional optional names for the result columns representing *ExprToReturn*.
 
-**Returns**
+## Returns
 
 Finds a row in the group that minimizes *ExprToMinimize*, and returns the value of *ExprToReturn* (or `*` to return the entire row).
 
-**Examples**
+## Examples
 
 Show cheapest supplier of each product:
 

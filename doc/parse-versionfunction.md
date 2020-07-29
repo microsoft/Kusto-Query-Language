@@ -17,15 +17,15 @@ Converts the input string representation of version to a comparable decimal numb
 parse_version("0.0.0.1")
 ```
 
-**Syntax**
+## Syntax
 
 `parse_version` `(` *Expr* `)`
 
-**Arguments**
+## Arguments
 
 * *`Expr`*: A scalar expression of type `string` that specifies the version to be parsed.
 
-**Returns**
+## Returns
 
 If conversion is successful, the result will be a decimal.
 If conversion is unsuccessful, the result will be `null`.
@@ -38,7 +38,7 @@ Each part of version may contain up to eight digits, with the max value at 99999
 
 If the number of parts is less than four, all the missing parts are considered as trailing (`1.0` == `1.0.0.0`).
 
-**Example**
+## Example
 ```kusto
 let dt = datatable(v:string)
 ["0.0.0.5","0.0.7.0","0.0.3","0.2","0.1.2.0","1.2.3.4","1","99999999.0.0.0"];

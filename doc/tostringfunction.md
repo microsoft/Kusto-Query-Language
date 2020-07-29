@@ -17,15 +17,15 @@ Converts input to a string representation.
 tostring(123) == "123"
 ```
 
-**Syntax**
+## Syntax
 
 `tostring(`*`Expr`*`)`
 
-**Arguments**
+## Arguments
 
 * *`Expr`*: Expression that will be converted to string. 
 
-**Returns**
+## Returns
 
 If the *`Expr`* value is non-null, the result will be a string representation of *`Expr`*.
 If the *`Expr`* value is null, the result will be an empty string.

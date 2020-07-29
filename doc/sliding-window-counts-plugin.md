@@ -20,11 +20,11 @@ For instance, for each *day*, calculate count and distinct count of users in pre
 T | evaluate sliding_window_counts(id, datetime_column, startofday(ago(30d)), startofday(now()), 7d, 1d, dim1, dim2, dim3)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `sliding_window_counts(`*IdColumn*`,` *TimelineColumn*`,` *Start*`,` *End*`,` *LookbackWindow*`,` *Bin* `,` [*dim1*`,` *dim2*`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
@@ -35,7 +35,7 @@ T | evaluate sliding_window_counts(id, datetime_column, startofday(ago(30d)), st
 * *Bin*: Scalar constant value of the analysis step period. This value can be a numeric/datetime/timestamp value. If the value is a string with the format `week`/`month`/`year`, all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md)/[startofyear](startofyearfunction.md). 
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
 
-**Returns**
+## Returns
 
 Returns a table that has the count and distinct count values of Ids in the lookback period, for each timeline period (by bin) and for each existing dimensions combination.
 
@@ -46,7 +46,7 @@ Output table schema is:
 |type: as of *TimelineColumn*|..|..|..|long|long|
 
 
-**Examples**
+## Examples
 
 Calculate counts and `dcounts` for users in past week, for each day in the analysis period. 
 

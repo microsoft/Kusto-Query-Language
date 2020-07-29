@@ -22,20 +22,20 @@ Like `now()`, this function can be used multiple times
 in a statement and the UTC clock time being referenced will be the same
 for all instantiations.
 
-**Syntax**
+## Syntax
 
 `ago(`*a_timespan*`)`
 
-**Arguments**
+## Arguments
 
 * *a_timespan*: Interval to subtract from the current UTC clock time
 (`now()`).
 
-**Returns**
+## Returns
 
 `now() - a_timespan`
 
-**Example**
+## Example
 
 All rows with a timestamp in the past hour:
 

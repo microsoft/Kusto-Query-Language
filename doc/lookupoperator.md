@@ -37,11 +37,11 @@ with the following differences:
   table (essentially, behaves as if `hint.broadcast` was specified). Note that
   this limits the size of the `$right` table.
 
-**Syntax**
+## Syntax
 
 *LeftTable* `|` `lookup` [`kind` `=` (`leftouter`|`inner`)] `(` *RightTable* `)` `on` *Attributes*
 
-**Arguments**
+## Arguments
 
 * *LeftTable*: The table or tabular expression that is the basis for the lookup.
   Denoted as `$left`.
@@ -68,7 +68,7 @@ with the following differences:
   is used, such rows are omitted from the output. (Other kinds
   of join are not supported by the `looku`p operator.)
   
-**Returns**
+## Returns
 
 A table with:
 
@@ -85,7 +85,7 @@ A table with:
 
      There's a row in the output for every combination of matching rows from left and right.
 
-**Examples**
+## Examples
 
 ```kusto
 let FactTable=datatable(Row:string,Personal:string,Family:string) [

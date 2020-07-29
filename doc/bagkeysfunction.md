@@ -15,11 +15,11 @@ Enumerates all the root keys in a dynamic property-bag object.
 
 `bag_keys(`*dynamic object*`)`
 
-**Returns**
+## Returns
 
 An array of keys, order is undetermined.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```

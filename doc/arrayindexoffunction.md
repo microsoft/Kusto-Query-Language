@@ -13,21 +13,21 @@ ms.date: 01/22/2020
 
 Searches the array for the specified item, and returns its position.
 
-**Syntax**
+## Syntax
 
 `array_index_of(`*array*,*value*`)`
 
-**Arguments**
+## Arguments
 
 * *array*: Input array to search.
 * *value*: Value to search for. The value should be of type long, integer, double, datetime, timespan, decimal, string, or guid.
 
-**Returns**
+## Returns
 
 Zero-based index position of lookup.
 Returns -1 if the value isn't found in the array.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

@@ -31,7 +31,7 @@ attacks.
 
 To reference query parameters, the query text, or functions it uses, must first declare which query parameter it uses. For each parameter, the declaration provides the name and scalar type. Optionally, the parameter can also have a default value. The default is used if the request doesn't provide a concrete value for the parameter. Kusto then parses the query parameter's value, according to its normal parsing rules for that type.
 
-**Syntax**
+## Syntax
 
 `declare` `query_parameters` `(` *Name1* `:` *Type1* [`=` *DefaultValue1*] [`,`...] `);`
 
@@ -47,7 +47,7 @@ To reference query parameters, the query text, or functions it uses, must first 
 > Like [user defined functions](functions/user-defined-functions.md),
 > query parameters of type `dynamic` cannot have default values.
 
-**Examples**
+## Examples
 
 ```kusto
 declare query_parameters(UserName:string, Password:string);

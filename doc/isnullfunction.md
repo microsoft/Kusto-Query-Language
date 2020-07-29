@@ -17,11 +17,11 @@ Evaluates its sole argument and returns a `bool` value indicating if the argumen
 isnull(parse_json("")) == true
 ```
 
-**Syntax**
+## Syntax
 
 `isnull(`*Expr*`)`
 
-**Returns**
+## Returns
 
 True or false, depending on whether or not the value is null.
 
@@ -38,7 +38,7 @@ True or false, depending on whether or not the value is null.
 |`parse_json("[]")`|`false`    |
 |`parse_json("{}")`|`false`    |
 
-**Example**
+## Example
 
 ```kusto
 T | where isnull(PossiblyNull) | count

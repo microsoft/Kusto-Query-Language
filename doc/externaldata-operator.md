@@ -14,11 +14,11 @@ ms.date: 03/24/2020
 The `externaldata` operator returns a table whose schema is defined in the query itself, and whose data is read from an external storage artifact, such as a blob in
 Azure Blob Storage.
 
-**Syntax**
+## Syntax
 
 `externaldata` `(` *ColumnName* `:` *ColumnType* [`,` ...] `)` `[` *StorageConnectionString* `]` [`with` `(` *Prop1* `=` *Value1* [`,` ...] `)`]
 
-**Arguments**
+## Arguments
 
 * *ColumnName*, *ColumnType*: The arguments define the schema of the table.
   The syntax is the same as the syntax used when defining a table in [.create table](../management/create-table-command.md).
@@ -33,11 +33,11 @@ Azure Blob Storage.
 > [!NOTE]
 > This operator does not have a pipeline input.
 
-**Returns**
+## Returns
 
 The `externaldata` operator returns a data table of the given schema whose data was parsed from the specified storage artifact, indicated by the storage connection string.
 
-**Examples**
+## Examples
 
 The following example shows how to find all records in a table whose `UserID` column falls into a known set of IDs, held (one per line) in an external blob.
 Because the set is indirectly referenced by the query, it can be large.

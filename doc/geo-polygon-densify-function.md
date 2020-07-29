@@ -13,16 +13,16 @@ ms.date: 07/01/2020
 
 Converts polygon or multipolygon planar edges to geodesics by adding intermediate points.
 
-**Syntax**
+## Syntax
 
 `geo_polygon_densify(`*polygon*`, `*tolerance*`)`
 
-**Arguments**
+## Arguments
 
 * *polygon*: Polygon or multipolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 * *tolerance*: An optional numeric that defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value `10` is used.
 
-**Returns**
+## Returns
 
 Densified polygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If either the polygon or tolerance is invalid, the query will produce a null result.
 
@@ -54,7 +54,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 * [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line.
 * The decision to use geodesic or planar edges might depend on the dataset and is especially relevant in long edges.
 
-**Examples**
+## Examples
 
 The following example densifies Manhattan Central Park polygon. The edges are short and the distance between planar edges and their geodesic counterparts is less than the distance specified by tolerance. As such, the result remains unchanged.
 

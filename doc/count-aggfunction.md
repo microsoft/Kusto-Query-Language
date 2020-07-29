@@ -17,15 +17,15 @@ Returns a count of the records per summarization group (or in total, if summariz
 * Use the [countif](countif-aggfunction.md) aggregation function
   to count only records for which some predicate returns `true`.
 
-**Syntax**
+## Syntax
 
 summarize `count()`
 
-**Returns**
+## Returns
 
 Returns a count of the records per summarization group (or in total, if summarization is done without grouping).
 
-**Example**
+## Example
 
 Counting events in states starting with letter `W`:
 

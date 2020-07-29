@@ -19,7 +19,7 @@ T | evaluate diffpatterns(splitColumn)
 ```
 
 
-**Syntax**
+## Syntax
 
 `T | evaluate diffpatterns(SplitColumn, SplitValueA, SplitValueB [, WeightColumn, Threshold, MaxDimensions, CustomWildcard, ...])` 
 
@@ -70,7 +70,7 @@ All other arguments are optional, but they must be ordered as below. To indicate
 
     Example: `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", "~", "~", int(-1), double(-1), long(0), datetime(1900-1-1))`
 
-**Returns**
+## Returns
 
 `Diffpatterns` returns a small set of patterns that capture different portions of the data in the two sets (that is, a pattern capturing a large percentage of the rows in the first data set and low percentage of the rows in the second set). Each pattern is represented by a row in the results.
 
@@ -103,7 +103,7 @@ When you find an interesting row, you might want to drill into it further by add
 
 * Note: `diffpatterns` aims to find significant patterns (that capture portions of the data difference between the sets) and isn't meant for row-by-row differences.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

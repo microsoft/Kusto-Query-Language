@@ -17,14 +17,14 @@ Returns a bitwise negation of the input value.
 binary_not(x)
 ```
 
-**Syntax**
+## Syntax
 
 `binary_not(`*num1*`)`
 
-**Arguments**
+## Arguments
 
 * *num1*: numeric 
 
-**Returns**
+## Returns
 
 Returns logical NOT operation on a number: num1.

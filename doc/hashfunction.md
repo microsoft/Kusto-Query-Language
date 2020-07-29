@@ -13,17 +13,17 @@ ms.date: 02/13/2020
 
 Returns a hash value for the input value.
 
-**Syntax**
+## Syntax
 
 `hash(`*source* [`,` *mod*]`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The value to be hashed.
 * *mod*: An optional module value to be applied to the hash result, so that
   the output value is between `0` and *mod* - 1
 
-**Returns**
+## Returns
 
 The hash value of the given scalar, modulo the given mod value (if specified).
 
@@ -35,7 +35,7 @@ The hash value of the given scalar, modulo the given mod value (if specified).
 > table. If persisting hash values is required, use
 > [hash_sha256()](./sha256hashfunction.md) or [hash_md5()](./md5hashfunction.md) instead. Note that these functions are more complex to calculate than `hash()`).
 
-**Examples**
+## Examples
 
 ```kusto
 hash("World")                   // 1846988464401551951

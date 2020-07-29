@@ -25,7 +25,7 @@ The `series_stats()` function takes a column containing dynamic numerical array 
 > [!NOTE] 
 > This function returns multiple columns so it can't be used as an argument for another function.
 
-**Syntax**
+## Syntax
 
 project `series_stats(`*x* `[,`*ignore_nonfinite*`])` or extend `series_stats(`*x*`)` 
 Returns all above-mentioned columns with the following names: series_stats_x_min, series_stats_x_min_idx and etc.
@@ -33,12 +33,12 @@ Returns all above-mentioned columns with the following names: series_stats_x_min
 project (m, mi)=`series_stats(`*x*`)` or extend (m, mi)=`series_stats(`*x*`)`
 Returns the following columns: m (min) and mi (min_idx).
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array cell, which is an array of numeric values. 
 * *ignore_nonfinite*: Boolean (optional, default: `false`) flag that specifies whether to calculate the statistics while ignoring non-finite values (*null*, *NaN*, *inf*, etc.). If set to `false`, the returned values would be `null` if non-finite values are present in the array.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

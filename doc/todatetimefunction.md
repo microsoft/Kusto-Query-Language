@@ -17,15 +17,15 @@ Converts input to [datetime](./scalar-data-types/datetime.md) scalar.
 todatetime("2015-12-24") == datetime(2015-12-24)
 ```
 
-**Syntax**
+## Syntax
 
 `todatetime(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be converted to [datetime](./scalar-data-types/datetime.md).
 
-**Returns**
+## Returns
 
 If the conversion is successful, the result will be a [datetime](./scalar-data-types/datetime.md) value.
 Else, the result will be null.

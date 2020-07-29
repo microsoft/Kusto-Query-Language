@@ -13,19 +13,19 @@ ms.date: 06/02/2019
 
 Returns a `dynamic` array of the set of all distinct values that are in all arrays - (arr1 ∩ arr2 ∩ ...).
 
-**Syntax**
+## Syntax
 
 `set_intersect(`*arr1*`, `*arr2*`[`,` *arr3*, ...])`
 
-**Arguments**
+## Arguments
 
 * *arr1...arrN*: Input arrays to create an intersect set (at least two arrays). All arguments must be dynamic arrays. For more information, see [pack_array](packarrayfunction.md). 
 
-**Returns**
+## Returns
 
 Returns a dynamic array of the set of all distinct values that are in all arrays. See [`set_union()`](setunionfunction.md) and [`set_difference()`](setdifferencefunction.md).
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

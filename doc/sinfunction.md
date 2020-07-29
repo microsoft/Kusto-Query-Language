@@ -13,14 +13,14 @@ ms.date: 10/23/2018
 
 Returns the sine function.
 
-**Syntax**
+## Syntax
 
 `sin(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number.
 
-**Returns**
+## Returns
 
 * The result of `sin(x)`

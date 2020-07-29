@@ -13,15 +13,15 @@ ms.date: 10/23/2018
 
 Computes [gamma function](https://en.wikipedia.org/wiki/Gamma_function)
 
-**Syntax**
+## Syntax
 
 `gamma(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Parameter for the gamma function
 
-**Returns**
+## Returns
 
 * Gamma function of x.
 * For computing log-gamma function, see [loggamma()](loggammafunction.md).

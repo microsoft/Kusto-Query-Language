@@ -13,16 +13,16 @@ ms.date: 02/13/2020
 
 Runs multiple consumer operators in parallel.
 
-**Syntax**
+## Syntax
 
 *T* `|` `fork` [*name*`=`]`(`*subquery*`)` [*name*`=`]`(`*subquery*`)` ...
 
-**Arguments**
+## Arguments
 
 * *subquery* is a downstream pipeline of query operators
 * *name* is a temporary name for the subquery result table
 
-**Returns**
+## Returns
 
 Multiple result tables, one for each of the subqueries.
 
@@ -41,7 +41,7 @@ The input stream will be cached by materialize and then the cached expression ca
 
 * Prefer using [batch](batches.md) with [`materialize`](materializefunction.md) of tabular expression statements over `fork` operator.
 
-**Examples**
+## Examples
 
 ```kusto
 KustoLogs

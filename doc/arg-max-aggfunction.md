@@ -15,11 +15,11 @@ Finds a row in the group that maximizes *ExprToMaximize*, and returns the value 
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` [`(`*NameExprToMaximize* `,` *NameExprToReturn* [`,` ...] `)=`] `arg_max` `(`*ExprToMaximize*, `*` | *ExprToReturn*  [`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *ExprToMaximize*: Expression that will be used for aggregation calculation. 
 * *ExprToReturn*: Expression that will be used for returning the value when *ExprToMaximize* is
@@ -27,11 +27,11 @@ Finds a row in the group that maximizes *ExprToMaximize*, and returns the value 
 * *NameExprToMaximize*: An optional name for the result column representing *ExprToMaximize*.
 * *NameExprToReturn*: Additional optional names for the result columns representing *ExprToReturn*.
 
-**Returns**
+## Returns
 
 Finds a row in the group that maximizes *ExprToMaximize*, and 
 returns the value of *ExprToReturn* (or `*` to return the entire row).
 
-**Examples**
+## Examples
 
 See examples for [arg_min()](arg-min-aggfunction.md) aggregation function

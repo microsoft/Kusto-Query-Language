@@ -13,15 +13,15 @@ ms.date: 10/23/2018
 
 Returns the angle whose cosine is the specified number (the inverse operation of [`cos()`](cosfunction.md)) .
 
-**Syntax**
+## Syntax
 
 `acos(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number in range [-1, 1].
 
-**Returns**
+## Returns
 
 * The value of the arc cosine of `x`
 * `null` if `x` < -1 or `x` > 1

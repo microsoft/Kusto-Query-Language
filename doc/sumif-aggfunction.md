@@ -17,20 +17,20 @@ Returns a sum of *Expr* for which *Predicate* evaluates to `true`.
 
 You can also use the [sum()](sum-aggfunction.md) function, which sums rows without predicate expression.
 
-**Syntax**
+## Syntax
 
 summarize `sumif(`*Expr*`,`*Predicate*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: expression for aggregation calculation. 
 * *Predicate*: predicate that, if true, the *Expr*'s calculated value will be added to the sum. 
 
-**Returns**
+## Returns
 
 The sum value of *Expr* for which *Predicate* evaluates to `true`.
 
-**Example**
+## Example
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)

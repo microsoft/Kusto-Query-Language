@@ -19,11 +19,11 @@ Optionally, the length of the requested substring can be specified.
 substring("abcdefg", 1, 2) == "bc"
 ```
 
-**Syntax**
+## Syntax
 
 `substring(`*source*`,` *startingIndex* [`,` *length*]`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The source string that the substring will be taken from.
 * *startingIndex*: The zero-based starting character position of the requested substring.
@@ -33,11 +33,11 @@ substring("abcdefg", 1, 2) == "bc"
 
 *startingIndex* can be a negative number, in which case the substring will be retrieved from the end of the source string.
 
-**Returns**
+## Returns
 
 A substring from the given string. The substring starts at startingIndex (zero-based) character position and continues to the end of the string or length characters if specified.
 
-**Examples**
+## Examples
 
 ```kusto
 substring("123456", 1)        // 23456

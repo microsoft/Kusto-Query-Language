@@ -15,12 +15,12 @@ Replaces missing values in a series with a specified constant value.
 
 Takes an expression containing dynamic numerical array as input, replaces all instances of missing_value_placeholder with specified constant_value and returns the resulting array.
 
-**Syntax**
+## Syntax
 
 `series_fill_const(`*x*`[, `*constant_value*`[,` *missing_value_placeholder*`]])`
 * Will return series *x* with all instances of *missing_value_placeholder* replaced with *constant_value*.
 
-**Arguments**
+## Arguments
 
 * *x*: dynamic array scalar expression that is an array of numeric values.
 * *constant_value*: parameter that specifies a placeholder for a missing value to be replaced. Default value is *0*. 
@@ -42,7 +42,7 @@ make-series num=count() default=long(null) on TimeStamp from ago(1d) to ago(1h) 
 * The *missing_value_placeholder* can be of any type, which will be converted to actual element types. As such, either `double`(*null*), `long`(*null*) or `int`(*null*) have the same meaning.
 * The function preserves original type of the array elements. 
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

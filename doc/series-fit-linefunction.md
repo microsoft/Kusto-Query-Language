@@ -21,18 +21,18 @@ Takes an expression containing dynamic numerical array as input and does [linear
 * `interception`: Interception of the approximated line ("b" from y=ax+b).
 * `line_fit`: Numerical array holding a series of values of the best fitted line. The series length is equal to the length of the input array. The value's used for charting.
 
-**Syntax**
+## Syntax
 
 `series_fit_line(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array of numeric values.
 
 > [!TIP]
 > The most convenient way of using this function is to apply it to the results of [make-series](make-seriesoperator.md) operator.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

@@ -18,17 +18,17 @@ Calculates the intermediate results of [`percentiles()`](percentiles-aggfunction
 
 For more information, see the [underlying algorithm (T-Digest) and the estimated error](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
-**Syntax**
+## Syntax
 
 `summarize` `tdigest`(*`Expr`* [`,` *`WeightExpr`*])
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that is used for aggregation calculation.
 * *WeightExpr*: Expression that is used as the weight of values for the aggregation calculation.
 
 	
-**Returns**
+## Returns
 
 The Intermediate results of weighted percentiles of `*Expr*` across the group.
  
@@ -39,7 +39,7 @@ The Intermediate results of weighted percentiles of `*Expr*` across the group.
 
 * Use the function [percentile_tdigest()](percentile-tdigestfunction.md) to calculate the percentile/percentilew of the `tdigest` results.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

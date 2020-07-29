@@ -15,19 +15,19 @@ The function converts encoded URL into a to regular URL representation.
 
 Detailed information about URL decoding and encoding can be found [here](https://en.wikipedia.org/wiki/Percent-encoding).
 
-**Syntax**
+## Syntax
 
 `url_decode(`*encoded url*`)`
 
-**Arguments**
+## Arguments
 
 * *encoded url*: encoded URL (string).  
 
-**Returns**
+## Returns
 
 URL (string) in a regular representation.
 
-**Examples**
+## Examples
 
 ```kusto
 let url = @'https%3a%2f%2fwww.bing.com%2f';

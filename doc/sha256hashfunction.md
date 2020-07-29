@@ -13,15 +13,15 @@ ms.date: 02/13/2020
 
 Returns a sha256 hash value for the input value.
 
-**Syntax**
+## Syntax
 
 `hash_sha256(`*source*`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The value to be hashed.
 
-**Returns**
+## Returns
 
 The sha256 hash value of the given scalar, encoded as a hex string (a string
 of characters, each two of which represent a single Hex number between 0
@@ -33,7 +33,7 @@ and 255).
 > need a "lightweight" hash function for the duration of a single query are advised
 > to use the function [hash()](./hashfunction.md) instead.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

@@ -18,21 +18,21 @@ estimate_data_size(*)
 estimate_data_size(Col1, Col2, Col3)
 ```
 
-**Syntax**
+## Syntax
 
 `estimate_data_size(*)`
 
 `estimate_data_size(`*col1*`, `*col2*`, `...`)`
 
-**Arguments**
+## Arguments
 
 * *col1*, *col2*: Selection of column references in the source tabular expression that are used for data size estimation. To include all columns, use `*` (asterisk) syntax.
 
-**Returns**
+## Returns
 
 * The estimated data size  in bytes of the record size. Estimation is based on data types and values lengths.
 
-**Examples**
+## Examples
 
 Calculating total data size using `estimated_data_size()`:
 

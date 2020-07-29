@@ -13,21 +13,21 @@ ms.date: 10/23/2018
 
 Replace all regex matches with another string.
 
-**Syntax**
+## Syntax
 
 `replace(`*regex*`,` *rewrite*`,` *text*`)`
 
-**Arguments**
+## Arguments
 
 * *regex*: The [regular expression](https://github.com/google/re2/wiki/Syntax) to search *text*. It can contain capture groups in '('parentheses')'. 
 * *rewrite*: The replacement regex for any match made by *matchingRegex*. Use `\0` to refer to the whole match, `\1` for the first capture group, `\2` and so on for subsequent capture groups.
 * *text*: A string.
 
-**Returns**
+## Returns
 
 *text* after replacing all matches of *regex* with evaluations of *rewrite*. Matches do not overlap.
 
-**Example**
+## Example
 
 This statement:
 

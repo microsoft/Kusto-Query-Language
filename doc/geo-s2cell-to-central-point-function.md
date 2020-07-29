@@ -15,22 +15,22 @@ Calculates the geospatial coordinates that represent the center of an S2 cell.
 
 Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierarchy).
 
-**Syntax**
+## Syntax
 
 `geo_s2cell_to_central_point(`*s2cell*`)`
 
-**Arguments**
+## Arguments
 
 *s2cell*: S2 cell token string value as it was calculated by [geo_point_to_s2cell()](geo-point-to-s2cell-function.md). The S2 cell token maximum string length is 16 characters.
 
-**Returns**
+## Returns
 
 The geospatial coordinate values in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If the S2 cell token is invalid, the query will produce a null result.
 
 > [!NOTE]
 > The GeoJSON format specifies longitude first and latitude second.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

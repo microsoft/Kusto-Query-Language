@@ -19,11 +19,11 @@ activity_engagement plugin can be used for calculating DAU/WAU/MAU (daily/weekly
 T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `activity_engagement(`*IdColumn*`,` *TimelineColumn*`,` [*Start*`,` *End*`,`] *InnerActivityWindow*`,` *OuterActivityWindow* [`,` *dim1*`,` *dim2*`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
@@ -34,7 +34,7 @@ T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 * *OuterActivityWindow*: Scalar with value of the outer-scope analysis window period.
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
 
-**Returns**
+## Returns
 
 Returns a table that has (distinct count of ID values inside inner-scope window, distinct count of ID values inside outer-scope window, and the activity ratio)for each inner-scope window period and for each existing dimensions combination.
 
@@ -45,7 +45,7 @@ Output table schema is:
 |type: as of *TimelineColumn*|long|long|double|..|..|..|
 
 
-**Examples**
+## Examples
 
 ### DAU/WAU calculation
 

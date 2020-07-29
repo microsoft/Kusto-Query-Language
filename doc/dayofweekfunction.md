@@ -17,19 +17,19 @@ Returns the integer number of days since the preceding Sunday, as a `timespan`.
 dayofweek(datetime(2015-12-14)) == 1d  // Monday
 ```
 
-**Syntax**
+## Syntax
 
 `dayofweek(`*a_date*`)`
 
-**Arguments**
+## Arguments
 
 * `a_date`: A `datetime`.
 
-**Returns**
+## Returns
 
 The `timespan` since midnight at the beginning of the preceding Sunday, rounded down to an integer number of days.
 
-**Examples**
+## Examples
 
 ```kusto
 dayofweek(datetime(1947-11-30 10:00:05))  // time(0.00:00:00), indicating Sunday

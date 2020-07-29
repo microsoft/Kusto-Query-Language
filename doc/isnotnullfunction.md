@@ -13,13 +13,13 @@ ms.date: 02/13/2020
 
 Returns `true` if the argument is not null.
 
-**Syntax**
+## Syntax
 
 `isnotnull(`[*value*]`)`
 
 `notnull(`[*value*]`)` - alias for `isnotnull`
 
-**Example**
+## Example
 
 ```kusto
 T | where isnotnull(PossiblyNull) | count

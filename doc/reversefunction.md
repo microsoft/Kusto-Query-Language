@@ -14,19 +14,19 @@ ms.date: 02/13/2020
 Function reverses the order of the input string.
 If the input value isn't of type `string`, then the function forcibly casts the value to type `string`.
 
-**Syntax**
+## Syntax
 
 `reverse(`*source*`)`
 
-**Arguments**
+## Arguments
 
 * *source*: input value.  
 
-**Returns**
+## Returns
 
 The reverse order of a string value.
 
-**Examples**
+## Examples
 
 ```kusto
 print str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

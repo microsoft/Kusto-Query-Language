@@ -30,15 +30,15 @@ Retrieves the `datetime` when the record was ingested and ready for query.
 > [!NOTE]
 > The value returned by this function is only approximate, as the ingestion process may take several minutes to complete and multiple ingestion activities may take place concurrently. To process all records of a table with exactly-once guarantees, use [database cursors](../management/databasecursor.md).
 
-**Syntax**
+## Syntax
 
 `ingestion_time()`
 
-**Returns**
+## Returns
 
 A `datetime` value specifying the approximate time of ingestion into a table.
 
-**Example**
+## Example
 
 ```kusto
 T

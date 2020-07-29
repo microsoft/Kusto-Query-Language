@@ -13,11 +13,11 @@ ms.date: 02/13/2020
 
 Calculates calendarian difference between two [datetime](./scalar-data-types/datetime.md) values.
 
-**Syntax**
+## Syntax
 
 `datetime_diff(`*period*`,`*datetime_1*`,`*datetime_2*`)`
 
-**Arguments**
+## Arguments
 
 * `period`: `string`. 
 * `datetime_1`: [datetime](./scalar-data-types/datetime.md) value.
@@ -36,11 +36,11 @@ Possible values of *period*:
 - Microsecond
 - Nanosecond
 
-**Returns**
+## Returns
 
 An integer, which represents amount of `periods` in the result of subtraction (`datetime_1` - `datetime_2`).
 
-**Examples**
+## Examples
 
 ```kusto
 print

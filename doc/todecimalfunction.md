@@ -17,15 +17,15 @@ Converts input to decimal number representation.
 todecimal("123.45678") == decimal(123.45678)
 ```
 
-**Syntax**
+## Syntax
 
 `todecimal(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be converted to decimal. 
 
-**Returns**
+## Returns
 
 If conversion is successful, result will be a decimal number.
 If conversion is not successful, result will be `null`.

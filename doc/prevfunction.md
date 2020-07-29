@@ -14,7 +14,7 @@ ms.date: 02/13/2020
 Returns the value of a specific column in a specified row.
 The specified row is at a specified offset from the current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
-**Syntax**
+## Syntax
 
 There are several possibilities.
 
@@ -24,7 +24,7 @@ There are several possibilities.
 
 * `prev(column, offset, default_value)`
 
-**Arguments**
+## Arguments
 
 * `column`: The column to get the values from.
 
@@ -32,7 +32,7 @@ There are several possibilities.
 
 * `default_value`: The default value to be used when there are no previous rows to take the value from. When no default value is specified, null is used.
 
-**Examples**
+## Examples
 
 ```kusto
 Table | serialize | extend prevA = prev(A,1)

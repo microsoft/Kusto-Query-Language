@@ -13,20 +13,20 @@ ms.date: 02/13/2020
 
 Returns the start of the month containing the date, shifted by an offset, if provided.
 
-**Syntax**
+## Syntax
 
 `startofmonth(`*date* [`,`*offset*]`)`
 
-**Arguments**
+## Arguments
 
 * `date`: The input date.
 * `offset`: An optional number of offset months from the input date (integer, default - 0).
 
-**Returns**
+## Returns
 
 A datetime representing the start of the month for the given *date* value, with the offset, if specified.
 
-**Example**
+## Example
 
 ```kusto
   range offset from -1 to 1 step 1

@@ -13,17 +13,17 @@ ms.date: 08/11/2019
 
 `array_shift_left()` shifts the values inside an array to the left.
 
-**Syntax**
+## Syntax
 
 `array_shift_left(`*`arr`*, *`shift_count`* `[,` *`fill_value`* ]`)`
 
-**Arguments**
+## Arguments
 
 * *`arr`*: Input array to split, must be dynamic array.
 * *`shift_count`*: Integer specifying the number of positions that array elements will be shifted to the left. If the value is negative, the elements will be shifted to the right.
 * *`fill_value`*: Scalar value that is used for inserting elements instead of the ones that were shifted and removed. Default: null value or empty string (depending on the *`arr`* type).
 
-**Returns**
+## Returns
 
 Dynamic array containing the same number of elements as in the original array. Each element has been shifted according to *shift_count*. New elements that are added in place of removed elements will have a value of *fill_value*.
 
@@ -33,7 +33,7 @@ Dynamic array containing the same number of elements as in the original array. E
 * For rotating array right, see [array_rotate_right()](array_rotate_rightfunction.md).
 * For rotating array left, see [array_rotate_left()](array_rotate_leftfunction.md).
 
-**Examples**
+## Examples
 
 * Shifting to the left by two positions:
 

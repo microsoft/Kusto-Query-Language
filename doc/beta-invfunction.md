@@ -21,17 +21,17 @@ If *probability* = `beta_cdf(`*x*,...`)`, then `beta_inv(`*probability*,...`)` =
 
 The beta distribution can be used in project planning to model probable completion times given an expected completion time and variability.
 
-**Syntax**
+## Syntax
 
 `beta_inv(`*probability*`, `*alpha*`, `*beta*`)`
 
-**Arguments**
+## Arguments
 
 * *probability*: A probability associated with the beta distribution.
 * *alpha*: A parameter of the distribution.
 * *beta*: A parameter of the distribution.
 
-**Returns**
+## Returns
 
 * The inverse of the beta cumulative probability density function [beta_cdf()](./beta-cdffunction.md)
 
@@ -45,7 +45,7 @@ If probability ≤ 0 or probability > 1, beta_inv() returns the NaN value.
 
 Given a value for probability, beta_inv() seeks that value x such that beta_cdf(x, alpha, beta) = probability.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

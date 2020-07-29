@@ -27,7 +27,7 @@ by the previous clause. This process continues for all aggregation clauses.
 For example, the `top-nested` operator can be used to answer the following question: "For a table containing sales
 figures, such as country, salesperson, and amount sold: what are the top five countries by sales? What are the top three salespeople in each of these countries?"
 
-**Syntax**
+## Syntax
 
 *T* `|` `top-nested` *TopNestedClause2* [`,` *TopNestedClause2*...]
 
@@ -35,7 +35,7 @@ Where *TopNestedClause* has the following syntax:
 
 [*N*] `of` [*`ExprName`* `=`] *`Expr`* [`with` `others` `=` *`ConstExpr`*] `by` [*`AggName`* `=`] *`Aggregation`* [`asc` | `desc`]
 
-**Arguments**
+## Arguments
 
 For each *TopNestedClause*:
 
@@ -74,7 +74,7 @@ For each *TopNestedClause*:
 
 * `asc` or `desc` (the default) may appear to control whether selection is actually from the "bottom" or "top" of the range of aggregated values.
 
-**Returns**
+## Returns
 
 This operator returns a table that has two columns for each aggregation clause:
 
@@ -102,7 +102,7 @@ limit the number of distinct values to return (by using *N*) and use the
 `with others=` *ConstExpr* option to get an indication for the "weight" of all other
 cases.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

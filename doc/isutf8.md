@@ -17,15 +17,15 @@ Returns `true` if the argument is a valid utf8 string.
 isutf8("some string") == true
 ```
 
-**Syntax**
+## Syntax
 
 `isutf8(`[*value*]`)`
 
-**Returns**
+## Returns
 
 Indicates whether the argument is a valid utf8 string.
 
-**Example**
+## Example
 
 ```kusto
 T

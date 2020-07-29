@@ -13,19 +13,19 @@ ms.date: 06/02/2019
 
 Returns a `dynamic` (JSON) array of the set of all distinct values that are in the first array but aren't in other arrays - (((arr1 \ arr2) \ arr3) \ ...).
 
-**Syntax**
+## Syntax
 
 `set_difference(`*arr1*`, `*arr2*`[`,` *arr3*, ...])`
 
-**Arguments**
+## Arguments
 
 * *arr1...arrN*: Input arrays to create a difference set (at least two arrays). All arguments must be dynamic arrays (see [pack_array](packarrayfunction.md)). 
 
-**Returns**
+## Returns
 
 Returns a dynamic array of the set of all distinct values that are in arr1 but aren't in other arrays. See [`set_union()`](setunionfunction.md) and [`set_intersect()`](setintersectfunction.md).
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

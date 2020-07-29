@@ -14,15 +14,15 @@ ms.date: 02/13/2020
 Returns the name of the database in scope (database that all query
 entities are resolved against if no other database is specified).
 
-**Syntax**
+## Syntax
 
 `current_database()`
 
-**Returns**
+## Returns
 
 The name of the database in scope as a value of type `string`.
 
-**Example**
+## Example
 
 ```kusto
 print strcat("Database in scope: ", current_database())

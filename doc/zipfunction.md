@@ -15,15 +15,15 @@ The `zip` function accepts any number of `dynamic` arrays, and returns an
 array whose elements are each an array holding the elements of the input
 arrays of the same index.
 
-**Syntax**
+## Syntax
 
 `zip(`*array1*`,` *array2*`, ... )`
 
-**Arguments**
+## Arguments
 
 Between 2 and 16 dynamic arrays.
 
-**Examples**
+## Examples
 
 The following example returns `[[1,2],[3,4],[5,6]]`:
 

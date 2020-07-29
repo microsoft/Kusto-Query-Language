@@ -18,16 +18,16 @@ when you need to extract more than one element of a JSON compound object.
 
 Aliases to [parse_json()](./parsejsonfunction.md) function.
 
-**Syntax**
+## Syntax
 
 `todynamic(`*json*`)`
 `toobject(`*json*`)`
 
-**Arguments**
+## Arguments
 
 * *json*: A JSON document.
 
-**Returns**
+## Returns
 
 An object of type `dynamic` specified by *json*.
 

@@ -19,11 +19,11 @@ the default (and currently only) flavor of the operator tries to return an answe
 T | sample-distinct 5 of DeviceId
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| sample-distinct` *NumberOfValues* `of` *ColumnName*
 
-**Arguments**
+## Arguments
 * *NumberOfValues*: The number distinct values of *T* to return. You can specify any numeric expression.
 
 **Tips**
@@ -34,7 +34,7 @@ T | sample-distinct 5 of DeviceId
 
  if you want to sample data rows (rather than values of a specific column), refer to the [sample operator](sampleoperator.md)
 
-**Examples**  
+## Examples  
 
 Get 10 distinct values from a population
 

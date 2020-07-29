@@ -17,11 +17,11 @@ Detects sequence occurrences based on provided predicates.
 T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `sequence_detect` `(`*TimelineColumn*`,` *MaxSequenceStepWindow*`,` *MaxSequenceSpan*`,` *Expr1*`,` *Expr2*`,` ..., *Dim1*`,` *Dim2*`,` ...`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *TimelineColumn*: column reference representing timeline, must be present in the source expression
@@ -30,7 +30,7 @@ T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 
 * *Expr1*, *Expr2*, ...: boolean predicate expressions defining sequence steps
 * *Dim1*, *Dim2*, ...: dimension expressions that are used to correlate sequences
 
-**Returns**
+## Returns
 
 Returns a single table where each row in the table represents a single sequence occurence:
 
@@ -38,7 +38,7 @@ Returns a single table where each row in the table represents a single sequence 
 * *Expr1*_*TimelineColumn*, *Expr2*_*TimelineColumn*, ...: Columns with time values, representing the timeline of each sequence step.
 * *Duration*: the overall sequence time window
 
-**Examples**
+## Examples
 
 ### Exploring Storm Events 
 

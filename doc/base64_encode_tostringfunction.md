@@ -13,15 +13,15 @@ ms.date: 06/22/2019
 
 Encodes a string as base64 string.
 
-**Syntax**
+## Syntax
 
 `base64_encode_tostring(`*String*`)`
 
-**Arguments**
+## Arguments
 
 * *String*: Input string to be encoded as base64 string.
 
-**Returns**
+## Returns
 
 Returns the string encoded as base64 string.
 
@@ -29,7 +29,7 @@ Returns the string encoded as base64 string.
 * To decode base64 strings to an array of long values, see [base64_decode_toarray()](base64_decode_toarrayfunction.md)
 
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

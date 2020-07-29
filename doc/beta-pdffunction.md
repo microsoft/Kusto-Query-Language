@@ -19,17 +19,17 @@ beta_pdf(0.2, 10.0, 50.0)
 
 The beta distribution is commonly used to study variation in the percentage of something across samples, such as the fraction of the day people spend watching television.
 
-**Syntax**
+## Syntax
 
 `beta_pdf(`*x*`, `*alpha*`, `*beta*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A value at which to evaluate the function.
 * *alpha*: A parameter of the distribution.
 * *beta*: A parameter of the distribution.
 
-**Returns**
+## Returns
 
 * The [probability beta density function](https://en.wikipedia.org/wiki/Beta_distribution#Probability_density_function).
 
@@ -41,7 +41,7 @@ If x ≤ 0 or 1 ≤ x, beta_pdf() returns NaN value.
 
 If alpha ≤ 0 or beta ≤ 0, beta_pdf() returns the NaN value.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

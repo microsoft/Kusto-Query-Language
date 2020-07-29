@@ -20,7 +20,7 @@ Alias statements allow you to define an alias for databases, which can be used l
 This is useful when you're working with several clusters but want to appear as if you're working on fewer clusters.
 The alias must be defined according to the following syntax, where *clustername* and *databasename* are existing and valid entities.
 
-**Syntax**
+## Syntax
 
 `alias` database[*'DatabaseAliasName'*] `=` cluster("https://*clustername*.kusto.windows.net:443").database("*databasename*")
 
@@ -29,7 +29,7 @@ The alias must be defined according to the following syntax, where *clustername*
 * *'DatabaseAliasName'* can be either an existing name or a new name.
 * The mapped cluster-uri and the mapped database-name must appear inside double-quotes(") or single-quotes(')
 
-**Examples**
+## Examples
 
 ```kusto
 alias database["wiki"] = cluster("https://somecluster.kusto.windows.net:443").database("somedatabase");

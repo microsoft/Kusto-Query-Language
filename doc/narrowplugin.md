@@ -20,11 +20,11 @@ The `narrow` plugin "unpivots" a wide table into a table with just three columns
 The `narrow` plugin is designed mainly for display purposes, as it allows wide
 tables to be displayed comfortably without the need of horizontal scrolling.
 
-**Syntax**
+## Syntax
 
 `T | evaluate narrow()`
 
-**Examples**
+## Examples
 
 The following example shows an easy way to read the output of the Kusto
 `.show diagnostics` control command.

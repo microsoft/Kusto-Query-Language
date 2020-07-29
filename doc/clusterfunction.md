@@ -21,11 +21,11 @@ Changes the reference of the query to a remote cluster.
 cluster('help').database('Sample').SomeTable
 ```
 
-**Syntax**
+## Syntax
 
 `cluster(`*stringConstant*`)`
 
-**Arguments**
+## Arguments
 
 * *stringConstant*: Name of the cluster that is referenced. Cluster name can be either 
 a fully qualified DNS name, or a string that will be suffixed with `.kusto.windows.net`. Argument has to be _constant_ prior to the query's execution,

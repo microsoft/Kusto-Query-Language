@@ -19,7 +19,7 @@ or disabled (unlike other language constructs, which are always available),
 and aren't "bound" by the relational nature of the language (for example, they may
 not have a predefined, statically determined, output schema).
 
-**Syntax** 
+## Syntax 
 
 [*T* `|`] `evaluate` [ *evaluateParameters* ] *PluginName* `(` [*PluginArg1* [`,` *PluginArg2*]... `)`
 

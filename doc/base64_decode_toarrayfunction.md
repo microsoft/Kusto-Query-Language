@@ -13,22 +13,22 @@ ms.date: 06/22/2019
 
 Decodes a base64 string to an array of long values.
 
-**Syntax**
+## Syntax
 
 `base64_decode_toarray(`*String*`)`
 
-**Arguments**
+## Arguments
 
 * *String*: Input string to be decoded from base64 to UTF8 string.
 
-**Returns**
+## Returns
 
 Returns an array of long values decoded from a base64 string.
 
 * To decode base64 strings to a UTF-8 string, see [base64_decode_tostring()](base64_decode_tostringfunction.md)
 * To encode strings to a base64 string, see [base64_encode_tostring()](base64_encode_tostringfunction.md)
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

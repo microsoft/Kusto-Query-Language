@@ -15,17 +15,17 @@ Calculates the geohash string value for a geographic location.
 
 Read more about [geohash](https://en.wikipedia.org/wiki/Geohash).  
 
-**Syntax**
+## Syntax
 
 `geo_point_to_geohash(`*longitude*`, `*latitude*`, `[*accuracy*]`)`
 
-**Arguments**
+## Arguments
 
 * *longitude*: Longitude value of a geographic location. Longitude x will be considered valid if x is a real number and is in the range [-180, +180]. 
 * *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y is in the range [-90, +90]. 
 * *accuracy*: An optional `int` that defines the requested accuracy. Supported values are in the range [1,18]. If unspecified, the default value `5` is used.
 
-**Returns**
+## Returns
 
 The geohash string value of a given geographic location with requested accuracy length. If the coordinate or accuracy is invalid, the query will produce an empty result.
 
@@ -63,7 +63,7 @@ The geohash string value of a given geographic location with requested accuracy 
 
 See also [geo_point_to_s2cell()](geo-point-to-s2cell-function.md).
 
-**Examples**
+## Examples
 
 US storm events aggregated by geohash.
 

@@ -20,11 +20,11 @@ The function takes an expression containing dynamic numerical array as input, an
 
 The function takes as input the column containing the dynamic array and two static dynamic arrays of the filter's *a* and *b* coefficients, and applies the filter on the column. It outputs a new dynamic array column, containing the filtered output.  
 
-**Syntax**
+## Syntax
 
 `series_iir(`*x*`,` *b* `,` *a*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array cell that is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
 * *b*: A constant expression containing the numerator coefficients of the filter (stored as a dynamic array of numeric values).

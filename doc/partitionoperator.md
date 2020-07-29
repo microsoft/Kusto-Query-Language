@@ -22,13 +22,13 @@ T | partition by Col1 ( top 10 by MaxValue )
 T | partition by Col1 { U | where Col2=toscalar(Col1) }
 ```
 
-**Syntax**
+## Syntax
 
 *T* `|` `partition` [*PartitionParameters*] `by` *Column* `(` *ContextualSubquery* `)`
 
 *T* `|` `partition` [*PartitionParameters*] `by` *Column* `{` *Subquery* `}`
 
-**Arguments**
+## Arguments
 
 * *T*: The tabular source whose data is to be processed by the operator.
 
@@ -49,7 +49,7 @@ T | partition by Col1 { U | where Col2=toscalar(Col1) }
   |`hint.concurrency`|*Number*|Hints the system how many concurrent subqueries of the `partition` operator should be executed in parallel. *Default*: Amount of CPU cores on the single node of the cluster (2 to 16).|
   |`hint.spread`|*Number*|Hints the system how many nodes should be used by the concurrent`partition` subqueries execution. *Default*: 1.|
 
-**Returns**
+## Returns
 
 The operator returns a union of the results of applying the subquery to each
 partition of the input data.

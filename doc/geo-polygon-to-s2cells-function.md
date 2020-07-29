@@ -3,7 +3,7 @@ title: geo_polygon_to_s2cells() - Azure Data Explorer
 description: This article describes geo_polygon_to_s2cells() in Azure Data Explorer.
 services: data-explorer
 author: orspod
-ms.author: orspod
+ms.author: orspodek
 ms.reviewer: mbrichko
 ms.service: data-explorer
 ms.topic: reference
@@ -15,16 +15,16 @@ Calculates S2 cell tokens that cover a polygon or multipolygon on Earth. This fu
 
 Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierarchy).
 
-**Syntax**
+## Syntax
 
 `geo_polygon_to_s2cells(`*polygon*`, `*level*`)`
 
-**Arguments**
+## Arguments
 
 * *polygon*: Polygon or multiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. 
 * *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
 
-**Returns**
+## Returns
 
 Array of S2 cell token strings that cover a polygon or multipolygon. If either the polygon or level is invalid, or the cell count exceeds the limit, the query will produce a null result.
 
@@ -91,7 +91,7 @@ This match can be achieved by the following process:
 > [!WARNING]
 > Covering a large-area polygon with small-area cells can lead to a huge amount of covering cells. As a result, the query might return null.
 
-**Examples**
+## Examples
 
 The following example classifies coordinates into polygons.
 

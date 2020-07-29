@@ -61,7 +61,7 @@ The `mv-apply` operator can be thought of as a generalization of the
 [`mv-expand`](./mvexpandoperator.md) operator (in fact, the latter can be implemented
 by the former, if the subquery includes only projections.)
 
-**Syntax**
+## Syntax
 
 *T* `|` `mv-apply` [*ItemIndex*] *ColumnsToExpand* [*RowLimit*] `on` `(` *SubQuery* `)`
 
@@ -79,7 +79,7 @@ Where *ItemIndex* has the syntax:
 
 and *SubQuery* has the same syntax of any query statement.
 
-**Arguments**
+## Arguments
 
 * *ItemIndex*: If used, indicates the name of a column of type `long` that is appended to the input as part of the array-expansion phase and indicates the 0-based array index of the
   expanded value.
@@ -111,7 +111,7 @@ and *SubQuery* has the same syntax of any query statement.
 * Unlike the [`mv-expand`](./mvexpandoperator.md) operator, the `mv-apply` operator
   supports array expansion only. There's no support for expanding property bags.
 
-**Examples**
+## Examples
 
 ## Getting the largest element from the array
 

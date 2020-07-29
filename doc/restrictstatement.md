@@ -29,7 +29,7 @@ a set of let statements defining views that restrict the user's access
 to data (for example, `T | where UserId == "..."`). As the last statement
 being added, it restricts the user's access to the logical model only.
 
-**Syntax**
+## Syntax
 
 `restrict` `access` `to` `(` [*EntitySpecifier* [`,` ...]] `)`
 
@@ -46,7 +46,7 @@ statement become "invisible" to the rest of the query.
 The restrict statement can be used to restrict access to entities in another database
 or cluster (wildcards are not supported in cluster names).
 
-**Arguments**
+## Arguments
 
 The restrict statement can get one or more parameters that define the permissive restriction during name resolution of the entity. 
 The entity can be:
@@ -87,7 +87,7 @@ restricts access to (database('DB2').*);
 ```
 
 
-**Examples**
+## Examples
 
 The following example shows how a middle-tier application can prepend a user's query
 with a logical model that prevents the user from querying any other user's data.

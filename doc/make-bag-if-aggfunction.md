@@ -16,17 +16,17 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr
 > [!NOTE]
 > Can only be used in context of aggregation inside [summarize](summarizeoperator.md).
 
-**Syntax**
+## Syntax
 
 `summarize` `make_bag_if(`*Expr*, *Predicate* [`,` *MaxSize*]`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression of type `dynamic` that will be used for aggregation calculation.
 * *Predicate*: Predicate that has to evaluate to `true`, in order for *'Expr'* to be added to the result.
 * *MaxSize*: An optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value can't exceed 1048576.
 
-**Returns**
+## Returns
 
 Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr'* in the group that are property-bags (dictionaries), for which *Predicate* evaluates to `true`.
 Non-dictionary values will be skipped.
@@ -35,7 +35,7 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 > [!NOTE]
 > The [`make_bag`](./make-bag-aggfunction.md) function, is similar to make_bag_if() without predicate expression.
 
-**Examples**
+## Examples
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)

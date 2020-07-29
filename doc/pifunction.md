@@ -13,10 +13,10 @@ ms.date: 04/25/2019
 
 Returns the constant value of Pi.
 
-**Syntax**
+## Syntax
 
 `pi()`
 
-**Returns**
+## Returns
 
 * The double value of Pi (3.1415926...)

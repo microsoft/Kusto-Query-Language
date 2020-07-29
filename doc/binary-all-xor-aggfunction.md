@@ -15,19 +15,19 @@ Accumulates values using the binary `XOR` operation per summarization group (or 
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 summarize `binary_all_xor(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: long number.
 
-**Returns**
+## Returns
 
 Returns a value that is aggregated using the binary `XOR` operation over records per summarization group (or in total, if summarization is done without grouping).
 
-**Example**
+## Example
 
 Producing 'cafe-food' using binary `XOR` operations:
 

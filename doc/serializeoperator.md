@@ -19,13 +19,13 @@ The operator has a declarative meaning. It marks the input row set as serialized
 T | serialize rn=row_number()
 ```
 
-**Syntax**
+## Syntax
 
 `serialize` [*Name1* `=` *Expr1* [`,` *Name2* `=` *Expr2*]...]
 
 * The *Name*/*Expr* pairs are similar to those pairs in the [extend operator](./extendoperator.md).
 
-**Example**
+## Example
 
 ```kusto
 Traces

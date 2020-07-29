@@ -17,15 +17,15 @@ Merges `HLL` results across the group into a single `HLL` value.
 
 For more information, see the [underlying algorithm (*H*yper*L*og*L*og) and estimation accuracy](dcount-aggfunction.md#estimation-accuracy).
 
-**Syntax**
+## Syntax
 
 `summarize` `hll_merge(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * `*Expr*`: Expression that will be used for the aggregation calculation.
 
-**Returns**
+## Returns
 
 The function returns the merged `hll` values of `*Expr*` across the group.
  

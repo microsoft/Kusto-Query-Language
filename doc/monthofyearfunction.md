@@ -19,14 +19,14 @@ Another alias: getmonth()
 monthofyear(datetime("2015-12-14"))
 ```
 
-**Syntax**
+## Syntax
 
 `monthofyear(`*a_date*`)`
 
-**Arguments**
+## Arguments
 
 * `a_date`: A `datetime`.
 
-**Returns**
+## Returns
 
 `month number` of the given year.

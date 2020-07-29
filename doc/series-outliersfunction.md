@@ -15,11 +15,11 @@ Scores anomaly points in a series.
 
 The function takes an expression with a dynamic numerical array as input, and generates a dynamic numeric array of the same length. Each value of the array indicates a score of a possible anomaly, using ["Tukey's test"](https://en.wikipedia.org/wiki/Outlier#Tukey.27s_test). A value greater than 1.5 in the same element of the input indicates a rise or decline anomaly. A value less than -1.5, indicates a decline anomaly.
 
-**Syntax**
+## Syntax
 
 `series_outliers(`*x*`, `*kind*`, `*ignore_val*`, `*min_percentile*`, `*max_percentile*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array cell that is an array of numeric values
 * *kind*: Algorithm of outlier detection. Currently supports `"tukey"` (traditional "Tukey") and  `"ctukey"` (custom "Tukey"). Default is `"ctukey"`
@@ -37,7 +37,7 @@ The following table describes differences between `"tukey"` and `"ctukey"`:
 > [!TIP]
 > The best way to use this function is to apply it to the results of the [make-series](make-seriesoperator.md) operator.
 
-**Example**
+## Example
 
 A time series with some noise creates outliers. If you would like to replace those outliers (noise) with the average value, use series_outliers() to detect the outliers, and then replace them.
 

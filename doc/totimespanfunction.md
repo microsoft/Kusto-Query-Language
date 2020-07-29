@@ -17,15 +17,15 @@ Converts input to [timespan](./scalar-data-types/timespan.md) scalar.
 totimespan("0.00:01:00") == time(1min)
 ```
 
-**Syntax**
+## Syntax
 
 `totimespan(Expr)`
 
-**Arguments**
+## Arguments
 
 * *`Expr`*: Expression that will be converted to [timespan](./scalar-data-types/timespan.md).
 
-**Returns**
+## Returns
 
 If conversion is successful, result will be a [timespan](./scalar-data-types/timespan.md) value.
 Else, result will be null.

@@ -19,16 +19,16 @@ Returns a dynamic array with the [tags](../management/extents-overview.md#extent
 
 Applying this function to calculated data which is not attached to a data shard returns an empty value.
 
-**Syntax**
+## Syntax
 
 `extent_tags()`
 
-**Returns**
+## Returns
 
 A value of type `dynamic` that is an array holding the current record's extent tags,
 or an empty value.
 
-**Examples**
+## Examples
 
 The following example shows how to get a list the tags of all the data shards
 that have records from an hour ago with a specific value for the

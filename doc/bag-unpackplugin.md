@@ -15,11 +15,11 @@ The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating e
 
     T | evaluate bag_unpack(col1)
 
-**Syntax**
+## Syntax
 
 *T* `|` `evaluate` `bag_unpack(` *Column* [`,` *OutputColumnPrefix* ] [`,` *columnsConflict* ] [`,` *ignoredProperties* ] `)`
 
-**Arguments**
+## Arguments
 
 * *T*: The tabular input whose column *Column* is to be unpacked.
 * *Column*: The column of *T* to unpack. Must be of type `dynamic`.
@@ -30,7 +30,7 @@ The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating e
     - `keep_source` - Source column is kept
 * *ignoredProperties*: Optional set of bag properties to be ignored. When argument is provided, it's expected to be a constant of `dynamic` array with one or more string literals.
 
-**Returns**
+## Returns
 
 The `bag_unpack` plugin returns a table with as many records as its tabular input (*T*). The schema of the table is the same as the schema of its tabular input with the following modifications:
 

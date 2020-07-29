@@ -16,7 +16,7 @@ Interprets a `string` as a JSON value and returns the value as `dynamic`.
 This function is better than [extractjson() function](./extractjsonfunction.md)
 when you need to extract more than one element of a JSON compound object.
 
-**Syntax**
+## Syntax
 
 `parse_json(`*json*`)`
 
@@ -24,18 +24,18 @@ Aliases:
 - [todynamic()](./todynamicfunction.md)
 - [toobject()](./todynamicfunction.md)
 
-**Arguments**
+## Arguments
 
 * *json*: An expression of type `string`. It represents a [JSON-formatted value](https://json.org/), or an expression of type [dynamic](./scalar-data-types/dynamic.md), representing the actual `dynamic` value.
 
-**Returns**
+## Returns
 
 An object of type `dynamic` that is determined by the value of *json*:
 * If *json* is of type `dynamic`, its value is used as-is.
 * If *json* is of type `string`, and is a [properly formatted JSON string](https://json.org/), then the string is parsed, and the value produced is returned.
 * If *json* is of type `string`, but it isn't a [properly formatted JSON string](https://json.org/), then the returned value is an object of type `dynamic` that holds the original `string` value.
 
-**Example**
+## Example
 
 In the following example, when `context_custom_metrics` is a `string`
 that looks like this:

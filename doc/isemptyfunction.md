@@ -17,11 +17,11 @@ Returns `true` if the argument is an empty string or is null.
 isempty("") == true
 ```
 
-**Syntax**
+## Syntax
 
 `isempty(`[*value*]`)`
 
-**Returns**
+## Returns
 
 Indicates whether the argument is an empty string or isnull.
 
@@ -33,7 +33,7 @@ Indicates whether the argument is an empty string or isnull.
 |parsejson("[]")|false
 |parsejson("{}")|false
 
-**Example**
+## Example
 
 ```kusto
 T

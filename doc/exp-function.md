@@ -13,15 +13,15 @@ ms.date: 10/23/2018
 
 The base-e exponential function of x, which is e raised to the power x: e^x.  
 
-**Syntax**
+## Syntax
 
 `exp(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number, value of the exponent.
 
-**Returns**
+## Returns
 
 * Exponential value of x.
 * For natural (base-e) logarithms, see [log()](log-function.md).

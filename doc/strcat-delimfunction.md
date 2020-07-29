@@ -15,20 +15,20 @@ Concatenates between 2 and 64 arguments, with delimiter, provided as first argum
 
  * If arguments aren't of string type, they'll be forcibly converted to string.
 
-**Syntax**
+## Syntax
 
 `strcat_delim(`*delimiter*, *argument1*, *argument2*[ , *argumentN*]`)`
 
-**Arguments**
+## Arguments
 
 * *delimiter*: string expression, which will be used as separator.
 * *argument1* ... *argumentN*: Expressions to be concatenated.
 
-**Returns**
+## Returns
 
 Arguments, concatenated to a single string with *delimiter*.
 
-**Examples**
+## Examples
 
 ```kusto
 print st = strcat_delim('-', 1, '2', 'A', 1s)

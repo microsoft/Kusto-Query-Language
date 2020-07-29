@@ -13,14 +13,14 @@ ms.date: 02/14/2019
 
 Calculates the absolute value of the input.  
 
-**Syntax**
+## Syntax
 
 `abs(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: An integer or real number, or a timespan value.
 
-**Returns**
+## Returns
 
 * Absolute value of x.

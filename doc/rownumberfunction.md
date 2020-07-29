@@ -16,7 +16,7 @@ The row index starts by default at `1` for the first row, and is incremented by 
 Optionally, the row index can start at a different value than `1`.
 Additionally, the row index may be reset according to some provided predicate.
 
-**Syntax**
+## Syntax
 
 `row_number` `(` [*StartingIndex* [`,` *Restart*]] `)`
 
@@ -26,11 +26,11 @@ Additionally, the row index may be reset according to some provided predicate.
   numbering is to be restarted to the *StartingIndex* value. If not provided,
   the default value of `false` is used.
 
-**Returns**
+## Returns
 
 The function returns the row index of the current row as a value of type `long`.
 
-**Examples**
+## Examples
 
 The following example returns a table with two columns, the first column (`a`)
 with numbers from `10` down to `1`, and the second column (`rn`) with numbers

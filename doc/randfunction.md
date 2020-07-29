@@ -18,7 +18,7 @@ rand()
 rand(1000)
 ```
 
-**Syntax**
+## Syntax
 
 * `rand()` - returns a value of type `real`
   with a uniform distribution in the range [0.0, 1.0).

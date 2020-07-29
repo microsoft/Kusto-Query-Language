@@ -25,11 +25,11 @@ print current_principal_is_member_of(
     )
 ```
 
-**Syntax**
+## Syntax
 
 `current_principal_is_member_of`(`*list of string literals*`)
 
-**Arguments**
+## Arguments
 
 * *list of expressions* - a comma-separated list of string literals, where each literal is a principal fully qualified name (FQN) string formed as:  
 *PrinciplaType*`=`*PrincipalId*`;`*TenantId*
@@ -40,7 +40,7 @@ print current_principal_is_member_of(
 | AAD Group       | `aadgroup=` |
 | AAD Application | `aadapp=`   |
 
-**Returns**
+## Returns
   
 The function returns:
 * `true`: if the current principal running the query was successfully matched for at least one input argument.
@@ -54,7 +54,7 @@ The function returns:
 > * `where current_principal_is_member_of('non-existing-group') != false` 
 
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

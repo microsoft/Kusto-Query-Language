@@ -13,15 +13,15 @@ ms.date: 10/23/2018
 
 Returns the square root function.  
 
-**Syntax**
+## Syntax
 
 `sqrt(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number >= 0.
 
-**Returns**
+## Returns
 
 * A positive number such that `sqrt(x) * sqrt(x) == x`
 * `null` if the argument is negative or cannot be converted to a `real` value. 

@@ -17,14 +17,14 @@ Returns the integer number represents the day number of the given year.
 dayofyear(datetime(2015-12-14))
 ```
 
-**Syntax**
+## Syntax
 
 `dayofweek(`*a_date*`)`
 
-**Arguments**
+## Arguments
 
 * `a_date`: A `datetime`.
 
-**Returns**
+## Returns
 
 `day number` of the given year.

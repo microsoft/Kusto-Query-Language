@@ -13,15 +13,15 @@ ms.date: 11/25/2019
 
 Converts unix-epoch milliseconds to UTC datetime.
 
-**Syntax**
+## Syntax
 
 `unixtime_milliseconds_todatetime(*milliseconds*)`
 
-**Arguments**
+## Arguments
 
 * *milliseconds*: A real number represents epoch timestamp in milliseconds. `Datetime` that occurs before the epoch time (1970-01-01 00:00:00) has a negative timestamp value.
 
-**Returns**
+## Returns
 
 If the conversion is successful, the result will be a [datetime](./scalar-data-types/datetime.md) value. If conversion is not successful, result will be null.
 
@@ -31,7 +31,7 @@ If the conversion is successful, the result will be a [datetime](./scalar-data-t
 * Convert unix-epoch microseconds to UTC datetime using [unixtime_microseconds_todatetime()](unixtime-microseconds-todatetimefunction.md).
 * Convert unix-epoch nanoseconds to UTC datetime using [unixtime_nanoseconds_todatetime()](unixtime-nanoseconds-todatetimefunction.md).
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples  -->
 ```kusto

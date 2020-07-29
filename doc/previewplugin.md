@@ -17,11 +17,11 @@ Returns a table with up to the specified number of rows from the input record se
 T | evaluate preview(50)
 ```
 
-**Syntax**
+## Syntax
 
 `T` `|` `evaluate` `preview(` *NumberOfRows* `)`
 
-**Returns**
+## Returns
 
 The `preview` plugin returns two result tables:
 * A table with up to the specified number of rows.

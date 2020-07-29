@@ -23,7 +23,7 @@ Produces a table with the distinct combination of all columns in the input table
 T | distinct *
 ```
 
-**Example**
+## Example
 
 Shows the distinct combination of fruit and price.
 

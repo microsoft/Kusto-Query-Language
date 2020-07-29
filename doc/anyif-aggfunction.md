@@ -14,16 +14,16 @@ ms.date: 02/13/2020
 Arbitrarily selects one record for each group in a [summarize operator](summarizeoperator.md), for which the predicate
 is "true". The function returns the value of an expression over each such record.
 
-**Syntax**
+## Syntax
 
 `summarize` `anyif` `(` *Expr*, *Predicate* `)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: An expression over each record selected from the input to return.
 * *Predicate*: Predicate to indicate which records may be considered for evaluation.
 
-**Returns**
+## Returns
 
 The `anyif` aggregation function returns the value of the expression calculated
 for each of the records randomly selected from each group of the summarize operator. Only records for which *Predicate* returns "true" may be selected. If the predicate doesn't return "true", a null value is produced.
@@ -35,7 +35,7 @@ per value of the compound group key, subject to some predicate that is "true".
 
 The function attempts to return a non-null/non-empty value, if such a value is present.
 
-**Examples**
+## Examples
 
 Show a random continent that has a population of 300 to 600 million.
 

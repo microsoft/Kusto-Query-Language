@@ -15,11 +15,11 @@ Forecast based on series decomposition.
 
 Takes an expression containing a series (dynamic numerical array) as input, and predicts the values of the last trailing points. For more information, see [series_decompose](series-decomposefunction.md).
  
-**Syntax**
+## Syntax
 
 `series_decompose_forecast(`*Series* `,` *Points* `[,` *Seasonality*`,` *Trend*`,` *Seasonality_threshold*`])`
 
-**Arguments**
+## Arguments
 
 * *Series*: Dynamic array cell of numeric values. Typically, the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
 * *Points*: Integer specifying the number of points at the end of the series to predict (forecast). These points are excluded from the learning (regression) process.
@@ -41,7 +41,7 @@ Takes an expression containing a series (dynamic numerical array) as input, and 
 > * The dynamic array of the original input series should include a number of *points* slots to be forecasted. The forecast is typically done by using [make-series](make-seriesoperator.md) and specifying the end time in the range that includes the timeframe to forecast.
 > * Either seasonality or trend should be enabled, otherwise the function is redundant, and just returns a series filled with zeroes.
 
-**Example**
+## Example
 
 In the following example, we generate a series of four weeks in an hourly grain, with weekly seasonality and a small upward trend. We then use `make-series` and add another empty week to the series. `series_decompose_forecast` is called with a week (24*7 points), and it automatically detects the seasonality and trend, and generates a forecast of the entire five-week period.
 

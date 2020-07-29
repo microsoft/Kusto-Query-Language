@@ -15,19 +15,19 @@ Merges `hll` results (scalar version of the aggregate version [`hll_merge()`](hl
 
 Read about the [underlying algorithm (*H*yper*L*og*L*og) and estimation accuracy](dcount-aggfunction.md#estimation-accuracy).
 
-**Syntax**
+## Syntax
 
 `hll_merge(` *Expr1*`,` *Expr2*`, ...)`
 
-**Arguments**
+## Arguments
 
 * Columns that have `hll` values to be merged.
 
-**Returns**
+## Returns
 
 The result for merging the columns `*Exrp1*`, `*Expr2*`, ... `*ExprN*` to one `hll` value.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/KustoMonitoringPersistentDatabase -->
 ```kusto

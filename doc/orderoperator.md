@@ -20,11 +20,11 @@ T | order by country asc, price desc
 > [!NOTE]
 > The order operator is an alias to the sort operator. For more information, see [sort operator](sortoperator.md)
 
-**Syntax**
+## Syntax
 
 *T* `| order by` *column* [`asc` | `desc`] [`nulls first` | `nulls last`] [`,` ...]
 
-**Arguments**
+## Arguments
 
 * *T*: The table input to sort.
 * *column*: Column of *T* by which to sort. The type of the values must be numeric, date, time or string.

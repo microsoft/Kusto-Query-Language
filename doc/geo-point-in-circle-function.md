@@ -13,11 +13,11 @@ ms.date: 02/03/2020
 
 Calculates whether the geospatial coordinates are inside a circle on Earth.
 
-**Syntax**
+## Syntax
 
 `geo_point_in_circle(`*p_longitude*`, `*p_latitude*`, `*pc_longitude*`, `*pc_latitude*`, `*c_radius*`)`
 
-**Arguments**
+## Arguments
 
 * *p_longitude*: Geospatial coordinate longitude value in degrees. Valid value is a real number and in the range [-180, +180].
 * *p_latitude*: Geospatial coordinate latitude value in degrees. Valid value is a real number and in the range [-90, +90].
@@ -25,7 +25,7 @@ Calculates whether the geospatial coordinates are inside a circle on Earth.
 * *pc_latitude*: circle center geospatial coordinate latitude value in degrees. Valid value is a real number and in the range [-90, +90].
 * *c_radius*: Circle radius in meters. Valid value must be positive.
 
-**Returns**
+## Returns
 
 Indicates whether the geospatial coordinates are inside a circle. If the coordinates or circle is invalid, the query will produce a null result.
 
@@ -34,7 +34,7 @@ Indicates whether the geospatial coordinates are inside a circle. If the coordin
 >* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere.
 >* A circle is a spherical cap on Earth. The radius of the cap is measured along the surface of the sphere.
 
-**Examples**
+## Examples
 
 The following query finds all the places in the area defined by the following circle: Radius of 18 km, center at [-122.317404, 47.609119] coordinates.
 

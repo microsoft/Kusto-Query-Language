@@ -16,19 +16,19 @@ The function converts characters of the input URL into a format that can be tran
 Detailed information about URL encoding and decoding can be found [here](https://en.wikipedia.org/wiki/Percent-encoding).
 Differs from [url_encode](./urlencodefunction.md) by encoding spaces as '20%' and not as '+'.
 
-**Syntax**
+## Syntax
 
 `url_encode_component(`*url*`)`
 
-**Arguments**
+## Arguments
 
 * *url*: input URL (string).  
 
-**Returns**
+## Returns
 
 URL (string) converted into a format that can be transmitted over the Internet.
 
-**Examples**
+## Examples
 
 ```kusto
 let url = @'https://www.bing.com/hello word/';

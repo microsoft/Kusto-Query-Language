@@ -13,11 +13,11 @@ ms.date: 10/23/2018
 
 Calculates the seasonal component of a series, according to the detected or given seasonal period.
 
-**Syntax**
+## Syntax
 
 `series_seasonal(`*series* `[,` *period*`])`
 
-**Arguments**
+## Arguments
 
 * *series*: Input numeric dynamic array
 * *period* (optional): Integer number of bins in each seasonal period, possible values:
@@ -25,7 +25,7 @@ Calculates the seasonal component of a series, according to the detected or give
     * Positive integer: Used as the period for the seasonal component
     * Any other value: Ignores seasonality and returns a series of zeroes
 
-**Returns**
+## Returns
 
 Dynamic array of the same length as the *series* input that contains the calculated seasonal component of the series. The seasonal component is calculated as the *median* of all the values that correspond to the location of the bin, across the periods.
 

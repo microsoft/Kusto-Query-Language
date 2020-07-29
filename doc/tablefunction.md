@@ -20,11 +20,11 @@ of type `string`.
 table('StormEvent')
 ```
 
-**Syntax**
+## Syntax
 
 `table` `(` *TableName* [`,` *DataScope*] `)`
 
-**Arguments**
+## Arguments
 
 ::: zone pivot="azuredataexplorer"
 

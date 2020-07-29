@@ -13,19 +13,19 @@ ms.date: 10/23/2018
 
 Concatenates a number of dynamic arrays to a single array.
 
-**Syntax**
+## Syntax
 
 `array_concat(`*arr1*`[`,` *arr2*, ...]`)`
 
-**Arguments**
+## Arguments
 
 * *arr1...arrN*: Input arrays to be concatenated into a dynamic array. All arguments must be dynamic arrays (see [pack_array](packarrayfunction.md)). 
 
-**Returns**
+## Returns
 
 Dynamic array of arrays with arr1, arr2, ... , arrN.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

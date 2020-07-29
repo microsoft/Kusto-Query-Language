@@ -13,15 +13,15 @@ ms.date: 08/11/2019
 
 `log()` returns the natural logarithm function.  
 
-**Syntax**
+## Syntax
 
 `log(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number > 0.
 
-**Returns**
+## Returns
 
 * The natural logarithm is the base-e logarithm: the inverse of the natural exponential function (exp).
 * `null` if the argument is negative or null or can't be converted to a `real` value. 

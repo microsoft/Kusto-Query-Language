@@ -20,7 +20,7 @@ T | take 5
 There is no guarantee which records are returned, unless
 the source data is sorted.
 
-**Syntax**
+## Syntax
 
 `take` *NumberOfRows*
 `limit` *NumberOfRows*

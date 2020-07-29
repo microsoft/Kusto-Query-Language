@@ -17,15 +17,15 @@ Converts input to integer (signed 32-bit) number representation.
 toint("123") == int(123)
 ```
 
-**Syntax**
+## Syntax
 
 `toint(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be converted to integer. 
 
-**Returns**
+## Returns
 
 If the conversion is successful, the result will be an integer.
 If the conversion isn't successful, the result will be `null`.

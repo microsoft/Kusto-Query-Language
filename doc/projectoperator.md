@@ -19,7 +19,7 @@ The order of the columns in the result is specified by the order of the argument
 T | project cost=price*quantity, price
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| project` *ColumnName* [`=` *Expression*] [`,` ...]
   
@@ -27,7 +27,7 @@ or
   
 *T* `| project` [*ColumnName* | `(`*ColumnName*[`,`]`)` `=`] *Expression* [`,` ...]
 
-**Arguments**
+## Arguments
 
 * *T*: The input table.
 * *ColumnName:* Optional name of a column to appear in the output. If there is no *Expression*, then *ColumnName* is mandatory and a column of that name must appear in the input. If omitted, the name will be automatically generated. If *Expression* returns more than one column, a list of column names can be specified in parentheses. In this case *Expression*'s output columns will be given the specified names, dropping all rest of the output columns, if there are any. If list of the column names is not specified, all *Expression*'s output columns with generated names will be added to the output.
@@ -35,11 +35,11 @@ or
 
     It is legal to return a new calculated column with the same name as an existing column in the input.
 
-**Returns**
+## Returns
 
 A table that has the columns named as arguments, and as many rows as the input table.
 
-**Example**
+## Example
 
 The following example shows several kinds of manipulations that can be done
 using the `project` operator. The input table `T` has three columns of type `int`: `A`, `B`, and `C`. 

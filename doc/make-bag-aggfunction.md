@@ -15,11 +15,11 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *`Expr
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` `make_bag(`*`Expr`* [`,` *MaxSize*]`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression of type `dynamic` that is used for aggregation calculations.
 * *MaxSize* is an optional integer limit on the maximum number of elements returned. The default is *1048576*. MaxSize value can't exceed *1048576*.
@@ -28,7 +28,7 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *`Expr
 
 A legacy and obsolete variant of function `make_dictionary()`, has a default limit of *MaxSize* = 128.
 
-**Returns**
+## Returns
 
 Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *`Expr`* in the group, which are property-bags.
 Non-dictionary values will be skipped.
@@ -38,7 +38,7 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 
 Use the [bag_unpack()](bag-unpackplugin.md) plugin for expanding dynamic JSON objects into columns that use property bag keys. 
 
-**Examples**
+## Examples
 
 ```kusto
 let T = datatable(prop:string, value:string)

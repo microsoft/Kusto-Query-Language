@@ -18,21 +18,21 @@ countof("The cat sat on the mat", "at") == 3
 countof("The cat sat on the mat", @"\b.at\b", "regex") == 3
 ```
 
-**Syntax**
+## Syntax
 
 `countof(`*text*`,` *search* [`,` *kind*]`)`
 
-**Arguments**
+## Arguments
 
 * *text*: A string.
 * *search*: The plain string or [regular expression](./re2.md) to match inside *text*.
 * *kind*: `"normal"|"regex"` Default `normal`. 
 
-**Returns**
+## Returns
 
 The number of times that the search string can be matched in the container. Plain string matches may overlap; regex matches do not.
 
-**Examples**
+## Examples
 
 |||
 |---|---

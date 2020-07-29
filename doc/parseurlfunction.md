@@ -14,19 +14,19 @@ ms.date: 02/13/2020
 Parses an absolute URL `string` and returns a `dynamic` object contains URL parts.
 
 
-**Syntax**
+## Syntax
 
 `parse_url(`*url*`)`
 
-**Arguments**
+## Arguments
 
 * *url*: A string represents a URL or the query part of the URL.
 
-**Returns**
+## Returns
 
 An object of type [dynamic](./scalar-data-types/dynamic.md) that included the URL components: Scheme, Host, Port, Path, Username, Password, Query Parameters, Fragment.
 
-**Example**
+## Example
 
 ```kusto
 T | extend Result = parse_url("scheme://username:password@host:1234/this/is/a/path?k1=v1&k2=v2#fragment")

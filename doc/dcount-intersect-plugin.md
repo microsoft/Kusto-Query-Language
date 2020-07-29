@@ -21,21 +21,21 @@ S<sub>1</sub> ∩ S<sub>2</sub> ∩ ... ∩ S<sub>n</sub>
 
     T | evaluate dcount_intersect(hll_1, hll_2, hll_3)
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `dcount_intersect(`*hll_1*, *hll_2*, [`,` *hll_3*`,` ...]`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *hll_i*: the values of set S<sub>i</sub> calculated with [`hll()`](./hll-aggfunction.md) function.
 
-**Returns**
+## Returns
 
 Returns a table with N `dcount` values (per column, representing set intersections).
 Column names are s0, s1, ... (until n-1).
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

@@ -13,7 +13,7 @@ ms.date: 02/13/2020
 
 Returns the year part of the `datetime` argument.
 
-**Example**
+## Example
 
 ```kusto
 T

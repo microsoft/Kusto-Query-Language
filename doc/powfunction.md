@@ -13,15 +13,15 @@ ms.date: 10/23/2018
 
 Returns a result of raising to power
 
-**Syntax**
+## Syntax
 
 `pow(`*base*`,` *exponent* `)`
 
-**Arguments**
+## Arguments
 
 * *base*: Base value.
 * *exponent*: Exponent value.
 
-**Returns**
+## Returns
 
 Returns base raised to the power exponent: base ^ exponent.

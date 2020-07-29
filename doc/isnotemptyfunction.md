@@ -17,7 +17,7 @@ Returns `true` if the argument isn't an empty string, and it isn't null.
 isnotempty("") == false
 ```
 
-**Syntax**
+## Syntax
 
 `isnotempty(`[*value*]`)`
 

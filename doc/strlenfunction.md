@@ -13,15 +13,15 @@ ms.date: 02/13/2020
 
 Returns the length, in characters, of the input string.
 
-**Syntax**
+## Syntax
 
 `strlen(`*source*`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The source string that will be measured for string length.
 
-**Returns**
+## Returns
 
 Returns the length, in characters, of the input string.
 
@@ -31,7 +31,7 @@ Each Unicode character in the string is equal to `1`, including surrogates.
 (e.g: Chinese characters will be counted once despite the fact that it requires more than one value in UTF-8 encoding).
 
 
-**Examples**
+## Examples
 
 ```kusto
 print length = strlen("hello")

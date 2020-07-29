@@ -15,11 +15,11 @@ Function reports the zero-based index of the first occurrence of a specified str
 
 See [`indexof()`](indexoffunction.md).
 
-**Syntax**
+## Syntax
 
 `indexof_regex(`*source*`,`*lookup*`[,`*start_index*`[,`*length*`[,`*occurrence*`]]])`
 
-**Arguments**
+## Arguments
 
 |Arguments     | Description                                     |Required or Optional|
 |--------------|-------------------------------------------------|--------------------|
@@ -30,7 +30,7 @@ See [`indexof()`](indexoffunction.md).
 |occurrence    | Find the index of the N-th appearance of the pattern. 
                  Default is 1, the index of the first occurrence |Optional            |
 
-**Returns**
+## Returns
 
 Zero-based index position of *lookup*.
 
@@ -41,7 +41,7 @@ Zero-based index position of *lookup*.
      * length parameter is less than -1.
 
 
-**Examples**
+## Examples
 
 ```kusto
 print

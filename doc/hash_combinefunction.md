@@ -13,21 +13,21 @@ ms.date: 11/19/2019
 
 Combines hash values of two or more hashes.
 
-**Syntax**
+## Syntax
 
 `hash_combine(`*h1* `,` *h2* [`,` *h3* ...]`)`
 
-**Arguments**
+## Arguments
 
 * *h1*: Long value representing the first hash value.
 * *h2*: Long value representing the second hash value.
 * *hN*: Long value representing Nth hash value.
 
-**Returns**
+## Returns
 
 The combined hash value of the given scalars.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

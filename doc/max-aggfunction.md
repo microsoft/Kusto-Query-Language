@@ -15,15 +15,15 @@ Returns the maximum value across the group.
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 `summarize` `max(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation. 
 
-**Returns**
+## Returns
 
 The maximum value of *Expr* across the group.
  

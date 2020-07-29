@@ -17,11 +17,11 @@ T | evaluate basket()
 
 Basket finds all frequent patterns of discrete attributes (dimensions) in the data. It then returns the frequent patterns that passed the frequency threshold in the original query. Basket is guaranteed to find every frequent pattern in the data, but isn't guaranteed to have polynomial runtime. The runtime of the query is linear in the number of rows, but it might be exponential in the number of columns (dimensions). Basket is based on the Apriori algorithm originally developed for basket analysis data mining.
 
-**Syntax**
+## Syntax
 
 `T | evaluate basket(` *arguments* `)`
 
-**Returns**
+## Returns
 
 Basket returns all frequent patterns appearing above the ratio threshold of the rows. The default threshold is 0.05. Each pattern is represented by a row in the results.
 
@@ -63,7 +63,7 @@ Available arguments:
 
      `T | evaluate basket('~', '~', '~', '*', int(-1), double(-1), long(0), datetime(1900-1-1))`
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

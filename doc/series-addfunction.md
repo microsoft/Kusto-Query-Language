@@ -13,19 +13,19 @@ ms.date: 10/23/2018
 
 Calculates the element-wise addition of two numeric series inputs.
 
-**Syntax**
+## Syntax
 
 `series_add(`*series1*`,` *series2*`)`
 
-**Arguments**
+## Arguments
 
 * *series1, series2*: Input numeric arrays to be element-wise added into a dynamic array result. All arguments must be dynamic arrays. 
 
-**Returns**
+## Returns
 
 Dynamic array of calculated element-wise add operation between the two inputs. Any non-numeric element or non-existing element (arrays of different sizes) yields a `null` element value.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

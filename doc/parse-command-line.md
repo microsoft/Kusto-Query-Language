@@ -13,20 +13,20 @@ ms.date: 06/28/2020
 
 Parses a Unicode command-line string and returns a dynamic array of the command-line arguments.
 
-**Syntax**
+## Syntax
 
 `parse_command_line(`*command_line*,*parser_type*`)`
 
-**Arguments**
+## Arguments
 
 * *command_line*: Command line to parse.
 * *parser_type*: The only value that is currently supported is `"Windows"`, which parses the command line the same way as [CommandLineToArgvW](https://docs.microsoft.com/windows/win32/api/shellapi/nf-shellapi-commandlinetoargvw).
 
-**Returns**
+## Returns
 
 A dynamic array of the command-line arguments.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

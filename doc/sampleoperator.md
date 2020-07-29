@@ -17,11 +17,11 @@ Returns up to the specified number of random rows from the input table.
 T | sample 5
 ```
 
-**Syntax**
+## Syntax
 
 _T_ `| sample` _NumberOfRows_
 
-**Arguments**
+## Arguments
 
 - _NumberOfRows_: The number of rows of _T_ to return. You can specify any numeric expression.
 
@@ -66,7 +66,7 @@ StormEvents | where rand() < 0.1
 
 - If you want to sample keys rather than rows (for example - sample 10 Ids and get all rows for these Ids) you can use [`sample-distinct`](./sampledistinctoperator.md) in combination with the `in` operator.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

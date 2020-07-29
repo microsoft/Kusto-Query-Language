@@ -17,15 +17,15 @@ Returns `true` if the argument is a valid ascii string.
 isascii("some string") == true
 ```
 
-**Syntax**
+## Syntax
 
 `isascii(`[*value*]`)`
 
-**Returns**
+## Returns
 
 Indicates whether the argument is a valid ascii string.
 
-**Example**
+## Example
 
 ```kusto
 T

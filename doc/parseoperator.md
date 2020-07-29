@@ -18,11 +18,11 @@ For more information, see the [parse-where operator](parsewhereoperator.md).
 T | parse Text with "ActivityName=" name ", ActivityType=" type
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| parse` [`kind=regex` [`flags=regex_flags`] |`simple`|`relaxed`] *Expression* `with` `*` (*StringConstant* *ColumnName* [`:` *ColumnType*]) `*`...
 
-**Arguments**
+## Arguments
 
 * *T*: The input table.
 * kind:
@@ -41,7 +41,7 @@ T | parse Text with "ActivityName=" name ", ActivityType=" type
   
 * *ColumnType:* Optional. The scalar value that indicates the type to convert the value to. The default is the `string` type.
 
-**Returns**
+## Returns
 
 The input table, extended according to the list of columns that are
 provided to the operator.
@@ -76,7 +76,7 @@ provided to the operator.
 		
 	* `long` was translated to `\-\d+`.
 
-**Examples**
+## Examples
 
 The `parse` operator provides a streamlined way to `extend` a table by using multiple `extract` applications on the same `string` expression. This result is useful, when the table has a `string` column that contains several values that you want to break into individual columns. For example, a column that was produced by a developer trace ("`printf`"/"`Console.WriteLine`") statement.
 

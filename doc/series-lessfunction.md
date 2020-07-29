@@ -13,19 +13,19 @@ ms.date: 04/01/2020
 
 Calculates the element-wise less (`<`) logic operation of two numeric series inputs.
 
-**Syntax**
+## Syntax
 
 `series_less (`*Series1*`,` *Series2*`)`
 
-**Arguments**
+## Arguments
 
 * *Series1, Series2*: Input numeric arrays to be element-wise compared. All arguments must be dynamic arrays. 
 
-**Returns**
+## Returns
 
 Dynamic array of booleans containing the calculated element-wise less logic operation between the two inputs. Any non-numeric element or non-existing element (arrays of different sizes) yields a `null` element value.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

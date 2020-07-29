@@ -25,11 +25,11 @@ print
 // pValue = 0.021
 ```
 
-**Syntax**
+## Syntax
 
 `welch_test(`*mean1*`, `*variance1*`, `*count1*`, `*mean2*`, `*variance2*`, `*count2*`)`
 
-**Arguments**
+## Arguments
 
 * *mean1*: Expression that represents the mean (average) value of the first series
 * *variance1*:  Expression that represents the variance value of the first series
@@ -38,7 +38,7 @@ print
 * *variance2*:  Expression that represents the variance value of the second series
 * *count2*:  Expression that represents the count of values in the second series
 
-**Returns**
+## Returns
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Welch%27s_t-test):
 

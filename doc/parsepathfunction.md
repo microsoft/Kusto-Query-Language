@@ -26,19 +26,19 @@ In addition to the simple paths with both types of slashes, the function support
 * Long paths. For example, "\\?\C:...""
 * Alternate data streams. For example, "file1.exe:file2.exe"
 
-**Syntax**
+## Syntax
 
 `parse_path(`*path*`)`
 
-**Arguments**
+## Arguments
 
 * *path*: A string that represents a file path.
 
-**Returns**
+## Returns
 
 An object of type `dynamic` that included the path components as listed above.
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

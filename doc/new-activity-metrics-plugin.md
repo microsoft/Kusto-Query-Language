@@ -19,11 +19,11 @@ the distinct count of users will be all users in T3 who were not seen in both T1
 T | evaluate new_activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `new_activity_metrics(`*IdColumn*`,` *TimelineColumn*`,` *Start*`,` *End*`,` *Window* [`,` *Cohort*] [`,` *dim1*`,` *dim2*`,` ...] [`,` *Lookback*] `)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColumn*: The name of the column with ID values that represent user activity. 
@@ -35,7 +35,7 @@ T | evaluate new_activity_metrics(id, datetime_column, startofday(ago(30d)), sta
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
 * *Lookback*: (optional) a tabular expression with a set of IDs that belong to the 'look back' period
 
-**Returns**
+## Returns
 
 Returns a table that has the distinct count values, distinct count of new values, retention rate, and churn rate for each 
 combination of 'from' and 'to' timeline periods and for each existing dimensions combination.
@@ -61,7 +61,7 @@ For definitions of `Retention Rate` and `Churn Rate` - refer to **Notes** sectio
 [activity_metrics plugin](./activity-metrics-plugin.md) documentation.
 
 
-**Examples**
+## Examples
 
 The following sample data set shows which users seen on which days. The table was generated based on a source `Users` 
 table, as follows: 

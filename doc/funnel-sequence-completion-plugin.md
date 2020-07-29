@@ -17,11 +17,11 @@ Calculates funnel of completed sequence steps within comparing different time pe
 T | evaluate funnel_sequence_completion(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, state_column, dynamic(['S1', 'S2', 'S3']), dynamic([10m, 30min, 1h]))
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| evaluate` `funnel_sequence_completion(`*IdColumn*`,` *TimelineColumn*`,` *Start*`,` *End*`,` *Step*`,` *StateColumn*`,` *Sequence*`,` *MaxSequenceStepWindows*`)`
 
-**Arguments**
+## Arguments
 
 * *T*: The input tabular expression.
 * *IdColum*: column reference, must be present in the source expression.
@@ -33,7 +33,7 @@ T | evaluate funnel_sequence_completion(id, datetime_column, startofday(ago(30d)
 * *Sequence*: a constant dynamic array with the sequence values (values are looked up in `StateColumn`).
 * *MaxSequenceStepWindows*: scalar constant dynamic array with the values of the max allowed timespan between the first and last sequential steps in the sequence. Each Window (period) in the array generates a funnel analysis result.
 
-**Returns**
+## Returns
 
 Returns a single table useful for constructing a funnel diagram for the analyzed sequence:
 
@@ -42,7 +42,7 @@ Returns a single table useful for constructing a funnel diagram for the analyzed
 * `Period`: the maximal period (window) allowed for completing steps in the funnel sequence measured from the first step in the sequence. Each value in *MaxSequenceStepWindows* generates a funnel analysis with a separate period. 
 * `dcount`: distinct count of `IdColumn` in time window that transitioned from first sequence state to the value of `StateColumn`.
 
-**Examples**
+## Examples
 
 ### Exploring Storm Events 
 

@@ -17,17 +17,17 @@ zone_pivot_groups: kql-flavors
 
 Returns the current principal name that runs the query.
 
-**Syntax**
+## Syntax
 
 `current_principal()`
 
-**Returns**
+## Returns
 
 The current principal fully qualified name (FQN) as a `string`.  
 The string format is:  
 *PrinciplaType*`=`*PrincipalId*`;`*TenantId*
 
-**Example**
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

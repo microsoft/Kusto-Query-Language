@@ -17,20 +17,20 @@ Returns the minimum value across the group for which *Predicate* evaluates to `t
 
 See also - [min()](min-aggfunction.md) function, which returns the minimum value across the group without predicate expression.
 
-**Syntax**
+## Syntax
 
 `summarize` `minif(`*Expr*`,`*Predicate*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation.
 * *Predicate*: predicate that if true, the *Expr* calculated value will be checked for minimum.
 
-**Returns**
+## Returns
 
 The minimum value of *Expr* across the group for which *Predicate* evaluates to `true`.
 
-**Examples**
+## Examples
 
 ```kusto
 range x from 1 to 100 step 1

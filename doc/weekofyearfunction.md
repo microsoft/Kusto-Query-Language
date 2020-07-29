@@ -17,19 +17,19 @@ Returns an integer which represents the week number. The week number is calculat
 week_of_year(datetime("2015-12-14"))
 ```
 
-**Syntax**
+## Syntax
 
 `week_of_year(`*a_date*`)`
 
-**Arguments**
+## Arguments
 
 * `a_date`: A `datetime`.
 
-**Returns**
+## Returns
 
 `week number` - The week number that contains the given date.
 
-**Examples**
+## Examples
 
 |Input                                    |Output|
 |-----------------------------------------|------|

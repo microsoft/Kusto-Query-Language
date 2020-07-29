@@ -15,11 +15,11 @@ Applies a Finite Impulse Response (FIR) filter on a series.
 
 The function takes an expression containing a dynamic numerical array as input and applies a [Finite Impulse Response](https://en.wikipedia.org/wiki/Finite_impulse_response) filter. By specifying the `filter` coefficients, it can be used for calculating a moving average, smoothing, change-detection, and many more use cases. The function takes the column containing the dynamic array and a static dynamic array of the filter's coefficients as input, and applies the filter on the column. It outputs a new dynamic array column, containing the filtered output.  
 
-**Syntax**
+## Syntax
 
 `series_fir(`*x*`,` *filter* [`,` *normalize*[`,` *center*]]`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array cell of numeric values. Typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
 * *filter*: A constant expression containing the coefficients of the filter (stored as a dynamic array of numeric values).
@@ -27,7 +27,7 @@ The function takes an expression containing a dynamic numerical array as input a
 Normalization is a convenient way to make sure that the sum of the coefficients is 1. Then the filter doesn't amplify or attenuate the series. For example, the moving average of four bins could be specified by *filter*=[1,1,1,1] and *normalized*=true, which is easier than typing [0.25,0.25.0.25,0.25].
 * *center*: An optional Boolean value that indicates whether the filter is applied symmetrically on a time window before and after the current point, or on a time window from the current point backwards. By default, center is false, which fits the scenario of streaming data, where we can only apply the filter on the current and older points. However, for ad-hoc processing you can set it to `true`, keeping it synchronized with the time series. See examples below. This parameter controls the filter’s [group delay](https://en.wikipedia.org/wiki/Group_delay_and_phase_delay).
 
-**Examples**
+## Examples
 
 * Calculate a moving average of five points by setting *filter*=[1,1,1,1,1] and *normalize*=`true` (default). Note the effect of *center*=`false` (default) vs. `true`:
 

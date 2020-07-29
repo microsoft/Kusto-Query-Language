@@ -20,7 +20,7 @@ Table1 | where Time between (datetime(2017-01-01) .. datetime(2017-01-01))
 
 `between` can operate on any numeric, datetime, or timespan expression.
  
-**Syntax**
+## Syntax
 
 *T* `|` `where` *expr* `between` `(`*leftRange*` .. `*rightRange*`)`   
  
@@ -28,18 +28,18 @@ If *expr* expression is datetime - another syntactic sugar syntax is provided:
 
 *T* `|` `where` *expr* `between` `(`*leftRangeDateTime*` .. `*rightRangeTimespan*`)`   
 
-**Arguments**
+## Arguments
 
 * *T* - The tabular input whose records are to be matched.
 * *expr* - the expression to filter.
 * *leftRange* - expression of the left range (inclusive).
 * *rightRange* - expression of the right range (inclusive).
 
-**Returns**
+## Returns
 
 Rows in *T* for which the predicate of (*expr* >= *leftRange* and *expr* <= *rightRange*) evaluates to `true`.
 
-**Examples**  
+## Examples  
 
 **Filtering numeric values using 'between' operator**  
 

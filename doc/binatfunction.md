@@ -14,11 +14,11 @@ ms.date: 10/23/2018
 Rounds values down to a fixed-size "bin", with control over the bin's starting point.
 (See also [`bin function`](./binfunction.md).)
 
-**Syntax**
+## Syntax
 
 `bin_at` `(`*Expression*`,` *BinSize*`, ` *FixedPoint*`)`
 
-**Arguments**
+## Arguments
 
 * *Expression*: A scalar expression of a numeric type (including `datetime` and `timespan`)
   indicating the value to round.
@@ -28,12 +28,12 @@ Rounds values down to a fixed-size "bin", with control over the bin's starting p
   one value of *Expression* which is a "fixed point" (that is, a value `fixed_point`
   for which `bin_at(fixed_point, bin_size, fixed_point) == fixed_point`.)
 
-**Returns**
+## Returns
 
 The nearest multiple of *BinSize* below *Expression*, shifted so that *FixedPoint*
 will be translated into itself.
 
-**Examples**
+## Examples
 
 |Expression                                                                    |Result                           |Comments                   |
 |------------------------------------------------------------------------------|---------------------------------|---------------------------|

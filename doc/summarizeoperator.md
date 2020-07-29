@@ -25,14 +25,14 @@ T | summarize count() by price_range=bin(price, 10.0)
 
 A table that shows how many items have prices in each interval  [0,10.0], [10.0,20.0], and so on. This example has a column for the count and one for the price range. All other input columns are ignored.
 
-**Syntax**
+## Syntax
 
 *T* `| summarize`
       [[*Column* `=`] *Aggregation* [`,` ...]]
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
-**Arguments**
+## Arguments
 
 * *Column:* Optional name for a result column. Defaults to a name derived from the expression.
 * *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
@@ -45,7 +45,7 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 > * If *GroupExpression* is not provided, the output will be a single (empty) row.
 > * If *GroupExpression* is provided, the output will have no rows.
 
-**Returns**
+## Returns
 
 The input rows are arranged into groups having the same values of the `by` expressions. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns and also at least one column for each computed aggregate. (Some aggregation functions return multiple columns.)
 
@@ -115,7 +115,7 @@ Operator       |Default value
 
 :::image type="content" source="images/summarizeoperator/summarize-price-by-supplier.png" alt-text="Summarize price by fruit and supplier":::
 
-**Example**
+## Example
 
 Determine what unique combinations of
 `ActivityType` and `CompletionStatus` there are in a table. There are no aggregation functions, just group-by keys. The output will just show the columns for those results:
@@ -131,7 +131,7 @@ Activities | summarize by ActivityType, completionStatus
 |`dancing`|`abandoned`
 |`singing`|`completed`
 
-**Example**
+## Example
 
 Finds the minimum and maximum timestamp of all records in the Activities table. There is no group-by clause, so there is just one row in the output:
 
@@ -143,7 +143,7 @@ Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
 |---|---
 |`1975-06-09 09:21:45` | `2015-12-24 23:45:00`
 
-**Example**
+## Example
 
 Create a row for each continent, showing a count of the cities in which activities occur. Because there are few values for "continent", no grouping function is needed in the 'by' clause:
 
@@ -156,7 +156,7 @@ Create a row for each continent, showing a count of the cities in which activiti
 |`2673`|`North America`|
 
 
-**Example**
+## Example
 
 The following example calculates a histogram for each activity
 type. Because `Duration` has many values, use `bin` to group its values into 10-minute intervals:

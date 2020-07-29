@@ -13,18 +13,18 @@ ms.date: 03/11/2020
 
 Calculates the shortest distance between two geospatial coordinates on Earth.
 
-**Syntax**
+## Syntax
 
 `geo_distance_2points(`*p1_longitude*`, `*p1_latitude*`, `*p2_longitude*`, `*p2_latitude*`)`
 
-**Arguments**
+## Arguments
 
 * *p1_longitude*: First geospatial coordinate, longitude value in degrees. Valid value is a real number and in the range [-180, +180].
 * *p1_latitude*: First geospatial coordinate, latitude value in degrees. Valid value is a real number and in the range [-90, +90].
 * *p2_longitude*: Second geospatial coordinate, longitude value in degrees. Valid value is a real number and in the range [-180, +180].
 * *p2_latitude*: Second geospatial coordinate, latitude value in degrees. Valid value is a real number and in the range [-90, +90].
 
-**Returns**
+## Returns
 
 The shortest distance, in meters, between two geographic locations on Earth. If the coordinates are invalid, the query will produce a null result.
 
@@ -32,7 +32,7 @@ The shortest distance, in meters, between two geographic locations on Earth. If 
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere.
 
-**Examples**
+## Examples
 
 The following example finds the shortest distance between Seattle and Los Angeles.
 

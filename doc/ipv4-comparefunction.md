@@ -20,11 +20,11 @@ ipv4_compare('192.168.1.1/24', '192.168.1.255/24') == 0
 ipv4_compare('192.168.1.1', '192.168.1.255', 24) == 0
 ```
 
-**Syntax**
+## Syntax
 
 `ipv4_compare(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
 
-**Arguments**
+## Arguments
 
 * *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
 * *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
@@ -36,7 +36,7 @@ The IP address to the LEFT of the slash (`/`) is the base IP address. The number
 
 **Example:** 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
-**Returns**
+## Returns
 
 * `0`: If the long representation of the first IPv4 string argument is equal to the second IPv4 string argument
 * `1`: If the long representation of the first IPv4 string argument is greater than the second IPv4 string argument

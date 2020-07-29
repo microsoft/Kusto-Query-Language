@@ -21,11 +21,11 @@ The function outputs two columns:
 * *periods*: A dynamic array that contains the periods to validate (supplied in the input).
 * *scores*: A dynamic array that contains a score between 0 and 1. The score shows the significance of a period in its respective position in the *periods* array.
 
-**Syntax**
+## Syntax
 
 `series_periods_validate(`*x*`,` *period1* [ `,` *period2* `,` . . . ] `)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array scalar expression that is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
 * *period1*, *period2*, and so on: `real` numbers specifying the periods to validate, in units of the bin size. For example, if the series is in 1h bins, a weekly period is 168 bins.
@@ -37,7 +37,7 @@ The function outputs two columns:
 > 
 > * The function accepts up to 16 periods to validate.
 
-**Example**
+## Example
 
 The following query embeds a snapshot of a month of an application’s traffic, aggregated twice a day (the bin size is 12 hours).
 

@@ -23,18 +23,18 @@ Takes an expression containing dynamic numerical array as input, and does [linea
 
 This operator is similar to [series_fit_line](series-fit-linefunction.md), but unlike `series-fit-line` it returns a dynamic bag.
 
-**Syntax**
+## Syntax
 
 `series_fit_line_dynamic(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array of numeric values.
 
 > [!TIP]
 > The most convenient way of using this function is by applying it to the results of [make-series](make-seriesoperator.md) operator.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

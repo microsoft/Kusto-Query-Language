@@ -17,11 +17,11 @@ Extracts the requested date part as an integer value.
 datetime_part("Day",datetime(2015-12-14))
 ```
 
-**Syntax**
+## Syntax
 
 `datetime_part(`*part*`,`*datetime*`)`
 
-**Arguments**
+## Arguments
 
 * `date`: `datetime`
 * `part`: `string`
@@ -40,7 +40,7 @@ Possible values of `part`:
 - Microsecond
 - Nanosecond
 
-**Returns**
+## Returns
 
 An integer representing the extracted part.
 
@@ -48,7 +48,7 @@ An integer representing the extracted part.
 
 `week_of_year` returns an integer which represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday.
 
-**Examples**
+## Examples
 
 ```kusto
 let dt = datetime(2017-10-30 01:02:03.7654321); 

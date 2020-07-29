@@ -13,20 +13,20 @@ ms.date: 02/13/2020
 
 Removes leading match of the specified regular expression.
 
-**Syntax**
+## Syntax
 
 `trim_start(`*regex*`,` *text*`)`
 
-**Arguments**
+## Arguments
 
 * *regex*: String or [regular expression](re2.md) to be trimmed from the beginning of *text*.  
 * *text*: A string.
 
-**Returns**
+## Returns
 
 *text* after trimming match of *regex* found in the beginning of *text*.
 
-**Example**
+## Example
 
 Statement bellow trims *substring*  from the start of *string_to_trim*:
 

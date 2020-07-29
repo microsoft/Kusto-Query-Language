@@ -13,14 +13,14 @@ ms.date: 10/23/2018
 
 Returns the cosine function.
 
-**Syntax**
+## Syntax
 
 `cos(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number.
 
-**Returns**
+## Returns
 
 * The result of `cos(x)`

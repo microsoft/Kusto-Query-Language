@@ -24,19 +24,19 @@ let Schema2=Table2 | getschema;
 union Schema1, Schema2 | evaluate schema_merge()
 ```
 
-**Syntax**
+## Syntax
 
 `T` `|` `evaluate` `schema_merge(` *PreserveOrder* `)`
 
-**Arguments**
+## Arguments
 
 * *PreserveOrder*: (Optional) When set to `true`, directs the plugin to validate the column order as defined by the first tabular schema that is kept. If the same column is in several schemas, the column ordinal must be like the column ordinal of the first schema that it appeared in. Default value is `true`.
 
-**Returns**
+## Returns
 
 The `schema_merge` plugin returns output similar to what [`getschema`](./getschemaoperator.md) operator returns.
 
-**Examples**
+## Examples
 
 Merge with a schema that has a new column appended.
 

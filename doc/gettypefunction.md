@@ -17,15 +17,15 @@ The runtime type may be different than the nominal (static) type for expressions
 whose nominal type is `dynamic`; in such cases `gettype()` can be useful to reveal
 thet type of the actual value (how the value is encoded in memory).
 
-**Syntax**
+## Syntax
 
 `gettype(`*Expr*`)`
 
-**Returns**
+## Returns
 
 A string representing the runtime type of its single argument.
 
-**Examples**
+## Examples
 
 |Expression                          |Returns      |
 |------------------------------------|-------------|

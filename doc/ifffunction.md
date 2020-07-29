@@ -15,22 +15,22 @@ Evaluates the first argument (the predicate), and returns the value of either th
 
 The second and third arguments must be of the same type.
 
-**Syntax**
+## Syntax
 
 `iff(`*predicate*`,` *ifTrue*`,` *ifFalse*`)`
 
-**Arguments**
+## Arguments
 
 * *predicate*: An expression that evaluates to a `boolean` value.
 * *ifTrue*: An expression that gets evaluated and its value returned from the function if *predicate* evaluates to `true`.
 * *ifFalse*: An expression that gets evaluated and its value returned from the function if *predicate* evaluates to `false`.
 
-**Returns**
+## Returns
 
 This function returns the value of *ifTrue* if *predicate* evaluates to `true`,
 or the value of *ifFalse* otherwise.
 
-**Example**
+## Example
 
 ```kusto
 T 

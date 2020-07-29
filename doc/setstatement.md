@@ -27,11 +27,11 @@ statements that trail them in the program order.
 * Query options are not formally a part of the Kusto language, and may be
   modified without being considered as a breaking language change.
 
-**Syntax**
+## Syntax
 
 `set` *OptionName* [`=` *OptionValue*]
 
-**Example**
+## Example
 
 ```kusto
 set querytrace;

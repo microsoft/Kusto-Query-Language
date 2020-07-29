@@ -17,7 +17,7 @@ Create series of specified aggregated values along a specified axis.
 T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from datetime(2016-01-01) to datetime(2016-01-10) step 1d by fruit, supplier
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| make-series` [*MakeSeriesParamters*]
       [*Column* `=`] *Aggregation* [`default` `=` *DefaultValue*] [`,` ...]
@@ -25,7 +25,7 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
-**Arguments**
+## Arguments
 
 * *Column:* Optional name for a result column. Defaults to a name derived from the expression.
 * *DefaultValue:* Default value that will be used instead of absent values. If there is no row with specific values of *AxisColumn* and *GroupExpression*, then in the results the corresponding element of the array will be assigned a *DefaultValue*. If *DefaultValue* is omitted, then 0 is assumed. 
@@ -42,7 +42,7 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
   |---------------|-------------------------------------|------------------------------------------------------------------------------|
   |`kind`          |`nonempty`								 |Produces default result when the input of make-series operator is empty|                                
 
-**Returns**
+## Returns
 
 The input rows are arranged into groups having the same values of the `by` expressions and the `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` expression. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns, *AxisColumn* column and also at least one column for each computed aggregate. (Aggregation that multiple columns or non-numeric results are not supported.)
 

@@ -14,16 +14,16 @@ ms.date: 02/13/2020
 Arbitrarily chooses one record for each group in a [summarize operator](summarizeoperator.md),
 and returns the value of one or more expressions over each such record.
 
-**Syntax**
+## Syntax
 
 `summarize` `any` `(` (*Expr* [`,` *Expr2* ...]) | `*` `)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: An expression over each record selected from the input to return.
 * *Expr2* .. *ExprN*: Additional expressions.
 
-**Returns**
+## Returns
 
 The `any` aggregation function returns the values of the expressions calculated
 for each of the records, selected randomly from each group of the summarize operator.
@@ -45,7 +45,7 @@ it a single time with multiple expressions. The former may have each application
 select a different record, while the latter guarantees that all values are calculated
 over a single record (per distinct group).
 
-**Examples**
+## Examples
 
 Show Random Continent:
 

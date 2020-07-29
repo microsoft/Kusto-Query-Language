@@ -15,11 +15,11 @@ Applies a decomposition transformation on a series.
 
 Takes an expression containing a series (dynamic numerical array) as input and decomposes it to seasonal, trend, and residual components.
  
-**Syntax**
+## Syntax
 
 `series_decompose(`*Series* `[,` *Seasonality*`,` *Trend*`,` *Test_points*`,` *Seasonality_threshold*`])`
 
-**Arguments**
+## Arguments
 
 * *Series*: Dynamic array cell, which is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators
 * *Seasonality*: An integer controlling the seasonal analysis, containing either
@@ -60,7 +60,7 @@ Takes an expression containing a series (dynamic numerical array) as input and d
 
 This method is usually applied to time series of metrics expected to manifest periodic and/or trend behavior. You can use the method to  forecast future metric values and/or detect anomalous values. The implicit assumption of this regression process is that apart from seasonal and trend behavior, the time series is stochastic and randomly distributed. Forecast future metric values from the seasonal and trend components while ignoring the residual part. Detect anomalous values based on outlier detection only on the residual part only. Further details can be found in the [Time Series Decomposition chapter](https://www.otexts.org/fpp/6).
 
-**Examples**
+## Examples
 
 **Weekly seasonality**
 

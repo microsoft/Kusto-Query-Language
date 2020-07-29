@@ -13,19 +13,19 @@ ms.date: 02/13/2020
 
 Returns the size, in bytes, of the input string.
 
-**Syntax**
+## Syntax
 
 `string_size(`*source*`)`
 
-**Arguments**
+## Arguments
 
 * *source*: The source string that will be measured for string size.
 
-**Returns**
+## Returns
 
 Returns the length, in bytes, of the input string.
 
-**Examples**
+## Examples
 
 ```kusto
 print size = string_size("hello")

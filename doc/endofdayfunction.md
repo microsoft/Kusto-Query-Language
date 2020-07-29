@@ -13,20 +13,20 @@ ms.date: 02/13/2020
 
 Returns the end of the day containing the date, shifted by an offset, if provided.
 
-**Syntax**
+## Syntax
 
 `endofday(`*date* [`,`*offset*]`)`
 
-**Arguments**
+## Arguments
 
 * `date`: The input date.
 * `offset`: An optional number of offset days from the input date (integer, default - 0).
 
-**Returns**
+## Returns
 
 A datetime representing the end of the day for the given *date* value, with the offset, if specified.
 
-**Example**
+## Example
 
 ```kusto
   range offset from -1 to 1 step 1

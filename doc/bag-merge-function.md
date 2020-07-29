@@ -3,7 +3,7 @@ title: bag_merge() - Azure Data Explorer
 description: This article describes bag_merge() in Azure Data Explorer.
 services: data-explorer
 author: orspod
-ms.author: orspod
+ms.author: orspodek
 ms.reviewer: elgevork
 ms.service: data-explorer
 ms.topic: reference
@@ -13,19 +13,19 @@ ms.date: 06/18/2020
 
 Merges `dynamic` property-bags into a `dynamic` property-bag with all properties merged.
 
-**Syntax**
+## Syntax
 
 `bag_merge(`*bag1*`, `*bag2*`[`,` *bag3*, ...])`
 
-**Arguments**
+## Arguments
 
 * *bag1...bagN*: Input `dynamic` property-bags. The function accepts between 2 to 64 arguments.
 
-**Returns**
+## Returns
 
 Returns a `dynamic` property-bag. Results from merging all of the input property-bag objects. If a key appears in more than one input object, an arbitrary value (out of the possible values for this key) will be chosen.
 
-**Example**
+## Example
 
 Expression:
 

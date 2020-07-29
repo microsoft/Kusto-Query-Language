@@ -13,17 +13,17 @@ ms.date: 03/11/2020
 
 Calculates the shortest distance between a coordinate and a line on Earth.
 
-**Syntax**
+## Syntax
 
 `geo_distance_point_to_line(`*longitude*`, `*latitude*`, `*lineString*`)`
 
-**Arguments**
+## Arguments
 
 * *longitude*: Geospatial coordinate longitude value in degrees. Valid value is a real number and in the range [-180, +180].
 * *latitude*: Geospatial coordinate latitude value in degrees. Valid value is a real number and in the range [-90, +90].
 * *lineString*: Line in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 
-**Returns**
+## Returns
 
 The shortest distance, in meters, between a coordinate and a line on Earth. If the coordinate or lineString are invalid, the query will produce a null result.
 
@@ -43,7 +43,7 @@ dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,...
 > [!TIP]
 > For better performance, use literal lines.
 
-**Examples**
+## Examples
 
 The following example finds the shortest distance between North Las Vegas Airport and a nearby road.
 

@@ -17,11 +17,11 @@ Returns an approximation of the first *N* results (assuming skewed distribution 
 T | top-hitters 25 of Page by Views 
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| top-hitters` *NumberOfRows* `of` *sort_key* `[` `by` *expression* `]`
 
-**Arguments**
+## Arguments
 
 * *NumberOfRows*: The number of rows of *T* to return. You can specify any numeric expression.
 * *sort_key*: The name of the column by which to sort the rows.
@@ -34,7 +34,7 @@ T | top-hitters 25 of Page by Views
 `top-hitters` is an approximation algorithm and should be used when running with large data. 
 The approximation of the the top-hitters is based on the [Count-Min-Sketch](https://en.wikipedia.org/wiki/Count%E2%80%93min_sketch) algorithm.  
 
-**Example**
+## Example
 
 ## Getting top hitters (most frequent items) 
 

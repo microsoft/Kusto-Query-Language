@@ -17,15 +17,15 @@ This function is useful for queries that require staged calculations. For exampl
 calculate a total count of events, and then use the result to filter groups
 that exceed a certain percent of all events.
 
-**Syntax**
+## Syntax
 
 `toscalar(`*Expression*`)`
 
-**Arguments**
+## Arguments
 
 * *Expression*: Expression that will be evaluated for scalar conversion.
 
-**Returns**
+## Returns
 
 A scalar constant value of the evaluated expression.
 If the result is a tabular, then the first column and first row will be taken for conversion.
@@ -38,7 +38,7 @@ If the result is a tabular, then the first column and first row will be taken fo
 `toscalar()` can be calculated a constant number of times during the query execution.
 The `toscalar()` function can't be applied on row-level (for-each-row scenario).
 
-**Examples**
+## Examples
 
 Evaluate `Start`, `End`, and `Step` as scalar constants, and use the result for `range` evaluation.
 

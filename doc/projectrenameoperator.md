@@ -17,22 +17,22 @@ Renames columns in the result output.
 T | project-rename new_column_name = column_name
 ```
 
-**Syntax**
+## Syntax
 
 *T* `| project-rename` *NewColumnName* = *ExistingColumnName* [`,` ...]
 
-**Arguments**
+## Arguments
 
 * *T*: The input table.
 * *NewColumnName:* The new name of a column. 
 * *ExistingColumnName:* The existing name of a column. 
 
-**Returns**
+## Returns
 
 A table that has the columns in the same order as in an existing table, with columns renamed.
 
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

@@ -13,11 +13,11 @@ ms.date: 02/19/2020
 
 Interprets a user-agent string, which identifies the user's browser and provides certain system details to servers hosting the websites the user visits. The result is returned as [`dynamic`](./scalar-data-types/dynamic.md). 
 
-**Syntax**
+## Syntax
 
 `parse_user_agent(`*user-agent-string*, *look-for*`)`
 
-**Arguments**
+## Arguments
 
 * *user-agent-string*: An expression of type `string`, representing a user-agent string.
 
@@ -25,7 +25,7 @@ Interprets a user-agent string, which identifies the user's browser and provides
 The possible options: "browser", "os", "device". If only a single parsing target is required it can be passed a `string` parameter.
 If two or three are required they can be passed as a `dynamic array`.
 
-**Returns**
+## Returns
 
 An object of type `dynamic` that contains the information about the requested parsing targets.
 
@@ -40,7 +40,7 @@ Device: Family, Brand, Model
 When the function is used in a query, make sure it runs in a distributed manner on multiple machines.
 If queries with this function are frequently used, you may want to pre-create the results via [update policy](../management/updatepolicy.md), but you need to take into account that using this function inside the update policy will increase the ingestion latency.
  
-**Example**
+## Example
 
 ```kusto
 print useragent = "Mozilla/5.0 (Windows; U; en-US) AppleWebKit/531.9 (KHTML, like Gecko) AdobeAIR/2.5.1"

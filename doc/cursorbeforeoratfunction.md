@@ -18,15 +18,15 @@ zone_pivot_groups: kql-flavors
 A predicate over the records of a table to compare their ingestion time
 against a database cursor.
 
-**Syntax**
+## Syntax
 
 `cursor_before_or_at` `(` *RHS* `)`
 
-**Arguments**
+## Arguments
 
 * *RHS*: Either an empty string literal, or a valid database cursor value.
 
-**Returns**
+## Returns
 
 A scalar value of type `bool` that indicates whether the record was ingested
 before or at the database cursor *RHS* (`true`) or not (`false`).

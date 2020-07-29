@@ -13,14 +13,14 @@ ms.date: 10/23/2018
 
 Calculates the trigonometric cotangent of the specified angle, in radians.
 
-**Syntax**
+## Syntax
 
 `cot(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number.
 
-**Returns**
+## Returns
 
 * The cotangent function value for `x`

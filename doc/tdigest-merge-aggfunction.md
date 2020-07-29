@@ -17,17 +17,17 @@ Merges tdigest results across the group.
 
 Read more about the underlying algorithm (T-Digest) and the estimated error [here](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
-**Syntax**
+## Syntax
 
 summarize `tdigest_merge(`*Expr*`)`.
 
 summarize `tdigest_merge(`*Expr*`)` - An alias.
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation. 
 
-**Returns**
+## Returns
 
 The merged tdigest values of *Expr* across the group.
  

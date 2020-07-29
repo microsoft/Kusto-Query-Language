@@ -19,16 +19,16 @@ T | project-away price, quantity, zz*
 
 The order of the columns in the result is determined by their original order in the table. Only the columns that were specified as arguments are dropped. The other columns are included in the result.  (See also `project`.)
 
-**Syntax**
+## Syntax
 
 *T* `| project-away` *ColumnNameOrPattern* [`,` ...]
 
-**Arguments**
+## Arguments
 
 * *T*: The input table
 * *ColumnNameOrPattern:* The name of the column or column wildcard-pattern to be removed from the output.
 
-**Returns**
+## Returns
 
 A table with columns that were not named as arguments. Contains same number of rows as the input table.
 
@@ -40,7 +40,7 @@ A table with columns that were not named as arguments. Contains same number of r
 * You can `project-away` any columns that are present in the original table or that were computed as part of the query.
 
 
-**Examples**
+## Examples
 
 The input table `T` has three columns of type `long`: `A`, `B`, and `C`.
 

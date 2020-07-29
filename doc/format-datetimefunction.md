@@ -17,16 +17,16 @@ Formats a datetime according to the provided format.
 format_datetime(datetime(2015-12-14 02:03:04.12345), 'y-M-d h:m:s.fffffff') == "15-12-14 2:3:4.1234500"
 ```
 
-**Syntax**
+## Syntax
 
 `format_datetime(`*datetime* `,` *format*`)`
 
-**Arguments**
+## Arguments
 
 * `datetime`: value of a type `datetime`.
 * `format`: format specifier string, consisting of one or more [format elements](#supported-formats).
 
-**Returns**
+## Returns
 
 The string with the format result.
 
@@ -81,7 +81,7 @@ Format specifier can include following delimeters characters:
 |`'['`||
 |`']'`||
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

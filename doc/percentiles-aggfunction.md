@@ -18,7 +18,7 @@ The accuracy depends on the density of population in the region of the percentil
 * `percentilesw()` is like `percentilew()`, but calculates a number of weighted percentile values, which is faster than calculating each percentile individually.
 * `percentilew()` and `percentilesw()` let you calculate weighted percentiles. Weighted percentiles calculate the given percentiles in a "weighted" way, by treating each value as if it was repeated `weight` times, in the input.
 
-**Syntax**
+## Syntax
 
 summarize `percentile(`*Expr*`,` *Percentile*`)`
 
@@ -36,18 +36,18 @@ summarize `percentilesw_array(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Per
 
 summarize `percentilesw_array(`*Expr*`,` *WeightExpr*`,` *Dynamic array*`)`
 
-**Arguments**
+## Arguments
 
 * `*Expr*`: Expression that will be used for aggregation calculation.
 * `*WeightExpr*`: Expression that will be used as the weight of values for aggregation calculation.
 * `*Percentile*`: A double constant that specifies the percentile.
 * `*Dynamic array*`: list of percentiles in a dynamic array of integer or floating point numbers.
 
-**Returns**
+## Returns
 
 Returns an estimate for `*Expr*` of the specified percentiles in the group. 
 
-**Examples**
+## Examples
 
 The value of `Duration` that is larger than 95% of the sample set and smaller than 5% of the sample set.
 
@@ -79,7 +79,7 @@ Use `summarize percentilesw(Duration, BucketSize, ...)` to calculate the given
 percentiles in a "weighted" way. Treat each value of Duration as if it was repeated
 BucketSize times in the input, without actually needing to materialize those records.
 
-**Example**
+## Example
 
 A customer has a set of latency values in milliseconds:
 `{ 1, 1, 2, 2, 2, 5, 7, 7, 12, 12, 15, 15, 15, 18, 21, 22, 26, 35 }`.

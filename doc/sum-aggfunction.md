@@ -15,15 +15,15 @@ Calculates the sum of *Expr* across the group.
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
-**Syntax**
+## Syntax
 
 summarize `sum(`*Expr*`)`
 
-**Arguments**
+## Arguments
 
 * *Expr*: Expression that will be used for aggregation calculation. 
 
-**Returns**
+## Returns
 
 The sum value of *Expr* across the group.
  

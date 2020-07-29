@@ -13,15 +13,15 @@ ms.date: 08/11/2019
 
 `log10()` returns the common (base-10) logarithm function.  
 
-**Syntax**
+## Syntax
 
 `log10(`*x*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: A real number > 0.
 
-**Returns**
+## Returns
 
 * The common logarithm is the base-10 logarithm: the inverse of the exponential function (exp) with base 10.
 * `null` if the argument is negative or null or can't be converted to a `real` value. 

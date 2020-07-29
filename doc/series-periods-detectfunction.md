@@ -24,11 +24,11 @@ The function outputs two columns:
 * *periods*: A dynamic array containing the periods that have been found, in units of the bin size, ordered by their scores.
 * *scores*: A dynamic array containing values between 0 and 1. Each array measures the significance of a period in its respective position in the *periods* array.
  
-**Syntax**
+## Syntax
 
 `series_periods_detect(`*x*`,` *min_period*`,` *max_period*`,` *num_periods*`)`
 
-**Arguments**
+## Arguments
 
 * *x*: Dynamic array scalar expression that is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
 * *min_period*: A `real` number specifying the minimal period to search for.
@@ -42,7 +42,7 @@ The function outputs two columns:
 >
 > * The input time series must be regular. That is, aggregated in constant bins, which is always the case if it has been created using [make-series](make-seriesoperator.md). Otherwise, the output is meaningless.
 
-**Example**
+## Example
 
 The following query embeds a snapshot of a month of an application’s traffic, aggregated twice a day. The bin size is 12 hours.
 

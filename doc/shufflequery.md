@@ -21,7 +21,7 @@ Define a [data partitioning policy](../management/partitioningpolicy.md) on your
 
 Set `shufflekey` as the table's hash partition key for better performance, as the amount of data required to move across cluster nodes is reduced.
 
-**Syntax**
+## Syntax
 
 ```kusto
 T | where Event=="Start" | project ActivityId, Started=Timestamp
@@ -142,7 +142,7 @@ This hint is useful when the cluster has a small number of cluster nodes where t
 > [!Note]
 > Having many partitions may consume more cluster resources and degrade performance. Instead, choose the partition number carefully by starting with the hint.strategy = shuffle and start increasing the partitions gradually.
 
-**Examples**
+## Examples
 
 The following example shows how shuffle `summarize` improves performance considerably.
 

@@ -13,19 +13,19 @@ ms.date: 02/13/2020
 
 Converts angle value in radians into value in degrees, using formula `degrees = (180 / PI ) * angle_in_radians`
 
-**Syntax**
+## Syntax
 
 `degrees(`*a*`)`
 
-**Arguments**
+## Arguments
 
 * *a*: Angle in radians (a real number).
 
-**Returns**
+## Returns
 
 * The corresponding angle in degrees for an angle specified in radians. 
 
-**Examples**
+## Examples
 
 ```kusto
 print degrees0 = degrees(pi()/4), degrees1 = degrees(pi()*1.5), degrees2 = degrees(0)

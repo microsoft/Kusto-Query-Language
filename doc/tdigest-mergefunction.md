@@ -15,21 +15,21 @@ Merges `tdigest` results (scalar version of the aggregate version [`tdigest_merg
 
 Read more about the underlying algorithm (T-Digest) and the estimated error [here](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
-**Syntax**
+## Syntax
 
 `merge_tdigests(` *Expr1*`,` *Expr2*`, ...)`
 
 `tdigest_merge(` *Expr1*`,` *Expr2*`, ...)` - An alias.
 
-**Arguments**
+## Arguments
 
 * Columns that have the `tdigest` values to be merged.
 
-**Returns**
+## Returns
 
 The result for merging the columns `*Expr1*`, `*Expr2*`, ... `*ExprN*` to one `tdigest`.
 
-**Examples**
+## Examples
 
 <!-- csl: https://help.kusto.windows.net:443/Samples -->
 ```kusto

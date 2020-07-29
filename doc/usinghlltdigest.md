@@ -75,7 +75,7 @@ MyTable
 |0|
 
 
-**Example**
+## Example
 
 There is a table, `PageViewsHllTDigest`, containing `hll` values of Pages viewed in each hour. You want these values binned to `12h`. Merge the `hll` values using the `hll_merge()` aggregate function, with the timestamp binned to `12h`. Use the function `dcount_hll` to return the final `dcount` value:
 
@@ -121,7 +121,7 @@ PageViewsHllTDigest
 |2016-05-02 12:00:00.0000000|181315|
 |2016-05-03 00:00:00.0000000|146817|
  
-**Example**
+## Example
 
 Kusto limits are reached with datasets that are too large, where you need to run periodic queries over the dataset, but run the regular queries to calculate [`percentile()`](percentiles-aggfunction.md) or [`dcount()`](dcount-aggfunction.md) over large datasets.
 
@@ -172,7 +172,7 @@ PageViewsHllTDigest
 
 This query should be more performant, as it runs over a smaller table. In this example, the first query runs over ~215M records, while the second one runs over just 32 records:
 
-**Example**
+## Example
 
 The Retention Query.
 Assume you have a table that summarizes when each Wikipedia page was viewed (sample size is 10M), and you want to find for each date1 date2

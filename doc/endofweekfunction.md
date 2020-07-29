@@ -15,20 +15,20 @@ Returns the end of the week containing the date, shifted by an offset, if provid
 
 Last day of the week is considered to be a Saturday.
 
-**Syntax**
+## Syntax
 
 `endofweek(`*date* [`,`*offset*]`)`
 
-**Arguments**
+## Arguments
 
 * `date`: The input date.
 * `offset`: An optional number of offset weeks from the input date (integer, default - 0).
 
-**Returns**
+## Returns
 
 A datetime representing the end of the week for the given *date* value, with the offset, if specified.
 
-**Example**
+## Example
 
 ```kusto
   range offset from -1 to 1 step 1
