@@ -219,11 +219,33 @@ namespace Kusto.Language.Parsing
 
         private class ParserInfo
         {
+            /// <summary>
+            /// The parser that is to be used.
+            /// </summary>
             public Parser<LexicalToken, SyntaxElement> Parser { get; }
+
+            /// <summary>
+            /// The <see cref="CustomElementDescriptor"/> for <see cref="CustomNode"/> child indices expected to contain this parser's output.
+            /// </summary>
             public CustomElementDescriptor Element { get; }
+
+            /// <summary>
+            /// A function that constructs an empty version of this parsers output when it is expected but missing.
+            /// </summary>
             public Func<SyntaxElement> Missing { get; }
+
+            /// <summary>
+            /// True if this element is considered a term (default == false)
+            /// </summary>
             public bool IsTerm { get; }
 
+            /// <summary>
+            /// Creates a <see cref="ParserInfo"/> instance.
+            /// </summary>
+            /// <param name="parser">The parser that is to be used.</param>
+            /// <param name="element">The <see cref="CustomElementDescriptor"/> for <see cref="CustomNode"/> child indices expected to contain this parser's output.</param>
+            /// <param name="missing">A function that constructs an empty version of this parsers output when it is expected but missing.</param>
+            /// <param name="isTerm">True if this element is considered a term (default == false)</param>
             public ParserInfo(
                 Parser<LexicalToken, SyntaxElement> parser, 
                 CustomElementDescriptor element, 
@@ -246,12 +268,13 @@ namespace Kusto.Language.Parsing
 
         private static CompletionKind GetCompletionKind(OffsetValue<string> textAndOffset)
         {
+            // the first term is always a command prefix
             if (textAndOffset.Offset == 0)
             {
                 return CompletionKind.CommandPrefix;
             }
-
-            if (SyntaxFacts.TryGetKind(textAndOffset.Value, out var kind))
+            // otherwise its based on the text
+            else if (SyntaxFacts.TryGetKind(textAndOffset.Value, out var kind))
             {
                 switch (kind.GetCategory())
                 {
@@ -490,6 +513,17 @@ namespace Kusto.Language.Parsing
                                 null,
                                 CreateMissingToken(SyntaxKind.CloseBraceToken))));
 
+            var KustoFunctionBody =
+                new ParserInfo(
+                    parser: q.FunctionBody.Cast<SyntaxElement>(),
+                    element: new CustomElementDescriptor(hint: Editor.CompletionHint.Syntax),
+                    missing: () => new FunctionBody(
+                        CreateMissingToken(SyntaxKind.OpenBraceToken),
+                        SyntaxList<SeparatedElement<Statement>>.Empty(),
+                        null,
+                        null,
+                        CreateMissingToken(SyntaxKind.CloseBraceToken)));
+
             var CommandInput =
                 First(
                     If(Token(SyntaxKind.DotToken),
@@ -574,6 +608,7 @@ namespace Kusto.Language.Parsing
                         case "cluster": return KustoClusterNameInfo;
                         case "function": return KustoFunctionNameInfo;
                         case "function_declaration": return KustoFunctionDeclaration;
+                        case "function_body": return KustoFunctionBody;
                         case "input_query": return KustoCommandInputInfo;
                         case "input_data": return KustoInputText;
                         case "bracketed_input_data": return KustoBracketedInputText;
