@@ -134,10 +134,10 @@ namespace Kusto.Language.Parsing
                 List(
                     elementParser: sequence,
                     separatorParser: Token("|"),
-                    missingElement: () => null,
-                    missingSeparator: () => null,
+                    missingElement: null,
+                    missingSeparator: null,
                     endOfList: null,
-                    oneOrMore: false,
+                    oneOrMore: true,
                     allowTrailingSeparator: false,
                     producer: list =>
                     {
@@ -153,34 +153,39 @@ namespace Kusto.Language.Parsing
 
             var separator = Rule(Token(","), term, (colon, word) => word);
 
-            var repeatition = Rule(Token("{"), alternation, Optional(separator), Token("}"), Optional(First(Token("+"), Token("*"))),
-                    (open, elem, sep, close, kind) =>
-                    {
-                        var zeroOrMore = kind == null || kind == "*";
+            var repeatition = Rule(
+                    Token("{"), 
+                    alternation, 
+                    Optional(separator),
+                    Token("}"), 
+                    Optional(First(Token("+"), Token("*"))),
+                (open, elem, sep, close, kind) =>
+                {
+                    var zeroOrMore = kind == null || kind == "*";
 
-                        if (zeroOrMore)
+                    if (zeroOrMore)
+                    {
+                        if (sep != null)
                         {
-                            if (sep != null)
-                            {
-                                return createZeroOrMoreSeparated(elem, sep);
-                            }
-                            else
-                            {
-                                return createZeroOrMore(elem);
-                            }
+                            return createZeroOrMoreSeparated(elem, sep);
                         }
                         else
                         {
-                            if (sep != null)
-                            {
-                                return createOneOrMoreSeparated(elem, sep);
-                            }
-                            else
-                            {
-                                return createOneOrMore(elem);
-                            }
+                            return createZeroOrMore(elem);
                         }
-                    }).WithTag("<repetition>");
+                    }
+                    else
+                    {
+                        if (sep != null)
+                        {
+                            return createOneOrMoreSeparated(elem, sep);
+                        }
+                        else
+                        {
+                            return createOneOrMore(elem);
+                        }
+                    }
+                }).WithTag("<repetition>");
 
             var grouped = Rule(
                 Token("("), alternation, Token(")"),
@@ -245,7 +250,7 @@ namespace Kusto.Language.Parsing
 
             elementCore = taggedPrimary;
 
-            return sequence;
+            return alternation;
         }
     }
 }

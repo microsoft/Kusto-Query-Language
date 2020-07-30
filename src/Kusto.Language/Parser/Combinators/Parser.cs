@@ -185,6 +185,11 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public TOutput Value { get; }
 
+        /// <summary>
+        /// True if the parse was successful.
+        /// </summary>
+        public bool Succeeded => Length >= 0;
+
         public ParseResult(int length, TOutput value)
         {
             this.Length = length;
