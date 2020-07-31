@@ -553,7 +553,7 @@ namespace Kusto.Language.Syntax
 
             while (element != null)
             {
-                if (childIndex < element.ChildCount)
+                if (childIndex < element.ChildCount && childIndex >= 0)
                 {
                     // walk down
                     var child = element.GetChild(childIndex);
