@@ -46,27 +46,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowClusterDatabases =
             new CommandSymbol(nameof(ShowClusterDatabases),
-                "show cluster databases ['(' { DatabaseName=<database>, ',' }+ ')']",
+                "show [cluster] databases ['(' { DatabaseName=<database>, ',' }+ ')']",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, ReservedSlot1: bool, DatabaseId: guid, InTransitionTo: string)");
 
         public static readonly CommandSymbol ShowClusterDatabasesDetails =
             new CommandSymbol(nameof(ShowClusterDatabasesDetails),
-                "show cluster databases details",
+                "show [cluster] databases details",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, AuthorizedPrincipals: string, RetentionPolicy: string, MergePolicy: string, ReservedSlot1: string, CachingPolicy: string, ShardingPolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string, TotalSize: real, DatabaseId: guid, InTransitionTo: string)");
 
         public static readonly CommandSymbol ShowClusterDatabasesIdentity =
             new CommandSymbol(nameof(ShowClusterDatabasesIdentity),
-                "show cluster databases identity",
+                "show [cluster] databases identity",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, CurrentUserIsUnrestrictedViewer: bool, DatabaseId: guid, InTransitionTo: string)");
 
         public static readonly CommandSymbol ShowClusterDatabasesPolicies =
             new CommandSymbol(nameof(ShowClusterDatabasesPolicies),
-                "show cluster databases policies",
+                "show [cluster] databases policies",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, DatabaseId: guid, AuthorizedPrincipals: string, RetentionPolicy: string, MergePolicy: string, CachingPolicy: string, ShardingPolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string)");
 
         public static readonly CommandSymbol ShowClusterDatabasesDataStats =
             new CommandSymbol(nameof(ShowClusterDatabasesDataStats),
-                "show cluster databases datastats",
+                "show [cluster] databases datastats",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, DatabaseId: guid, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)");
 
         public static readonly CommandSymbol CreateDatabasePersist =
