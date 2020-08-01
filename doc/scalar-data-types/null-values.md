@@ -68,7 +68,7 @@ Then:
 ::: zone pivot="azuredataexplorer"
 
 * If you run the query above in Kusto.Explorer, all `true`
-  values will be displated as `1`, and all `false` values
+  values will be displayed as `1`, and all `false` values
   will be displayed as `0`.
 
 ::: zone-end
