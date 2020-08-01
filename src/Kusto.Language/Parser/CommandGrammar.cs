@@ -356,6 +356,11 @@ namespace Kusto.Language.Parsing
                     .WithCompletionHint(Editor.CompletionHint.Table)
                     .WithTag("<table>");
 
+            var MaterializedViewNameReference =
+                Rule(Name, name => (Expression)new NameReference(name, SymbolMatch.MaterializedView))
+                    .WithCompletionHint(Editor.CompletionHint.MaterializedView)
+                    .WithTag("<materializedview>");
+
             var DatabaseNameReference =
                 Rule(Name, name => (Expression)new NameReference(name, SymbolMatch.Database))
                     .WithCompletionHint(Editor.CompletionHint.Database)
@@ -455,6 +460,12 @@ namespace Kusto.Language.Parsing
                 new ParserInfo(
                     TableNameReference.Cast<SyntaxElement>(),
                     new CustomElementDescriptor(hint: Editor.CompletionHint.Table),
+                    () => (SyntaxElement)Q.MissingNameReference());
+
+            var KustoMaterializedViewNameInfo =
+                new ParserInfo(
+                    MaterializedViewNameReference.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(hint: Editor.CompletionHint.MaterializedView),
                     () => (SyntaxElement)Q.MissingNameReference());
 
             var KustoDatabaseNameInfo =
@@ -603,6 +614,7 @@ namespace Kusto.Language.Parsing
                         case "table_column": return KustoTableColumnNameInfo;
                         case "database_table_column": return KustoDatabaseTableColumnNameInfo;
                         case "table": return KustoTableNameInfo;
+                        case "materializedview": return KustoMaterializedViewNameInfo;
                         case "database_table": return KustoDatabaseTableNameInfo;
                         case "database": return KustoDatabaseNameInfo;
                         case "cluster": return KustoClusterNameInfo;

@@ -1121,6 +1121,9 @@ namespace Kusto.Language.Editor
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
 
+            if ((hint & CompletionHint.MaterializedView) != 0)
+                match |= SymbolMatch.MaterializedView;
+
             if ((hint & CompletionHint.Database) != 0)
                 match |= SymbolMatch.Database;
 

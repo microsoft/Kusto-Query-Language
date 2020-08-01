@@ -135,6 +135,8 @@ namespace Kusto.Language
         #endregion
 
         #region Tables
+        private static readonly string ExtentIdList = "'(' {ExtentId=<guid>, ','}+ ')'";
+
         private static readonly string ShowTablesResult =
             "(TableName: string, DatabaseName: string, Folder: string, DocString: string)";
 
@@ -1291,6 +1293,80 @@ namespace Kusto.Language
 
         #endregion
 
+        #region Materialized Views
+
+        private static readonly string ShowMaterializedViewResult =
+           "(Name: string, SourceTable: string, Query: string, " +
+           "MaterializedTo: datetime, LastRun: datetime, LastRunResult: string, IsHealthy: bool, " +
+           "IsEnabled: bool, Folder: string, DocString: string, AutoUpdateSchema: bool)";
+
+        public static readonly CommandSymbol CreateMaterializedView =
+            new CommandSymbol(nameof(CreateMaterializedView),
+                "create [async] materialized-view [with '('! { PropertyName=<name> '='! Value=<value>, ',' } ')'!] " +
+                "MaterializedViewName=<name> on table <table> <function_body>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowMaterializedView =
+           new CommandSymbol(nameof(ShowMaterializedView),
+               "show materialized-view MaterializedViewName=<materializedview>",
+               ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol ShowMaterializedViews =
+           new CommandSymbol(nameof(ShowMaterializedViews),
+               "show materialized-views",
+               ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyRetention =
+            new CommandSymbol(nameof(ShowMaterializedViewPolicyRetention),
+                "show materialized-view MaterializedViewName=<materializedview> policy retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyCaching =
+            new CommandSymbol(nameof(ShowMaterializedViewPolicyCaching),
+                "show materialized-view MaterializedViewName=<materializedview> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyMerge =
+            new CommandSymbol(nameof(ShowMaterializedViewPolicyMerge),
+                "show materialized-view MaterializedViewName=<materializedview> policy merge",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewExtents =
+            new CommandSymbol(nameof(ShowMaterializedViewExtents),
+                 $"show materialized-view MaterializedViewName=<materializedview> extents [{ExtentIdList}] [hot] [details]",
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+
+        public static readonly CommandSymbol AlterMaterializedView =
+            new CommandSymbol(nameof(AlterMaterializedView),
+                $"alter materialized-view MaterializedViewName=<materializedview> on table <table> <function_body>",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropMaterializedView =
+            new CommandSymbol(nameof(DropMaterializedView),
+                $"drop materialized-view MaterializedViewName=<materializedview>",
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol EnableDisableMaterializedView =
+            new CommandSymbol(nameof(EnableDisableMaterializedView),
+                $"(enable | disable) materialized-view MaterializedViewName=<materializedview>",
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPrincipals =
+            new CommandSymbol(nameof(ShowMaterializedViewPrincipals),
+                "show materialized-view MaterializedViewName=<materializedview> principals",
+                ShowPrincipalsResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewSchemaAsJson =
+            new CommandSymbol(nameof(ShowMaterializedViewSchemaAsJson),
+                "show materialized-view MaterializedViewName=<materializedview> schema as json",
+                ShowTableSchemaResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewCslSchema =
+            new CommandSymbol(nameof(ShowMaterializedViewCslSchema),
+                "show materialized-view MaterializedViewName=<materializedview> cslschema",
+                ShowTableSchemaResult);
+        #endregion
+
         #region System Information Commands
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol(nameof(ShowCluster),
@@ -1359,10 +1435,7 @@ namespace Kusto.Language
                     new ColumnSymbol("TargetDiskCacheShardsPercentage", ScalarTypes.Int),
                     new ColumnSymbol("MaterializedViewsInProgress", ScalarTypes.Long),
                     new ColumnSymbol("DataPartitioningOperationsInProgress", ScalarTypes.Real),
-                    new ColumnSymbol("IngestionCapacityUtilization", ScalarTypes.Real),
-                    new ColumnSymbol("ShardsWarmingStatus", ScalarTypes.String),
-                    new ColumnSymbol("ShardsWarmingTemperature", ScalarTypes.Real),
-                    new ColumnSymbol("ShardsWarmingDetails", ScalarTypes.String)));
+                    new ColumnSymbol("IngestionCapacityUtilization", ScalarTypes.Real)));
 
         public static readonly CommandSymbol ShowCapacity =
             new CommandSymbol(nameof(ShowCapacity),
@@ -1465,7 +1538,6 @@ namespace Kusto.Language
                 "show cluster extents [hot]",
                 "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
 
-        private static readonly string ExtentIdList = "'(' {ExtentId=<guid>, ','}+ ')'";
         private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains')! Tag=<string>, and }+";
 
         public static readonly CommandSymbol ShowDatabaseExtents =
@@ -1849,6 +1921,22 @@ namespace Kusto.Language
                 EnableContinuousExport,
                 DisableContinuousExport,
                 #endregion
+
+                #region Materialized Views 
+                CreateMaterializedView,
+                ShowMaterializedView,
+                ShowMaterializedViews, 
+                ShowMaterializedViewExtents,
+                ShowMaterializedViewPolicyRetention, 
+                ShowMaterializedViewPolicyCaching, 
+                ShowMaterializedViewPolicyMerge,
+                AlterMaterializedView, 
+                DropMaterializedView, 
+                EnableDisableMaterializedView, 
+                ShowMaterializedViewPrincipals,
+                ShowMaterializedViewSchemaAsJson, 
+                ShowMaterializedViewCslSchema,
+                #endregion 
 
                 #region System Information Commands
                 ShowCluster,

@@ -1563,7 +1563,8 @@ namespace Kusto.Language.Binding
                 var hint = element.Parent.GetCompletionHint(element.IndexInParent);
 
                 if (hint == Editor.CompletionHint.Table
-                    || hint == Editor.CompletionHint.Tabular)
+                    || hint == Editor.CompletionHint.Tabular
+                    || hint == Editor.CompletionHint.MaterializedView)
                 {
                     return true;
                 }

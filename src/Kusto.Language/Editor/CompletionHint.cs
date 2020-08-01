@@ -125,5 +125,10 @@ namespace Kusto.Language.Editor
         /// A clause
         /// </summary>
         Clause = Keyword << 1,
+
+        /// <summary>
+        /// A materialized view
+        /// </summary>
+        MaterializedView = Clause << 1,
     }
 }
