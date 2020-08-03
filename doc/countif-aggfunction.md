@@ -4,10 +4,10 @@ description: This article describes countif() (aggregation function) in Azure Da
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 08/02/2020
 ---
 # countif() (aggregation function)
 
@@ -23,11 +23,27 @@ summarize `countif(`*Predicate*`)`
 
 ## Arguments
 
-* *Predicate*: Expression that will be used for aggregation calculation. 
+*Predicate*: Expression that will be used for aggregation calculation. *Predicate* can be any scalar expression with return type of bool (evaluating to true/false).
 
 ## Returns
 
 Returns a count of rows for which *Predicate* evaluates to `true`.
 
-> [!TIP]
-> Use `summarize countif(filter)` instead of `where filter | summarize count()`
+## Example
+
+```kusto
+let T = datatable(name:string, day_of_birth:long)
+[
+   "John", 9,
+   "Paul", 18,
+   "George", 25,
+   "Ringo", 7
+];
+T
+| summarize countif(strlen(name) > 4)
+```
+
+|countif_|
+|----|
+|2|
+
