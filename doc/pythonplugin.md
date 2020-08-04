@@ -53,7 +53,7 @@ The following variables are reserved for interaction between Kusto query languag
 
 * The plugin is disabled by default.
 * To enable the plugin, see the list of [prerequisites](../concepts/sandboxes.md#prerequisites).
-* Enable or disable the plugin in the Azure portal, in your cluster 's[Configuration tab](../../language-extensions.md).
+* Enable or disable the plugin in the Azure portal, in your cluster's [Configuration tab](../../language-extensions.md).
 
 ## Python sandbox image
 
