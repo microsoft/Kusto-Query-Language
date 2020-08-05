@@ -14,17 +14,17 @@ namespace Kusto.Language.Editor
     {
         private static readonly Diagnostic _diagnostic_equals =
             new Diagnostic(
-                "AvoidUsingIsNullStringComparison",
+                "KS501",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                message: "Avoid using isnull on string arguments, use isempty() instead");
+                description: "Avoid using isnull on string arguments, use isempty() instead");
 
         private static readonly Diagnostic _diagnostic_not_equals =
-          new Diagnostic(
-              "AvoidUsingIsNullStringComparison",
-              category: DiagnosticCategory.Correctness,
-              severity: DiagnosticSeverity.Warning,
-              message: "Avoid using isnotnull on string arguments, use isnotempty() instead");
+            new Diagnostic(
+                "KS502",
+                category: DiagnosticCategory.Correctness,
+                severity: DiagnosticSeverity.Warning,
+                description: "Avoid using isnotnull on string arguments, use isnotempty() instead");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()
         {

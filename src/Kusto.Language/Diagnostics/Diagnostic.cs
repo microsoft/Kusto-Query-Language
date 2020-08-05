@@ -25,7 +25,12 @@ namespace Kusto.Language
         public string Severity { get; }
 
         /// <summary>
-        /// The message of the diagnostic
+        /// A short description of the diagnostic.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
+        /// The message of the diagnostic.
         /// </summary>
         public string Message { get; }
 
@@ -33,21 +38,28 @@ namespace Kusto.Language
         private readonly int length;
 
         public Diagnostic(string code, string message)
-            : this(code, category: null, severity: null, message: message, start: 0, length: 0)
+            : this(code, category: null, severity: null, message: message, description: null, start: 0, length: 0)
         {
         }
 
-        public Diagnostic(string code, string category, string severity, string message)
-            : this(code, category, severity, message, start: 0, length: 0)
+        public Diagnostic(string code, string category, string severity, string description)
+            : this(code, category, severity, description: description, message: null, start: 0, length: 0)
         {
         }
 
-        private Diagnostic(string code, string category, string severity, string message, int start, int length)
+        public Diagnostic(string code, string category, string severity, string description, string message)
+            : this(code, category, severity, description: description, message: message, start: 0, length: 0)
+        {
+        }
+
+
+        private Diagnostic(string code, string category, string severity, string description, string message, int start, int length)
         {
             this.Code = code ?? "";
             this.Category = category ?? DiagnosticCategory.General;
             this.Severity = severity ?? DiagnosticSeverity.Error;
-            this.Message = message ?? "";
+            this.Description = description ?? message ?? "";
+            this.Message = message ?? description ?? "";
             this.start = start >= 0 ? start: 0;
             this.length = length >= 0 ? length: 0;
         }
@@ -76,6 +88,7 @@ namespace Kusto.Language
             string code = null,
             string category = null,
             string severity = null,
+            string description = null,
             string message = null,
             int start = -1,
             int length = -1)
@@ -83,6 +96,7 @@ namespace Kusto.Language
             code = code ?? this.Code;
             category = category ?? this.Category;
             severity = severity ?? this.Severity;
+            description = description ?? this.Description;
             message = message ?? this.Message;
             start = start >= 0 ? start : this.start;
             length = length >= 0 ? length : this.length;
@@ -90,11 +104,12 @@ namespace Kusto.Language
             if (code != this.Code
                 || category != this.Code
                 || severity != this.Severity
+                || description != this.Description
                 || message != this.Message
                 || start != this.start
                 || length != this.length)
             {
-                return new Diagnostic(code, category, severity, message, start, length);
+                return new Diagnostic(code, category, severity, description, message, start, length);
             }
             else
             {

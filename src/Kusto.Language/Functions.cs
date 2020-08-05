@@ -36,6 +36,13 @@ namespace Kusto.Language
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("max_age", ScalarTypes.TimeSpan, minOccurring: 0));
 
+        public static readonly FunctionSymbol StoredQueryResult = 
+            new FunctionSymbol("stored_query_result",
+                (table, args) => TableSymbol.Empty, // we don't want to resolve schema of SQR for now
+                Tabularity.Tabular,
+                new Parameter("name", ScalarTypes.String))
+            .Hide();
+
         #endregion
 
         #region string functions
@@ -2092,6 +2099,7 @@ namespace Kusto.Language
             Table,
             ExternalTable,
             MaterializedView,
+            StoredQueryResult,
 #endregion
 
 #region string functions

@@ -223,6 +223,24 @@ namespace Kusto.Language.Editor
             return _analyzers;
         }
 
+        private static IReadOnlyList<Diagnostic> _analyzerDiagnostics;
+
+        /// <summary>
+        /// The set of known analyzer diagnostics
+        /// </summary>
+        public static IReadOnlyList<Diagnostic> AnalyzerDiagnostics
+        {
+            get
+            {
+                if (_analyzerDiagnostics == null)
+                {
+                    _analyzerDiagnostics = new KustoCodeService("").GetAnalyzers().SelectMany(a => a.Diagnostics).ToReadOnly();
+                }
+
+                return _analyzerDiagnostics;
+            }
+        }
+
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))

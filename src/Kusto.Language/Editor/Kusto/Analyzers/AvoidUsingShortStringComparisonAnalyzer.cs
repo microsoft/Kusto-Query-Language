@@ -14,9 +14,10 @@ namespace Kusto.Language.Editor
     {
         private static readonly Diagnostic _diagnostic =
             new Diagnostic(
-                "AvoidUsingShortStringComparison",
+                "KS503",
                 category: DiagnosticCategory.Performance,
                 severity: DiagnosticSeverity.Suggestion,
+                description: "Avoid strong string comparisons",
                 message: "Avoid using short strings (less than 4 characters) for string comparison operations (see: https://aka.ms/kusto.stringterms).");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()

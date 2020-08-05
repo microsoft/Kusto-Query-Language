@@ -14,22 +14,22 @@ namespace Kusto.Language
     {
         public static Diagnostic GetMissingCharacter(char ch)
         {
-            return new Diagnostic("KUS001", $"Missing '{ch}'");
+            return new Diagnostic("KS001", $"Missing '{ch}'");
         }
 
         public static Diagnostic GetUnexpectedCharacter(string text)
         {
-            return new Diagnostic("KUS002", $"Unexpected: '{text}'");
+            return new Diagnostic("KS002", $"Unexpected: '{text}'");
         }
 
         public static Diagnostic GetMalformedToken(string term)
         {
-            return new Diagnostic("KUS003", $"Malformed {term}");
+            return new Diagnostic("KS003", $"Malformed {term}");
         }
 
         public static Diagnostic GetMalformedLiteral()
         {
-            return new Diagnostic("KUS004", "Malformed literal");
+            return new Diagnostic("KS004", "Malformed literal");
         }
 
         public static Diagnostic GetTokenExpected(params SyntaxKind[] kinds)
@@ -45,7 +45,7 @@ namespace Kusto.Language
         public static Diagnostic GetTokenExpected(IEnumerable<string> texts)
         {
             var list = texts.Select(t => $"'{t}'").ToArray().Join(", ", " or ");
-            return new Diagnostic("KUS005", $"Expected: {list}");
+            return new Diagnostic("KS005", $"Expected: {list}");
         }
 
         public static Diagnostic GetTokenExpected(params string[] tokens)
@@ -55,7 +55,7 @@ namespace Kusto.Language
 
         private static Diagnostic GetMissingElement(string term)
         {
-            return new Diagnostic("KUS006", $"Missing {term}");
+            return new Diagnostic("KS006", $"Missing {term}");
         }
 
         public static Diagnostic GetMissingName()
@@ -155,32 +155,32 @@ namespace Kusto.Language
 
         public static Diagnostic GetParsePatternMustStartWithColumnNameOrStar()
         {
-            return new Diagnostic("KUS100", "The pattern must start with a column name or *");
+            return new Diagnostic("KS100", "The pattern must start with a column name or *");
         }
 
         public static Diagnostic GetParsePatternNameDoesNotFollowStringLiteral()
         {
-            return new Diagnostic("KUS101", "The column name must follow a string literal");
+            return new Diagnostic("KS101", "The column name must follow a string literal");
         }
 
         public static Diagnostic GetParsePatternStringLiteralMustFollowStar()
         {
-            return new Diagnostic("KUS102", "A string literal must follow a *");
+            return new Diagnostic("KS102", "A string literal must follow a *");
         }
 
         public static Diagnostic GetParsePatternUsingStarAfterStringColumnIsAmbiguous()
         {
-            return new Diagnostic("KUS103", "Using * after parsing a string column is abmiguous.");
+            return new Diagnostic("KS103", "Using * after parsing a string column is abmiguous.");
         }
 
         public static Diagnostic GetInvalidPatternPart()
         {
-            return new Diagnostic("KUS104", "Invalid pattern part.");
+            return new Diagnostic("KS104", "Invalid pattern part.");
         }
 
         public static Diagnostic GetIdentifierNameOnly()
         {
-            return new Diagnostic("KUS105", "The name must be a single identifier only.");
+            return new Diagnostic("KS105", "The name must be a single identifier only.");
         }
 
         public static Diagnostic GetOperatorNotDefined(string name, params TypeSymbol[] argumentTypes)
@@ -192,18 +192,18 @@ namespace Kusto.Language
         {
             if (argumentTypes.Count == 1)
             {
-                return new Diagnostic("KUS106", $"The operator '{name}' is not defined for the operand type {argumentTypes[0].Name}.");
+                return new Diagnostic("KS106", $"The operator '{name}' is not defined for the operand type {argumentTypes[0].Name}.");
             }
             else
             {
                 var list = argumentTypes.Select(t => t.Name).ToList().Join(", ", " and ");
-                return new Diagnostic("KUS106", $"The operator '{name}' is not defined for the operand types {list}.");
+                return new Diagnostic("KS106", $"The operator '{name}' is not defined for the operand types {list}.");
             }
         }
 
         public static Diagnostic GetTypeExpected(Symbol type)
         {
-            return new Diagnostic("KUS107", $"A value of type '{type.Name}' expected.");
+            return new Diagnostic("KS107", $"A value of type '{type.Name}' expected.");
         }
 
         public static Diagnostic GetTypeExpected(IReadOnlyList<TypeSymbol> types)
@@ -215,73 +215,73 @@ namespace Kusto.Language
             else
             {
                 var list = types.Select(t => "'" + t.Name + "'").ToList().Join(", ", " or ");
-                return new Diagnostic("KUS107", $"A value of type {list} expected.");
+                return new Diagnostic("KS107", $"A value of type {list} expected.");
             }
         }
 
         public static Diagnostic GetScalarTypeExpected()
         {
-            return new Diagnostic("KUS108", $"Scalar value expected.");
+            return new Diagnostic("KS108", $"Scalar value expected.");
         }
 
         public static Diagnostic GetColumnExpected()
         {
-            return new Diagnostic("KUS109", "Column name expected.");
+            return new Diagnostic("KS109", "Column name expected.");
         }
 
         public static Diagnostic GetRenameAssignmentExpected()
         {
-            return new Diagnostic("KUS110", "Column rename assignment expected.");
+            return new Diagnostic("KS110", "Column rename assignment expected.");
         }
 
         public static Diagnostic GetTableExpected()
         {
-            return new Diagnostic("KUS111", "Table expected.");
+            return new Diagnostic("KS111", "Table expected.");
         }
 
         public static Diagnostic GetTableOrScalarExpected()
         {
-            return new Diagnostic("KUS112", "A table or scalar value expected.");
+            return new Diagnostic("KS112", "A table or scalar value expected.");
         }
 
         public static Diagnostic GetSingleColumnTableExpected()
         {
-            return new Diagnostic("KUS113", "A table with only one column expected.");
+            return new Diagnostic("KS113", "A table with only one column expected.");
         }
 
         public static Diagnostic GetDatabaseExpected()
         {
-            return new Diagnostic("KUS114", "Database expected.");
+            return new Diagnostic("KS114", "Database expected.");
         }
 
         public static Diagnostic GetClusterExpected()
         {
-            return new Diagnostic("KUS115", "Cluster expected.");
+            return new Diagnostic("KS115", "Cluster expected.");
         }
 
         public static Diagnostic GetTypeNotAllowed(Symbol type)
         {
-            return new Diagnostic("KUS116", $"The value of type '{type.Name}' is not allowed in this context.");
+            return new Diagnostic("KS116", $"The value of type '{type.Name}' is not allowed in this context.");
         }
 
         public static Diagnostic GetFunctionRequiresArgumentList(string functionName)
         {
-            return new Diagnostic("KUS117", $"The function '{functionName}' requires an argument list.");
+            return new Diagnostic("KS117", $"The function '{functionName}' requires an argument list.");
         }
 
         public static Diagnostic GetArgumentCountExpected(int count)
         {
             if (count == 0)
             {
-                return new Diagnostic("KUS118", $"No arguments expected.");
+                return new Diagnostic("KS118", $"No arguments expected.");
             }
             else if (count == 1)
             {
-                return new Diagnostic("KUS118", $"1 argument expected.");
+                return new Diagnostic("KS118", $"1 argument expected.");
             }
             else
             {
-                return new Diagnostic("KUS118", $"{count} arguments expected.");
+                return new Diagnostic("KS118", $"{count} arguments expected.");
             }
         }
 
@@ -289,15 +289,15 @@ namespace Kusto.Language
         {
             if (count == 0)
             {
-                return new Diagnostic("KUS119", $"The function '{functionName}' expects no arguments.");
+                return new Diagnostic("KS119", $"The function '{functionName}' expects no arguments.");
             }
             else if (count == 1)
             {
-                return new Diagnostic("KUS119", $"The function '{functionName}' expects 1 argument.");
+                return new Diagnostic("KS119", $"The function '{functionName}' expects 1 argument.");
             }
             else
             {
-                return new Diagnostic("KUS119", $"The function '{functionName}' expects {count} arguments.");
+                return new Diagnostic("KS119", $"The function '{functionName}' expects {count} arguments.");
             }
         }
 
@@ -309,117 +309,117 @@ namespace Kusto.Language
             }
             else
             {
-                return new Diagnostic("KUS120", $"The function '{functionName}' expects between {min} and {max} arguments.");
+                return new Diagnostic("KS120", $"The function '{functionName}' expects between {min} and {max} arguments.");
             }
         }
 
         public static Diagnostic GetFunctionHasIncorrectNumberOfArguments()
         {
-            return new Diagnostic("KUS121", $"The function call has an incorrect number of arguments.");
+            return new Diagnostic("KS121", $"The function call has an incorrect number of arguments.");
         }
 
         public static Diagnostic GetScalarFunctionNotDefined(string name)
         {
-            return new Diagnostic("KUS122", $"The scalar function '{name}' is not defined.");
+            return new Diagnostic("KS122", $"The scalar function '{name}' is not defined.");
         }
 
         public static Diagnostic GetAggregateFunctionNotDefined(string name)
         {
-            return new Diagnostic("KUS123", $"The aggregate function '{name}' is not defined.");
+            return new Diagnostic("KS123", $"The aggregate function '{name}' is not defined.");
         }
 
         public static Diagnostic GetPlugInFunctionNotDefined(string name)
         {
-            return new Diagnostic("KUS124", $"The plug-in function '{name}' is not defined.");
+            return new Diagnostic("KS124", $"The plug-in function '{name}' is not defined.");
         }
 
         public static Diagnostic GetPlugInFunctionIsNotEnabled(string name)
         {
-            return new Diagnostic("KUS125", $"The plug-in function '{name}' is not enabled.");
+            return new Diagnostic("KS125", $"The plug-in function '{name}' is not enabled.");
         }
 
         public static Diagnostic GetPluginNotAllowedInThisContext(string name)
         {
-            return new Diagnostic("KUS126", $"The plug-in function '{name}' is not allowed in this context.");
+            return new Diagnostic("KS126", $"The plug-in function '{name}' is not allowed in this context.");
         }
 
         public static Diagnostic GetFunctionNotDefinedWithMatchingParameters(string name, IReadOnlyList<Symbol> argumentTypes)
         {
             var types = string.Join(", ", argumentTypes.Select(p => p.Name));
-            return new Diagnostic("KUS127", $"The function '{name}' is not compatible with arguments ({types})");
+            return new Diagnostic("KS127", $"The function '{name}' is not compatible with arguments ({types})");
         }
 
         public static Diagnostic GetNameIsNotAFunction(string name)
         {
-            return new Diagnostic("KUS128", $"The name '{name}' does not refer to a function.");
+            return new Diagnostic("KS128", $"The name '{name}' does not refer to a function.");
         }
 
         public static Diagnostic GetExpressionMustBeConstant()
         {
-            return new Diagnostic("KUS129", "The expression must be a constant.");
+            return new Diagnostic("KS129", "The expression must be a constant.");
         }
 
         public static Diagnostic GetExpressionMustBeConstantOrIdentifier()
         {
-            return new Diagnostic("KUS130", "The expression must be a constant or identifier.");
+            return new Diagnostic("KS130", "The expression must be a constant or identifier.");
         }
 
         public static Diagnostic GetExpressionMustBeLiteral()
         {
-            return new Diagnostic("KUS131", $"The expression must be a literal.");
+            return new Diagnostic("KS131", $"The expression must be a literal.");
         }
 
         public static Diagnostic GetExpressionMustBeLiteralScalarValue()
         {
-            return new Diagnostic("KUS132", $"The expression must be a literal scalar value.");
+            return new Diagnostic("KS132", $"The expression must be a literal scalar value.");
         }
 
         public static Diagnostic GetExpressionMustNotBeEmpty()
         {
-            return new Diagnostic("KUS133", $"The expression value must not be empty.");
+            return new Diagnostic("KS133", $"The expression value must not be empty.");
         }
 
         public static Diagnostic GetExpressionMustBeInteger()
         {
-            return new Diagnostic("KUS134", "The expression value must be an integer.");
+            return new Diagnostic("KS134", "The expression value must be an integer.");
         }
 
         public static Diagnostic GetExpressionMustBeRealOrDecimal()
         {
-            return new Diagnostic("KUS135", "The expression value must be an real or decimal number.");
+            return new Diagnostic("KS135", "The expression value must be an real or decimal number.");
         }
 
         public static Diagnostic GetExpressionMustBeIntegerOrDynamic()
         {
-            return new Diagnostic("KUS136", "The expression value must be an integer or dynamic.");
+            return new Diagnostic("KS136", "The expression value must be an integer or dynamic.");
         }
 
 
         public static Diagnostic GetExpressionMustBeNumeric()
         {
-            return new Diagnostic("KUS137", "The expression value must be a number.");
+            return new Diagnostic("KS137", "The expression value must be a number.");
         }
 
         public static Diagnostic GetExpressionMustBeSummable()
         {
-            return new Diagnostic("KUS138", "The argument value must be a number, timespan or datetime.");
+            return new Diagnostic("KS138", "The argument value must be a number, timespan or datetime.");
         }
 
         public static Diagnostic GetMultiValuedExpressionCannotBeAssignedToVariable()
         {
-            return new Diagnostic("KUS139", "The multi-valued expression cannot be assigned to a variable.");
+            return new Diagnostic("KS139", "The multi-valued expression cannot be assigned to a variable.");
         }
 
         public static Diagnostic GetExpressionMustHaveValue<T>(IReadOnlyList<T> values)
         {
             if (values.Count == 1)
             {
-                return new Diagnostic("KUS140", $"The expression must be the value: {values[0]}");
+                return new Diagnostic("KS140", $"The expression must be the value: {values[0]}");
             }
             else
             {
                 var list = values.Select(v => v.ToString()).ToList().Join(", ", " or ");
-                return new Diagnostic("KUS140", $"The expression must be one of the values: {list}");
+                return new Diagnostic("KS140", $"The expression must be one of the values: {list}");
             }
         }
 
@@ -432,12 +432,12 @@ namespace Kusto.Language
         {
             if (types.Count == 1)
             {
-                return new Diagnostic("KUS141", $"The expression must have the type {types[0].Name}.");
+                return new Diagnostic("KS141", $"The expression must have the type {types[0].Name}.");
             }
             else
             {
                 var list = types.Select(s => s.Name).ToList().Join(", ", " or ");
-                return new Diagnostic("KUS141", $"The expression must have one of the types: {list}.");
+                return new Diagnostic("KS141", $"The expression must have one of the types: {list}.");
             }
         }
 
@@ -448,236 +448,236 @@ namespace Kusto.Language
 
         public static Diagnostic GetNameDoesNotReferToAnyKnownItem(string name)
         {
-            return new Diagnostic("KUS142", $"The name '{name}' does not refer to any known column, table, variable or function.");
+            return new Diagnostic("KS142", $"The name '{name}' does not refer to any known column, table, variable or function.");
         }
 
         public static Diagnostic GetFunctionNotDefined(string name)
         {
-            return new Diagnostic("KUS143", $"The function '{name}' is not defined.");
+            return new Diagnostic("KS143", $"The function '{name}' is not defined.");
         }
 
         public static Diagnostic GetAggregateNotAllowedInThisContext(string name)
         {
-            return new Diagnostic("KUS144", $"The aggregate function '{name}' is not allowed in this context.");
+            return new Diagnostic("KS144", $"The aggregate function '{name}' is not allowed in this context.");
         }
 
         public static Diagnostic GetColumnMustExistOnBothSidesOfJoin(string name)
         {
-            return new Diagnostic("KUS145", $"The column '{name}' must exist on both sides of the join.");
+            return new Diagnostic("KS145", $"The column '{name}' must exist on both sides of the join.");
         }
 
         public static Diagnostic GetNameRefersToMoreThanOneItem(string name)
         {
-            return new Diagnostic("KUS146", $"The name '{name}' refers to more than one column or variable");
+            return new Diagnostic("KS146", $"The name '{name}' refers to more than one column or variable");
         }
 
         public static Diagnostic GetTheElementAccessOperatorIsNotAllowedInThisContext()
         {
-            return new Diagnostic("KUS147", "The element access operator [] is not allowed in this context.");
+            return new Diagnostic("KS147", "The element access operator [] is not allowed in this context.");
         }
 
         public static Diagnostic GetTheExpressionHasNoName()
         {
-            return new Diagnostic("KUS148", "A column name cannot be inferred for this expression.");
+            return new Diagnostic("KS148", "A column name cannot be inferred for this expression.");
         }
 
         public static Diagnostic GetTheExpressionDoesNotHaveMultipleValues()
         {
-            return new Diagnostic("KUS149", "The expression does not have multiple named values.");
+            return new Diagnostic("KS149", "The expression does not have multiple named values.");
         }
 
         public static Diagnostic GetTheNameDoesNotHaveCorrespondingExpression()
         {
-            return new Diagnostic("KUS150", "The name does not have a corresponding expression.");
+            return new Diagnostic("KS150", "The name does not have a corresponding expression.");
         }
 
         public static Diagnostic GetInvalidTypeName(string name)
         {
-            return new Diagnostic("KUS160", $"The name '{name}' is not a valid type name.");
+            return new Diagnostic("KS160", $"The name '{name}' is not a valid type name.");
         }
 
         public static Diagnostic GetInvalidColumnDeclaration()
         {
-            return new Diagnostic("KUS170", "The syntax is not a valid column declaration.");
+            return new Diagnostic("KS170", "The syntax is not a valid column declaration.");
         }
 
         public static Diagnostic GetDuplicateColumnDeclaration(string name)
         {
-            return new Diagnostic("KUS171", $"A column with the name '{name}' is already declared.");
+            return new Diagnostic("KS171", $"A column with the name '{name}' is already declared.");
         }
 
         public static Diagnostic GetInvalidTypeExpression()
         {
-            return new Diagnostic("KUS172", "The syntax is not a valid type expression.");
+            return new Diagnostic("KS172", "The syntax is not a valid type expression.");
         }
 
         public static Diagnostic GetIncorrectNumberOfDataValues(int multiple)
         {
-            return new Diagnostic("KUS173", $"Incorrect number of data values. The values should appear in multiples of {multiple}.");
+            return new Diagnostic("KS173", $"Incorrect number of data values. The values should appear in multiples of {multiple}.");
         }
 
         public static Diagnostic GetQueryOperatorCannotBeFirst()
         {
-            return new Diagnostic("KUS174", $"The operator cannot be the first operator in a query.");
+            return new Diagnostic("KS174", $"The operator cannot be the first operator in a query.");
         }
 
         public static Diagnostic GetQueryOperatorMustBeFirst()
         {
-            return new Diagnostic("KUS175", "The operator must be the first operator in the query.");
+            return new Diagnostic("KS175", "The operator must be the first operator in the query.");
         }
 
         public static Diagnostic GetQueryOperatorExpected()
         {
-            return new Diagnostic("KUS176", "Query operator expected.");
+            return new Diagnostic("KS176", "Query operator expected.");
         }
 
         public static Diagnostic GetQueryOperatorNotAllowedInContext(string name)
         {
-            return new Diagnostic("KUS177", $"The query operator '{name}' is not allowed in the current context.");
+            return new Diagnostic("KS177", $"The query operator '{name}' is not allowed in the current context.");
         }
 
         public static Diagnostic GetTypeIsNotIntervalType(Symbol intervalType, Symbol rangeType)
         {
-            return new Diagnostic("KUS178", $"The type '{intervalType.Name}' is not an appropriate interval type for '{rangeType.Name}'");
+            return new Diagnostic("KS178", $"The type '{intervalType.Name}' is not an appropriate interval type for '{rangeType.Name}'");
         }
 
         public static Diagnostic GetUnknownParameterName(string name)
         {
-            return new Diagnostic("KUS179", $"The '{name}' is not a recognized parameter.");
+            return new Diagnostic("KS179", $"The '{name}' is not a recognized parameter.");
         }
 
         public static Diagnostic GetParameterAlreadySpecified(string name)
         {
-            return new Diagnostic("KUS180", $"The parameter '{name}' is already specified.");
+            return new Diagnostic("KS180", $"The parameter '{name}' is already specified.");
         }
 
         public static Diagnostic GetNameDoesNotReferToTable(string name)
         {
-            return new Diagnostic("KUS181", $"The name '{name}' does not refer to a table.");
+            return new Diagnostic("KS181", $"The name '{name}' does not refer to a table.");
         }
 
         public static Diagnostic GetInvalidJoinCondition()
         {
-            return new Diagnostic("KUS182", "The join condition must be either the name of a column common to both tables or in the form $left.<column> == $right.<column>.");
+            return new Diagnostic("KS182", "The join condition must be either the name of a column common to both tables or in the form $left.<column> == $right.<column>.");
         }
         public static Diagnostic GetInvalidJoinConditionOperand(string prefix)
         {
-            return new Diagnostic("KUS183", $"The join condition operand must be: {prefix}.<column>");
+            return new Diagnostic("KS183", $"The join condition operand must be: {prefix}.<column>");
         }
 
         public static Diagnostic GetTheExpressionRefersToMoreThanOneColumn()
         {
-            return new Diagnostic("KUS184", "The expression refers to more than one column.");
+            return new Diagnostic("KS184", "The expression refers to more than one column.");
         }
 
         public static Diagnostic GetPackMustBeLastItemInList()
         {
-            return new Diagnostic("KUS185", "The pack(*) expression must be the last item in the list.");
+            return new Diagnostic("KS185", "The pack(*) expression must be the last item in the list.");
         }
 
         public static Diagnostic GetValueCountMustEqualParameterCount()
         {
-            return new Diagnostic("KUS185", "The number of values must equal the number of parameters.");
+            return new Diagnostic("KS185", "The number of values must equal the number of parameters.");
         }
 
         public static Diagnostic GetPathValueWithNoPathParameter()
         {
-            return new Diagnostic("KUS186", "A path value can only be specified when a path name is part of the declaration.");
+            return new Diagnostic("KS186", "A path value can only be specified when a path name is part of the declaration.");
         }
 
         public static Diagnostic GetPathValueExpected()
         {
-            return new Diagnostic("KUS187", "A path value is expected.");
+            return new Diagnostic("KS187", "A path value is expected.");
         }
 
         public static Diagnostic GetNoPatternMatchesArguments()
         {
-            return new Diagnostic("KUS188", "No pattern matches the specified arguments.");
+            return new Diagnostic("KS188", "No pattern matches the specified arguments.");
         }
 
         public static Diagnostic GetDefaultValueExpected()
         {
-            return new Diagnostic("KUS189", "Default value expected.");
+            return new Diagnostic("KS189", "Default value expected.");
         }
 
         public static Diagnostic GetTableHasNoColumns()
         {
-            return new Diagnostic("KUS190", "The table has no columns");
+            return new Diagnostic("KS190", "The table has no columns");
         }
 
         public static Diagnostic GetStarExpressionNotAllowed()
         {
-            return new Diagnostic("KUS191", "The * syntax is not allowed here.");
+            return new Diagnostic("KS191", "The * syntax is not allowed here.");
         }
 
         public static Diagnostic GetStarExpressionMustBeLastArgument()
         {
-            return new Diagnostic("KUS192", "The * syntax must be the last argument.");
+            return new Diagnostic("KS192", "The * syntax must be the last argument.");
         }
 
         public static Diagnostic GetNamedArgumentsNotSupported()
         {
-            return new Diagnostic("KUS193", "Named arguments are not supported for this function.");
+            return new Diagnostic("KS193", "Named arguments are not supported for this function.");
         }
 
         public static Diagnostic GetCompoundNamedArgumentsNotSupported()
         {
-            return new Diagnostic("KUS194", "Compound named arguments are not supported.");
+            return new Diagnostic("KS194", "Compound named arguments are not supported.");
         }
 
         public static Diagnostic GetUnnamedArgumentAfterOutofOrderNamedArgument()
         {
-            return new Diagnostic("KUS195", "All arguments after an unordered named argument must be named.");
+            return new Diagnostic("KS195", "All arguments after an unordered named argument must be named.");
         }
 
         public static Diagnostic GetUnknownArgumentName()
         {
-            return new Diagnostic("KUS196", $"The argument name does not refer to a declared parameter.");
+            return new Diagnostic("KS196", $"The argument name does not refer to a declared parameter.");
         }
 
         public static Diagnostic GetMissingArgumentForParameter(string parameterName)
         {
-            return new Diagnostic("KUS197", $"The argument for parameter '{parameterName}' is missing.");
+            return new Diagnostic("KS197", $"The argument for parameter '{parameterName}' is missing.");
         }
 
         public static Diagnostic GetIncompleteFragment()
         {
-            return new Diagnostic("KUS198", "The incomplete fragment is unexpected.");
+            return new Diagnostic("KS198", "The incomplete fragment is unexpected.");
         }
 
         public static Diagnostic GetNoColumnsInScope()
         {
-            return new Diagnostic("KUS199", "No columns are currently in scope.");
+            return new Diagnostic("KS199", "No columns are currently in scope.");
         }
 
         public static Diagnostic GetErrorInExpansion(string name, string errors)
         {
-            return new Diagnostic("KUS200", $"Failure in expansion of '{name}': {errors}");
+            return new Diagnostic("KS200", $"Failure in expansion of '{name}': {errors}");
         }
 
         public static Diagnostic GetVariableAlreadyDeclared(string name)
         {
-            return new Diagnostic("KUS201", $"A variable with the name '{name}' has already been declared.");
+            return new Diagnostic("KS201", $"A variable with the name '{name}' has already been declared.");
         }
 
         public static Diagnostic GetMaterializedViewNameMustBeStringLiteral()
         {
-            return new Diagnostic("KUS202", $"Materialized view name must be a string literal");
+            return new Diagnostic("KS202", $"Materialized view name must be a string literal");
         }
 
         public static Diagnostic AnalysisFailure(string analyzerName, string message)
         {
-            return new Diagnostic("KUS203", $"Failure in analysis '{analyzerName}': {message}");
+            return new Diagnostic("KS203", $"Failure in analysis '{analyzerName}': {message}");
         }
 
         public static Diagnostic GetNameDoesNotReferToAnyKnownTable(string name)
         {
-            return new Diagnostic("KUS204", $"The name '{name}' does not refer to any known table, tabular variable or function.");
+            return new Diagnostic("KS204", $"The name '{name}' does not refer to any known table, tabular variable or function.");
         }
 
         public static Diagnostic GetFuzzyUnionOperandNotDefined(string name)
         {
-            return new Diagnostic("KUS205", 
+            return new Diagnostic("KS205", 
                 $"The fuzzy union operand '{name}' does not refer to any known table, tabular variable or function.")
                 .WithSeverity(DiagnosticSeverity.Warning);
         }
@@ -685,7 +685,7 @@ namespace Kusto.Language
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {
-            return new Diagnostic("KUS300", "Missing command.");
+            return new Diagnostic("KS300", "Missing command.");
         }
         #endregion
     }

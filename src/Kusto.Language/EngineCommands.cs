@@ -1628,6 +1628,15 @@ namespace Kusto.Language
 
         #endregion
 
+        #region StoredQueryResults
+        
+        public static readonly CommandSymbol StoredQueryResultSet =
+            new CommandSymbol(nameof(StoredQueryResultSet),
+                $"set stored_query_result StoredQueryResultName=<name> [{PropertyList}] '<|' Query=<input_query>",
+                UnknownResult);
+
+        #endregion
+
         public static IReadOnlyList<CommandSymbol> All { get; } =
             new CommandSymbol[]
             {
@@ -1976,6 +1985,9 @@ namespace Kusto.Language
                 ClearTableData,
                 ClearTableCacheStreamingIngestionSchema,
                 #endregion
+
+                // StoredQueryResults
+                StoredQueryResultSet,
             };
     }
 }

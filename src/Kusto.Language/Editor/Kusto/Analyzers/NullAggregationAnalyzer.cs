@@ -14,13 +14,10 @@ namespace Kusto.Language.Editor
     internal sealed class NullAggregationAnalyzer : KustoAnalyzer
     {
         private static readonly Diagnostic _diagnostic = new Diagnostic(
-                "KustoNullAggregation",
+                "KS505",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                message:
-                $"If any of the columns referenced in 'aggregate(<left> <op> <right>)' contains nulls, significant values might not be included due to scalar arithmetic null propagation rules."
-                + Environment.NewLine +
-                $"Consider rewriting it as 'aggregate(<left>) <op> aggregate(<right>)'.");
+                description: "Avoid using operations on possible null values inside aggregates");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()
         {
@@ -58,7 +55,7 @@ namespace Kusto.Language.Editor
 
             return _diagnostic
                 .WithMessage(
-                $"If any of the columns referenced in '{fc.ToString()}' contains nulls, significant values might not be included due to scalar arithmetic null propagation rules."
+                $"If any of the columns referenced in '{fc}' contains nulls, significant values might not be included due to scalar arithmetic null propagation rules."
                 + Environment.NewLine +
                 $"Consider rewriting it as '{fc.Name}({left}) {op} {fc.Name}({right})'.")
                 .WithLocation(fc);

@@ -14,10 +14,10 @@ namespace Kusto.Language.Editor
     {
         private static readonly Diagnostic _diagnostic =
             new Diagnostic(
-                "AvoidUsingToBoolOnNumerics",
+                "KS504",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                message: "Avoid using tobool on numeric arguments, use comparison operators instead");
+                description: "Avoid using tobool on numeric arguments, use comparison operators instead");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()
         {
