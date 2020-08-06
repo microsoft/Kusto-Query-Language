@@ -847,7 +847,7 @@ namespace Kusto.Language.Binding
                 var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.Function);
 
                 // table.column only works in commands
-                if (_pathScope is TableSymbol && !IsInCommand(contextNode))
+                if (_pathScope is TableSymbol && !IsInsideControlCommandProper(contextNode))
                 {
                     memberMatch &= ~SymbolMatch.Column;
                 }
@@ -1200,16 +1200,52 @@ namespace Kusto.Language.Binding
 
         public bool IsInsideFunctionDeclaration(SyntaxNode location)
         {
-            return location.GetFirstAncestor<CustomCommand>() != null
-                || this._currentFunction != null;
+            // this is true when during expansion binding of database functions
+            if (_currentFunction != null)
+                return true;
+
+            return IsInsideControlCommandFunctionDeclaration(location);
+        }
+
+        private static bool IsInsideControlCommandFunctionDeclaration(SyntaxNode location)
+        {
+            var functionDeclaration = location.GetFirstAncestor<FunctionDeclaration>();
+            if (functionDeclaration != null && functionDeclaration.Parent is CustomNode)
+                return true;
+
+            var functionBody = location.GetFirstAncestor<FunctionBody>();
+            if (functionBody != null && functionBody.Parent is CustomNode)
+                return true;
+
+            return false;
+        }
+
+        private static bool IsInsideControlCommand(SyntaxNode location)
+        {
+            // so far, only control commands use CustomNode
+            return location.GetFirstAncestor<CustomNode>() != null;
+        }
+
+        private static bool IsInsideControlCommandProper(SyntaxNode location)
+        {
+            // its part of the control command but not part of any
+            // function declaration or input query
+            return IsInsideControlCommand(location)
+                && !IsInsideControlCommandFunctionDeclaration(location)
+                && !IsInsideControlCommandInputQuery(location);
+        }
+
+        private static bool IsInsideControlCommandInputQuery(SyntaxNode location)
+        {
+            // looking for statement list that is child of a CustomNode
+            return location.GetFirstAncestor<SyntaxList<SeparatedElement<Statement>>>(
+                s => s.Parent is CustomNode) != null;
         }
 
         private static bool IsInvocableFunctionName(SyntaxNode location)
         {
-            // its either not part of a control command,
-            // or its part of a control command that defines the body of a function
-            return location.GetFirstAncestor<CustomCommand>() == null
-                || location.GetFirstAncestor<FunctionBody>() != null;
+            // function names in non-executable parts of control commands are not invocable
+            return !IsInsideControlCommandProper(location);
         }
 
         private static bool IsPossibleInvocableFunctionWithoutArgumentList(SyntaxNode location)
@@ -1224,12 +1260,14 @@ namespace Kusto.Language.Binding
                 && fn.Parent is EvaluateOperator;
         }
 
+#if false
         private static bool IsInCommand(SyntaxNode location)
         {
             var command = location.GetFirstAncestor<Command>();
             var functionBody = location.GetFirstAncestor<FunctionBody>();
             return command != null && functionBody == null;
         }
+#endif
 
         private SemanticInfo BindName(string name, SymbolMatch match, Expression location)
         {
@@ -1341,7 +1379,7 @@ namespace Kusto.Language.Binding
                                 return new SemanticInfo(table, table);
                             }
                         }
-                        else if (!(_pathScope is TableSymbol) || IsInCommand(location))
+                        else if (!(_pathScope is TableSymbol) || IsInsideControlCommandProper(location))
                         {
                             _pathScope.GetMembers(name, match, list);
                         }
