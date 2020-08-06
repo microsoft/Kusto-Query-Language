@@ -19,6 +19,9 @@ that are wanted in the final output.
 T | evaluate pivot(PivotColumn)
 ```
 
+> [!NOTE]
+> The output schema of the `pivot` plugin is based on the data and therefore query may produce different schema for any two runs. This also means that query that is referencing unpacked columns may become 'broken' at any time. Due to this reason - it is not advised to use this plugin for automation jobs.
+
 ## Syntax
 
 `T | evaluate pivot(`*pivotColumn*`[, `*aggregationFunction*`] [,`*column1* `[,`*column2* ... `]])`
@@ -32,10 +35,6 @@ T | evaluate pivot(PivotColumn)
 ## Returns
 
 Pivot returns the rotated table with specified columns (*column1*, *column2*, ...) plus all unique values of the pivot columns. Each cell for the pivoted columns will contain the aggregate function computation.
-
-**Note**
-
-The output schema of the `pivot` plugin is based on the data and therefore query may produce different schema for any two runs. This also means that query that is referencing unpacked columns may become 'broken' at any time. Due to this reason - it is not advised to use this plugin for automation jobs.
 
 ## Examples
 
@@ -60,7 +59,7 @@ StormEvents
 |Strong Wind|22|0|
 
 
-### Pivot by a column with aggregation function.
+### Pivot by a column with aggregation function
 
 For each EventType and States starting with 'AR', display the total number of direct deaths.
 
@@ -83,7 +82,7 @@ StormEvents
 |Heat|3|0|
 
 
-### Pivot by a column with aggregation function and a single additional column.
+### Pivot by a column with aggregation function and a single additional column
 
 Result is identical to previous example.
 
@@ -106,7 +105,7 @@ StormEvents
 |Heat|3|0|
 
 
-### Specify the pivoted column, aggregation function and multiple additional columns.
+### Specify the pivoted column, aggregation function and multiple additional columns
 
 For each event type, source and state, sum the number of direct deaths.
 

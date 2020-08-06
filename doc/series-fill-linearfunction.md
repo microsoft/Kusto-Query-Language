@@ -28,14 +28,14 @@ Takes an expression containing dynamic numerical array as input, does linear int
 * *fill_edges*: Boolean value, which indicates whether *missing_value_placeholder* at the start and end of the array should be replaced with nearest value. *True* by default. If set to *false*, then *missing_value_placeholder* at the start and end of the array will be preserved.
 * *constant_value*: optional parameter relevant only for arrays entirely consists of *null* values. This parameter specifies a constant value to fill the series with. Default value is *0*. Setting this parameter it to `double`(*null*) will effectively leave *null* values where they are.
 
-**Notes**
+## Notes
 
 * To apply any interpolation functions after [make-series](make-seriesoperator.md), specify *null* as the default value: 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```kusto
-make-series num=count() default=long(null) on TimeStamp from ago(1d) to ago(1h) step 1h by Os, Browser
-```
+    <!-- csl: https://help.kusto.windows.net:443/Samples -->
+    ```kusto
+    make-series num=count() default=long(null) on TimeStamp from ago(1d) to ago(1h) step 1h by Os, Browser
+    ```
 
 * The *missing_value_placeholder* can be of any type that will be converted to actual element types. As such, either `double`(*null*), `long`(*null*) or `int`(*null*) have the same meaning.
 * If *missing_value_placeholder* is `double`(*null*) (or omitted, which have the same meaning) then a result may contain *null* values. Use other interpolation functions to fill these *null* values. Currently only [series_outliers()](series-outliersfunction.md) support *null* values in input arrays.

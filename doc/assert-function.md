@@ -22,15 +22,13 @@ Checks for a condition. If the condition is false, outputs error messages and fa
 * *condition*: The conditional expression to evaluate. If the condition is `false`, the specified message is used to report an error. If the condition is `true`, it returns `true` as an evaluation result. Condition must be evaluated to constant during the query analysis phase.
 * *message*: The message used if assertion is evaluated to `false`. The *message* must be a string literal.
 
+> [!NOTE]
+> `condition` must be evaluated to constant during the query analysis phase. In other words, it can be constructed from other expressions referencing constants, and can't be bound to row-context.
 
 ## Returns
 
 * `true` - if the condition is `true`
 * Raises semantic error if the condition is evaluated to `false`.
-
-**Notes**
-
-* `condition` must be evaluated to constant during the query analysis phase. In other words, it can be constructed from other expressions referencing constants, and can't be bound to row-context.
 
 ## Examples
 

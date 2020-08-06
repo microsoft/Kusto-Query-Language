@@ -13,6 +13,8 @@ ms.date: 10/23/2018
 
 Enumerates all the root keys in a dynamic property-bag object.
 
+## Syntax
+
 `bag_keys(`*dynamic object*`)`
 
 ## Returns

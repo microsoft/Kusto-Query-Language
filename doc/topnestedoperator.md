@@ -84,7 +84,7 @@ This operator returns a table that has two columns for each aggregation clause:
 * One column holds the result of the *Aggregation*
   calculation (having the column name *AggregationName* if specified)
 
-**Comments**
+## Notes
 
 Input columns that aren't specified as *`Expr`* values aren't outputted.
 To get all values at a certain level, add an aggregation count that:

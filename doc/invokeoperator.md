@@ -17,6 +17,9 @@ Invokes lambda that receives the source of `invoke` as tabular parameter argumen
 T | invoke foo(param1, param2)
 ```
 
+> [!NOTE]
+> See [let statements](./letstatement.md) for more details on how to declare lambda expressions that can accept tabular arguments.
+ 
 ## Syntax
 
 `T | invoke` *function*`(`[*param1*`,` *param2*]`)`
@@ -30,10 +33,6 @@ T | invoke foo(param1, param2)
 ## Returns
 
 Returns the result of the evaluated expression.
-
-**Notes**
-
-See [let statements](./letstatement.md) for more details how to declare lambda expressions that can accept tabular arguments.
 
 ## Example
 

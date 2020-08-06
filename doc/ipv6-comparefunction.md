@@ -21,6 +21,9 @@ ipv6_compare('fe80::85d:e82c:9446:7994/127', 'fe80::85d:e82c:9446:7995/127') == 
 ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
 ```
 
+> [!Note]
+> The function can accept and compare arguments representing both IPv6 and IPv4 network addresses. However, if the caller knows that arguments are in IPv4 format, use [ipv4_is_compare()](./ipv4-comparefunction.md) function. This function will result in better runtime performance.
+
 ## Syntax
 
 `ipv6_compare(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
@@ -30,14 +33,12 @@ ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
 * *Expr1*, *Expr2*: A string expression representing an IPv6 or IPv4 address. IPv6 and IPv4 strings can be masked using IP-prefix notation (see note).
 * *PrefixMask*: An integer from 0 to 128 representing the number of most significant bits that are taken into account.
 
-> [!Note] 
->**IP-prefix notation**
-> 
->It's common practice to define IP addresses with `IP-prefix notation` using a slash (`/`) character.
->The IP address to the LEFT of the slash (`/`) is the base IP address, and the number (1 to 127) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask. 
->
-> ## Example:
-> fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
+## IP-prefix notation
+
+It's common practice to define IP addresses with `IP-prefix notation` using a slash (`/`) character.
+The IP address to the LEFT of the slash (`/`) is the base IP address, and the number (1 to 127) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask. 
+
+For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 
 ## Returns
 
@@ -45,9 +46,6 @@ ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
 * `1`: If the long representation of the first IPv6 string argument is greater than the second IPv6 string argument.
 * `-1`: If the long representation of the first IPv6 string argument is less than the second IPv6 string argument.
 * `null`: If conversion for one of the two IPv6 strings wasn't successful.
-
-> [!Note]
-> The function can accept and compare arguments representing both IPv6 and IPv4 network addresses. However, if the caller knows that arguments are in IPv4 format, use [ipv4_is_compare()](./ipv4-comparefunction.md) function. This function will result in better runtime performance.
 
 ## Examples: IPv6/IPv4 comparison equality cases
 

@@ -29,6 +29,9 @@ a set of let statements defining views that restrict the user's access
 to data (for example, `T | where UserId == "..."`). As the last statement
 being added, it restricts the user's access to the logical model only.
 
+> [!NOTE]
+> The restrict statement can be used to restrict access to entities in another database or cluster (wildcards are not supported in cluster names).
+
 ## Syntax
 
 `restrict` `access` `to` `(` [*EntitySpecifier* [`,` ...]] `)`
@@ -41,51 +44,45 @@ Where *EntitySpecifier* is one of:
 All tables, tabular views, or patterns that are not specified by the restrict
 statement become "invisible" to the rest of the query. 
 
-**Notes**
-
-The restrict statement can be used to restrict access to entities in another database
-or cluster (wildcards are not supported in cluster names).
-
 ## Arguments
 
 The restrict statement can get one or more parameters that define the permissive restriction during name resolution of the entity. 
 The entity can be:
-- [let statement](./letstatement.md) appearing before `restrict` statement. 
+* [let statement](./letstatement.md) appearing before `restrict` statement. 
 
-```kusto
-// Limit access to 'Test' let statement only
-let Test = () { print x=1 };
-restrict access to (Test);
-```
+  ```kusto
+  // Limit access to 'Test' let statement only
+  let Test = () { print x=1 };
+  restrict access to (Test);
+  ```
 
-- [Tables](../management/tables.md) or [functions](../management/functions.md) that are defined in the database metadata.
+* [Tables](../management/tables.md) or [functions](../management/functions.md) that are defined in the database metadata.
 
-```kusto
-// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata, 
-// and other database 'DB2' has Table2 defined in the metadata
- 
-restrict access to (database().Table1, database().Func1, database('DB2').Table2);
-```
+    ```kusto
+    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata, 
+    // and other database 'DB2' has Table2 defined in the metadata
+    
+    restrict access to (database().Table1, database().Func1, database('DB2').Table2);
+    ```
 
-- Wildcard patterns that can match multiples of [let statements](./letstatement.md) or tables/functions  
+* Wildcard patterns that can match multiples of [let statements](./letstatement.md) or tables/functions  
 
-```kusto
-let Test1 = () { print x=1 };
-let Test2 = () { print y=1 };
-restrict access to (*);
-// Now access is restricted to Test1, Test2 and no tables/functions are accessible.
+    ```kusto
+    let Test1 = () { print x=1 };
+    let Test2 = () { print y=1 };
+    restrict access to (*);
+    // Now access is restricted to Test1, Test2 and no tables/functions are accessible.
 
-// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
-// Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
-restricts access to (database().*);
-// Now access is restricted to all tables/functions of the current database ('DB2' is not accessible).
+    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
+    // Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
+    restricts access to (database().*);
+    // Now access is restricted to all tables/functions of the current database ('DB2' is not accessible).
 
-// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
-// Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
-restricts access to (database('DB2').*);
-// Now access is restricted to all tables/functions of the database 'DB2'
-```
-
+    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
+    // Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
+    restricts access to (database('DB2').*);
+    // Now access is restricted to all tables/functions of the database 'DB2'
+    ```
 
 ## Examples
 

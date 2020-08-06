@@ -18,6 +18,9 @@ when you need to extract more than one element of a JSON compound object.
 
 Aliases to [parse_json()](./parsejsonfunction.md) function.
 
+> [!NOTE]
+> Prefer using [dynamic()](./scalar-data-types/dynamic.md) when possible.
+
 ## Syntax
 
 `todynamic(`*json*`)`
@@ -30,5 +33,3 @@ Aliases to [parse_json()](./parsejsonfunction.md) function.
 ## Returns
 
 An object of type `dynamic` specified by *json*.
-
-*Note*: Prefer using [dynamic()](./scalar-data-types/dynamic.md) when possible.

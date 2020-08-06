@@ -17,6 +17,9 @@ Converts the input to a value of type `real`. (`todouble()` and `toreal()` are s
 toreal("123.4") == 123.4
 ```
 
+> [!NOTE]
+> Prefer using [double() or real()](./scalar-data-types/real.md) when possible.
+
 ## Syntax
 
 `toreal(`*Expr*`)`
@@ -30,5 +33,3 @@ toreal("123.4") == 123.4
 
 If conversion is successful, the result is a value of type `real`.
 If conversion is not successful, the result is the value `real(null)`.
-
-*Note*: Prefer using [double() or real()](./scalar-data-types/real.md) when possible.

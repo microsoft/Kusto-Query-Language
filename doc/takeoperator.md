@@ -20,27 +20,16 @@ T | take 5
 There is no guarantee which records are returned, unless
 the source data is sorted.
 
+> [!NOTE]
+> `take` is a simple, quick, and efficient way to view a small sample of records when browsing data interactively, but be aware that it doesn't guarantee any consistency in its results when executing multiple times, even if the data set hasn't changed.
+> Even if the number of rows returned by the query isn't explicitly limited by the query (no `take` operator is used), Kusto limits that number by default. For more details, see [Kusto query limits](../concepts/querylimits.md).
+
 ## Syntax
 
 `take` *NumberOfRows*
 `limit` *NumberOfRows*
 
 (`take` and `limit` are synonyms.)
-
-**Notes**
-
-`take` is a simple, quick, and efficient way to view a small sample of records
-when browsing data interactively, but be aware that it doesn't guarantee any consistency
-in its results when executing multiple times, even if the data set hasn't changed.
-
-Even if the number of rows returned by the query isn't explicitly limited
-by the query (no `take` operator is used), Kusto limits that number by default.
-Please see [Kusto query limits](../concepts/querylimits.md) for details.
-
-See:
-[sort operator](sortoperator.md)
-[top operator](topoperator.md)
-[top-nested operator](topnestedoperator.md)
 
 ## Does Kusto support paging of query results?
 
@@ -58,3 +47,9 @@ For paging support implement one of the following features:
 
 * Writing a middle-tier application that provides a stateful paging API by caching
    the results of a Kusto query.
+
+## See also
+
+* [sort operator](sortoperator.md)
+* [top operator](topoperator.md)
+* [top-nested operator](topnestedoperator.md)

@@ -23,7 +23,9 @@ The `diffpatterns_text` returns a set of text patterns that capture different po
 
 `T | evaluate diffpatterns_text(`TextColumn, BooleanCondition [, MinTokens, Threshold , MaxTokens]`)` 
 
-**Required Arguments**
+## Arguments
+
+### Required arguments
 
 * TextColumn - *column_name*
 
@@ -33,7 +35,7 @@ The `diffpatterns_text` returns a set of text patterns that capture different po
 
     Defines how to generate the two record subsets to compare to the input table. The algorithm splits the query into two data sets, “True” and “False” according to the condition, then analyzes the (text) differences between them. 
 
-**Optional Arguments**
+### Optional arguments
 
 All other arguments are optional, but they must be ordered as below. 
 
@@ -80,4 +82,3 @@ StormEvents
 |0|42|0|7.71|* * * * * * caused * * * * * * * * across western Colorado. *|
 |0|45|0|8.26|* * below normal *|
 |0|110|0|20.18|Below normal *|
-
