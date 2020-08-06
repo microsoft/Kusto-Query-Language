@@ -56,6 +56,7 @@
     <Compile Include="Binder\Binder_SearchPredicateBinder.cs" />
     <Compile Include="ClusterManagerCommands.cs" />
     <Compile Include="DataManagerCommands.cs" />
+    <Compile Include="Editor\DisabledDiagnostics.cs" />
     <Compile Include="Editor\AnalyzerInfo.cs" />
     <Compile Include="Editor\BrackettingStyle.cs" />
     <Compile Include="Editor\ClassificationKind.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Editor\OutlineInfo.cs" />
     <Compile Include="Editor\PlacementStyle.cs" />
     <Compile Include="Editor\FindRelatedOptions.cs" />
+    <Compile Include="Editor\QuickInfoOptions.cs" />
     <Compile Include="Editor\RelatedInfo.cs" />
     <Compile Include="Editor\TextRange.cs" />
     <Compile Include="Editor\UnknownCodeService.cs" />

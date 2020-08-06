@@ -17,7 +17,7 @@ namespace Kusto.Language.Editor
                 "KS503",
                 category: DiagnosticCategory.Performance,
                 severity: DiagnosticSeverity.Suggestion,
-                description: "Avoid strong string comparisons",
+                description: "Avoid short string comparisons",
                 message: "Avoid using short strings (less than 4 characters) for string comparison operations (see: https://aka.ms/kusto.stringterms).");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()

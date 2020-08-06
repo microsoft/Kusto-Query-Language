@@ -159,9 +159,9 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken)
+        public override QuickInfo GetQuickInfo(int position, QuickInfoOptions options, CancellationToken cancellationToken)
         {
-            return _service.GetQuickInfo(position - _offset, cancellationToken);
+            return _service.GetQuickInfo(position - _offset, options, cancellationToken);
         }
 
         public override TextRange GetElement(int position, CancellationToken cancellationToken)

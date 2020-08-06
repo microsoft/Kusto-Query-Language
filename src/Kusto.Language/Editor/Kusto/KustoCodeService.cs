@@ -387,7 +387,7 @@ namespace Kusto.Language.Editor
             return CompletionInfo.Empty;
         }
 
-        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken))
+        public override QuickInfo GetQuickInfo(int position, QuickInfoOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundCode(cancellationToken, true, out var code)
                 && CanBeAnalyzed(code))
@@ -395,7 +395,7 @@ namespace Kusto.Language.Editor
                 // have try-catch to keep editor from crashing from parser bugs
                 try
                 {
-                    return new KustoQuickInfoBuilder(this, code).GetQuickInfo(position, cancellationToken);
+                    return new KustoQuickInfoBuilder(this, code, options ?? QuickInfoOptions.Default).GetQuickInfo(position, cancellationToken);
                 }
                 catch (Exception)
                 {

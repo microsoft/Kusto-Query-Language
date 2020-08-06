@@ -238,11 +238,10 @@ namespace Kusto.Language.Editor
             return CompletionInfo.Empty;
         }
 
-        public override QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken)
+        public override QuickInfo GetQuickInfo(int position, QuickInfoOptions options, CancellationToken cancellationToken)
         {
             return QuickInfo.Empty;
         }
-
         
         public override TextRange GetElement(int position, CancellationToken cancellationToken)
         {

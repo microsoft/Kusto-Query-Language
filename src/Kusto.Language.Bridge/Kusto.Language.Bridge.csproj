@@ -140,6 +140,9 @@
     <Compile Include="..\Kusto.Language\Editor\DatabaseReference.cs">
       <Link>Src\DatabaseReference.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Editor\DisabledDiagnostics.cs">
+      <Link>Src\DisabledDiagnostics.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Editor\FindRelatedOptions.cs">
       <Link>Src\FindRelatedOptions.cs</Link>
     </Compile>
@@ -205,6 +208,9 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Editor\QuickInfo.cs">
       <Link>Src\QuickInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Editor\QuickInfoOptions.cs">
+      <Link>Src\QuickInfoOptions.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Editor\RelatedInfo.cs">
       <Link>Src\RelatedInfo.cs</Link>

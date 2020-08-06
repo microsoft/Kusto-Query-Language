@@ -86,8 +86,9 @@ namespace Kusto.Language.Editor
         /// Gets the <see cref="QuickInfo"/> associated with the position within the text.
         /// </summary>
         /// <param name="position">The text position of the caret.</param>
+        /// <param name="options">Any options specified for quick info.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
-        public abstract QuickInfo GetQuickInfo(int position, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract QuickInfo GetQuickInfo(int position, QuickInfoOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the <see cref="TextRange"/> of the syntax element at or adjacent to the text position.

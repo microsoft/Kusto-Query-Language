@@ -14,11 +14,15 @@ namespace Kusto.Language.Editor
     {
         private readonly KustoCodeService _service;
         private readonly KustoCode _code;
+        private readonly QuickInfoOptions _options;
+        private readonly DisabledDiagnostics _disabled;
 
-        public KustoQuickInfoBuilder(KustoCodeService service, KustoCode code)
+        public KustoQuickInfoBuilder(KustoCodeService service, KustoCode code, QuickInfoOptions options)
         {
             _service = service;
             _code = code;
+            _options = options;
+            _disabled = new DisabledDiagnostics(_options.DisabledDiagnostics);
         }
 
         /// <summary>
@@ -230,7 +234,8 @@ namespace Kusto.Language.Editor
         private QuickInfoItem GetDiagnosticInfo(int position, CancellationToken cancellationToken)
         {
             var diagnostics = _service.GetDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken)
-                .Concat(_service.GetAnalyzerDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken));
+                .Concat(_service.GetAnalyzerDiagnostics(waitForAnalysis: false, cancellationToken: cancellationToken))
+                .Where(dx => _disabled.IsDiagnosticEnabled(dx));
 
             Diagnostic bestDx = null;
 
