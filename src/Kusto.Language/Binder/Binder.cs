@@ -3993,22 +3993,34 @@ namespace Kusto.Language.Binding
         {
             foreach (var elem in expressions)
             {
-                GetReferencedColumn(elem.Element, columns, diagnostics);
+                GetReferencedColumns(elem.Element, columns, diagnostics);
             }
         }
 
         /// <summary>
         /// Gets the columns referenced by one expression.
         /// </summary>
-        private void GetReferencedColumn(Expression expression, List<ColumnSymbol> columns, List<Diagnostic> diagnostics)
+        private void GetReferencedColumns(Expression expression, List<ColumnSymbol> columns, List<Diagnostic> diagnostics = null)
         {
-            if (GetReferencedSymbol(expression) is ColumnSymbol c)
+            var symbol = GetReferencedSymbol(expression);
+
+            switch (symbol)
             {
-                columns.Add(c);
-            }
-            else
-            {
-                diagnostics.Add(DiagnosticFacts.GetColumnExpected().WithLocation(expression));
+                case ColumnSymbol c:
+                    columns.Add(c);
+                    break;
+                case GroupSymbol g:
+                    foreach (var m in g.Members)
+                    {
+                        if (m is ColumnSymbol c)
+                        {
+                            columns.Add(c);
+                        }
+                    }
+                    break;
+                default:
+                    diagnostics?.Add(DiagnosticFacts.GetColumnExpected().WithLocation(expression));
+                    break;
             }
         }
 
@@ -4017,22 +4029,9 @@ namespace Kusto.Language.Binding
         /// </summary>
         private void GetReferencedColumnsInTree(SyntaxNode node, List<ColumnSymbol> columns)
         {
-            if (node is NameReference nr && GetReferencedSymbol(nr) is ColumnSymbol c)
+            foreach (var nr in node.GetDescendantsOrSelf<NameReference>())
             {
-                if (!columns.Contains(c))
-                {
-                    columns.Add(c);
-                }
-            }
-
-            // find all references in tree
-            for (int i = 0; i < node.ChildCount; i++)
-            {
-                var child = node.GetChild(i);
-                if (child is SyntaxNode sn)
-                {
-                    GetReferencedColumnsInTree(sn, columns);
-                }
+                GetReferencedColumns(nr, columns);
             }
         }
 
