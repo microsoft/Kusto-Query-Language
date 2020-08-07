@@ -35,7 +35,7 @@ processing steps:
 1. Adds zero or more columns to the resulting subtable. These columns contain the values of the source columns that aren't expanded, and are repeated where needed.
 1. Returns the union of the results.
 
-The `mv-expand` operator gets the following inputs:
+The `mv-apply` operator gets the following inputs:
 
 1. One or more expressions that evaluate into dynamic arrays to expand.
    The number of records in each expanded subtable is the maximum length of
