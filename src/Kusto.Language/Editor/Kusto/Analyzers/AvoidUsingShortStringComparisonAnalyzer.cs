@@ -25,10 +25,8 @@ namespace Kusto.Language.Editor
             return new[] { _diagnostic };
         }
 
-        public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
+        public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            var diagnostics = new List<Diagnostic>();
-
             foreach (var node in code.Syntax.GetDescendants<BinaryExpression>())
             {
                 if (!node.Right.IsConstant && !node.Left.IsConstant)
@@ -60,8 +58,6 @@ namespace Kusto.Language.Editor
                     }
                 }
             }
-
-            return diagnostics;
         }
     }
 }

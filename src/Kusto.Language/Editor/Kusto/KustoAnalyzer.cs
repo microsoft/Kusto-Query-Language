@@ -36,8 +36,8 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Analyzes the <see cref="KustoCode"/> and returns any diagnostics found.
+        /// Analyzes the <see cref="KustoCode"/> and outputs any diagnostics found into the diagnostics list.
         /// </summary>
-        public abstract IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken);
+        public abstract void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken);
     }
 }

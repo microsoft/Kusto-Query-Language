@@ -24,10 +24,8 @@ namespace Kusto.Language.Editor
             return new[] { _diagnostic };
         }
 
-        public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
+        public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            var diagnostics = new List<Diagnostic>();
-
             foreach (var node in code.Syntax.GetDescendants<SummarizeOperator>())
             {
                 var badSums = node.Aggregates.GetDescendants<FunctionCallExpression>(fc =>
@@ -42,8 +40,6 @@ namespace Kusto.Language.Editor
                     diagnostics.Add(GetDiagnostic(bs));
                 }
             }
-
-            return diagnostics;
         }
 
         private static Diagnostic GetDiagnostic(FunctionCallExpression fc)

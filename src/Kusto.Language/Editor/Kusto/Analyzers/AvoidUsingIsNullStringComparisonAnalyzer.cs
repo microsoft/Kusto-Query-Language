@@ -17,24 +17,24 @@ namespace Kusto.Language.Editor
                 "KS501",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                description: "Avoid using isnull on string arguments, use isempty() instead");
+                description: "Avoid using isnull on string arguments",
+                message: "Avoid using isnull on string arguments, use isempty() instead");
 
         private static readonly Diagnostic _diagnostic_not_equals =
             new Diagnostic(
                 "KS502",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                description: "Avoid using isnotnull on string arguments, use isnotempty() instead");
+                description: "Avoid using isnotnull on string arguments",
+                message: "Avoid using isnotnull on string arguments, use isnotempty() instead");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()
         {
             return new[] { _diagnostic_equals, _diagnostic_not_equals };
         }
 
-        public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
+        public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            var diagnostics = new List<Diagnostic>();
-
             foreach (var node in code.Syntax.GetDescendants<FunctionCallExpression>())
             {
                 if ((node.ReferencedSymbol == Functions.IsNull ||
@@ -53,8 +53,6 @@ namespace Kusto.Language.Editor
                 }
 
             }
-
-            return diagnostics;
         }
     }
 }

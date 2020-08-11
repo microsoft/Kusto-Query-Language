@@ -152,6 +152,9 @@
     <Compile Include="..\Kusto.Language\Editor\FormattingOptions.cs">
       <Link>Src\FormattingOptions.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidFormatDatetimeInPredicate.cs">
+      <Link>Src\AvoidFormatDatetimeInPredicate.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingContainsAnalyzer.cs">
       <Link>Src\AvoidUsingContainsAnalyzer.cs</Link>
     </Compile>

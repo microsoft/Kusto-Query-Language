@@ -17,17 +17,16 @@ namespace Kusto.Language.Editor
                 "KS504",
                 category: DiagnosticCategory.Correctness,
                 severity: DiagnosticSeverity.Warning,
-                description: "Avoid using tobool on numeric arguments, use comparison operators instead");
+                description: "Avoid using tobool on numeric arguments",
+                message: "Avoid using tobool on numeric arguments, use comparison operators instead");
 
         protected override IEnumerable<Diagnostic> GetDiagnostics()
         {
             return new[] { _diagnostic };
         }
 
-        public override IReadOnlyList<Diagnostic> Analyze(KustoCode code, CancellationToken cancellationToken)
+        public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            var diagnostics = new List<Diagnostic>();
-
             foreach (var node in code.Syntax.GetDescendants<FunctionCallExpression>())
             {
                 if ((node.ReferencedSymbol == Functions.ToBool || node.ReferencedSymbol == Functions.ToBoolean) && node.ArgumentList.Expressions.Count > 0)
@@ -45,8 +44,6 @@ namespace Kusto.Language.Editor
                     }
                 }
             }
-
-            return diagnostics;
         }
     }
 }

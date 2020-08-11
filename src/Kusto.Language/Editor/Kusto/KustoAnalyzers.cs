@@ -25,6 +25,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer NullAggregation =
             new NullAggregationAnalyzer();
 
+        public static readonly KustoAnalyzer AvoidUsingFormatDatetimeInPredicate =
+            new AvoidUsingFormatDatetimeInPredicatesAnalyzer();
+
         public static IReadOnlyList<KustoAnalyzer> All =
              new KustoAnalyzer[]
              {
@@ -33,6 +36,7 @@ namespace Kusto.Language.Editor
                  AvoidUsingToBoolOnNumerics,
                  AvoidUsingShortStringComparision,
                  NullAggregation,
+                 AvoidUsingFormatDatetimeInPredicate
              }
              .ToReadOnly();
     }

@@ -196,8 +196,7 @@ namespace Kusto.Language.Editor
                     // have try-catch to keep editor from crashing from analyzer bugs
                     try
                     {
-                        var results = analyzer.Analyze(code, cancellationToken);
-                        ds.AddRange(results);
+                        analyzer.Analyze(code, ds, cancellationToken);
                     }
                     catch (Exception e)
                     {
