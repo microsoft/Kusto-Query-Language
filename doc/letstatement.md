@@ -4,10 +4,10 @@ description: This article describes the Let statement in Azure Data Explorer.
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 08/09/2020
 ---
 # Let statement
 
@@ -125,16 +125,72 @@ Events
 | take n
 ```
 
+### Use let statement with arguments for scalar calculation
+
+This example uses the let statement with arguments for scalar calculation. The query defines function `MultiplyByN` for multiplying two numbers.
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+let MultiplyByN = (val:long, n:long) { val * n };
+range x from 1 to 5 step 1 
+| extend result = MultiplyByN(x, 5)
+```
+
+|x|result|
+|---|---|
+|1|5|
+|2|10|
+|3|15|
+|4|20|
+|5|25|
+
+The following example removes leading/trailing ones (`1`) from the input.
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+let TrimOnes = (s:string) { trim("1", s) };
+range x from 10 to 15 step 1 
+| extend result = TrimOnes(tostring(x))
+```
+
+|x|result|
+|---|---|
+|10|0|
+|11||
+|12|2|
+|13|3|
+|14|4|
+|15|5|
+
+
 ### Use multiple let statements
 
 This example defines two let statements where one statement (`foo2`) uses another (`foo1`).
 
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let foo1 = (_start:long, _end:long, _step:long) { range x from _start to _end step _step};
 let foo2 = (_step:long) { foo1(1, 100, _step)};
 foo2(2) | count
 // Result: 50
 ```
+
+### Use the `view` keyword in a let statement
+
+This example shows you how to use let statement with the `view` keyword.
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+let Range10 = view () { range MyColumn from 1 to 10 step 1 };
+let Range20 = view () { range MyColumn from 1 to 20 step 1 };
+search MyColumn == 5
+```
+
+|$table|MyColumn|
+|---|---|
+|Range10|5|
+|Range20|5|
+
 
 ### Use materialize function
 
