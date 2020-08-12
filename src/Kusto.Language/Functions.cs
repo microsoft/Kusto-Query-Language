@@ -1305,7 +1305,7 @@ namespace Kusto.Language
             new FunctionSymbol("dynamic_to_json", ScalarTypes.String,
                 new Parameter("dynamic", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 1))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable().Hide(); // TODO: unhide after released
+            .ConstantFoldable();
 
         #endregion
 
