@@ -28,6 +28,7 @@ namespace Kusto.Language
             new FunctionSymbol("cnt", ScalarTypes.Long)
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("cnt")
+            .Obsolete("count")
             .Hide(); // legacy
 
         public static readonly FunctionSymbol Count =
@@ -169,6 +170,7 @@ namespace Kusto.Language
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list")
+            .Obsolete("make_list")
             .Hide();
 
         public static readonly FunctionSymbol MakeList =
@@ -197,7 +199,9 @@ namespace Kusto.Language
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("set").Hide();
+            .WithResultNamePrefix("set")
+            .Obsolete("make_set")
+            .Hide();
 
         public static readonly FunctionSymbol MakeSet =
             new FunctionSymbol("make_set", ScalarTypes.Dynamic,
@@ -518,8 +522,9 @@ namespace Kusto.Language
                         Tabularity.Scalar,
                         new Parameter("minimized", ParameterTypeKind.Summable),
                         new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
-                    .WithResultNamePrefix("min")
-                    .Hide();
+            .WithResultNamePrefix("min")
+            .Obsolete("arg_min")
+            .Hide();
 
         public static readonly FunctionSymbol ArgMax_Depricated =
             new FunctionSymbol("argmax",
@@ -533,8 +538,9 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     new Parameter("maximized", ParameterTypeKind.Summable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
-                .WithResultNamePrefix("max")
-                .Hide();
+            .WithResultNamePrefix("max")
+            .Obsolete("arg_max")
+            .Hide();
 
         private static TypeSymbol GetArgMinMaxDepResult(TableSymbol table, IReadOnlyList<Expression> args)
         {

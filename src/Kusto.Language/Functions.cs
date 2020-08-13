@@ -190,6 +190,7 @@ namespace Kusto.Language
                     new Parameter("text", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
+            .Obsolete("extract_all")
             .Hide();
 
         public static readonly FunctionSymbol ExtractAll =
@@ -313,6 +314,7 @@ namespace Kusto.Language
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument)
+            .Obsolete("todynamic")
             .Hide();
 
         public static readonly FunctionSymbol ToLong =
@@ -351,7 +353,7 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
-        public static readonly FunctionSymbol ToTime=
+        public static readonly FunctionSymbol ToTime =
            new FunctionSymbol("totime", ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Hide()
@@ -413,7 +415,8 @@ namespace Kusto.Language
             new FunctionSymbol("base64_encodestring", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .Hide() // obsolete function name
+            .Hide()
+            .Obsolete("base64_encode_tostring()")
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeToString =
@@ -426,12 +429,13 @@ namespace Kusto.Language
             new FunctionSymbol("base64_decodestring", ScalarTypes.String,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
-            .Hide() // obsolete function name
+            .Hide()
+            .Obsolete("base64_decode_tostring")
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToString =
-                    new FunctionSymbol("base64_decode_tostring", ScalarTypes.String,
-                        new Parameter("base64_string", ScalarTypes.String))
+            new FunctionSymbol("base64_decode_tostring", ScalarTypes.String,
+                new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
@@ -475,6 +479,7 @@ namespace Kusto.Language
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable()
+            .Obsolete("parse_json")
             .Hide();
 
         public static readonly FunctionSymbol ParseJson =
@@ -494,6 +499,7 @@ namespace Kusto.Language
                 new Parameter("url", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
+            .Obsolete("parse_url")
             .Hide();
 
         public static readonly FunctionSymbol ParseUrl =
@@ -507,6 +513,7 @@ namespace Kusto.Language
                 new Parameter("query", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
+            .Obsolete("parse_urlquery")
             .Hide();
 
         public static readonly FunctionSymbol ParseUrlQuery =
@@ -712,6 +719,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("week_of_year")
             .Hide();
 
         public static readonly FunctionSymbol WeekOfYearISO =
@@ -800,6 +808,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("datetime_part")
             .Hide();
 
         public static readonly FunctionSymbol DatetimePart =
@@ -1013,6 +1022,7 @@ namespace Kusto.Language
             new FunctionSymbol("notnull", ScalarTypes.Bool,
                 new Parameter("expression", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("isnotnull")
             .Hide();
 
         public static readonly FunctionSymbol IsNotNull =
@@ -1029,6 +1039,7 @@ namespace Kusto.Language
             new FunctionSymbol("notempty", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("isnotempty")
             .Hide();
 
         public static readonly FunctionSymbol IsNotEmpty =
@@ -1062,6 +1073,7 @@ namespace Kusto.Language
                 new Parameter("column_name", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("defaultValue", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.FirstArgumentValueIfColumn)
+            .Obsolete("column_ifexists")
             .Hide();
 
         public static readonly FunctionSymbol ColumnIfExists =
@@ -1141,6 +1153,7 @@ namespace Kusto.Language
                 new Parameter("array", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
+            .Obsolete("array_length")
             .Hide();
 
         public static readonly FunctionSymbol ArrayLength =
@@ -2004,7 +2017,9 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ExtentId2 =
-            new FunctionSymbol("extentid", ScalarTypes.Guid).Hide();
+            new FunctionSymbol("extentid", ScalarTypes.Guid)
+            .Obsolete("extend_id")
+            .Hide();
 
         public static readonly FunctionSymbol ExtentTags =
             new FunctionSymbol("extent_tags", ScalarTypes.Dynamic)
@@ -2032,7 +2047,9 @@ namespace Kusto.Language
             new FunctionSymbol("cursor_current", ScalarTypes.String);
 
         public static readonly FunctionSymbol CursorCurrent2 =
-            new FunctionSymbol("current_cursor", ScalarTypes.String).Hide();
+            new FunctionSymbol("current_cursor", ScalarTypes.String)
+            .Obsolete("cursor_current")
+            .Hide();
 
         public static readonly FunctionSymbol FormatBytes=
             new FunctionSymbol("format_bytes", ScalarTypes.String,

@@ -28,6 +28,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidUsingFormatDatetimeInPredicate =
             new AvoidUsingFormatDatetimeInPredicatesAnalyzer();
 
+        public static readonly KustoAnalyzer AvoidUsingObsoleteFunctions =
+            new AvoidObsoleteFunctionsAnalyzer();
+
         public static IReadOnlyList<KustoAnalyzer> All =
              new KustoAnalyzer[]
              {
@@ -36,7 +39,8 @@ namespace Kusto.Language.Editor
                  AvoidUsingToBoolOnNumerics,
                  AvoidUsingShortStringComparision,
                  NullAggregation,
-                 AvoidUsingFormatDatetimeInPredicate
+                 AvoidUsingFormatDatetimeInPredicate,
+                 AvoidUsingObsoleteFunctions
              }
              .ToReadOnly();
     }
