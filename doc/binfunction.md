@@ -27,7 +27,7 @@ Alias to `floor()` function.
 ## Arguments
 
 * *value*: A number, date, or timespan. 
-* *roundTo*: The "bin size". A number, date or timespan that divides *value*. 
+* *roundTo*: The "bin size". A number or timespan that divides *value*. 
 
 ## Returns
 
