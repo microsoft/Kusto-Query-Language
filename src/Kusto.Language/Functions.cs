@@ -541,7 +541,6 @@ namespace Kusto.Language
                  new Parameter("ip", ParameterTypeKind.Scalar), // TODO: restrict to String, Int or Long
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // Unhide on Aug-01-2020
             .ConstantFoldable();
 
         public static readonly FunctionSymbol FormatIPV4Mask =
@@ -549,7 +548,6 @@ namespace Kusto.Language
                 new Parameter("ip", ParameterTypeKind.Scalar), // TODO: restrict to String, Int or Long
                 new Parameter("prefix", ScalarTypes.Long))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // Unhide on Aug-01-2020
             .ConstantFoldable();
 
 
