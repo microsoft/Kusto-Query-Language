@@ -14,10 +14,12 @@ ms.date: 03/20/2020
 Produces a table that aggregates the content of the input table.
 
 ```kusto
-T | summarize count(), avg(price) by fruit, supplier
+Sales | summarize NumTransactions=count(), Total=sum(UnitPrice * NumUnits) by Fruit, StartOfMonth=startofmonth(SellDateTime)
 ```
 
-A table that shows the number and average price of each fruit from each supplier. There's a row in the output for each distinct combination of fruit and supplier. The output columns show the count, average price, fruit and supplier. All other input columns are ignored.
+Returns a table with how many sell transactions and the total amount per fruit and sell month.
+The output columns show the count of transactions, transaction worth, fruit, and the datetime of the beginning of the month
+in which the transaction was recorded.
 
 ```kusto
 T | summarize count() by price_range=bin(price, 10.0)
@@ -36,7 +38,9 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 
 * *Column:* Optional name for a result column. Defaults to a name derived from the expression.
 * *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
-* *GroupExpression:* An expression over the columns, that provides a set of distinct values. Typically it's either a column name that already provides a restricted set of values, or `bin()` with a numeric or time column as argument. 
+* *GroupExpression:* A scalar expression that can reference the input data.
+  The output will have as many records as there are distinct values of all the
+  group expressions.
 
 > [!NOTE]
 > When the input table is empty, the output depends on whether *GroupExpression*
