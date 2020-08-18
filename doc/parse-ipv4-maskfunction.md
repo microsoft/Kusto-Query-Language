@@ -1,5 +1,5 @@
 ---
-title: parse_ipv4_mask() - Azure Data Explorer | Microsoft Docs
+title: parse_ipv4_mask() - Azure Data Explorer
 description: This article describes parse_ipv4_mask() function in Azure Data Explorer.
 services: data-explorer
 author: orspod
