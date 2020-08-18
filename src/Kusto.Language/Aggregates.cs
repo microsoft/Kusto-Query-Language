@@ -274,26 +274,27 @@ namespace Kusto.Language
 
         private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
         {
-            var valueArg = GetArgument(args, signature, valueParameterName);
-            var valueArgName = GetExpressionResultName(valueArg);
-
-            var percentileParameter = signature.GetParameter(percentileParameterName);
-            var argumentParameters = signature.GetArgumentParameters(args);
-            GetArgumentRange(argumentParameters, percentileParameter, out var start, out var length);
-
-            var resultType = valueArg.ResultType;
-            if (resultType == ScalarTypes.Int)
-                resultType = ScalarTypes.Long;
-            else if (resultType == ScalarTypes.Decimal)
-                resultType = ScalarTypes.Real;
-
-            for (int p = start; p < start + length; p++)
+            if (GetArgument(args, signature, valueParameterName) is Expression valueArg
+                && GetExpressionResultName(valueArg) is string valueArgName)
             {
-                var percentileArg = args[p];
-                var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
-                var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
+                var percentileParameter = signature.GetParameter(percentileParameterName);
+                var argumentParameters = signature.GetArgumentParameters(args);
+                GetArgumentRange(argumentParameters, percentileParameter, out var start, out var length);
 
-                columns.Add(new ColumnSymbol(name, resultType));
+                var resultType = valueArg.ResultType;
+                if (resultType == ScalarTypes.Int)
+                    resultType = ScalarTypes.Long;
+                else if (resultType == ScalarTypes.Decimal)
+                    resultType = ScalarTypes.Real;
+
+                for (int p = start; p < start + length; p++)
+                {
+                    var percentileArg = args[p];
+                    var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
+                    var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
+
+                    columns.Add(new ColumnSymbol(name, resultType));
+                }
             }
         }
 
@@ -307,9 +308,13 @@ namespace Kusto.Language
         private static CustomReturnType PercentileArrayReturn = (table, args, signature) =>
         {
             var cols = new List<ColumnSymbol>();
-            var valueArg = GetArgument(args, signature, "expr");
-            var valueArgName = GetExpressionResultName(valueArg);
-            cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic));
+            
+            if (GetArgument(args, signature, "expr") is Expression valueArg
+                && GetExpressionResultName(valueArg) is string valueArgName)
+            {
+                cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic));
+            }
+
             return new TupleSymbol(cols);
         };
 

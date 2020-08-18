@@ -67,13 +67,6 @@
     <Compile Include="Editor\DatabaseReference.cs" />
     <Compile Include="Editor\FormattedText.cs" />
     <Compile Include="Editor\FormattingOptions.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidFormatDatetimeInPredicatesAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidObsoleteFunctionsAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingContainsAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingIsNullStringComparisonAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingToBoolOnNumericsAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\AvoidUsingShortStringComparisonAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\Analyzers\NullAggregationAnalyzer.cs" />
     <Compile Include="Editor\Kusto\KustoAnalyzer.cs" />
     <Compile Include="Editor\Kusto\KustoAnalyzers.cs" />
     <Compile Include="Editor\Kusto\KustoClassifier.cs" />

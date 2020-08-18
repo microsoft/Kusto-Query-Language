@@ -152,27 +152,6 @@
     <Compile Include="..\Kusto.Language\Editor\FormattingOptions.cs">
       <Link>Src\FormattingOptions.cs</Link>
     </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidFormatDatetimeInPredicatesAnalyzer.cs">
-      <Link>Src\AvoidFormatDatetimeInPredicatesAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidObsoleteFunctionsAnalyzer.cs">
-      <Link>Src\AvoidObsoleteFunctionsAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingContainsAnalyzer.cs">
-      <Link>Src\AvoidUsingContainsAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingIsNullStringComparisonAnalyzer.cs">
-      <Link>Src\AvoidUsingIsNullStringComparisonAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingShortStringComparisonAnalyzer.cs">
-      <Link>Src\AvoidUsingShortStringComparisonAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\AvoidUsingToBoolOnNumericsAnalyzer.cs">
-      <Link>Src\AvoidUsingToBoolOnNumericsAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\Kusto.Language\Editor\Kusto\Analyzers\NullAggregationAnalyzer.cs">
-      <Link>Src\NullAggregationAnalyzer.cs</Link>
-    </Compile>
     <Compile Include="..\Kusto.Language\Editor\Kusto\KustoAnalyzer.cs">
       <Link>Src\KustoAnalyzer.cs</Link>
     </Compile>
