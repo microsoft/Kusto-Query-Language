@@ -1413,11 +1413,10 @@ namespace Kusto.Language
                 (table, args, sig) => MakePrefixedTuple(sig, "series", args,
                     new TupleSymbol(
                         new ColumnSymbol("real", ScalarTypes.Dynamic),
-                        new ColumnSymbol("imag", ScalarTypes.Dynamic))),                    
+                        new ColumnSymbol("imag", ScalarTypes.Dynamic))),
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0))
-            .Hide();
+                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesIFft =
             new FunctionSymbol("series_ifft",
@@ -1427,8 +1426,7 @@ namespace Kusto.Language
                         new ColumnSymbol("imag", ScalarTypes.Dynamic))),
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0))
-            .Hide();
+                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
