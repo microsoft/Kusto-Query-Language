@@ -18,7 +18,7 @@ The `timespan` (`time`) data type represents a  time interval.
 Literals of type `timespan` have the syntax `timespan(`*value*`)`, where a number of formats 
 are supported for *value*, as indicated by the following table:
 
-|||
+|Value|Length of time|
 ---|---
 `2d`|2 days
 `1.5h`|1.5 hour

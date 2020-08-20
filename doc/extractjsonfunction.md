@@ -46,7 +46,7 @@ T
 
 ### JSON Path expressions
 
-|||
+|Path expression|Description|
 |---|---|
 |`$`|Root object|
 |`@`|Current object|

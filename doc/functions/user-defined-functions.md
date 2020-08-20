@@ -39,9 +39,6 @@ Valid user-defined function names must follow the same [identifier naming rules]
 
 The name must also be unique in its scope of definition.
 
-> [!NOTE]
-> Function overloading is not supported. You can't define multiple functions using the same name.
-
 ## Input arguments
 
 Valid user-defined functions follow these rules:
@@ -324,3 +321,11 @@ let Table2 = datatable(Column:long)[1235];
 let f = (hours:long) { range x from 1 to hours step 1 | summarize make_list(x) };
 Table2 | where Column != 123 | project d = f(Column)
 ```
+
+## Features that are currently unsupported by user-defined functions
+
+For completeness, here are some commonly-requested features for user-defined functions that are currently not supported:
+
+1.	Function overloading: There is currently no way to overload a function (i.e., create multiple functions with the same name and different input schema).
+
+2.	Default values: The default value for a scalar parameter to a function must be a scalar literal (constant). Furthermore, stored functions cannot have a default value of type `dynamic`.

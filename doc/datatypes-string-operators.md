@@ -11,7 +11,7 @@ ms.date: 02/13/2020
 ---
 # String operators
 
-Kusto offers a variety of query operators for searching string data types. The following article describes the how string terms are indexed, lists the string query operators, and gives tips for optimizing performance.
+Kusto offers a variety of query operators for searching string data types. The following article describes how string terms are indexed, lists the string query operators, and gives tips for optimizing performance.
 
 ## Understanding string terms
 
@@ -19,7 +19,7 @@ Kusto indexes all columns, including columns of type `string`. Multiple indexes 
 
 ### What is a term? 
 
-By default, Each `string` value is broken into maximal sequences of ASCII alphanumeric characters, and each of those sequences is made into a term.
+By default, each `string` value is broken into maximal sequences of ASCII alphanumeric characters, and each of those sequences is made into a term.
 For example, in the following `string`, the terms are `Kusto`, `WilliamGates3rd`, and the following substrings: `ad67d136`, `c1db`, `4f9f`, `88ef`, `d94f3b6b0b5a`.
 
 ```

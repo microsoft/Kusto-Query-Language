@@ -34,7 +34,7 @@ The number of times that the search string can be matched in the container. Plai
 
 ## Examples
 
-|||
+|Function call|Result|
 |---|---
 |`countof("aaa", "a")`| 3 
 |`countof("aaaa", "aa")`| 3 (not 2!)
