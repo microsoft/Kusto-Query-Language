@@ -198,7 +198,6 @@
     <Compile Include="Utils\UniqueNameTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Syntax\CodeGen\CslTreeGenerator.t4" />
   </ItemGroup>
   <ItemGroup>
