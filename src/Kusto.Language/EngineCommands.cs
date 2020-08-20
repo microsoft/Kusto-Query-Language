@@ -400,25 +400,19 @@ namespace Kusto.Language
             @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
               kind '='! TableKind=(blob | adl)
               [partition by!
-               (
-                {(format_datetime '='! DateTimeFormat=<string> bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
-                  | bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
-                  | [StringPartitionPrefix=<string>] (StringColumn=<name> | hash '('! StringColumn=<name> ',' HashMod=<long> ')') [StringPartitionSuffix=<string>]), ','}+
-               |
-                '('
-                 {PartitionName=<name> ':'!
-                  (PartitionType=string ['=' StringColumn=<name>]
-                   | PartitionType=datetime ['=' 
-                     (DateTimeColumn=<name> 
-                      | PartitionFunction=bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
-                      | PartitionFunction=(startofday | startofweek | startofmonth | startofyear) '('! DateTimeColumn=<name> ')')]
-                   | PartitionType=long '='! PartitionFunction=hash '(' StringColumn=<name> ',' HashMod=<long> ')'), ','}+
-                ')'
-                [pathformat '='! '(' 
-                 [PathSeparator=<string>]
-                 { (PartitionName=<name> | datetime_pattern '('! DateTimeFormat=<string> ',' PartitionName=<name> ')')
-                  [PathSeparator=<string>] }+ ')']
-               )
+               '('
+                {PartitionName=<name> ':'!
+                 (PartitionType=string ['=' StringColumn=<name>]
+                  | PartitionType=datetime ['='
+                    (DateTimeColumn=<name>
+                     | PartitionFunction=bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
+                     | PartitionFunction=(startofday | startofweek | startofmonth | startofyear) '('! DateTimeColumn=<name> ')')]
+                  | PartitionType=long '='! PartitionFunction=hash '(' StringColumn=<name> ',' HashMod=<long> ')'), ','}+
+               ')'
+               [pathformat '='! '('
+                [PathSeparator=<string>]
+                { (PartitionName=<name> | datetime_pattern '('! DateTimeFormat=<string> ',' PartitionName=<name> ')')
+                 [PathSeparator=<string>] }+ ')']
               ]
               dataformat '='! DataFormatKind=(avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile)
               '(' { StorageConnectionString=<string>, ',' }+ ')'
