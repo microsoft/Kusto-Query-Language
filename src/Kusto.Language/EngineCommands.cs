@@ -398,7 +398,7 @@ namespace Kusto.Language
 
         private static readonly string CreateOrAlterExternalTableGrammar =
             @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
-              kind '='! TableKind=(blob | adl)
+              kind '='! TableKind=(blob | adl | sql)
               [partition by!
                '('
                 {PartitionName=<name> ':'!
@@ -1439,7 +1439,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowOperations =
             new CommandSymbol(nameof(ShowOperations),
                 "show operations [(OperationId=<guid> | '(' { OperationId=<guid>, ',' }+ ')')]",
-                "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime: Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
+                "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
 
         public static readonly CommandSymbol ShowOperationDetails =
             new CommandSymbol(nameof(ShowOperationDetails),
