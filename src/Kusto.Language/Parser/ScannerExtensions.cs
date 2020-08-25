@@ -26,7 +26,7 @@ namespace Kusto.Language.Parsing
             try
             {
                 source.Init(text);
-                int len = scanner.Scan(source, 0);
+                int len = scanner.Scan(source, offset);
                 return len == length; // must scan all characters
             }
             finally
