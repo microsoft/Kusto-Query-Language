@@ -30,11 +30,14 @@ Returns a string representation of the `dynamic` input. If the input is a proper
 
 Expression:
 
+```kusto
   let bag1 = dynamic_to_json(dynamic({ 'Y10':dynamic({ }), 'X8': dynamic({ 'c3':1, 'd8':5, 'a4':6 }),'D1':114, 'A1':12, 'B1':2, 'C1':3, 'A14':[15, 13, 18]}));
   print bag1
+```
   
 Result:
 
+```
 "{
   ""A1"": 12,
   ""A14"": [
@@ -52,14 +55,18 @@ Result:
   },
   ""Y10"": {}
 }"
+```
 
 Expression:
 
+```kusto
  let bag2 = dynamic_to_json(dynamic({ 'X8': dynamic({ 'a4':6, 'c3':1, 'd8':5}), 'A14':[15, 13, 18], 'C1':3, 'B1':2, 'Y10': dynamic({ }), 'A1':12, 'D1':114}));
  print bag2
+```
  
 Result:
 
+```
 {
   "A1": 12,
   "A14": [
@@ -77,3 +84,4 @@ Result:
   },
   "Y10": {}
 }
+```

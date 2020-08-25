@@ -176,7 +176,7 @@ union (App('a1').Text), (App('a2').Text)
 
 **Semantic error**:
 
-     SEM0036: One or more pattern references weren't declared. Detected pattern references: ["App('a1').['Text']","App('a2').['Text']"].
+> SEM0036: One or more pattern references weren't declared. Detected pattern references: ["App('a1').['Text']","App('a2').['Text']"].
 
 ```kusto
 declare pattern App;
@@ -192,7 +192,7 @@ union (App('a2').Metrics), (App('a3').Metrics)
 
 **Semantic error returned**:
 
-    SEM0036: One or more pattern references weren't declared. Detected pattern references: ["App('a2').['Metrics']","App('a3').['Metrics']"].
+> SEM0036: One or more pattern references weren't declared. Detected pattern references: ["App('a2').['Metrics']","App('a3').['Metrics']"].
 
 ::: zone-end
 

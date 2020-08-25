@@ -29,7 +29,9 @@ The maximum value of *`Expr`* across the group.
 
 > [!TIP] 
 > If `buildschema(json_column)` gives a syntax error:
-> *Is your `json_column` a string rather than a dynamic object?* 
+>
+> > *Is your `json_column` a string rather than a dynamic object?*
+>
 > then use `buildschema(parsejson(json_column))`.
 
 ## Example
@@ -45,12 +47,14 @@ Assume the input column has three dynamic values.
 
 The resulting schema would be:
 
-    { 
-      "x":["int", "string"], 
-      "y":["double", {"w": "string"}], 
-      "z":{"`indexer`": ["int", "string"]}, 
-      "t":{"`indexer`": "string"} 
-    }
+```kusto
+{ 
+    "x":["int", "string"],
+    "y":["double", {"w": "string"}],
+    "z":{"`indexer`": ["int", "string"]},
+    "t":{"`indexer`": "string"}
+}
+```
 
 The schema tells us that:
 
@@ -66,20 +70,23 @@ The schema tells us that:
 
 The syntax of the returned schema is:
 
-    Container ::= '{' Named-type* '}';
-    Named-type ::= (name | '"`indexer`"') ':' Type;
-	Type ::= Primitive-type | Union-type | Container;
-    Union-type ::= '[' Type* ']';
-    Primitive-type ::= "int" | "string" | ...;
+```output
+Container ::= '{' Named-type* '}';
+Named-type ::= (name | '"`indexer`"') ':' Type;
+Type ::= Primitive-type | Union-type | Container;
+Union-type ::= '[' Type* ']';
+Primitive-type ::= "int" | "string" | ...;
+```
 
 The values are equivalent to a subset of the TypeScript type annotations, encoded as a Kusto dynamic value. 
 In Typescript, the example schema would be:
 
-    var someobject: 
-    { 
-      x?: (number | string), 
-      y?: (number | { w?: string}), 
-      z?: { [n:number] : (int | string)},
-      t?: { [n:number]: string } 
-    }
-    
+```typescript
+var someobject: 
+{
+    x?: (number | string),
+    y?: (number | { w?: string}),
+    z?: { [n:number] : (int | string)},
+    t?: { [n:number]: string }
+}
+```

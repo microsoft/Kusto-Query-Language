@@ -48,15 +48,15 @@ Output table schema is:
 
 `Retention Rate` over a period is calculated as:
 
-    # of customers returned during the period
-    / (divided by)
-    # customers at the beginning of the period
+> *number of customers returned during the period*  
+> / (divided by)  
+> *number customers at the beginning of the period*  
 
 where the `# of customers returned during the period` is defined as:
 
-    # of customers at end of period
-    - (minus)
-    # of new customers acquired during the period
+> *number of customers at end of period*  
+> \- (minus)  
+> *number of new customers acquired during the period*  
 
 `Retention Rate` can vary from 0.0 to 1.0  
 The higher score means the larger amount of returning users.
@@ -66,15 +66,15 @@ The higher score means the larger amount of returning users.
 
 `Churn Rate` over a period is calculated as:
     
-    # of customers lost in the period
-    / (divided by)
-    # of customers at the beginning of the period
+> *number of customers lost in the period*  
+> / (divided by)  
+> *number of customers at the beginning of the period*  
 
 where the `# of customer lost in the period` is defined as:
 
-    # of customers at the beginning of the period
-    - (minus)
-    # of customers at the end of the period
+> *number of customers at the beginning of the period*  
+> \- (minus)  
+> *number of customers at the end of the period*  
 
 `Churn Rate` can vary from 0.0 to 1.0
 The higher score means the larger amount of users are NOT returning to the service.
@@ -83,7 +83,7 @@ The higher score means the larger amount of users are NOT returning to the servi
 
 Derived from the definition of `Churn Rate` and `Retention Rate`, the following is always true:
 
-    [Retention rate] = 100.0% - [Churn Rate]
+> [`Retention Rate`] = 100.0% - [`Churn Rate`]
 
 
 ## Examples

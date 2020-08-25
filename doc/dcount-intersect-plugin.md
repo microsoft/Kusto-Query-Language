@@ -19,7 +19,9 @@ S<sub>1</sub> ∩ S<sub>2</sub> ∩ S<sub>3</sub>,
 ... ,  
 S<sub>1</sub> ∩ S<sub>2</sub> ∩ ... ∩ S<sub>n</sub>
 
-    T | evaluate dcount_intersect(hll_1, hll_2, hll_3)
+```kusto
+T | evaluate dcount_intersect(hll_1, hll_2, hll_3)
+```
 
 ## Syntax
 

@@ -13,7 +13,9 @@ ms.date: 06/15/2020
 
 The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating each property bag top-level slot as a column.
 
-    T | evaluate bag_unpack(col1)
+```kusto
+T | evaluate bag_unpack(col1)
+```
 
 ## Syntax
 
