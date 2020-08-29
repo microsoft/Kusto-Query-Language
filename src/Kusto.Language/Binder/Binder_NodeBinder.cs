@@ -3287,9 +3287,21 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckIsIdentifierNameDeclaration(node.Name, diagnostics);
 
+                    var option = _binder._globals.GetOption(node.Name.SimpleName);
+                    if (option != null)
+                    {
+                        _binder.SetSemanticInfo(node.Name, new SemanticInfo(option, (TypeSymbol)null));
+                    }
+
                     if (node.ValueClause != null)
                     {
-                        _binder.CheckIsLiteralOrName(node.ValueClause.Expression, diagnostics);
+                        if (_binder.CheckIsLiteralOrName(node.ValueClause.Expression, diagnostics))
+                        {
+                            if (option != null && option.Types.Count > 0)
+                            {
+                                _binder.CheckIsAnyType(node.ValueClause.Expression, option.Types, Conversion.Compatible, diagnostics);
+                            }
+                        }
                     }
 
                     if (diagnostics.Count > 0)

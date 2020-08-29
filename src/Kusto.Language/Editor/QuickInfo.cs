@@ -230,9 +230,14 @@ namespace Kusto.Language.Editor
         Operator,
 
         /// <summary>
-        /// The <see cref="QuickInfoItem"/> is a control command
+        /// The <see cref="QuickInfoItem"/> is a control command.
         /// </summary>
-        Command
+        Command,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a query option.
+        /// </summary>
+        Option
     }
 
     public class ClassifiedText

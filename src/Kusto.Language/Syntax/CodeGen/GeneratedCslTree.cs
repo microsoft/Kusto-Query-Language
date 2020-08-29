@@ -10279,7 +10279,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Declaration;
+                case 1: return CompletionHint.Option;
                 case 2: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }

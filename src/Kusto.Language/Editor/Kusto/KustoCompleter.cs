@@ -346,7 +346,7 @@ namespace Kusto.Language.Editor
 
             if (TryGetCompletionContext(position, out var contextNode, out var contextChildIndex))
             {
-                var mode = GetFunctionArgumentCompletions(position, contextNode, contextChildIndex, builder);
+                var mode = GetSpecialCaseCompletions(position, contextNode, contextChildIndex, builder);
                 if (mode == CompletionMode.Isolated)
                     return mode;
 
@@ -558,6 +558,9 @@ namespace Kusto.Language.Editor
 
                 case ClusterSymbol cl:
                     return new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBracketedName(cl.Name));
+
+                case OptionSymbol opt:
+                    return new CompletionItem(CompletionKind.Option, opt.Name, editName);
 
                 default:
                     return new CompletionItem(kind, symbol.Name, editName);
@@ -787,6 +790,37 @@ namespace Kusto.Language.Editor
             /// The completions should be shown with other completions
             /// </summary>
             Combined
+        }
+
+        private CompletionMode GetSpecialCaseCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
+        {
+            var mode = GetFunctionArgumentCompletions(position, contextNode, childIndex, builder);
+            if (mode == CompletionMode.Isolated)
+                return mode;
+
+            mode = GetSetOptionCompletions(position, contextNode, childIndex, builder);
+
+            return mode;
+        }
+
+        private CompletionMode GetSetOptionCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
+        {
+            if (contextNode is OptionValueClause clause 
+                && childIndex == 1
+                && clause.Parent is SetOptionStatement statement
+                && statement.Name.ReferencedSymbol is OptionSymbol option
+                && option.Examples != null)
+            {
+                foreach (var example in option.Examples)
+                {
+                    var value = KustoFacts.GetStringLiteralValue(example);
+                    builder.Add(new CompletionItem(CompletionKind.Example, example, example, matchText: value));
+                }
+
+                return CompletionMode.Isolated;
+            }
+
+            return CompletionMode.Combined;
         }
 
         private CompletionMode GetFunctionArgumentCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
@@ -1129,6 +1163,9 @@ namespace Kusto.Language.Editor
 
             if ((hint & CompletionHint.Cluster) != 0)
                 match |= SymbolMatch.Cluster;
+
+            if ((hint & CompletionHint.Option) != 0)
+                match |= SymbolMatch.Option;
 
             return match;
         }

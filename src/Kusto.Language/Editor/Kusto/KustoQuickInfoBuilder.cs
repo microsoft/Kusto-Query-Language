@@ -158,6 +158,8 @@ namespace Kusto.Language.Editor
                     return QuickInfoKind.Type;
                 case CommandSymbol cs:
                     return QuickInfoKind.Command;
+                case OptionSymbol os:
+                    return QuickInfoKind.Option;
                 default:
                     return QuickInfoKind.Text;
             }
@@ -342,6 +344,8 @@ namespace Kusto.Language.Editor
                     return p.Description;
                 case FunctionSymbol f:
                     return f.Description;
+                case OptionSymbol o:
+                    return o.Description;
                 default:
                     return "";
             }
@@ -369,6 +373,8 @@ namespace Kusto.Language.Editor
                     return ClassificationKind.Variable;
                 case CommandSymbol _:
                     return ClassificationKind.Command;
+                case OptionSymbol _:
+                    return ClassificationKind.Option;
                 case ScalarSymbol s:
                     if (s == ScalarTypes.String)
                     {

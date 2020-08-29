@@ -92,5 +92,10 @@ namespace Kusto.Language.Symbols
         /// Materialized view
         /// </summary>
         MaterializedView,
+
+        /// <summary>
+        /// A query option (assigned via set statement)
+        /// </summary>
+        Option,
     }
 }

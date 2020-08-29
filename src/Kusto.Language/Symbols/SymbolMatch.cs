@@ -62,6 +62,11 @@ namespace Kusto.Language.Symbols
         MaterializedView = Tabular << 1,
 
         /// <summary>
+        /// Any query option
+        /// </summary>
+        Option = MaterializedView << 1,
+
+        /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
         Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView,

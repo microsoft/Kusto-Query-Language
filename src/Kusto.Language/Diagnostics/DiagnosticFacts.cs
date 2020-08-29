@@ -428,7 +428,8 @@ namespace Kusto.Language
             return GetExpressionMustHaveValue((IReadOnlyList<T>)values);
         }
 
-        public static Diagnostic GetExpressionMustHaveType(IReadOnlyList<Symbol> types)
+        public static Diagnostic GetExpressionMustHaveType<S>(IReadOnlyList<S> types)
+            where S: Symbol
         {
             if (types.Count == 1)
             {
@@ -441,9 +442,10 @@ namespace Kusto.Language
             }
         }
 
-        public static Diagnostic GetExpressionMustHaveType(params Symbol[] types)
+        public static Diagnostic GetExpressionMustHaveType<S>(params S[] types)
+            where S: Symbol
         {
-            return GetExpressionMustHaveType((IReadOnlyList<Symbol>)types);
+            return GetExpressionMustHaveType((IReadOnlyList<S>)types);
         }
 
         public static Diagnostic GetNameDoesNotReferToAnyKnownItem(string name)

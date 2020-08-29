@@ -381,7 +381,12 @@ namespace Kusto.Language.Binding
             /// <summary>
             /// Only plug-in funtions are visible
             /// </summary>
-            PlugIn
+            PlugIn,
+
+            /// <summary>
+            /// Only query options are visible
+            /// </summary>
+            Option
         }
 
         /// <summary>
@@ -950,6 +955,13 @@ namespace Kusto.Language.Binding
                         if ((match & SymbolMatch.Function) != 0)
                         {
                             GetFunctionsInScope(match, null, include, list);
+                        }
+                        break;
+
+                    case ScopeKind.Option:
+                        if ((match & SymbolMatch.Option) != 0)
+                        {
+                            list.AddRange(_globals.Options);
                         }
                         break;
                 }
@@ -5289,6 +5301,33 @@ namespace Kusto.Language.Binding
             if (!GetResultTypeOrError(expression).IsError && !type.IsError)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(type).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool IsAnyType<T>(Expression expression, IReadOnlyList<T> types, Conversion conversionKind = Conversion.None) where T : TypeSymbol
+        {
+            var exprType = GetResultTypeOrError(expression);
+
+            foreach (var type in types)
+            {
+                if (SymbolsAssignable(type, exprType, conversionKind))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool CheckIsAnyType<T>(Expression expression, IReadOnlyList<T> types, Conversion conversionKind, List<Diagnostic> diagnostics)
+            where T : TypeSymbol
+        {
+            if (IsAnyType(expression, types, conversionKind))
+                return true;
+
+            if (!GetResultTypeOrError(expression).IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(types).WithLocation(expression));
             }
 
             return false;

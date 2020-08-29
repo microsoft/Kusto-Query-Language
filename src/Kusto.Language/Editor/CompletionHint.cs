@@ -130,5 +130,10 @@ namespace Kusto.Language.Editor
         /// A materialized view
         /// </summary>
         MaterializedView = Clause << 1,
+
+        /// <summary>
+        /// A query option
+        /// </summary>
+        Option = MaterializedView << 1
     }
 }

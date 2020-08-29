@@ -230,6 +230,9 @@
     <Compile Include="..\Kusto.Language\Operators.cs">
       <Link>Src\Operators.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Options.cs">
+      <Link>Src\Options.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Parser\CharScanners.cs">
       <Link>Src\CharScanners.cs</Link>
     </Compile>
@@ -331,6 +334,9 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Symbols\OperatorSymbol.cs">
       <Link>Src\OperatorSymbol.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Symbols\OptionSymbol.cs">
+      <Link>Src\OptionSymbol.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Symbols\Parameter.cs">
       <Link>Src\Parameter.cs</Link>

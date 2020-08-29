@@ -99,6 +99,7 @@
     <Compile Include="FunctionHelpers.cs" />
     <Compile Include="KustoCache.cs" />
     <Compile Include="KustoCode.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Parser\Combinators\ArraySource.cs" />
     <Compile Include="Parser\Combinators\GrammarBuilder.cs" />
     <Compile Include="Parser\Combinators\Parser.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Symbols\GroupSymbol.cs" />
     <Compile Include="Binder\LocalScope.cs" />
     <Compile Include="Symbols\PatternSymbol.cs" />
+    <Compile Include="Symbols\OptionSymbol.cs" />
     <Compile Include="Symbols\Tabularity.cs" />
     <Compile Include="Symbols\VariableSymbol.cs" />
     <Compile Include="Symbols\OperatorKind.cs" />

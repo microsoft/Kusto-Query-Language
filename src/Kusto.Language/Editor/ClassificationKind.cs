@@ -127,5 +127,10 @@ namespace Kusto.Language.Editor
         /// A member of a function signature declaration
         /// </summary>
         SignatureParameter,
+
+        /// <summary>
+        /// A query option
+        /// </summary>
+        Option,
     }
 }

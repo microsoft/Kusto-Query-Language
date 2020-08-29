@@ -349,6 +349,16 @@ namespace Kusto.Language.Binding
                 base.VisitToTableExpression(node);
                 _binder._rowScope = null;
             }
+
+            public override void VisitSetOptionStatement(SetOptionStatement node)
+            {
+                base.VisitSetOptionStatement(node);
+
+                if (_position >= node.SetKeyword.End && (node.ValueClause == null || _position <= node.ValueClause.TextStart))
+                {
+                    _binder._scopeKind = ScopeKind.Option;
+                }
+            }
         }
 
         class AsContextBuilder : DefaultSyntaxVisitor

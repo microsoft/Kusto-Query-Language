@@ -130,5 +130,10 @@ namespace Kusto.Language.Editor
         /// The name of a scalar type
         /// </summary>
         ScalarType,
+
+        /// <summary>
+        /// A query option
+        /// </summary>
+        Option,
     }
 }
