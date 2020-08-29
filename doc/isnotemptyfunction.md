@@ -22,3 +22,11 @@ isnotempty("") == false
 `isnotempty(`[*value*]`)`
 
 `notempty(`[*value*]`)` -- alias of `isnotempty`
+
+## Example
+
+```kusto
+T
+| where isnotempty(fieldName)
+| count
+```
