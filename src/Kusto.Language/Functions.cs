@@ -1314,9 +1314,17 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DynamicToJson =
             new FunctionSymbol("dynamic_to_json", ScalarTypes.String,
-                new Parameter("dynamic", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 1))
+                new Parameter("dynamic", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol BagRemoveKeys =
+            new FunctionSymbol("bag_remove_keys", ScalarTypes.Dynamic,
+                new Parameter("bag", ScalarTypes.Dynamic),
+                new Parameter("keys", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // Unhide on 2020-09-15
 
         #endregion
 
@@ -2323,6 +2331,7 @@ namespace Kusto.Language
             SetDifference,
             BagMerge,
             DynamicToJson,
+            BagRemoveKeys,
 #endregion
 
 #region digest / series functions
