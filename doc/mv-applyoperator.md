@@ -176,7 +176,7 @@ _data
 |3|8|
 |4|10|
 
-## Using the `mv-apply` operator to sort the output of `makelist` aggregate by some key
+## Using the `mv-apply` operator to sort the output of `make_list` aggregate by some key
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
