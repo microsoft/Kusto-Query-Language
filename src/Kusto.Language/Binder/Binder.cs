@@ -2802,7 +2802,6 @@ namespace Kusto.Language.Binding
                     break;
 
                 case ParameterTypeKind.Tabular:
-                case ParameterTypeKind.SingleColumnTable:
                     if (IsTabular(argumentType))
                         return MatchKind.Tabular;
                     break;
@@ -3293,7 +3292,6 @@ namespace Kusto.Language.Binding
                 case ParameterTypeKind.Declared:
                     return parameter.DeclaredTypes[0];
                 case ParameterTypeKind.Tabular:
-                case ParameterTypeKind.SingleColumnTable:
                     return TableSymbol.Empty;
                 default:
                     return ScalarTypes.Dynamic;
@@ -5863,10 +5861,6 @@ namespace Kusto.Language.Binding
 
                         case ParameterTypeKind.Tabular:
                             CheckIsTabular(argument, diagnostics, argumentType);
-                            break;
-
-                        case ParameterTypeKind.SingleColumnTable:
-                            CheckIsSingleColumnTable(argument, diagnostics, argumentType);
                             break;
 
                         case ParameterTypeKind.Database:

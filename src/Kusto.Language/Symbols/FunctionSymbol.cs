@@ -476,7 +476,6 @@ namespace Kusto.Language.Symbols
                     return GetTypeDisplay(this.Signatures[0].Parameters[1]);
                 case ParameterTypeKind.Parameter2:
                     return GetTypeDisplay(this.Signatures[0].Parameters[2]);
-                case ParameterTypeKind.SingleColumnTable:
                 case ParameterTypeKind.Tabular:
                     return "()";
                 case ParameterTypeKind.Cluster:

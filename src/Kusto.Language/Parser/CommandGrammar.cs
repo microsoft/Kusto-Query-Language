@@ -139,6 +139,12 @@ namespace Kusto.Language.Parsing
                     commandOutputPipeExpression,
                     cmd => (Statement)new ExpressionStatement(cmd));
 
+            var skippedTokens =
+                If(AnyTokenButEnd,
+                    Rule(
+                        List(AnyTokenButEnd), // consumes all remaining tokens
+                        tokens => new SkippedTokens(tokens)));
+
             var commandBlock =
                 Rule(
                     SeparatedList(
@@ -149,7 +155,7 @@ namespace Kusto.Language.Parsing
                         endOfList: EndOfText,
                         oneOrMore: true,
                         allowTrailingSeparator: true),
-                    Optional(q.SkippedTokens), // consumes all remaining tokens
+                    Optional(skippedTokens), // consumes all remaining tokens (no diagnostic)
                     Optional(Token(SyntaxKind.EndOfTextToken)),
                     (cmd, skipped, end) =>
                         new CommandBlock(cmd, skipped, end));

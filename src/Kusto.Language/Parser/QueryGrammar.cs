@@ -2691,11 +2691,15 @@ namespace Kusto.Language.Parsing
                     allowTrailingSeparator: true);
 
             this.SkippedTokens =
-                If(AnyTokenButEnd,
-                    Rule(
-                        List(AnyTokenButEnd), // consumes all remaining tokens
-                        tokens => new SkippedTokens(tokens)))
-                    .WithTag("<skipped-tokens>");
+                Convert(
+                    OneOrMore(AnyTokenButEnd),
+                    (IReadOnlyList<LexicalToken> list) => 
+                        new SkippedTokens(new SyntaxList<SyntaxToken>(
+                            list.Select((tok, i) =>
+                                i == 0 // only tag first token with diagnostic
+                                    ? SyntaxToken.From(tok, DiagnosticFacts.GetIncompleteFragment()) 
+                                    : SyntaxToken.From(tok)))))
+                .WithTag("<skipped-tokens>");
 
             this.QueryBlock =
                 Rule(

@@ -1363,7 +1363,6 @@ namespace Kusto.Language.Editor
                     case ParameterTypeKind.Parameter2:
                         return GetParameterHint(signature, signature.Parameters.Count > 2 ? signature.Parameters[2] : null);
                     case ParameterTypeKind.Tabular:
-                    case ParameterTypeKind.SingleColumnTable:
                         return CompletionHint.Tabular;
                     case ParameterTypeKind.Database:
                         return CompletionHint.Database;
@@ -1937,9 +1936,6 @@ namespace Kusto.Language.Editor
 
                 case ParameterTypeKind.Tabular:
                     return type.IsTabular;
-
-                case ParameterTypeKind.SingleColumnTable:
-                    return type is TableSymbol tab && tab.Columns.Count == 1;
 
                 case ParameterTypeKind.Database:
                     return type is DatabaseSymbol;

@@ -25,11 +25,6 @@ namespace Kusto.Language.Symbols
         Tabular,
 
         /// <summary>
-        /// Any table value with a single column
-        /// </summary>
-        SingleColumnTable,
-
-        /// <summary>
         /// Any database
         /// </summary>
         Database,

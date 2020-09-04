@@ -242,7 +242,6 @@ namespace Kusto.Language.Symbols
                     case ParameterTypeKind.Declared:
                         return this.DeclaredTypes[0].Tabularity;
                     case ParameterTypeKind.Tabular:
-                    case ParameterTypeKind.SingleColumnTable:
                     case ParameterTypeKind.Database:
                     case ParameterTypeKind.Cluster:
                         return Tabularity.Tabular;

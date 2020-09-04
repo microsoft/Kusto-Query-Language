@@ -889,21 +889,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitSkippedTokens(SkippedTokens node)
             {
-                var diagnostics = s_diagnosticListPool.AllocateFromPool();
-                try
-                {
-                    if (node.Tokens.Count > 0)
-                    {
-                        // add error to first token only
-                        diagnostics.Add(DiagnosticFacts.GetIncompleteFragment().WithLocation(node.Tokens[0]));
-                    }
-
-                    return new SemanticInfo(null, diagnostics);
-                }
-                finally
-                {
-                    s_diagnosticListPool.ReturnToPool(diagnostics);
-                }
+                return null;
             }
 
             public override SemanticInfo VisitRenameList(RenameList node)
@@ -2121,6 +2107,7 @@ namespace Kusto.Language.Binding
                 {
                     case "rightanti":
                     case "rightsemi":
+                    case "rightantisemi":
                         return true;
                     default:
                         return false;

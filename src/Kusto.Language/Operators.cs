@@ -270,31 +270,31 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol In =
             new OperatorSymbol(OperatorKind.In,
-                    new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("table", ParameterTypeKind.SingleColumnTable)).Hide(),
-                    new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("table", ParameterTypeKind.SingleColumnTable)),
+                    new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("table", ParameterTypeKind.Tabular)).Hide(),
+                    new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("table", ParameterTypeKind.Tabular)),
                     new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)).Hide(), // hide bool in (bools)
                     new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
         public static readonly OperatorSymbol HasAny =
             new OperatorSymbol(OperatorKind.HasAny,
-                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.SingleColumnTable)),
+                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
         public static readonly OperatorSymbol InCs =
             new OperatorSymbol(OperatorKind.InCs,
-                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.SingleColumnTable)),
+                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
         public static readonly OperatorSymbol NotIn =
             new OperatorSymbol(OperatorKind.NotIn,
-                new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("table", ParameterTypeKind.SingleColumnTable)).Hide(),
-                new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("table", ParameterTypeKind.SingleColumnTable)),
+                new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("table", ParameterTypeKind.Tabular)).Hide(),
+                new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("table", ParameterTypeKind.Tabular)),
                 new Signature(ScalarTypes.Bool, new Parameter("value", ScalarTypes.Bool), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)).Hide(), // hide bool in (bools)
                 new Signature(ScalarTypes.Bool, new Parameter("value", ParameterTypeKind.NotBool), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
         public static readonly OperatorSymbol NotInCs =
             new OperatorSymbol(OperatorKind.NotInCs,
-                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.SingleColumnTable)),
+                new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
         public static readonly OperatorSymbol Between =
