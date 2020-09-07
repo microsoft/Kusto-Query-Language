@@ -1448,7 +1448,7 @@ namespace Kusto.Language
 
         private static readonly string JournalResult =
             "(Event: string, EventTimestamp: datetime, Database: string, EntityName: string, UpdatedEntityName: string, EntityVersion: string, EntityContainerName: string, " +
-            "OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestString: string, " + 
+            "OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, " + 
             "User: string, OriginalEntityVersion: string)";
 
         public static readonly CommandSymbol ShowJournal =
