@@ -1960,6 +1960,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoLineValidate =
+            new FunctionSymbol("__geo_line_validate", ScalarTypes.String,
+                new Parameter("lineString", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonValidate =
             new FunctionSymbol("__geo_polygon_validate", ScalarTypes.String,
                 new Parameter("polygon", ScalarTypes.Dynamic))
@@ -2428,6 +2435,7 @@ namespace Kusto.Language
             GeohashToCentralPoint,
             GeoPointToS2Cell,
             GeoLineDensify,
+            GeoLineValidate,
             S2CellToCentralPoint,
             #endregion
 
