@@ -40,7 +40,8 @@ Currently supported properties are:
 
 
 > [!NOTE]
-> This operator doesn't accept any pipeline input.
+> * This operator doesn't accept any pipeline input.
+> * Standard [query limits](../concepts/querylimits.md) apply to external data queries as well.
 
 ## Returns
 

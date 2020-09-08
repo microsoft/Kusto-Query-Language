@@ -11,7 +11,7 @@ ms.date: 08/21/2019
 ---
 # external_table()
 
-References an external table by name.
+References an [external table](schema-entities/externaltables.md) by name.
 
 ```kusto
 external_table('StormEvent')
@@ -19,8 +19,7 @@ external_table('StormEvent')
 
 > [!NOTE]
 > * The `external_table` function has similar restrictions as the [table](tablefunction.md) function.
-> * [External tables](schema-entities/externaltables.md)
-> * [Commands for managing external tables](../management/externaltables.md)
+> * Standard [query limits](../concepts/querylimits.md) apply to external table queries as well.
 
 ## Syntax
 
@@ -30,8 +29,14 @@ external_table('StormEvent')
 
 * *TableName*: The name of the external table being queried.
   Must be a string literal referencing an external table of kind
-  `blob` or `adl`. <!-- TODO: Document data formats supported -->
+  `blob`, `adl` or `sql`.
 
 * *MappingName*: An optional name of the mapping object that maps the
   fields in the actual (external) data shards to the columns output
   by this function.
+
+## Next steps
+
+* [External table general control commands](../management/externaltables.md)
+* [Create and alter external tables in Azure Storage or Azure Data Lake](../management/external-tables-azurestorage-azuredatalake.md)
+* [Create and alter external SQL tables](../management/external-sql-tables.md)
