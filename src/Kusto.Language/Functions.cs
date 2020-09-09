@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 namespace Kusto.Language
 {
+    using System.Linq;
+    using Kusto.Language.Syntax;
     using Symbols;
     using static FunctionHelpers;
 
@@ -1251,6 +1253,58 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static readonly Parameter m_ArraySort_ArraysArg = new Parameter("arrays", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 64);
+        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1);
+
+        public static readonly FunctionSymbol ArraySortAsc =
+            new FunctionSymbol("array_sort_asc",
+                new Signature(
+                    GetArraySortResult,
+                    Tabularity.Scalar,
+                    m_ArraySort_ArraysArg,
+                    m_ArraySort_NullsLastArg)
+                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort))
+            .Hide(); // slneimer: unhide after 20/Sep/2020
+
+        public static readonly FunctionSymbol ArraySortDesc =
+            new FunctionSymbol("array_sort_desc",
+                new Signature(
+                    GetArraySortResult,
+                    Tabularity.Scalar,
+                    m_ArraySort_ArraysArg,
+                    m_ArraySort_NullsLastArg)
+                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort))
+            .Hide(); // slneimer: unhide after 20/Sep/2020
+
+        private static void ValidateArgumentsForArraySort(Signature signature, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters)
+        {
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                if ((i < arguments.Count - 1) || (arguments[i].ResultType != ScalarTypes.Bool))
+                {
+                    argumentParameters.Add(m_ArraySort_ArraysArg);
+                }
+                else
+                {
+                    argumentParameters.Add(m_ArraySort_NullsLastArg);
+                }
+            }
+        }
+
+        private static TypeSymbol GetArraySortResult(TableSymbol table, IReadOnlyList<Expression> arguments, Signature signature)
+        {
+            var result = new List<ColumnSymbol>();
+            for (int i = 0; (i < arguments.Count) && (arguments[i].ResultType == ScalarTypes.Dynamic); i++)
+            {
+                var argument = arguments[i];
+                var argumentExpressionName = Binding.Binder.GetExpressionResultName(argument, "");
+                var resultColumnName = string.IsNullOrEmpty(argumentExpressionName) ? $"array{i}_sorted" : $"{argumentExpressionName}_sorted";
+                var resultColumn = new ColumnSymbol(resultColumnName, argument.ResultType);
+                result.Add(resultColumn);
+            }
+            return new TupleSymbol(result);
+        }
+
         public static readonly FunctionSymbol BagKeys =
             new FunctionSymbol("bag_keys", ScalarTypes.Dynamic,
                 new Parameter("object", ScalarTypes.Dynamic))
@@ -2326,6 +2380,8 @@ namespace Kusto.Language
             ArrayShiftRight,
             ArrayRotateLeft,
             ArrayRotateRight,
+            ArraySortAsc,
+            ArraySortDesc,
             BagKeys,
             Zip,
             Pack,
