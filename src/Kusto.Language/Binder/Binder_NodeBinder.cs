@@ -2678,8 +2678,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitPrintOperator(PrintOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
-                var columns = s_columnListPool.AllocateFromPool();
-                var uniqueNames = s_uniqueNameTablePool.AllocateFromPool();
+                var builder = s_projectionBuilderPool.AllocateFromPool();
                 try
                 {
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
@@ -2687,28 +2686,16 @@ namespace Kusto.Language.Binding
                         var expr = node.Expressions[i].Element;
                         _binder.CheckIsScalar(expr, diagnostics);
 
-                        var name = GetExpressionResultName(expr);
-
-                        if (string.IsNullOrEmpty(name))
-                            name = "print_" + i;
-
-                        var col = new ColumnSymbol(uniqueNames.GetOrAddName(name), _binder.GetResultTypeOrError(expr));
-                        columns.Add(col);
-
-                        if (expr is SimpleNamedExpression sn)
-                        {
-                            _binder.SetSemanticInfo(sn.Name, CreateSemanticInfo(col));
-                        }
+                        _binder.CreateProjectionColumns(expr, builder, diagnostics, columnName: "print_" + i);
                     }
 
-                    var resultType = new TableSymbol(columns);
+                    var resultType = new TableSymbol(builder.GetProjection());
                     return new SemanticInfo(resultType, diagnostics);
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
-                    s_columnListPool.ReturnToPool(columns);
-                    s_uniqueNameTablePool.ReturnToPool(uniqueNames);
+                    s_projectionBuilderPool.ReturnToPool(builder);
                 }
             }
 

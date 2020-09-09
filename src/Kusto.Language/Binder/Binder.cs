@@ -4087,7 +4087,8 @@ namespace Kusto.Language.Binding
             bool isExtend = false,
             bool aggregates = false,
             bool doNotRepeat = false,
-            TypeSymbol columnType = null)
+            TypeSymbol columnType = null,
+            string columnName = null)
         {
             ColumnSymbol col;
             TypeSymbol type;
@@ -4236,7 +4237,7 @@ namespace Kusto.Language.Binding
                         else
                         {
                             var name = GetFunctionResultName(f, null, _rowScope);
-                            col = new ColumnSymbol(name ?? "Column1", columnType ?? GetResultTypeOrError(f));
+                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? GetResultTypeOrError(f));
                             builder.Add(col, name ?? "Column", replace: isExtend);
                         }
                         break;
@@ -4309,7 +4310,7 @@ namespace Kusto.Language.Binding
                             else
                             {
                                 var name = GetExpressionResultName(expression, null);
-                                col = new ColumnSymbol(name ?? "Column1", columnType ?? GetResultTypeOrError(expression));
+                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? GetResultTypeOrError(expression));
                                 builder.Add(col, name ?? "Column", replace: isExtend);
                             }
                         }

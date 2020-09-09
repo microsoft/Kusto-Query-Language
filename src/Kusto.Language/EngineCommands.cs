@@ -487,6 +487,11 @@ namespace Kusto.Language
                 "alter table TableName=<database_table> policy caching hot '=' Timespan=<timespan>",
                 PolicyResult);
 
+        public static readonly CommandSymbol AlterMaterializedViewPolicyCaching =
+            new CommandSymbol(nameof(AlterMaterializedViewPolicyCaching),
+                "alter materialized-view MaterializedViewName=<materializedview> policy caching hot '=' Timespan=<timespan>",
+                PolicyResult);
+
         public static readonly CommandSymbol AlterClusterPolicyCaching =
             new CommandSymbol(nameof(AlterClusterPolicyCaching),
                 "alter cluster policy caching hot '=' Timespan=<timespan>",
@@ -536,6 +541,11 @@ namespace Kusto.Language
                 "alter table TableName=<database_table> policy retention RetentionPolicy=<string>",
                 PolicyResult);
 
+        public static readonly CommandSymbol AlterMaterializedViewPolicyRetention =
+            new CommandSymbol(nameof(AlterMaterializedViewPolicyRetention),
+                "alter materialized-view MaterializedViewName=<materializedview> policy retention RetentionPolicy=<string>",
+                PolicyResult);
+
         public static readonly CommandSymbol AlterDatabasePolicyRetention =
             new CommandSymbol(nameof(AlterDatabasePolicyRetention),
                 "alter database DatabaseName=<database> policy retention RetentionPolicy=<string>",
@@ -549,6 +559,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMergeTablePolicyRetention =
             new CommandSymbol(nameof(AlterMergeTablePolicyRetention),
                 "alter-merge table TableName=<database_table> policy retention (RetentionPolicy=<string> | softdelete '='! SoftDeleteValue=<timespan> [recoverability '='! RecoverabilityValue=(disabled|enabled)] | recoverability '='! RecoverabilityValue=(disabled|enabled))",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeMaterializedViewPolicyRetention =
+            new CommandSymbol(nameof(AlterMergeMaterializedViewPolicyRetention),
+                "alter-merge materialized-view MaterializedViewName=<materializedview> policy retention (RetentionPolicy=<string> | softdelete '='! SoftDeleteValue=<timespan> [recoverability '='! RecoverabilityValue=(disabled|enabled)] | recoverability '='! RecoverabilityValue=(disabled|enabled))",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeDatabasePolicyRetention =
@@ -1724,6 +1739,7 @@ namespace Kusto.Language
                 AlterDatabasePolicyCaching,
                 ShowTablePolicyCaching,
                 AlterTablePolicyCaching,
+                AlterMaterializedViewPolicyCaching,
                 AlterClusterPolicyCaching,
                 DeleteTablePolicyCaching,
 
@@ -1744,9 +1760,11 @@ namespace Kusto.Language
                 DeleteTablePolicyRetention,
                 DeleteDatabasePolicyRetention,
                 AlterTablePolicyRetention,
+                AlterMaterializedViewPolicyRetention,
                 AlterTablesPolicyRetention,
                 AlterDatabasePolicyRetention,
                 AlterMergeTablePolicyRetention,
+                AlterMergeMaterializedViewPolicyRetention,
                 AlterMergeDatabasePolicyRetention,
 
                 // RowOrder
