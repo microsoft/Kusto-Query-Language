@@ -51,6 +51,7 @@
         ColumnDocStringsKeyword,
         CommandsKeyword,
         CommandsAndQueriesKeyword,
+        CommConcurrencyKeyword,
         CommPoolsKeyword,
         CompletedKeyword,
         CompressedKeyword,

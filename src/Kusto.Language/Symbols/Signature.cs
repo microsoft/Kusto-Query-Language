@@ -336,7 +336,10 @@ namespace Kusto.Language.Symbols
             return parameter;
         }
 
-        private static readonly Parameter UnknownParameter = new Parameter("", ScalarTypes.Unknown);
+        /// <summary>
+        /// A parameter used to associate with an argument when no declared parameter matches.
+        /// </summary>
+        public static readonly Parameter UnknownParameter = new Parameter("", ScalarTypes.Unknown);
 
         /// <summary>
         /// True if the function allows named arguments
@@ -386,7 +389,8 @@ namespace Kusto.Language.Symbols
         /// </summary>
         private void GetArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool? respectNamedArguments = null)
         {
-            bool namedArgumentsAllowed = respectNamedArguments ?? AllowsNamedArguments;
+            if (nArguments == 0)
+                return;
 
             if (this.CustomArgumentParametersBuilder != null && arguments != null)
             {
@@ -394,55 +398,77 @@ namespace Kusto.Language.Symbols
             }
             else if (this.HasRepeatableParameters)
             {
-                int firstRepeatingArgument = this._firstRepeatableParameter;
-                var numberOfRepeatingParameters = (this._lastRepeatableParameter - this._firstRepeatableParameter + 1);
-                var minRepeats = this.Parameters[this._firstRepeatableParameter].MinOccurring;
-                var possibleRepeatingArguments = (arguments.Count - firstRepeatingArgument) - (this.Parameters.Count - this._lastRepeatableParameter);
-                var minRepeatingArguments = numberOfRepeatingParameters * minRepeats;
-                var repeatingArgumentGroups = (possibleRepeatingArguments + numberOfRepeatingParameters - 1) / numberOfRepeatingParameters;
-                var totalRepeatingArguments = Math.Max(repeatingArgumentGroups * numberOfRepeatingParameters, minRepeatingArguments);
-                var lastRepeatingArgument = firstRepeatingArgument + totalRepeatingArguments;
-
-                for (int i = 0; i < nArguments; i++)
-                {
-                    if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
-                    {
-                        argumentParameters.Add(GetParameter(sn.Name.SimpleName));
-                    }
-                    else if (i < firstRepeatingArgument)
-                    {
-                        argumentParameters.Add(this.Parameters[i]);
-                    }
-                    else if (i >= firstRepeatingArgument && i < lastRepeatingArgument)
-                    {
-                        argumentParameters.Add(this.Parameters[this._firstRepeatableParameter + (i % numberOfRepeatingParameters)]);
-                    }
-                    else if (i >= lastRepeatingArgument && i < arguments.Count)
-                    {
-                        argumentParameters.Add(this.Parameters[this._lastRepeatableParameter + (i - lastRepeatingArgument)]);
-                    }
-                    else
-                    {
-                        argumentParameters.Add(UnknownParameter);
-                    }
-                }
+                GetRepeatingBlockArgumentParameters(nArguments, arguments, argumentParameters, respectNamedArguments ?? AllowsNamedArguments);
             }
             else
             {
-                for (int i = 0; i < nArguments; i++)
+                GetNonRepeatingArgumentParameters(nArguments, arguments, argumentParameters, respectNamedArguments ?? AllowsNamedArguments);
+            }
+
+            // fill out any parameters left unspecified
+            while (argumentParameters.Count < nArguments)
+            {
+                argumentParameters.Add(UnknownParameter);
+            }
+        }
+
+        /// <summary>
+        /// Gets argument parameters using a strategy that allows for a block of parameters that repeat together.
+        /// </summary>
+        private void GetRepeatingBlockArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool namedArgumentsAllowed)
+        {
+            int firstRepeatingArgument = _firstRepeatableParameter;
+            var numberOfRepeatingParameters = (_lastRepeatableParameter - _firstRepeatableParameter + 1);
+            var minRepeats = this.Parameters[_firstRepeatableParameter].MinOccurring;
+            var possibleRepeatingArguments = (nArguments - firstRepeatingArgument) - (this.Parameters.Count - _lastRepeatableParameter);
+            var minRepeatingArguments = numberOfRepeatingParameters * minRepeats;
+            var repeatingArgumentGroups = (possibleRepeatingArguments + numberOfRepeatingParameters - 1) / numberOfRepeatingParameters;
+            var totalRepeatingArguments = Math.Max(repeatingArgumentGroups * numberOfRepeatingParameters, minRepeatingArguments);
+            var lastRepeatingArgument = firstRepeatingArgument + totalRepeatingArguments;
+
+            for (int i = 0; i < nArguments; i++)
+            {
+                if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
                 {
-                    if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
-                    {
-                        argumentParameters.Add(GetParameter(sn.Name.SimpleName));
-                    }
-                    else if (i < this.Parameters.Count)
-                    {
-                        argumentParameters.Add(this.Parameters[i]);
-                    }
-                    else
-                    {
-                        argumentParameters.Add(UnknownParameter);
-                    }
+                    argumentParameters.Add(this.GetParameter(sn.Name.SimpleName));
+                }
+                else if (i < firstRepeatingArgument)
+                {
+                    argumentParameters.Add(this.Parameters[i]);
+                }
+                else if (i >= firstRepeatingArgument && i < lastRepeatingArgument)
+                {
+                    argumentParameters.Add(this.Parameters[_firstRepeatableParameter + (i % numberOfRepeatingParameters)]);
+                }
+                else if (i >= lastRepeatingArgument && i < arguments.Count)
+                {
+                    argumentParameters.Add(this.Parameters[_lastRepeatableParameter + (i - lastRepeatingArgument)]);
+                }
+                else
+                {
+                    argumentParameters.Add(UnknownParameter);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets argument parameters using a strategy that allows each parameter to appear only once.
+        /// </summary>
+        private void GetNonRepeatingArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool namedArgumentsAllowed)
+        {
+            for (int i = 0; i < nArguments; i++)
+            {
+                if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
+                {
+                    argumentParameters.Add(this.GetParameter(sn.Name.SimpleName));
+                }
+                else if (i < this.Parameters.Count)
+                {
+                    argumentParameters.Add(this.Parameters[i]);
+                }
+                else
+                {
+                    argumentParameters.Add(UnknownParameter);
                 }
             }
         }

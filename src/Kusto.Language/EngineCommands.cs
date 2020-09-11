@@ -373,27 +373,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowExternalTable =
             new CommandSymbol(nameof(ShowExternalTable),
-                "show external table ExternalTableName=<table>",
+                "show external table ExternalTableName=<externaltable>",
                 ExternalTableResult);
 
         public static readonly CommandSymbol ShowExternalTableCslSchema =
             new CommandSymbol(nameof(ShowExternalTableCslSchema),
-                "show external table ExternalTableName=<table> cslschema",
+                "show external table ExternalTableName=<externaltable> cslschema",
                 ExternalTableSchemaResult);
 
         public static readonly CommandSymbol ShowExternalTableSchema =
             new CommandSymbol(nameof(ShowExternalTableSchema),
-                "show external table ExternalTableName=<table> schema as (json | csl)", 
+                "show external table ExternalTableName=<externaltable> schema as (json | csl)", 
                 ExternalTableSchemaResult);
 
         public static readonly CommandSymbol ShowExternalTableArtifacts =
             new CommandSymbol(nameof(ShowExternalTableArtifacts),
-                "show external table ExternalTableName=<table> artifacts [limit LimitCount=<long>]", 
+                "show external table ExternalTableName=<externaltable> artifacts [limit LimitCount=<long>]", 
                 ExternalTableArtifactsResult);
 
         public static readonly CommandSymbol DropExternalTable =
             new CommandSymbol(nameof(DropExternalTable),
-                "drop external table ExternalTableName=<table>",
+                "drop external table ExternalTableName=<externaltable>",
                 ExternalTableResult);
 
         private static readonly string CreateOrAlterExternalTableGrammar =
@@ -435,27 +435,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateExternalTableMapping =
             new CommandSymbol(nameof(CreateExternalTableMapping),
-                "create external table ExternalTableName=<table> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "create external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol AlterExternalTableMapping =
             new CommandSymbol(nameof(AlterExternalTableMapping),
-                "alter external table ExternalTableName=<table> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "alter external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowExternalTableMappings =
             new CommandSymbol(nameof(ShowExternalTableMappings),
-                "show external table ExternalTableName=<table> MappingKind=(csv | json | avro | parquet | orc) mappings",
+                "show external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mappings",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowExternalTableMapping =
             new CommandSymbol(nameof(ShowExternalTableMapping),
-                "show external table ExternalTableName=<table> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "show external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol DropExternalTableMapping =
             new CommandSymbol(nameof(DropExternalTableMapping),
-                "drop external table ExternalTableName=<table> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "drop external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
                 TableIngestionMappingResult);
         
         #endregion
@@ -1250,14 +1250,14 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ExportToExternalTable =
             new CommandSymbol(nameof(ExportToExternalTable), 
-                $"export [async] to table ExternalTableName=<name> [{PropertyList}] '<|' Query=<input_query>",
+                $"export [async] to table ExternalTableName=<externaltable> [{PropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static readonly string OverClause = "over '('! { TableName=<name>, ',' }+ ')'";
 
         public static readonly CommandSymbol CreateOrAlterContinuousExport =
             new CommandSymbol(nameof(CreateOrAlterContinuousExport), 
-                $"create-or-alter continuous-export ContinuousExportName=<name> [{OverClause}] to table ExternalTableName=<name> [{PropertyList}] '<|' Query=<input_query>",
+                $"create-or-alter continuous-export ContinuousExportName=<name> [{OverClause}] to table ExternalTableName=<externaltable> [{PropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static readonly string ShowContinuousExportResult =

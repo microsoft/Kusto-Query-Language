@@ -83,6 +83,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ColumnDocStringsKeyword, "column-docstrings"),
                 new SyntaxData(SyntaxKind.CommandsKeyword, "commands", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CommandsAndQueriesKeyword, "commands-and-queries", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.CommConcurrencyKeyword, "commconcurrency", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CommPoolsKeyword, "commpools", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CompletedKeyword, "completed", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CompressedKeyword, "compressed", canBeIdentifier: true),

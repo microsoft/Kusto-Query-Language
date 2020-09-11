@@ -1614,7 +1614,8 @@ namespace Kusto.Language.Binding
 
                 if (hint == Editor.CompletionHint.Table
                     || hint == Editor.CompletionHint.Tabular
-                    || hint == Editor.CompletionHint.MaterializedView)
+                    || hint == Editor.CompletionHint.MaterializedView
+                    || hint == Editor.CompletionHint.ExternalTable)
                 {
                     return true;
                 }

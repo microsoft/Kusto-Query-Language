@@ -130,8 +130,6 @@ namespace Kusto.Language
                     new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant, minOccurring: 0))
                 );
 
-#if true // problem with optional parameters and repeatable parameters
-
         private static Parameter nam_IdColumn = new Parameter("IdColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column);
         private static Parameter nam_TimelineColumn = new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column);
         private static Parameter nam_Start = new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant);
@@ -198,8 +196,6 @@ namespace Kusto.Language
                     if (i < args.Count)
                         list.Add(nam_Lookback);
                 }));
-#endif
-
 
         public static readonly IReadOnlyList<ColumnSymbol> AutoClusterColumns = new[] {
             new ColumnSymbol("SegmentId", ScalarTypes.Long),

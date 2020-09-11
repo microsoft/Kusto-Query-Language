@@ -1155,6 +1155,9 @@ namespace Kusto.Language.Editor
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
 
+            if ((hint & CompletionHint.ExternalTable) != 0)
+                match |= SymbolMatch.ExternalTable;
+
             if ((hint & CompletionHint.MaterializedView) != 0)
                 match |= SymbolMatch.MaterializedView;
 
@@ -1166,6 +1169,9 @@ namespace Kusto.Language.Editor
 
             if ((hint & CompletionHint.Option) != 0)
                 match |= SymbolMatch.Option;
+
+            if ((hint & CompletionHint.ExternalTable) != 0)
+                match |= SymbolMatch.ExternalTable;
 
             return match;
         }

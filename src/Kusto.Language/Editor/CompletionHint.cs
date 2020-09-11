@@ -134,6 +134,11 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// A query option
         /// </summary>
-        Option = MaterializedView << 1
+        Option = MaterializedView << 1,
+
+        /// <summary>
+        /// An external table
+        /// </summary>
+        ExternalTable = Option << 1
     }
 }

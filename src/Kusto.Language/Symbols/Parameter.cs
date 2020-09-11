@@ -54,12 +54,6 @@ namespace Kusto.Language.Symbols
         public bool IsRepeatable => this.MaxOccurring > 1;
 
         /// <summary>
-        /// True if this parameter repeats in a block with the next parameter.
-        /// If parameter A repeats with the next parameter B, they can occur in the pattern ABABAB instead of AAABBB.
-        /// </summary>
-        public bool RepeatsWithNext { get; }
-
-        /// <summary>
         /// The specific values that this parameter is constrained to.
         /// </summary>
         public IReadOnlyList<object> Values { get; }
