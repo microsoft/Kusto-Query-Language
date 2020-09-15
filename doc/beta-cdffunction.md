@@ -41,7 +41,9 @@ If any argument is nonnumeric, beta_cdf() returns null value.
 
 If x < 0 or x > 1, beta_cdf() returns NaN value.
 
-If alpha ≤ 0 or beta ≤ 0, beta_cdf() returns the NaN value.
+If alpha ≤ 0 or alpha > 10000, beta_cdf() returns the NaN value.
+
+If beta ≤ 0 or beta > 10000, beta_cdf() returns the NaN value.
 
 ## Examples
 
