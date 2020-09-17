@@ -58,11 +58,11 @@ and the [todatetime()](../todatetimefunction.md) function.
 |Format|Example|
 |------|-------|
 |%Y-%m-%dT%H:%M:%s%z|2014-05-25T08:20:03.123456Z|
-|%Y-%m-%dT%H:%M:%s"|2014-05-25T08:20:03.123456|
-|%Y-%m-%dT%H:%M"|2014-05-25T08:20|
-|%Y-%m-%d %H:%M:%s%z"|2014-11-08 15:55:55.123456Z|
-|%Y-%m-%d %H:%M:%s"|2014-11-08 15:55:55|
-|%Y-%m-%d %H:%M"|2014-11-08 15:55|
+|%Y-%m-%dT%H:%M:%s|2014-05-25T08:20:03.123456|
+|%Y-%m-%dT%H:%M|2014-05-25T08:20|
+|%Y-%m-%d %H:%M:%s%z|2014-11-08 15:55:55.123456Z|
+|%Y-%m-%d %H:%M:%s|2014-11-08 15:55:55|
+|%Y-%m-%d %H:%M|2014-11-08 15:55|
 |%Y-%m-%d|2014-11-08|
 
 ### [RFC 822](https://www.ietf.org/rfc/rfc0822.txt)
@@ -74,9 +74,9 @@ and the [todatetime()](../todatetimefunction.md) function.
 |%w, %e %b %r %H:%M|Sat, 8 Nov 14 15:05|
 |%w, %e %b %r %H:%M %Z|Sat, 8 Nov 14 15:05 GMT|
 |%e %b %r %H:%M:%s %Z|8 Nov 14 15:05:02 GMT|
-|%e %b %r %H:%M:%s"|8 Nov 14 15:05:02|
-|%e %b %r %H:%M"|8 Nov 14 15:05|
-|%e %b %r %H:%M %Z"|8 Nov 14 15:05 GMT|
+|%e %b %r %H:%M:%s|8 Nov 14 15:05:02|
+|%e %b %r %H:%M|8 Nov 14 15:05|
+|%e %b %r %H:%M %Z|8 Nov 14 15:05 GMT|
 
 ### [RFC 850](https://tools.ietf.org/html/rfc850)
 
@@ -87,9 +87,9 @@ and the [todatetime()](../todatetimefunction.md) function.
 |%w, %e-%b-%r %H:%M %Z|Saturday, 08-Nov-14 15:05 GMT|
 |%w, %e-%b-%r %H:%M|Saturday, 08-Nov-14 15:05|
 |%e-%b-%r %H:%M:%s %Z|08-Nov-14 15:05:02 GMT|
-|%e-%b-%r %H:%M:%s"|08-Nov-14 15:05:02|
-|%e-%b-%r %H:%M %Z"|08-Nov-14 15:05 GMT|
-|%e-%b-%r %H:%M"|08-Nov-14 15:05|
+|%e-%b-%r %H:%M:%s|08-Nov-14 15:05:02|
+|%e-%b-%r %H:%M %Z|08-Nov-14 15:05 GMT|
+|%e-%b-%r %H:%M|08-Nov-14 15:05|
 
 
 ### Sortable 
@@ -103,4 +103,4 @@ and the [todatetime()](../todatetimefunction.md) function.
 |%Y-%n-%eT%H:%M:%s|2014-11-08T15:05:25|
 |%Y-%n-%eT%H:%M:%s %Z|2014-11-08T15:05:25 GMT|
 |%Y-%n-%eT%H:%M|2014-11-08T15:05|
-|%Y-%n-%eT%H:%M %Z"|2014-11-08T15:05 GMT|
+|%Y-%n-%eT%H:%M %Z|2014-11-08T15:05 GMT|

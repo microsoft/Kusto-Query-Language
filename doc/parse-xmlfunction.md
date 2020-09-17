@@ -25,8 +25,6 @@ Interprets a `string` as a XML value, converts the value to a JSON and returns t
 
 An object of type [dynamic](./scalar-data-types/dynamic.md) that is determined by the value of *xml*, or null, if the XML format is invalid.
 
-Converting the XML to JSON is done using [xml2json](https://github.com/Cheedoong/xml2json) library.
-
 The conversion is done as following:
 
 XML                                |JSON                                            |Access
@@ -41,7 +39,7 @@ XML                                |JSON                                        
 
 **Notes**
 
-* Maximal input `string` length for `parse_xml` is 128 KB. Longer strings interpretation will result in a null object 
+* Maximal input `string` length for `parse_xml` is 1MB (1,048,576 bytes). Longer strings interpretation will result in a null object
 * Only element nodes, attributes and text nodes will be translated. Everything else will be skipped
  
 ## Example
