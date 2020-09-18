@@ -1490,6 +1490,21 @@ namespace Kusto.Language
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
 
+        public static readonly FunctionSymbol SeriesFitPoly =
+            new FunctionSymbol("series_fit_poly",
+                (table, args, sig) => MakePrefixedTuple(sig, "y_series", args,
+                    new TupleSymbol(
+                        new ColumnSymbol("rsquare", ScalarTypes.Real),
+                        new ColumnSymbol("coefficients", ScalarTypes.Dynamic),
+                        new ColumnSymbol("variance", ScalarTypes.Real),
+                        new ColumnSymbol("rvariance", ScalarTypes.Real),
+                        new ColumnSymbol("poly_fit", ScalarTypes.Dynamic))),
+                Tabularity.Scalar,
+                new Parameter("y_series", ScalarTypes.Dynamic),
+                new Parameter("x_series", ScalarTypes.Dynamic, minOccurring: 0),
+                new Parameter("degree", ScalarTypes.Int, minOccurring: 0))
+                .Hide();
+
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
                 (table, args, sig) => MakePrefixedTuple(sig, "series", args,
@@ -2423,6 +2438,7 @@ namespace Kusto.Language
             SeriesFillForward,
             SeriesFillConst,
             SeriesFillLinear,
+            SeriesFitPoly,
             SeriesAdd,
             SeriesSubtract,
             SeriesMultiply,
