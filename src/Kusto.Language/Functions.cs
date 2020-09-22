@@ -1263,8 +1263,7 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     m_ArraySort_ArraysArg,
                     m_ArraySort_NullsLastArg)
-                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort))
-            .Hide(); // slneimer: unhide after 20/Sep/2020
+                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort));
 
         public static readonly FunctionSymbol ArraySortDesc =
             new FunctionSymbol("array_sort_desc",
@@ -1273,8 +1272,7 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     m_ArraySort_ArraysArg,
                     m_ArraySort_NullsLastArg)
-                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort))
-            .Hide(); // slneimer: unhide after 20/Sep/2020
+                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort));
 
         private static void ValidateArgumentsForArraySort(Signature signature, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters)
         {
