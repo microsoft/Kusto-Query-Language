@@ -85,7 +85,7 @@ Trace | take 10000
 | reduce by Text with characters="-_"
 ```
 
-**See also**
+## See also
 
 [autocluster](./autoclusterplugin.md)
 

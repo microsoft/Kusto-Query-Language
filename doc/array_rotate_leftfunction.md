@@ -26,7 +26,7 @@ ms.date: 08/11/2019
 
 Dynamic array containing the same amount of the elements as in original array, where each element was rotated according to *rotate_count*.
 
-**See also**
+## See also
 
 * For rotating array to the right, see [array_rotate_right()](array_rotate_rightfunction.md).
 * For shifting array to the left, see [array_shift_left()](array_shift_leftfunction.md).

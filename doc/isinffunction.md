@@ -25,7 +25,7 @@ Returns whether input is an infinite (positive or negative) value.
 
 A non-zero value (true) if x is a positive or negative infinite; and zero (false) otherwise.
 
-**See also**
+## See also
 
 * For checking if value is null, see [isnull()](isnullfunction.md).
 * For checking if value is finite, see [isfinite()](isfinitefunction.md).

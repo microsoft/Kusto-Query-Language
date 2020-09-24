@@ -33,7 +33,7 @@ The array's sort order is undefined.
 > [!TIP]
 > To only count the distinct values, use [dcountif()](dcountif-aggfunction.md)
 
-**See also**
+## See also
 
 [`make_set`](./makeset-aggfunction.md) function, which does the same, without predicate expression.
 

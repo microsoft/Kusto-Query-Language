@@ -34,7 +34,7 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *`Expr
 Non-dictionary values will be skipped.
 If a key appears in more than one row, an arbitrary value, out of the possible values for this key, will be selected.
 
-**See also**
+## See also
 
 Use the [bag_unpack()](bag-unpackplugin.md) plugin for expanding dynamic JSON objects into columns that use property bag keys. 
 

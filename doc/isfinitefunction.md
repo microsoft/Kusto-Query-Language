@@ -25,7 +25,7 @@ Returns whether input is a finite value (is neither infinite nor NaN).
 
 A non-zero value (true) if x is finite; and zero (false) otherwise.
 
-**See also**
+## See also
 
 * For checking if value is null, see [isnull()](isnullfunction.md).
 * For checking if value is infinite, see [isinf()](isinffunction.md).

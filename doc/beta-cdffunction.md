@@ -67,7 +67,7 @@ datatable(x:double, alpha:double, beta:double, comment:string)
 |0.1|-1|20|alpha is < 0, yields NaN|NaN|
 
 
-**See also**
+## See also
 
 
 * For computing the inverse of the beta cumulative probability density function, see [beta-inv()](./beta-invfunction.md).

@@ -42,9 +42,9 @@ PageViewLog
 | summarize countries=make_set(country) by continent
 ```
 
-:::image type="content" source="images/makeset-aggfunction/makeset.png" alt-text="Makeset":::
+:::image type="content" source="images/makeset-aggfunction/makeset.png" alt-text="Table showing Kusto Query summarize countries by continent in Azure Data Explorer":::
 
-**See also**
+## See also
 
 * Use [`mv-expand`](./mvexpandoperator.md) operator for the opposite function.
 * [`make_set_if`](./makesetif-aggfunction.md) operator is similar to `make_set`, except it also accepts a predicate.

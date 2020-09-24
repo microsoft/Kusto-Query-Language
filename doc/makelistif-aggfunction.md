@@ -49,6 +49,6 @@ T
 |----|
 |["George", "Ringo"]|
 
-**See also**
+## See also
 
 [`make_list`](./makelist-aggfunction.md) function, which does the same, without predicate expression.

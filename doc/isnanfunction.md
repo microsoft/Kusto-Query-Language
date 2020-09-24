@@ -25,7 +25,7 @@ Returns whether input is Not-a-Number (NaN) value.
 
 A non-zero value (true) if x is NaN; and zero (false) otherwise.
 
-**See also**
+## See also
 
 * For checking if value is null, see [isnull()](isnullfunction.md).
 * For checking if value is finite, see [isfinite()](isfinitefunction.md).

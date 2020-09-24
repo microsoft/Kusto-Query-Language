@@ -39,7 +39,7 @@ print arr=dynamic(["this", "is", "an", "example"])
 |---|
 |3|
 
-**See also**
+## See also
 
 If you only want to check whether a value exists in an array,
 but you are not interested in its position, you can use

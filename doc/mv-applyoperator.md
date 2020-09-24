@@ -152,7 +152,6 @@ _data
 |1    |[1,3,5,7]|12       |
 |0    |[2,4,6,8]|14       |
 
-
 ## Using `with_itemindex` for working with a subset of the array
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -205,7 +204,6 @@ datatable(command:string, command_time:datetime, user_id:string)
 |user1|[<br>  "ls",<br>  "mkdir",<br>  "chmod",<br>  "dir",<br>  "pwd",<br>  "rm"<br>]|
 |user2|[<br>  "rm",<br>  "pwd"<br>]|
 
-
-**See also**
+## See also
 
 * [mv-expand](./mvexpandoperator.md) operator.
