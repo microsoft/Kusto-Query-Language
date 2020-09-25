@@ -1392,17 +1392,16 @@ namespace Kusto.Language
                     new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
             .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
-        // does not exists in engine?
-#if false
         public static readonly FunctionSymbol PercentileArrayTDigest =
-            new FunctionSymbol("percentile_array_tdigest",
+            new FunctionSymbol("percentiles_array_tdigest",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("tdigest", ScalarTypes.Dynamic),
                     new Parameter("percentile", ScalarTypes.Real, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("tdigest", ScalarTypes.Dynamic),
-                    new Parameter("percentiles", ScalarTypes.Dynamic)));
-#endif
+                    new Parameter("percentiles", ScalarTypes.Dynamic)))
+            .WithResultNamePrefix("percentile_tdigest")
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
 
         public static readonly FunctionSymbol PercentRankTDigest =
             new FunctionSymbol("percentrank_tdigest", ScalarTypes.Real,
@@ -2412,7 +2411,7 @@ namespace Kusto.Language
 
 #region digest / series functions
             PercentileTDigest,
-            //PercentileArrayTDigest,
+            PercentileArrayTDigest,
             PercentRankTDigest,
             RankTDigest,
             TDigestMerge,
