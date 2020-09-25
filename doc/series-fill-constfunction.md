@@ -13,21 +13,21 @@ ms.date: 02/13/2020
 
 Replaces missing values in a series with a specified constant value.
 
-Takes an expression containing dynamic numerical array as input, replaces all instances of missing_value_placeholder with specified constant_value and returns the resulting array.
+Takes an expression containing dynamic numerical array as input, replaces all instances of missing_value_placeholder with the specified constant_value and returns the resulting array.
 
 ## Syntax
 
-`series_fill_const(`*x*`[, `*constant_value*`[,` *missing_value_placeholder*`]])`
+`series_fill_const(`*x*`, `*constant_value*`[,` *missing_value_placeholder*`])`
 * Will return series *x* with all instances of *missing_value_placeholder* replaced with *constant_value*.
 
 ## Arguments
 
 * *x*: dynamic array scalar expression that is an array of numeric values.
-* *constant_value*: parameter that specifies a placeholder for a missing value to be replaced. Default value is *0*. 
+* *constant_value*: the value replacing missing values. 
 * *missing_value_placeholder*: optional parameter that specifies a placeholder for a missing value to be replaced. Default value is `double`(*null*).
 
 **Notes**
-* You can create a series that fills with a constant value by using `default = ` *DefaultValue* syntax (or just omitting that will assume 0). For more information, see [make-series](make-seriesoperator.md).
+* If you create the series using the [make-series](make-seriesoperator.md) operator, it fills in the missing values using default 0. Alternatively, you can specify a constant value to fill in by specifying `default = ` *DefaultValue* in the make-series statement.
 
 ```kusto
 make-series num=count() default=-1 on TimeStamp from ago(1d) to ago(1h) step 1h by Os, Browser
