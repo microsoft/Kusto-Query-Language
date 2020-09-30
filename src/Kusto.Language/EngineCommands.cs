@@ -361,7 +361,7 @@ namespace Kusto.Language
             "(TableName: string, Schema: string, DatabaseName: string, Folder: string, DocString: string)";
 
         private static readonly string ExternalTableArtifactsResult =
-            "(Uri: string)";
+            "(Uri: string, Partition: dynamic, Size: long)";
 
         private static readonly string ExternalTableFullResult =
             "(TableName: string, TableType: string, Folder: string, DocString: string, Schema: string, Properties: string)";
@@ -1648,6 +1648,11 @@ namespace Kusto.Language
                 $"set stored_query_result StoredQueryResultName=<name> [{PropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
+        public static readonly CommandSymbol StoredQueryResultsShow =
+            new CommandSymbol(nameof(StoredQueryResultsShow),
+                "show stored_query_results",
+                "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)");
+
         #endregion
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
@@ -2004,6 +2009,7 @@ namespace Kusto.Language
 
                 // StoredQueryResults
                 StoredQueryResultSet,
+                StoredQueryResultsShow,
             };
     }
 }

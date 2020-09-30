@@ -150,6 +150,11 @@ namespace Kusto.Language
         public static readonly OptionSymbol ValidatePermissions =
             new OptionSymbol("validate_permissions", "Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
 
+        #if QUERY_COLD_DATA_SCAN_MAX_RECORDS
+        public static readonly OptionSymbol QueryColdDataScanMaxRecords =
+            new OptionSymbol("query_cold_data_scan_max_records", "Enables limiting query to scanning no more than N records of the cold data.", ScalarTypes.Long);
+        #endif
+
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
             AdminSuperSlackerMode,
@@ -168,6 +173,9 @@ namespace Kusto.Language
             PushSelectionThroughAggregation,
             QueryBinAutoAt,
             QueryBinAutoSize,
+#if QUERY_COLD_DATA_SCAN_MAX_RECORDS
+            QueryColdDataScanMaxRecords,
+#endif
             QueryConsistency,
             QueryCursorAfterDefault,
             QueryCursorBeforeOrAtDefault,

@@ -457,11 +457,23 @@ namespace Kusto.Language
             new FunctionSymbol("zlib_decompress_from_base64_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO unhide and document once released
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ZlibCompressString =
             new FunctionSymbol("zlib_compress_to_base64_string", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol GzipDecompressString =
+            new FunctionSymbol("gzip_decompress_from_base64_string", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO unhide and document once released
+
+        public static readonly FunctionSymbol GzipCompressString =
+            new FunctionSymbol("gzip_compress_to_base64_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
@@ -2271,6 +2283,8 @@ namespace Kusto.Language
             Base64DecodeToString,
             ZlibDecompressString,
             ZlibCompressString,
+            GzipDecompressString,
+            GzipCompressString,
             #endregion
 
 #region parsing functions
