@@ -230,7 +230,7 @@ ms.date: 05/27/2020
 |[base64_encode_tostring()](base64_encode_tostringfunction.md)|Encodes a string as base64 string.|
 |[base64_decode_tostring()](base64_decode_tostringfunction.md)|Decodes a base64 string to a UTF-8 string.|
 |[base64_decode_toarray()](base64_decode_toarrayfunction.md)|Decodes a base64 string to an array of long values.|
-|[countof()](cotfunction.md)|Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches don't.|
+|[countof()](countoffunction.md)|Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches don't.|
 |[extract()](extractfunction.md)|Get a match for a regular expression from a text string.|
 |[extract_all()](extractallfunction.md)|Get all matches for a regular expression from a text string.|
 |[extractjson()](extractjsonfunction.md)|Get a specified element out of a JSON text using a path expression.|

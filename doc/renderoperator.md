@@ -120,8 +120,8 @@ These are:
 |               |`unstacked`        |Same as `default`.                 |
 |               |`stacked`          |Stack "columns" one atop the other.|
 |               |`stacked100`       |Stack "columns" and stretch each one to the same height as the others.|
+|`scatterchart` |`map`              |Expected columns are [Longitude, Latitude] or GeoJSON point. Series column is optional.|
 |`piechart`     |`map`              |Expected columns are [Longitude, Latitude] or GeoJSON point, color-axis and numeric. Supported in Kusto Explorer desktop.|
-|`scatterchart` |`map`              |Expected columns are [Longitude, Latitude] or GeoJSON point. Series column is optional. Supported in Kusto Explorer desktop.|
 
 ::: zone pivot="azuredataexplorer"
 

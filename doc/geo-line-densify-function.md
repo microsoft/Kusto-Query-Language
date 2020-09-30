@@ -11,7 +11,7 @@ ms.date: 07/01/2020
 ---
 # geo_line_densify()
 
-Converts planar line edges to geodesics by adding intermediate points.
+Converts planar line or multiline edges to geodesics by adding intermediate points.
 
 ## Syntax
 
@@ -19,7 +19,7 @@ Converts planar line edges to geodesics by adding intermediate points.
 
 ## Arguments
 
-* *lineString*: Line in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+* *lineString*: Line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 * *tolerance*: An optional numeric that defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value `10` is used.
 
 ## Returns
@@ -32,6 +32,8 @@ Densified line in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and 
 **LineString definition**
 
 dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
+
+dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_N ] ]})
 
 * LineString coordinates array must contain at least two entries.
 * The coordinates [longitude,latitude] must be valid. The longitude must be a real number in the range [-180, +180] and the latitude must be a real number in the range [-90, +90].
