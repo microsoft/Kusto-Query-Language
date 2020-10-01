@@ -9,9 +9,6 @@ namespace Kusto.Language
     /// </summary>
     public class Options
     {
-        public static readonly OptionSymbol AdminSuperSlackerMode =
-            new OptionSymbol("query_admin_super_slacker_mode", "If true, delegate execution of the query to another node", ScalarTypes.Bool);
-
         public static readonly OptionSymbol DebugPython =
             new OptionSymbol("query_python_debug", "If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
 
@@ -157,7 +154,6 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
-            AdminSuperSlackerMode,
             DebugPython,
             DeferPartialQueryFailures,
             DoNotImpersonate,
