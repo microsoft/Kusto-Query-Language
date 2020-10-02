@@ -11,11 +11,7 @@ ms.date: 08/02/2020
 ---
 # countif() (aggregation function)
 
-Returns a count of rows for which *Predicate* evaluates to `true`.
-
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
-
-See also - [count()](count-aggfunction.md) function, which counts rows without predicate expression.
+Returns a count of rows for which *Predicate* evaluates to `true`. Can only be used only in context of aggregation inside [summarize](summarizeoperator.md).
 
 ## Syntax
 
@@ -47,3 +43,6 @@ T
 |----|
 |2|
 
+## See also
+
+[count()](count-aggfunction.md) function, which counts rows without predicate expression.
