@@ -1387,8 +1387,7 @@ namespace Kusto.Language
                 new Parameter("bag", ScalarTypes.Dynamic),
                 new Parameter("keys", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // Unhide on 2020-09-15
+            .ConstantFoldable();
 
         #endregion
 
