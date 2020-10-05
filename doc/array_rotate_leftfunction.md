@@ -11,7 +11,7 @@ ms.date: 08/11/2019
 ---
 # array_rotate_left()
 
-`array_rotate_left()` rotates values inside an array to the left.
+Rotates values inside a `dynamic` array to the left.
 
 ## Syntax
 

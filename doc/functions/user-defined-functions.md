@@ -277,7 +277,7 @@ union T*
 The following restrictions apply:
 
 * User-defined functions can't pass into [toscalar()](../toscalarfunction.md) invocation information that depends on the row-context in which the function is called.
-* User-defined functions that return a tabular expression can'tbe invoked with an argument that varies with the row context.
+* User-defined functions that return a tabular expression can't be invoked with an argument that varies with the row context.
 * A function taking at least one tabular input can't be invoked on a remote cluster.
 * A scalar function can't be invoked on a remote cluster.
 

@@ -11,7 +11,7 @@ ms.date: 08/11/2019
 ---
 # array_shift_left()
 
-`array_shift_left()` shifts the values inside an array to the left.
+Shifts the values inside a `dynamic` array to the left.
 
 ## Syntax
 

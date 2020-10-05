@@ -11,7 +11,7 @@ ms.date: 08/11/2019
 ---
 # array_rotate_right()
 
-`array_rotate_right()` rotates values inside an array to the right.
+Rotates values inside a `dynamic` array to the right.
 
 ## Syntax
 
