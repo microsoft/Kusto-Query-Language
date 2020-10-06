@@ -7333,6 +7333,73 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ProjectAwayOperator */
     
+    #region class ProjectKeepOperator
+    public sealed partial class ProjectKeepOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.ProjectKeepOperator;
+        
+        public SyntaxToken ProjectKeepKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ProjectKeepOperator"/>.
+        /// </summary>
+        internal ProjectKeepOperator(SyntaxToken projectKeepKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ProjectKeepKeyword = Attach(projectKeepKeyword);
+            this.Expressions = Attach(expressions);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ProjectKeepKeyword;
+                case 1: return Expressions;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ProjectKeepKeyword);
+                case 1: return nameof(Expressions);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitProjectKeepOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitProjectKeepOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ProjectKeepOperator((SyntaxToken)ProjectKeepKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ProjectKeepOperator */
+    
     #region class ProjectRenameOperator
     public sealed partial class ProjectRenameOperator : QueryOperator
     {
@@ -12814,6 +12881,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitPartitionSubquery(PartitionSubquery node);
         public abstract void VisitProjectOperator(ProjectOperator node);
         public abstract void VisitProjectAwayOperator(ProjectAwayOperator node);
+        public abstract void VisitProjectKeepOperator(ProjectKeepOperator node);
         public abstract void VisitProjectRenameOperator(ProjectRenameOperator node);
         public abstract void VisitProjectReorderOperator(ProjectReorderOperator node);
         public abstract void VisitSampleOperator(SampleOperator node);
@@ -13259,6 +13327,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitProjectKeepOperator(ProjectKeepOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitProjectRenameOperator(ProjectRenameOperator node)
         {
             this.DefaultVisit(node);
@@ -13630,6 +13702,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitPartitionSubquery(PartitionSubquery node);
         public abstract TResult VisitProjectOperator(ProjectOperator node);
         public abstract TResult VisitProjectAwayOperator(ProjectAwayOperator node);
+        public abstract TResult VisitProjectKeepOperator(ProjectKeepOperator node);
         public abstract TResult VisitProjectRenameOperator(ProjectRenameOperator node);
         public abstract TResult VisitProjectReorderOperator(ProjectReorderOperator node);
         public abstract TResult VisitSampleOperator(SampleOperator node);
@@ -14072,6 +14145,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitProjectAwayOperator(ProjectAwayOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitProjectKeepOperator(ProjectKeepOperator node)
         {
             return this.DefaultVisit(node);
         }

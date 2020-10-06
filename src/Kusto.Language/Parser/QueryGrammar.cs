@@ -1706,6 +1706,13 @@ namespace Kusto.Language.Parsing
                     (keyword, list) => (QueryOperator)new ProjectAwayOperator(keyword, list))
                 .WithTag("<project-away>");
 
+            var ProjectKeepOperator =
+               Rule(
+                   Token(SyntaxKind.ProjectKeepKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
+                   CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode, oneOrMore: true),
+                   (keyword, list) => (QueryOperator)new ProjectKeepOperator(keyword, list))
+               .WithTag("<project-keep>");
+
             var ProjectRenameOperator =
                 Rule(
                     Token(SyntaxKind.ProjectRenameKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
@@ -2167,6 +2174,7 @@ namespace Kusto.Language.Parsing
                     SampleOperator,
                     SampleDistinctOperator,
                     ProjectAwayOperator,
+                    ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
                     ReduceByOperator,
@@ -2198,6 +2206,7 @@ namespace Kusto.Language.Parsing
                     TopNestedOperator,
                     ProjectOperator,
                     ProjectAwayOperator,
+                    ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
                     SummarizeOperator,
@@ -2234,6 +2243,7 @@ namespace Kusto.Language.Parsing
                     TopNestedOperator,
                     ProjectOperator,
                     ProjectAwayOperator,
+                    ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
                     SummarizeOperator,

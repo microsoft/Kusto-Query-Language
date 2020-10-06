@@ -304,6 +304,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ProjectKeyword, "project"),
                 new SyntaxData(SyntaxKind.ProjectAwayKeyword, "project-away"),
                 new SyntaxData(SyntaxKind._ProjectAwayKeyword, "__projectAway"),
+                new SyntaxData(SyntaxKind.ProjectKeepKeyword, "project-keep"),
                 new SyntaxData(SyntaxKind.ProjectRenameKeyword, "project-rename"),
                 new SyntaxData(SyntaxKind.ProjectReorderKeyword, "project-reorder"),
                 new SyntaxData(SyntaxKind.ProjectSmartKeyword, "project-smart"),
@@ -702,6 +703,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.ProjectOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectAwayOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ProjectKeepOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectRenameOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectReorderOperator, "", SyntaxCategory.Node),
 

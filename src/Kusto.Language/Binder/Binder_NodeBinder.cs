@@ -1176,6 +1176,38 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitProjectKeepOperator(ProjectKeepOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    _binder.GetColumnsInColumnList(node.Expressions, columns, diagnostics);
+                    var namesToKeep = new HashSet<string>(columns.Select(c => c.Name));
+                    columns.Clear();
+
+                    // only include columns from the original table that are not included in the list
+                    foreach (ColumnSymbol column in RowScopeOrEmpty.Members)
+                    {
+                        if (namesToKeep.Contains(column.Name))
+                        {
+                            columns.Add(column);
+                        }
+                    }
+
+                    var resultType = new TableSymbol(columns).WithInheritableProperties(RowScopeOrEmpty);
+                    var info = new SemanticInfo(resultType, diagnostics);
+                    return info;
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
+                }
+            }
+
             public override SemanticInfo VisitProjectRenameOperator(ProjectRenameOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

@@ -273,6 +273,7 @@
         ProjectKeyword,
         ProjectAwayKeyword,
         _ProjectAwayKeyword,
+        ProjectKeepKeyword,
         ProjectRenameKeyword,
         ProjectReorderKeyword,
         ProjectSmartKeyword,
@@ -671,6 +672,7 @@
 
         ProjectOperator,
         ProjectAwayOperator,
+        ProjectKeepOperator,
         ProjectRenameOperator,
         ProjectReorderOperator,
 

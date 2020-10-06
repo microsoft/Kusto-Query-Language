@@ -1501,6 +1501,20 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "ProjectKeepOperator",
+        Doc = "",
+        Base = "QueryOperator",
+        Sealed = true,
+        Kind = "ProjectKeepOperator",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ProjectKeepKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Scalar"},
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "ProjectRenameOperator",
         Doc = "",
         Base = "QueryOperator",
