@@ -19,9 +19,9 @@ All even arguments (the `then`s) and the last argument (the `else`) must be of t
 
 ## Syntax
 
-`case(`*predicate_1*`,` *then_1*,
-       *predicate_2*`,` *then_2*,
-       *predicate_3*`,` *then_3*,
+`case(`*predicate_1*, *then_1*,
+       *predicate_2*, *then_2*,
+       *predicate_3*, *then_3*,
        *else*`)`
 
 ## Arguments
