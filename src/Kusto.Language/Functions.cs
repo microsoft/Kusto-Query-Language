@@ -1510,8 +1510,7 @@ namespace Kusto.Language
                 Tabularity.Scalar,
                 new Parameter("y_series", ScalarTypes.Dynamic),
                 new Parameter("x_series", ScalarTypes.Dynamic, minOccurring: 0),
-                new Parameter("degree", ScalarTypes.Int, minOccurring: 0))
-                .Hide();
+                new Parameter("degree", ScalarTypes.Int, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
