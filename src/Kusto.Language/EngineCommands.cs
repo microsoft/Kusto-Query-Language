@@ -457,9 +457,37 @@ namespace Kusto.Language
             new CommandSymbol(nameof(DropExternalTableMapping),
                 "drop external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
                 TableIngestionMappingResult);
-        
         #endregion
 
+        #region Workload groups
+        private static readonly string WorkloadGroupResult =
+            "(WorkloadGroupName: string, WorkloadGroup:string)";
+
+        public static readonly CommandSymbol ShowWorkloadGroups =
+            new CommandSymbol(nameof(ShowWorkloadGroups),
+                "show workload_groups",
+                WorkloadGroupResult);
+
+        public static readonly CommandSymbol ShowWorkloadGroup =
+            new CommandSymbol(nameof(ShowWorkloadGroup),
+                "show workload_group WorkloadGroup=<name>",
+                WorkloadGroupResult);
+
+        public static readonly CommandSymbol CreateOrAleterWorkloadGroup =
+            new CommandSymbol(nameof(CreateOrAleterWorkloadGroup),
+                "create-or-alter workload_group WorkloadGroupName=<name> WorkloadGroup=<string>",
+                WorkloadGroupResult);
+
+        public static readonly CommandSymbol AlterMergeWorkloadGroup =
+            new CommandSymbol(nameof(AlterMergeWorkloadGroup),
+                "alter-merge workload_group WorkloadGroupName=<name> WorkloadGroup=<string>",
+                WorkloadGroupResult);
+
+        public static readonly CommandSymbol DropWorkloadGroup =
+            new CommandSymbol(nameof(DropWorkloadGroup),
+                "drop workload_group WorkloadGroupName=<name>",
+                WorkloadGroupResult);
+        #endregion
         #endregion
 
         #region Policy Commands
@@ -993,6 +1021,28 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMergeClusterPolicyCapacity =
             new CommandSymbol(nameof(AlterMergeClusterPolicyCapacity),
                 "alter-merge cluster policy capacity Policy=<string>",
+                PolicyResult);
+        #endregion
+
+        #region Request classification
+        public static readonly CommandSymbol ShowClusterPolicyRequestClassification =
+            new CommandSymbol(nameof(ShowClusterPolicyRequestClassification),
+                "show cluster policy request_classification",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyRequestClassification =
+            new CommandSymbol(nameof(AlterClusterPolicyRequestClassification),
+                "alter cluster policy request_classification Policy=<string> '<|' Query=<input_query>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyRequestClassification =
+            new CommandSymbol(nameof(AlterMergeClusterPolicyRequestClassification),
+                "alter-merge cluster policy request_classification Policy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteClusterPolicyRequestClassification =
+                new CommandSymbol(nameof(DeleteClusterPolicyRequestClassification),
+                "delete cluster policy request_classification",
                 PolicyResult);
         #endregion
 
@@ -1740,6 +1790,13 @@ namespace Kusto.Language
                 ShowExternalTableMapping,
                 ShowExternalTableMappings,
                 DropExternalTableMapping,
+
+                // Workload groups
+                ShowWorkloadGroup,
+                ShowWorkloadGroups,
+                CreateOrAleterWorkloadGroup,
+                AlterMergeWorkloadGroup,
+                DropWorkloadGroup,
                 #endregion
 
                 #region Policy Commands
@@ -1828,6 +1885,12 @@ namespace Kusto.Language
                 AlterTablePolicyPartitioning,
                 AlterMergeTablePolicyPartitioning,
                 DeleteTablePolicyPartitioning,
+
+                // Request classification
+                ShowClusterPolicyRequestClassification,
+                AlterClusterPolicyRequestClassification,
+                AlterMergeClusterPolicyRequestClassification,
+                DeleteClusterPolicyRequestClassification,
 
                 // Restricted View Access
                 ShowTablePolicyRestrictedViewAccess,

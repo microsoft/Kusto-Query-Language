@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kusto.Language.Utils;
 
 namespace Kusto.Language.Parsing
 {
@@ -106,6 +107,35 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Returns true if the line is empty or whitespace.
+        /// </summary>
+        public static bool IsBlankLine(string text, int lineStart)
+        {
+            var pos = lineStart;
+
+            while (pos < text.Length && IsWhitespace(text[pos]) && !IsLineBreakStart(text[pos]))
+                pos++;
+
+            return pos == text.Length || IsLineBreakStart(text[pos]);
+        }
+
+        /// <summary>
+        /// Gets the line length (including line break characters)
+        /// </summary>
+        public static int GetLineLength(string text, int lineStart, bool includeLineBreak = false)
+        {
+            var pos = lineStart;
+
+            while (pos < text.Length && !IsLineBreakStart(text[pos]))
+                pos++;
+
+            if (includeLineBreak && pos < text.Length)
+                pos += GetLineBreakLength(text, pos);
+
+            return pos - lineStart;
+        }
+
+        /// <summary>
         /// Gets the index of the start of the next line or -1;
         /// </summary>
         public static int GetNextLineStart(string text, int start)
@@ -155,9 +185,86 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Gets the starting position of the 1-based line number.
+        /// </summary>
+        public static bool TryGetLineStart(string text, int line, out int lineStart)
+        {
+            if (line < 1)
+            {
+                lineStart = 0;
+                return false;
+            }
+            else if (line == 1)
+            {
+                lineStart = 0;
+                return true;
+            }
+
+            for (int i = 0, n = text.Length, count = 1; i < n;)
+            {
+                var lb = GetLineBreakLength(text, i);
+                if (lb > 0)
+                {
+                    i += lb;
+
+                    count++;
+                    if (count == line)
+                    {
+                        lineStart = i;
+                        return true;
+                    }
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            // line beyond the end
+            lineStart = 0;
+            return false;
+        }
+
+        private static readonly ObjectPool<List<int>> s_lineStarts =
+            new ObjectPool<List<int>>(() => new List<int>(), list => list.Clear());
+
+        /// <summary>
         /// Gets the 1-based line and lineOffset for a position.
         /// </summary>
-        public static bool TryGetLineAndOffset(string text, int position, List<int> lineStarts, out int line, out int lineOffset)
+        public static bool TryGetLineAndOffset(string text, int position, out int line, out int lineOffset)
+        {
+            var lineStarts = s_lineStarts.AllocateFromPool();
+            try
+            {
+                GetLineStarts(text, lineStarts);
+                return TryGetLineAndOffset(lineStarts, position, out line, out lineOffset);
+            }
+            finally
+            {
+                s_lineStarts.ReturnToPool(lineStarts);
+            }
+        }
+
+        /// <summary>
+        /// Gets the position corresponding to the 1-based line and lineOffset.
+        /// </summary>
+        public static bool TryGetPosition(string text, int line, int lineOffset, out int position)
+        {
+            if (line >= 1 && lineOffset >= 1 
+                && TryGetLineStart(text, line, out var lineStart))
+            {
+                position = lineStart + (lineOffset - 1);
+                return position <= text.Length;
+            }
+
+            position = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the 1-based line and lineOffset for a position.
+        /// </summary>
+        public static bool TryGetLineAndOffset(List<int> lineStarts, int position, out int line, out int lineOffset)
         {
             line = lineStarts.BinarySearch(position);
             line = line >= 0 ? line : ~line - 1;
@@ -173,6 +280,22 @@ namespace Kusto.Language.Parsing
             line++; // 1 based
 
             return true;
+        }
+
+        /// <summary>
+        /// Gets the position corresponding to the 1-based line and lineOffset.
+        /// </summary>
+        public static bool TryGetPosition(IReadOnlyList<int> lineStarts, int line, int lineOffset, out int position)
+        {
+            if (line >= 1 && line <= lineStarts.Count && lineOffset >= 1)
+            {
+                var lineStart = lineStarts[line - 1];
+                position = lineStart + (lineOffset - 1);
+                return true;
+            }
+
+            position = 0;
+            return false;
         }
 
         /// <summary>

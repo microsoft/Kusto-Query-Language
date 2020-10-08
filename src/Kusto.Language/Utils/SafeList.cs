@@ -98,23 +98,25 @@ namespace Kusto.Language.Utils
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
             private readonly IReadOnlyList<T> _list;
-            private readonly int _length;
+            private readonly int _start;
+            private readonly int _end;
             private int _index;
 
             public Enumerator(IReadOnlyList<T> list, int start, int length)
             {
                 _list = list;
-                _length = length;
-                _index = start;
+                _start = start;
+                _end = start + length;
+                _index = start - 1;
             }
 
-            public T Current => _list[_index];
+            public T Current => _index >= _start && _index < _end ? _list[_index] : default(T);
             object IEnumerator.Current => this.Current;
 
             public bool MoveNext()
             {
                 _index++;
-                return _index < _length;
+                return _index < _end;
             }
 
             public void Dispose() { }

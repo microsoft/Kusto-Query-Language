@@ -356,7 +356,7 @@ namespace Kusto.Language
                 Interlocked.CompareExchange(ref lineStarts, tmp, null);
             }
 
-            return TextFacts.TryGetLineAndOffset(this.Text, position, this.lineStarts, out line, out lineOffset);
+            return TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
         }
     }
 

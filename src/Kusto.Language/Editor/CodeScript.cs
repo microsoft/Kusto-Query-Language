@@ -295,7 +295,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         public bool TryGetLineAndOffset(int position, out int line, out int lineOffset)
         {
-            return Parsing.TextFacts.TryGetLineAndOffset(this.Text, position, this.lineStarts, out line, out lineOffset);
+            return Parsing.TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
         }
     }
 }

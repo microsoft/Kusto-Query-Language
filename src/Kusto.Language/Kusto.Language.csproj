@@ -187,6 +187,7 @@
     <Compile Include="TestHelpers.cs" />
     <Compile Include="Utils\Cancellation.cs" />
     <Compile Include="Utils\ChangeType.cs" />
+    <Compile Include="Utils\EditString.cs" />
     <Compile Include="Utils\EmptyReadOnlyList.cs" />
     <Compile Include="Utils\Ensure.cs" />
     <Compile Include="Utils\Interlocked.cs" />

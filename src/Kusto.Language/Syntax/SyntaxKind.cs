@@ -301,6 +301,7 @@
         RenameKeyword,
         RenderKeyword,
         ReplaceKeyword,
+        RequestClassificationKeyword,
         ResetKeyword,
         RestrictKeyword,
         RetentionKeyword,
@@ -385,6 +386,8 @@
         WhatIfKeyword,
         WhereKeyword,
         WithKeyword,
+        WorkloadGroupKeyword,
+        WorkloadGroupsKeyword,
         WriteAheadLogKeyword,
 
         // scalar type keyword tokens

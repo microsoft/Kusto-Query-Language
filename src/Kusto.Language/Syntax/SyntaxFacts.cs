@@ -332,6 +332,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.RenameKeyword, "rename", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.RenderKeyword, "render", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ReplaceKeyword, "replace", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.RequestClassificationKeyword, "request_classification", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ResetKeyword, "reset"),
                 new SyntaxData(SyntaxKind.RestrictKeyword, "restrict" /*, canBeIdentifier: true*/),
                 new SyntaxData(SyntaxKind.RetentionKeyword, "retention", canBeIdentifier: true),
@@ -415,6 +416,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.WhatIfKeyword, "whatif", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.WhereKeyword, "where"),
                 new SyntaxData(SyntaxKind.WithKeyword, "with"),
+                new SyntaxData(SyntaxKind.WorkloadGroupKeyword, "workload_group", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.WorkloadGroupsKeyword, "workload_groups", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.WriteAheadLogKeyword, "writeaheadlog", canBeIdentifier: true),
 
                 // type name keywords?
