@@ -78,7 +78,7 @@ then the following CSL Fragment translates the XML to the following JSON:
 
 and retrieves the value of the `duration` slot
 in the object, and from that it retrieves two slots, `duration.value` and
- `duration.min` (`118.0` and `110.0`, respectively).
+ `duration.min` (`118.0` and `100.0`, respectively).
 
 ```kusto
 T
