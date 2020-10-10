@@ -462,33 +462,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Bridge, Version=17.10.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Bridge.Core.17.10.1\lib\net40\Bridge.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Bridge" Version="17.10.1" />
+    <PackageReference Include="Bridge.Min" Version="17.10.1" />
   </ItemGroup>
-  <PropertyGroup Condition="Exists('..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets')">
-    <PackageRoot>..\..\..\packages</PackageRoot>
-  </PropertyGroup>
-  <PropertyGroup Condition="Exists('..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets')">
-    <PackageRoot>..\packages</PackageRoot>
-  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(PackageRoot)\Bridge.Min.17.10.1\build\Bridge.Min.targets" Condition="Exists('$(PackageRoot)\Bridge.Min.17.10.1\build\Bridge.Min.targets')" />
-  <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: ..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets) -->
+  <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(KustoGlobalPackagesFolder)\.nuget\packages\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />
     <BridgeCompilerTask Assembly="@(IntermediateAssembly)" AssemblyName="$(AssemblyName)" AssembliesPath="$(OutDir)" CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)" Configuration="$(Configuration)" DefineConstants="$(DefineConstants)" OutDir="$(OutDir)" OutputPath="$(OutputPath)" OutputType="$(OutputType)" Platform="$(Platform)" ProjectPath="$(MSBuildProjectFullPath)" RootNamespace="$(RootNamespace)" Sources="@(Compile)" />
     <Message Text="Patched Bridge done" Importance="high" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Bridge.Min.17.10.1\build\Bridge.Min.targets'))" />
   </Target>
 </Project>

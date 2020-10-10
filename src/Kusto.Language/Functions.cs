@@ -301,7 +301,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ToHex =
             new FunctionSymbol("tohex", ScalarTypes.String,
-                new Parameter("value", ParameterTypeKind.Integer))
+                new Parameter("value", ParameterTypeKind.Integer),
+                new Parameter("minLength", ParameterTypeKind.Integer, minOccurring: 0))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
