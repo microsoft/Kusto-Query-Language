@@ -31,7 +31,7 @@ Shows the distinct combination of fruit and price.
 Table | distinct fruit, price
 ```
 
-:::image type="content" source="images/distinctoperator/distinct.PNG" alt-text="Distinct":::
+:::image type="content" source="images/distinctoperator/distinct.PNG" alt-text="Two tables. One has suppliers, fruit types, and prices, with some fruit-price combinations repeated. The second table lists only unique combinations.":::
 
 **Notes**
 

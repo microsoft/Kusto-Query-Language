@@ -55,7 +55,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 
 Manhattan island without Central Park.
 
-:::image type="content" source="images/geo-point-in-polygon-function/polygon-manhattan-with-hole.png" alt-text="Manhattan with a hole":::
+:::image type="content" source="images/geo-point-in-polygon-function/polygon-manhattan-with-hole.png" alt-text="Screenshot of a map of the Manhattan area, with markers for a landmark, a museum, and an airport. The island appears dimmed except for Central Park.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -74,7 +74,7 @@ datatable(longitude:real, latitude:real, description:string)
 
 Search for coordinates in multipolygon.
 
-:::image type="content" source="images/geo-point-in-polygon-function/multipolygon-manhattan.png" alt-text="Manhattan with a hole":::
+:::image type="content" source="images/geo-point-in-polygon-function/multipolygon-manhattan.png" alt-text="Screenshot of a map of the Manhattan area, with markers for the Upper West Side, Greenwich Village, and an airport. Three neighborhoods appear dimmed.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

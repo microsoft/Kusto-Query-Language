@@ -62,7 +62,7 @@ CallDetailRecords
 | summarize percentiles(Duration, 5, 50, 95) by continent
 ```
 
-:::image type="content" source="images/percentiles-aggfunction/percentiles.png" alt-text="Percentiles":::
+:::image type="content" source="images/percentiles-aggfunction/percentiles.png" alt-text="A table listing the results, with columns for the continent and for duration values in the fifth, fiftieth, and ninety-fifth percentiles.":::
 
 The results show that in Europe, 5% of calls are shorter than 11.55s, 50% of calls are shorter than 3 minutes, 18.46 seconds, and 95% of calls are shorter than 40 minutes 48 seconds.
 

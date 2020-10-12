@@ -130,7 +130,7 @@ T | make-series PriceAvg=avg(Price) default=0
 on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplier, Fruit
 ```
 
-:::image type="content" source="images/make-seriesoperator/makeseries.png" alt-text="Makeseries":::  
+:::image type="content" source="images/make-seriesoperator/makeseries.png" alt-text="Three tables. The first lists raw data, the second has only distinct supplier-fruit-date combinations, and the third contains the make-series results.":::  
 
 <!-- csl: https://help.kusto.windows.net:443/Samples --> 
 ```kusto
