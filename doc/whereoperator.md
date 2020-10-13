@@ -53,7 +53,7 @@ To get the fastest performance:
 
 For more information, see the summary of [available String operators](./datatypes-string-operators.md) and the summary of [available Numerical operators](./numoperators.md).
 
-## Example
+## Example: Simple comparisons first
 
 ```kusto
 Traces
@@ -67,7 +67,7 @@ come from a source called `MyCluster`, and have two columns of the same value.
 
 Notice that we put the comparison between two columns last, as it can't use the index and forces a scan.
 
-## Example
+## Example: Columns contain string
 
 ```kusto
 Traces | where * has "Kusto"

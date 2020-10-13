@@ -31,9 +31,7 @@ parse_ipv4('192.1.168.1') < parse_ipv4('192.1.168.2') == true
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
 The IP address to the LEFT of the slash (`/`) is the base IP address. The number (1 to 32) to the RIGHT of the slash (/) is the number of contiguous 1 bit in the netmask.
 
-## Example
-
-192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
+For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
 ## Returns
 

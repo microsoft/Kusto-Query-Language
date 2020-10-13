@@ -104,7 +104,7 @@ with [view keyword](./letstatement.md)
 ::: zone-end
 
 
-## Example
+## Example: Tables with string in name or column
 
 ```kusto
 union K* | where * has "Kusto"
@@ -112,7 +112,7 @@ union K* | where * has "Kusto"
 
 Rows from all tables in the database whose name starts with `K`, and in which any column includes the word `Kusto`.
 
-## Example
+## Example: Distinct count
 
 ```kusto
 union withsource=SourceTable kind=outer Query, Command

@@ -119,7 +119,7 @@ Operator       |Default value
 
 :::image type="content" source="images/summarizeoperator/summarize-price-by-supplier.png" alt-text="Summarize price by fruit and supplier":::
 
-## Example
+## Example: Unique combination
 
 Determine what unique combinations of
 `ActivityType` and `CompletionStatus` there are in a table. There are no aggregation functions, just group-by keys. The output will just show the columns for those results:
@@ -135,7 +135,7 @@ Activities | summarize by ActivityType, completionStatus
 |`dancing`|`abandoned`
 |`singing`|`completed`
 
-## Example
+## Example: Minimum and maximum timestamp
 
 Finds the minimum and maximum timestamp of all records in the Activities table. There is no group-by clause, so there is just one row in the output:
 
@@ -147,7 +147,7 @@ Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
 |---|---
 |`1975-06-09 09:21:45` | `2015-12-24 23:45:00`
 
-## Example
+## Example: Distinct count
 
 Create a row for each continent, showing a count of the cities in which activities occur. Because there are few values for "continent", no grouping function is needed in the 'by' clause:
 
@@ -162,7 +162,7 @@ Activities | summarize cities=dcount(city) by continent
 |`2673`|`North America`|
 
 
-## Example
+## Example: Histogram
 
 The following example calculates a histogram for each activity
 type. Because `Duration` has many values, use `bin` to group its values into 10-minute intervals:
