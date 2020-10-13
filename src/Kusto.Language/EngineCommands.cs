@@ -337,10 +337,17 @@ namespace Kusto.Language
                 "create-or-alter function [with '('! { PropertyName=<name> '='! Value=<value>, ',' }+ ')'!] FunctionName=<name> <function_declaration>",
                 FunctionResult);
 
+        private static readonly string FunctionNameList = "'(' { FunctionName=<function>, ',' }+ ')'";
+
         public static readonly CommandSymbol DropFunction =
             new CommandSymbol(nameof(DropFunction),
-                "drop function FunctionName=<function>",
+                "drop function FunctionName=<function> [ifexists]",
                 "(Name: string)");
+
+        public static readonly CommandSymbol DropFunctions =
+            new CommandSymbol(nameof(DropFunctions),
+                $"drop functions {FunctionNameList} [ifexists]",
+                FunctionResult);
 
         public static readonly CommandSymbol AlterFunctionDocString =
             new CommandSymbol(nameof(AlterFunctionDocString),
@@ -1770,6 +1777,7 @@ namespace Kusto.Language
                 ShowFunctions,
                 ShowFunction,
                 DropFunction,
+                DropFunctions,
                 AlterFunctionDocString,
                 AlterFunctionFolder,
                 CreateFunction,
