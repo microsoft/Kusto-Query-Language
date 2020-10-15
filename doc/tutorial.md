@@ -125,7 +125,7 @@ then [take](./takeoperator.md) operator
 StormEvents
 | sort by StartTime desc
 | take 5
-| project  StartTime, EndLat, EventType, EventNarrative
+| project  StartTime, EndTime, EventType, EventNarrative
 ```
 
 ## extend: compute derived columns
