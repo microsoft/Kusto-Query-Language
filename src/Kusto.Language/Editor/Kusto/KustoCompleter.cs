@@ -1703,9 +1703,8 @@ namespace Kusto.Language.Editor
         private SyntaxToken GetTokenLeftOfPosition(int position)
         {
             var token = this.code.Syntax.GetTokenAt(position);
-            var hasAffinity = token != null && HasAffinity(token, position);
 
-            if (token != null && (position < token.TextStart || !hasAffinity || token.Kind == SyntaxKind.EndOfTextToken))
+            if (token != null && (position <= token.TextStart || token.Kind == SyntaxKind.EndOfTextToken))
             {
                 token = token.GetPreviousToken();
             }
