@@ -83,6 +83,8 @@ ms.date: 05/27/2020
 |[array_shift_left()](array_shift_leftfunction.md)|Shifts values inside a dynamic array to the left.|
 |[array_shift_right()](array_shift_rightfunction.md)|Shifts values inside a dynamic array to the right.|
 |[array_slice()](arrayslicefunction.md)|Extracts a slice of a dynamic array.|
+|[array_sort_asc()](arraysortascfunction.md)|Sorts a collection of arrays in ascending order.|
+|[array_sort_desc()](arraysortdescfunction.md)|Sorts a collection of arrays in descending order.|
 |[array_split()](arraysplitfunction.md)|Builds an array of arrays split from the input array.|
 |[bag_keys()](bagkeysfunction.md)|Enumerates all the root keys in a dynamic property-bag object.|
 |[bag_merge()](bag-merge-function.md)|Merges dynamic property-bags into a dynamic property-bag with all properties merged.|
