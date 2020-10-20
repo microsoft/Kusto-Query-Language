@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: rkarlin
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 10/19/2020
 ---
 # String operators
 
@@ -63,8 +63,8 @@ Operator        |Description                                                    
 `!startswith_cs`|RHS isn't an initial subsequence of LHS                          |Yes           |`"Fabrikam" !startswith_cs "fab"`
 `endswith`      |RHS is a closing subsequence of LHS                               |No            |`"Fabrikam" endswith "Kam"`
 `!endswith`     |RHS isn't a closing subsequence of LHS                           |No            |`"Fabrikam" !endswith "brik"`
-`endswith_cs`   |RHS is a closing subsequence of LHS                               |Yes           |`"Fabrikam" endswith "Kam"`
-`!endswith_cs`  |RHS isn't a closing subsequence of LHS                           |Yes           |`"Fabrikam" !endswith "brik"`
+`endswith_cs`   |RHS is a closing subsequence of LHS                               |Yes           |`"Fabrikam" endswith_cs "kam"`
+`!endswith_cs`  |RHS isn't a closing subsequence of LHS                           |Yes           |`"Fabrikam" !endswith_cs "brik"`
 `matches regex` |LHS contains a match for RHS                                      |Yes           |`"Fabrikam" matches regex "b.*k"`
 `in`            |Equals to one of the elements                                     |Yes           |`"abc" in ("123", "345", "abc")`
 `!in`           |Not equals to any of the elements                                 |Yes           |`"bca" !in ("123", "345", "abc")`
