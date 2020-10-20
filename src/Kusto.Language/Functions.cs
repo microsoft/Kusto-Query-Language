@@ -222,7 +222,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Replace =
             new FunctionSymbol("replace", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String),
-                new Parameter("rewrite", ScalarTypes.String),
+                new Parameter("rewrite", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
