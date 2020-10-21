@@ -4,7 +4,7 @@ description: This article describes make_list_with_nulls() (aggregation function
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/09/2020

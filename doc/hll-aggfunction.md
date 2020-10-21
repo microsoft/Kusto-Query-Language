@@ -4,7 +4,7 @@ description: This article describes hll() (aggregation function) in Azure Data E
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/15/2020

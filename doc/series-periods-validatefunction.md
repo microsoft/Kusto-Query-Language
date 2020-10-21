@@ -4,7 +4,7 @@ description: This article describes series_periods_validate() in Azure Data Expl
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2019

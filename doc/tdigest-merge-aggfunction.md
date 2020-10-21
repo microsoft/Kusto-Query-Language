@@ -4,7 +4,7 @@ description: This article describes tdigest_merge() (aggregation function) in Az
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/09/2019

@@ -4,7 +4,7 @@ description: This article describes funnel_sequence_completion plugin in Azure D
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/16/2020

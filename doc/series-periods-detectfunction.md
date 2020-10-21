@@ -4,7 +4,7 @@ description: This article describes series_periods_detect() in Azure Data Explor
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2019

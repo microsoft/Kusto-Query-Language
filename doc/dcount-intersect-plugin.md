@@ -4,7 +4,7 @@ description: This article describes dcount_intersect plugin in Azure Data Explor
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/23/2018

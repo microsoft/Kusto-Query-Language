@@ -4,7 +4,7 @@ description: This article describes sliding_window_counts plugin in Azure Data E
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020

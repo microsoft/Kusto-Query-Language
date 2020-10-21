@@ -4,7 +4,7 @@ description: This article describes new_activity_metrics plugin in Azure Data Ex
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/30/2020

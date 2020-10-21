@@ -4,7 +4,7 @@ description: This article describes current_principal_details() in Azure Data Ex
 services: data-explorer
 author: orspod
 ms.author: orspodek
-ms.reviewer: rkarlin
+ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 11/08/2019
