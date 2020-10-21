@@ -607,6 +607,13 @@ namespace Kusto.Language
                  new Parameter("ConnectionString", ScalarTypes.String),
                  new Parameter("SqlQuery", ScalarTypes.String));
 
+        public static readonly FunctionSymbol MySqlRequest =
+             new FunctionSymbol("mysql_request",
+                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
+                 Tabularity.Tabular,
+                 new Parameter("ConnectionString", ScalarTypes.String),
+                 new Parameter("SqlQuery", ScalarTypes.String));
+
         public static IReadOnlyList<FunctionSymbol> All { get; } = new FunctionSymbol[]
         {
             ActiveUseCounts,
@@ -641,7 +648,8 @@ namespace Kusto.Language
             SessionCount,
             SequenceDetect,
             SlidingWindowCounts,
-            SqlRequest
+            SqlRequest,
+            MySqlRequest,
         };
 
         private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;
