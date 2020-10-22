@@ -31,7 +31,6 @@ T | project-rename new_column_name = column_name
 
 A table that has the columns in the same order as in an existing table, with columns renamed.
 
-
 ## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->

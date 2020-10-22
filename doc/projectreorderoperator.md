@@ -30,9 +30,9 @@ T | project-reorder Col2, Col1, Col* asc
 > [!NOTE]
 > * In ambiguous *ColumnNameOrPattern* matching, the column appears in the first position matching the pattern.
 > * Specifying columns for the `project-reorder` is optional. Columns that aren't specified explicitly appear as the last columns of the output table.
-> * Use [`project-away`](projectawayoperator.md) to remove columns.
-> * Use [`project-rename`](projectrenameoperator.md) to rename columns.
-
+> * To remove columns, use [`project-away`](projectawayoperator.md).
+> * To choose which columns to keep, use [`project-keep`](project-keep-operator.md).
+> * To rename columns, use [`project-rename`](projectrenameoperator.md).
 
 ## Returns
 
