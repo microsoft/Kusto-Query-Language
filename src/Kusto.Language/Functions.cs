@@ -1177,6 +1177,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol ArrayReverse =
+            new FunctionSymbol("array_reverse", ScalarTypes.Dynamic,
+                new Parameter("value", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // slneimer to unhide after Nov/9
+
         public static readonly FunctionSymbol Range =
             new FunctionSymbol("range", ScalarTypes.Dynamic,
                 new Parameter("start", ParameterTypeKind.Summable),
@@ -2411,6 +2418,7 @@ namespace Kusto.Language
             ArraySplit,
             ArrayShiftLeft,
             ArrayShiftRight,
+            ArrayReverse,
             ArrayRotateLeft,
             ArrayRotateRight,
             ArraySortAsc,
