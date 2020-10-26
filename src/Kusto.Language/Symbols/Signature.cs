@@ -20,11 +20,6 @@ namespace Kusto.Language.Symbols
     public delegate TypeSymbol CustomReturnTypeShort(TableSymbol table, IReadOnlyList<Expression> arguments);
 
     /// <summary>
-    /// A function that builds a list of parameters associated with each argument.
-    /// </summary>
-    public delegate void CustomArgumentParametersBuilder(Signature signature, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters);
-
-    /// <summary>
     /// The parameters and return type of a function-like symbol.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Display}")]
@@ -66,9 +61,9 @@ namespace Kusto.Language.Symbols
         public CustomReturnType CustomReturnType { get; }
 
         /// <summary>
-        /// A custom function that associates parameters to input arguments.
+        /// The rule that describes how parameters are associated with arguments
         /// </summary>
-        public CustomArgumentParametersBuilder CustomArgumentParametersBuilder { get; }
+        public ParameterLayout Layout { get; }
 
         /// <summary>
         /// If true, this signature is hidden from intellisense
@@ -78,13 +73,17 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// If true, this signature can have a variable number of arguments.
         /// </summary>
-        public bool HasRepeatableParameters => _firstRepeatableParameter >= 0;
+        public bool HasRepeatableParameters { get; }
 
+        /// <summary>
+        /// If true, this signature has optional parameters.
+        /// </summary>
         public bool HasOptionalParameters { get; }
-        public bool HasAggregateParameters { get; }
 
-        private readonly sbyte _firstRepeatableParameter;
-        private readonly sbyte _lastRepeatableParameter;
+        /// <summary>
+        /// If true, this signature has parameters that are expected to be aggregates.
+        /// </summary>
+        public bool HasAggregateParameters { get; }
 
         private TypeSymbol _returnType;
         private string _body;
@@ -98,7 +97,7 @@ namespace Kusto.Language.Symbols
             CustomReturnType customReturnType,
             Tabularity tabularity,
             IReadOnlyList<Parameter> parameters,
-            CustomArgumentParametersBuilder customParameterListBuilder = null,
+            ParameterLayout layout = null,
             bool isHidden = false)
         {
             if (returnKind == ReturnTypeKind.Declared && returnType == null)
@@ -117,7 +116,6 @@ namespace Kusto.Language.Symbols
             this.CustomReturnType = customReturnType;
             this._tabularity = tabularity;
             this.Parameters = parameters.ToReadOnly();
-            this.CustomArgumentParametersBuilder = customParameterListBuilder;
             this.IsHidden = isHidden;
 
             if (returnKind == ReturnTypeKind.Computed
@@ -127,21 +125,14 @@ namespace Kusto.Language.Symbols
                 this._tabularity = returnType.Tabularity;
             }
 
-            this._firstRepeatableParameter = -1;
-            this._lastRepeatableParameter = -1;
-
             int minArgumentCount = 0;
             int maxArgumentCount = 0;
 
-            for (sbyte i = 0, n = (sbyte)this.Parameters.Count; i < n; i++)
+            foreach (var p in parameters)
             {
-                var p = parameters[i];
-
                 if (p.IsRepeatable)
                 {
-                    if (this._firstRepeatableParameter == -1)
-                        this._firstRepeatableParameter = i;
-                    this._lastRepeatableParameter = i;
+                    this.HasRepeatableParameters = true;
                 }
 
                 if (p.IsOptional)
@@ -160,6 +151,19 @@ namespace Kusto.Language.Symbols
 
             this.MinArgumentCount = minArgumentCount;
             this.MaxArgumentCount = maxArgumentCount;
+
+            if (layout != null)
+            {
+                this.Layout = layout;
+            }
+            else if (!this.HasRepeatableParameters && this.AllowsNamedArguments)
+            {
+                this.Layout = ParameterLayouts.Fixed;
+            }
+            else
+            {
+                this.Layout = ParameterLayouts.Repeating;
+            }
         }
 
         public Signature(ReturnTypeKind returnKind, IReadOnlyList<Parameter> parameters)
@@ -234,9 +238,18 @@ namespace Kusto.Language.Symbols
         /// Creates a new <see cref="Signature"/> just like this one, but with a custom function that 
         /// builds a list of parameter associated with each argument.
         /// </summary>
-        public Signature WithArgumentParametersBuilder(CustomArgumentParametersBuilder customBuilder)
+        public Signature WithLayout(ParameterLayoutBuilder customBuilder)
         {
-            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, customBuilder, this.IsHidden);
+            return WithLayout(ParameterLayouts.Custom(customBuilder));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Signature"/> just like this one, but with a custom function that 
+        /// builds a list of parameter associated with each argument.
+        /// </summary>
+        public Signature WithLayout(ParameterLayout layout)
+        {
+            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, layout, this.IsHidden);
         }
 
         /// <summary>
@@ -244,7 +257,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public Signature Hide()
         {
-            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, this.CustomArgumentParametersBuilder, isHidden: true);
+            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, this.Layout, isHidden: true);
         }
 
         /// <summary>
@@ -268,50 +281,6 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TypeSymbol DeclaredReturnType =>
             this.ReturnKind == ReturnTypeKind.Declared ? this._returnType : null;
-
-        /// <summary>
-        /// Gets the set of possible parameters for signatures with repeatable parameter blocks and
-        /// with possibly incomplete argument lists.
-        /// </summary>
-        public void GetPossibleParameters(int argumentIndex, int argumentCount, List<Parameter> possible)
-        {
-            // TODO: update this to consider custom argument parameter rules/layouts
-
-            if (this.HasRepeatableParameters)
-            {
-                if (argumentIndex < this._firstRepeatableParameter)
-                {
-                    possible.Add(this.Parameters[argumentIndex]);
-                }
-                else
-                {
-                    var nRepeatable = this._lastRepeatableParameter - this._firstRepeatableParameter + 1;
-                    var iRepeatableParam = ((argumentIndex - this._firstRepeatableParameter) % nRepeatable) + this._firstRepeatableParameter;
-                    possible.Add(this.Parameters[iRepeatableParam]);
-
-                    // if there exists at least one full block of repeatable parameters
-                    // and there are non-repeatable parameters following the repeatable parameters
-                    // determine the after parameter this could be
-                    if (argumentIndex > this._lastRepeatableParameter
-                        && this._lastRepeatableParameter < this.Parameters.Count - 1)
-                    {
-                        var remainder = (argumentIndex - this._firstRepeatableParameter) % nRepeatable;
-
-                        // include all possible after-repeatable parameters
-                        // if repeating size < number of after-repeatable parameters then the number of repeats can be variable
-                        // assuming that the argumentCount is potentially a partial set of arguments (during typing)
-                        for (int iAfterParam = this._lastRepeatableParameter + remainder; iAfterParam < this.Parameters.Count; iAfterParam += nRepeatable)
-                        {
-                            possible.Add(this.Parameters[iAfterParam]);
-                        }
-                   }
-                }
-            }
-            else if (argumentIndex < this.Parameters.Count)
-            {
-                possible.Add(this.Parameters[argumentIndex]);
-            }
-        }
 
         private Dictionary<string, Parameter> nameToParameterMap;
 
@@ -349,20 +318,20 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Builds a list of parameters as associated with the specified arguments.
         /// </summary>
-        public List<Parameter> GetArgumentParameters(IReadOnlyList<Expression> arguments, bool? respectNamedArguments = null)
+        public List<Parameter> GetArgumentParameters(IReadOnlyList<Expression> arguments)
         {
             if (arguments == null)
                 throw new ArgumentNullException(nameof(arguments));
 
             var argumentParameters = new List<Parameter>();
-            GetArgumentParameters(arguments, argumentParameters, respectNamedArguments);
+            GetArgumentParameters(arguments, argumentParameters);
             return argumentParameters;
         }
 
         /// <summary>
-        /// Builds a list of parameters as associated with the specified arguments.
+        /// Builds a list of parameters associated with the specified arguments.
         /// </summary>
-        public void GetArgumentParameters(IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool? respectNamedArguments = null)
+        public void GetArgumentParameters(IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters)
         {
             if (arguments == null)
                 throw new ArgumentNullException(nameof(arguments));
@@ -370,107 +339,43 @@ namespace Kusto.Language.Symbols
             if (argumentParameters == null)
                 throw new ArgumentNullException(nameof(argumentParameters));
 
-            this.GetArgumentParameters(arguments.Count, arguments, argumentParameters, respectNamedArguments);
+            this.Layout.GetArgumentParameters(this, arguments, argumentParameters);
         }
 
         /// <summary>
-        /// Builds a list of parameters as associated with the specified number of arguments.
+        /// Builds a list of parameters associated with the specified argument types.
         /// </summary>
-        public void GetArgumentParameters(int nArguments, List<Parameter> argumentParameters)
+        public void GetArgumentParameters(IReadOnlyList<TypeSymbol> argumentTypes, List<Parameter> argumentParameters)
         {
+            if (argumentTypes == null)
+                throw new ArgumentNullException(nameof(argumentTypes));
+
             if (argumentParameters == null)
                 throw new ArgumentNullException(nameof(argumentParameters));
 
-            this.GetArgumentParameters(nArguments, null, argumentParameters);
+            this.Layout.GetArgumentParameters(this, argumentTypes, argumentParameters);
         }
 
         /// <summary>
-        /// Builds a list of parameters as associated with the specified arguments.
+        /// Gets the set of possible parameters that could occur after the specified arguments
         /// </summary>
-        private void GetArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool? respectNamedArguments = null)
+        public void GetNextPossibleParameters(IReadOnlyList<Expression> arguments, List<Parameter> possibleParameters)
         {
-            if (nArguments == 0)
-                return;
+            if (arguments == null)
+                throw new ArgumentNullException(nameof(arguments));
 
-            if (this.CustomArgumentParametersBuilder != null && arguments != null)
-            {
-                this.CustomArgumentParametersBuilder(this, arguments, argumentParameters);
-            }
-            else if (this.HasRepeatableParameters)
-            {
-                GetRepeatingBlockArgumentParameters(nArguments, arguments, argumentParameters, respectNamedArguments ?? AllowsNamedArguments);
-            }
-            else
-            {
-                GetNonRepeatingArgumentParameters(nArguments, arguments, argumentParameters, respectNamedArguments ?? AllowsNamedArguments);
-            }
+            if (possibleParameters == null)
+                throw new ArgumentNullException(nameof(possibleParameters));
 
-            // fill out any parameters left unspecified
-            while (argumentParameters.Count < nArguments)
-            {
-                argumentParameters.Add(UnknownParameter);
-            }
+            this.Layout.GetNextPossibleParameters(this, arguments, possibleParameters);
         }
 
         /// <summary>
-        /// Gets argument parameters using a strategy that allows for a block of parameters that repeat together.
+        /// True if the argument count represents a valid number of arguments.
         /// </summary>
-        private void GetRepeatingBlockArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool namedArgumentsAllowed)
+        public bool IsValidArgumentCount(int argumentCount)
         {
-            int firstRepeatingArgument = _firstRepeatableParameter;
-            var numberOfRepeatingParameters = (_lastRepeatableParameter - _firstRepeatableParameter + 1);
-            var minRepeats = this.Parameters[_firstRepeatableParameter].MinOccurring;
-            var possibleRepeatingArguments = (nArguments - firstRepeatingArgument) - (this.Parameters.Count - _lastRepeatableParameter);
-            var minRepeatingArguments = numberOfRepeatingParameters * minRepeats;
-            var repeatingArgumentGroups = (possibleRepeatingArguments + numberOfRepeatingParameters - 1) / numberOfRepeatingParameters;
-            var totalRepeatingArguments = Math.Max(repeatingArgumentGroups * numberOfRepeatingParameters, minRepeatingArguments);
-            var lastRepeatingArgument = firstRepeatingArgument + totalRepeatingArguments;
-
-            for (int i = 0; i < nArguments; i++)
-            {
-                if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
-                {
-                    argumentParameters.Add(this.GetParameter(sn.Name.SimpleName));
-                }
-                else if (i < firstRepeatingArgument)
-                {
-                    argumentParameters.Add(this.Parameters[i]);
-                }
-                else if (i >= firstRepeatingArgument && i < lastRepeatingArgument)
-                {
-                    argumentParameters.Add(this.Parameters[_firstRepeatableParameter + (i % numberOfRepeatingParameters)]);
-                }
-                else if (i >= lastRepeatingArgument && i < arguments.Count)
-                {
-                    argumentParameters.Add(this.Parameters[_lastRepeatableParameter + (i - lastRepeatingArgument)]);
-                }
-                else
-                {
-                    argumentParameters.Add(UnknownParameter);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets argument parameters using a strategy that allows each parameter to appear only once.
-        /// </summary>
-        private void GetNonRepeatingArgumentParameters(int nArguments, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters, bool namedArgumentsAllowed)
-        {
-            for (int i = 0; i < nArguments; i++)
-            {
-                if (namedArgumentsAllowed && arguments != null && arguments[i] is SimpleNamedExpression sn)
-                {
-                    argumentParameters.Add(this.GetParameter(sn.Name.SimpleName));
-                }
-                else if (i < this.Parameters.Count)
-                {
-                    argumentParameters.Add(this.Parameters[i]);
-                }
-                else
-                {
-                    argumentParameters.Add(UnknownParameter);
-                }
-            }
+            return this.Layout.IsValidArgumentCount(this, argumentCount);
         }
 
         public Tabularity Tabularity
@@ -540,21 +445,6 @@ namespace Kusto.Language.Symbols
             }
         }
 
-        public bool IsValidArgumentCount(int argumentCount)
-        {
-            if (argumentCount < this.MinArgumentCount || argumentCount > this.MaxArgumentCount)
-                return false;
-
-            if (this.HasRepeatableParameters)
-            {
-                // argument count must include an even multiple of the repeating parameters
-                var nVariable = (this._lastRepeatableParameter - this._firstRepeatableParameter + 1);
-                return (argumentCount - this.Parameters.Count) % nVariable == 0;
-            }
-
-            return true;
-        }
-
         public string ReturnTypeDisplay
         {
             get
@@ -614,7 +504,7 @@ namespace Kusto.Language.Symbols
                 builder.Append(", ...");
             }
 
-            return $"{Symbol.Name}({builder}) => {this.ReturnTypeDisplay}";
+            return $"{Symbol?.Name ?? ""}({builder}) => {this.ReturnTypeDisplay}";
         }
 
         /// <summary>
@@ -675,7 +565,7 @@ namespace Kusto.Language.Symbols
             var argumentParameters = s_parameterListPool.AllocateFromPool();
             try
             {
-                this.GetArgumentParameters(argumentTypes.Count, argumentParameters);
+                this.GetArgumentParameters(argumentTypes, argumentParameters);
                 return GetReturnType(globals, argumentTypes, argumentParameters);
             }
             finally

@@ -946,10 +946,12 @@ namespace Kusto.Language
                 new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic));
 
         public static readonly FunctionSymbol Case =
-            new FunctionSymbol("case", ReturnTypeKind.Common,
-                new Parameter("predicate", ScalarTypes.Bool, maxOccurring: MaxRepeat),
-                new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic, maxOccurring: MaxRepeat),
-                new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic));
+            new FunctionSymbol("case", 
+                new Signature(ReturnTypeKind.Common,
+                    new Parameter("predicate", ScalarTypes.Bool, maxOccurring: MaxRepeat),
+                    new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic, maxOccurring: MaxRepeat),
+                    new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
+                .WithLayout(ParameterLayouts.BlockRepeating));
 
         public static readonly FunctionSymbol Assert =
             new FunctionSymbol("assert", ScalarTypes.Bool,
@@ -1276,7 +1278,7 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     m_ArraySort_ArraysArg,
                     m_ArraySort_NullsLastArg)
-                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort));
+                .WithLayout(ValidateArgumentsForArraySort));
 
         public static readonly FunctionSymbol ArraySortDesc =
             new FunctionSymbol("array_sort_desc",
@@ -1285,7 +1287,7 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     m_ArraySort_ArraysArg,
                     m_ArraySort_NullsLastArg)
-                .WithArgumentParametersBuilder(ValidateArgumentsForArraySort));
+                .WithLayout(ValidateArgumentsForArraySort));
 
         private static void ValidateArgumentsForArraySort(Signature signature, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters)
         {
@@ -1329,16 +1331,22 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Pack =
-            new FunctionSymbol("pack", ScalarTypes.Dynamic,
-                new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
-                new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+            new FunctionSymbol("pack", 
+                new Signature(
+                    ScalarTypes.Dynamic,
+                    new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
+                    new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+                .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackDictionary =
-            new FunctionSymbol("pack_dictionary", ScalarTypes.Dynamic,
-                new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
-                new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+            new FunctionSymbol("pack_dictionary", 
+                new Signature(
+                    ScalarTypes.Dynamic,
+                    new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
+                    new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+                .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 

@@ -172,7 +172,7 @@ namespace Kusto.Language
                      nam_Cohort,
                      nam_Dimension,
                      nam_Lookback)
-                .WithArgumentParametersBuilder((sig, args, list) =>
+                .WithLayout((sig, args, list) =>
                 {
                     // add these even if not that many arguments supplied.. should not cause a problem
                     list.Add(nam_IdColumn);
@@ -558,7 +558,7 @@ namespace Kusto.Language
                      SD_MaxSequenceSpan,
                      SD_Expr,
                      SD_Dimension)
-                 .WithArgumentParametersBuilder((sig, args, list) =>
+                 .WithLayout((sig, args, list) =>
                  {
                      list.Add(SD_TimelineColumn);
                      list.Add(SD_MaxSequenceStepWindows);

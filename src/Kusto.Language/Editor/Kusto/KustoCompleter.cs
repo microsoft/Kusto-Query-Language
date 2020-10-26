@@ -776,6 +776,11 @@ namespace Kusto.Language.Editor
                 argumentCount++;
             }
 
+            if (signatures != null && !signatures.Any(s => s.AllowsNamedArguments))
+            {
+                parameterName = null;
+            }
+
             return true;
         }
 
@@ -845,6 +850,7 @@ namespace Kusto.Language.Editor
 
                 HashSet<string> examples = null;
                 var possibleParameters = new List<Parameter>();
+                var knownParameter = false;
 
                 foreach (var sig in signatures)
                 {
@@ -934,16 +940,42 @@ namespace Kusto.Language.Editor
 
                     if (name != null)
                     {
-                        possibleParameters.Add(sig.GetParameter(name));
+                        var ap = sig.GetParameter(name);
+                        if (ap != Signature.UnknownParameter)
+                        {
+                            possibleParameters.Add(sig.GetParameter(name));
+                            knownParameter = true;
+                        }
                     }
                     else if (argumentIndex < arguments.Count)
                     {
-                        var argParams = sig.GetArgumentParameters(arguments);
-                        possibleParameters.Add(argParams[argumentIndex]);
+                        if (argumentIndex == arguments.Count - 1 && arguments[argumentIndex].IsMissing)
+                        {
+                            var prevArgs = arguments.Take(argumentIndex).ToList();
+                            sig.GetNextPossibleParameters(prevArgs, possibleParameters);
+                            if (possibleParameters.Count > 0)
+                            {
+                                knownParameter = true;
+                            }
+                        }
+                        else
+                        {
+                            var argParams = sig.GetArgumentParameters(arguments);
+                            var ap = argParams[argumentIndex];
+                            if (ap != Signature.UnknownParameter)
+                            {
+                                possibleParameters.Add(ap);
+                                knownParameter = true;
+                            }
+                        }
                     }
                     else
                     {
-                        sig.GetPossibleParameters(argumentIndex, arguments.Count, possibleParameters);
+                        sig.GetNextPossibleParameters(arguments, possibleParameters);
+                        if (possibleParameters.Count > 0)
+                        {
+                            knownParameter = true;
+                        }
                     }
 
                     foreach (var p in possibleParameters)
@@ -959,6 +991,13 @@ namespace Kusto.Language.Editor
                             }
                         }
                     }
+                }
+
+                // if we got through all the signature and did not match a known parameter
+                // then return no results and 'isolated' so there will be no completions
+                if (!knownParameter)
+                {
+                    return CompletionMode.Isolated;
                 }
 
                 if (examples != null)
@@ -1054,22 +1093,49 @@ namespace Kusto.Language.Editor
             return false;
         }
 
+        private static readonly ObjectPool<List<Expression>> s_expressionListPool =
+            new ObjectPool<List<Expression>>(() => new List<Expression>(), list => list.Clear());
+
         private bool IsArgumentNameRequired(Signature signature, IReadOnlyList<Expression> arguments, int argumentIndex)
         {
             if (argumentIndex > 0)
             {
-                var argumentParameters = signature.GetArgumentParameters(arguments);
-                var unnamedArgumentParameters = signature.GetArgumentParameters(arguments, respectNamedArguments: false);
-
-                for (int i = 0; i < argumentIndex; i++)
+                var unnamedArguments = s_expressionListPool.AllocateFromPool();
+                try
                 {
-                    // unordered named argument causes requirement to use named arguments
-                    if (argumentParameters[i] != unnamedArgumentParameters[i])
-                        return true;
+                    GetUnnamedArguments(arguments, unnamedArguments);
+                    var argumentParameters = signature.GetArgumentParameters(arguments);
+                    var unnamedArgumentParameters = signature.GetArgumentParameters(unnamedArguments);
+
+                    for (int i = 0; i < argumentIndex; i++)
+                    {
+                        // unordered named argument causes requirement to use named arguments
+                        if (argumentParameters[i] != unnamedArgumentParameters[i])
+                            return true;
+                    }
+                }
+                finally
+                {
+                    s_expressionListPool.ReturnToPool(unnamedArguments);
                 }
             }
 
             return false;
+        }
+
+        private static void GetUnnamedArguments(IReadOnlyList<Expression> arguments, List<Expression> unnamedArguments)
+        {
+            foreach (var arg in arguments)
+            {
+                if (arg is SimpleNamedExpression sn)
+                {
+                    unnamedArguments.Add(sn.Expression);
+                }
+                else
+                {
+                    unnamedArguments.Add(arg);
+                }
+            }
         }
 
         private HashSet<string> GetSpecifiedArgumentNames(IReadOnlyList<Expression> arguments)
@@ -1248,9 +1314,9 @@ namespace Kusto.Language.Editor
         private CompletionHint GetChildHint(SyntaxNode contextNode, int childIndex, CompletionHint @default = CompletionHint.None)
         {
             // if the context/child is an argument to a function or operator then determine the hint based on the defined parameter
-            if (TryGetFunctionOrOperatorArgument(contextNode, childIndex, out var signatures, out _, out var argumentIndex, out var argumentCount, out var parameterName))
+            if (TryGetFunctionOrOperatorArgument(contextNode, childIndex, out var signatures, out var arguments, out var argumentIndex, out var argumentCount, out var parameterName))
             {
-                return GetParameterHint(signatures, parameterName, argumentIndex, argumentCount);
+                return GetParameterHint(signatures, arguments, parameterName, argumentIndex);
             }
 
             while (true)
@@ -1292,9 +1358,15 @@ namespace Kusto.Language.Editor
         private static ObjectPool<List<Parameter>> s_parameterListPool =
             new ObjectPool<List<Parameter>>(() => new List<Parameter>(), list => list.Clear());
 
-        public CompletionHint GetParameterHint(IReadOnlyList<Signature> signatures, string parameterName, int iArgument, int nArguments)
+        public CompletionHint GetParameterHint(IReadOnlyList<Signature> signatures, IReadOnlyList<Expression> arguments, string parameterName, int iArgument)
         {
             var hint = CompletionHint.None;
+
+            // if iArgument is last argument, but also missing, don't use the last argument
+            if (iArgument == arguments.Count - 1 && arguments[iArgument].IsMissing)
+            {
+                arguments = arguments.Take(iArgument).ToList();
+            }
 
             foreach (var signature in signatures)
             {
@@ -1306,19 +1378,13 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        var parameterList = s_parameterListPool.AllocateFromPool();
-                        try
+                        if (iArgument < arguments.Count)
                         {
-                            signature.GetPossibleParameters(iArgument, nArguments, parameterList);
-
-                            foreach (var p in parameterList)
-                            {
-                                hint |= GetParameterHint(signature, p);
-                            }
+                            hint |= GetArgumentParameterHints(signature, arguments, iArgument);
                         }
-                        finally
+                        else
                         {
-                            s_parameterListPool.ReturnToPool(parameterList);
+                            hint |= GetNextPossibleParameterHints(signature, arguments);
                         }
                     }
                 }
@@ -1327,7 +1393,44 @@ namespace Kusto.Language.Editor
             return hint;
         }
 
-        private CompletionHint GetParameterHint(Signature signature, Parameter parameter)
+        private static CompletionHint GetNextPossibleParameterHints(Signature signature, IReadOnlyList<Expression> arguments)
+        {
+            var parameterList = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                CompletionHint hint = CompletionHint.None;
+
+                signature.GetNextPossibleParameters(arguments, parameterList);
+
+                foreach (var p in parameterList)
+                {
+                    hint |= GetParameterHint(signature, p);
+                }
+
+                return hint;
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(parameterList);
+            }
+        }
+
+        private static CompletionHint GetArgumentParameterHints(Signature signature, IReadOnlyList<Expression> arguments, int iArgument)
+        {
+            var parameterList = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                signature.GetArgumentParameters(arguments, parameterList);
+                var p = parameterList[iArgument];
+                return GetParameterHint(signature, p);
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(parameterList);
+            }
+        }
+
+        private static CompletionHint GetParameterHint(Signature signature, Parameter parameter)
         {
             if (parameter != null)
             {
@@ -1703,8 +1806,9 @@ namespace Kusto.Language.Editor
         private SyntaxToken GetTokenLeftOfPosition(int position)
         {
             var token = this.code.Syntax.GetTokenAt(position);
+            var hasAffinity = token != null && HasAffinity(token, position);
 
-            if (token != null && (position <= token.TextStart || token.Kind == SyntaxKind.EndOfTextToken))
+            if (token != null && (position <= token.TextStart || !hasAffinity || token.Kind == SyntaxKind.EndOfTextToken))
             {
                 token = token.GetPreviousToken();
             }

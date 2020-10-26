@@ -38,6 +38,84 @@ namespace Kusto.Language.Binding
     }
 
     /// <summary>
+    /// The kind of match that an argument can have with its corresponding signature parameter.
+    /// </summary>
+    internal enum ParameterMatchKind
+    {
+        // These are in order of which is better.. a better match is one that is more specific.
+
+        /// <summary>
+        /// There is no match between the argument and the parameter.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// The argument had an unknown type.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
+        /// The argument's type is not the excluded type
+        /// </summary>
+        NotType,
+
+        /// <summary>
+        /// The argument's type is a scalar type
+        /// </summary>
+        Scalar,
+
+        /// <summary>
+        /// The argument's type is a summable scalar type
+        /// </summary>
+        Summable,
+
+        /// <summary>
+        /// The argumet's type is a number
+        /// </summary>
+        Number,
+
+        /// <summary>
+        /// The argument type is compatible with the parameter type
+        /// </summary>
+        Compatible,
+
+        /// <summary>
+        /// The arguments type can be promoted to the parameter type
+        /// </summary>
+        Promoted,  // smaller set than all numbers
+
+        /// <summary>
+        /// The argument's type is tabular.
+        /// </summary>
+        Tabular,
+
+        /// <summary>
+        /// The argument's type is a table.
+        /// </summary>
+        Table,
+
+        /// <summary>
+        /// The argument's type is a database
+        /// </summary>
+        Database,
+
+        /// <summary>
+        /// The argument's type is a cluster
+        /// </summary>
+        Cluster,
+
+        /// <summary>
+        /// The argument's type is one of two possible parameter types
+        /// </summary>
+        OneOfTwo,  // one of two explicit types?
+
+        /// <summary>
+        /// The argument's type is an exact match for the parameter type
+        /// </summary>
+        Exact
+    }
+
+    /// <summary>
     /// Binding state that persists across multiple bindings (lifetime of <see cref="KustoCache"/>)
     /// </summary>
     internal class GlobalBindingCache
@@ -272,7 +350,7 @@ namespace Kusto.Language.Binding
             return outerScope;
         }
 
-        private static void DefaultSetSemanticInfo(SyntaxNode node, SemanticInfo info)
+        internal static void DefaultSetSemanticInfo(SyntaxNode node, SemanticInfo info)
         {
             if (info != null)
             {
@@ -2582,8 +2660,8 @@ namespace Kusto.Language.Binding
                 signature1.GetArgumentParameters(arguments, argumentParameters1);
                 signature2.GetArgumentParameters(arguments, argumentParameters2);
 
-                var matches1 = GetParameterMatchKind(signature1, argumentParameters1, arguments, argumentTypes, argumentParameters1[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
-                var matches2 = GetParameterMatchKind(signature2, argumentParameters2, arguments, argumentTypes, argumentParameters2[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
+                var matches1 = GetParameterMatchKind(signature1, argumentParameters1, argumentTypes, argumentParameters1[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
+                var matches2 = GetParameterMatchKind(signature2, argumentParameters2, argumentTypes, argumentParameters2[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
 
                 return matches1 > matches2;
             }
@@ -2611,8 +2689,8 @@ namespace Kusto.Language.Binding
                 {
                     if (GetParameterMatchKind(
                         signature, 
-                        argumentParameters, arguments, argumentTypes,
-                        argumentParameters[i], arguments[i], argumentTypes[i]) != MatchKind.None)
+                        argumentParameters, argumentTypes,
+                        argumentParameters[i], arguments[i], argumentTypes[i]) != ParameterMatchKind.None)
                     {
                         matches++;
                     }
@@ -2627,101 +2705,34 @@ namespace Kusto.Language.Binding
             return matches;
         }
 
-        /// <summary>
-        /// The kind of match that an argument can have with its corresponding signature parameter.
-        /// </summary>
-        private enum MatchKind
+        private ParameterMatchKind GetParameterMatchKind(
+            Signature signature,
+            IReadOnlyList<Parameter> argumentParameters,
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            Parameter parameter,
+            Expression argument,
+            TypeSymbol argumentType)
         {
-            // These are in order of which is better.. a better match is one that is more specific.
-
-            /// <summary>
-            /// There is no match between the argument and the parameter.
-            /// </summary>
-            None,
-
-            /// <summary>
-            /// The argument had an unknown type.
-            /// </summary>
-            Unknown,
-
-            /// <summary>
-            /// The argument's type is not the excluded type
-            /// </summary>
-            NotType,
-
-            /// <summary>
-            /// The argument's type is a scalar type
-            /// </summary>
-            Scalar,
-
-            /// <summary>
-            /// The argument's type is a summable scalar type
-            /// </summary>
-            Summable,
-
-            /// <summary>
-            /// The argumet's type is a number
-            /// </summary>
-            Number,
-
-            /// <summary>
-            /// The argument type is compatible with the parameter type
-            /// </summary>
-            Compatible,
-
-            /// <summary>
-            /// The arguments type can be promoted to the parameter type
-            /// </summary>
-            Promoted,  // smaller set than all numbers
-
-            /// <summary>
-            /// The argument's type is tabular.
-            /// </summary>
-            Tabular,
-
-            /// <summary>
-            /// The argument's type is a table.
-            /// </summary>
-            Table,
-
-            /// <summary>
-            /// The argument's type is a database
-            /// </summary>
-            Database,
-
-            /// <summary>
-            /// The argument's type is a cluster
-            /// </summary>
-            Cluster,
-
-            /// <summary>
-            /// The argument's type is one of two possible parameter types
-            /// </summary>
-            OneOfTwo,  // one of two explicit types?
-
-            /// <summary>
-            /// The argument's type is an exact match for the parameter type
-            /// </summary>
-            Exact
+            return GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType, AllowLooseParameterMatching(signature));
         }
 
         /// <summary>
         /// Determines the kind of match that the argument has with its corresponding signature parameter.
         /// </summary>
-        private MatchKind GetParameterMatchKind(
+        public static ParameterMatchKind GetParameterMatchKind(
             Signature signature, 
             IReadOnlyList<Parameter> argumentParameters, 
-            IReadOnlyList<Expression> arguments, 
             IReadOnlyList<TypeSymbol> argumentTypes, 
             Parameter parameter, 
             Expression argument, 
-            TypeSymbol argumentType)
+            TypeSymbol argumentType,
+            bool allowLooseParameterMatching)
         {
             if (parameter == null)
-                return MatchKind.None;
+                return ParameterMatchKind.None;
 
             if (argumentType == ScalarTypes.Unknown)
-                return MatchKind.Unknown;
+                return ParameterMatchKind.Unknown;
 
             if (parameter.DefaultValueIndicator != null
                 && argumentType == ScalarTypes.String
@@ -2729,17 +2740,17 @@ namespace Kusto.Language.Binding
                 && lit.LiteralValue is string value
                 && value == parameter.DefaultValueIndicator)
             {
-                return MatchKind.Exact;
+                return ParameterMatchKind.Exact;
             }
 
             if (argument is StarExpression)
             {
                 return (parameter.ArgumentKind == ArgumentKind.Star)
-                    ? MatchKind.Exact : MatchKind.None;
+                    ? ParameterMatchKind.Exact : ParameterMatchKind.None;
             }
             else if (parameter.ArgumentKind == ArgumentKind.Star)
             {
-                return MatchKind.None;
+                return ParameterMatchKind.None;
             }
 
             switch (parameter.TypeKind)
@@ -2749,99 +2760,98 @@ namespace Kusto.Language.Binding
                     {
                         if (parameter.DeclaredTypes.Count == 1)
                         {
-                            return MatchKind.Exact;
+                            return ParameterMatchKind.Exact;
                         }
                         else
                         {
-                            return MatchKind.OneOfTwo;
+                            return ParameterMatchKind.OneOfTwo;
                         }
                     }
                     else if (SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Promotable))
                     {
-                        return MatchKind.Promoted;
+                        return ParameterMatchKind.Promoted;
                     }
-                    else if (AllowLooseParameterMatching(signature)
+                    else if (allowLooseParameterMatching
                         && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Compatible))
                     {
-                        return MatchKind.Compatible;
+                        return ParameterMatchKind.Compatible;
                     }
                     break;
 
                 case ParameterTypeKind.Scalar:
                     if (argumentType.IsScalar)
-                        return MatchKind.Scalar;
+                        return ParameterMatchKind.Scalar;
                     break;
 
                 case ParameterTypeKind.Integer:
                     if (IsInteger(argumentType))
-                        return MatchKind.OneOfTwo;
+                        return ParameterMatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.RealOrDecimal:
                     if (IsRealOrDecimal(argumentType))
-                        return MatchKind.OneOfTwo;
+                        return ParameterMatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.StringOrDynamic:
                     if (IsStringOrDynamic(argumentType))
-                        return MatchKind.OneOfTwo;
+                        return ParameterMatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.IntegerOrDynamic:
                     if (IsIntegerOrDynamic(argumentType))
-                        return MatchKind.OneOfTwo;
+                        return ParameterMatchKind.OneOfTwo;
                     break;
 
                 case ParameterTypeKind.Number:
                     if (IsNumber(argumentType))
-                        return MatchKind.Number;
+                        return ParameterMatchKind.Number;
                     break;
 
                 case ParameterTypeKind.Summable:
                     if (IsSummable(argumentType))
-                        return MatchKind.Summable;
+                        return ParameterMatchKind.Summable;
                     break;
 
                 case ParameterTypeKind.Tabular:
                     if (IsTabular(argumentType))
-                        return MatchKind.Tabular;
+                        return ParameterMatchKind.Tabular;
                     break;
 
                 case ParameterTypeKind.Database:
                     if (IsDatabase(argumentType))
-                        return MatchKind.Database;
+                        return ParameterMatchKind.Database;
                     break;
 
                 case ParameterTypeKind.Cluster:
                     if (IsCluster(argumentType))
-                        return MatchKind.Cluster;
+                        return ParameterMatchKind.Cluster;
                     break;
 
                 case ParameterTypeKind.NotBool:
                     if (!SymbolsAssignable(argumentType, ScalarTypes.Bool))
-                        return MatchKind.NotType;
+                        return ParameterMatchKind.NotType;
                     break;
 
                 case ParameterTypeKind.NotRealOrBool:
                     if (!SymbolsAssignable(argumentType, ScalarTypes.Real)
                         && !SymbolsAssignable(argumentType, ScalarTypes.Bool))
-                        return MatchKind.NotType;
+                        return ParameterMatchKind.NotType;
                     break;
 
                 case ParameterTypeKind.NotDynamic:
                     if (!SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
-                        return MatchKind.NotType;
+                        return ParameterMatchKind.NotType;
                     break;
 
-                // TODO: verify these are doing the right thing...
                 case ParameterTypeKind.Parameter0:
-                    return GetParameterMatchKind(signature, argumentParameters, arguments, argumentTypes, argumentParameters[0], argument, argumentType);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[0], argument, argumentType, allowLooseParameterMatching);
 
                 case ParameterTypeKind.Parameter1:
-                    return GetParameterMatchKind(signature, argumentParameters, arguments, argumentTypes, argumentParameters[1], argument, argumentType);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[1], argument, argumentType, allowLooseParameterMatching);
 
                 case ParameterTypeKind.Parameter2:
-                    return GetParameterMatchKind(signature, argumentParameters, arguments, argumentTypes, argumentParameters[2], argument, argumentType);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[2], argument, argumentType, allowLooseParameterMatching);
 
                 case ParameterTypeKind.CommonScalar:
                 case ParameterTypeKind.CommonNumber:
@@ -2852,27 +2862,27 @@ namespace Kusto.Language.Binding
                     {
                         if (SymbolsAssignable(commonType, argumentType, Conversion.None))
                         {
-                            return MatchKind.Exact;
+                            return ParameterMatchKind.Exact;
                         }
                         else if (SymbolsAssignable(commonType, argumentType, Conversion.Promotable))
                         {
-                            return MatchKind.Promoted;
+                            return ParameterMatchKind.Promoted;
                         }
-                        else if (AllowLooseParameterMatching(signature)
+                        else if (allowLooseParameterMatching
                             && SymbolsAssignable(commonType, argumentType, Conversion.Compatible))
                         {
-                            return MatchKind.Compatible;
+                            return ParameterMatchKind.Compatible;
                         }
                         else if (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic
                                  && SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
                         {
-                            return MatchKind.Exact;
+                            return ParameterMatchKind.Exact;
                         }
                     }
                     break;
             }
 
-            return MatchKind.None;
+            return ParameterMatchKind.None;
         }
 #endregion
 
@@ -3227,7 +3237,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (argumentTypes != null)
                 {
-                    signature.GetArgumentParameters(argumentTypes.Count, argumentParameters);
+                    signature.GetArgumentParameters(argumentTypes, argumentParameters);
                 }
 
                 foreach (var p in signature.Parameters)
@@ -5799,10 +5809,10 @@ namespace Kusto.Language.Binding
                     switch (parameter.TypeKind)
                     {
                         case ParameterTypeKind.Declared:
-                            switch (GetParameterMatchKind(signature, argumentParameters, arguments, argumentTypes, parameter, argument, argumentType))
+                            switch (GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType))
                             {
-                                case MatchKind.Compatible:
-                                case MatchKind.None:
+                                case ParameterMatchKind.Compatible:
+                                case ParameterMatchKind.None:
                                     if (!AllowLooseParameterMatching(signature))
                                     {
                                         diagnostics.Add(DiagnosticFacts.GetTypeExpected(parameter.DeclaredTypes).WithLocation(argument));

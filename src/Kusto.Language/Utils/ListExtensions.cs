@@ -148,6 +148,35 @@ namespace Kusto.Language.Utils
 
             return true;
         }
+
+        /// <summary>
+        /// Returns the index of the first match or -1 if no matches.
+        /// </summary>
+        public static int FirstIndex<T>(this IReadOnlyList<T> list, Func<T, bool> predicate)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (predicate(list[i]))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns the index of the last match or -1 if no matches.
+        /// </summary>
+        public static int LastIndex<T>(this IReadOnlyList<T> list, Func<T, bool> predicate)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (predicate(list[i]))
+                    return i;
+            }
+
+            return -1;
+        }
+
     }
 
     /// <summary>

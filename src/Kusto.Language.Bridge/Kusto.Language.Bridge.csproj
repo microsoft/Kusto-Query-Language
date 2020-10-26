@@ -296,6 +296,9 @@
     <Compile Include="..\Kusto.Language\PlugIns.cs">
       <Link>Src\PlugIns.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Semantics\FakeExpression.cs">
+      <Link>Src\FakeExpression.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Semantics\SemanticInfo.cs">
       <Link>Src\SemanticInfo.cs</Link>
     </Compile>
@@ -340,6 +343,12 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Symbols\Parameter.cs">
       <Link>Src\Parameter.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Symbols\ParameterLayout.cs">
+      <Link>Src\ParameterLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Symbols\ParameterLayouts.cs">
+      <Link>Src\ParameterLayouts.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Symbols\ParameterSymbol.cs">
       <Link>Src\ParameterSymbol.cs</Link>

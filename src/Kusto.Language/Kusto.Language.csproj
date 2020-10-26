@@ -134,6 +134,8 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Symbols\GroupSymbol.cs" />
     <Compile Include="Binder\LocalScope.cs" />
+    <Compile Include="Symbols\ParameterLayout.cs" />
+    <Compile Include="Symbols\ParameterLayouts.cs" />
     <Compile Include="Symbols\PatternSymbol.cs" />
     <Compile Include="Symbols\OptionSymbol.cs" />
     <Compile Include="Symbols\Tabularity.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Parser\LexicalGrammar.cs" />
     <Compile Include="Parser\Combinators\Parsers.cs" />
     <Compile Include="Syntax\CustomNode.cs" />
+    <Compile Include="Semantics\FakeExpression.cs" />
     <Compile Include="Syntax\SeparatedElement.cs" />
     <Compile Include="Parser\Combinators\Source.cs" />
     <Compile Include="Syntax\SyntaxElement.cs" />
