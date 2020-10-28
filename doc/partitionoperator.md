@@ -99,7 +99,7 @@ StormEvents
 
 **Example: query non-overlapping data partitions**
 
-Sometimes it is useful (perf-wise) to run a complex subquery over non-overlapping
+Sometimes it is useful (performance-wise) to run a complex subquery over non-overlapping
 data partitions in a map/reduce style. The example below shows how to create a
 manual distribution of aggregation over 10 partitions.
 
