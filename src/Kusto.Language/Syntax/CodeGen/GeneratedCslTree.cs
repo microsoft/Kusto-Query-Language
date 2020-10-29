@@ -8165,6 +8165,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken Keyword { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public SyntaxToken ByKeyword { get; }
         
         public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
@@ -8172,23 +8174,25 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="SortOperator"/>.
         /// </summary>
-        internal SortOperator(SyntaxToken keyword, SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal SortOperator(SyntaxToken keyword, SyntaxList<NamedParameter> parameters, SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.Keyword = Attach(keyword);
+            this.Parameters = Attach(parameters);
             this.ByKeyword = Attach(byKeyword);
             this.Expressions = Attach(expressions);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return Keyword;
-                case 1: return ByKeyword;
-                case 2: return Expressions;
+                case 1: return Parameters;
+                case 2: return ByKeyword;
+                case 3: return Expressions;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -8198,8 +8202,9 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(Keyword);
-                case 1: return nameof(ByKeyword);
-                case 2: return nameof(Expressions);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(ByKeyword);
+                case 3: return nameof(Expressions);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -8209,8 +8214,9 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Keyword;
-                case 2: return CompletionHint.Scalar;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Keyword;
+                case 3: return CompletionHint.Scalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -8226,7 +8232,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new SortOperator((SyntaxToken)Keyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new SortOperator((SyntaxToken)Keyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class SortOperator */

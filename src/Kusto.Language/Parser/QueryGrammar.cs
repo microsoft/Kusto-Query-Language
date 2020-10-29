@@ -1843,10 +1843,13 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.OrderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                         Token(SyntaxKind.SortKeyword, CompletionKind.QueryPrefix, CompletionPriority.High)),
+                    List(First(
+                        TokenNamedParameterK(SyntaxKind.HintDotStrategyKeyword, KustoFacts.OrderByHintStrategies),
+                        KnownQueryOperatorParameter)),
                     RequiredToken(SyntaxKind.ByKeyword),
                     CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
-                    (keyword, byKeyword, list) =>
-                        (QueryOperator)new SortOperator(keyword, byKeyword, list))
+                    (keyword, parameters, byKeyword, list) =>
+                        (QueryOperator)new SortOperator(keyword, parameters, byKeyword, list))
                 .WithTag("<sort>");
 
             var ReorderExpression =
