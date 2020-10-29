@@ -565,7 +565,6 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-
         public static readonly FunctionSymbol Ipv4Compare  =
             new FunctionSymbol("ipv4_compare", ScalarTypes.Long,
                 new Parameter("ip1", ScalarTypes.String),
@@ -581,6 +580,13 @@ namespace Kusto.Language
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol Ipv4IsPrivate =
+            new FunctionSymbol("ipv4_is_private", ScalarTypes.Bool,
+                new Parameter("ip", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // Unhide after Nov-15-2020 (alexans)
         #endregion
 
         #region IPv6 functions
@@ -2541,6 +2547,7 @@ namespace Kusto.Language
             Ipv4Compare,
             Ipv4IsMatch,
             Ipv6Compare,
+            Ipv4IsPrivate,
             Ipv6IsMatch,
             #endregion
 
