@@ -470,15 +470,13 @@ namespace Kusto.Language
             new FunctionSymbol("gzip_decompress_from_base64_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO unhide and document once released
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol GzipCompressString =
             new FunctionSymbol("gzip_compress_to_base64_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO unhide and document once released
+            .WithResultNameKind(ResultNameKind.None);
 
         #endregion
 
