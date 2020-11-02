@@ -156,13 +156,13 @@ namespace Kusto.Language.Symbols
             {
                 this.Layout = layout;
             }
-            else if (!this.HasRepeatableParameters && this.AllowsNamedArguments)
+            else if (this.HasRepeatableParameters)
             {
-                this.Layout = ParameterLayouts.Fixed;
+                this.Layout = ParameterLayouts.Repeating;
             }
             else
             {
-                this.Layout = ParameterLayouts.Repeating;
+                this.Layout = ParameterLayouts.Fixed;
             }
         }
 
