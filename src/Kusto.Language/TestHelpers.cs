@@ -20,7 +20,7 @@ namespace Kusto.Language
 
         public static void Bind(SyntaxNode syntax, GlobalState globals)
         {
-            Binder.Bind(syntax, globals);
+            Binder.TryBind(syntax, globals);
         }
     }
 }

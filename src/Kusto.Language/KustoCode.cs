@@ -170,8 +170,10 @@ namespace Kusto.Language
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 localCache = new LocalBindingCache();
-                Binder.Bind(syntax, globals, localCache, null, cancellationToken);
-                resultType = DetermineResultType(syntax);
+                if (Binder.TryBind(syntax, globals, localCache, null, cancellationToken))
+                {
+                    resultType = DetermineResultType(syntax);
+                }
             }
 
             return new KustoCode(text, kind, globals, grammar, syntax, analyze && isAnalyzable, resultType, tokens, localCache, maxDepth);

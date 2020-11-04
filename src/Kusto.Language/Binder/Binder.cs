@@ -310,13 +310,16 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Do semantic analysis over the syntax tree.
         /// </summary>
-        public static void Bind(
+        public static bool TryBind(
             SyntaxNode root,
             GlobalState globals,
             LocalBindingCache localBindingCache = null,
             Action<SyntaxNode, SemanticInfo> semanticInfoSetter = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (!CanBind(root))
+                return false;
+
             var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
             lock (bindingCache)
             {
@@ -334,6 +337,7 @@ namespace Kusto.Language.Binding
                 var treeBinder = new TreeBinder(binder);
 
                 root.Accept(treeBinder);
+                return true;
             }
         }
 
@@ -362,7 +366,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Do semantic analysis over an inline expansion of a function body.
         /// </summary>
-        public static void BindExpansion(
+        public static bool TryBindExpansion(
             SyntaxNode expansionRoot,
             Binder outer,
             ClusterSymbol currentCluster,
@@ -371,6 +375,9 @@ namespace Kusto.Language.Binding
             LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
+            if (!CanBind(expansionRoot))
+                return false;
+
             var binder = new Binder(
                 outer._globals,
                 currentCluster ?? outer._currentCluster,
@@ -389,6 +396,35 @@ namespace Kusto.Language.Binding
 
             var treeBinder = new TreeBinder(binder);
             expansionRoot.Accept(treeBinder);
+
+            return true;
+        }
+
+        private static bool CanBind(SyntaxElement root)
+        {
+            var depth = ComputeMaxDepth(root);
+            return depth <= KustoCode.MaxAnalyzableSyntaxDepth;
+        }
+
+        /// <summary>
+        /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
+        /// </summary>
+        public static int ComputeMaxDepth(SyntaxElement root)
+        {
+            var maxDepth = 0;
+            var depth = 0;
+
+            SyntaxElement.Walk(
+                root,
+                fnBefore: e =>
+                {
+                    depth++;
+                    if (depth > maxDepth)
+                        maxDepth = depth;
+                },
+                fnAfter: e => depth--);
+
+            return maxDepth;
         }
 
         private void SetLocals(IEnumerable<Symbol> locals)
@@ -861,22 +897,25 @@ namespace Kusto.Language.Binding
         /// </summary>
         public static void GetSymbolsInScope(SyntaxNode root, int position, GlobalState globals, SymbolMatch match, IncludeFunctionKind include, List<Symbol> list, CancellationToken cancellationToken)
         {
-            var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
-            lock (bindingCache)
+            if (CanBind(root))
             {
-                var binder = new Binder(
-                    globals,
-                    globals.Cluster,
-                    globals.Database,
-                    null, // currentFunction
-                    GetDefaultOuterScope(globals),
-                    bindingCache,
-                    localBindingCache: null,
-                    semanticInfoSetter: null,
-                    cancellationToken: cancellationToken);
-                var startNode = GetStartNode(root, position);
-                binder.SetContext(startNode, position);
-                binder.GetSymbolsInContext(startNode, match, include, list);
+                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
+                lock (bindingCache)
+                {
+                    var binder = new Binder(
+                        globals,
+                        globals.Cluster,
+                        globals.Database,
+                        null, // currentFunction
+                        GetDefaultOuterScope(globals),
+                        bindingCache,
+                        localBindingCache: null,
+                        semanticInfoSetter: null,
+                        cancellationToken: cancellationToken);
+                    var startNode = GetStartNode(root, position);
+                    binder.SetContext(startNode, position);
+                    binder.GetSymbolsInContext(startNode, match, include, list);
+                }
             }
         }
 
@@ -885,22 +924,29 @@ namespace Kusto.Language.Binding
         /// </summary>
         public static TableSymbol GetRowScope(SyntaxNode root, int position, GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
-            lock (bindingCache)
+            if (CanBind(root))
             {
-                var binder = new Binder(
-                    globals,
-                    globals.Cluster,
-                    globals.Database,
-                    null, // currentFunction
-                    GetDefaultOuterScope(globals),
-                    bindingCache,
-                    localBindingCache: null,
-                    semanticInfoSetter: null,
-                    cancellationToken: cancellationToken);
-                var startNode = GetStartNode(root, position);
-                binder.SetContext(startNode, position);
-                return binder._rowScope;
+                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
+                lock (bindingCache)
+                {
+                    var binder = new Binder(
+                        globals,
+                        globals.Cluster,
+                        globals.Database,
+                        null, // currentFunction
+                        GetDefaultOuterScope(globals),
+                        bindingCache,
+                        localBindingCache: null,
+                        semanticInfoSetter: null,
+                        cancellationToken: cancellationToken);
+                    var startNode = GetStartNode(root, position);
+                    binder.SetContext(startNode, position);
+                    return binder._rowScope;
+                }
+            }
+            else
+            {
+                return TableSymbol.Empty;
             }
         }
 
@@ -3139,23 +3185,26 @@ namespace Kusto.Language.Binding
                             var isDatabaseFunction = IsDatabaseFunction(function);
                             var currentDatabase = isDatabaseFunction ? _globals.GetDatabase(function) : null;
                             var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
-                            BindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals);
-                            SetSignatureBindingInfo(signature, expansion);
+
+                            if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
+                            {
+                                SetSignatureBindingInfo(signature, expansion);
+                            }
+                            else
+                            {
+                                // don't return expansion that did not bind
+                                expansion = null;
+                            }
                         }
                     }
                     catch (Exception)
                     {
+                        // don't return expansion that failed in binding
+                        expansion = null;
                     }
 
                     AddExpansionToCache(callSiteInfo, expansion);
                 }
-
-#if false
-                var dx = body.GetContainedDiagnostics();
-                if (dx.Count > 0)
-                {
-                }
-#endif
 
                 return expansion;
             }

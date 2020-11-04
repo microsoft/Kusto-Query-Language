@@ -470,6 +470,9 @@ namespace Kusto.Language
         private static readonly string WorkloadGroupResult =
             "(WorkloadGroupName: string, WorkloadGroup:string)";
 
+        private static readonly string WorkloadGroupResourcesUtilizationResult =
+            "(WorkloadGroupName: string, Principal:string, ResourceKind:string, Capacity:long, Consumed:long, TimeWindow:timespan, MeasuredOn:datetime)";
+
         public static readonly CommandSymbol ShowWorkloadGroups =
             new CommandSymbol(nameof(ShowWorkloadGroups),
                 "show workload_groups",
@@ -494,6 +497,16 @@ namespace Kusto.Language
             new CommandSymbol(nameof(DropWorkloadGroup),
                 "drop workload_group WorkloadGroupName=<name>",
                 WorkloadGroupResult);
+
+        public static readonly CommandSymbol ShowWorkloadGroupsResourcesUtilization =
+            new CommandSymbol(nameof(ShowWorkloadGroupsResourcesUtilization),
+                "show workload_groups resources utilization",
+                WorkloadGroupResourcesUtilizationResult);
+
+        public static readonly CommandSymbol ShowWorkloadGroupResourcesUtilization =
+            new CommandSymbol(nameof(ShowWorkloadGroupResourcesUtilization),
+                "show workload_group WorkloadGroup=<name> resources utilization",
+                WorkloadGroupResourcesUtilizationResult);
         #endregion
         #endregion
 
@@ -1805,6 +1818,8 @@ namespace Kusto.Language
                 CreateOrAleterWorkloadGroup,
                 AlterMergeWorkloadGroup,
                 DropWorkloadGroup,
+                ShowWorkloadGroupResourcesUtilization,
+                ShowWorkloadGroupsResourcesUtilization,
                 #endregion
 
                 #region Policy Commands

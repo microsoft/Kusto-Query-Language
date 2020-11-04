@@ -128,7 +128,7 @@ namespace Kusto.Language.Symbols
             int minArgumentCount = 0;
             int maxArgumentCount = 0;
 
-            foreach (var p in parameters)
+            foreach (var p in this.Parameters)
             {
                 if (p.IsRepeatable)
                 {
