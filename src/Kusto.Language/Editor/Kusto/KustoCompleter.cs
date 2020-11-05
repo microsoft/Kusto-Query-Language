@@ -1145,9 +1145,9 @@ namespace Kusto.Language.Editor
             for (int i = 0; i < arguments.Count; i++)
             {
                 var arg = arguments[i];
-                if (arg is SimpleNamedExpression sn)
+                if (Binder.GetExpressionDeclaredName(arg) is string name)
                 {
-                    names.Add(sn.Name.SimpleName);
+                    names.Add(name);
                 }
             }
 

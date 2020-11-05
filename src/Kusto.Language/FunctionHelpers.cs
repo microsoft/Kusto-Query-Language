@@ -206,10 +206,7 @@ namespace Kusto.Language
             {
                 var expr = exprs[i].Element;
 
-                if (expr is SimpleNamedExpression sn)
-                {
-                    expr = sn.Expression;
-                }
+                expr = Kusto.Language.Binding.Binder.GetUnderlyingExpression(expr);
 
                 if (expr.ReferencedSymbol is ColumnSymbol c)
                 {

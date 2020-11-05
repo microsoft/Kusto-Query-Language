@@ -2261,11 +2261,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         internal static bool TryGetLiteralValue(Expression expression, out object value)
         {
-            // named parameter?
-            if (expression is SimpleNamedExpression sn)
-            {
-                expression = sn.Expression;
-            }
+            expression = GetUnderlyingExpression(expression);
 
             if (expression.IsLiteral)
             {
@@ -4410,6 +4406,9 @@ namespace Kusto.Language.Binding
             }
         }
 
+        /// <summary>
+        /// Gets the name that a function call expression will use as its column name in a projection.
+        /// </summary>
         private static string GetFunctionResultName(FunctionCallExpression fc, string defaultName = "", TableSymbol row = null)
         {
             var fs = fc.ReferencedSymbol as FunctionSymbol;
@@ -4501,6 +4500,9 @@ namespace Kusto.Language.Binding
             }
         }
 
+        /// <summary>
+        /// Gets the name that an expression will use for its column name in a projection.
+        /// </summary>
         public static string GetExpressionResultName(Expression expr, string defaultName = "", TableSymbol row = null)
         {
             switch (expr)
@@ -4543,6 +4545,38 @@ namespace Kusto.Language.Binding
                     return GetFunctionResultName(f, defaultName, row);
                 default:
                     return defaultName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the declared name of a <see cref="SimpleNamedExpression"/> or null. 
+        /// </summary>
+        public static string GetExpressionDeclaredName(Expression expr)
+        {
+            switch (expr)
+            {
+                case SimpleNamedExpression n:
+                    return n.Name.SimpleName;
+                case OrderedExpression o:
+                    return GetExpressionDeclaredName(o.Expression);
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the expression underlying adornments such as name assignment or ordering
+        /// </summary>
+        public static Expression GetUnderlyingExpression(Expression expression)
+        {
+            switch (expression)
+            {
+                case SimpleNamedExpression n:
+                    return GetUnderlyingExpression(n.Expression);
+                case OrderedExpression o:
+                    return GetUnderlyingExpression(o.Expression);
+                default:
+                    return expression;
             }
         }
 
@@ -5850,10 +5884,7 @@ namespace Kusto.Language.Binding
                     }
 
                     // see through any named argument
-                    if (argument is SimpleNamedExpression sn)
-                    {
-                        argument = sn.Expression;
-                    }
+                    argument = GetUnderlyingExpression(argument);
 
                     switch (parameter.TypeKind)
                     {

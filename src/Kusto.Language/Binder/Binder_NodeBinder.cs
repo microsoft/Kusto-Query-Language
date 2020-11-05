@@ -1438,9 +1438,11 @@ namespace Kusto.Language.Binding
                         var ofName = GetExpressionResultName(clause.OfExpression);
                         columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(ofName), _binder.GetResultTypeOrError(clause.OfExpression)));
 
-                        var byName = clause.ByExpression is SimpleNamedExpression sn
-                            ? sn.Name.SimpleName
-                            : "aggregated_" + ofName;
+                        var byName = GetExpressionDeclaredName(clause.ByExpression)
+                            ?? "aggregated_" + ofName;
+
+                        GetExpressionResultName(clause.ByExpression, null);
+
                         columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(byName), _binder.GetResultTypeOrError(clause.ByExpression)));
                     }
 

@@ -177,7 +177,8 @@ namespace Kusto.Language
                 ShowTableSchemaResult);
 
         private static readonly string TableSchema = "('(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')')";
-        private static readonly string TableProperties = "with '(' docstring '=' Documentation=<string> [',' folder! '=' FolderName=<string>] ')'";
+
+        private static readonly string TableProperties = "with '(' {docstring '='! Documentation=<string> | folder '='! FolderName=<string>, ','} ')'";
 
         public static readonly CommandSymbol CreateTable =
             new CommandSymbol(nameof(CreateTable),
