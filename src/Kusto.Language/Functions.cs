@@ -1185,8 +1185,7 @@ namespace Kusto.Language
             new FunctionSymbol("array_reverse", ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // slneimer to unhide after Nov/9
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Range =
             new FunctionSymbol("range", ScalarTypes.Dynamic,
