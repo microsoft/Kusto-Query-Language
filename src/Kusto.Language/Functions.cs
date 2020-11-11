@@ -2176,6 +2176,12 @@ namespace Kusto.Language
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol RowRank =
+            new FunctionSymbol("row_rank", ScalarTypes.Long,
+                new Parameter("column", ParameterTypeKind.NotDynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
         public static readonly FunctionSymbol RowWindowSession =
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
                 new Parameter("expr", ScalarTypes.DateTime),
@@ -2572,6 +2578,7 @@ namespace Kusto.Language
             InternalFunnelCompletion,
             RowNumber,
             RowCumSum,
+            RowRank,
             RowWindowSession,
             Prev,
             Next,
