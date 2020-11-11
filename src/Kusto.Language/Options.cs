@@ -19,7 +19,10 @@ namespace Kusto.Language
             new OptionSymbol("request_impersonation_disabled", "If specified, indicates that the service should not impersonate the caller's identity.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol MaterializedViewShuffleQuery =
-            new OptionSymbol("materialized_view_shuffle", "An hint to use shuffle strategy for materialized views that are referenced in the query. The property is an array of materialized views names and the shuffle keys to use. examples: 'dynamic(", ScalarTypes.Dynamic);
+            new OptionSymbol("materialized_view_shuffle",
+                "An hint to use shuffle strategy for materialized views that are referenced in the query.\r\n" +
+                "The property is an array of materialized views names and the shuffle keys to use.\r\n" +
+                "examples: 'dynamic(", ScalarTypes.Dynamic);
 
         public static readonly OptionSymbol MaxEntitiesToUnion =
             new OptionSymbol("query_max_entities_in_union", "Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
@@ -85,7 +88,9 @@ namespace Kusto.Language
             new OptionSymbol("query_datetimescope_to", "Controls the query's datetime scope (latest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
 
         public static readonly OptionSymbol QueryDistributionNodesSpanSize =
-            new OptionSymbol("query_distribution_nodes_span", "If set, controls the way sub-query merge behaves: the executing node will introduce an additional level in the query hierarchy for each sub-group of nodes; the size of the sub-group is set by this option.", ScalarTypes.Int);
+            new OptionSymbol("query_distribution_nodes_span", 
+                "If set, controls the way sub-query merge behaves: the executing node will introduce an additional level\r\n"
+                + "in the query hierarchy for each sub-group of nodes; the size of the sub-group is set by this option.", ScalarTypes.Int);
 
         public static readonly OptionSymbol QueryFanoutNodesPercent =
             new OptionSymbol("query_fanout_nodes_percent", "The percentage of nodes to fanout execution to.", ScalarTypes.Int);

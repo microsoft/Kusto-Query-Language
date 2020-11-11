@@ -202,7 +202,7 @@ namespace Kusto.Language.Editor
                     // write remainder of line (possible comments and/or EOL)
                     var nextLineBreakStart = TextFacts.GetNextLineBreakStart(trivia, whitespaceEnd);
                     var nextLineStart = TextFacts.GetNextLineStart(trivia, whitespaceEnd);
-                    lineEnd = nextLineStart >= 0 ? nextLineStart : whitespaceEnd;
+                    lineEnd = nextLineStart >= 0 ? nextLineStart : trivia.Length;
                     _builder.Append(trivia, whitespaceEnd, lineEnd - whitespaceEnd);
 
                     // if the last thing in the trivia was a line break, add indentation for following token.
