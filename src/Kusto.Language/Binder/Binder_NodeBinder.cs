@@ -660,6 +660,21 @@ namespace Kusto.Language.Binding
                         return new SemanticInfo(ScalarTypes.Dynamic);
                     }
                 }
+                else if (collectionType is TupleSymbol ts)
+                {
+                    if (IsInteger(indexerType) 
+                        && selector.Expression.IsConstant
+                        && TryGetIntValue(selector.Expression.ConstantValue, out var index))
+                    {
+                        if (index >= 0 && index < ts.Columns.Count)
+                        {
+                            var col = ts.Columns[index];
+                            return new SemanticInfo(col, col.Type);
+                        }
+                    }
+
+                    return new SemanticInfo(ScalarTypes.Unknown);
+                }
                 else if (collectionType == ScalarTypes.Unknown)
                 {
                     // unknown is unknown
@@ -669,6 +684,26 @@ namespace Kusto.Language.Binding
                 {
                     // element access only works for dynamic values
                     return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(selector));
+                }
+            }
+
+            private static bool TryGetIntValue(object value, out int intValue)
+            {
+                if (value is int iVal)
+                {
+                    intValue = iVal;
+                    return true;
+                }
+                else if (value is long longVal)
+                {
+
+                    intValue = (int)longVal;
+                    return true;
+                }
+                else
+                {
+                    intValue = 0;
+                    return false;
                 }
             }
 

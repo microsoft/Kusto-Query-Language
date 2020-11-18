@@ -123,6 +123,11 @@ namespace Kusto.Language
                 "show database (schema | DatabaseName=<database> schema) [if_later_than Version=<string>] as json",
                 "(DatabaseSchema: string)");
 
+        public static readonly CommandSymbol ShowDatabaseSchemaAsCslScript =
+            new CommandSymbol(nameof(ShowDatabaseSchemaAsCslScript),
+                "show database (schema | DatabaseName=<database> schema) [if_later_than Version=<string>] as csl script",
+                "(DatabaseSchemaScript: string)");
+
         public static readonly CommandSymbol ShowDatabasesSchema =
             new CommandSymbol(nameof(ShowDatabasesSchema),
                 "show databases '(' { DatabaseName=<database> [if_later_than Version=<string>], ',' }+ ')' schema [details]",
@@ -1750,6 +1755,7 @@ namespace Kusto.Language
                 SetAccess,
                 ShowDatabaseSchema,
                 ShowDatabaseSchemaAsJson,
+                ShowDatabaseSchemaAsCslScript,
                 ShowDatabasesSchema,
                 ShowDatabasesSchemaAsJson,
 
