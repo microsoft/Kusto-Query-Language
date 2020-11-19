@@ -66,6 +66,38 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> StorageTypes = ExtendedParamTypes;
 
+        public static string[] KnownQueryOperatorParameterNames = new string[] {
+            "bagexpansion",
+            "bin_legacy",
+            "decodeblocks",
+            "expandoutput",
+            "hint.concurrency",
+            "hint.distribution",
+            "hint.materialized",
+            "hint.num_partitions",
+            "hint.pass_filters",
+            "hint.pass_filters_column",
+            "hint.progressive_top",
+            "hint.remote",
+            "hint.shufflekey",
+            "hint.spread",
+            "hint.strategy",
+            "isfuzzy",
+            "kind",
+            "with_itemindex",
+            "with_match_id",
+            "with_step_name",
+            "withsource",
+            "with_source",
+            "__crossCluster",
+            "__crossDB",
+            "__id",
+            "__isFuzzy",
+            "__noWithSource",
+            "__packedColumn",
+            "__sourceColumnIndex",
+          };
+
         public static readonly IReadOnlyList<string> ChartTypes = new string[]
         {
             "table", "list", "barchart", "piechart", "ladderchart", "timechart", "linechart", "anomalychart", "pivotchart", "areachart",

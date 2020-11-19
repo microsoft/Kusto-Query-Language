@@ -1090,14 +1090,14 @@ namespace Kusto.Language.Parsing
             var QueryOperatorParameter =
                 NamedParameter(
                     First(
-                        Token(KnownQueryOperatorParameterNames).Hide(),
+                        Token(KustoFacts.KnownQueryOperatorParameterNames).Hide(),
                         Token(SyntaxKind.IdentifierToken)), // allows for unknown by parser operator parameter names
                     QueryOperatorParameterType).Hide();
 
             // just like QueryOperatorParameters, except it only allows known parameter names
             var KnownQueryOperatorParameter =
                 NamedParameter(
-                    Token(KnownQueryOperatorParameterNames).Hide(),
+                    Token(KustoFacts.KnownQueryOperatorParameterNames).Hide(),
                     QueryOperatorParameterType).Hide();
             #endregion
 
@@ -3055,17 +3055,6 @@ namespace Kusto.Language.Parsing
                     return true;
             }
         }
-
-        private static string[] KnownQueryOperatorParameterNames = new string[] {
-            "kind", "withsource", "with_source", "bagexpansion",
-            "hint.concurrency", "hint.materialized", "hint.spread", "hint.remote", "hint.strategy", "hint.shufflekey", "hint.num_partitions",
-            "expandoutput", "isfuzzy",
-            "bin_legacy",
-            "decodeblocks",
-            "with_itemindex",
-            "__packedColumn", "__noWithSource", "__sourceColumnIndex",
-            "__crossDB", "__crossCluster", "__isFuzzy"
-          };
 
         private static Parser<LexicalToken, NamedParameter> NamedParameter(Parser<LexicalToken, SyntaxToken> tokenParser, Parser<LexicalToken, Expression> valueParser, CompletionHint expressionHint = CompletionHint.None) =>
             Rule(
