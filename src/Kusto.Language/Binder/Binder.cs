@@ -116,6 +116,19 @@ namespace Kusto.Language.Binding
     }
 
     /// <summary>
+    /// A <see cref="SyntaxTree"/> that represents the expansion of a function call.
+    /// </summary>
+    internal class Expansion : SyntaxTree
+    {
+        public FunctionBody Body => (FunctionBody)this.Root;
+
+        public Expansion(FunctionBody body)
+            : base(body)
+        {
+        }
+    }
+
+    /// <summary>
     /// Binding state that persists across multiple bindings (lifetime of <see cref="KustoCache"/>)
     /// </summary>
     internal class GlobalBindingCache
@@ -129,8 +142,8 @@ namespace Kusto.Language.Binding
         internal readonly Dictionary<IReadOnlyList<TableSymbol>, TableSymbol> CommonColumnsMap =
             new Dictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
 
-        internal Dictionary<CallSiteInfo, Syntax.FunctionBody> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, Syntax.FunctionBody>(CallSiteInfo.Comparer.Instance);
+        internal Dictionary<CallSiteInfo, Expansion> CallSiteToExpansionMap =
+            new Dictionary<CallSiteInfo, Expansion>(CallSiteInfo.Comparer.Instance);
     }
 
     /// <summary>
@@ -141,8 +154,8 @@ namespace Kusto.Language.Binding
         internal readonly HashSet<Signature> SignaturesComputingExpansion
             = new HashSet<Signature>();
 
-        internal Dictionary<CallSiteInfo, Syntax.FunctionBody> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, Syntax.FunctionBody>(CallSiteInfo.Comparer.Instance);
+        internal Dictionary<CallSiteInfo, Expansion> CallSiteToExpansionMap =
+            new Dictionary<CallSiteInfo, Expansion>(CallSiteInfo.Comparer.Instance);
     }
 
     internal class CallSiteInfo
@@ -311,13 +324,13 @@ namespace Kusto.Language.Binding
         /// Do semantic analysis over the syntax tree.
         /// </summary>
         public static bool TryBind(
-            SyntaxNode root,
+            SyntaxTree tree,
             GlobalState globals,
             LocalBindingCache localBindingCache = null,
             Action<SyntaxNode, SemanticInfo> semanticInfoSetter = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (!CanBind(root))
+            if (!tree.IsSafeToRecurse)
                 return false;
 
             var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
@@ -336,7 +349,7 @@ namespace Kusto.Language.Binding
 
                 var treeBinder = new TreeBinder(binder);
 
-                root.Accept(treeBinder);
+                tree.Root.Accept(treeBinder);
                 return true;
             }
         }
@@ -367,7 +380,7 @@ namespace Kusto.Language.Binding
         /// Do semantic analysis over an inline expansion of a function body.
         /// </summary>
         public static bool TryBindExpansion(
-            SyntaxNode expansionRoot,
+            SyntaxTree expansionTree,
             Binder outer,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
@@ -375,7 +388,7 @@ namespace Kusto.Language.Binding
             LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
-            if (!CanBind(expansionRoot))
+            if (!expansionTree.IsSafeToRecurse)
                 return false;
 
             var binder = new Binder(
@@ -395,36 +408,9 @@ namespace Kusto.Language.Binding
             }
 
             var treeBinder = new TreeBinder(binder);
-            expansionRoot.Accept(treeBinder);
+            expansionTree.Root.Accept(treeBinder);
 
             return true;
-        }
-
-        private static bool CanBind(SyntaxElement root)
-        {
-            var depth = ComputeMaxDepth(root);
-            return depth <= KustoCode.MaxAnalyzableSyntaxDepth;
-        }
-
-        /// <summary>
-        /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
-        /// </summary>
-        public static int ComputeMaxDepth(SyntaxElement root)
-        {
-            var maxDepth = 0;
-            var depth = 0;
-
-            SyntaxElement.Walk(
-                root,
-                fnBefore: e =>
-                {
-                    depth++;
-                    if (depth > maxDepth)
-                        maxDepth = depth;
-                },
-                fnAfter: e => depth--);
-
-            return maxDepth;
         }
 
         private void SetLocals(IEnumerable<Symbol> locals)
@@ -895,9 +881,9 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets all the symbols that are in scope at the text position.
         /// </summary>
-        public static void GetSymbolsInScope(SyntaxNode root, int position, GlobalState globals, SymbolMatch match, IncludeFunctionKind include, List<Symbol> list, CancellationToken cancellationToken)
+        public static void GetSymbolsInScope(SyntaxTree tree, int position, GlobalState globals, SymbolMatch match, IncludeFunctionKind include, List<Symbol> list, CancellationToken cancellationToken)
         {
-            if (CanBind(root))
+            if (tree.IsSafeToRecurse)
             {
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
                 lock (bindingCache)
@@ -912,7 +898,7 @@ namespace Kusto.Language.Binding
                         localBindingCache: null,
                         semanticInfoSetter: null,
                         cancellationToken: cancellationToken);
-                    var startNode = GetStartNode(root, position);
+                    var startNode = GetStartNode(tree.Root, position);
                     binder.SetContext(startNode, position);
                     binder.GetSymbolsInContext(startNode, match, include, list);
                 }
@@ -922,9 +908,9 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the <see cref="TableSymbol"/> that is in scope as the implicit set of columns accessible within a query.
         /// </summary>
-        public static TableSymbol GetRowScope(SyntaxNode root, int position, GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
+        public static TableSymbol GetRowScope(SyntaxTree tree, int position, GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (CanBind(root))
+            if (tree.IsSafeToRecurse)
             {
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
                 lock (bindingCache)
@@ -939,7 +925,7 @@ namespace Kusto.Language.Binding
                         localBindingCache: null,
                         semanticInfoSetter: null,
                         cancellationToken: cancellationToken);
-                    var startNode = GetStartNode(root, position);
+                    var startNode = GetStartNode(tree.Root, position);
                     binder.SetContext(startNode, position);
                     return binder._rowScope;
                 }
@@ -2216,14 +2202,14 @@ namespace Kusto.Language.Binding
             else
             {
                 var expansion = this.GetCallSiteExpansion(signature, arguments, argumentTypes, outerScope);
-                var returnType = expansion?.Expression?.ResultType ?? ErrorSymbol.Instance;
-                return new SignatureResult(returnType, () => expansion);
+                var returnType = expansion?.Body?.Expression?.ResultType ?? ErrorSymbol.Instance;
+                return new SignatureResult(returnType, () => expansion?.Root);
             }
         }
 
         private Func<SyntaxNode> GetDeferredCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
         {
-            SyntaxNode expansion = null;
+            Expansion expansion = null;
             var args = arguments.ToReadOnly(); // force copy
             var types = argumentTypes.ToReadOnly(); // force copy
 
@@ -2238,7 +2224,7 @@ namespace Kusto.Language.Binding
                     }
                 }
 
-                return expansion;
+                return expansion.Root;
             };
         }
 
@@ -3153,7 +3139,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the inline expansion of an invocation of this <see cref="Signature"/>.
         /// </summary>
-        internal FunctionBody GetCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
+        internal Expansion GetCallSiteExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
         {
             if (signature.ReturnKind != ReturnTypeKind.Computed)
                 return null;
@@ -3172,19 +3158,20 @@ namespace Kusto.Language.Binding
                     try
                     {
                         var functionBodyGrammar = QueryGrammar.From(_globals).FunctionBody;
-                        var body = GetFunctionBody(signature);
-                        expansion = functionBodyGrammar.ParseFirst(body, alwaysProduceEOF: false);
+                        var bodyText = GetFunctionBody(signature);
+                        var body = functionBodyGrammar.ParseFirst(bodyText, alwaysProduceEOF: false);
 
-                        if (expansion != null)
+                        if (body != null)
                         {
                             var function = signature.Symbol as FunctionSymbol;
                             var isDatabaseFunction = IsDatabaseFunction(function);
                             var currentDatabase = isDatabaseFunction ? _globals.GetDatabase(function) : null;
                             var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
+                            expansion = new Expansion(body);
 
                             if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {
-                                SetSignatureBindingInfo(signature, expansion);
+                                SetSignatureBindingInfo(signature, expansion.Body);
                             }
                             else
                             {
@@ -3210,14 +3197,14 @@ namespace Kusto.Language.Binding
             }
 
             // Tries to get the expansion from global or local cache.
-            bool TryGetExpansionFromCache(CallSiteInfo callsite, out FunctionBody expansion)
+            bool TryGetExpansionFromCache(CallSiteInfo callsite, out Expansion expansion)
             {
                 return _localBindingCache.CallSiteToExpansionMap.TryGetValue(callsite, out expansion)
                     || _globalBindingCache.CallSiteToExpansionMap.TryGetValue(callsite, out expansion);
             }
 
             // Adds expansion to global or local cache.
-            void AddExpansionToCache(CallSiteInfo callsite, FunctionBody expansion)
+            void AddExpansionToCache(CallSiteInfo callsite, Expansion expansion)
             {
                 // if there is a call to unqualified table(t) then it may require resolving using dynamic scope, so don't cache anywhere
                 if ((callsite.Signature.FunctionBodyFacts & FunctionBodyFacts.Table) != 0)

@@ -20,7 +20,8 @@ namespace Kusto.Language
 
         public static void Bind(SyntaxNode syntax, GlobalState globals)
         {
-            Binder.TryBind(syntax, globals);
+            var tree = new SyntaxTree(syntax);
+            Binder.TryBind(tree, globals);
         }
     }
 }

@@ -428,6 +428,9 @@
     <Compile Include="..\Kusto.Language\Syntax\SyntaxToken.cs">
       <Link>Src\SyntaxToken.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Syntax\SyntaxTree.cs">
+      <Link>Src\SyntaxTree.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Syntax\SyntaxVisitor.cs">
       <Link>Src\SyntaxVisitor.cs</Link>
     </Compile>

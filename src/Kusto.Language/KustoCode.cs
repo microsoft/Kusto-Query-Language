@@ -26,9 +26,14 @@ namespace Kusto.Language
         public string Kind { get; }
 
         /// <summary>
-        /// The syntax of the parsed code.
+        /// The <see cref="SyntaxTree"/> of the parsed code.
         /// </summary>
-        public SyntaxNode Syntax { get; }
+        internal SyntaxTree Tree { get; }
+
+        /// <summary>
+        /// The root <see cref="SyntaxNode"/> of the parsed code.
+        /// </summary>
+        public SyntaxNode Syntax => Tree.Root;
 
         /// <summary>
         /// The grammar rule used to parse the code.
@@ -54,7 +59,7 @@ namespace Kusto.Language
         /// <summary>
         /// The deepest node depth of the syntax tree.
         /// </summary>
-        public int MaxDepth { get; }
+        public int MaxDepth => Tree.Depth;
 
         /// <summary>
         /// The tokens produced by the lexer.
@@ -82,23 +87,21 @@ namespace Kusto.Language
             string kind, 
             GlobalState globals, 
             Parser<LexicalToken> grammar, 
-            SyntaxNode syntax, 
+            SyntaxTree tree, 
             bool hasSemantics, 
             TypeSymbol resultType,
             LexicalToken[] lexerTokens, 
-            LocalBindingCache localCache, 
-            int maxDepth)
+            LocalBindingCache localCache)
         {
             this.Text = text;
             this.Kind = kind;
             this.Globals = globals;
             this.Grammar = grammar;
-            this.Syntax = syntax;
+            this.Tree = tree;
             this.HasSemantics = hasSemantics;
             this.ResultType = resultType;
             this.lexerTokens = lexerTokens;
             this.localCache = localCache;
-            this.MaxDepth = maxDepth;
         }
 
         /// <summary>
@@ -158,25 +161,27 @@ namespace Kusto.Language
                     break;
             }
 
-            var maxDepth = ComputeMaxDepth(syntax);
-            var isAnalyzable = maxDepth <= MaxAnalyzableSyntaxDepth;
+            var tree = new SyntaxTree(syntax);
 
             syntax.InitializeTriviaStarts();
 
             LocalBindingCache localCache = null;
-
             TypeSymbol resultType = null;
-            if (analyze && isAnalyzable)
+            var analyzed = false;
+
+            if (analyze)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                analyzed = true;
+
                 localCache = new LocalBindingCache();
-                if (Binder.TryBind(syntax, globals, localCache, null, cancellationToken))
+                if (Binder.TryBind(tree, globals, localCache, null, cancellationToken))
                 {
                     resultType = DetermineResultType(syntax);
                 }
             }
 
-            return new KustoCode(text, kind, globals, grammar, syntax, analyze && isAnalyzable, resultType, tokens, localCache, maxDepth);
+            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, localCache);
         }
 
         /// <summary>
@@ -210,27 +215,6 @@ namespace Kusto.Language
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
-        /// </summary>
-        private static int ComputeMaxDepth(SyntaxElement root)
-        {
-            var maxDepth = 0;
-            var depth = 0;
-
-            SyntaxElement.Walk(
-                root,
-                fnBefore: e =>
-                {
-                    depth++;
-                    if (depth > maxDepth)
-                        maxDepth = depth;
-                },
-                fnAfter: e => depth--);
-
-            return maxDepth;
         }
 
         /// <summary>
@@ -338,7 +322,7 @@ namespace Kusto.Language
 
             if (this.HasSemantics)
             {
-                Binder.GetSymbolsInScope(this.Syntax, position, this.Globals, match, include, symbols, cancellationToken);
+                Binder.GetSymbolsInScope(this.Tree, position, this.Globals, match, include, symbols, cancellationToken);
             }
 
             return symbols.ToReadOnly();

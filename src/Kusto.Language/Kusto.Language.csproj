@@ -187,6 +187,7 @@
     <Compile Include="Syntax\SyntaxFacts.cs" />
     <Compile Include="Parser\Combinators\TextSource.cs" />
     <Compile Include="Syntax\SyntaxKind.cs" />
+    <Compile Include="Syntax\SyntaxTree.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="Utils\Cancellation.cs" />
     <Compile Include="Utils\ChangeType.cs" />

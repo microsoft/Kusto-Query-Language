@@ -495,6 +495,31 @@ namespace Kusto.Language.Editor
                         AddRule(be.OpenBracket, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
                     }
                     break;
+
+                case Statement st:
+                    var first = st.GetFirstToken();
+                    if (first != null)
+                    {
+                        var prev = first.GetPreviousToken();
+                        if (prev != null)
+                        {
+                            switch (_options.StatementStyle)
+                            {
+                                case PlacementStyle.Smart:
+                                    if (st.Parent is SeparatedElement<Statement> se
+                                        && se.Parent is SyntaxList<SeparatedElement<Statement>> list)
+                                    {
+                                        AddRule(first, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(list, excluded: first)));
+                                    }
+                                    break;
+
+                                case PlacementStyle.NewLine:
+                                    AddRule(first, SpacingRule.From(SpacingKind.NewLine));
+                                    break;
+                            }
+                        }
+                    }
+                    break;
             }
         }
 

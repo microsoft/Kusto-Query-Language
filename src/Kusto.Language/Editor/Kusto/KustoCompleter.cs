@@ -372,11 +372,11 @@ namespace Kusto.Language.Editor
                 include &= IncludeFunctionKind.DatabaseFunctions;
             }
 
-            Binder.GetSymbolsInScope(this.code.Syntax, position, this.code.Globals, match, include, symbols, this.cancellationToken);
+            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, match, include, symbols, this.cancellationToken);
 
             var isInvoke = IsInvokeFunctionContext(contextNode);
             var rowScope = (isInvoke)
-                ? Binder.GetRowScope(this.code.Syntax, position, this.code.Globals, this.cancellationToken)
+                ? Binder.GetRowScope(this.code.Tree, position, this.code.Globals, this.cancellationToken)
                 : null;
 
             foreach (var symbol in symbols)
@@ -1015,7 +1015,7 @@ namespace Kusto.Language.Editor
         private void GetStringValuesInScope(int position, SyntaxNode contextNode, CompletionBuilder builder)
         {
             var symbols = new List<Symbol>();
-            Binder.GetSymbolsInScope(this.code.Syntax, position, this.code.Globals, SymbolMatch.Local, IncludeFunctionKind.All, symbols, this.cancellationToken);
+            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, SymbolMatch.Local, IncludeFunctionKind.All, symbols, this.cancellationToken);
 
             for (int i = symbols.Count - 1; i >= 0; i--)
             {

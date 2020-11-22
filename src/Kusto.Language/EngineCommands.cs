@@ -1275,16 +1275,25 @@ namespace Kusto.Language
 
         #region Data Ingestion
         private static readonly string SourceDataLocatorList = "'(' { SourceDataLocator=<string>, ',' }+ ')'";
-        private static readonly string PropertyList = "with '('! { PropertyName=<name> '='! PropertyValue=<value>, ',' }+ ')'";
+
+        private static string PropertyList(string propertyNameRule = null) =>
+            string.IsNullOrEmpty(propertyNameRule)
+                ? "with '('! { PropertyName=<name> '='! PropertyValue=<value>, ',' }+ ')'"
+                : $"with '('! {{ PropertyName=({propertyNameRule} | <name>) '='! PropertyValue=<value>, ',' }}+ ')'";
+
+        private static readonly string DataIngestionPropertyList =
+            PropertyList(
+                "ingestionMapping | ingestionMappingReference | creationTime | extend_schema | folder | format | ingestIfNotExists | " +
+                "ignoreFirstRecord | persistDetails | policy_ingestionTime | recreate_schema | tags | validationPolicy | zipPattern");
 
         public static readonly CommandSymbol IngestIntoTable =
             new CommandSymbol(nameof(IngestIntoTable),
-                $"ingest [async] into table! TableName=<table> {SourceDataLocatorList} [{PropertyList}]",
+                $"ingest [async] into table! TableName=<table> {SourceDataLocatorList} [{DataIngestionPropertyList}]",
                 "(ExtentId: guid, ItemLoaded: string, Duration: string, HasErrors: string, OperationId: guid)");
 
         public static readonly CommandSymbol IngestInlineIntoTable =
             new CommandSymbol(nameof(IngestInlineIntoTable),
-                $"ingest inline into! table TableName=<name> ('[' Data=<bracketed_input_data> ']' | {PropertyList} '<|'! Data=<input_data> | '<|' Data=<input_data>)",
+                $"ingest inline into! table TableName=<name> ('[' Data=<bracketed_input_data> ']' | {DataIngestionPropertyList} '<|'! Data=<input_data> | '<|' Data=<input_data>)",
                 "(ExtentId: guid)");
 
         private static readonly string DataIngestionSetAppendResult =
@@ -1292,22 +1301,22 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol SetTable =
             new CommandSymbol(nameof(SetTable), 
-                $"set [async] TableName=<name> [{PropertyList}] '<|' QueryOrCommand=<input_query>", 
+                $"set [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol AppendTable =
             new CommandSymbol(nameof(AppendTable), 
-                $"append [async] TableName=<table> [{PropertyList}] '<|' QueryOrCommand=<input_query>", 
+                $"append [async] TableName=<table> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrAppendTable =
             new CommandSymbol(nameof(SetOrAppendTable), 
-                $"set-or-append [async] TableName=<name> [{PropertyList}] '<|' QueryOrCommand=<input_query>", 
+                $"set-or-append [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrReplaceTable =
             new CommandSymbol(nameof(SetOrReplaceTable), 
-                $"set-or-replace [async] TableName=<name> [{PropertyList}] '<|' QueryOrCommand=<input_query>",
+                $"set-or-replace [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>",
                 DataIngestionSetAppendResult);
         #endregion
 
@@ -1316,24 +1325,24 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ExportToStorage =
             new CommandSymbol(nameof(ExportToStorage),
-                $"export [async] [compressed] to (csv|tsv|json|parquet) {DataConnectionStringList} [{PropertyList}] '<|' Query=<input_query>",
+                $"export [async] [compressed] to (csv|tsv|json|parquet) {DataConnectionStringList} [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
         public static readonly CommandSymbol ExportToSqlTable =
             new CommandSymbol(nameof(ExportToSqlTable),
-                $"export [async] to sql SqlTableName=<name> SqlConnectionString=<string> [{PropertyList}] '<|' Query=<input_query>",
+                $"export [async] to sql SqlTableName=<name> SqlConnectionString=<string> [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
         public static readonly CommandSymbol ExportToExternalTable =
             new CommandSymbol(nameof(ExportToExternalTable), 
-                $"export [async] to table ExternalTableName=<externaltable> [{PropertyList}] '<|' Query=<input_query>",
+                $"export [async] to table ExternalTableName=<externaltable> [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static readonly string OverClause = "over '('! { TableName=<name>, ',' }+ ')'";
 
         public static readonly CommandSymbol CreateOrAlterContinuousExport =
             new CommandSymbol(nameof(CreateOrAlterContinuousExport), 
-                $"create-or-alter continuous-export ContinuousExportName=<name> [{OverClause}] to table ExternalTableName=<externaltable> [{PropertyList}] '<|' Query=<input_query>",
+                $"create-or-alter continuous-export ContinuousExportName=<name> [{OverClause}] to table ExternalTableName=<externaltable> [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static readonly string ShowContinuousExportResult =
@@ -1721,7 +1730,7 @@ namespace Kusto.Language
         
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol(nameof(StoredQueryResultSet),
-                $"set stored_query_result StoredQueryResultName=<name> [{PropertyList}] '<|' Query=<input_query>",
+                $"set stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
         public static readonly CommandSymbol StoredQueryResultsShow =
