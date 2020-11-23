@@ -88,7 +88,7 @@ namespace Kusto.Language
             new OptionSymbol("query_datetimescope_to", "Controls the query's datetime scope (latest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
 
         public static readonly OptionSymbol QueryDistributionNodesSpanSize =
-            new OptionSymbol("query_distribution_nodes_span", 
+            new OptionSymbol("query_distribution_nodes_span",
                 "If set, controls the way sub-query merge behaves: the executing node will introduce an additional level\r\n"
                 + "in the query hierarchy for each sub-group of nodes; the size of the sub-group is set by this option.", ScalarTypes.Int);
 
@@ -152,10 +152,10 @@ namespace Kusto.Language
         public static readonly OptionSymbol ValidatePermissions =
             new OptionSymbol("validate_permissions", "Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
 
-        #if QUERY_COLD_DATA_SCAN_MAX_RECORDS
+#if QUERY_COLD_DATA_SCAN_MAX_RECORDS
         public static readonly OptionSymbol QueryColdDataScanMaxRecords =
             new OptionSymbol("query_cold_data_scan_max_records", "Enables limiting query to scanning no more than N records of the cold data.", ScalarTypes.Long);
-        #endif
+#endif
 
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
