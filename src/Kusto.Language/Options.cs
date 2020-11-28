@@ -107,6 +107,9 @@ namespace Kusto.Language
         public static readonly OptionSymbol QueryNow =
             new OptionSymbol("query_now", "Overrides the datetime value returned by the now(0s) function.", ScalarTypes.DateTime);
 
+        public static readonly OptionSymbol QueryParquetInShardEngine =
+            new OptionSymbol("query_parquet_in_shard_engine", "Force a Parquet external_table/externaldata query to run in EngineV3 (true) or EngineV2 (false)", ScalarTypes.Bool);
+        
         public static readonly OptionSymbol QueryResultsApplyGetSchema =
             new OptionSymbol("query_results_apply_getschema", "If set, retrieves the schema of each tabular data in the results of the query instead of the data itself.", ScalarTypes.Bool);
 
@@ -193,6 +196,7 @@ namespace Kusto.Language
             QueryForceRowLevelSecurity,
             QueryLanguage,
             QueryNow,
+            QueryParquetInShardEngine,
             QueryResultsApplyGetSchema,
             QueryResultsCacheMaxAge,
             RequestBlockRowLevelSecurity,
