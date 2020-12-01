@@ -448,27 +448,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateExternalTableMapping =
             new CommandSymbol(nameof(CreateExternalTableMapping),
-                "create external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "create external table ExternalTableName=<externaltable> mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol AlterExternalTableMapping =
             new CommandSymbol(nameof(AlterExternalTableMapping),
-                "alter external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "alter external table ExternalTableName=<externaltable> mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowExternalTableMappings =
             new CommandSymbol(nameof(ShowExternalTableMappings),
-                "show external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mappings",
+                "show external table ExternalTableName=<externaltable> mappings",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowExternalTableMapping =
             new CommandSymbol(nameof(ShowExternalTableMapping),
-                "show external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "show external table ExternalTableName=<externaltable> mapping MappingName=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol DropExternalTableMapping =
             new CommandSymbol(nameof(DropExternalTableMapping),
-                "drop external table ExternalTableName=<externaltable> MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "drop external table ExternalTableName=<externaltable> mapping MappingName=<string>",
                 TableIngestionMappingResult);
         #endregion
 
