@@ -1733,10 +1733,23 @@ namespace Kusto.Language
                 $"set stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
+        private static string StoredQueryResultsShowSchema =
+            "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
+
         public static readonly CommandSymbol StoredQueryResultsShow =
-            new CommandSymbol(nameof(StoredQueryResultsShow),
+            new CommandSymbol(nameof(StoredQueryResultsShow), 
                 "show stored_query_results",
-                "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)");
+                StoredQueryResultsShowSchema);
+
+        public static readonly CommandSymbol StoredQueryResultDrop =
+            new CommandSymbol(nameof(StoredQueryResultDrop),
+                "drop stored_query_result StoredQueryResultName=<name>",
+                StoredQueryResultsShowSchema);
+
+        public static readonly CommandSymbol StoredQueryResultsDrop =
+            new CommandSymbol(nameof(StoredQueryResultsDrop),
+                "drop stored_query_results by user Principal=<string>",
+                StoredQueryResultsShowSchema);
 
         #endregion
 
@@ -2112,6 +2125,8 @@ namespace Kusto.Language
                 // StoredQueryResults
                 StoredQueryResultSet,
                 StoredQueryResultsShow,
+                StoredQueryResultDrop,
+                StoredQueryResultsDrop,
             };
     }
 }
