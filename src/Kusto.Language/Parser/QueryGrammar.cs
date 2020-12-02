@@ -509,6 +509,9 @@ namespace Kusto.Language.Parsing
             var KeywordTokenLiteral =
                 AsTokenLiteral(KeywordAsIdentifier).WithTag("<keyword>");
 
+            var IdentifierOrKeywordTokenLiteral =
+                First(IdentifierTokenLiteral, KeywordTokenLiteral);
+
             var NullLiteralExpression =
                 Rule(
                     Token("null"),
@@ -626,21 +629,17 @@ namespace Kusto.Language.Parsing
                                 && t.Trivia.Length == 0)));
 
             var AnyQueryOperatorParameterName =
-                First(
-                    Token(SyntaxKind.IdentifierToken),
-                    Convert(
-                        ScanAnyQueryOperatorParameterName.Hide(),
-                        (IReadOnlyList<LexicalToken> list) =>
-                            SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text)))))
-                    .WithTag("<query-operator-parameter-name>");
+                Convert(
+                    ScanAnyQueryOperatorParameterName.Hide(),
+                    (IReadOnlyList<LexicalToken> list) =>
+                        SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
+                .WithTag("<query-operator-parameter-name>");
 
             var AnyQueryOperatorParameterValue =
                 First(
-                    IdentifierTokenLiteral,
-                    KeywordTokenLiteral,
-                    BooleanLiteral,
-                    NumericConstantExpression,
-                    StringOrCompoundStringLiteral);
+                    ConstantExpression.Hide(),
+                    IdentifierOrKeywordTokenLiteral,
+                    SimpleNameReference);
 
             var AnyQueryOperatorParameter =
                 If(And(AnyQueryOperatorParameterName, Token(SyntaxKind.EqualToken)),
@@ -678,34 +677,34 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterKind.StringLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(StringOrCompoundStringLiteral, SimpleNameReference, ConstantExpression.Hide()),
+                            First(StringOrCompoundStringLiteral, AnyQueryOperatorParameterValue),
                             MissingStringLiteral);
                     case QueryOperatorParameterKind.BoolLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter), 
-                            First(BooleanLiteralWithCompletion, SimpleNameReference, ConstantExpression.Hide()), 
+                            First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue), 
                             MissingBooleanLiteral);
-                    case QueryOperatorParameterKind.Integer:
-                    case QueryOperatorParameterKind.Number:
-                    case QueryOperatorParameterKind.Summable:
+                    case QueryOperatorParameterKind.IntegerLiteral:
+                    case QueryOperatorParameterKind.NumericLiteral:
+                    case QueryOperatorParameterKind.SummableLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(NumericConstantExpression, SimpleNameReference, ConstantExpression.Hide()), 
+                            First(NumericConstantExpression, AnyQueryOperatorParameterValue), 
                             MissingLongLiteral);
-                    case QueryOperatorParameterKind.Scalar:
+                    case QueryOperatorParameterKind.ScalarLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue);
-                    case QueryOperatorParameterKind.Identifier:
-                    case QueryOperatorParameterKind.IdentifierOrNumber:
+                    case QueryOperatorParameterKind.Word:
+                    case QueryOperatorParameterKind.WordOrNumber:
                         return parameter.Values.Count > 0
                             ? NamedParameter(
                                 QueryParameterName(parameter), 
-                                First(AsTokenLiteral(Token(parameter.Values)), AsTokenLiteral(Token(SyntaxKind.IdentifierToken)).Hide(), ConstantExpression.Hide()), 
+                                First(AsTokenLiteral(Token(parameter.Values)), AnyQueryOperatorParameterValue),
                                 MissingTokenLiteral(parameter.Values))
                             : NamedParameter(
                                 QueryParameterName(parameter),
-                                First(AsTokenLiteral(Token(SyntaxKind.IdentifierToken)), ConstantExpression.Hide()), 
+                                AnyQueryOperatorParameterValue,
                                 MissingTokenLiteral("token"));
                     case QueryOperatorParameterKind.NameDeclaration:
                         return NamedParameter(

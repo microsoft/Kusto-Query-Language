@@ -4944,16 +4944,20 @@ namespace Kusto.Language.Binding
             {
                 switch (qop.Kind)
                 {
-                    case QueryOperatorParameterKind.Integer:
+                    case QueryOperatorParameterKind.IntegerLiteral:
+                        CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsInteger(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Number:
+                    case QueryOperatorParameterKind.NumericLiteral:
+                        CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsNumber(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Scalar:
+                    case QueryOperatorParameterKind.ScalarLiteral:
+                        CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsScalar(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Summable:
+                    case QueryOperatorParameterKind.SummableLiteral:
+                        CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsSummable(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterKind.StringLiteral:
@@ -4967,14 +4971,14 @@ namespace Kusto.Language.Binding
                     case QueryOperatorParameterKind.Column:
                         CheckIsColumn(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Identifier:
-                    case QueryOperatorParameterKind.IdentifierOrNumber:
+                    case QueryOperatorParameterKind.Word:
+                    case QueryOperatorParameterKind.WordOrNumber:
                         CheckIsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
                         break;
                 }
 
-                if (qop.Kind != QueryOperatorParameterKind.Identifier 
-                    && qop.Kind != QueryOperatorParameterKind.IdentifierOrNumber
+                if (qop.Kind != QueryOperatorParameterKind.Word 
+                    && qop.Kind != QueryOperatorParameterKind.WordOrNumber
                     && qop.Values != null 
                     && qop.Values.Count > 0)
                 {
@@ -4989,20 +4993,20 @@ namespace Kusto.Language.Binding
             var type = GetResultTypeOrError(parameter.Expression);
             switch (qop.Kind)
             {
-                case QueryOperatorParameterKind.Integer:
-                    if (!IsInteger(type))
+                case QueryOperatorParameterKind.IntegerLiteral:
+                    if (!(parameter.Expression.IsLiteral && IsInteger(type)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Number:
-                    if (!IsNumber(type))
+                case QueryOperatorParameterKind.NumericLiteral:
+                    if (!(parameter.Expression.IsLiteral && IsNumber(type)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Scalar:
-                    if (!type.IsScalar)
+                case QueryOperatorParameterKind.ScalarLiteral:
+                    if (!(parameter.Expression.IsLiteral && type.IsScalar))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Summable:
-                    if (!IsSummable(type))
+                case QueryOperatorParameterKind.SummableLiteral:
+                    if (!(parameter.Expression.IsLiteral && IsSummable(type)))
                         return false;
                     break;
                 case QueryOperatorParameterKind.StringLiteral:
@@ -5017,18 +5021,18 @@ namespace Kusto.Language.Binding
                     if (!(GetReferencedSymbol(parameter.Expression) is ColumnSymbol))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Identifier:
+                case QueryOperatorParameterKind.Word:
                     if (!IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
-                case QueryOperatorParameterKind.IdentifierOrNumber:
+                case QueryOperatorParameterKind.WordOrNumber:
                     if (!IsNumber(type) && !IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
             }
 
-            if (qop.Kind != QueryOperatorParameterKind.Identifier 
-                && qop.Kind != QueryOperatorParameterKind.IdentifierOrNumber
+            if (qop.Kind != QueryOperatorParameterKind.Word 
+                && qop.Kind != QueryOperatorParameterKind.WordOrNumber
                 && qop.Values != null
                 && qop.Values.Count > 0)
             {
