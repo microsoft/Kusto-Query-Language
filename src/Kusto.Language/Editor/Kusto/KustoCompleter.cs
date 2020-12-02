@@ -665,9 +665,10 @@ namespace Kusto.Language.Editor
 
                 for (int i = 0, n = g.Annotations.Count; i < n; i++)
                 {
-                    if (g.Annotations[i] is CompletionHint hint)
+                    var hint = g.Annotations[i] as CompletionHint?;
+                    if (hint != null)
                     {
-                        match |= GetSymbolMatch(hint);
+                        match |= GetSymbolMatch(hint.Value);
                     }
                 }
             });

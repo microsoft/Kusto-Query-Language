@@ -442,7 +442,7 @@ namespace Kusto.Language.Binding
                 {
                     if (node.KindParameter != null)
                     {
-                        _binder.CheckQueryParameter(node.KindParameter, toScalarKind, dx);
+                        _binder.CheckQueryOperatorParameter(node.KindParameter, QueryOperatorParameters.ToScalarKindParameter, dx);
                     }
 
                     var resultType = _binder.GetResultType(node.Expression);
@@ -475,9 +475,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo toScalarKind =
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.ToScalarKinds);
-
             public override SemanticInfo VisitToTableExpression(ToTableExpression node)
             {
                 var dx = s_diagnosticListPool.AllocateFromPool();
@@ -485,7 +482,7 @@ namespace Kusto.Language.Binding
                 {
                     if (node.KindParameter != null)
                     {
-                        _binder.CheckQueryParameter(node.KindParameter, toTableKind, dx);
+                        _binder.CheckQueryOperatorParameter(node.KindParameter, QueryOperatorParameters.ToTableKindParameter, dx);
                     }
 
                     if (_binder.CheckIsTabular(node.Expression, dx))
@@ -501,9 +498,6 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(dx);
                 }
             }
-
-            private static readonly QueryParameterInfo toTableKind =
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.ToTableKinds);
 
             #endregion
 
@@ -932,7 +926,7 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
-            public override SemanticInfo VisitRenderNameList(RenderNameList node)
+            public override SemanticInfo VisitNameReferenceList(NameReferenceList node)
             {
                 return null;
             }
@@ -1057,6 +1051,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.FilterParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
                     var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
@@ -1076,6 +1071,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.TakeParameters, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
 
                     var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
@@ -1096,6 +1092,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SampleParameters, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
 
                     var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
@@ -1116,6 +1113,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SampleDistinctParameters, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
                     _binder.CheckIsColumn(node.OfExpression, diagnostics);
 
@@ -1330,7 +1328,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_SummarizeParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SummarizeParameters, diagnostics);
 
                     if (node.ByClause != null)
                     {
@@ -1354,13 +1352,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_SummarizeParameters = new QueryParameterInfo[]
-            {
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotShuffleKeyKeyword), QueryParameterKind.Column, isRepeatable: true),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotStrategyKeyword), QueryParameterKind.Identifier, values: KustoFacts.SummarizeHintStrategies),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotNumPartitions), QueryParameterKind.Integer, isRepeatable: false),
-            };
-
             public override SemanticInfo VisitDistinctOperator(DistinctOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1368,6 +1359,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DistinctParameters, diagnostics);
 
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
                     
@@ -1502,7 +1494,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_ConsumeParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.ConsumeParameters, diagnostics);
 
                     // consume doesn't produce anything
                     return new SemanticInfo(VoidSymbol.Instance, diagnostics);
@@ -1514,11 +1506,6 @@ namespace Kusto.Language.Binding
             }
 
             private static readonly TableSymbol s_ConsumeStatsSchema = new TableSymbol(new ColumnSymbol("Stats", ScalarTypes.Dynamic));
-
-            private static readonly QueryParameterInfo[] s_ConsumeParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo("decodeblocks", QueryParameterKind.BoolLiteral, isRepeatable: false),
-            };
 
             public override SemanticInfo VisitExecuteAndCacheOperator(ExecuteAndCacheOperator node)
             {
@@ -1546,6 +1533,7 @@ namespace Kusto.Language.Binding
                 var declaredNames = s_stringSetPool.AllocateFromPool();
                 try
                 {
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DataTableParameters, diagnostics);
                     CreateColumnsFromSchema(node.Schema, columns, declaredNames, diagnostics);
                     _binder.CheckDataValueTypes(node.Values, columns, diagnostics);
                     return new SemanticInfo(new TableSymbol(columns), diagnostics);
@@ -1571,11 +1559,7 @@ namespace Kusto.Language.Binding
 
                     if (node.WithClause != null)
                     {
-                        for (int i = 0, n = node.WithClause.Properties.Count; i < n; i++)
-                        {
-                            var prop = node.WithClause.Properties[i].Element;
-                            _binder.CheckIsScalar(prop.Expression, diagnostics);
-                        }
+                        // Does not check properties in with clause. Any property name is legal?
                     }
 
                     return new SemanticInfo(new TableSymbol(columns), diagnostics);
@@ -1594,6 +1578,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SortParameters, diagnostics);
 
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
@@ -1620,6 +1605,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SerializedParameters, diagnostics);
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
@@ -1644,7 +1630,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
-                    _binder.CheckQueryParameters(node.Parameters, s_AsParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.AsParameters, diagnostics);
                     
                     var resultTable = new TableSymbol(RowScopeOrEmpty.Columns)
                         .WithInheritableProperties(RowScopeOrEmpty);
@@ -1656,11 +1642,6 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                 }
             }
-
-            private static readonly QueryParameterInfo[] s_AsParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotMaterializedKeyword), QueryParameterKind.BoolLiteral),
-            };
 
             public override SemanticInfo VisitForkOperator(ForkOperator node)
             {
@@ -1724,7 +1705,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
-                    _binder.CheckQueryParameters(node.Parameters, s_PartitionParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.PartitionParameters, diagnostics);
 
                     var operand = node.Operand;
                     _binder.CheckIsColumn(node.ByExpression, diagnostics);
@@ -1760,21 +1741,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_PartitionParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotConcurrencyKeyword), new [] {
-                    new QueryParameterValueInfo(QueryParameterKind.Identifier, values: KustoFacts.JoinHintRemotes),
-                    new QueryParameterValueInfo(QueryParameterKind.Number)
-                }),
-
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotSpreadKeyword), new [] {
-                    new QueryParameterValueInfo(QueryParameterKind.Identifier, values: KustoFacts.JoinHintRemotes),
-                    new QueryParameterValueInfo(QueryParameterKind.Number)
-                }),
-
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotMaterializedKeyword), QueryParameterKind.BoolLiteral),
-            };
-
             public override SemanticInfo VisitSearchOperator(SearchOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1782,7 +1748,7 @@ namespace Kusto.Language.Binding
                 var tables = s_tableListPool.AllocateFromPool();
                 try
                 {
-                    _binder.CheckQueryParameters(node.Parameters, s_SearchParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SearchParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
                     columns.Add(new ColumnSymbol("$table", ScalarTypes.String));
@@ -1825,11 +1791,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_SearchParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.SearchKinds)
-            };
-
             public override SemanticInfo VisitFindOperator(FindOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1840,7 +1801,7 @@ namespace Kusto.Language.Binding
 
                 try
                 {
-                    _binder.CheckQueryParameters(node.Parameters, s_FindParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.FindParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
                     var withSource = node.Parameters.GetByName(KustoFacts.FindWithSourceProperty);
@@ -2033,11 +1994,6 @@ namespace Kusto.Language.Binding
                            (be.Kind == SyntaxKind.AndExpression || be.Kind == SyntaxKind.OrExpression))) != null;
             }
 
-            private static readonly QueryParameterInfo[] s_FindParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(KustoFacts.FindWithSourceProperty, QueryParameterKind.NameDeclaration)
-            };
-
             public override SemanticInfo VisitUnionOperator(UnionOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2045,7 +2001,7 @@ namespace Kusto.Language.Binding
                 var tables = s_tableListPool.AllocateFromPool();
                 try
                 {
-                    _binder.CheckQueryParameters(node.Parameters, s_UnionParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.UnionParameters, diagnostics);
 
                     var withSourceParameter = node.Parameters.GetByName(KustoFacts.UnionWithSourceProperties);
                     if (withSourceParameter != null)
@@ -2094,13 +2050,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_UnionParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.UnionKinds),
-                new QueryParameterInfo(KustoFacts.UnionWithSourceProperties, QueryParameterKind.NameDeclaration),
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.IsFuzzyKeyword), QueryParameterKind.BoolLiteral)
-            };
-
             public override SemanticInfo VisitLookupOperator(LookupOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2111,7 +2060,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_JoinParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.LookupParameters, diagnostics);
 
                     _binder.CheckIsTabular(node.Expression, diagnostics);
 
@@ -2191,7 +2140,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_JoinParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.JoinParameters, diagnostics);
 
                     _binder.CheckIsTabular(node.Expression, diagnostics);
 
@@ -2401,15 +2350,6 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
-            private static readonly QueryParameterInfo[] s_JoinParameters = new QueryParameterInfo[]
-            {
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.JoinKinds),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotRemoteKeyword), QueryParameterKind.Identifier, values: KustoFacts.JoinHintRemotes),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotShuffleKeyKeyword), QueryParameterKind.Column, isRepeatable: true),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotStrategyKeyword), QueryParameterKind.Identifier, values: KustoFacts.JoinHintStrategies),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.HintDotNumPartitions), QueryParameterKind.Integer, isRepeatable: false),
-            };
-
             public override SemanticInfo VisitRangeOperator(RangeOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2505,6 +2445,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.MakeSeriesParameters, diagnostics);
 
                     // check by clause first, because these columns are first in the result
                     if (node.ByClause != null)
@@ -2589,7 +2530,7 @@ namespace Kusto.Language.Binding
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_MvExpandParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.MvExpandParameters, diagnostics);
 
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
@@ -2644,12 +2585,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_MvExpandParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(KustoFacts.MvExpandBagExpansionProperty, QueryParameterKind.Identifier, values: KustoFacts.MvExpandBagExpansions),
-                new QueryParameterInfo(KustoFacts.MvExpandWithItemIndexProperty, QueryParameterKind.NameDeclaration)
-            };
-
             public override SemanticInfo VisitMvApplyOperator(MvApplyOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2660,7 +2595,7 @@ namespace Kusto.Language.Binding
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_MvApplyParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.MvApplyParameters, diagnostics);
 
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
@@ -2739,11 +2674,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo[] s_MvApplyParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(KustoFacts.MvApplyWithItemIndexProperty, QueryParameterKind.NameDeclaration)
-            };
-
             public override SemanticInfo VisitPrintOperator(PrintOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2775,13 +2705,13 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CheckQueryParameters(node.Parameters, s_ReduceQueryParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.ReduceParameters, diagnostics);
 
                     _binder.CheckIsExactType(node.Expression, ScalarTypes.String, diagnostics);
 
                     if (node.With != null)
                     {
-                        _binder.CheckQueryParameters(node.With.Parameters, s_ReduceWithParameters, diagnostics);
+                        _binder.CheckQueryOperatorParameters(node.With.Parameters, QueryOperatorParameters.ReduceWithParameters, diagnostics);
                     }
 
                     var resultType = new TableSymbol(s_ReduceColumns);
@@ -2800,17 +2730,6 @@ namespace Kusto.Language.Binding
                 new ColumnSymbol("Representative", ScalarTypes.String)
             };
 
-            private static readonly QueryParameterInfo[] s_ReduceQueryParameters = new[]
-            {
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: new [] { "source" })
-                };
-
-            private static readonly QueryParameterInfo[] s_ReduceWithParameters = new[]
-            {
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.ThresholdKeyword), QueryParameterKind.Number),
-                    new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.CharactersKeyword), ScalarTypes.String)
-                };
-
             public override SemanticInfo VisitRenderOperator(RenderOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2823,7 +2742,7 @@ namespace Kusto.Language.Binding
 
                     if (node.WithClause != null)
                     {
-                        _binder.CheckQueryParameters(node.WithClause.Properties, s_RenderProperties, diagnostics);
+                        _binder.CheckQueryOperatorParameters(node.WithClause.Properties, QueryOperatorParameters.RenderWithProperties, diagnostics);
                     }
 
                     _binder.GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
@@ -2840,34 +2759,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private static readonly QueryParameterInfo s_RenderKindProperty =
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.ChartKinds);
-
-            private static readonly QueryParameterInfo s_RenderTitleProperty =
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.TitleKeyword), ScalarTypes.String);
-
-            private static readonly QueryParameterInfo s_RenderAccumulateProperty =
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.AccumulateKeyword), QueryParameterKind.BoolLiteral);
-
-            private static readonly IReadOnlyList<QueryParameterInfo> s_RenderProperties = new QueryParameterInfo[]
-            {
-                s_RenderKindProperty,
-                s_RenderTitleProperty,
-                s_RenderAccumulateProperty,
-                new QueryParameterInfo("xcolumn", QueryParameterKind.NameDeclaration),
-                new QueryParameterInfo("ycolumns", QueryParameterKind.NameDeclarationList),
-                new QueryParameterInfo("anomalycolumns", QueryParameterKind.NameDeclarationList),
-                new QueryParameterInfo("series", QueryParameterKind.NameDeclarationList),
-                new QueryParameterInfo("xtitle", QueryParameterKind.StringLiteral),
-                new QueryParameterInfo("ytitle", QueryParameterKind.StringLiteral),
-                new QueryParameterInfo("xaxis", QueryParameterKind.Identifier, values: KustoFacts.ChartAxis),
-                new QueryParameterInfo("yaxis", QueryParameterKind.Identifier, values: KustoFacts.ChartAxis),
-                new QueryParameterInfo("legend", QueryParameterKind.Identifier, values: KustoFacts.ChartLegends),
-                new QueryParameterInfo("ysplit", QueryParameterKind.Identifier, values: KustoFacts.ChartYSplit),
-                new QueryParameterInfo("ymin", QueryParameterKind.Number),
-                new QueryParameterInfo("ymax", QueryParameterKind.Number),
-            };
-
             private SemanticInfo ParseVisitCommon(QueryOperator node, Expression expression, SyntaxList<SyntaxNode> patterns, SyntaxList<NamedParameter> parameters)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -2879,7 +2770,7 @@ namespace Kusto.Language.Binding
 
                     _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, columns);
 
-                    _binder.CheckQueryParameters(parameters, s_ParseParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(parameters, QueryOperatorParameters.ParseParameters, diagnostics);
                     _binder.CheckIsScalar(expression, diagnostics);
 
                     for (int i = 0, n = patterns.Count; i < n; i++)
@@ -2983,12 +2874,6 @@ namespace Kusto.Language.Binding
                 return ParseVisitCommon(node, node.Expression, node.Patterns, node.Parameters);
             }
 
-            private static readonly QueryParameterInfo[] s_ParseParameters = new QueryParameterInfo[]
-            {
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryParameterKind.Identifier, values: KustoFacts.ParseKinds),
-                new QueryParameterInfo(SyntaxFacts.GetText(SyntaxKind.FlagsKeyword), QueryParameterKind.Identifier)
-            };
-
             public override SemanticInfo VisitInvokeOperator(InvokeOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -3011,6 +2896,7 @@ namespace Kusto.Language.Binding
 
                 try
                 {
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.EvaluateParameters, diagnostics);
                     return new SemanticInfo(_binder.GetResultTypeOrError(node.FunctionCall), diagnostics);
                 }
                 finally
@@ -3040,6 +2926,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.ScanParameters, diagnostics);
 
                     // TODO: check other clauses here
 

@@ -4576,7 +4576,8 @@ namespace Kusto.Language.Binding
                 case NameReference nr:
                     return nr.Name.SimpleName;
                 case LiteralExpression le:
-                    if (le.Kind == SyntaxKind.StringLiteralExpression)
+                    if (le.Kind == SyntaxKind.StringLiteralExpression
+                        || le.Kind == SyntaxKind.TokenLiteralExpression)
                         return (string)le.LiteralValue;
                     break;
                 case CompoundStringLiteralExpression cs:
@@ -4873,152 +4874,15 @@ namespace Kusto.Language.Binding
 #endregion
 
 #region Check methods
-        private enum QueryParameterKind
-        {
-            /// <summary>
-            /// The parameter type is the type specified.
-            /// </summary>
-            Fixed,
 
-            /// <summary>
-            /// Any scalar type
-            /// </summary>
-            Scalar,
-
-            /// <summary>
-            /// Any scalar integer type (int, long)
-            /// </summary>
-            Integer,
-
-            /// <summary>
-            /// Either real or decimal
-            /// </summary>
-            RealOrDecimal,
-
-            /// <summary>
-            /// Either a string or a dynamic value
-            /// </summary>
-            StringOrDynamic,
-
-            /// <summary>
-            /// Any scalar numeric type (int, long, real, decimal)
-            /// </summary>
-            Number,
-
-            /// <summary>
-            /// A scalar string literal
-            /// </summary>
-            StringLiteral,
-
-            /// <summary>
-            /// A scalar boolean literal
-            /// </summary>
-            BoolLiteral,
-
-            /// <summary>
-            /// Any scalar type that is summable (number, timespan, datetime)
-            /// </summary>
-            Summable,
-
-            /// <summary>
-            /// The parameter is an identifier token (or keyword)
-            /// </summary>
-            Identifier,
-
-            /// <summary>
-            /// The parameter is a name declaration
-            /// </summary>
-            NameDeclaration,
-
-            /// <summary>
-            /// The parameter is a list of name declarations
-            /// </summary>
-            NameDeclarationList,
-
-            /// <summary>
-            /// The parameter is a column reference
-            /// </summary>
-            Column,
-        }
-
-        private class QueryParameterInfo
-        {
-            public IReadOnlyList<string> Names { get; }
-
-            public IReadOnlyList<QueryParameterValueInfo> ValueInfos { get; }
-
-            public bool IsRepeatable { get; }
-
-            public QueryParameterInfo(IReadOnlyList<string> names, IReadOnlyList<QueryParameterValueInfo> valueInfos, bool isRepeatable = false)
-            {
-                Names = names;
-                ValueInfos = valueInfos.ToReadOnly();
-                IsRepeatable = isRepeatable;
-            }
-
-            public QueryParameterInfo(string name, IReadOnlyList<QueryParameterValueInfo> valueInfos, bool isRepeatable = false)
-                : this(new[] { name }, valueInfos, isRepeatable)
-            {
-            }
-
-            public QueryParameterInfo(IReadOnlyList<string> names, QueryParameterKind kind, bool caseSensitive = true, IEnumerable<object> values = null, bool isRepeatable = false)
-                : this(names, new[] { new QueryParameterValueInfo(kind, caseSensitive, values) }, isRepeatable)
-            {
-            }
-
-            public QueryParameterInfo(IReadOnlyList<string> names, TypeSymbol fixedType, bool caseSensitive = true, IEnumerable<object> values = null, bool isRepeatable = false)
-                : this(names, new[] { new QueryParameterValueInfo(fixedType, caseSensitive, values) }, isRepeatable)
-            {
-            }
-
-            public QueryParameterInfo(string name, QueryParameterKind kind, bool caseSensitive = true, IEnumerable<object> values = null, bool isRepeatable = false)
-                : this(new[] { name }, new[] { new QueryParameterValueInfo(kind, null, caseSensitive, values) }, isRepeatable)
-            {
-            }
-
-            public QueryParameterInfo(string name, TypeSymbol fixedType, bool caseSensitive = true, IEnumerable<object> values = null, bool isRepeatable = false)
-                : this(new[] { name }, new[] { new QueryParameterValueInfo(fixedType, caseSensitive, values) }, isRepeatable)
-            {
-            }
-        }
-
-        private class QueryParameterValueInfo
-        {
-            public QueryParameterKind Kind { get; }
-
-            public TypeSymbol FixedType { get; }
-
-            public bool CaseSensitive { get; }
-
-            public IReadOnlyList<object> Values { get; }
-
-            internal QueryParameterValueInfo(QueryParameterKind kind, TypeSymbol fixedType, bool caseSensitive, IEnumerable<object> values)
-            {
-                Kind = kind;
-                FixedType = fixedType;
-                CaseSensitive = caseSensitive;
-                Values = values.ToReadOnly();
-            }
-
-            public QueryParameterValueInfo(QueryParameterKind kind, bool caseSensitive = true, IEnumerable<object> values = null)
-                : this(kind, null, caseSensitive, values)
-            {
-            }
-
-            public QueryParameterValueInfo(TypeSymbol fixedType, bool caseSensitive = true, IEnumerable<object> values = null)
-                : this(QueryParameterKind.Fixed, fixedType, caseSensitive, values)
-            {
-            }
-        }
-
-        private void CheckQueryParameters(SyntaxList<NamedParameter> parameters, IReadOnlyList<QueryParameterInfo> queryParameters, List<Diagnostic> diagnostics)
+        private void CheckQueryOperatorParameters(SyntaxList<NamedParameter> parameters, IReadOnlyList<QueryOperatorParameter> queryParameters, List<Diagnostic> diagnostics)
         {
             var names = s_stringSetPool.AllocateFromPool();
             try
             {
                 for (int i = 0, n = parameters.Count; i < n; i++)
                 {
-                    CheckQueryParameter(parameters[i], queryParameters, names, diagnostics);
+                    CheckQueryOperatorParameter(parameters[i], queryParameters, names, diagnostics);
                 }
             }
             finally
@@ -5027,14 +4891,14 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void CheckQueryParameters(SyntaxList<SeparatedElement<NamedParameter>> parameters, IReadOnlyList<QueryParameterInfo> queryParameters, List<Diagnostic> diagnostics)
+        private void CheckQueryOperatorParameters(SyntaxList<SeparatedElement<NamedParameter>> parameters, IReadOnlyList<QueryOperatorParameter> queryParameters, List<Diagnostic> diagnostics)
         {
             var names = s_stringSetPool.AllocateFromPool();
             try
             {
                 for (int i = 0, n = parameters.Count; i < n; i++)
                 {
-                    CheckQueryParameter(parameters[i].Element, queryParameters, names, diagnostics);
+                    CheckQueryOperatorParameter(parameters[i].Element, queryParameters, names, diagnostics);
                 }
             }
             finally
@@ -5043,32 +4907,29 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void CheckQueryParameter(NamedParameter parameter, IReadOnlyList<QueryParameterInfo> queryParameters, HashSet<string> namesAlreadySpecified, List<Diagnostic> diagnostics)
+        private void CheckQueryOperatorParameter(NamedParameter parameter, IReadOnlyList<QueryOperatorParameter> queryOperatorParameters, HashSet<string> namesAlreadySpecified, List<Diagnostic> diagnostics)
         {
             var name = parameter.Name.SimpleName;
             if (!string.IsNullOrEmpty(name))
             {
-                var info = GetQueryParameterInfo(name, queryParameters);
+                var qop = GetQueryOperatorParameter(name, queryOperatorParameters);
 
-                if (info != null)
+                if (qop != null)
                 {
-                    foreach (var n in info.Names)
+                    if (!qop.IsRepeatable)
                     {
-                        if (!info.IsRepeatable)
+                        if (namesAlreadySpecified.Contains(qop.Name)
+                            || (qop.Aliases.Count > 0 && qop.Aliases.Any(a => namesAlreadySpecified.Contains(a))))
                         {
-                            if (namesAlreadySpecified.Contains(n))
-                            {
-                                diagnostics.Add(DiagnosticFacts.GetParameterAlreadySpecified(name).WithLocation(parameter.Name));
-                                break;
-                            }
-                            else
-                            {
-                                namesAlreadySpecified.Add(n);
-                            }
+                            diagnostics.Add(DiagnosticFacts.GetParameterAlreadySpecified(name).WithLocation(parameter.Name));
+                        }
+                        else
+                        {
+                            namesAlreadySpecified.Add(qop.Name);
                         }
                     }
 
-                    CheckQueryParameter(parameter, info, diagnostics);
+                    CheckQueryOperatorParameter(parameter, qop, diagnostics);
                 }
                 else
                 {
@@ -5077,143 +4938,118 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void CheckQueryParameter(NamedParameter parameter, QueryParameterInfo info, List<Diagnostic> diagnostics)
+        private void CheckQueryOperatorParameter(NamedParameter parameter, QueryOperatorParameter qop, List<Diagnostic> diagnostics)
         {
-            if (!IsAnyQueryParameterKind(parameter, info))
+            if (!IsQueryOperatorParameterKind(parameter, qop))
             {
-                // generate error from first parameter kind
-                var valueInfo = info.ValueInfos[0];
-
-                switch (valueInfo.Kind)
+                switch (qop.Kind)
                 {
-                    case QueryParameterKind.Fixed:
-                        CheckIsType(parameter.Expression, valueInfo.FixedType, Conversion.Compatible, diagnostics);
-                        break;
-                    case QueryParameterKind.Integer:
+                    case QueryOperatorParameterKind.Integer:
                         CheckIsInteger(parameter.Expression, diagnostics);
                         break;
-                    case QueryParameterKind.Number:
+                    case QueryOperatorParameterKind.Number:
                         CheckIsNumber(parameter.Expression, diagnostics);
                         break;
-                    case QueryParameterKind.RealOrDecimal:
-                        CheckIsRealOrDecimal(parameter.Expression, diagnostics);
-                        break;
-                    case QueryParameterKind.Scalar:
+                    case QueryOperatorParameterKind.Scalar:
                         CheckIsScalar(parameter.Expression, diagnostics);
                         break;
-                    case QueryParameterKind.StringOrDynamic:
-                        CheckIsStringOrDynamic(parameter.Expression, diagnostics);
-                        break;
-                    case QueryParameterKind.Summable:
+                    case QueryOperatorParameterKind.Summable:
                         CheckIsSummable(parameter.Expression, diagnostics);
                         break;
-                    case QueryParameterKind.StringLiteral:
+                    case QueryOperatorParameterKind.StringLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsExactType(parameter.Expression, ScalarTypes.String, diagnostics);
                         break;
-                    case QueryParameterKind.BoolLiteral:
+                    case QueryOperatorParameterKind.BoolLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsExactType(parameter.Expression, ScalarTypes.Bool, diagnostics);
                         break;
-                    case QueryParameterKind.Column:
+                    case QueryOperatorParameterKind.Column:
                         CheckIsColumn(parameter.Expression, diagnostics);
                         break;
-                    case QueryParameterKind.Identifier:
-                        CheckIsTokenLiteral(parameter.Expression, valueInfo.Values, valueInfo.CaseSensitive, diagnostics);
+                    case QueryOperatorParameterKind.Identifier:
+                    case QueryOperatorParameterKind.IdentifierOrNumber:
+                        CheckIsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
                         break;
                 }
 
-                if (valueInfo.Kind != QueryParameterKind.Identifier && valueInfo.Values != null && valueInfo.Values.Count > 0)
+                if (qop.Kind != QueryOperatorParameterKind.Identifier 
+                    && qop.Kind != QueryOperatorParameterKind.IdentifierOrNumber
+                    && qop.Values != null 
+                    && qop.Values.Count > 0)
                 {
                     CheckIsLiteral(parameter.Expression, diagnostics);
-                    CheckLiteralValue(parameter.Expression, valueInfo.Values, valueInfo.CaseSensitive, diagnostics);
+                    CheckLiteralValue(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
                 }
             }
         }
 
-        private bool IsAnyQueryParameterKind(NamedParameter parameter, QueryParameterInfo info)
+        private bool IsQueryOperatorParameterKind(NamedParameter parameter, QueryOperatorParameter qop)
         {
             var type = GetResultTypeOrError(parameter.Expression);
-
-            foreach (var valueInfo in info.ValueInfos)
+            switch (qop.Kind)
             {
-                if (IsQueryParameterKind(parameter, valueInfo))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private bool IsQueryParameterKind(NamedParameter parameter, QueryParameterValueInfo valueInfo)
-        {
-            var type = GetResultTypeOrError(parameter.Expression);
-            switch (valueInfo.Kind)
-            {
-                case QueryParameterKind.Fixed:
-                    if (!IsType(parameter.Expression, valueInfo.FixedType, Conversion.Compatible))
-                        return false;
-                    break;
-                case QueryParameterKind.Integer:
+                case QueryOperatorParameterKind.Integer:
                     if (!IsInteger(type))
                         return false;
                     break;
-                case QueryParameterKind.Number:
+                case QueryOperatorParameterKind.Number:
                     if (!IsNumber(type))
                         return false;
                     break;
-                case QueryParameterKind.RealOrDecimal:
-                    if (!IsRealOrDecimal(type))
-                        return false;
-                    break;
-                case QueryParameterKind.Scalar:
+                case QueryOperatorParameterKind.Scalar:
                     if (!type.IsScalar)
                         return false;
                     break;
-                case QueryParameterKind.StringOrDynamic:
-                    if (!IsStringOrDynamic(type))
-                        return false;
-                    break;
-                case QueryParameterKind.Summable:
+                case QueryOperatorParameterKind.Summable:
                     if (!IsSummable(type))
                         return false;
                     break;
-                case QueryParameterKind.StringLiteral:
+                case QueryOperatorParameterKind.StringLiteral:
                     if (!(parameter.Expression.IsLiteral && IsType(parameter.Expression, ScalarTypes.String)))
                         return false;
                     break;
-                case QueryParameterKind.BoolLiteral:
+                case QueryOperatorParameterKind.BoolLiteral:
                     if (!(parameter.Expression.IsLiteral && IsType(parameter.Expression, ScalarTypes.Bool)))
                         return false;
                     break;
-                case QueryParameterKind.Column:
+                case QueryOperatorParameterKind.Column:
                     if (!(GetReferencedSymbol(parameter.Expression) is ColumnSymbol))
                         return false;
                     break;
-                case QueryParameterKind.Identifier:
-                    if (!IsTokenLiteral(parameter.Expression, valueInfo.Values, valueInfo.CaseSensitive))
+                case QueryOperatorParameterKind.Identifier:
+                    if (!IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
+                        return false;
+                    break;
+                case QueryOperatorParameterKind.IdentifierOrNumber:
+                    if (!IsNumber(type) && !IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
             }
 
-            if (valueInfo.Kind != QueryParameterKind.Identifier && valueInfo.Values != null && valueInfo.Values.Count > 0)
+            if (qop.Kind != QueryOperatorParameterKind.Identifier 
+                && qop.Kind != QueryOperatorParameterKind.IdentifierOrNumber
+                && qop.Values != null
+                && qop.Values.Count > 0)
             {
                 if (!parameter.Expression.IsLiteral)
                     return false;
 
-                if (!IsLiteralValue(parameter.Expression, valueInfo.Values, valueInfo.CaseSensitive))
+                if (!IsLiteralValue(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                     return false;
             }
 
             return true;
         }
 
-        private static QueryParameterInfo GetQueryParameterInfo(string name, IReadOnlyList<QueryParameterInfo> parameters)
+        private static QueryOperatorParameter GetQueryOperatorParameter(string name, IReadOnlyList<QueryOperatorParameter> parameters)
         {
-            for (int i = 0, n = parameters.Count; i < n; i++)
+            foreach (var p in parameters)
             {
-                if (parameters[i].Names.Contains(name))
+                if (p.Name == name
+                    || (p.Aliases.Count > 0 && p.Aliases.Contains(name)))
                 {
-                    return parameters[i];
+                    return p;
                 }
             }
 

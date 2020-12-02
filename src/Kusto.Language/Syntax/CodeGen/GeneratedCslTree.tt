@@ -1894,11 +1894,11 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
-        Name = "RenderNameList",
+        Name = "NameReferenceList",
         Doc = "",
         Base = "Expression",
         Sealed = true,
-        Kind = "RenderNameList",
+        Kind = "NameReferenceList",
         Properties = new GeneratedProperty[]
         {
             new GeneratedProperty { Name = "Names", Type = "SyntaxList<SeparatedElement<NameReference>>" },

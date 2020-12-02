@@ -183,7 +183,7 @@ namespace Kusto.Language
 
         public static readonly string MvExpandBagExpansionProperty = "bagexpansion";
 
-        public static readonly IReadOnlyList<string> MvExpandBagExpansions = new string[]
+        public static readonly IReadOnlyList<string> MvExpandKinds = new string[]
         {
             "bag", "array"
         };

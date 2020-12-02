@@ -117,6 +117,7 @@
     <Compile Include="Editor\QuickInfo.cs" />
     <Compile Include="Editor\SyntaxReference.cs" />
     <Compile Include="PlugIns.cs" />
+    <Compile Include="QueryOperatorParameters.cs" />
     <Compile Include="Symbols\ArgumentKind.cs" />
     <Compile Include="Binder\Binder_ContextBuilder.cs" />
     <Compile Include="Binder\Binder_NodeBinder.cs" />

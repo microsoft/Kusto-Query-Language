@@ -296,6 +296,9 @@
     <Compile Include="..\Kusto.Language\PlugIns.cs">
       <Link>Src\PlugIns.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\QueryOperatorParameters.cs">
+      <Link>Src\QueryOperatorParameters.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Semantics\FakeExpression.cs">
       <Link>Src\FakeExpression.cs</Link>
     </Compile>

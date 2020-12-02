@@ -261,6 +261,38 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
+        /// It does not show up in intellisense completion lists.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxToken> HiddenToken(string text)
+        {
+            return MatchText(text).WithTag(GetDefaultTag(text));
+        }
+
+        /// <summary>
+        /// A parser that consumes the next next <see cref="LexicalToken"/> if it has the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/>.
+        /// It does not show up in intellisense completion lists.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxToken> HiddenToken(SyntaxKind tokenKind)
+        {
+            return Match(t => t.Kind == tokenKind, lt => SyntaxToken.From(lt)).WithTag(GetDefaultTag(tokenKind));
+        }
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a single <see cref="SyntaxToken"/>.
+        /// It does not show up in intellisense completion lists.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxToken> HiddenToken(IReadOnlyList<string> texts)
+        {
+            Ensure.ArgumentNotNull(texts, nameof(texts));
+            var set = new HashSet<string>(texts);
+
+            var rule = Match(t => set.Contains(t.Text), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", texts.Select(t => GetDefaultTag(t))));
+
+            return rule;
+        }
+
+        /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> if it has the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(SyntaxKind kind, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null) =>
@@ -377,7 +409,8 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 missingElement != null ? (Func<TElement>)(() => (TElement)missingElement.Clone()) : null,
                 oneOrMore,
-                elements => new SyntaxList<TElement>(elements.ToArray()));
+                elements => 
+                    new SyntaxList<TElement>(elements.ToArray()));
         }
 
         /// <summary>
@@ -459,6 +492,16 @@ namespace Kusto.Language.Parsing
 
             return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
         }
+
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(Parser<LexicalToken, TElement> elementParser, TElement missingElement) where TElement : SyntaxNode =>
+            Produce(
+                Sequence(
+                    Required(elementParser.Cast<SyntaxElement>(), () => (SyntaxElement)missingElement.Clone()),
+                    ZeroOrMore(
+                        Sequence(
+                            Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),
+                            Rule(elementParser, l => (SyntaxElement)l)))),
+                elements => MakeSeparatedList<TElement>(elements));
 
         /// <summary>
         /// Constructs a SyntaxList&lt;SeparatedElement&lt;TElement&gt;&gt; from a list of items and separators.

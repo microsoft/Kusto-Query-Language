@@ -686,7 +686,7 @@
 
         RenderOperator,
         RenderWithClause,
-        RenderNameList,
+        NameReferenceList,
 
         SampleOperator,
         SampleDistinctOperator,

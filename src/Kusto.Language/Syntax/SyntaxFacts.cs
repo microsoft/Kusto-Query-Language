@@ -715,7 +715,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.RenderOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.RenderWithClause, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.RenderNameList, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.NameReferenceList, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.SampleOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.SampleDistinctOperator, "", SyntaxCategory.Node),

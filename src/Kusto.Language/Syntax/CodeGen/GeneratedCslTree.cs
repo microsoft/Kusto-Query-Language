@@ -9318,17 +9318,17 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class RenderOperator */
     
-    #region class RenderNameList
-    public sealed partial class RenderNameList : Expression
+    #region class NameReferenceList
+    public sealed partial class NameReferenceList : Expression
     {
-        public override SyntaxKind Kind => SyntaxKind.RenderNameList;
+        public override SyntaxKind Kind => SyntaxKind.NameReferenceList;
         
         public SyntaxList<SeparatedElement<NameReference>> Names { get; }
         
         /// <summary>
-        /// Constructs a new instance of <see cref="RenderNameList"/>.
+        /// Constructs a new instance of <see cref="NameReferenceList"/>.
         /// </summary>
-        internal RenderNameList(SyntaxList<SeparatedElement<NameReference>> names, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal NameReferenceList(SyntaxList<SeparatedElement<NameReference>> names, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.Names = Attach(names);
             this.Init();
@@ -9356,19 +9356,19 @@ namespace Kusto.Language.Syntax
         
         public override void Accept(SyntaxVisitor visitor)
         {
-            visitor.VisitRenderNameList(this);
+            visitor.VisitNameReferenceList(this);
         }
         public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
-            return visitor.VisitRenderNameList(this);
+            return visitor.VisitNameReferenceList(this);
         }
         
         protected override SyntaxElement CloneCore()
         {
-            return new RenderNameList((SyntaxList<SeparatedElement<NameReference>>)Names?.Clone(), this.SyntaxDiagnostics);
+            return new NameReferenceList((SyntaxList<SeparatedElement<NameReference>>)Names?.Clone(), this.SyntaxDiagnostics);
         }
     }
-    #endregion /* class RenderNameList */
+    #endregion /* class NameReferenceList */
     
     #region class RenderWithClause
     public sealed partial class RenderWithClause : Clause
@@ -12913,7 +12913,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitSerializeOperator(SerializeOperator node);
         public abstract void VisitInvokeOperator(InvokeOperator node);
         public abstract void VisitRenderOperator(RenderOperator node);
-        public abstract void VisitRenderNameList(RenderNameList node);
+        public abstract void VisitNameReferenceList(NameReferenceList node);
         public abstract void VisitRenderWithClause(RenderWithClause node);
         public abstract void VisitPrintOperator(PrintOperator node);
         public abstract void VisitAliasStatement(AliasStatement node);
@@ -13437,7 +13437,7 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
-        public override void VisitRenderNameList(RenderNameList node)
+        public override void VisitNameReferenceList(NameReferenceList node)
         {
             this.DefaultVisit(node);
         }
@@ -13734,7 +13734,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitSerializeOperator(SerializeOperator node);
         public abstract TResult VisitInvokeOperator(InvokeOperator node);
         public abstract TResult VisitRenderOperator(RenderOperator node);
-        public abstract TResult VisitRenderNameList(RenderNameList node);
+        public abstract TResult VisitNameReferenceList(NameReferenceList node);
         public abstract TResult VisitRenderWithClause(RenderWithClause node);
         public abstract TResult VisitPrintOperator(PrintOperator node);
         public abstract TResult VisitAliasStatement(AliasStatement node);
@@ -14258,7 +14258,7 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
-        public override TResult VisitRenderNameList(RenderNameList node)
+        public override TResult VisitNameReferenceList(NameReferenceList node)
         {
             return this.DefaultVisit(node);
         }
