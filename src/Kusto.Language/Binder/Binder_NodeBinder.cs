@@ -1453,7 +1453,7 @@ namespace Kusto.Language.Binding
                             _binder.CheckIsInteger(clause.Expression, diagnostics);
                         }
 
-                        _binder.CheckIsColumn(clause.OfExpression, diagnostics);
+                        _binder.CheckIsScalar(clause.OfExpression, diagnostics);
 
                         if (clause.WithOthersClause != null)
                         {
