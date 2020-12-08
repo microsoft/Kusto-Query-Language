@@ -20,14 +20,30 @@ namespace Kusto.Language.Parsing
     {
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }
 
+        public Parser<LexicalToken, SyntaxList<SeparatedElement<Statement>>> CommandList { get; }
+
         private readonly Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser;
         private readonly Dictionary<CommandSymbol, Parser<LexicalToken, Command>> commandToParserMap;
 
         private CommandGrammar(
-            Parser<LexicalToken, CommandBlock> commandBlockParser,
+            Parser<LexicalToken, SyntaxList<SeparatedElement<Statement>>> commandListParser,
             Parser<char, Parser<LexicalToken, SyntaxElement>> commandGrammarParser,
             Dictionary<CommandSymbol, Parser<LexicalToken, Command>> commandToParserMap)
         {
+            var skippedTokens =
+                If(
+                    AnyTokenButEnd,
+                    Rule(
+                        List(AnyTokenButEnd), // consumes all remaining tokens
+                        tokens => new SkippedTokens(tokens)));
+            var commandBlockParser =
+                Rule(
+                    commandListParser,
+                    Optional(skippedTokens), // consumes all remaining tokens (no diagnostic)
+                    Optional(Token(SyntaxKind.EndOfTextToken)),
+                    (cmd, skipped, end) => new CommandBlock(cmd, skipped, end));
+
+            this.CommandList = commandListParser;
             this.CommandBlock = commandBlockParser;
             this.commandGrammarParser = commandGrammarParser;
             this.commandToParserMap = commandToParserMap;
@@ -139,28 +155,16 @@ namespace Kusto.Language.Parsing
                     commandOutputPipeExpression,
                     cmd => (Statement)new ExpressionStatement(cmd));
 
-            var skippedTokens =
-                If(AnyTokenButEnd,
-                    Rule(
-                        List(AnyTokenButEnd), // consumes all remaining tokens
-                        tokens => new SkippedTokens(tokens)));
+            var commandList = SeparatedList(
+                commandStatement, // first one is a command statement
+                SyntaxKind.SemicolonToken,
+                q.Statement,      // all others elements are query statements
+                MissingCommandStatementNode,
+                endOfList: EndOfText,
+                oneOrMore: true,
+                allowTrailingSeparator: true);
 
-            var commandBlock =
-                Rule(
-                    SeparatedList(
-                        commandStatement, // first one is a command statement
-                        SyntaxKind.SemicolonToken,
-                        q.Statement,      // all others elements are query statements
-                        MissingCommandStatementNode,
-                        endOfList: EndOfText,
-                        oneOrMore: true,
-                        allowTrailingSeparator: true),
-                    Optional(skippedTokens), // consumes all remaining tokens (no diagnostic)
-                    Optional(Token(SyntaxKind.EndOfTextToken)),
-                    (cmd, skipped, end) =>
-                        new CommandBlock(cmd, skipped, end));
-
-            return new CommandGrammar(commandBlock, grammarParser, map);
+            return new CommandGrammar(commandList, grammarParser, map);
         }
 
         private static Statement MissingCommandStatementNode =
