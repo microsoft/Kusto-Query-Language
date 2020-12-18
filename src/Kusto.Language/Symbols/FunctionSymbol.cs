@@ -204,12 +204,12 @@ namespace Kusto.Language.Symbols
         }
 
         public FunctionSymbol(string name, string body, IReadOnlyList<Parameter> parameters, string description = null)
-            : this(name, new[] { new Signature(body, Tabularity.Unknown, parameters) }, description)
+            : this(name, new[] { new Signature(body, Tabularity.Unspecified, parameters) }, description)
         {
         }
 
         public FunctionSymbol(string name, string body, params Parameter[] parameters)
-            : this(name, new[] { new Signature(body, Tabularity.Unknown, parameters) })
+            : this(name, new[] { new Signature(body, Tabularity.Unspecified, parameters) })
         {
         }
 

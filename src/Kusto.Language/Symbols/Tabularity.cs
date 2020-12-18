@@ -23,8 +23,13 @@ namespace Kusto.Language.Symbols
         Tabular,
 
         /// <summary>
-        /// The symbol's tabularity is not yet known; some functions.
+        /// The tabularity is not known.
         /// </summary>
-        Unknown
+        Unknown,
+
+        /// <summary>
+        /// The tabularity was unspecified and should be determined based on other state.
+        /// </summary>
+        Unspecified
     }
 }

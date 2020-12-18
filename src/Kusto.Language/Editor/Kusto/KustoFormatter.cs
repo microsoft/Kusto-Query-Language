@@ -306,15 +306,7 @@ namespace Kusto.Language.Editor
             if (prev == null)
                 return;
 
-            if (IsWildcardPart(token))
-            {
-                // wildcard parts should have no space between them (though grammatically legal)
-                if (token.Trivia != "")
-                {
-                    AddRule(token, SpacingRule.From(SpacingKind.NoSpace));
-                }
-            }
-            else if (IsIdentifierOrKeyword(token) && IsIdentifierOrKeyword(prev))
+            if (IsIdentifierOrKeyword(token) && IsIdentifierOrKeyword(prev))
             {
                 // always have space between two adjacent names
                 if (token.Trivia != " ")
@@ -580,11 +572,6 @@ namespace Kusto.Language.Editor
         {
             return token.Kind == SyntaxKind.IdentifierToken
                 || SyntaxFacts.IsKeyword(token.Kind);
-        }
-
-        private static bool IsWildcardPart(SyntaxToken token)
-        {
-            return token.Parent is WildcardedName;
         }
 #endregion
 

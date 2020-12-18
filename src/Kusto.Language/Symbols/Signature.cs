@@ -120,7 +120,7 @@ namespace Kusto.Language.Symbols
 
             if (returnKind == ReturnTypeKind.Computed
                 && returnType != null
-                && tabularity == Tabularity.Unknown)
+                && tabularity == Tabularity.Unspecified)
             {
                 this._tabularity = returnType.Tabularity;
             }
@@ -167,24 +167,24 @@ namespace Kusto.Language.Symbols
         }
 
         public Signature(ReturnTypeKind returnKind, IReadOnlyList<Parameter> parameters)
-             : this(returnKind, null, null, null, null, Tabularity.Unknown, parameters)
+             : this(returnKind, null, null, null, null, Tabularity.Unspecified, parameters)
         {
         }
 
         public Signature(ReturnTypeKind returnKind, params Parameter[] parameters)
-             : this(returnKind, null, null, null, null, Tabularity.Unknown, parameters)
+             : this(returnKind, null, null, null, null, Tabularity.Unspecified, parameters)
         {
         }
 
         public Signature(TypeSymbol returnType, IReadOnlyList<Parameter> parameters)
-            : this(ReturnTypeKind.Declared, returnType, null, null, null, Tabularity.Unknown, parameters)
+            : this(ReturnTypeKind.Declared, returnType, null, null, null, Tabularity.Unspecified, parameters)
         {
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
         }
 
         public Signature(TypeSymbol returnType, params Parameter[] parameters)
-            : this(ReturnTypeKind.Declared, returnType, null, null, null, Tabularity.Unknown, parameters)
+            : this(ReturnTypeKind.Declared, returnType, null, null, null, Tabularity.Unspecified, parameters)
         {
             if (returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
@@ -225,12 +225,12 @@ namespace Kusto.Language.Symbols
         }
 
         public Signature(FunctionDeclaration declaration, IReadOnlyList<Parameter> parameters)
-            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unknown, parameters)
+            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
         {
         }
 
         public Signature(FunctionDeclaration declaration, params Parameter[] parameters)
-            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unknown, parameters)
+            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
         {
         }
 
@@ -382,7 +382,7 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this._tabularity == Tabularity.Unknown)
+                if (this._tabularity == Tabularity.Unspecified)
                 {
                     switch (this.ReturnKind)
                     {
@@ -657,21 +657,101 @@ namespace Kusto.Language.Symbols
         /// <param name="globals">The <see cref="GlobalState"/> in context for any computations made in determining the tabularity.</param>
         public void ComputeTabularity(GlobalState globals)
         {
-            if (this.ReturnKind != ReturnTypeKind.Computed || _tabularity != Tabularity.Unknown)
-                return;
-
-            var type = Binding.Binder.GetComputedReturnType(this, globals);
-
-            if (this._tabularity == Tabularity.Unknown && type != null)
+            if (this.ReturnKind == ReturnTypeKind.Computed
+                && _tabularity == Tabularity.Unspecified)
             {
-                if (type.IsTabular)
+                // pre-assign to hopefully avoid duplicate computation work
+                _tabularity = Tabularity.Unknown;
+
+                // first try to deduce tabularity from syntax alone
+                var syntaxTabularity = GetSyntaxTabularity(globals);
+                if (syntaxTabularity != Tabularity.Unknown)
                 {
-                    this._tabularity = Tabularity.Tabular;
+                    _tabularity = syntaxTabularity;
                 }
-                else if (type.IsScalar)
+                else
                 {
-                    this._tabularity = Tabularity.Scalar;
+                    // otherwise try to fully bind and base tabularity on return type
+                    var type = Binding.Binder.GetComputedReturnType(this, globals);
+                    if (type != null)
+                    {
+                        if (type.IsTabular)
+                        {
+                            _tabularity = Tabularity.Tabular;
+                        }
+                        else if (type.IsScalar)
+                        {
+                            _tabularity = Tabularity.Scalar;
+                        }
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Determine's the tabularity of this function signature from the syntax of the body.
+        /// </summary>
+        private Tabularity GetSyntaxTabularity(GlobalState globals)
+        {
+            SyntaxList<SeparatedElement<Statement>> statements = null;
+
+            if (this.Declaration != null)
+            {
+                statements = this.Declaration.Body.Statements;
+            }
+            else if (_body != null)
+            {
+                var body = _body.Trim();
+                if (body.StartsWith("{"))
+                {
+                    body = body.Substring(1);
+                    if (body.EndsWith("}"))
+                        body = body.Substring(0, body.Length - 1);
+                }
+                var code = KustoCode.Parse(body);
+                statements = code.Syntax.GetFirstDescendantOrSelf<SyntaxList<SeparatedElement<Statement>>>();
+            }
+
+            if (statements != null 
+                && statements.Count > 0
+                && statements[statements.Count - 1].Element is ExpressionStatement es)
+            {
+                switch (es.Expression)
+                {
+                    case QueryOperator _:  // querys operator are always tabular
+                    case PipeExpression _: // pipes are always queries
+                    case Command _:        // commands always have tabular output
+                    case DataTableExpression _:
+                    case ToTableExpression _:
+                        return Tabularity.Tabular;
+                    case BinaryExpression _:
+                    case PrefixUnaryExpression _:
+                    case InExpression _:
+                    case HasAnyExpression _:
+                    case BetweenExpression _:
+                    case ElementExpression _:
+                    case BracketedExpression _:
+                    case LiteralExpression _:
+                    case CompoundStringLiteralExpression _:
+                    case DynamicExpression _:
+                    case ToScalarExpression _:
+                        return Tabularity.Scalar;
+                    case FunctionCallExpression fc:
+                        var fn = globals.GetFunction(fc.Name.SimpleName);
+                        if (fn != null)
+                            return fn.Tabularity;
+                        var dbFn = globals.Database?.GetFunction(fc.Name.SimpleName);
+                        if (dbFn != null)
+                            return dbFn.Tabularity;
+                        return Tabularity.Unknown;
+                    case Expression _:
+                    default:
+                        return Tabularity.Unknown;
+                }
+            }
+            else
+            {
+                return Tabularity.None;
             }
         }
 
