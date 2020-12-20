@@ -42,8 +42,7 @@ namespace Kusto.Language
             new FunctionSymbol("stored_query_result",
                 (table, args) => TableSymbol.Empty, // we don't want to resolve schema of SQR for now
                 Tabularity.Tabular,
-                new Parameter("name", ScalarTypes.String))
-            .Hide();
+                new Parameter("name", ScalarTypes.String));
 
         #endregion
 
