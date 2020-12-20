@@ -579,12 +579,26 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol Ipv4IsInRange =
+            new FunctionSymbol("ipv4_is_in_range", ScalarTypes.Bool,
+                new Parameter("ip", ScalarTypes.String),
+                new Parameter("ip_range", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // unhide in Jan-2021
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol Ipv4NetmaskSuffix =
+           new FunctionSymbol("ipv4_netmask_suffix", ScalarTypes.Long,
+               new Parameter("ip", ScalarTypes.String))
+           .WithResultNameKind(ResultNameKind.None)
+           .Hide() // unhide in Jan-2021
+           .ConstantFoldable();
+
         public static readonly FunctionSymbol Ipv4IsPrivate =
             new FunctionSymbol("ipv4_is_private", ScalarTypes.Bool,
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // Unhide after Nov-15-2020 (alexans)
+            .ConstantFoldable();
         #endregion
 
         #region IPv6 functions
@@ -2552,6 +2566,8 @@ namespace Kusto.Language
             Ipv6Compare,
             Ipv4IsPrivate,
             Ipv6IsMatch,
+            Ipv4IsInRange,
+            Ipv4NetmaskSuffix,
             #endregion
 
             #region formatting functions
