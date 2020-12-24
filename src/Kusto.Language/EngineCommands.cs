@@ -190,6 +190,11 @@ namespace Kusto.Language
                 $"create table TableName=<name> {TableSchema} [{TableProperties}]",
                 ShowTableSchemaResult);
 
+        public static readonly CommandSymbol CreateTableBasedOnAnother =
+            new CommandSymbol(nameof(CreateTableBasedOnAnother),
+                $"create table NewTableName=<name> based-on TableName=<name> [{TableProperties}]",
+                ShowTableSchemaResult);
+
         public static readonly CommandSymbol CreateMergeTable =
             new CommandSymbol(nameof(CreateMergeTable),
                 $"create-merge table TableName=<name> {TableSchema}",
@@ -1789,6 +1794,7 @@ namespace Kusto.Language
                 ShowTableCslSchema,
                 ShowTableSchemaAsJson,
                 CreateTable,
+                CreateTableBasedOnAnother,
                 CreateMergeTable,
                 CreateTables,
                 AlterTable,
