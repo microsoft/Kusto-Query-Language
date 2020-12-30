@@ -1618,7 +1618,7 @@ namespace Kusto.Language
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " + 
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " + 
                 "User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, " + 
-                "ResourceUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
+                "ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
             new CommandSymbol(nameof(ShowCommandsAndQueries),
