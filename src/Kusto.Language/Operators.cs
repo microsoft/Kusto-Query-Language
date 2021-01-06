@@ -280,6 +280,11 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
 
+        public static readonly OperatorSymbol HasAll =
+           new OperatorSymbol(OperatorKind.HasAll,
+               new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
+               new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: short.MaxValue)));
+
         public static readonly OperatorSymbol InCs =
             new OperatorSymbol(OperatorKind.InCs,
                 new Signature(ScalarTypes.Bool, new Parameter("value", StringOrDynamic), new Parameter("table", ParameterTypeKind.Tabular)),
@@ -376,6 +381,7 @@ namespace Kusto.Language
             Between,
             NotBetween,
             HasAny,
+            HasAll,
         };
     }
 }

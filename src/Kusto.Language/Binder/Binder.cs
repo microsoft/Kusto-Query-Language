@@ -70,6 +70,11 @@ namespace Kusto.Language.Binding
         Summable,
 
         /// <summary>
+        /// The argument's type is an orderable scalar type
+        /// </summary>
+        Orderable,
+
+        /// <summary>
         /// The argumet's type is a number
         /// </summary>
         Number,
@@ -1992,6 +1997,8 @@ namespace Kusto.Language.Binding
                     return OperatorKind.Search;
                 case SyntaxKind.HasAnyExpression:
                     return OperatorKind.HasAny;
+                case SyntaxKind.HasAllExpression:
+                    return OperatorKind.HasAll;
                 default:
                     return OperatorKind.None;
             }
@@ -2402,7 +2409,8 @@ namespace Kusto.Language.Binding
                     if ((parameter.TypeKind == ParameterTypeKind.CommonScalar && argType.IsScalar)
                         || (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic && argType.IsScalar)
                         || (parameter.TypeKind == ParameterTypeKind.CommonNumber && IsNumber(argType))
-                        || (parameter.TypeKind == ParameterTypeKind.CommonSummable && IsSummable(argType)))
+                        || (parameter.TypeKind == ParameterTypeKind.CommonSummable && IsSummable(argType))
+                        || (parameter.TypeKind == ParameterTypeKind.CommonOrderable && IsOrderable(argType)))
                     {
                         if (commonType == null )
                         {
@@ -2840,7 +2848,10 @@ namespace Kusto.Language.Binding
                     if (IsSummable(argumentType))
                         return ParameterMatchKind.Summable;
                     break;
-
+                case ParameterTypeKind.Orderable:
+                    if (IsOrderable(argumentType))
+                        return ParameterMatchKind.Orderable;
+                    break;
                 case ParameterTypeKind.Tabular:
                     if (IsTabular(argumentType))
                         return ParameterMatchKind.Tabular;
@@ -2884,6 +2895,7 @@ namespace Kusto.Language.Binding
                 case ParameterTypeKind.CommonScalar:
                 case ParameterTypeKind.CommonNumber:
                 case ParameterTypeKind.CommonSummable:
+                case ParameterTypeKind.CommonOrderable:
                 case ParameterTypeKind.CommonScalarOrDynamic:
                     var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                     if (commonType != null)
@@ -4712,6 +4724,11 @@ namespace Kusto.Language.Binding
             return type is ScalarSymbol s && s.IsSummable;
         }
 
+        public static bool IsOrderable(TypeSymbol type)
+        {
+            return type is ScalarSymbol s && s.IsOrderable;
+        }
+
         private static bool IsTabular(TypeSymbol type)
         {
             return type != null && type.IsTabular;
@@ -5174,6 +5191,19 @@ namespace Kusto.Language.Binding
             if (!GetResultTypeOrError(expression).IsError)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeSummable().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsOrderable(Expression expression, List<Diagnostic> diagnostics)
+        {
+            if (IsOrderable(GetResultTypeOrError(expression)))
+                return true;
+
+            if (!GetResultTypeOrError(expression).IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeOrderable().WithLocation(expression));
             }
 
             return false;
@@ -5756,6 +5786,10 @@ namespace Kusto.Language.Binding
                             CheckIsSummable(argument, diagnostics);
                             break;
 
+                        case ParameterTypeKind.Orderable:
+                            CheckIsOrderable(argument, diagnostics);
+                            break;
+
                         case ParameterTypeKind.NotBool:
                             if (CheckIsScalar(argument, diagnostics))
                             {
@@ -5837,6 +5871,17 @@ namespace Kusto.Language.Binding
 
                         case ParameterTypeKind.CommonSummable:
                             if (CheckIsSummable(argument, diagnostics))
+                            {
+                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                if (commonType != null)
+                                {
+                                    CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
+                                }
+                            }
+                            break;
+
+                        case ParameterTypeKind.CommonOrderable:
+                            if (CheckIsOrderable(argument, diagnostics))
                             {
                                 var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)

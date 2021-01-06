@@ -73,5 +73,6 @@ namespace Kusto.Language.Symbols
         Between,
         NotBetween,
         HasAny,
+        HasAll,
     }
 }

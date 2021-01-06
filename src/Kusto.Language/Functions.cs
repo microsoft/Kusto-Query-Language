@@ -156,7 +156,7 @@ namespace Kusto.Language
                 new Parameter("source", ParameterTypeKind.Scalar),
                 new Parameter("delimiter", ScalarTypes.String),
                 new Parameter("requestedIndex", ParameterTypeKind.Integer, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.None)
+            .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseCommandLine =
@@ -1989,13 +1989,13 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol MaxOf =
             new FunctionSymbol("max_of", ReturnTypeKind.Common,
-                new Parameter("arg", ParameterTypeKind.CommonSummable, minOccurring: 2, maxOccurring: 64))
+                new Parameter("arg", ParameterTypeKind.CommonOrderable, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol MinOf =
             new FunctionSymbol("min_of", ReturnTypeKind.Common,
-                new Parameter("arg", ParameterTypeKind.CommonSummable, minOccurring: 2, maxOccurring: 64))
+                new Parameter("arg", ParameterTypeKind.CommonOrderable, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 

@@ -2158,6 +2158,92 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class HasAnyExpression */
     
+    #region class HasAllExpression
+    /// <summary>
+    /// A node in the kusto syntax that represents a has_all expression.
+    /// </summary>
+    public sealed partial class HasAllExpression : Expression
+    {
+        private readonly SyntaxKind kind;
+        public override SyntaxKind Kind => this.kind;
+        
+        /// <summary>
+        /// The left side expression.
+        /// </summary>
+        public Expression Left { get; }
+        
+        /// <summary>
+        /// The has_all keyword.
+        /// </summary>
+        public SyntaxToken Operator { get; }
+        
+        /// <summary>
+        /// The list of expressions.
+        /// </summary>
+        public ExpressionList Right { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="HasAllExpression"/>.
+        /// </summary>
+        internal HasAllExpression(SyntaxKind kind, Expression left, SyntaxToken @operator, ExpressionList right, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.kind = kind;
+            this.Left = Attach(left);
+            this.Operator = Attach(@operator);
+            this.Right = Attach(right);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Left;
+                case 1: return Operator;
+                case 2: return Right;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Left);
+                case 1: return nameof(Operator);
+                case 2: return nameof(Right);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitHasAllExpression(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitHasAllExpression(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new HasAllExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (ExpressionList)Right?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class HasAllExpression */
+    
     #region class BetweenExpression
     /// <summary>
     /// A node in the kusto syntax that represents a between expression.
@@ -12821,6 +12907,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitBinaryExpression(BinaryExpression node);
         public abstract void VisitInExpression(InExpression node);
         public abstract void VisitHasAnyExpression(HasAnyExpression node);
+        public abstract void VisitHasAllExpression(HasAllExpression node);
         public abstract void VisitBetweenExpression(BetweenExpression node);
         public abstract void VisitFunctionCallExpression(FunctionCallExpression node);
         public abstract void VisitToScalarExpression(ToScalarExpression node);
@@ -13066,6 +13153,10 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitHasAnyExpression(HasAnyExpression node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitHasAllExpression(HasAllExpression node)
         {
             this.DefaultVisit(node);
         }
@@ -13642,6 +13733,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitBinaryExpression(BinaryExpression node);
         public abstract TResult VisitInExpression(InExpression node);
         public abstract TResult VisitHasAnyExpression(HasAnyExpression node);
+        public abstract TResult VisitHasAllExpression(HasAllExpression node);
         public abstract TResult VisitBetweenExpression(BetweenExpression node);
         public abstract TResult VisitFunctionCallExpression(FunctionCallExpression node);
         public abstract TResult VisitToScalarExpression(ToScalarExpression node);
@@ -13887,6 +13979,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitHasAnyExpression(HasAnyExpression node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitHasAllExpression(HasAllExpression node)
         {
             return this.DefaultVisit(node);
         }

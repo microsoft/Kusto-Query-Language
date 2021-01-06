@@ -2044,6 +2044,9 @@ namespace Kusto.Language.Editor
                 case ParameterTypeKind.Summable:
                     return type is ScalarSymbol s3 && s3.IsSummable;
 
+                case ParameterTypeKind.Orderable:
+                    return type is ScalarSymbol s4 && s4.IsOrderable;
+
                 case ParameterTypeKind.Tabular:
                     return type.IsTabular;
 
@@ -2063,7 +2066,7 @@ namespace Kusto.Language.Editor
                     return type is ScalarSymbol && type != ScalarTypes.Dynamic;
 
                 case ParameterTypeKind.IntegerOrDynamic:
-                    return (type is ScalarSymbol s4 && s4.IsInteger) || type == ScalarTypes.Dynamic;
+                    return (type is ScalarSymbol s5 && s5.IsInteger) || type == ScalarTypes.Dynamic;
 
                 case ParameterTypeKind.Parameter0:
                 case ParameterTypeKind.Parameter1:
@@ -2071,6 +2074,7 @@ namespace Kusto.Language.Editor
                 case ParameterTypeKind.CommonScalar:
                 case ParameterTypeKind.CommonNumber:
                 case ParameterTypeKind.CommonSummable:
+                case ParameterTypeKind.CommonOrderable:
                 case ParameterTypeKind.CommonScalarOrDynamic:
                     return type is ScalarSymbol;
             }

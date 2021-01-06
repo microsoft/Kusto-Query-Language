@@ -415,6 +415,29 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitHasAllExpression(HasAllExpression node)
+            {
+                var dx = s_diagnosticListPool.AllocateFromPool();
+                var args = s_expressionListPool.AllocateFromPool();
+                try
+                {
+                    args.Add(node.Left);
+
+                    for (int i = 0; i < node.Right.Expressions.Count; i++)
+                    {
+                        args.Add(node.Right.Expressions[i].Element);
+                    }
+
+                    var op = SyntaxFacts.GetOperatorKind(node.Operator.Kind);
+                    return _binder.GetOperatorInfo(op, args, node.Operator);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(dx);
+                    s_expressionListPool.ReturnToPool(args);
+                }
+            }
+
             public override SemanticInfo VisitBetweenExpression(BetweenExpression node)
             {
                 var dx = s_diagnosticListPool.AllocateFromPool();

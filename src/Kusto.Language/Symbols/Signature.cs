@@ -728,6 +728,7 @@ namespace Kusto.Language.Symbols
                     case PrefixUnaryExpression _:
                     case InExpression _:
                     case HasAnyExpression _:
+                    case HasAllExpression _:
                     case BetweenExpression _:
                     case ElementExpression _:
                     case BracketedExpression _:

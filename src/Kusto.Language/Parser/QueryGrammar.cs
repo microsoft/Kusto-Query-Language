@@ -1166,6 +1166,9 @@ namespace Kusto.Language.Parsing
                             Rule(_left, Token(SyntaxKind.HasAnyKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.HasAnyKeyword) + " (|)"), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new HasAnyExpression(SyntaxKind.HasAnyKeyword, left, op, right)),
 
+                              Rule(_left, Token(SyntaxKind.HasAllKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.HasAllKeyword) + " (|)"), InOperatorExpressionList,
+                                (left, op, right) => (Expression)new HasAllExpression(SyntaxKind.HasAllKeyword, left, op, right)),
+
                             Rule(_left, Token(SyntaxKind.BetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.BetweenKeyword) + " (|)"), ExpressionCouple,
                                 (left, op, right) => (Expression)new BetweenExpression(SyntaxKind.BetweenExpression, left, op, right)),
 

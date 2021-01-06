@@ -49,6 +49,8 @@ namespace Kusto.Language.Symbols
 
         public bool IsSummable => (this.Flags & ScalarFlags.Summable) != 0;
 
+        public bool IsOrderable => (this.Flags & ScalarFlags.Orderable) != 0;
+
         /// <summary>
         /// True if this symbol is wider than the specified symbol.
         /// </summary>
@@ -85,13 +87,18 @@ namespace Kusto.Language.Symbols
         Interval = 0b0000_0100,
 
         /// <summary>
-        /// Can be used in the Sum aggregate
+        /// Can be used in the sum aggregate
         /// </summary>
         Summable = 0b0000_1000,
 
         /// <summary>
+        /// Can be used in order by or arg_max aggregate
+        /// </summary>
+        Orderable = 0b0001_0000,
+
+        /// <summary>
         /// All flags
         /// </summary>
-        All = Integer | Numeric | Interval | Summable
+        All = Integer | Numeric | Interval | Summable | Orderable
     }
 }

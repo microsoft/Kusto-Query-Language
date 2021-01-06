@@ -146,6 +146,7 @@
         HardDeleteKeyword,
         HasKeyword,
         HasAnyKeyword,
+        HasAllKeyword,
         HasCsKeyword,
         HashKeyword,
         HasPrefixKeyword,
@@ -594,6 +595,7 @@
         MatchesRegexExpression,
         SearchExpression,
         HasAnyExpression,
+        HasAllExpression,
 
         // common command-related expressions & clauses
         TypedColumnReference,

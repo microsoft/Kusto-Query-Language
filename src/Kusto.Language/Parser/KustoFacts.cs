@@ -101,7 +101,7 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<string> ChartTypes = new string[]
         {
             "table", "list", "barchart", "piechart", "ladderchart", "timechart", "linechart", "anomalychart", "pivotchart", "areachart",
-            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card"
+            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card", "treemap"
         };
 
         /// <summary>

@@ -90,42 +90,28 @@ namespace Kusto.Language
             .WithResultNamePrefix("hll_merge");
 
         public static readonly FunctionSymbol Min =
-            new FunctionSymbol("min",
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ParameterTypeKind.Summable)),
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ScalarTypes.String)))
+            new FunctionSymbol("min", ReturnTypeKind.Parameter0,
+                new Parameter("expr", ParameterTypeKind.Orderable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("min");
 
         public static readonly FunctionSymbol MinIf =
-            new FunctionSymbol("minif",
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ParameterTypeKind.Summable),
-                    new Parameter("predicate", ScalarTypes.Bool)),
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ScalarTypes.String),
-                    new Parameter("predicate", ScalarTypes.Bool)))
+            new FunctionSymbol("minif", ReturnTypeKind.Parameter0,
+                new Parameter("expr", ParameterTypeKind.Orderable),
+                new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("minif");
 
         public static readonly FunctionSymbol Max =
-            new FunctionSymbol("max",
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ParameterTypeKind.Summable)),
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ScalarTypes.String)))
+            new FunctionSymbol("max", ReturnTypeKind.Parameter0,
+               new Parameter("expr", ParameterTypeKind.Orderable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("max");
 
         public static readonly FunctionSymbol MaxIf =
-            new FunctionSymbol("maxif",
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ParameterTypeKind.Summable),
-                    new Parameter("predicate", ScalarTypes.Bool)),
-                new Signature(ReturnTypeKind.Parameter0,
-                    new Parameter("expr", ScalarTypes.String),
-                    new Parameter("predicate", ScalarTypes.Bool)))
+            new FunctionSymbol("maxif", ReturnTypeKind.Parameter0,
+                new Parameter("expr", ParameterTypeKind.Orderable),
+                new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("maxif");
 
@@ -456,12 +442,12 @@ namespace Kusto.Language
                 new Signature(
                     GetArgMinMaxResult,
                     Tabularity.Scalar,
-                    new Parameter("minimized", ParameterTypeKind.Summable),
+                    new Parameter("minimized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
                     GetArgMinMaxResult,
                     Tabularity.Scalar,
-                    new Parameter("minimized", ParameterTypeKind.Summable),
+                    new Parameter("minimized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
         public static readonly FunctionSymbol ArgMax =
@@ -469,12 +455,12 @@ namespace Kusto.Language
                 new Signature(
                     GetArgMinMaxResult,
                     Tabularity.Scalar,
-                    new Parameter("maximized", ParameterTypeKind.Summable),
+                    new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
                     GetArgMinMaxResult,
                     Tabularity.Scalar,
-                    new Parameter("maximized", ParameterTypeKind.Summable),
+                    new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
         private static TypeSymbol GetArgMinMaxResult(TableSymbol table, IReadOnlyList<Expression> args)
@@ -519,12 +505,12 @@ namespace Kusto.Language
                     new Signature(
                         GetArgMinMaxDepResult,
                         Tabularity.Scalar,
-                        new Parameter("minimized", ParameterTypeKind.Summable),
+                        new Parameter("minimized", ParameterTypeKind.Orderable),
                         new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                     new Signature(
                         GetArgMinMaxDepResult,
                         Tabularity.Scalar,
-                        new Parameter("minimized", ParameterTypeKind.Summable),
+                        new Parameter("minimized", ParameterTypeKind.Orderable),
                         new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNamePrefix("min")
             .Obsolete("arg_min")
@@ -535,12 +521,12 @@ namespace Kusto.Language
                 new Signature(
                     GetArgMinMaxDepResult,
                     Tabularity.Scalar,
-                    new Parameter("maximized", ParameterTypeKind.Summable),
+                    new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
                     GetArgMinMaxDepResult,
                     Tabularity.Scalar,
-                    new Parameter("maximized", ParameterTypeKind.Summable),
+                    new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNamePrefix("max")
             .Obsolete("arg_max")

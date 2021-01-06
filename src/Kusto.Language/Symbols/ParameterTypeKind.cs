@@ -60,6 +60,11 @@ namespace Kusto.Language.Symbols
         Summable,
 
         /// <summary>
+        /// Any scalar type that is orderable (number, timespan, datetime, string, bool)
+        /// </summary>
+        Orderable,
+
+        /// <summary>
         /// Any scalar type, except Real
         /// </summary>
         NotRealOrBool,
@@ -103,6 +108,11 @@ namespace Kusto.Language.Symbols
         /// The argument type must be promotable to the common summable type of all the parameters marked CommonXXX.
         /// </summary>
         CommonSummable,
+
+        /// <summary>
+        /// The argument type must be promotable to the common orderable type of all the parameters marked CommonXXX.
+        /// </summary>
+        CommonOrderable,
 
         /// <summary>
         /// The argument type must be promotable to the common scalar type of all the parameters marked CommonXXX, or be dynamic.

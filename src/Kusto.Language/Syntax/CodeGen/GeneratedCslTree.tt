@@ -450,6 +450,20 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "HasAllExpression",
+        Doc = "A node in the kusto syntax that represents a has_all expression.",
+        Base = "Expression",
+        Sealed = true,
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "Left", Type = "Expression", Doc = "The left side expression."},
+            new GeneratedProperty { Name = "Operator", Type = "SyntaxToken", Doc = "The has_all keyword.", Completion="Syntax"},
+            new GeneratedProperty { Name = "Right", Type = "ExpressionList", Doc = "The list of expressions.", Completion="Syntax"}
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "BetweenExpression",
         Doc = "A node in the kusto syntax that represents a between expression.",
         Base = "Expression",

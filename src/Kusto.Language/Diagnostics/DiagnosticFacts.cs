@@ -402,7 +402,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetExpressionMustBeSummable()
         {
-            return new Diagnostic("KS138", "The argument value must be a number, timespan or datetime.");
+            return new Diagnostic("KS138", "The argument value must be summable: a number, timespan or datetime.");
         }
 
         public static Diagnostic GetMultiValuedExpressionCannotBeAssignedToVariable()
@@ -682,6 +682,11 @@ namespace Kusto.Language
             return new Diagnostic("KS205", 
                 $"The fuzzy union operand '{name}' does not refer to any known table, tabular variable or function.")
                 .WithSeverity(DiagnosticSeverity.Warning);
+        }
+
+        public static Diagnostic GetExpressionMustBeOrderable()
+        {
+            return new Diagnostic("KS206", "The argument value must be orderable: a number, timespan, datetime, string or boolean.");
         }
 
         #region command diagnostics
