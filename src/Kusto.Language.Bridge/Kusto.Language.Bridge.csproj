@@ -1,23 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <KustoProps Condition="Exists('..\..\..\BuildProcessTemplates\Kusto.props')">true</KustoProps>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
-  <Import Project="..\..\..\BuildProcessTemplates\Kusto.props" Condition="'$(KustoProps)' == 'true'" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props') And '$(KustoProps)' != 'true'" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform>AnyCPU</Platform>
-    <ProjectGuid>{58657E20-75AB-426E-9C34-5A3020B79D74}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kusto.Language.Bridge</RootNamespace>
-    <AssemblyName>Kusto.Language.Bridge</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -473,7 +458,6 @@
     <Compile Include="..\Kusto.Language\Utils\UniqueNameTable.cs">
       <Link>Src\UniqueNameTable.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
@@ -482,7 +466,7 @@
     <PackageReference Include="Bridge" Version="17.10.1" />
     <PackageReference Include="Bridge.Min" Version="17.10.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\Directory.Build.targets')" />
   <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(KustoGlobalPackagesFolder)\.nuget\packages\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />

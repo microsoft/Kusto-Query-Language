@@ -422,8 +422,7 @@ namespace Kusto.Language
                 {PartitionName=<name> ':'!
                  (PartitionType=string ['=' StringColumn=<name>]
                   | PartitionType=datetime ['='
-                    (DateTimeColumn=<name>
-                     | PartitionFunction=bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
+                    (PartitionFunction=bin '('! DateTimeColumn=<name> ',' BinValue=<timespan> ')'
                      | PartitionFunction=(startofday | startofweek | startofmonth | startofyear) '('! DateTimeColumn=<name> ')')]
                   | PartitionType=long '='! PartitionFunction=hash '(' StringColumn=<name> ',' HashMod=<long> ')'), ','}+
                ')'

@@ -1,44 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <KustoProps Condition="Exists('..\..\..\BuildProcessTemplates\Kusto.props')">true</KustoProps>
+    <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
-  <Import Project="..\..\..\BuildProcessTemplates\Kusto.props" Condition="'$(KustoProps)' == 'true'" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="'$(KustoProps)' != 'true'" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{31238C2B-3226-4012-A3C9-5B9E77381566}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kusto.Language</RootNamespace>
-    <AssemblyName>Kusto.Language</AssemblyName>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' and '$(KustoProps)' != 'true'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' and '$(KustoProps)' != 'true'">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateDocumentation>true</GenerateDocumentation>
     <DocumentationFile>$(OutputPath)\$(AssemblyName).XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
     <!-- This is a missing documentation comment warning: disabling -->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <LangVersion>default</LangVersion>
@@ -50,166 +33,12 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregates.cs" />
-    <Compile Include="AriaBridgeCommands.cs" />
-    <Compile Include="Binder\ProjectionBuilder.cs" />
-    <Compile Include="Binder\Binder_SearchPredicateBinder.cs" />
-    <Compile Include="ClusterManagerCommands.cs" />
-    <Compile Include="DataManagerCommands.cs" />
-    <Compile Include="Editor\DisabledDiagnostics.cs" />
-    <Compile Include="Editor\AnalyzerInfo.cs" />
-    <Compile Include="Editor\BrackettingStyle.cs" />
-    <Compile Include="Editor\ClassificationKind.cs" />
-    <Compile Include="Editor\ClassificationResult.cs" />
-    <Compile Include="Editor\ClassifiedRange.cs" />
-    <Compile Include="Editor\ClusterReference.cs" />
-    <Compile Include="Editor\CodeBlock.cs" />
-    <Compile Include="Editor\DatabaseReference.cs" />
-    <Compile Include="Editor\FormattedText.cs" />
-    <Compile Include="Editor\FormattingOptions.cs" />
-    <Compile Include="Editor\Kusto\KustoAnalyzer.cs" />
-    <Compile Include="Editor\Kusto\KustoAnalyzers.cs" />
-    <Compile Include="Editor\Kusto\KustoClassifier.cs" />
-    <Compile Include="Editor\Kusto\KustoCompleter.cs" />
-    <Compile Include="Editor\CompletionItem.cs" />
-    <Compile Include="Editor\CompletionKind.cs" />
-    <Compile Include="Editor\CompletionPriority.cs" />
-    <Compile Include="Editor\CompletionInfo.cs" />
-    <Compile Include="Editor\CompletionOptions.cs" />
-    <Compile Include="Editor\ClientParameter.cs" />
-    <Compile Include="Editor\CodeKinds.cs" />
-    <Compile Include="Editor\CodeServiceFactory.cs" />
-    <Compile Include="Editor\CodeServiceFeatures.cs" />
-    <Compile Include="Editor\CommonCodeService.cs" />
-    <Compile Include="Editor\Kusto\KustoCodeService.cs" />
-    <Compile Include="Editor\CodeService.cs" />
-    <Compile Include="Editor\Kusto\KustoCodeServiceFactory.cs" />
-    <Compile Include="Editor\Kusto\KustoQuickInfoBuilder.cs" />
-    <Compile Include="Editor\Kusto\KustoRelatedElementFinder.cs" />
-    <Compile Include="Editor\OffsetCodeService.cs" />
-    <Compile Include="Editor\OutlineRange.cs" />
-    <Compile Include="Editor\OutlineInfo.cs" />
-    <Compile Include="Editor\PlacementStyle.cs" />
-    <Compile Include="Editor\FindRelatedOptions.cs" />
-    <Compile Include="Editor\QuickInfoOptions.cs" />
-    <Compile Include="Editor\RelatedInfo.cs" />
-    <Compile Include="Editor\TextRange.cs" />
-    <Compile Include="Editor\UnknownCodeService.cs" />
-    <Compile Include="Editor\Kusto\KustoFormatter.cs" />
-    <Compile Include="FunctionHelpers.cs" />
-    <Compile Include="KustoCache.cs" />
-    <Compile Include="KustoCode.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="Parser\Combinators\ArraySource.cs" />
-    <Compile Include="Parser\Combinators\GrammarBuilder.cs" />
-    <Compile Include="Parser\Combinators\Parser.cs" />
-    <Compile Include="Parser\Combinators\SafeParse.cs" />
-    <Compile Include="Parser\Combinators\SafeScan.cs" />
-    <Compile Include="Parser\Combinators\SafeSearch.cs" />
-    <Compile Include="Parser\CommandGrammar.cs" />
-    <Compile Include="Parser\DirectiveGrammar.cs" />
-    <Compile Include="Parser\KustoFacts.cs" />
-    <Compile Include="Parser\Combinators\GrammarGrammar.cs" />
-    <Compile Include="Parser\QueryGrammar.cs" />
-    <Compile Include="Parser\LexicalToken.cs" />
-    <Compile Include="Editor\CodeScript.cs" />
-    <Compile Include="Parser\ScannerExtensions.cs" />
-    <Compile Include="Editor\QuickInfo.cs" />
-    <Compile Include="Editor\SyntaxReference.cs" />
-    <Compile Include="PlugIns.cs" />
-    <Compile Include="QueryOperatorParameters.cs" />
-    <Compile Include="Symbols\ArgumentKind.cs" />
-    <Compile Include="Binder\Binder_ContextBuilder.cs" />
-    <Compile Include="Binder\Binder_NodeBinder.cs" />
-    <Compile Include="Binder\Binder_TreeBinder.cs" />
-    <Compile Include="Editor\CompletionHint.cs" />
-    <Compile Include="Symbols\ClusterSymbol.cs" />
-    <Compile Include="Symbols\ColumnSymbol.cs" />
-    <Compile Include="Symbols\CombineKind.cs" />
-    <Compile Include="EngineCommands.cs" />
-    <Compile Include="Symbols\CommandSymbol.cs" />
-    <Compile Include="Symbols\DatabaseSymbol.cs" />
-    <Compile Include="Symbols\ErrorSymbol.cs" />
-    <Compile Include="Symbols\FunctionSymbol.cs" />
-    <Compile Include="GlobalState.cs" />
-    <Compile Include="Functions.cs" />
-    <Compile Include="Symbols\GroupSymbol.cs" />
-    <Compile Include="Binder\LocalScope.cs" />
-    <Compile Include="Symbols\ParameterLayout.cs" />
-    <Compile Include="Symbols\ParameterLayouts.cs" />
-    <Compile Include="Symbols\PatternSymbol.cs" />
-    <Compile Include="Symbols\OptionSymbol.cs" />
-    <Compile Include="Symbols\Tabularity.cs" />
-    <Compile Include="Symbols\VariableSymbol.cs" />
-    <Compile Include="Symbols\OperatorKind.cs" />
-    <Compile Include="Operators.cs" />
-    <Compile Include="Symbols\OperatorSymbol.cs" />
-    <Compile Include="Symbols\Parameter.cs" />
-    <Compile Include="Symbols\ParameterSymbol.cs" />
-    <Compile Include="Symbols\ParameterTypeKind.cs" />
-    <Compile Include="Symbols\ReturnTypeKind.cs" />
-    <Compile Include="Symbols\ScalarSymbol.cs" />
-    <Compile Include="Symbols\ScalarTypes.cs" />
-    <Compile Include="Semantics\SemanticInfo.cs" />
-    <Compile Include="Symbols\Signature.cs" />
-    <Compile Include="Symbols\SymbolKind.cs" />
-    <Compile Include="Symbols\SymbolMatch.cs" />
-    <Compile Include="Semantics\SyntaxNode_Semantics.cs" />
-    <Compile Include="Symbols\TableSymbol.cs" />
-    <Compile Include="Symbols\TupleSymbol.cs" />
-    <Compile Include="Symbols\TypeSymbol.cs" />
-    <Compile Include="Symbols\VoidSymbol.cs" />
-    <Compile Include="Parser\CharScanners.cs" />
-    <Compile Include="Binder\Binder.cs" />
-    <Compile Include="Symbols\Symbol.cs" />
-    <Compile Include="Syntax\CodeGen\CodeGenerator.cs" />
-    <Compile Include="Syntax\CodeGen\CslTreeGenerator.cs" />
-    <Compile Include="Syntax\CodeGen\GeneratedCslTree.cs">
+    <Compile Update="Syntax\CodeGen\GeneratedCslTree.cs">
       <DependentUpon>GeneratedCslTree.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Diagnostics\Diagnostic.cs" />
-    <Compile Include="Diagnostics\DiagnosticFacts.cs" />
-    <Compile Include="Parser\LexicalGrammar.cs" />
-    <Compile Include="Parser\Combinators\Parsers.cs" />
-    <Compile Include="Syntax\CustomNode.cs" />
-    <Compile Include="Semantics\FakeExpression.cs" />
-    <Compile Include="Syntax\SeparatedElement.cs" />
-    <Compile Include="Parser\Combinators\Source.cs" />
-    <Compile Include="Syntax\SyntaxElement.cs" />
-    <Compile Include="Syntax\SyntaxList.cs" />
-    <Compile Include="Syntax\SyntaxNode.cs" />
-    <Compile Include="Parser\SyntaxParsers.cs" />
-    <Compile Include="Syntax\SyntaxToken.cs" />
-    <Compile Include="Parser\TextFacts.cs" />
-    <Compile Include="Syntax\SyntaxCategory.cs" />
-    <Compile Include="Syntax\SyntaxFacts.cs" />
-    <Compile Include="Parser\Combinators\TextSource.cs" />
-    <Compile Include="Syntax\SyntaxKind.cs" />
-    <Compile Include="Syntax\SyntaxTree.cs" />
-    <Compile Include="TestHelpers.cs" />
-    <Compile Include="Utils\Cancellation.cs" />
-    <Compile Include="Utils\ChangeType.cs" />
-    <Compile Include="Utils\EditString.cs" />
-    <Compile Include="Utils\EmptyReadOnlyList.cs" />
-    <Compile Include="Utils\Ensure.cs" />
-    <Compile Include="Utils\Interlocked.cs" />
-    <Compile Include="Utils\ListExtensions.cs" />
-    <Compile Include="Utils\ObjectPool.cs" />
-    <Compile Include="Utils\Optional.cs" />
-    <Compile Include="Utils\SafeList.cs" />
-    <Compile Include="Utils\StringTable.cs" />
-    <Compile Include="Syntax\SyntaxVisitor.cs" />
-    <Compile Include="Utils\TextKeyedDictionary.cs" />
-    <Compile Include="Utils\UniqueNameTable.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Syntax\CodeGen\CslTreeGenerator.t4" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Syntax\CodeGen\GeneratedCslTree.tt">
+    <Content Update="Syntax\CodeGen\GeneratedCslTree.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GeneratedCslTree.cs</LastGenOutput>
     </Content>
@@ -217,6 +46,5 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="..\..\..\BuildProcessTemplates\Kusto.targets" Condition="Exists('..\..\..\BuildProcessTemplates\Kusto.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\..\..\BuildProcessTemplates\Kusto.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\Directory.Build.targets')" />
 </Project>
