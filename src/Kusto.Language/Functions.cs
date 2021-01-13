@@ -2241,6 +2241,13 @@ namespace Kusto.Language
                 new Parameter("periods", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
+
+        public static readonly FunctionSymbol HasIpv4 =
+            new FunctionSymbol("__has_ipv4", ScalarTypes.Bool,
+                new Parameter("text", ScalarTypes.String),
+                new Parameter("ip", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region All
@@ -2591,6 +2598,7 @@ namespace Kusto.Language
             CursorCurrent,
             CursorCurrent2,
             InternalFunnelCompletion,
+            HasIpv4,
             RowNumber,
             RowCumSum,
             RowRank,
