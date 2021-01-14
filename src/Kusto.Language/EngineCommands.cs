@@ -1076,35 +1076,6 @@ namespace Kusto.Language
                 PolicyResult);
         #endregion
 
-        #region Query Throttling
-        public static readonly CommandSymbol ShowClusterPolicyQueryThrottling =
-            new CommandSymbol(nameof(ShowClusterPolicyQueryThrottling),
-                "show cluster policy querythrottling", 
-                PolicyResult);
-
-        public static readonly CommandSymbol AlterClusterPolicyQueryThrottling =
-            new CommandSymbol(nameof(AlterClusterPolicyQueryThrottling),
-                "alter cluster policy querythrottling Policy=<string>",
-                PolicyResult);
-
-        public static readonly CommandSymbol DeleteClusterPolicyQueryThrottling =
-            new CommandSymbol(nameof(DeleteClusterPolicyQueryThrottling),
-                "delete cluster policy querythrottling", 
-                PolicyResult);
-        #endregion
-
-        #region Query Limit
-        public static readonly CommandSymbol ShowClusterPolicyQueryLimit =
-            new CommandSymbol(nameof(ShowClusterPolicyQueryLimit),
-                "show cluster policy querylimit", 
-                PolicyResult);
-
-        public static readonly CommandSymbol AlterClusterPolicyQueryLimit =
-            new CommandSymbol(nameof(AlterClusterPolicyQueryLimit),
-                "alter cluster policy querylimit Policy=<string>",
-                PolicyResult);
-        #endregion
-
         #region Multi Database Admins
         public static readonly CommandSymbol ShowClusterPolicyMultiDatabaseAdmins =
             new CommandSymbol(nameof(ShowClusterPolicyMultiDatabaseAdmins),
@@ -1995,15 +1966,6 @@ namespace Kusto.Language
                 ShowClusterPolicyCapacity,
                 AlterClusterPolicyCapacity,
                 AlterMergeClusterPolicyCapacity,
-
-                // Query Throttling
-                ShowClusterPolicyQueryThrottling,
-                AlterClusterPolicyQueryThrottling,
-                DeleteClusterPolicyQueryThrottling,
-
-                // Query Limit
-                ShowClusterPolicyQueryLimit,
-                AlterClusterPolicyQueryLimit,
 
                 // Multi Database Admins
                 ShowClusterPolicyMultiDatabaseAdmins,
