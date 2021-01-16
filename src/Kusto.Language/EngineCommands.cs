@@ -1512,7 +1512,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowCapacity =
             new CommandSymbol(nameof(ShowCapacity),
-                "show capacity",
+                "show capacity [with '(' scope '=' Scope=(cluster | workloadgroup) ')']",
                 "(Resource: string, Total: long, Consumed: long, Remaining: long)");
 
         public static readonly CommandSymbol ShowOperations =
