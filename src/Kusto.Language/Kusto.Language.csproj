@@ -4,6 +4,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="'$(KustoProps)' != 'true'" />
   <PropertyGroup>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
