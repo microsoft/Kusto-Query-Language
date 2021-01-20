@@ -61,7 +61,6 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, TypeExpression> ParamTypeExtended { get; private set; }
         public Parser<LexicalToken, SchemaTypeExpression> SchemaType { get; private set; }
         public Parser<LexicalToken, Expression> SimpleNameReference { get; private set; }
-        public Parser<LexicalToken, Expression> ConstantExpression { get; private set; }
         public Parser<LexicalToken, Expression> Literal { get; private set; }
         public Parser<LexicalToken, Expression> StringLiteral { get; private set; }
         public Parser<LexicalToken, SkippedTokens> SkippedTokens { get; private set; }
@@ -344,7 +343,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         Token(SyntaxKind.OpenParenToken),
                         CommaList<Expression>(
-                            Rule(NameAndTypeDeclaration, nat => (Expression)nat), 
+                            Rule(NameAndTypeDeclaration, nat => (Expression)nat),
                             MissingNameAndTypeDeclarationNode),
                         RequiredToken(SyntaxKind.CloseParenToken),
 
@@ -489,19 +488,48 @@ namespace Kusto.Language.Parsing
                         : new CompoundStringLiteralExpression(new SyntaxList<SyntaxToken>(list)))
                 .WithTag("<string-literal>");
 
-            LiteralCore =
+            var IsSignedNumericLiteral =
+                Match((source, start) =>
+                {
+                    var sign = source.Peek(start);
+                    var number = source.Peek(start + 1);
+                    if (sign != null && number != null
+                        && (sign.Kind == SyntaxKind.PlusToken || sign.Kind == SyntaxKind.MinusToken)
+                        && number.TriviaWidth == 0
+                        && (number.Kind == SyntaxKind.LongLiteralToken
+                        || number.Kind == SyntaxKind.RealLiteralToken)
+                        && number.Text.Length > 0 && char.IsDigit(number.Text[0]))
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                });
+
+            var SignedNumericLiteral =
+                If(IsSignedNumericLiteral,
+                    Rule(
+                        First(Token(SyntaxKind.MinusToken), Token(SyntaxKind.PlusToken)).Hide(),
+                        First(LongLiteral, RealLiteral),
+                        (sign, expr) =>
+                        {
+                            // combine sign and literal into single literal token and expression
+                            var lit = (LiteralExpression)expr;
+                            var combinedToken = SyntaxToken.Literal(sign.Trivia, sign.Text + lit.Token.Text, lit.Token.Kind);
+                            return (Expression)new LiteralExpression(lit.Kind, combinedToken);
+                        }));
+
+            var NumericLiteral =
                 First(
-                    StringOrCompoundStringLiteral,
-                    BooleanLiteral,
                     LongLiteral,
-                    RealLiteral,
-                    DecimalLiteral,
                     IntLiteral,
-                    GuidLiteral,
+                    RealLiteral,
                     DateTimeLiteral,
                     TimespanLiteral,
-                    TypeofLiteral,
-                    ClientParameterReference);
+                    SignedNumericLiteral)
+                .WithTag("<numeric-constant>");
 
             var IdentifierTokenLiteral =
                 AsTokenLiteral(Token(SyntaxKind.IdentifierToken)).WithTag("<identifier>");
@@ -584,20 +612,22 @@ namespace Kusto.Language.Parsing
                     JsonArray,
                     ClientParameterReference);
 
-            this.ConstantExpression =
+            LiteralCore =
                 First(
-                    Literal,
-                    DynamicLiteral)
-                .WithTag("<constant>");
-
-            var NumericConstantExpression =
-                First(
+                    StringOrCompoundStringLiteral,
+                    BooleanLiteral,
                     LongLiteral,
-                    IntLiteral,
                     RealLiteral,
+                    DecimalLiteral,
+                    IntLiteral,
+                    GuidLiteral,
                     DateTimeLiteral,
-                    TimespanLiteral)
-                .WithTag("<numeric-constant>");
+                    TimespanLiteral,
+                    SignedNumericLiteral,
+                    DynamicLiteral,
+                    TypeofLiteral,
+                    ClientParameterReference)
+                .WithTag("<literal>");
 
             #endregion
 
@@ -637,7 +667,7 @@ namespace Kusto.Language.Parsing
 
             var AnyQueryOperatorParameterValue =
                 First(
-                    ConstantExpression.Hide(),
+                    Literal.Hide(),
                     IdentifierOrKeywordTokenLiteral,
                     SimpleNameReference);
 
@@ -689,7 +719,7 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterKind.SummableLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(NumericConstantExpression, AnyQueryOperatorParameterValue), 
+                            First(NumericLiteral, AnyQueryOperatorParameterValue), 
                             MissingLongLiteral);
                     case QueryOperatorParameterKind.ScalarLiteral:
                         return NamedParameter(
@@ -1994,7 +2024,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.WithKeyword),
                     RequiredToken(SyntaxKind.OthersKeyword),
                     RequiredToken(SyntaxKind.EqualToken),
-                    ConstantExpression,
+                    Literal,
                     (withKeyword, othersKeyword, equals, expression) =>
                         new TopNestedWithOthersClause(withKeyword, othersKeyword, equals, expression));
 
@@ -2307,7 +2337,7 @@ namespace Kusto.Language.Parsing
             var DefaultValueDeclaration =
                 Rule(
                     Token(SyntaxKind.EqualToken),
-                    Required(First(ConstantExpression, NameTokenLiteral), MissingExpression),
+                    Required(First(Literal, NameTokenLiteral), MissingExpression),
                     (equalToken, value) => new DefaultValueDeclaration(equalToken, value));
 
             FunctionParameterCore =
@@ -2547,7 +2577,7 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.DataTableParameters),
                     SchemaMultipartType,
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(ConstantExpression, MissingExpressionNode, allowTrailingComma: true),
+                    CommaList(Literal, MissingExpressionNode, allowTrailingComma: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (keyword, parameters, schema, openBracket, values, closeBracket) =>
                         (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
@@ -2659,7 +2689,7 @@ namespace Kusto.Language.Parsing
 
             PrimaryExpressionCore =
                 First(
-                    ConstantExpression,
+                    Literal,
                     ParenthesizedExpression,
                     DataTableExpression,
                     ExternalDataExpression,
