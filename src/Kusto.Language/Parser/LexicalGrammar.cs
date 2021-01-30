@@ -166,6 +166,9 @@ namespace Kusto.Language.Parsing
                 And(Chars("@\""), ZeroOrMore(Or(Chars("\"\""), Not(Or(Char('"'), Char('\r'), Char('\n'))))), Optional(Char('"')))
                 ));
 
+        private static readonly Parser<char> MultiLineStringLiteral =
+            And(Chars(KustoFacts.MultiLineStringQuote), ZeroOrMore(Not(Chars(KustoFacts.MultiLineStringQuote))), Optional(Chars(KustoFacts.MultiLineStringQuote)));
+
         private static readonly Parser<char> Directive =
             And(Char('#'), ZeroOrMore(Not(LineBreak)));
 
@@ -181,20 +184,20 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static RightParser<char, LexicalToken> EndCheckedToken(LeftValue<OffsetValue<string>> left, Parser<char> scanner, SyntaxKind kind, char expectedEndChar) =>
+        private static RightParser<char, LexicalToken> EndCheckedToken(LeftValue<OffsetValue<string>> left, Parser<char> scanner, SyntaxKind kind, string expectedEndChars) =>
             Rule(left, Text(scanner),
-                (trivia, text) => 
+                (trivia, text) =>
                 {
                     // validate the expected last character is correct
-                    var dx = text[text.Length -1] == expectedEndChar 
-                        ? null 
-                        : new Diagnostic[] { DiagnosticFacts.GetMissingCharacter(expectedEndChar) };
+                    var dx = text.EndsWith(expectedEndChars)
+                        ? null
+                        : new Diagnostic[] { DiagnosticFacts.GetMissingText(expectedEndChars) };
 
                     return new LexicalToken(trivia.Offset, kind, trivia.Value, text, dx);
                 });
 
         private static RightParser<char, LexicalToken> GooCheckedToken(LeftValue<OffsetValue<string>> left, Parser<char> gooScanner, SyntaxKind kind) =>
-            EndCheckedToken(left, gooScanner, kind, ')');
+            EndCheckedToken(left, gooScanner, kind, ")");
 
         private static readonly Parser<char, FixedTextInfo> KeywordOrPunctuationInfo =
             Map(SyntaxFacts.GetKindsWithFixedText().Select(k => new KeyValuePair<IEnumerable<char>, FixedTextInfo>(k.GetText(), new FixedTextInfo(k, k.GetText()))));
@@ -208,8 +211,9 @@ namespace Kusto.Language.Parsing
                 _trivia => Best(
                     Rule(_trivia, KeywordOrPunctuationInfo,
                         (trivia, info) => new LexicalToken(trivia.Offset, info.Kind, trivia.Value, info.Text)),
-                    EndCheckedToken(_trivia, SingleQuoteStringLiteral, SyntaxKind.StringLiteralToken, '\''),
-                    EndCheckedToken(_trivia, DoubleQuoteStringLiteral, SyntaxKind.StringLiteralToken, '"'),
+                    EndCheckedToken(_trivia, SingleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "'"),
+                    EndCheckedToken(_trivia, DoubleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "\""),
+                    EndCheckedToken(_trivia, MultiLineStringLiteral, SyntaxKind.StringLiteralToken, KustoFacts.MultiLineStringQuote),
                     GooCheckedToken(_trivia, PrefixedBooleanLiteral, SyntaxKind.BooleanLiteralToken),
                     GooCheckedToken(_trivia, PrefixedGuidLiteral, SyntaxKind.GuidLiteralToken),
                     GooCheckedToken(_trivia, PrefixedDateTimeLiteral, SyntaxKind.DateTimeLiteralToken),

@@ -2192,8 +2192,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol RowRank =
             new FunctionSymbol("row_rank", ScalarTypes.Long,
                 new Parameter("column", ParameterTypeKind.NotDynamic))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);            
 
         public static readonly FunctionSymbol RowWindowSession =
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,

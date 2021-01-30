@@ -12,9 +12,9 @@ namespace Kusto.Language
 
     public static class DiagnosticFacts
     {
-        public static Diagnostic GetMissingCharacter(char ch)
+        public static Diagnostic GetMissingText(string text)
         {
-            return new Diagnostic("KS001", $"Missing '{ch}'");
+            return new Diagnostic("KS001", $"Missing '{text}'");
         }
 
         public static Diagnostic GetUnexpectedCharacter(string text)

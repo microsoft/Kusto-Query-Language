@@ -382,6 +382,11 @@ namespace Kusto.Language
             return "\"" + GetEscapedString(text, doubleQuoteStringEscapes) + "\"";
         }
 
+        public static string GetMultiLineStringLiteral(string text)
+        {
+            return MultiLineStringQuote + text + MultiLineStringQuote;
+        }
+
         private static Dictionary<char, string> singleQuoteStringEscapes =
             new Dictionary<char, string> {
                 { '\'', @"\'" },
@@ -428,53 +433,69 @@ namespace Kusto.Language
             return Binder.GetExpressionResultName(expr, defaultName, rowScope);
         }
 
-        public static string GetStringLiteralValue(string text)
+        public static readonly string MultiLineStringQuote = "~~~";
+
+        public static string GetStringLiteralValue(string literal)
         {
             int start = 0;
-            int end = text.Length;
+            int end = literal.Length;
             bool verbatim = false;
 
             if (end == 0)
                 return string.Empty;
 
-            if (text[0] == 'h' || text[0] == 'H')
+            // check for multi-line string
+            if (literal.StartsWith(MultiLineStringQuote))
+            {
+                var twiceQuoteLen = MultiLineStringQuote.Length << 1;
+                if (end >= twiceQuoteLen && literal.EndsWith(MultiLineStringQuote))
+                {
+                    return literal.Substring(MultiLineStringQuote.Length, end - twiceQuoteLen);
+                }
+                else
+                {
+                    return literal.Substring(MultiLineStringQuote.Length);
+                }
+            }
+
+            if (literal[0] == 'h' || literal[0] == 'H')
                 start++; // do not include H prefix in value
 
-            if (start < text.Length && text[start] == '@')
+            if (start < literal.Length && literal[start] == '@')
             {
                 verbatim = true;
                 start++; // do not include @ prefix in value
             }
 
-            if (start >= text.Length)
+            if (start >= literal.Length)
                 return string.Empty;
 
-            var quote = text[start];
+            var quote = literal[start];
 
             start++; // do not include quote in value
 
-            if (end > 0 && text[end - 1] == quote)
+            if (end > 0 && literal[end - 1] == quote)
                 end--; // do not include end quote in value
 
             if (end <= start)
             {
                 return string.Empty;
             }
-            else if (!verbatim && text.IndexOf('\\', start) >= start)
+            else if (!verbatim && literal.IndexOf('\\', start) >= start)
             {
-                return DecodeEscapes(text, start, end - start);
+                return DecodeEscapes(literal, start, end - start);
             }
-            else if (verbatim && HasInteriorQuote(text, start, end, quote))
+            else if (verbatim && HasInteriorQuote(literal, start, end, quote))
             {
-                return DecodeDoubleQuotes(text, start, end - start, quote);
+                return DecodeDoubleQuotes(literal, start, end - start, quote);
             }
-            else if (start > 0 || end < text.Length)
+            else if (start > 0 || end < literal.Length)
             {
-                return text.Substring(start, end - start);
+                return literal.Substring(start, end - start);
             }
             else
             {
-                return text;
+                return literal;
             }
         }
 
