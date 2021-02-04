@@ -102,6 +102,24 @@ namespace Kusto.Language.Symbols
             }
         }
 
+        /// <summary>
+        /// Creates a new <see cref="ClusterSymbol"/> with the specified database removed.
+        /// </summary>
+        public ClusterSymbol RemoveDatabase(DatabaseSymbol symbolToRemove)
+        {
+            var newDatabases = this.Databases.Where(d => d != symbolToRemove).ToReadOnly();
+            return new ClusterSymbol(this.Name, newDatabases, this.IsOpen);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="ClusterSymbol"/> with the specified databases removed.
+        /// </summary>
+        public ClusterSymbol RemoveDatabases(IEnumerable<DatabaseSymbol> symbolsToRemove)
+        {
+            var newDatabases = this.Databases.Except(symbolsToRemove).ToReadOnly();
+            return new ClusterSymbol(this.Name, newDatabases, this.IsOpen);
+        }
+
         protected override string GetDisplay() =>
             $"cluster({this.Name})";
     }

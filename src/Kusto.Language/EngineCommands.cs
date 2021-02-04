@@ -648,12 +648,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterTablePolicyRowLevelSecurity =
             new CommandSymbol(nameof(AlterTablePolicyRowLevelSecurity),
-                "alter table TableName=<table> policy row_level_security (enable | disable) Query=<string>",
+                "alter table TableName=<table> policy row_level_security (enable | disable) [with '('! { PropertyName=<name> '='! Value=<value>, ',' } ')'!] Query=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyRowLevelSecurity =
             new CommandSymbol(nameof(DeleteTablePolicyRowLevelSecurity),
                 "delete table TableName=<table> policy row_level_security",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyRowLevelSecurity =
+            new CommandSymbol(nameof(ShowMaterializedViewPolicyRowLevelSecurity),
+                "show materialized-view MaterializedViewName=<materializedview> policy row_level_security",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMaterializedViewPolicyRowLevelSecurity =
+            new CommandSymbol(nameof(AlterMaterializedViewPolicyRowLevelSecurity),
+                "alter materialized-view MaterializedViewName=<materializedview> policy row_level_security (enable | disable) Query=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteMaterializedViewPolicyRowLevelSecurity =
+            new CommandSymbol(nameof(DeleteMaterializedViewPolicyRowLevelSecurity),
+                "delete materialized-view MaterializedViewName=<materializedview> policy row_level_security",
                 PolicyResult);
         #endregion
 
@@ -1367,7 +1382,7 @@ namespace Kusto.Language
         private static readonly string ShowMaterializedViewResult =
            "(Name: string, SourceTable: string, Query: string, " +
            "MaterializedTo: datetime, LastRun: datetime, LastRunResult: string, IsHealthy: bool, " +
-           "IsEnabled: bool, Folder: string, DocString: string, AutoUpdateSchema: bool)";
+           "IsEnabled: bool, Folder: string, DocString: string, AutoUpdateSchema: bool, EffectiveDateTime: datetime, Lookback:timespan)";
 
         public static readonly CommandSymbol CreateMaterializedView =
             new CommandSymbol(nameof(CreateMaterializedView),
@@ -1408,7 +1423,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMaterializedView =
             new CommandSymbol(nameof(AlterMaterializedView),
                 $"alter materialized-view MaterializedViewName=<materializedview> on table <table> <function_body>",
-                UnknownResult);
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol CreateOrAlterMaterializedView =
+            new CommandSymbol(nameof(CreateOrAlterMaterializedView),
+                $"create-or-alter materialized-view MaterializedViewName=<materializedview> on table <table> <function_body>",
+                ShowMaterializedViewResult);
 
         public static readonly CommandSymbol DropMaterializedView =
             new CommandSymbol(nameof(DropMaterializedView),
@@ -1434,6 +1454,27 @@ namespace Kusto.Language
             new CommandSymbol(nameof(ShowMaterializedViewCslSchema),
                 "show materialized-view MaterializedViewName=<materializedview> cslschema",
                 ShowTableSchemaResult);
+
+        public static readonly CommandSymbol AlterMaterializedViewFolder =
+            new CommandSymbol(nameof(AlterMaterializedViewFolder),
+                "alter materialized-view MaterializedViewNameName=<materializedview> folder Folder=<string>",
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol AlterMaterializedViewDocString =
+            new CommandSymbol(nameof(AlterMaterializedViewDocString),
+                "alter materialized-view MaterializedViewNameName=<materializedview> docstring Documentation=<string>",
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol AlterMaterializedViewLookback =
+            new CommandSymbol(nameof(AlterMaterializedViewLookback),
+                "alter materialized-view MaterializedViewNameName=<materializedview> lookback Lookback=<timespan>",
+                ShowMaterializedViewResult);
+
+        public static readonly CommandSymbol AlterMaterializedViewAutoUpdateSchema =
+            new CommandSymbol(nameof(AlterMaterializedViewAutoUpdateSchema),
+                "alter materialized-view MaterializedViewNameName=<materializedview> autoUpdateSchema (true|false)",
+                ShowMaterializedViewResult);
+
         #endregion
 
         #region System Information Commands
@@ -1847,6 +1888,9 @@ namespace Kusto.Language
                 ShowTablePolicyRowLevelSecurity,
                 AlterTablePolicyRowLevelSecurity,
                 DeleteTablePolicyRowLevelSecurity,
+                ShowMaterializedViewPolicyRowLevelSecurity,
+                AlterMaterializedViewPolicyRowLevelSecurity,
+                DeleteMaterializedViewPolicyRowLevelSecurity,
 
                 // Retention
                 ShowTablePolicyRetention,
@@ -2035,7 +2079,12 @@ namespace Kusto.Language
                 #endregion
 
                 #region Materialized Views 
+                AlterMaterializedViewDocString, 
+                AlterMaterializedViewFolder, 
+                AlterMaterializedViewAutoUpdateSchema, 
+                AlterMaterializedViewLookback,
                 CreateMaterializedView,
+                CreateOrAlterMaterializedView,
                 ShowMaterializedView,
                 ShowMaterializedViews, 
                 ShowMaterializedViewExtents,

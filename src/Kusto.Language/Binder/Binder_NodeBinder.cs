@@ -1356,7 +1356,7 @@ namespace Kusto.Language.Binding
                     if (node.ByClause != null)
                     {
                         // all columns corresponding to by-clause expressions
-                        _binder.CreateProjectionColumns(node.ByClause.Expressions, builder, diagnostics, doNotRepeat: true);
+                        _binder.CreateProjectionColumns(node.ByClause.Expressions, builder, diagnostics);
                     }
 
                     // all columns corresponding to aggregate expressions
