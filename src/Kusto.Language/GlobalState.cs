@@ -81,8 +81,8 @@ namespace Kusto.Language
             IReadOnlyList<OptionSymbol> options)
         {
             this.Clusters = clusters;
-            this.Cluster = cluster ?? new ClusterSymbol("", databases: null, isOpen: true);
-            this.Database = database ?? new DatabaseSymbol("", members: null, isOpen: true);
+            this.Cluster = cluster ?? ClusterSymbol.Unknown;
+            this.Database = database ?? DatabaseSymbol.Unknown;
             this.Functions = functions;
             this.Aggregates = aggregates;
             this.PlugIns = plugins;
@@ -189,7 +189,16 @@ namespace Kusto.Language
         /// </summary>
         public GlobalState WithClusterList(IReadOnlyList<ClusterSymbol> clusters)
         {
-            return With(clusters: Optional(clusters));
+            if (this.Clusters == clusters)
+            {
+                return this;
+            }
+            else
+            {
+                // change the set of clusters and update current cluster in case its symbol was updated
+                var newCluster = clusters.FirstOrDefault(c => c.Name == this.Cluster.Name) ?? ClusterSymbol.Unknown;
+                return With(clusters: Optional(clusters)).WithCluster(newCluster);
+            }
         }
 
         /// <summary>
@@ -197,15 +206,37 @@ namespace Kusto.Language
         /// </summary>
         public GlobalState WithCluster(ClusterSymbol cluster)
         {
-            if (!this.Clusters.Contains(cluster))
+            if (this.Cluster == cluster)
             {
-                var newClusters = new List<ClusterSymbol>(this.Clusters);
-                newClusters.Add(cluster);
-                return With(cluster: cluster, clusters: newClusters);
+                return this;
+            }
+            else if (cluster == ClusterSymbol.Unknown)
+            {
+                return With(cluster: cluster, database: DatabaseSymbol.Unknown);
+            }
+            else if (this.Clusters.Contains(cluster))
+            {
+                // this is a known cluster, so change current and try to set current database to one with same name
+                var newDb = cluster.GetDatabase(this.Database.Name) ?? DatabaseSymbol.Unknown;
+                return With(cluster: cluster, database: newDb);
             }
             else
             {
-                return With(cluster: cluster);
+                // add new cluster or replace existing cluster with same name
+                var newClusters = new List<ClusterSymbol>(this.Clusters);
+
+                var existingCluster = GetCluster(cluster.Name);
+                if (existingCluster != null)
+                {
+                    var index = newClusters.IndexOf(existingCluster);
+                    newClusters[index] = cluster;
+                }
+                else
+                {
+                    newClusters.Add(cluster);
+                }
+
+                return WithClusterList(newClusters).WithCluster(cluster);
             }
         }
 
@@ -214,24 +245,32 @@ namespace Kusto.Language
         /// </summary>
         public GlobalState WithDatabase(DatabaseSymbol database)
         {
-            if (this.Cluster != null && this.Cluster.Databases.Contains(database))
+            database = database ?? DatabaseSymbol.Unknown;
+
+            if (this.Database == database)
+            {
+                return this;
+            }
+            else if (database == DatabaseSymbol.Unknown
+                || this.Cluster.Databases.Contains(database))
             {
                 // same cluster, just change database
                 return With(database: database);
             }
             else
             {
-                var existingCluster = GetCluster(database);
-                if (existingCluster != null)
+                // check if it is a database of some other known cluster
+                var knownCluster = GetCluster(database);
+                if (knownCluster != null)
                 {
                     // changing the current database changes the current cluster too
-                    return With(cluster: existingCluster, database: database);
+                    return With(cluster: knownCluster, database: database);
                 }
                 else
                 {
-                    // no existing cluster for this database, so make a new one
+                    // the database must be part of a known cluster, so add a cluster for it to be part of
                     var cluster = new ClusterSymbol(database.Name + ":cluster", database);
-                    return WithCluster(cluster).With(database: database);
+                    return WithCluster(cluster).WithDatabase(database);
                 }
             }
         }
@@ -258,50 +297,6 @@ namespace Kusto.Language
         public GlobalState WithFunctions(IReadOnlyList<FunctionSymbol> functions)
         {
             return With(functions: Optional(functions));
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="GlobalState"/> with the new cluster added or replacing an existing cluster with the same name.
-        /// </summary>
-        public GlobalState AddOrUpdateCluster(ClusterSymbol newCluster)
-        {
-            var clusterInList = this.Clusters.FirstOrDefault(c => c.Name == newCluster.Name);
-
-            if (clusterInList == null)
-            {
-                // if it was not in the list add it
-                return this.WithClusterList(this.Clusters.Concat(new[] { newCluster }).ToList());
-            }
-            else if (clusterInList == newCluster)
-            {
-                // this is the same cluster instance that is already in the list, so do nothing
-                return this;
-            }
-            else
-            {
-                // make a new list with the old cluster instance removed and the new instance added
-                var newList = this.Clusters.Select(c => c == clusterInList ? newCluster : c).ToArray();
-                var newGlobals = this.WithClusterList(newList);
-
-                // check to see if the current cluster was this cluster and update it too.
-                if (this.Cluster == clusterInList)
-                {
-                    newGlobals = newGlobals.WithCluster(newCluster);
-                }
-
-                // check to see if the current database was a member of this cluster and if so, update it as well.
-                var oldCurrentDatabase = clusterInList.Databases.FirstOrDefault(d => d == this.Database);
-                if (oldCurrentDatabase != null)
-                {
-                    var newDatabase = newCluster.Databases.FirstOrDefault(d => d.Name == oldCurrentDatabase.Name);
-                    if (newDatabase != null)
-                    {
-                        newGlobals = newGlobals.WithDatabase(newDatabase);
-                    }
-                }
-
-                return newGlobals;
-            }
         }
 
         /// <summary>

@@ -206,5 +206,7 @@ namespace Kusto.Language.Symbols
 
         protected override string GetDisplay() =>
             $"database({this.Name})";
+
+        public static readonly DatabaseSymbol Unknown = new DatabaseSymbol(null, members: null, isOpen: true);
     }
 }

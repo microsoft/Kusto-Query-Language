@@ -122,5 +122,8 @@ namespace Kusto.Language.Symbols
 
         protected override string GetDisplay() =>
             $"cluster({this.Name})";
+
+
+        public static readonly ClusterSymbol Unknown = new ClusterSymbol("", databases: null, isOpen: true);
     }
 }
