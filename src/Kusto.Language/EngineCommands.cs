@@ -1608,8 +1608,8 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowQueryPlan =
             new CommandSymbol(nameof(ShowQueryPlan),
-                "show queryplan '<|' Query=<input_query>",
-                "(ResultType: string, RelopTree: string, QueryPlan: string, Stat: string)");
+                "show queryplan '<|' Query=<input_query>", // TODO: with (reconstructCsl=true)
+                "(ResultType: string, Format: string, Content: string)");
 
         public static readonly CommandSymbol ShowBasicAuthUsers =
             new CommandSymbol(nameof(ShowBasicAuthUsers),
