@@ -1606,9 +1606,13 @@ namespace Kusto.Language
                 "cancel query ClientRequestId=<string>",
                 UnknownResult);
 
+        private static readonly string ShowQueryPlanPropertyList =
+            PropertyList("reconstructCsl"
+                );
+
         public static readonly CommandSymbol ShowQueryPlan =
             new CommandSymbol(nameof(ShowQueryPlan),
-                "show queryplan '<|' Query=<input_query>", // TODO: with (reconstructCsl=true)
+                $"show queryplan [{ShowQueryPlanPropertyList}] '<|' Query=<input_query>",
                 "(ResultType: string, Format: string, Content: string)");
 
         public static readonly CommandSymbol ShowBasicAuthUsers =
