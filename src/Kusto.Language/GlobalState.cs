@@ -80,18 +80,18 @@ namespace Kusto.Language
             IReadOnlyList<ParameterSymbol> parameters,
             IReadOnlyList<OptionSymbol> options)
         {
-            this.Clusters = clusters;
+            this.Clusters = clusters ?? EmptyReadOnlyList<ClusterSymbol>.Instance;
             this.Cluster = cluster ?? ClusterSymbol.Unknown;
             this.Database = database ?? DatabaseSymbol.Unknown;
-            this.Functions = functions;
-            this.Aggregates = aggregates;
-            this.PlugIns = plugins;
-            this.Operators = operators;
-            this.Commands = commands;
+            this.Functions = functions ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
+            this.Aggregates = aggregates ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
+            this.PlugIns = plugins ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
+            this.Operators = operators ?? EmptyReadOnlyList<OperatorSymbol>.Instance;
+            this.Commands = commands ?? EmptyReadOnlyList<CommandSymbol>.Instance;
             this.commandMap = commandMap;
             this.commandListMap = commandListMap;
-            this.Parameters = parameters.ToReadOnly();
-            this.Options = options;
+            this.Parameters = parameters ?? EmptyReadOnlyList<ParameterSymbol>.Instance;
+            this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
         }
 
         private Dictionary<string, FunctionSymbol> aggregatesMap;
