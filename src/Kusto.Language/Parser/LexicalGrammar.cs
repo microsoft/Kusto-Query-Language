@@ -167,7 +167,10 @@ namespace Kusto.Language.Parsing
                 ));
 
         private static readonly Parser<char> MultiLineStringLiteral =
-            And(Chars(KustoFacts.MultiLineStringQuote), ZeroOrMore(Not(Chars(KustoFacts.MultiLineStringQuote))), Optional(Chars(KustoFacts.MultiLineStringQuote)));
+            And(Optional(HiddenPrefix), And(Chars(KustoFacts.MultiLineStringQuote), ZeroOrMore(Not(Chars(KustoFacts.MultiLineStringQuote))), Optional(Chars(KustoFacts.MultiLineStringQuote))));
+                
+        private static readonly Parser<char> AlternateMultiLineStringLiteral =
+            And(Optional(HiddenPrefix), And(Chars(KustoFacts.AlternateMultiLineStringQuote), ZeroOrMore(Not(Chars(KustoFacts.AlternateMultiLineStringQuote))), Optional(Chars(KustoFacts.AlternateMultiLineStringQuote))));
 
         private static readonly Parser<char> Directive =
             And(Char('#'), ZeroOrMore(Not(LineBreak)));
@@ -214,6 +217,7 @@ namespace Kusto.Language.Parsing
                     EndCheckedToken(_trivia, SingleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "'"),
                     EndCheckedToken(_trivia, DoubleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "\""),
                     EndCheckedToken(_trivia, MultiLineStringLiteral, SyntaxKind.StringLiteralToken, KustoFacts.MultiLineStringQuote),
+                    EndCheckedToken(_trivia, AlternateMultiLineStringLiteral, SyntaxKind.StringLiteralToken, KustoFacts.AlternateMultiLineStringQuote),
                     GooCheckedToken(_trivia, PrefixedBooleanLiteral, SyntaxKind.BooleanLiteralToken),
                     GooCheckedToken(_trivia, PrefixedGuidLiteral, SyntaxKind.GuidLiteralToken),
                     GooCheckedToken(_trivia, PrefixedDateTimeLiteral, SyntaxKind.DateTimeLiteralToken),

@@ -382,6 +382,9 @@ namespace Kusto.Language
             return "\"" + GetEscapedString(text, doubleQuoteStringEscapes) + "\"";
         }
 
+        /// <summary>
+        /// Gets the multi-line quoted string literal for the text.
+        /// </summary>
         public static string GetMultiLineStringLiteral(string text)
         {
             return MultiLineStringQuote + text + MultiLineStringQuote;
@@ -433,8 +436,6 @@ namespace Kusto.Language
             return Binder.GetExpressionResultName(expr, defaultName, rowScope);
         }
 
-        public static readonly string MultiLineStringQuote = "~~~";
-
         public static string GetStringLiteralValue(string literal)
         {
             int start = 0;
@@ -444,22 +445,16 @@ namespace Kusto.Language
             if (end == 0)
                 return string.Empty;
 
-            // check for multi-line string
-            if (literal.StartsWith(MultiLineStringQuote))
+            // do not include H prefix in value
+            if (literal[0] == 'h' || literal[0] == 'H')
             {
-                var twiceQuoteLen = MultiLineStringQuote.Length << 1;
-                if (end >= twiceQuoteLen && literal.EndsWith(MultiLineStringQuote))
-                {
-                    return literal.Substring(MultiLineStringQuote.Length, end - twiceQuoteLen);
-                }
-                else
-                {
-                    return literal.Substring(MultiLineStringQuote.Length);
-                }
+                literal = literal.Substring(1);
+                end = literal.Length;
             }
 
-            if (literal[0] == 'h' || literal[0] == 'H')
-                start++; // do not include H prefix in value
+            // check for multi-line string
+            if (TryParseMultiLineStringLiteral(literal, out var multiLineLiteral))
+                return multiLineLiteral;
 
             if (start < literal.Length && literal[start] == '@')
             {
@@ -497,6 +492,44 @@ namespace Kusto.Language
             {
                 return literal;
             }
+        }
+
+        /// <summary>
+        /// The quote text at the start and end of a multi-line string.
+        /// </summary>
+        public static readonly string MultiLineStringQuote = "```";
+
+        /// <summary>
+        /// Alternate quote for multi-line strings, to be depreciated.
+        /// </summary>
+        public static readonly string AlternateMultiLineStringQuote = "~~~";
+
+        private static bool TryParseMultiLineStringLiteral(string str, out string literal)
+        {
+            return TryParseSimpleStringLiteral(str, MultiLineStringQuote, out literal)
+                || TryParseSimpleStringLiteral(str, AlternateMultiLineStringQuote, out literal);
+        }
+
+        private static bool TryParseSimpleStringLiteral(string str, string quote, out string literal)
+        {
+            // check for multi-line string
+            if (str.StartsWith(quote, StringComparison.Ordinal))
+            {
+                var twiceQuoteLen = quote.Length << 1;
+                if (str.Length >= twiceQuoteLen && str.EndsWith(quote, StringComparison.Ordinal))
+                {
+                    literal = str.Substring(quote.Length, str.Length - twiceQuoteLen);
+                    return true;
+                }
+                else
+                {
+                    literal = str.Substring(quote.Length);
+                    return true;
+                }
+            }
+
+            literal = null;
+            return false;
         }
 
         private static bool HasInteriorQuote(string text, int start, int end, char quote)
