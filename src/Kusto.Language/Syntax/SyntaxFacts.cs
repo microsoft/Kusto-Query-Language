@@ -99,8 +99,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.CreatedOnKeyword, "createdon", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CreateOrAlterKeyword, "create-or-alter"),
                 new SyntaxData(SyntaxKind.CreateMergeKeyword, "create-merge"),
-                new SyntaxData(SyntaxKind.CrossClusterKeyword, "__crossCluster"),
-                new SyntaxData(SyntaxKind.CrossDbKeyword, "__crossDB"),
                 new SyntaxData(SyntaxKind.CslKeyword, "csl", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CslSchemaKeyword, "cslschema", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.CsvKeyword, "csv", canBeIdentifier: true),
@@ -214,7 +212,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.IntoKeyword, "into", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.InvokeKeyword, "invoke"),
                 new SyntaxData(SyntaxKind.IsFuzzyKeyword, "isfuzzy", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind._IsFuzzyKeyword, "__isFuzzy"),
 
                 new SyntaxData(SyntaxKind.JoinKeyword, "join"),
                 new SyntaxData(SyntaxKind.JournalKeyword, "journal"),
@@ -285,7 +282,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.OthersKeyword, "others", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.PackKeyword, "pack", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind.PackedColumnKeyword, "__packedColumn"),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
                 new SyntaxData(SyntaxKind.ParseWhereKeyword, "parse-where"),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
@@ -368,7 +364,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.StartsWithCsKeyword, "startswith_cs", opKind: OperatorKind.StartsWithCs),
                 new SyntaxData(SyntaxKind.SoftDeleteKeyword, "softdelete"),
                 new SyntaxData(SyntaxKind.SortKeyword, "sort"),
-                new SyntaxData(SyntaxKind.SourceColumnIndexKeyword, "__sourceColumnIndex"),
                 new SyntaxData(SyntaxKind.SqlKeyword, "sql"),
                 new SyntaxData(SyntaxKind.StateKeyword, "state", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.StepKeyword, "step", canBeIdentifier: true),

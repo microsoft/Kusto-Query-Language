@@ -646,17 +646,24 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(nameParser, MissingNameReferenceNode),
                     list => (Expression)new NameReferenceList(list));
 
+            var SecondaryQueryOperatorParameterNamePart =
+                Match(t => (t.Kind == SyntaxKind.IdentifierToken
+                    || t.Kind.IsKeyword()
+                    || t.Kind == SyntaxKind.LongLiteralToken
+                    || t.Kind == SyntaxKind.DotToken
+                    || t.Kind == SyntaxKind.MinusToken)
+                    && t.Trivia.Length == 0);
+
             // allow for query operator parameter names to have otherwise illegal punctuation inside them
             var ScanAnyQueryOperatorParameterName =
-                And(
-                    Match(t => t.Kind == SyntaxKind.IdentifierToken),
-                    ZeroOrMore(
-                        Match(t => (t.Kind == SyntaxKind.IdentifierToken
-                                || t.Kind.GetCategory() == SyntaxCategory.Keyword
-                                || t.Kind == SyntaxKind.LongLiteralToken
-                                || t.Kind == SyntaxKind.DotToken
-                                || t.Kind == SyntaxKind.MinusToken)
-                                && t.Trivia.Length == 0)));
+                Or(
+                    And(
+                        Match(t => t.Kind == SyntaxKind.IdentifierToken
+                                || t.Kind.IsKeyword() && t.Kind.CanBeIdentifier()),
+                        ZeroOrMore(SecondaryQueryOperatorParameterNamePart)),
+                    And(
+                        Match(t => t.Kind.IsKeyword()),
+                        OneOrMore(SecondaryQueryOperatorParameterNamePart)));
 
             var AnyQueryOperatorParameterName =
                 Convert(

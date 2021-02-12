@@ -67,8 +67,6 @@
         CreateOrAlterKeyword,
         CreatedOnKeyword,
         CreateMergeKeyword,
-        CrossDbKeyword,
-        CrossClusterKeyword,
         CslKeyword,
         CslSchemaKeyword,
         CsvKeyword,
@@ -181,7 +179,6 @@
         IngestorsKeyword,
         InlineKeyword,
         IsFuzzyKeyword,
-        _IsFuzzyKeyword,
         IntoKeyword,
         InvokeKeyword,
 
@@ -254,7 +251,6 @@
         OthersKeyword,
 
         PackKeyword,
-        PackedColumnKeyword,
         ParseKeyword,
         ParseWhereKeyword,
         PartitionKeyword,
@@ -335,7 +331,6 @@
         SimpleKeyword,
         SoftDeleteKeyword,
         SortKeyword,
-        SourceColumnIndexKeyword,
         SqlKeyword,
         StartsWithKeyword,
         StartsWithCsKeyword,
