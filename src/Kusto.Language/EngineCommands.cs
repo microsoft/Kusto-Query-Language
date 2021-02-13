@@ -1700,6 +1700,11 @@ namespace Kusto.Language
                 $"move [async] extents to table DestinationTableName=<table> '<|' Query=<input_query>",
                 MoveExtentsResult);
 
+        public static readonly CommandSymbol ReplaceExtents =
+            new CommandSymbol(nameof(ReplaceExtents),
+                $"replace [async] extents in table DestinationTableName=<table> '<|' '{{' ExtentsToDropQuery=<input_query> '}}' ',' '{{' ExtentsToMoveQuery=<input_query> '}}'",
+                MoveExtentsResult);
+
         private static readonly string DropExtentResult =
             "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
 
@@ -2132,6 +2137,7 @@ namespace Kusto.Language
                 MergeExtents,
                 MoveExtentsFrom,
                 MoveExtentsQuery,
+                ReplaceExtents,
                 DropExtent,
                 DropExtents,
                 //DropExtentsQuery,
