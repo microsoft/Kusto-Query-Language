@@ -260,6 +260,22 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public virtual SyntaxElement GetChild(int index) => throw new IndexOutOfRangeException();
 
+#if DEBUG
+        /// <summary>
+        /// Property for debugging
+        /// </summary>
+        private SyntaxElement[] Children
+        {
+            get
+            {
+                var children = new SyntaxElement[this.ChildCount];
+                for (int i = 0; i < this.ChildCount; i++)
+                    children[i] = this.GetChild(i);
+                return children;
+            }
+        }
+#endif
+
         /// <summary>
         /// True if the child element at the specified index is optional and may contain a null value.
         /// </summary>

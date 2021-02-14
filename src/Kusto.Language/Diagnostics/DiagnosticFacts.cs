@@ -153,6 +153,11 @@ namespace Kusto.Language
             return GetMissingElement($"{clauseName} clause");
         }
 
+        public static Diagnostic GetMissingSchemaDeclaration()
+        {
+            return GetMissingElement("schema declaration");
+        }
+
         public static Diagnostic GetParsePatternMustStartWithColumnNameOrStar()
         {
             return new Diagnostic("KS100", "The pattern must start with a column name or *");

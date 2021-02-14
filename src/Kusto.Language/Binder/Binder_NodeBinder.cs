@@ -1569,6 +1569,31 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitContextualDataTableExpression(ContextualDataTableExpression node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
+                var declaredNames = s_stringSetPool.AllocateFromPool();
+                try
+                {
+                    CreateColumnsFromSchema(node.Schema, columns, declaredNames, diagnostics);
+
+                    if (node.Id != null)
+                    {
+                        var _ = _binder.CheckIsExactType(node.Id, ScalarTypes.Guid, diagnostics)
+                            && _binder.CheckIsLiteral(node.Id, diagnostics);
+                    }
+
+                    return new SemanticInfo(new TableSymbol(columns), diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
+                    s_stringSetPool.ReturnToPool(declaredNames);
+                }
+            }
+
             public override SemanticInfo VisitExternalDataExpression(ExternalDataExpression node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

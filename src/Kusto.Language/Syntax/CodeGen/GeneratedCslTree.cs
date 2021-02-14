@@ -11420,6 +11420,79 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ExternalDataExpression */
     
+    #region class ContextualDataTableExpression
+    public sealed partial class ContextualDataTableExpression : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.ContextualDataTableExpression;
+        
+        public SyntaxToken ContextualDataTableKeyword { get; }
+        
+        public Expression Id { get; }
+        
+        public SchemaTypeExpression Schema { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ContextualDataTableExpression"/>.
+        /// </summary>
+        internal ContextualDataTableExpression(SyntaxToken contextualDataTableKeyword, Expression id, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ContextualDataTableKeyword = Attach(contextualDataTableKeyword);
+            this.Id = Attach(id);
+            this.Schema = Attach(schema);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ContextualDataTableKeyword;
+                case 1: return Id;
+                case 2: return Schema;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ContextualDataTableKeyword);
+                case 1: return nameof(Id);
+                case 2: return nameof(Schema);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitContextualDataTableExpression(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitContextualDataTableExpression(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new ContextualDataTableExpression((SyntaxToken)ContextualDataTableKeyword?.Clone(), (Expression)Id?.Clone(), (SchemaTypeExpression)Schema?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class ContextualDataTableExpression */
+    
     #region class ExternalDataWithClause
     public sealed partial class ExternalDataWithClause : Expression
     {
@@ -13025,6 +13098,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitDataScopeExpression(DataScopeExpression node);
         public abstract void VisitDataTableExpression(DataTableExpression node);
         public abstract void VisitExternalDataExpression(ExternalDataExpression node);
+        public abstract void VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract void VisitExternalDataWithClause(ExternalDataWithClause node);
         public abstract void VisitJoinOperator(JoinOperator node);
         public abstract void VisitLookupOperator(LookupOperator node);
@@ -13628,6 +13702,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitContextualDataTableExpression(ContextualDataTableExpression node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitExternalDataWithClause(ExternalDataWithClause node)
         {
             this.DefaultVisit(node);
@@ -13851,6 +13929,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitDataScopeExpression(DataScopeExpression node);
         public abstract TResult VisitDataTableExpression(DataTableExpression node);
         public abstract TResult VisitExternalDataExpression(ExternalDataExpression node);
+        public abstract TResult VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract TResult VisitExternalDataWithClause(ExternalDataWithClause node);
         public abstract TResult VisitJoinOperator(JoinOperator node);
         public abstract TResult VisitLookupOperator(LookupOperator node);
@@ -14451,6 +14530,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitExternalDataExpression(ExternalDataExpression node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitContextualDataTableExpression(ContextualDataTableExpression node)
         {
             return this.DefaultVisit(node);
         }

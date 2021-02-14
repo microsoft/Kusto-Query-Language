@@ -2582,12 +2582,19 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DataTableParameters),
-                    SchemaMultipartType,
+                    Required(SchemaMultipartType, MissingSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     CommaList(Literal, MissingExpressionNode, allowTrailingComma: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (keyword, parameters, schema, openBracket, values, closeBracket) =>
                         (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
+
+            var ContextualDataTableExpression =
+                Rule(
+                    Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
+                    Required(UnnamedExpression, MissingExpression), // guid literal expected, though parse any expression
+                    Required(SchemaMultipartType, MissingSchema),
+                    (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
             var ExternalDataWithClauseNamedParameter =
                 Rule(
@@ -2614,7 +2621,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
                         Token(SyntaxKind.External_DataKeyword).Hide()),
                     List(AnyQueryOperatorParameter),
-                    SchemaMultipartType,
+                    Required(SchemaMultipartType, MissingSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     CommaList(Expression, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
@@ -2699,6 +2706,7 @@ namespace Kusto.Language.Parsing
                     Literal,
                     ParenthesizedExpression,
                     DataTableExpression,
+                    ContextualDataTableExpression,
                     ExternalDataExpression,
                     MaterializedViewCombineExpression,
                     PrimaryPathSelector);
@@ -2870,6 +2878,16 @@ namespace Kusto.Language.Parsing
 
         public static readonly Func<Expression> MissingFunctionCallExpression =
             () => (FunctionCallExpression)MissingFunctionCallNode.Clone();
+
+        public static readonly SchemaTypeExpression MissingSchemaNode =
+            new SchemaTypeExpression(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                SyntaxList<SeparatedElement<Expression>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
+        public static readonly Func<SchemaTypeExpression> MissingSchema =
+            () => (SchemaTypeExpression)MissingSchemaNode.Clone();
 
         public static readonly QueryOperator MissingQueryOperatorNode =
             new BadQueryOperator(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetQueryOperatorExpected() });

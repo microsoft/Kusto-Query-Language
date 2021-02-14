@@ -2302,6 +2302,21 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "ContextualDataTableExpression",
+        Doc = "",
+        Base = "Expression",
+        Sealed = true,
+        Kind = "ContextualDataTableExpression",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ContextualDataTableKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Id", Type = "Expression", Completion="None" },
+            new GeneratedProperty { Name = "Schema", Type = "SchemaTypeExpression", Completion="Syntax" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "ExternalDataWithClause",
         Doc = "",
         Base = "Expression",
