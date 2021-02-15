@@ -1774,14 +1774,14 @@ namespace Kusto.Language.Parsing
             var ProjectOperator =
                 Rule(
                     Token(SyntaxKind.ProjectKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode),
                     (keyword, list) => (QueryOperator)new ProjectOperator(keyword, list))
                 .WithTag("<project>");
 
             var ProjectAwayOperator =
                 Rule(
                     Token(SyntaxKind.ProjectAwayKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode, oneOrMore: true),
+                    CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode),
                     (keyword, list) => (QueryOperator)new ProjectAwayOperator(keyword, list))
                 .WithTag("<project-away>");
 
@@ -1795,7 +1795,7 @@ namespace Kusto.Language.Parsing
             var ProjectRenameOperator =
                 Rule(
                     Token(SyntaxKind.ProjectRenameKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, MissingExpressionNode),
                     (keyword, list) => (QueryOperator)new ProjectRenameOperator(keyword, list))
                 .WithTag("<project-rename>");
 

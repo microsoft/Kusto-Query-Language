@@ -153,7 +153,9 @@ namespace Kusto.Language.Binding
                         var se = (SeparatedElement<Statement>)list[i];
 
                         // don't include declarations not fully defined before position
-                        if (_position < se.End || IsIncomplete(se))
+                        if (_position < se.End || 
+                            IsInTriviaAfter(se.Element, _position)
+                            && (IsIncomplete(se.Element) || CanHoldMore(se.Element)))
                             break;
 
                         if (se.Element is LetStatement ls)
@@ -172,10 +174,56 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            /// <summary>
+            /// The node has a missing element as its last child.
+            /// </summary>
             private static bool IsIncomplete(SyntaxNode node)
             {
                 var last = node.GetLastToken(includeZeroWidthTokens: true);
                 return last?.IsMissing ?? false;
+            }
+
+            /// <summary>
+            /// The node ends in a list or optional element
+            /// </summary>
+            private static bool CanHoldMore(SyntaxNode node)
+            {
+                // walk up tree looking for lists
+                var lastToken = node.GetLastToken(includeZeroWidthTokens: true);
+                
+                for (var subNode = lastToken.Parent;
+                    subNode != node && subNode.TextStart > node.TextStart;
+                    subNode = subNode.Parent)
+                {
+                    for (int i = subNode.ChildCount - 1; i >= 0; i--)
+                    {
+                        var child = subNode.GetChild(i);
+                        // missing optional element could be here
+                        if (child == null && subNode.IsOptional(i))
+                            return true;
+                        // lists can always have more
+                        if (child is SyntaxList)
+                            return true;
+                        // see-through zero width elements
+                        if (child != null && child.Width > 0)
+                            break;
+                    }
+                }
+
+                return false;
+            }
+
+            private static bool IsInTriviaAfter(SyntaxNode node, int position)
+            {
+                return IsInTriviaAfter(node.GetLastToken(), position);
+            }
+
+            private static bool IsInTriviaAfter(SyntaxToken token, int position)
+            {
+                var nextToken = token.GetNextToken();
+                return nextToken == null 
+                    || position < nextToken.TextStart 
+                    || nextToken.Kind == SyntaxKind.EndOfTextToken;
             }
 
             public override void VisitFunctionDeclaration(FunctionDeclaration node)

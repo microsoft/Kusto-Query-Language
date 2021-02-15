@@ -55,7 +55,7 @@ namespace Kusto.Language.Syntax
                 if (child != null)
                 {
                     child.OffsetInParent = offset;
-                    child.IndexInParent = (short)i;
+                    child.IndexInParent = i;
                     offset += child.FullWidth;
                 }
             }
@@ -248,7 +248,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Child Index in parent.
         /// </summary>
-        public short IndexInParent { get; private set; }
+        public int IndexInParent { get; private set; }
 
         /// <summary>
         /// The number of immediate child elements this element has.
@@ -495,7 +495,7 @@ namespace Kusto.Language.Syntax
 
             while (element != null)
             {
-                if (childIndex < element.ChildCount)
+                if (childIndex < element.ChildCount && childIndex >= 0)
                 {
                     // walk down
                     var child = element.GetChild(childIndex);
@@ -634,11 +634,17 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public void WalkTokens(int start, int end, Action<SyntaxToken> action)
         {
-            for (var token = this.GetTokenAt(start);
-                token != null && token.TriviaStart < end;
-                token = token.GetNextToken())
+            start = Math.Max(start, this.TextStart);
+            end = Math.Min(end, this.End);
+
+            if (start < end)
             {
-                action(token);
+                for (var token = this.GetTokenAt(start);
+                    token != null && token.TriviaStart < end;
+                    token = token.GetNextToken())
+                {
+                    action(token);
+                }
             }
         }
 
@@ -675,7 +681,7 @@ namespace Kusto.Language.Syntax
 
             while (node != null)
             {
-                if (childIndex < node.ChildCount && (fnDescend == null || fnDescend(node)))
+                if (childIndex < node.ChildCount && childIndex >= 0 && (fnDescend == null || fnDescend(node)))
                 {
                     // walk down
                     var child = node.GetChild(childIndex);
@@ -715,7 +721,7 @@ namespace Kusto.Language.Syntax
         {
             if (this.Parent != null)
             {
-                for (int i = this.IndexInParent + 1; i < this.Parent.ChildCount; i++)
+                for (int i = this.IndexInParent + 1; i < this.Parent.ChildCount && i >= 0; i++)
                 {
                     var sibling = this.Parent.GetChild(i);
                     if (sibling != null && (includeZeroWidthElements || sibling.FullWidth > 0))
@@ -767,7 +773,7 @@ namespace Kusto.Language.Syntax
 
             while (node != null)
             {
-                if (childIndex < node.ChildCount)
+                if (childIndex < node.ChildCount && childIndex >= 0)
                 {
                     var child = node.GetChild(childIndex);
                     if (child != null)
@@ -806,7 +812,7 @@ namespace Kusto.Language.Syntax
 
             while (node != null)
             {
-                if (childIndex >= 0)
+                if (childIndex < node.ChildCount && childIndex >= 0)
                 {
                     var child = node.GetChild(childIndex);
                     if (child != null)
