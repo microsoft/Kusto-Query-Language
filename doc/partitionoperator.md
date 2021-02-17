@@ -46,8 +46,8 @@ T | partition by Col1 { U | where Col2=toscalar(Col1) }
   |Name               |Values         |Description|
   |-------------------|---------------|-----------|
   |`hint.materialized`|`true`,`false` |If set to `true` will materialize the source of the `partition` operator (default: `false`)|
-  |`hint.concurrency`|*Number*|Hints the system how many concurrent subqueries of the `partition` operator should be executed in parallel. *Default*: Amount of CPU cores on the single node of the cluster (2 to 16).|
-  |`hint.spread`|*Number*|Hints the system how many nodes should be used by the concurrent`partition` subqueries execution. *Default*: 1.|
+  |`hint.concurrency`|*Number*|Hints the system how many partitions to run in parallel. *Default*: 16.|
+  |`hint.spread`|*Number*|Hints the system how to distribute the partitions among cluster nodes (for example: if there are N partitions and the spread hint is set to P then the N partitions will be processed by P different cluster nodes equally in parallel/sequentially depending on the concurrency hint). *Default*: 1.|
 
 ## Returns
 

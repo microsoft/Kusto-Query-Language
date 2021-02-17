@@ -1,28 +1,30 @@
 ---
-title: parse_json() - Azure Data Explorer
-description: This article describes parse_json() in Azure Data Explorer.
+title: todynamic(), parse_json() functions - Azure Data Explorer
+description: This article describes the todynamic(), parse_json() functions in Azure Data Explorer.
 services: data-explorer
 author: orspod
 ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/25/2021
+ms.localizationpriority: high
 ---
-# parse_json()
+# todynamic(), parse_json()
 
-Interprets a `string` as a JSON value and returns the value as `dynamic`.
+Interprets a `string` as a JSON value and returns the value as `dynamic`. 
 
-This function is better than [extractjson() function](./extractjsonfunction.md)
-when you need to extract more than one element of a JSON compound object.
+> [!NOTE]
+> The `todynamic()` and `parse_json()` functions are interpreted equivalently.
+
+This function is better than [extractjson() function](./extractjsonfunction.md) when you need to extract more than one element of a JSON compound object. Prefer using [dynamic()](./scalar-data-types/dynamic.md) when possible.
 
 ## Syntax
 
 `parse_json(`*json*`)`
+`todynamic(`*json*`)`
 
-Aliases:
-- [todynamic()](./todynamicfunction.md)
-- [toobject()](./todynamicfunction.md)
+<!-- deprecated aliases: `toobject()` and parsejson() -->
 
 ## Arguments
 

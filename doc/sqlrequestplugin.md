@@ -16,6 +16,7 @@ zone_pivot_groups: kql-flavors
 ::: zone pivot="azuredataexplorer"
 
 The `sql_request` plugin sends a SQL query to a SQL Server network endpoint and returns the first rowset in the results.
+The query may return more then one rowset, but only the first rowset is made available for the rest of the Kusto query.
 
 ## Syntax
 

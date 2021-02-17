@@ -32,3 +32,7 @@ This function returns a table with a single record and column of type
 ```kusto
 StormEvents | count
 ```
+
+## See also
+
+For information about the count() aggregation function, see [count() (aggregation function)](count-aggfunction.md).

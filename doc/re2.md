@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/09/2019
+ms.localizationpriority: high
 ---
 # RE2 syntax
 

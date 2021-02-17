@@ -30,6 +30,9 @@ Operator       |Description                         |Example
 `in`           |Equals to one of the elements       |[see here](inoperator.md)
 `!in`          |Not equals to any of the elements   |[see here](inoperator.md)
 
+> [!NOTE]
+> To convert from one numerical type to another, use `to*()` functions. For example, see [`tolong()`](tolongfunction.md) and [`toint()`](tointfunction.md).
+
 **Comment regarding the modulo operator**
 
 The modulo of two numbers always returns in Kusto a "small non-negative number".

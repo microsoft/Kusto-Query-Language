@@ -8,11 +8,14 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
 ---
 # fork operator
+::: zone pivot="azuredataexplorer"
 
 Runs multiple consumer operators in parallel.
-
+ 
 ## Syntax
 
 *T* `|` `fork` [*name*`=`]`(`*subquery*`)` [*name*`=`]`(`*subquery*`)` ...
@@ -66,3 +69,11 @@ KustoLogs
     EventsTexts = ( project Timestamp, EventText | top 1000 by Timestamp desc )
     TimeRangePerActivityID = ( summarize min(Timestamp), max(Timestamp) by ActivityID )
 ```
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+This capability isn't supported in Azure Monitor
+
+::: zone-end

@@ -44,12 +44,12 @@ The following example shows how to define the callout policy for Cosmos DB. It's
 [
   {
     "CalloutType": "CosmosDB",
-    "CalloutUriRegex": "my_endpoint1.documents.azure.com",
+    "CalloutUriRegex": "my_endpoint1\\.documents\\.azure\\.com",
     "CanCall": true
   },
   {
     "CalloutType": "CosmosDB",
-    "CalloutUriRegex": "my_endpoint2.documents.azure.com",
+    "CalloutUriRegex": "my_endpoint2\\.documents\\.azure\\.com",
     "CanCall": true
   }
 ]

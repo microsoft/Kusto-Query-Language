@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/23/2020
+adobe-target: true
 ---
 # make_list() (aggregation function)
 
@@ -25,7 +26,7 @@ Returns a `dynamic` (JSON) array of all the values of *Expr* in the group.
 * *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
 
 > [!NOTE]
-> A legacy and obsolete variant of this function: `makelist()` has a default limit of *MaxSize* = 128.
+> `makelist()` is a legacy and obsolete version of the `make_list` function. The legacy version has a default limit of *MaxSize* = 128.
 
 ## Returns
 

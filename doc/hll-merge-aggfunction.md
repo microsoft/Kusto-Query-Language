@@ -31,4 +31,4 @@ The function returns the merged `hll` values of `*Expr*` across the group.
  
 **Tips**
 
-1) Use the function [dcount_hll] (dcount-hllfunction.md) to calculate the `dcount` from `hll` / `hll-merge` aggregation functions.
+1) Use the function [dcount_hll](dcount-hllfunction.md) to calculate the `dcount` from `hll` / `hll-merge` aggregation functions.

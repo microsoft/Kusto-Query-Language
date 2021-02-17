@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/21/2020
+ms.localizationpriority: high
 ---
 # count() (aggregation function)
 

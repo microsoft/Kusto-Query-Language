@@ -38,8 +38,6 @@ Pretty names allow middle-tier applications to map automatically-create entity n
 
 ## Identifier naming rules
 
-<!-- TODO: This section should be reviewed and moved to its own page -->
-
 Identifiers are used to name various entities (entities or otherwise).
 Valid identifier names follow these rules:
 * They have between 1 and 1024 characters long.

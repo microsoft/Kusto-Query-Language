@@ -129,6 +129,27 @@ Polygons
 |-73.995|40.734|Greenwich Village|
 |-73.9584|40.7688|Upper East Side|
 
+The following example filters out polygons that don't intersect with the area of the polygon of interest. The maximum error is diagonal of s2cell length. This example is based on a polygonized earth at night raster file.
+
+```kusto
+let intersection_level_hint = 7;
+let area_of_interest = dynamic({"type": "Polygon","coordinates": [[[-73.94966125488281,40.79698248639272],[-73.95841598510742,40.800426144169315],[-73.98124694824219,40.76806170936614],[-73.97283554077148,40.7645513650551],[-73.94966125488281,40.79698248639272]]]});
+let area_of_interest_covering = geo_polygon_to_s2cells(area_of_interest, intersection_level_hint);
+EarthAtNight
+| project value = features.properties.DN, polygon = features.geometry
+| extend covering = geo_polygon_to_s2cells(polygon, intersection_level_hint)
+| mv-apply c = covering to typeof(string) on
+(
+    summarize is_intersects = anyif(1, array_index_of(area_of_interest_covering, c) != -1)
+)
+| where is_intersects == 1
+| count
+```
+
+|Count|
+|---|
+|83|
+
 Count of cells that will be needed in order to cover some polygon with S2 cells of level 5.
 
 ```kusto

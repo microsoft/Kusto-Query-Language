@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 07/09/2020
+ms.localizationpriority: high 
 ---
 # The dynamic data type
 
@@ -185,6 +186,8 @@ arrays to hold aggregated values:
 * [make_set_if()](../makesetif-aggfunction.md) returns an array holding all unique values (with a predicate).
 
 ## Operators and functions over dynamic types
+
+For a complete list of scalar dynamic/array functions, see [dynamic/array functions](../scalarfunctions.md#dynamicarray-functions).
 
 |Operator or function|Usage with dynamic data types|
 |---|---|

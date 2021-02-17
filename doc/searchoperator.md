@@ -8,10 +8,24 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
+zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
+zone_pivot_groups: kql-flavors
 ---
 # search operator
 
-The search operator provides a multi-table/multi-column search experience.
+The `search` operator provides a multi-table/multi-column search experience.
+
+::: zone pivot="azuredataexplorer"
+
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+> [!NOTE]
+> `search` operator is substentially less efficient than table-specific and column-specific text filtering. Whenever the tables or columns are known, it is recommended to use the [union operator](unionoperator.md) and [where operator](whereoperator.md). Search will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
+
+::: zone-end
+
 
 ## Syntax
 

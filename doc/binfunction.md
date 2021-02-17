@@ -8,6 +8,8 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
+ms.localizationpriority: high
+adobe-target: true
 ---
 # bin()
 
@@ -26,7 +28,7 @@ Alias to `floor()` function.
 
 ## Arguments
 
-* *value*: A number, date, or timespan. 
+* *value*: A number, date, or [timespan](scalar-data-types/timespan.md). 
 * *roundTo*: The "bin size". A number or timespan that divides *value*. 
 
 ## Returns

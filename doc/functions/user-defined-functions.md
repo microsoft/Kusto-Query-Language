@@ -1,6 +1,6 @@
 ---
-title: User-Defined Functions - Azure Data Explorer | Microsoft Docs
-description: This article describes User-Defined Functions in Azure Data Explorer.
+title: User-defined functions - Azure Data Explorer
+description: This article describes user-defined functions (scalar and views) in Azure Data Explorer.
 services: data-explorer
 author: orspod
 ms.author: orspodek
@@ -8,6 +8,7 @@ ms.reviewer: rkarlin
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/12/2020
+ms.localizationpriority: high
 ---
 # User-defined functions
 
@@ -16,7 +17,7 @@ ms.date: 03/12/2020
 A user-defined function belongs to one of two categories:
 
 * Scalar functions 
-* Tabular functions 
+* Tabular functions, also known as views
 
 The function's input arguments and output determine whether it is scalar or tabular, which then establishes how it might be used. 
 
@@ -38,6 +39,9 @@ The function's input arguments and output determine whether it is scalar or tabu
 Valid user-defined function names must follow the same [identifier naming rules](../schema-entities/entity-names.md#identifier-naming-rules) as other entities.
 
 The name must also be unique in its scope of definition.
+
+> [!NOTE]
+> If a stored function and a table both have the same name, the stored function overrides when querying the table/function name.
 
 ## Input arguments
 

@@ -24,9 +24,3 @@ Returns `true` if the argument is not null.
 ```kusto
 T | where isnotnull(PossiblyNull) | count
 ```
-
-Notice that there are other ways of achieving this effect:
-
-```kusto
-T | summarize count(PossiblyNull)
-```

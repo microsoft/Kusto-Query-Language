@@ -55,7 +55,7 @@ The `infer_storage_schema` plugin returns a single result table containing a sin
 ```kusto
 let options = dynamic({
   'StorageContainers': [
-    h@'https://storageaccount.blob.core.windows.net/MovileEvents/2015;secretKey'
+    h@'https://storageaccount.blob.core.windows.net/MovileEvents;secretKey'
   ],
   'FileExtension': '.parquet',
   'FileNamePrefix': 'part-',
@@ -69,3 +69,18 @@ evaluate infer_storage_schema(options)
 |CslSchema|
 |---|
 |app_id:string, user_id:long, event_time:datetime, country:string, city:string, device_type:string, device_vendor:string, ad_network:string, campaign:string, site_id:string, event_type:string, event_name:string, organic:string, days_from_install:int, revenue:real|
+
+Use the returned schema in external table definition:
+
+```kusto
+.create external table MobileEvents(
+    app_id:string, user_id:long, event_time:datetime, country:string, city:string, device_type:string, device_vendor:string, ad_network:string, campaign:string, site_id:string, event_type:string, event_name:string, organic:string, days_from_install:int, revenue:real
+)
+kind=blob
+partition by (dt:datetime = bin(event_time, 1d), app:string = app_id)
+pathformat = ('app=' app '/dt=' datetime_pattern('yyyyMMdd', dt))
+dataformat = parquet
+(
+    h@'https://storageaccount.blob.core.windows.net/MovileEvents;secretKey'
+)
+```

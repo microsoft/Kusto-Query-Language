@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 08/09/2020
+ms.localizationpriority: high
 ---
 # Let statement
 
@@ -47,14 +48,14 @@ Expressions bound by let statements can be:
 
  or:
 
- [*TabularArgName* `:` `(` `*` `)`]
+ [*TabularArgName* `:` `(` `*` `)`] - indicating tabular expressions with variable and unknown columns.
 
 `ScalarArguments` - [*ArgName* `:` *ArgType*] [`,` ... ]
 
 
 |Field  |Definition  |Example  |
 |---------|---------|---------|
-| **view** | May appear only in a parameterless lambda, that has no arguments. It indicates that the bound name will be included when "all tables" are queries. | For example, when using `union *`.|
+| **view** | May appear only in a parameterless let statement that has no arguments. When the 'view' keyword is used, the let statement will be included in queries that use a `union` operator with wildcard selection of the tables/views. |  |
 | ***TabularArguments*** | The list of the formal tabular expression arguments. 
 | Each tabular argument has:||
 |<ul><li> *TabularArgName*</li></ul> | The name of the formal tabular argument. The name may appear in the *FunctionBody* and is bound to a particular value when the lambda is invoked. ||

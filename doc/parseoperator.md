@@ -8,11 +8,11 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
+ms.localizationpriority: high
 ---
 # parse operator
 
-Evaluates a string expression and parses its value into one or more calculated columns. The calculated columns will have nulls, for unsuccessfully parsed strings.
-For more information, see the [parse-where operator](parsewhereoperator.md).
+Evaluates a string expression and parses its value into one or more calculated columns. The calculated columns will have nulls, for unsuccessfully parsed strings. If there is no need to use rows where parsing doesn't succeed, prefer using the [parse-where operator](parsewhereoperator.md).
 
 ```kusto
 T | parse Text with "ActivityName=" name ", ActivityType=" type
@@ -82,7 +82,7 @@ The `parse` operator provides a streamlined way to `extend` a table by using mul
 
 In the example below, assume that the column `EventText` of table `Traces` contains
 strings of the form `Event: NotifySliceRelease (resourceName={0}, totalSlices= {1}, sliceNumber={2}, lockTime={3}, releaseTime={4}, previousLockTime={5})`.
-The operation will extend the table with six columns: `resourceName`, `totalSlices`, `sliceNumber`, `lockTime `, `releaseTime`, `previousLockTime`, `Month`, and `Day`. 
+The operation will extend the table with six columns: `resourceName`, `totalSlices`, `sliceNumber`, `lockTime `, `releaseTime`, and `previousLockTime`. 
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

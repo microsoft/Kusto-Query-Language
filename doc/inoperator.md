@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/18/2019
+ms.localizationpriority: high
 ---
 # in and !in operators
 

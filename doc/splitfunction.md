@@ -8,6 +8,8 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
+ms.localizationpriority: high
+adobe-target: true
 ---
 # split()
 

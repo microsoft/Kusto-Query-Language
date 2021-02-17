@@ -7,7 +7,8 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/29/2020
+ms.date: 12/08/2020
+ms.localizationpriority: high
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -36,7 +37,7 @@ Where:
 
 |*Visualization*     |Description|
 |--------------------|-|
-| `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-out-of-your-data-in-kusto-with-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
+| `anomalychart`     | Similar to timechart, but [highlights anomalies](./samples.md#get-more-from-your-data-by-using-kusto-with-machine-learning) using [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function. |
 | `areachart`        | Area graph. First column is the x-axis and should be a numeric column. Other numeric columns are y-axes. |
 | `barchart`         | First column is the x-axis and can be text, datetime or numeric. Other columns are numeric, displayed as horizontal strips.|
 | `card`             | First result record is treated as set of scalar values and shows as a card. |
@@ -133,8 +134,6 @@ Some visualizations support splitting into multiple y-axis values:
 |`axes`    |A single chart is displayed with multiple y-axes (one per series).|
 |`panels`  |One chart is rendered for each `ycolumn` value (up to some limit).|
 
-::: zone-end
-
 > [!NOTE]
 > The data model of the render operator looks at the tabular data as if it has
 three kinds of columns:
@@ -168,10 +167,46 @@ range x from -2 to 2 step 0.1
 | render linechart with  (ycolumns = sin, cos, series = x_sign, sum_sign)
 ```
 
-::: zone pivot="azuredataexplorer"
+[Rendering examples in the tutorial](./tutorial.md#displaychartortable)
 
-[Rendering examples in the tutorial](./tutorial.md#render-display-a-chart-or-table).
+[Anomaly detection](./samples.md#get-more-from-your-data-by-using-kusto-with-machine-learning)
 
-[Anomaly detection](./samples.md#get-more-out-of-your-data-in-kusto-with-machine-learning)
+::: zone-end
+
+::: zone pivot="azuremonitor"
+
+> [!NOTE]
+> The data model of the render operator looks at the tabular data as if it has
+three kinds of columns:
+>
+> * The x axis column (indicated by the `xcolumn` property).
+> * The series columns (any number of columns indicated by the `series` property.)
+> * The y axis columns (any number of columns indicated by the `ycolumns`
+  property).
+  For each record, the series has as many measurements ("points" in the chart)
+  as there are y-axis columns.
+
+> [!TIP]
+> 
+> * Use `where`, `summarize` and `top` to limit the volume that you display.
+> * Sort the data to define the order of the x-axis.
+> * User agents are free to "guess" the value of properties that are not specified
+  by the query. In particular, having "uninteresting" columns in the schema of
+  the result might translate into them guessing wrong. Try projecting-away such
+  columns when that happens. 
+
+## Example
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+InsightsMetrics
+| where Computer == "DC00.NA.contosohotels.com"
+| where Namespace  == "Processor" and Name == "UtilizationPercentage"
+| summarize avg(Val) by Computer, bin(TimeGenerated, 1h)
+| render timechart
+```
+
+[Rendering examples in the tutorial](./tutorial.md?pivots=azuremonitor#display-a-chart-or-table-render-1)
+
 
 ::: zone-end

@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/16/2020
+ms.localizationpriority: high
 ---
 # make-series operator
 
@@ -89,6 +90,7 @@ It is recommended to use the main syntax of make-series and not the alternate sy
 |[maxif()](maxif-aggfunction.md)|Returns the maximum value with the predicate of the group|
 |[min()](min-aggfunction.md)|Returns the minimum value across the group|
 |[minif()](minif-aggfunction.md)|Returns the minimum value with the predicate of the group|
+|[percentile()](percentiles-aggfunction.md)|Returns the percentile value across the group|
 |[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
 |[sum()](sum-aggfunction.md)|Returns the sum of the elements within the group|
 |[sumif()](sumif-aggfunction.md)|Returns the sum of the elements with the predicate of the group|
@@ -109,7 +111,9 @@ It is recommended to use the main syntax of make-series and not the alternate sy
 |[series_periods_validate()](series-periods-validatefunction.md)|Checks whether a time series contains periodic patterns of given lengths|
 |[series_stats_dynamic()](series-stats-dynamicfunction.md)|Return multiple columns with the common statistics (min/max/variance/stdev/average)|
 |[series_stats()](series-statsfunction.md)|Generates a dynamic value with the common statistics (min/max/variance/stdev/average)|
-  
+
+For a complete list of series analysis functions see: [Series processing functions](scalarfunctions.md#series-processing-functions)
+
 ## List of series interpolation functions
 
 |Function|Description|

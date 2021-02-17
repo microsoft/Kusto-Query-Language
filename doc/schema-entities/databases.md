@@ -18,6 +18,5 @@ Each database has its own permissions set, based on [Role Based Access Control (
 
 **Notes**  
 
-* Database names are case-insensitive.
 * Database names must follow the rules for [entity names](./entity-names.md).
 * Maximum limit of databases per cluster is 10,000.

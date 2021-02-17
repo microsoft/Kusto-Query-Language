@@ -8,6 +8,7 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/20/2020
+ms.localizationpriority: high 
 ---
 # summarize operator
 
