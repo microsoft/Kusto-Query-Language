@@ -2247,6 +2247,13 @@ namespace Kusto.Language
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
+
+        public static readonly FunctionSymbol HasIpv4Prefix =
+            new FunctionSymbol("__has_ipv4_prefix", ScalarTypes.Bool,
+                new Parameter("text", ScalarTypes.String),
+                new Parameter("ip_prefix", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region All
@@ -2598,6 +2605,7 @@ namespace Kusto.Language
             CursorCurrent2,
             InternalFunnelCompletion,
             HasIpv4,
+            HasIpv4Prefix,
             RowNumber,
             RowCumSum,
             RowRank,
