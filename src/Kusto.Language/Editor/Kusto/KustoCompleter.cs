@@ -310,10 +310,17 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private bool IsInCommand(SyntaxElement element)
+        private bool IsInCommand(SyntaxElement element, int contextChildIndex)
         {
             if (element == null)
                 return false;
+
+            if (contextChildIndex > 0
+                && element.GetChild(contextChildIndex - 1) is SyntaxToken e
+                && e.Text == "<|")
+            {
+                return false;
+            }
 
             // actually inside a function body, even if it is part of a create command this is not part of the command proper.
             var body = element.GetFirstAncestorOrSelf<FunctionBody>();
@@ -362,7 +369,7 @@ namespace Kusto.Language.Editor
                 match &= ~SymbolMatch.Function;
             }
 
-            var isCommand = IsInCommand(contextNode);
+            var isCommand = IsInCommand(contextNode, contextChildIndex);
 
             var include = options.IncludeFunctions;
 
@@ -471,14 +478,46 @@ namespace Kusto.Language.Editor
             switch (symbol)
             {
                 case TableSymbol t:
+                    var addExternalTableFuncText = !nameOnly && t.IsExternal;
+
+                    // editName gets bracketted: ['name with blanks']
+                    // when the name has characters that cannot be represented in a variable name.
+                    // This problem doesn't exist in external tables case as their name is put into a string anyway.
+                    var insertionText =
+                        addExternalTableFuncText
+                        ? $"external_table('{t.Name}')"
+                        : editName;
+
+                    var displayText =
+                        addExternalTableFuncText
+                        ? $"external_table('{t.Name}')"
+                        : t.Name;
+
+                    // Lower ordering priority for external tables so that
+                    // “regular” tables are displayed first and then the external ones.
+                    var priority = t.IsExternal ? CompletionPriority.Low : CompletionPriority.Normal;
+
+                    // Enables the user to be able to just type the name of the external table
+                    // and not the entire expression (including the external_table('...') part)
+                    var matchText = t.Name;
+
                     if (IsStartOfQuery(contextNode))
                     {
-                        // add | for start of query
-                        return new CompletionItem(kind, t.Name, editName + AfterQueryStart);
+                        return new CompletionItem(
+                            kind,
+                            displayText,
+                            insertionText + AfterQueryStart, // add | for start of query
+                            matchText: matchText,
+                            priority: priority);
                     }
                     else
                     {
-                        return new CompletionItem(kind, t.Name, editName);
+                        return new CompletionItem(
+                            kind,
+                            displayText,
+                            insertionText,
+                            matchText: matchText,
+                            priority: priority);
                     }
 
                 case FunctionSymbol f:
@@ -1214,10 +1253,10 @@ namespace Kusto.Language.Editor
                 match |= SymbolMatch.Scalar | SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local;
 
             if ((hint & CompletionHint.Tabular) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.MaterializedView;
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.MaterializedView;
 
             if ((hint & CompletionHint.Expression) != 0)
-                match |= SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Tabular;
+                match |= SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Tabular;
 
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
@@ -1236,9 +1275,6 @@ namespace Kusto.Language.Editor
 
             if ((hint & CompletionHint.Option) != 0)
                 match |= SymbolMatch.Option;
-
-            if ((hint & CompletionHint.ExternalTable) != 0)
-                match |= SymbolMatch.ExternalTable;
 
             return match;
         }
