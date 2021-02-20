@@ -1852,7 +1852,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.FindParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
-                    var withSource = node.Parameters.GetByName(KustoFacts.FindWithSourceProperty);
+                    var withSource = node.Parameters.GetParameter(QueryOperatorParameters.WithSource);
                     string sourceColumnName = (withSource != null) ? GetNameDeclarationName(withSource.Expression) ?? "source_" : "source_";
                     columns.Add(new ColumnSymbol(sourceColumnName, ScalarTypes.String));
 
@@ -2051,7 +2051,7 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.UnionParameters, diagnostics);
 
-                    var withSourceParameter = node.Parameters.GetByName(KustoFacts.UnionWithSourceProperties);
+                    var withSourceParameter = node.Parameters.GetParameter(QueryOperatorParameters.WithSource);
                     if (withSourceParameter != null)
                     {
                         var name = GetNameDeclarationName(withSourceParameter.Expression);
@@ -2203,7 +2203,7 @@ namespace Kusto.Language.Binding
                             break;
                     }
 
-                    var joinKindNode = node.Parameters.GetByName("kind");
+                    var joinKindNode = node.Parameters.GetParameter(QueryOperatorParameters.Kind);
                     var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
 
                     var resultIsOpen = false;
@@ -2589,7 +2589,7 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, isReplace: true, columnType: type);
                     }
 
-                    var itemIndex = node.Parameters.GetByName(KustoFacts.MvExpandWithItemIndexProperty);
+                    var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
                     if (itemIndex != null)
                     {
                         var indexName = GetNameDeclarationName(itemIndex.Expression);
@@ -2654,7 +2654,7 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, isReplace: true);
                     }
 
-                    var itemIndex = node.Parameters.GetByName(KustoFacts.MvApplyWithItemIndexProperty);
+                    var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
                     if (itemIndex != null)
                     {
                         var indexName = GetNameDeclarationName(itemIndex.Expression);
@@ -2989,11 +2989,11 @@ namespace Kusto.Language.Binding
                         }
                     }
                     
-                    var matchIdParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == KustoFacts.ScanOperatorWithMatchIdProperty);
+                    var matchIdParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == QueryOperatorParameters.WithMatchId.Name);
                     var matchIdColumnName = (matchIdParam != null && matchIdParam.Expression is NameDeclaration matchNd) ? matchNd.SimpleName : "match_id";
                     columns.Add(new ColumnSymbol(matchIdColumnName, ScalarTypes.Long));
 
-                    var stepNameParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == KustoFacts.ScanOperatorWithStepNameProperty);
+                    var stepNameParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == QueryOperatorParameters.WithStepName.Name);
                     var stepColumnName = (stepNameParam != null && stepNameParam.Expression is NameDeclaration stepNd) ? stepNd.SimpleName : "step";
                     columns.Add(new ColumnSymbol(stepColumnName, ScalarTypes.String));
 

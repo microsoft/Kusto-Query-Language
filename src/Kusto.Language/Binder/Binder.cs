@@ -1767,7 +1767,7 @@ namespace Kusto.Language.Binding
 
                 if (context is UnionOperator uo)
                 {
-                    var np = uo.Parameters.GetByName(KustoFacts.UnionIsFuzzyProperty);
+                    var np = uo.Parameters.GetParameter(QueryOperatorParameters.IsFuzzy);
                     return np != null && np.Expression.ConstantValue is bool b && b;
                 }
             }
@@ -4950,7 +4950,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    diagnostics.Add(DiagnosticFacts.GetUnknownParameterName(name).WithLocation(parameter.Name));
+                    diagnostics.Add(DiagnosticFacts.GetUnknownQueryOperatorParameterName(name).WithLocation(parameter.Name));
                 }
             }
         }

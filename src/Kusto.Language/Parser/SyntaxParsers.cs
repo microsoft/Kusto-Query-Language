@@ -211,7 +211,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) that combined has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        private static Parser<LexicalToken, SyntaxToken> MatchText(string text) =>
+        public static Parser<LexicalToken, SyntaxToken> MatchText(string text) =>
             Match(
                 (source, start) => MatchesText(source, start, text), 
                 (source, start, length) => ProduceSyntaxToken(source, start, length, text));

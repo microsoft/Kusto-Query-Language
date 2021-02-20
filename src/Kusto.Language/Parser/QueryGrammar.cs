@@ -654,16 +654,31 @@ namespace Kusto.Language.Parsing
                     || t.Kind == SyntaxKind.MinusToken)
                     && t.Trivia.Length == 0);
 
+            var AnyQueryOperatorParameterValue =
+                First(
+                    Literal.Hide(),
+                    IdentifierOrKeywordTokenLiteral,
+                    SimpleNameReference);
+
+            // all parameters declared in QueryOperatorParameters (hidden)
+            // These have better matched parsing of the parameter value and just the names
+            var DeclaredQueryOperatorParameter =
+                First(QueryOperatorParameters.AllKnownParameters.Select(p => QueryParameter(p, QueryOperatorParameters.AllKnownParameters)).ToArray());
+
             // allow for query operator parameter names to have otherwise illegal punctuation inside them
             var ScanAnyQueryOperatorParameterName =
                 Or(
+                    // starts with at least an identifer or identifier like keyword
                     And(
                         Match(t => t.Kind == SyntaxKind.IdentifierToken
-                                || t.Kind.IsKeyword() && t.Kind.CanBeIdentifier()),
+                                || (t.Kind.IsKeyword() && t.Kind.CanBeIdentifier())),
                         ZeroOrMore(SecondaryQueryOperatorParameterNamePart)),
+                    // starts with a keyword but also has more parts
                     And(
                         Match(t => t.Kind.IsKeyword()),
-                        OneOrMore(SecondaryQueryOperatorParameterNamePart)));
+                        OneOrMore(SecondaryQueryOperatorParameterNamePart)),
+                    // is one of the known operator parameter names
+                    Or(KustoFacts.KnownQueryOperatorParameterNames.Select(n => MatchText(n)).ToArray()));
 
             var AnyQueryOperatorParameterName =
                 Convert(
@@ -672,26 +687,23 @@ namespace Kusto.Language.Parsing
                         SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
                 .WithTag("<query-operator-parameter-name>");
 
-            var AnyQueryOperatorParameterValue =
-                First(
-                    Literal.Hide(),
-                    IdentifierOrKeywordTokenLiteral,
-                    SimpleNameReference);
-
             var AnyQueryOperatorParameter =
-                If(And(AnyQueryOperatorParameterName, Token(SyntaxKind.EqualToken)),
-                    NamedParameter(
-                        AnyQueryOperatorParameterName,
-                        AnyQueryOperatorParameterValue))
+                First(
+                    DeclaredQueryOperatorParameter,
+                    If(And(AnyQueryOperatorParameterName, Token(SyntaxKind.EqualToken)),
+                        NamedParameter(
+                            AnyQueryOperatorParameterName,
+                            AnyQueryOperatorParameterValue)))
                 .WithTag("<any-query-operator-parameter>");
 
             // just like AnyQueryOperatorParameters, except it only allows known parameter names
             // this is used for situations where a grammar rule like named-expression occurs next (like filter)
             var KnownQueryOperatorParameter =
-                NamedParameter(
-                    HiddenToken(KustoFacts.KnownQueryOperatorParameterNames),
-                    AnyQueryOperatorParameterValue)
-                .WithTag("<known-query-operator-parameter>");
+                First(
+                    DeclaredQueryOperatorParameter,
+                    NamedParameter(
+                        HiddenToken(KustoFacts.KnownQueryOperatorParameterNames),
+                        AnyQueryOperatorParameterValue));
 
             Parser<LexicalToken, SyntaxToken> QueryParameterName(QueryOperatorParameter parameter)
             {
@@ -714,7 +726,7 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterKind.StringLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(StringOrCompoundStringLiteral, AnyQueryOperatorParameterValue),
+                            AnyQueryOperatorParameterValue,
                             MissingStringLiteral);
                     case QueryOperatorParameterKind.BoolLiteral:
                         return NamedParameter(
@@ -726,7 +738,7 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterKind.SummableLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(NumericLiteral, AnyQueryOperatorParameterValue), 
+                            AnyQueryOperatorParameterValue, 
                             MissingLongLiteral);
                     case QueryOperatorParameterKind.ScalarLiteral:
                         return NamedParameter(
@@ -746,12 +758,12 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterKind.NameDeclaration:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            First(SimpleNameDeclarationExpression, StringLiteral),
+                            First(SimpleNameDeclarationExpression, AnyQueryOperatorParameterValue),
                             MissingNameDeclarationExpression);
                     case QueryOperatorParameterKind.Column:
                         return NamedParameter(
                             QueryParameterName(parameter),
-                            SimpleNameReference, 
+                            First(SimpleNameReference, AnyQueryOperatorParameterValue), 
                             MissingNameReference,
                             expressionHint: CompletionHint.Column);
                     case QueryOperatorParameterKind.ColumnList:
@@ -760,7 +772,7 @@ namespace Kusto.Language.Parsing
                         var nameList = NameReferenceList(nameRule);
                         return NamedParameter(
                             QueryParameterName(parameter), 
-                            nameList, 
+                            First(nameList, AnyQueryOperatorParameterValue),
                             expressionHint: CompletionHint.Column);
                     default:
                         throw new InvalidOperationException($"Unhandled query operator parameter kind: {parameter.Kind}");

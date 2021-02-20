@@ -12,14 +12,100 @@ namespace Kusto.Language
     /// </summary>
     public static class QueryOperatorParameters
     {
+        public static readonly QueryOperatorParameter BagExpansion =
+            new QueryOperatorParameter("bagexpansion", QueryOperatorParameterKind.Word, values: KustoFacts.MvExpandKinds).Hide();
+
+        public static readonly QueryOperatorParameter Characters =
+            new QueryOperatorParameter("characters", QueryOperatorParameterKind.StringLiteral);
+
+        public static readonly QueryOperatorParameter DecodeBlocks =
+            new QueryOperatorParameter("decodeblocks", QueryOperatorParameterKind.BoolLiteral, isRepeatable: false);
+
+        public static readonly QueryOperatorParameter Flags =
+            new QueryOperatorParameter("flags", QueryOperatorParameterKind.Word);
+
+        public static readonly QueryOperatorParameter HintDotConcurrency =
+            new QueryOperatorParameter("hint.concurrency", QueryOperatorParameterKind.WordOrNumber, values: KustoFacts.JoinHintRemotes);
+
+        public static readonly QueryOperatorParameter HintDotDistribution =
+            new QueryOperatorParameter("hint.distribution", QueryOperatorParameterKind.Word, values: KustoFacts.DistributionHintStrategies);
+
+        public static readonly QueryOperatorParameter HintDotMaterialized =
+            new QueryOperatorParameter("hint.materialized", QueryOperatorParameterKind.BoolLiteral);
+
+        public static readonly QueryOperatorParameter HintDotNumPartitions =
+            new QueryOperatorParameter("hint.num_partitions", QueryOperatorParameterKind.IntegerLiteral, isRepeatable: false);
+
+        public static readonly QueryOperatorParameter HintDotProgressiveTop =
+            new QueryOperatorParameter("hint.progressive_top", QueryOperatorParameterKind.BoolLiteral);
+
+        public static readonly QueryOperatorParameter HintDotRemote =
+            new QueryOperatorParameter("hint.remote", QueryOperatorParameterKind.Word, values: KustoFacts.JoinHintRemotes);
+
+        public static readonly QueryOperatorParameter HintDotShuffleKey =
+            new QueryOperatorParameter("hint.shufflekey", QueryOperatorParameterKind.Column, isRepeatable: true);
+
+        public static readonly QueryOperatorParameter HintDotSpread =
+            new QueryOperatorParameter("hint.spread", QueryOperatorParameterKind.WordOrNumber, values: KustoFacts.JoinHintRemotes);
+
+        public static readonly QueryOperatorParameter HintDotStrategy =
+            new QueryOperatorParameter("hint.strategy", QueryOperatorParameterKind.Word, values: KustoFacts.JoinHintStrategies);
+
+        public static readonly QueryOperatorParameter IsFuzzy =
+            new QueryOperatorParameter("isfuzzy", QueryOperatorParameterKind.BoolLiteral);
+
+        public static readonly QueryOperatorParameter Kind =
+            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word);
+
+        public static readonly QueryOperatorParameter Threshold =
+            new QueryOperatorParameter("threshold", QueryOperatorParameterKind.NumericLiteral);
+
+        public static readonly QueryOperatorParameter WithMatchId =
+            new QueryOperatorParameter("with_match_id", QueryOperatorParameterKind.NameDeclaration);
+
+        public static readonly QueryOperatorParameter WithItemIndex =
+            new QueryOperatorParameter("with_itemindex", QueryOperatorParameterKind.NameDeclaration);
+
+        public static readonly QueryOperatorParameter WithSource =
+            new QueryOperatorParameter("withsource", QueryOperatorParameterKind.NameDeclaration, aliases: new[] { "with_source" });
+
+        public static readonly QueryOperatorParameter WithStepName =
+            new QueryOperatorParameter("with_step_name", QueryOperatorParameterKind.NameDeclaration);
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> AllKnownParameters = new QueryOperatorParameter[]
+        {
+            BagExpansion.Hide(),
+            Characters.Hide(),
+            DecodeBlocks.Hide(),
+            Flags.Hide(),
+            HintDotConcurrency.Hide(),
+            HintDotDistribution.Hide(),
+            HintDotMaterialized.Hide(),
+            HintDotNumPartitions.Hide(),
+            HintDotProgressiveTop.Hide(),
+            HintDotRemote.Hide(),
+            HintDotShuffleKey.Hide(),
+            HintDotSpread.Hide(),
+            HintDotStrategy.Hide(),
+            IsFuzzy.Hide(),
+            Kind.Hide(),
+            Threshold.Hide(),
+            WithMatchId.Hide(),
+            WithItemIndex.Hide(),
+            WithSource.Hide(),
+            WithStepName.Hide()
+        };
+
+        // parameters sets for specific operators
+
         public static readonly IReadOnlyList<QueryOperatorParameter> AsParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotMaterializedKeyword), QueryOperatorParameterKind.BoolLiteral),
+            HintDotMaterialized
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ConsumeParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter("decodeblocks", QueryOperatorParameterKind.BoolLiteral, isRepeatable: false),
+            DecodeBlocks,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> DataTableParameters = new QueryOperatorParameter[]
@@ -34,7 +120,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> EvaluateParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotDistributionKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.DistributionHintStrategies)
+            HintDotDistribution
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ExternalDataWithClauseProperties = new QueryOperatorParameter[]
@@ -49,21 +135,21 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> FindParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(KustoFacts.FindWithSourceProperty, QueryOperatorParameterKind.NameDeclaration)
+            WithSource
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> JoinParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.JoinKinds),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotRemoteKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.JoinHintRemotes),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotShuffleKeyKeyword), QueryOperatorParameterKind.Column, isRepeatable: true),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotStrategyKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.JoinHintStrategies),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotNumPartitions), QueryOperatorParameterKind.IntegerLiteral, isRepeatable: false),
+            Kind.WithValues(KustoFacts.JoinKinds),
+            HintDotRemote.WithValues(KustoFacts.JoinHintRemotes),
+            HintDotShuffleKey,
+            HintDotStrategy.WithValues(KustoFacts.JoinHintStrategies),
+            HintDotNumPartitions
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> LookupParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.JoinKinds),
+            Kind.WithValues(KustoFacts.JoinKinds)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> MakeSeriesParameters = new QueryOperatorParameter[]
@@ -73,27 +159,27 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> MvApplyParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(KustoFacts.MvApplyWithItemIndexProperty, QueryOperatorParameterKind.NameDeclaration)
+            WithItemIndex,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> MvExpandParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word, values: KustoFacts.MvExpandKinds),
-            new QueryOperatorParameter(KustoFacts.MvExpandBagExpansionProperty, QueryOperatorParameterKind.Word, values: KustoFacts.MvExpandKinds).Hide(),
-            new QueryOperatorParameter(KustoFacts.MvExpandWithItemIndexProperty, QueryOperatorParameterKind.NameDeclaration)
+            Kind.WithValues(KustoFacts.MvExpandKinds),
+            BagExpansion.WithValues(KustoFacts.MvExpandKinds).Hide(),
+            WithItemIndex,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ParseParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.ParseKinds),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.FlagsKeyword), QueryOperatorParameterKind.Word)
+            Kind.WithValues(KustoFacts.ParseKinds),
+            Flags,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> PartitionParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotConcurrencyKeyword), QueryOperatorParameterKind.WordOrNumber, values: KustoFacts.JoinHintRemotes),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotSpreadKeyword), QueryOperatorParameterKind.WordOrNumber, values: KustoFacts.JoinHintRemotes),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotMaterializedKeyword), QueryOperatorParameterKind.BoolLiteral),
+            HintDotConcurrency,
+            HintDotSpread,
+            HintDotMaterialized
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> RenderWithProperties = new QueryOperatorParameter[]
@@ -117,13 +203,13 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ReduceParameters = new[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: new [] { "source" })
+            Kind.WithValues(new [] { "source" })
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ReduceWithParameters = new[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.ThresholdKeyword), QueryOperatorParameterKind.NumericLiteral),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.CharactersKeyword), QueryOperatorParameterKind.StringLiteral)
+            Threshold,
+            Characters
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SampleParameters = new QueryOperatorParameter[]
@@ -138,14 +224,14 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ScanParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word, values: KustoFacts.ScanOperatorKinds),
-            new QueryOperatorParameter(KustoFacts.ScanOperatorWithMatchIdProperty, QueryOperatorParameterKind.NameDeclaration),
-            new QueryOperatorParameter(KustoFacts.ScanOperatorWithStepNameProperty, QueryOperatorParameterKind.NameDeclaration)
+            Kind.WithValues(KustoFacts.ScanOperatorKinds),
+            WithMatchId,
+            WithStepName,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SearchParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.SearchKinds)
+            Kind.WithValues(KustoFacts.SearchKinds)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SerializedParameters = new QueryOperatorParameter[]
@@ -155,14 +241,14 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SortParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotStrategyKeyword), QueryOperatorParameterKind.Word, values:KustoFacts.OrderByHintStrategies)
+            HintDotStrategy.WithValues(KustoFacts.OrderByHintStrategies)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SummarizeParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotShuffleKeyKeyword), QueryOperatorParameterKind.Column, isRepeatable: true),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotStrategyKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.SummarizeHintStrategies),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotNumPartitions), QueryOperatorParameterKind.IntegerLiteral, isRepeatable: false),
+            HintDotShuffleKey,
+            HintDotStrategy.WithValues(KustoFacts.SummarizeHintStrategies),
+            HintDotNumPartitions
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> TakeParameters = new QueryOperatorParameter[]
@@ -172,23 +258,24 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> TopParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.HintDotProgressiveTopKeyword), QueryOperatorParameterKind.BoolLiteral)
+            HintDotProgressiveTop,
         }.ToReadOnly();
 
         public static readonly QueryOperatorParameter ToScalarKindParameter =
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.ToScalarKinds).Hide();
+            Kind.WithValues(KustoFacts.ToScalarKinds);
 
         public static readonly QueryOperatorParameter ToTableKindParameter =
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.KindKeyword), QueryOperatorParameterKind.Word, values: KustoFacts.ToTableKinds).Hide();
+            Kind.WithValues(KustoFacts.ToTableKinds);
 
         public static readonly IReadOnlyList<QueryOperatorParameter> UnionParameters = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word, values: KustoFacts.UnionKinds),
-            new QueryOperatorParameter("withsource", QueryOperatorParameterKind.NameDeclaration, aliases: new [] { "with_source" }),
-            new QueryOperatorParameter(SyntaxFacts.GetText(SyntaxKind.IsFuzzyKeyword), QueryOperatorParameterKind.BoolLiteral),
-            new QueryOperatorParameter("hint.concurrency", QueryOperatorParameterKind.NumericLiteral),
-            new QueryOperatorParameter("hint.spread", QueryOperatorParameterKind.NumericLiteral)
+            Kind.WithValues(KustoFacts.UnionKinds),
+            WithSource,
+            IsFuzzy,
+            HintDotConcurrency,
+            HintDotSpread
         }.ToReadOnly();
+
     }
 
     public enum QueryOperatorParameterKind
@@ -320,7 +407,26 @@ namespace Kusto.Language
 
         public QueryOperatorParameter WithIsHidden(bool isHidden)
         {
-            return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, this.Values, this.IsRepeatable, isHidden, this.Aliases);
+            if (this.IsHidden != isHidden)
+            {
+                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, this.Values, this.IsRepeatable, isHidden, this.Aliases);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        public QueryOperatorParameter WithValues(IReadOnlyList<string> values)
+        {
+            if (this.Values != values)
+            {
+                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, values, this.IsRepeatable, this.IsHidden, this.Aliases);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public QueryOperatorParameter Hide() => WithIsHidden(true);

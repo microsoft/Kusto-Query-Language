@@ -174,23 +174,15 @@ namespace Kusto.Language
             "single", "per_node", "per_shard", "default"
         };
 
-        public static readonly string FindWithSourceProperty = "withsource";
-
         public static readonly IReadOnlyList<string> SearchKinds = new string[]
         {
             "default", "case_insensitive", "case_sensitive"
         };
 
-        public static readonly string MvExpandBagExpansionProperty = "bagexpansion";
-
         public static readonly IReadOnlyList<string> MvExpandKinds = new string[]
         {
             "bag", "array"
         };
-
-        public static readonly string MvExpandWithItemIndexProperty = "with_itemindex";
-
-        public static readonly string MvApplyWithItemIndexProperty = "with_itemindex";
 
         public static readonly IReadOnlyList<string> ReduceByKinds = new string[]
         {
@@ -307,9 +299,6 @@ namespace Kusto.Language
             "partial",
             "full"
         };
-
-        public static readonly string ScanOperatorWithMatchIdProperty = "with_match_id";
-        public static readonly string ScanOperatorWithStepNameProperty = "with_step_name";
 
         /// <summary>
         /// True if the text can an identifier in all places that declare or reference names.

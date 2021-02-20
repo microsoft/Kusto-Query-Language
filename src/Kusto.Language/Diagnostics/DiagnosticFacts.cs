@@ -548,9 +548,9 @@ namespace Kusto.Language
             return new Diagnostic("KS178", $"The type '{intervalType.Name}' is not an appropriate interval type for '{rangeType.Name}'");
         }
 
-        public static Diagnostic GetUnknownParameterName(string name)
+        public static Diagnostic GetUnknownQueryOperatorParameterName(string name)
         {
-            return new Diagnostic("KS179", $"The '{name}' is not a recognized parameter.");
+            return new Diagnostic("KS179", $"The name '{name}' is not a recognized parameter for this operator.").WithSeverity(DiagnosticSeverity.Warning);
         }
 
         public static Diagnostic GetParameterAlreadySpecified(string name)

@@ -158,5 +158,11 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public static NamedParameter GetByName(this SyntaxList<NamedParameter> list, IReadOnlyList<string> names) =>
             list.FirstOrDefault(np => names.Contains(np.Name.SimpleName));
+
+        /// <summary>
+        /// Gets the first <see cref="NamedParameter"/> that matches the <see cref="QueryOperatorParameter"/> definition
+        /// </summary>
+        public static NamedParameter GetParameter(this SyntaxList<NamedParameter> list, QueryOperatorParameter parameter) =>
+            list.FirstOrDefault(np => np.Name.SimpleName == parameter.Name || (parameter.Aliases.Count > 0 && parameter.Aliases.Contains(np.Name.SimpleName)));
     }
 }
