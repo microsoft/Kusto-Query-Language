@@ -264,34 +264,49 @@ namespace Kusto.Language
             SyntaxKind.ExecuteAndCacheOperator
         };
 
-        public static readonly IReadOnlyList<SyntaxKind> PartitionOperatorKinds = new SyntaxKind[]
+        /// <summary>
+        /// Query operators that can come after a pipe 
+        /// </summary>
+        public static readonly IReadOnlyList<SyntaxKind> PostPipeOperatorKinds = new SyntaxKind[]       
         {
+            SyntaxKind.ConsumeOperator,
             SyntaxKind.CountOperator,
+            SyntaxKind.ExecuteAndCacheOperator,
             SyntaxKind.ExtendOperator,
+            SyntaxKind.FacetOperator,
             SyntaxKind.FilterOperator,
+            SyntaxKind.GetSchemaOperator,
+            SyntaxKind.JoinOperator,
+            SyntaxKind.ForkOperator,
+            SyntaxKind.LookupOperator,
+            SyntaxKind.MakeSeriesOperator,
+            SyntaxKind.MvApplyOperator,
+            SyntaxKind.MvExpandOperator,
+            SyntaxKind.EvaluateOperator,
             SyntaxKind.ParseOperator,
             SyntaxKind.ParseWhereOperator,
-            SyntaxKind.TakeOperator,
-            SyntaxKind.TopNestedOperator,
+            SyntaxKind.PartitionOperator,
             SyntaxKind.ProjectOperator,
+            SyntaxKind.SampleOperator,
+            SyntaxKind.SampleDistinctOperator,
             SyntaxKind.ProjectAwayOperator,
             SyntaxKind.ProjectKeepOperator,
             SyntaxKind.ProjectRenameOperator,
             SyntaxKind.ProjectReorderOperator,
+            SyntaxKind.ReduceByOperator,
             SyntaxKind.SummarizeOperator,
             SyntaxKind.DistinctOperator,
+            SyntaxKind.TakeOperator,
+            SyntaxKind.SortOperator,
             SyntaxKind.TopHittersOperator,
             SyntaxKind.TopOperator,
-            SyntaxKind.SortOperator,
-            SyntaxKind.MakeSeriesOperator,
-            SyntaxKind.MvExpandOperator,
-            SyntaxKind.MvApplyOperator,
-            SyntaxKind.ReduceByOperator,
-            SyntaxKind.SampleOperator,
-            SyntaxKind.SampleDistinctOperator,
+            SyntaxKind.TopNestedOperator,
+            SyntaxKind.UnionOperator,
+            SyntaxKind.RenderOperator,
             SyntaxKind.AsOperator,
+            SyntaxKind.SerializeOperator,
             SyntaxKind.InvokeOperator,
-            SyntaxKind.ExecuteAndCacheOperator
+            SyntaxKind.ScanOperator
         };
 
         public static readonly IReadOnlyList<string> ScanOperatorKinds = new string[]

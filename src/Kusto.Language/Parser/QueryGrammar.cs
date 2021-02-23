@@ -81,11 +81,12 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, Expression> FunctionCallOrPathCore = null;
             Parser<LexicalToken, QueryOperator> ForkPipeOperatorCore = null;
             Parser<LexicalToken, Expression> ForkPipeExpressionCore = null;
-            Parser<LexicalToken, QueryOperator> PartitionPipeOperatorCore = null;
-            Parser<LexicalToken, Expression> PartitionPipeExpressionCore = null;
             Parser<LexicalToken, Statement> LetStatementCore = null;
             Parser<LexicalToken, Statement> DeclareQueryParametersStatementCore = null;
             Parser<LexicalToken, FunctionParameter> FunctionParameterCore = null;
+            Parser<LexicalToken, Expression> PipeExpressionCore = null;
+            Parser<LexicalToken, Expression> PipeSubExpressionCore = null;
+            Parser<LexicalToken, Expression> ContextualSubExpressionCore = null;
 
             this.Expression =
                 Forward(() => ExpressionCore)
@@ -127,13 +128,17 @@ namespace Kusto.Language.Parsing
                 Forward(() => ForkPipeExpressionCore)
                 .WithTag("<fork-pipe-expression>");
 
-            var PartitionPipeOperator =
-                Forward(() => PartitionPipeOperatorCore)
-                .WithTag("<partition-pipe-operator>");
+            var PipeExpression =
+                Forward(() => PipeExpressionCore)
+                .WithTag("<pipe-expression>");
 
-            var PartitionPipeExpression =
-                Forward(() => PartitionPipeExpressionCore)
-                .WithTag("<partition-pipe-expression>");
+            var PipeSubExpression =
+                Forward(() => PipeSubExpressionCore)
+                .WithTag("<pipe-sub-expression>");
+
+            var ContextualSubExpression =
+                Forward(() => ContextualSubExpressionCore)
+                .WithTag("<contextual-sub-expression>");
 
             var LetStatement =
                 Forward(() => LetStatementCore)
@@ -1236,8 +1241,59 @@ namespace Kusto.Language.Parsing
                         (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.OrExpression, left, op, right)));
             #endregion
 
-
             #region Query Operators
+            var DataTableExpression =
+                Rule(
+                    Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
+                    QueryParameterList(QueryOperatorParameters.DataTableParameters),
+                    Required(SchemaMultipartType, MissingSchema),
+                    RequiredToken(SyntaxKind.OpenBracketToken),
+                    CommaList(Literal, MissingExpressionNode, allowTrailingComma: true),
+                    RequiredToken(SyntaxKind.CloseBracketToken),
+                    (keyword, parameters, schema, openBracket, values, closeBracket) =>
+                        (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
+
+            var ContextualDataTableExpression =
+                Rule(
+                    Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
+                    Required(UnnamedExpression, MissingExpression), // guid literal expected, though parse any expression
+                    Required(SchemaMultipartType, MissingSchema),
+                    (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
+
+            var ExternalDataWithClauseNamedParameter =
+                Rule(
+                    SimpleNameDeclaration,
+                    RequiredToken(SyntaxKind.EqualToken),
+                    Required(
+                        First(Literal, AsTokenLiteral(Token(SyntaxKind.IdentifierToken)), KeywordTokenLiteral),
+                        MissingValue),
+                    (name, equalToken, value) =>
+                        new NamedParameter(name, equalToken, value));
+
+            var ExternalDataWithClause =
+                Rule(
+                    Token(SyntaxKind.WithKeyword),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    QueryParameterCommaList(QueryOperatorParameters.ExternalDataWithClauseProperties),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, openParen, list, closeParen) =>
+                        new ExternalDataWithClause(keyword, openParen, list, closeParen));
+
+            var ExternalDataExpression =
+                Rule(
+                    First(
+                        Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
+                        Token(SyntaxKind.External_DataKeyword).Hide()),
+                    List(AnyQueryOperatorParameter),
+                    Required(SchemaMultipartType, MissingSchema),
+                    RequiredToken(SyntaxKind.OpenBracketToken),
+                    CommaList(Expression, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
+                    RequiredToken(SyntaxKind.CloseBracketToken),
+                    Optional(ExternalDataWithClause),
+                    (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
+                        (Expression)new ExternalDataExpression(keyword, parameters, schema, openBracket, name, closeBracket, withClause));
+
+
             var ConsumeOperator =
                 Rule(
                     Token(SyntaxKind.ConsumeKeyword, CompletionKind.QueryPrefix).Hide(),
@@ -1467,7 +1523,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     PartitionScopeClause,
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
+                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (scope, openParen, expr, closeParen) =>
                         (PartitionOperand)new PartitionSubquery(scope, openParen, expr, closeParen));
@@ -1475,7 +1531,7 @@ namespace Kusto.Language.Parsing
             var UnscopedPartitionSubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(First(PartitionPipeExpression, Expression.Hide()), MissingExpression),
+                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
                         (PartitionOperand)new PartitionSubquery(null, openParen, expr, closeParen));
@@ -1710,7 +1766,7 @@ namespace Kusto.Language.Parsing
             var MvApplySubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(PartitionPipeExpression, MissingExpression),
+                    Required(ContextualSubExpression, MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
                         new MvApplySubqueryExpression(openParen, expr, closeParen));
@@ -2267,48 +2323,10 @@ namespace Kusto.Language.Parsing
                         Rule(_left, Token(SyntaxKind.BarToken), Required(ForkPipeOperator, MissingQueryOperator),
                             (left, pipeToken, right) => (Expression)new PipeExpression(left, pipeToken, right)));
 
-            PartitionPipeOperatorCore =
-                First(
-                    CountOperator,
-                    ExtendOperator,
-                    FilterOperator,
-                    ParseOperator,
-                    ParseWhereOperator,
-                    TakeOperator,
-                    TopNestedOperator,
-                    ProjectOperator,
-                    ProjectAwayOperator,
-                    ProjectKeepOperator,
-                    ProjectRenameOperator,
-                    ProjectReorderOperator,
-                    SummarizeOperator,
-                    DistinctOperator,
-                    TopHittersOperator,
-                    TopOperator,
-                    SortOperator,
-                    MakeSeriesOperator,
-                    MvExpandOperator,
-                    MvApplyOperator,
-                    ReduceByOperator,
-                    SampleOperator,
-                    SampleDistinctOperator,
-                    AsOperator,
-                    InvokeOperator,
-                    ExecuteAndCacheOperator,
-                    ScanOperator,
-                    AllQueryOperator.Hide()); // allow all query operators to parse, but fail later in binding
-
-            PartitionPipeExpressionCore =
-                ApplyZeroOrMore(
-                    Rule(PartitionPipeOperator, o => (Expression)o),
-                    _left =>
-                        Rule(_left, Token(SyntaxKind.BarToken), Required(PartitionPipeOperator, MissingQueryOperator),
-                            (left, pipeToken, right) => (Expression)new PipeExpression(left, pipeToken, right)));
-
             var InitialPipeElementExpression =
                 First(
                     Rule(PrePipeQueryOperator, o => (Expression)o),
-                    If(Not(And(Token(SyntaxKind.CountKeyword), Token("("))),
+                    If(Not(And(Token(SyntaxKind.CountKeyword), Token("("))), // allow count() to bind as function call
                         Rule(PostPipeQueryOperator, o => (Expression)o).Hide()), // allow other pipe operators to parse, but fail in binding
                     UnnamedExpression);
 
@@ -2318,18 +2336,36 @@ namespace Kusto.Language.Parsing
                     PrePipeQueryOperator.Hide(), // allow these to parse, but fail in binding
                     BadQueryOperator.Hide()); // allow these to parse, but fail in binding
 
-            var PipeExpression =
+            PipeExpressionCore =
                 ApplyZeroOrMore(
                     InitialPipeElementExpression,
                     _left =>
                         Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right)));
 
+            PipeSubExpressionCore =
+                ApplyZeroOrMore(
+                    First(
+                        PostPipeQueryOperator.Cast<Expression>(),
+                        InitialPipeElementExpression.Hide()),
+                    _left =>
+                        Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
+                            (left, op, right) => (Expression)new PipeExpression(left, op, right)));
+
+            ContextualSubExpressionCore =
+                First(
+                    ApplyZeroOrMore(
+                        ContextualDataTableExpression,
+                        _left =>
+                            Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
+                                (left, op, right) => (Expression)new PipeExpression(left, op, right))),
+                    PipeSubExpression);
+
             UnnamedExpressionCore =
                 LogicalOr;
 
             ExpressionCore =
-                PipeExpression;
+                PipeExpressionCore;
 #endregion
 
 #region Statements
@@ -2589,57 +2625,6 @@ namespace Kusto.Language.Parsing
                             DataScopeClause(CompletionKind.TabularSuffix),
                             (path, clause) =>
                                 (Expression)new DataScopeExpression(path, clause)));
-
-            var DataTableExpression =
-                Rule(
-                    Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
-                    QueryParameterList(QueryOperatorParameters.DataTableParameters),
-                    Required(SchemaMultipartType, MissingSchema),
-                    RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Literal, MissingExpressionNode, allowTrailingComma: true),
-                    RequiredToken(SyntaxKind.CloseBracketToken),
-                    (keyword, parameters, schema, openBracket, values, closeBracket) =>
-                        (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
-
-            var ContextualDataTableExpression =
-                Rule(
-                    Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
-                    Required(UnnamedExpression, MissingExpression), // guid literal expected, though parse any expression
-                    Required(SchemaMultipartType, MissingSchema),
-                    (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
-
-            var ExternalDataWithClauseNamedParameter =
-                Rule(
-                    SimpleNameDeclaration,
-                    RequiredToken(SyntaxKind.EqualToken),
-                    Required(
-                        First(Literal, AsTokenLiteral(Token(SyntaxKind.IdentifierToken)), KeywordTokenLiteral),
-                        MissingValue),
-                    (name, equalToken, value) =>
-                        new NamedParameter(name, equalToken, value));
-
-            var ExternalDataWithClause =
-                Rule(
-                    Token(SyntaxKind.WithKeyword),
-                    RequiredToken(SyntaxKind.OpenParenToken),
-                    QueryParameterCommaList(QueryOperatorParameters.ExternalDataWithClauseProperties),
-                    RequiredToken(SyntaxKind.CloseParenToken),
-                    (keyword, openParen, list, closeParen) =>
-                        new ExternalDataWithClause(keyword, openParen, list, closeParen));
-
-            var ExternalDataExpression =
-                Rule(
-                    First(
-                        Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
-                        Token(SyntaxKind.External_DataKeyword).Hide()),
-                    List(AnyQueryOperatorParameter),
-                    Required(SchemaMultipartType, MissingSchema),
-                    RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Expression, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
-                    RequiredToken(SyntaxKind.CloseBracketToken),
-                    Optional(ExternalDataWithClause),
-                    (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
-                        (Expression)new ExternalDataExpression(keyword, parameters, schema, openBracket, name, closeBracket, withClause));
 
             var ParenthesizedSummarizeOperator =
                 Rule(
