@@ -634,14 +634,14 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public void WalkTokens(int start, int end, Action<SyntaxToken> action)
         {
-            start = Math.Max(start, this.TextStart);
+            start = Math.Max(start, this.TriviaStart);
             end = Math.Min(end, this.End);
 
             if (start < end)
             {
                 for (var token = this.GetTokenAt(start);
                     token != null && token.TriviaStart < end;
-                    token = token.GetNextToken())
+                    token = GetNextToken(this, token, includeZeroWidthTokens: false))
                 {
                     action(token);
                 }

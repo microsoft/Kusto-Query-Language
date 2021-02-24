@@ -1369,6 +1369,20 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "EvaluateSchemaClause",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "EvaluateSchemaClause",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "ColonKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "Schema", Type = "SchemaTypeExpression", Optional=true, Completion="Syntax" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "EvaluateOperator",
         Doc = "",
         Base = "QueryOperator",
@@ -1378,7 +1392,8 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "EvaluateKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="None"},
-            new GeneratedProperty { Name = "FunctionCall", Type = "FunctionCallExpression", Completion="Tabular"}
+            new GeneratedProperty { Name = "FunctionCall", Type = "FunctionCallExpression", Completion="Tabular"},
+            new GeneratedProperty { Name = "Schema", Type = "EvaluateSchemaClause", Optional=true, Completion="Syntax" }
         }
     },
 

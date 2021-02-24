@@ -603,6 +603,7 @@
         NameEqualsClause,
         DefaultExpressionClause,
         ToTypeOfClause,
+        EvaluateSchemaClause,
 
         // query operators
         BadQueryOperator,

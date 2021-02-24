@@ -634,6 +634,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DataScopeClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.NameEqualsClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.DefaultExpressionClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.EvaluateSchemaClause, "", SyntaxCategory.Node),
 
                 // query operators
                 new SyntaxData(SyntaxKind.BadQueryOperator, "", SyntaxCategory.Node),

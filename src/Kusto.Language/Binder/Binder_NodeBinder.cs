@@ -3193,9 +3193,14 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
 
-#region statements
+            public override SemanticInfo VisitEvaluateSchemaClause(EvaluateSchemaClause node)
+            {
+                return null;
+            }
+            #endregion
+
+            #region statements
             public override SemanticInfo VisitAliasStatement(AliasStatement node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

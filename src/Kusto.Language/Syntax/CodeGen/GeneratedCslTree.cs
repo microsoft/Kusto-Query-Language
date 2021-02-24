@@ -6715,6 +6715,84 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ToTypeOfClause */
     
+    #region class EvaluateSchemaClause
+    public sealed partial class EvaluateSchemaClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.EvaluateSchemaClause;
+        
+        public SyntaxToken ColonKeyword { get; }
+        
+        public SchemaTypeExpression Schema { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="EvaluateSchemaClause"/>.
+        /// </summary>
+        internal EvaluateSchemaClause(SyntaxToken colonKeyword, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ColonKeyword = Attach(colonKeyword);
+            this.Schema = Attach(schema, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ColonKeyword;
+                case 1: return Schema;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ColonKeyword);
+                case 1: return nameof(Schema);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitEvaluateSchemaClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitEvaluateSchemaClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore()
+        {
+            return new EvaluateSchemaClause((SyntaxToken)ColonKeyword?.Clone(), (SchemaTypeExpression)Schema?.Clone(), this.SyntaxDiagnostics);
+        }
+    }
+    #endregion /* class EvaluateSchemaClause */
+    
     #region class EvaluateOperator
     public sealed partial class EvaluateOperator : QueryOperator
     {
@@ -6726,18 +6804,21 @@ namespace Kusto.Language.Syntax
         
         public FunctionCallExpression FunctionCall { get; }
         
+        public EvaluateSchemaClause Schema { get; }
+        
         /// <summary>
         /// Constructs a new instance of <see cref="EvaluateOperator"/>.
         /// </summary>
-        internal EvaluateOperator(SyntaxToken evaluateKeyword, SyntaxList<NamedParameter> parameters, FunctionCallExpression functionCall, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal EvaluateOperator(SyntaxToken evaluateKeyword, SyntaxList<NamedParameter> parameters, FunctionCallExpression functionCall, EvaluateSchemaClause schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.EvaluateKeyword = Attach(evaluateKeyword);
             this.Parameters = Attach(parameters);
             this.FunctionCall = Attach(functionCall);
+            this.Schema = Attach(schema, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -6746,6 +6827,7 @@ namespace Kusto.Language.Syntax
                 case 0: return EvaluateKeyword;
                 case 1: return Parameters;
                 case 2: return FunctionCall;
+                case 3: return Schema;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -6757,7 +6839,19 @@ namespace Kusto.Language.Syntax
                 case 0: return nameof(EvaluateKeyword);
                 case 1: return nameof(Parameters);
                 case 2: return nameof(FunctionCall);
+                case 3: return nameof(Schema);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -6768,6 +6862,7 @@ namespace Kusto.Language.Syntax
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.None;
                 case 2: return CompletionHint.Tabular;
+                case 3: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -6783,7 +6878,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new EvaluateOperator((SyntaxToken)EvaluateKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (FunctionCallExpression)FunctionCall?.Clone(), this.SyntaxDiagnostics);
+            return new EvaluateOperator((SyntaxToken)EvaluateKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (FunctionCallExpression)FunctionCall?.Clone(), (EvaluateSchemaClause)Schema?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class EvaluateOperator */
@@ -13038,6 +13133,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitMvApplyContextIdClause(MvApplyContextIdClause node);
         public abstract void VisitMvApplySubqueryExpression(MvApplySubqueryExpression node);
         public abstract void VisitToTypeOfClause(ToTypeOfClause node);
+        public abstract void VisitEvaluateSchemaClause(EvaluateSchemaClause node);
         public abstract void VisitEvaluateOperator(EvaluateOperator node);
         public abstract void VisitParseOperator(ParseOperator node);
         public abstract void VisitParseWhereOperator(ParseWhereOperator node);
@@ -13462,6 +13558,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitEvaluateSchemaClause(EvaluateSchemaClause node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitEvaluateOperator(EvaluateOperator node)
         {
             this.DefaultVisit(node);
@@ -13869,6 +13969,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitMvApplyContextIdClause(MvApplyContextIdClause node);
         public abstract TResult VisitMvApplySubqueryExpression(MvApplySubqueryExpression node);
         public abstract TResult VisitToTypeOfClause(ToTypeOfClause node);
+        public abstract TResult VisitEvaluateSchemaClause(EvaluateSchemaClause node);
         public abstract TResult VisitEvaluateOperator(EvaluateOperator node);
         public abstract TResult VisitParseOperator(ParseOperator node);
         public abstract TResult VisitParseWhereOperator(ParseWhereOperator node);
@@ -14290,6 +14391,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitToTypeOfClause(ToTypeOfClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitEvaluateSchemaClause(EvaluateSchemaClause node)
         {
             return this.DefaultVisit(node);
         }

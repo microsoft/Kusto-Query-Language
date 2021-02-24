@@ -1786,12 +1786,19 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new MvApplyOperator(keyword, parameters, list, rowLimit, contextId, onKeyword, subquery))
                 .WithTag("<mvapply>");
 
+            var EvaluateSchemaClause =
+                Rule(
+                    Token(SyntaxKind.ColonToken),
+                    Required(SchemaMultipartType, MissingSchema),
+                    (keyword, expr) => new EvaluateSchemaClause(keyword, expr));
+
             var EvaluateOperator =
                 Rule(
                     Token(SyntaxKind.EvaluateKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.EvaluateParameters),
                     Required(FunctionCall, MissingFunctionCallExpression),
-                    (keyword, parameters, expr) => (QueryOperator)new EvaluateOperator(keyword, parameters, (FunctionCallExpression)expr))
+                    Optional(EvaluateSchemaClause),
+                    (keyword, parameters, expr, schema) => (QueryOperator)new EvaluateOperator(keyword, parameters, (FunctionCallExpression)expr, schema))
                 .WithTag("<evaluate>");
 
             var NameAndOptionalTypeDeclaration =
