@@ -115,7 +115,7 @@ namespace Kusto.Language.Binding
                     }
                 }
 
-                var fs = new FunctionSymbol(name, decl, parameters);
+                var fs = new FunctionSymbol(name, decl.Body, parameters);
 
 #if false  // TODO: check if we can add this back if we know it is invariant
                 // add exiting declaration as default expansion
@@ -204,7 +204,7 @@ namespace Kusto.Language.Binding
                             pathValue = pattern.PathValue.Value.LiteralValue?.ToString() ?? "";
                         }
 
-                        patternsigs.Add(new PatternSignature(values, pathValue, pattern));
+                        patternsigs.Add(new PatternSignature(values, pathValue, pattern.Body));
                     }
 
                     var patternName = (node.Parent as PatternStatement)?.Name.SimpleName;

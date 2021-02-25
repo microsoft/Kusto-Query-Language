@@ -51,9 +51,9 @@ namespace Kusto.Language.Symbols
         public int MaxArgumentCount { get; }
 
         /// <summary>
-        /// The declaration of the function.
+        /// The declaration of the body of the function in source.
         /// </summary>
-        public FunctionDeclaration Declaration { get; }
+        public FunctionBody Declaration { get; }
 
         /// <summary>
         /// A custom function that evaluates the return type of this signature.
@@ -93,7 +93,7 @@ namespace Kusto.Language.Symbols
             ReturnTypeKind returnKind,
             TypeSymbol returnType,
             string body,
-            FunctionDeclaration declaration,
+            FunctionBody declaration,
             CustomReturnType customReturnType,
             Tabularity tabularity,
             IReadOnlyList<Parameter> parameters,
@@ -224,13 +224,13 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public Signature(FunctionDeclaration declaration, IReadOnlyList<Parameter> parameters)
-            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
+        public Signature(FunctionBody declaration, IReadOnlyList<Parameter> parameters)
+            : this(ReturnTypeKind.Computed, declaration.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
         {
         }
 
-        public Signature(FunctionDeclaration declaration, params Parameter[] parameters)
-            : this(ReturnTypeKind.Computed, declaration.Body.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
+        public Signature(FunctionBody declaration, params Parameter[] parameters)
+            : this(ReturnTypeKind.Computed, declaration.Expression?.ResultType as TypeSymbol, null, declaration, null, Tabularity.Unspecified, parameters)
         {
         }
 
@@ -269,7 +269,7 @@ namespace Kusto.Language.Symbols
             {
                 if (this._body == null && this.Declaration != null)
                 {
-                    this._body = this.Declaration.Body.ToString(IncludeTrivia.Interior);
+                    this._body = this.Declaration.ToString(IncludeTrivia.Interior);
                 }
 
                 return this._body;
@@ -697,7 +697,7 @@ namespace Kusto.Language.Symbols
 
             if (this.Declaration != null)
             {
-                statements = this.Declaration.Body.Statements;
+                statements = this.Declaration.Statements;
             }
             else if (_body != null)
             {

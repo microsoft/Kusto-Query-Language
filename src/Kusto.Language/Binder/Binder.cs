@@ -447,7 +447,7 @@ namespace Kusto.Language.Binding
             GlobalState globals,
             IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
-            var currentDatabase = globals.GetDatabase((FunctionSymbol)signature.Symbol);
+            var currentDatabase = globals.GetDatabase(signature.Symbol);
             var currentCluster = globals.GetCluster(currentDatabase);
 
             var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
@@ -3017,48 +3017,49 @@ namespace Kusto.Language.Binding
         private SemanticInfo BindPattern(FunctionCallExpression functionCall, PatternSymbol pattern)
         {
             var diagnostics = s_diagnosticListPool.AllocateFromPool();
-            var matchingPatterns = s_patternListPool.AllocateFromPool();
+            var matchingSignatures = s_patternListPool.AllocateFromPool();
             var arguments = s_expressionListPool.AllocateFromPool();
             try
             {
-                // check arguments
+                // check argument count
                 if (pattern.Parameters.Count != functionCall.ArgumentList.Expressions.Count)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetArgumentCountExpected(pattern.Parameters.Count));
+                    diagnostics.Add(DiagnosticFacts.GetArgumentCountExpected(pattern.Parameters.Count).WithLocation(functionCall.Name));
                 }
 
-                for (int i = 0, n = pattern.Parameters.Count; i < n; i++)
+                // check actual arguments
+                for (int i = 0, n = functionCall.ArgumentList.Expressions.Count; i < n; i++)
                 {
                     var argument = functionCall.ArgumentList.Expressions[i].Element;
                     arguments.Add(argument);
 
-                    var type = pattern.Parameters[i].DeclaredTypes[0];
-                    if (CheckIsExactType(argument, type, diagnostics))
+                    if (i < pattern.Parameters.Count)
                     {
-                        CheckIsLiteral(argument, diagnostics);
+                        var type = pattern.Parameters[i].DeclaredTypes[0];
+                        if (CheckIsExactType(argument, type, diagnostics))
+                        {
+                            CheckIsLiteral(argument, diagnostics);
+                        }
                     }
                 }
 
-                if (diagnostics.Count > 0)
-                {
-                    return new SemanticInfo(ErrorSymbol.Instance, diagnostics);
-                }
+                GetMatchingPatterns(pattern.Signatures, arguments, matchingSignatures);
 
-                GetMatchingPatterns(pattern.Signatures, arguments, matchingPatterns);
-
-                if (matchingPatterns.Count == 0)
+                if (matchingSignatures.Count == 0)
                 {
                     diagnostics.Add(DiagnosticFacts.GetNoPatternMatchesArguments().WithLocation(functionCall.Name));
-                    return new SemanticInfo(ErrorSymbol.Instance, diagnostics);
+                    return new SemanticInfo(pattern, ErrorSymbol.Instance, diagnostics);
                 }
-
-                var result = GetReturnType(matchingPatterns);
-                return new SemanticInfo(pattern, result, diagnostics);
+                else
+                {
+                    var result = GetReturnType(matchingSignatures);
+                    return new SemanticInfo(pattern, result, diagnostics);
+                }
             }
             finally
             {
                 s_diagnosticListPool.ReturnToPool(diagnostics);
-                s_patternListPool.ReturnToPool(matchingPatterns);
+                s_patternListPool.ReturnToPool(matchingSignatures);
                 s_expressionListPool.ReturnToPool(arguments);
             }
         }
@@ -3068,11 +3069,24 @@ namespace Kusto.Language.Binding
         /// </summary>
         private void GetMatchingPatterns(IReadOnlyList<PatternSignature> signatures, IReadOnlyList<Expression> arguments, List<PatternSignature> matchingSignatures)
         {
+            // look for exact match
             foreach (var sig in signatures)
             {
-                if (PatternMatches(sig, arguments))
+                if (PatternMatches(sig, arguments, exact: true))
                 {
                     matchingSignatures.Add(sig);
+                }
+            }
+
+            // if no exact matches, look for partial matches
+            if (matchingSignatures.Count == 0)
+            {
+                foreach (var sig in signatures)
+                {
+                    if (PatternMatches(sig, arguments, exact: false))
+                    {
+                        matchingSignatures.Add(sig);
+                    }
                 }
             }
         }
@@ -3080,17 +3094,20 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Determines if the pattern signature matches the arguments.
         /// </summary>
-        private bool PatternMatches(PatternSignature signature, IReadOnlyList<Expression> arguments)
+        private bool PatternMatches(PatternSignature signature, IReadOnlyList<Expression> arguments, bool exact)
         {
-            if (signature.ArgumentValues.Count != arguments.Count)
+            if (exact && signature.ArgumentValues.Count != arguments.Count)
                 return false;
 
             for (int i = 0; i < arguments.Count; i++)
             {
-                string matchValue = signature.ArgumentValues[i];
-                string argValue = arguments[i].LiteralValue?.ToString() ?? "";
-                if (matchValue != argValue)
-                    return false;
+                if (i < signature.ArgumentValues.Count)
+                {
+                    string matchValue = signature.ArgumentValues[i];
+                    string argValue = arguments[i].LiteralValue?.ToString() ?? "";
+                    if (matchValue != argValue)
+                        return false;
+                }
             }
 
             return true;
@@ -3103,48 +3120,55 @@ namespace Kusto.Language.Binding
         /// </summary>
         private TypeSymbol GetReturnType(IReadOnlyList<PatternSignature> signatures)
         {
+            if (signatures.Count == 1 && signatures[0].PathValue == null)
+                return signatures[0].Signature.GetReturnType(_globals);
+
             var paths = s_symbolListPool.AllocateFromPool();
+            var types = s_typeListPool.AllocateFromPool();
             try
             {
-                foreach (var signature in signatures)
+                foreach (var sig in signatures)
                 {
-                    var type = GetReturnType(signature);
+                    var type = sig.Signature.GetReturnType(_globals);
 
-                    if (signature.PathValue == null)
-                        return type;
-
-                    paths.Add(new VariableSymbol(signature.PathValue.ToString(), type));
+                    if (sig.PathValue == null)
+                    {
+                        if (!types.Contains(type))
+                        {
+                            types.Add(type);
+                        }
+                    }
+                    else
+                    {
+                        paths.Add(new VariableSymbol(sig.PathValue.ToString(), type));
+                    }
                 }
 
-                return new DatabaseSymbol("", paths);
+                if (paths.Count > 0)
+                {
+                    if (types.Count > 0)
+                    {
+                        // this should not happen, but in case it does
+                        return new GroupSymbol(paths.Concat(types));
+                    }
+                    else
+                    {
+                        return new GroupSymbol(paths);
+                    }
+                }
+                else if (types.Count == 1)
+                {
+                    return types[0];
+                }
+                else
+                {
+                    return new GroupSymbol(types);
+                }
             }
             finally
             {
                 s_symbolListPool.ReturnToPool(paths);
-            }
-        }
-
-        /// <summary>
-        /// Gets the return type of the pattern signature.
-        /// </summary>
-        private TypeSymbol GetReturnType(PatternSignature signature)
-        {
-            if (signature.Declaration != null)
-            {
-                var expr = signature.Declaration.Body.Expression;
-                if (expr != null)
-                {
-                    return GetResultTypeOrError(expr);
-                }
-                else
-                {
-                    return VoidSymbol.Instance;
-                }
-            }
-            else
-            {
-                // TODO: not implemented yet
-                return ErrorSymbol.Instance;
+                s_typeListPool.ReturnToPool(types);
             }
         }
 
@@ -3175,10 +3199,9 @@ namespace Kusto.Language.Binding
 
                         if (body != null)
                         {
-                            var function = signature.Symbol as FunctionSymbol;
-                            var isDatabaseFunction = IsDatabaseFunction(function);
-                            var currentDatabase = isDatabaseFunction ? _globals.GetDatabase(function) : null;
-                            var currentCluster = isDatabaseFunction ? _globals.GetCluster(currentDatabase) : null;
+                            var isInDatabase = IsDatabaseSymbolSignature(signature);
+                            var currentDatabase = isInDatabase ? _globals.GetDatabase(signature.Symbol) : null;
+                            var currentCluster = isInDatabase ? _globals.GetCluster(currentDatabase) : null;
                             expansion = new Expansion(body);
 
                             if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
@@ -3223,7 +3246,7 @@ namespace Kusto.Language.Binding
                     return;
 
                 // only add database functions that are variable in nature to global cache
-                var shouldCacheGlobally = IsDatabaseFunction(callsite.Signature.Symbol as FunctionSymbol)
+                var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature)
                     && callsite.Signature.FunctionBodyFacts != FunctionBodyFacts.None;
 
                 if (shouldCacheGlobally)
@@ -3238,14 +3261,15 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// True if the function is declared as part of database known to the current <see cref="GlobalState"/>
+        /// True if the signature is declared by a symbol that is part of database known to the current <see cref="GlobalState"/>
         /// </summary>
-        private bool IsDatabaseFunction(FunctionSymbol function)
+        private bool IsDatabaseSymbolSignature(Signature signature)
         {
-            return function.Signatures.Count == 1               // db functions only have one signature
-                && function.Signatures[0].Declaration == null   // they don't have syntax trees (yet)
-                && function.Signatures[0].Body != null          // they do have a body as text
-                && _globals.IsDatabaseFunction(function);       // and they are known by the global state
+            return signature != null
+                && signature.Symbol != null
+                && signature.Declaration == null   // they don't have syntax trees (yet)
+                && signature.Body != null          // they do have a body as text
+                && _globals.IsDatabaseSymbol(signature.Symbol);       // and they are known by the global state
         }
 
         internal void SetSignatureBindingInfo(Signature signature, FunctionBody body)

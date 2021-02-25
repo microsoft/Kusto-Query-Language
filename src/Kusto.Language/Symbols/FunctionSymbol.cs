@@ -213,12 +213,12 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public FunctionSymbol(string name, FunctionDeclaration declaration, IReadOnlyList<Parameter> parameters)
+        public FunctionSymbol(string name, FunctionBody declaration, IReadOnlyList<Parameter> parameters)
             : this(name, new[] { new Signature(declaration, parameters) })
         {
         }
 
-        public FunctionSymbol(string name, FunctionDeclaration declaration, params Parameter[] parameters)
+        public FunctionSymbol(string name, FunctionBody declaration, params Parameter[] parameters)
             : this(name, new[] { new Signature(declaration, parameters) })
         {
         }

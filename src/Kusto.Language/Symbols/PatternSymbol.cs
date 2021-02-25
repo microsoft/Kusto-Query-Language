@@ -31,6 +31,11 @@ namespace Kusto.Language.Symbols
             this.Parameters = parameters ?? EmptyReadOnlyList<Parameter>.Instance;
             this.PathParameter = pathParameter;
             this.Signatures = signatures ?? EmptyReadOnlyList<PatternSignature>.Instance;
+
+            foreach (var sig in this.Signatures)
+            {
+                sig.Symbol = this;
+            }
         }
 
         public PatternSymbol(string name)
@@ -49,24 +54,25 @@ namespace Kusto.Language.Symbols
 
     public class PatternSignature
     {
-        public IReadOnlyList<string> ArgumentValues { get; }
+        public PatternSymbol Symbol { get; internal set; }
 
+        public IReadOnlyList<string> ArgumentValues { get; }
         public string PathValue { get; }
 
-        public string Body { get; }
-
-        public PatternMatch Declaration { get; }
+        private readonly string _bodyText;
+        private readonly FunctionBody _bodySyntax;
+        private Signature _signature;
 
         private PatternSignature(
             IReadOnlyList<string> argumentValues,
             string pathValue,
-            string body,
-            PatternMatch declaration)
+            string bodyText,
+            FunctionBody bodySyntax)
         {
             this.ArgumentValues = argumentValues;
             this.PathValue = pathValue;
-            this.Body = body;
-            this.Declaration = declaration;
+            _bodyText = bodyText;
+            _bodySyntax = bodySyntax;
         }
 
         public PatternSignature(
@@ -80,9 +86,39 @@ namespace Kusto.Language.Symbols
         public PatternSignature(
             IReadOnlyList<string> argumentValues,
             string pathValue,
-            PatternMatch declaration)
-            : this(argumentValues, pathValue, null, declaration)
+            FunctionBody body)
+            : this(argumentValues, pathValue, null, body)
         {
+        }
+
+        public Signature Signature
+        {
+            get
+            {
+                if (_signature == null && this.Symbol != null)
+                {
+                    Signature sig = null;
+
+                    var pms = this.Symbol.Parameters;
+                    if (this.Symbol?.PathParameter != null)
+                        pms = pms.Concat(new[] { this.Symbol.PathParameter }).ToList();
+
+                    if (_bodySyntax != null)
+                    {
+                        sig = new Signature(_bodySyntax, pms);
+                        sig.Symbol = this.Symbol;
+                    }
+                    else if (_bodyText != null)
+                    {
+                        sig = new Signature(_bodyText, Tabularity.Unspecified, pms);
+                        sig.Symbol = this.Symbol;
+                    }
+
+                    Interlocked.CompareExchange(ref _signature, sig, null);
+                }
+
+                return _signature;
+            }
         }
     }
 }

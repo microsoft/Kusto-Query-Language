@@ -1641,7 +1641,7 @@ namespace Kusto.Language
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " +
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, " +
                 "User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, " +
-                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowIngestionFailures =
             new CommandSymbol(nameof(ShowIngestionFailures),

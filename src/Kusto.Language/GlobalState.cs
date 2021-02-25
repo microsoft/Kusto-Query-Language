@@ -292,6 +292,14 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// True if the <see cref="Symbol"/> is contained by one of the known databases.
+        /// </summary>
+        public bool IsDatabaseSymbol(Symbol symbol)
+        {
+            return GetDatabase(symbol) != null;
+        }
+
+        /// <summary>
         /// Constructs a new <see cref="GlobalState"/> with the specified functions.
         /// </summary>
         public GlobalState WithFunctions(IReadOnlyList<FunctionSymbol> functions)
@@ -360,7 +368,10 @@ namespace Kusto.Language
             return GetDatabase((Symbol)function);
         }
 
-        private DatabaseSymbol GetDatabase(Symbol symbol)
+        /// <summary>
+        /// Gets the <see cref="DatabaseSymbol"/> that contains this <see cref="Symbol"/>
+        /// </summary>
+        public DatabaseSymbol GetDatabase(Symbol symbol)
         {
             if (symbol == null)
                 return null;
