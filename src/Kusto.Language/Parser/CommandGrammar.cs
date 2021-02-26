@@ -38,13 +38,78 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static CommandGrammar From(GlobalState globals)
         {
-            if (!globals.Cache.TryGetValue<CommandGrammar>(out var grammar))
+            // if this is same set of commands as the default set, then just return the default grammar
+            if (globals.Commands == GlobalState.Default.Commands)
             {
-                grammar = globals.Cache.GetOrCreate(() => Create(globals));
+                return GetDefaultCommandGrammar();
+            }
+
+            CommandGrammar grammar = null;
+            bool foundInCache = false;
+
+            // if the globals has a cache, look in the cache
+            if (globals.Cache != null)
+            {
+                foundInCache = globals.Cache.TryGetValue<CommandGrammar>(out grammar);
+            }
+
+            // if we still don't have a grammar check the recently created grammar
+            // or create a new one
+            if (grammar == null)
+            {
+                var recent = s_recentGrammar;
+                if (recent != null && recent.Commands == globals.Commands)
+                {
+                    grammar = recent.Grammar;
+                }
+                else
+                {
+                    grammar = Create(globals);
+
+                    // remember this grammar for next time
+                    var newRecent = new RecentGrammar(globals.Commands, grammar);
+                    Interlocked.CompareExchange(ref s_recentGrammar, newRecent, recent);
+                }
+            }
+
+            // if the grammar did not come from the cache, put it into the cache if there is one.
+            if (globals.Cache != null && !foundInCache)
+            {
+                grammar = globals.Cache.GetOrCreate<CommandGrammar>(() => grammar);
             }
 
             return grammar;
         }
+
+        private static RecentGrammar s_recentGrammar;
+
+        private class RecentGrammar
+        {
+            public IReadOnlyList<CommandSymbol> Commands { get; }
+            public CommandGrammar Grammar { get; }
+
+            public RecentGrammar(IReadOnlyList<CommandSymbol> commands, CommandGrammar grammar)
+            {
+                this.Commands = commands;
+                this.Grammar = grammar;
+            }
+        }
+
+        private static CommandGrammar s_defaultCommandGrammar;
+
+        private static CommandGrammar GetDefaultCommandGrammar()
+        {
+            if (s_defaultCommandGrammar == null)
+            {
+                var grammar = Create(GlobalState.Default);
+                Interlocked.CompareExchange(ref s_defaultCommandGrammar, grammar, null);
+            }
+
+            return s_defaultCommandGrammar;
+        }
+
+
+
 
         /// <summary>
         /// Creates a new <see cref="CommandGrammar"/> given the <see cref="GlobalState"/>

@@ -62,23 +62,81 @@ namespace Kusto.Language
         /// </summary>
         public IReadOnlyList<OptionSymbol> Options { get; }
 
+        /// <summary>
+        /// The <see cref="KustoCache"/> used to store additional accumulated global state.
+        /// If caching is not enabled for this <see cref="GlobalState"/> this property will return null.
+        /// </summary>
+        public KustoCache Cache { get; }
+
+        /// <summary>
+        /// Name to aggregate lookup map
+        /// </summary>
+        private Dictionary<string, FunctionSymbol> aggregatesMap;
+
+        /// <summary>
+        /// Name to function lookup map
+        /// </summary>
+        private Dictionary<string, FunctionSymbol> functionsMap;
+
+        /// <summary>
+        /// Name to plugin lookup map
+        /// </summary>
+        private Dictionary<string, FunctionSymbol> pluginMap;
+
+        /// <summary>
+        /// Name to operator lookup map
+        /// </summary>
+        private Dictionary<OperatorKind, OperatorSymbol> operatorMap;
+
+        /// <summary>
+        /// Name to command lookup map
+        /// </summary>
+        private Dictionary<string, CommandSymbol> commandMap;
+
+        /// <summary>
+        /// Name to <see cref="OptionSymbol"/> lookup map
+        /// </summary>
+        private Dictionary<string, OptionSymbol> optionMap;
+
+        /// <summary>
+        /// Symbol (database) to <see cref="ClusterSymbol"/> reverse lookup map
+        /// </summary>
+        private Dictionary<Symbol, ClusterSymbol> reverseClusterMap;
+
+        /// <summary>
+        /// Symbol to <see cref="DatabaseSymbol"/> reverse lookup map
+        /// </summary>
+        private Dictionary<Symbol, DatabaseSymbol> reverseDatabaseMap;
+
+        /// <summary>
+        /// Column to <see cref="TableSymbol"/> reverse lookup map
+        /// </summary>
+        private Dictionary<Symbol, TableSymbol> reverseTableMap;
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> instance.
+        /// </summary>
         private GlobalState(
             IReadOnlyList<ClusterSymbol> clusters,
             ClusterSymbol cluster,
             DatabaseSymbol database,
             IReadOnlyList<FunctionSymbol> functions,
-            Dictionary<string, FunctionSymbol> functionMap,
             IReadOnlyList<FunctionSymbol> aggregates,
-            Dictionary<string, FunctionSymbol> aggregateMap,
             IReadOnlyList<FunctionSymbol> plugins,
-            Dictionary<string, FunctionSymbol> pluginMap,
             IReadOnlyList<OperatorSymbol> operators,
-            Dictionary<OperatorKind, OperatorSymbol> operatorMap,
             IReadOnlyList<CommandSymbol> commands,
-            Dictionary<string, CommandSymbol> commandMap,
-            Dictionary<string, IReadOnlyList<CommandSymbol>> commandListMap,
             IReadOnlyList<ParameterSymbol> parameters,
-            IReadOnlyList<OptionSymbol> options)
+            IReadOnlyList<OptionSymbol> options,
+            KustoCache cache,
+            Dictionary<Symbol, ClusterSymbol> reverseClusterMap,
+            Dictionary<Symbol, DatabaseSymbol> reverseDatabaseMap,
+            Dictionary<Symbol, TableSymbol> reverseTableMap,
+            Dictionary<string, FunctionSymbol> functionsMap,
+            Dictionary<string, FunctionSymbol> aggregatesMap,
+            Dictionary<string, FunctionSymbol> pluginMap,
+            Dictionary<OperatorKind, OperatorSymbol> operatorMap,
+            Dictionary<string, CommandSymbol> commandMap,
+            Dictionary<string, OptionSymbol> optionMap)
         {
             this.Clusters = clusters ?? EmptyReadOnlyList<ClusterSymbol>.Instance;
             this.Cluster = cluster ?? ClusterSymbol.Unknown;
@@ -88,44 +146,53 @@ namespace Kusto.Language
             this.PlugIns = plugins ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
             this.Operators = operators ?? EmptyReadOnlyList<OperatorSymbol>.Instance;
             this.Commands = commands ?? EmptyReadOnlyList<CommandSymbol>.Instance;
-            this.commandMap = commandMap;
-            this.commandListMap = commandListMap;
             this.Parameters = parameters ?? EmptyReadOnlyList<ParameterSymbol>.Instance;
             this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
+            this.Cache = cache != null ? cache.WithGlobals(this) : null;
+            this.reverseClusterMap = reverseClusterMap;
+            this.reverseDatabaseMap = reverseDatabaseMap;
+            this.reverseTableMap = reverseTableMap;
+            this.functionsMap = functionsMap;
+            this.aggregatesMap = aggregatesMap;
+            this.pluginMap = pluginMap;
+            this.operatorMap = operatorMap;
+            this.commandMap = commandMap;
+            this.optionMap = optionMap;
         }
-
-        private Dictionary<string, FunctionSymbol> aggregatesMap;
-        private Dictionary<string, FunctionSymbol> functionsMap;
-        private Dictionary<string, FunctionSymbol> pluginMap;
-        private Dictionary<OperatorKind, OperatorSymbol> operatorMap;
-        private Dictionary<string, CommandSymbol> commandMap;
-        private Dictionary<string, IReadOnlyList<CommandSymbol>> commandListMap;
-        private Dictionary<Symbol, ClusterSymbol> reverseClusterMap;
-        private Dictionary<Symbol, DatabaseSymbol> reverseDatabaseMap;
-        private Dictionary<Symbol, TableSymbol> reverseTableMap;
-        private Dictionary<string, OptionSymbol> optionMap;
-        private KustoCache cache;
 
         /// <summary>
-        /// The <see cref="KustoCache"/> used to store additional accumulated global state.
+        /// Makes a new instance of this <see cref="GlobalState"/> that contains the same content,
+        /// but possibly clears the cache.
         /// </summary>
-        internal KustoCache Cache
+        public GlobalState Copy()
         {
-            get
-            {
-                if (this.cache == null)
-                {
-                    Interlocked.CompareExchange(ref this.cache, new KustoCache(), null);
-                }
-
-                return this.cache;
-            }
+            return new GlobalState(
+                this.Clusters,
+                this.Cluster,
+                this.Database,
+                this.Functions,
+                this.Aggregates,
+                this.PlugIns,
+                this.Operators,
+                this.Commands,
+                this.Parameters,
+                this.Options,
+                this.Cache,
+                this.reverseClusterMap,
+                this.reverseDatabaseMap,
+                this.reverseTableMap,
+                this.functionsMap,
+                this.aggregatesMap,
+                this.pluginMap,
+                this.operatorMap,
+                this.commandMap,
+                this.optionMap);
         }
 
-        private static readonly IReadOnlyList<ClusterSymbol> NoClusters = EmptyReadOnlyList<ClusterSymbol>.Instance;
-        private static readonly IReadOnlyList<CommandSymbol> NoCommands = EmptyReadOnlyList<CommandSymbol>.Instance;
-        private static readonly IReadOnlyList<ParameterSymbol> NoParameters = EmptyReadOnlyList<ParameterSymbol>.Instance;
-
+        /// <summary>
+        /// Conditionally creates a new instance of a <see cref="GlobalState"/> if one of the 
+        /// optional arguments is different than the current corresponding value.
+        /// </summary>
         private GlobalState With(
             Optional<IReadOnlyList<ClusterSymbol>> clusters = default(Optional<IReadOnlyList<ClusterSymbol>>),
             Optional<ClusterSymbol> cluster = default(Optional<ClusterSymbol>),
@@ -136,7 +203,8 @@ namespace Kusto.Language
             Optional<IReadOnlyList<OperatorSymbol>> operators = default(Optional<IReadOnlyList<OperatorSymbol>>),
             Optional<IReadOnlyList<CommandSymbol>> commands = default(Optional<IReadOnlyList<CommandSymbol>>),
             Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>),
-            Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>))
+            Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>),
+            Optional<KustoCache> cache = default(Optional<KustoCache>))
         {
             var useClusters = clusters.HasValue ? clusters.Value : this.Clusters;
             var useCluster = cluster.HasValue ? cluster.Value : this.Cluster;
@@ -148,6 +216,7 @@ namespace Kusto.Language
             var useCommands = commands.HasValue ? commands.Value : this.Commands;
             var useParameters = parameters.HasValue ? parameters.Value : this.Parameters;
             var useOptions = options.HasValue ? options.Value : this.Options;
+            var useCache = cache.HasValue ? cache.Value : this.Cache;
 
             if (useClusters != this.Clusters
                 || useCluster != this.Cluster
@@ -158,29 +227,49 @@ namespace Kusto.Language
                 || useOperators != this.Operators
                 || useCommands != this.Commands
                 || useParameters != this.Parameters
-                || useOptions != this.Options)
+                || useOptions != this.Options
+                || useCache != this.Cache)
             {
                 return new GlobalState(
                     useClusters,
                     useCluster,
                     useDatabase,
                     useFunctions,
-                    useFunctions == this.Functions ? this.functionsMap : null,
                     useAggregates,
-                    useAggregates == this.Aggregates ? this.aggregatesMap : null,
                     usePlugins,
-                    usePlugins == this.PlugIns ? this.pluginMap : null,
                     useOperators,
-                    useOperators == this.Operators ? this.operatorMap : null,
                     useCommands,
-                    useCommands == this.Commands ? this.commandMap : null,
-                    useCommands == this.Commands ? this.commandListMap : null,
                     useParameters,
-                    useOptions);
+                    useOptions,
+                    useCache,
+                    useClusters == this.Clusters ? this.reverseClusterMap : null,
+                    useClusters == this.Clusters ? this.reverseDatabaseMap : null,
+                    useClusters == this.Clusters ? this.reverseTableMap : null,
+                    useFunctions == this.Functions ? this.functionsMap : null,
+                    useAggregates == this.Aggregates ? this.aggregatesMap : null,
+                    usePlugins == this.PlugIns ? this.pluginMap : null,
+                    useOperators == this.Operators ? this.operatorMap : null,
+                    useCommands == this.Commands ? this.commandMap : null,
+                    useOptions == this.Options ? this.optionMap : null);
             }
             else
             {
                 return this;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with caching enabled.
+        /// </summary>
+        public GlobalState WithCache()
+        {
+            if (this.Cache != null)
+            {
+                return this;
+            }
+            else
+            {
+                return With(cache: new KustoCache(this));
             }
         }
 
@@ -635,21 +724,32 @@ namespace Kusto.Language
         {
             get
             {
+                // initialize lazy, because other symbols may reference this default instance
                 if (s_default == null)
                 {
-                    Interlocked.CompareExchange(ref s_default,
+                    var globals =
                         new GlobalState(
-                            NoClusters,
-                            null, // cluster
-                            null, // database
-                            Language.Functions.All, null,
-                            Language.Aggregates.All, null,
-                            Language.PlugIns.All, null,
-                            Language.Operators.All, null,
-                            Language.EngineCommands.All, null, null,
-                            NoParameters,
-                            Language.Options.All),
-                        null);
+                            EmptyReadOnlyList<ClusterSymbol>.Instance,
+                            ClusterSymbol.Unknown,
+                            DatabaseSymbol.Unknown,
+                            Language.Functions.All,
+                            Language.Aggregates.All,
+                            Language.PlugIns.All,
+                            Language.Operators.All,
+                            Language.EngineCommands.All,
+                            EmptyReadOnlyList<ParameterSymbol>.Instance,
+                            Language.Options.All,
+                            cache: null,
+                            reverseClusterMap: null,
+                            reverseDatabaseMap: null,
+                            reverseTableMap: null,
+                            functionsMap: null,
+                            aggregatesMap: null,
+                            pluginMap: null,
+                            operatorMap: null,
+                            commandMap: null,
+                            optionMap: null);
+                    Interlocked.CompareExchange(ref s_default, globals, null);
                 }
 
                 return s_default;

@@ -20,7 +20,8 @@ namespace Kusto.Language.Editor
             if (globals == null)
                 throw new ArgumentNullException(nameof(globals));
 
-            this.Globals = globals;
+            // always use a cache
+            this.Globals = globals.WithCache();
         }
 
         /// <summary>

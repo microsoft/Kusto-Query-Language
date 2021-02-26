@@ -338,6 +338,7 @@ namespace Kusto.Language.Binding
             if (!tree.IsSafeToRecurse)
                 return false;
 
+            globals = globals.WithCache();
             var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
             lock (bindingCache)
             {
@@ -447,6 +448,8 @@ namespace Kusto.Language.Binding
             GlobalState globals,
             IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
+            globals = globals.WithCache();
+
             var currentDatabase = globals.GetDatabase(signature.Symbol);
             var currentCluster = globals.GetCluster(currentDatabase);
 
@@ -890,6 +893,7 @@ namespace Kusto.Language.Binding
         {
             if (tree.IsSafeToRecurse)
             {
+                globals = globals.WithCache();
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
                 lock (bindingCache)
                 {
@@ -917,6 +921,7 @@ namespace Kusto.Language.Binding
         {
             if (tree.IsSafeToRecurse)
             {
+                globals = globals.WithCache();
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
                 lock (bindingCache)
                 {

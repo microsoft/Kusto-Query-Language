@@ -9,12 +9,26 @@ using System.Threading.Tasks;
 
 namespace Kusto.Language
 {
-    internal class KustoCache
+    public class KustoCache
     {
-        internal KustoCache()
+        public GlobalState Globals { get; }
+
+        public KustoCache(GlobalState globals)
         {
+            this.Globals = globals;
         }
 
+        public KustoCache WithGlobals(GlobalState globals)
+        {
+            if (this.Globals == globals)
+            {
+                return this;
+            }
+            else
+            {
+                return new KustoCache(globals);
+            }
+        }
 
 #if BRIDGE
         private readonly Dictionary<Type, object> m_cache

@@ -10,7 +10,7 @@ namespace Kusto.Language
     {
         public static int GetGlobalExpansionCacheSize(GlobalState globals)
         {
-            if (globals.Cache.TryGetValue<GlobalBindingCache>(out var gbc))
+            if (globals.Cache != null && globals.Cache.TryGetValue<GlobalBindingCache>(out var gbc))
             {
                 return gbc.CallSiteToExpansionMap.Count;
             }

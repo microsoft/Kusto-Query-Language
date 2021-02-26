@@ -115,7 +115,7 @@ namespace Kusto.Language
                 throw new ArgumentNullException(nameof(text));
 
             var tokens = LexicalGrammar.GetTokens(text, alwaysProduceEndToken: true);
-            return Create(text, globals ?? GlobalState.Default, tokens, analyze: false, cancellationToken: default(CancellationToken));
+            return Create(text, globals, tokens, analyze: false, cancellationToken: default(CancellationToken));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Kusto.Language
                 throw new ArgumentNullException(nameof(text));
 
             var tokens = LexicalGrammar.GetTokens(text, alwaysProduceEndToken: true);
-            return Create(text, globals ?? GlobalState.Default, tokens, analyze: true, cancellationToken: cancellationToken);
+            return Create(text, globals, tokens, analyze: true, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -140,6 +140,8 @@ namespace Kusto.Language
         {
             Parser<LexicalToken> grammar;
             SyntaxNode syntax;
+
+            globals = globals ?? GlobalState.Default;
 
             var kind = GetKind(text);
             switch (kind)
