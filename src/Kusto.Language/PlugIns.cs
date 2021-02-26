@@ -245,6 +245,14 @@ namespace Kusto.Language
                  new Parameter("sql_query", ScalarTypes.String)
                  );
 
+        public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
+                     new FunctionSymbol("azure_digital_twins_query_request",
+                         (table, args) => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
+                         Tabularity.Tabular,
+                         new Parameter("endpoint", ScalarTypes.String),
+                         new Parameter("sql_query", ScalarTypes.String)
+                         );
+        
         public static readonly FunctionSymbol DCountIntersect =
              new FunctionSymbol("dcount_intersect",
                  (table, args) => new TableSymbol(table.Columns.Concat(args.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long)))).WithInheritableProperties(table),
@@ -620,6 +628,7 @@ namespace Kusto.Language
             ActivityCountsMetrics,
             ActivityEngagement,
             ActivityMetrics,
+            AzureDigitalTwinsQueryRequest,
             AutoCluster,
             BagUnpack,
             Basket,
