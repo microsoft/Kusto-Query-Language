@@ -1917,6 +1917,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "RenderKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "ChartType", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
+            new GeneratedProperty { Name = "Parameters", Type = "SyntaxList<NamedParameter>", Completion="None" },
             new GeneratedProperty { Name = "WithClause", Type = "RenderWithClause", Optional=true, Completion="Clause" }
         }
     },

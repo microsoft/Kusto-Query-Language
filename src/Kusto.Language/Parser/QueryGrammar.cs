@@ -2221,12 +2221,32 @@ namespace Kusto.Language.Parsing
                     First(KustoFacts.ChartTypes.Select(c => KustoFacts.HiddenChartTypes.Contains(c) ? Token(c).Hide() : Token(c, CompletionKind.RenderChart)).ToArray()),
                     Token(SyntaxKind.IdentifierToken)); // allow any identifier as a chart type and flag it later during semantic analysis (binding)
 
+            var DeprecatedRenderByPropertyName =
+                If(Not(Or(
+                        Token(SyntaxKind.KindKeyword),  // exclude other property names from possibly by-names
+                        Token(SyntaxKind.TitleKeyword),
+                        Token(SyntaxKind.AccumulateKeyword),
+                        Token(SyntaxKind.WithKeyword))),
+                    SimpleNameReference.Cast<NameReference>());
+
+            var DeprecatedRenderProperty =
+                First(
+                    QueryParameter(QueryOperatorParameters.RenderKind.Hide()),
+                    QueryParameter(QueryOperatorParameters.RenderTitle.Hide()),
+                    QueryParameter(QueryOperatorParameters.RenderAccumulate.Hide()),
+                    If(And(Token(SyntaxKind.WithKeyword).Hide(), Not(Token(SyntaxKind.OpenParenToken))),
+                        Rule(Token(SyntaxKind.WithKeyword).Hide(), Required(Literal, MissingValue),
+                            (keyword, value) => new NamedParameter(new NameDeclaration(new TokenName(keyword)), SyntaxToken.Missing(SyntaxKind.EqualToken), value))),
+                    Rule(Token(SyntaxKind.ByKeyword).Hide(), NameReferenceList(DeprecatedRenderByPropertyName),
+                        (keyword, list) => new NamedParameter(new NameDeclaration(new TokenName(keyword)), SyntaxToken.Missing(SyntaxKind.EqualToken), list)));
+
             var RenderOperator =
                 Rule(
                     Token(SyntaxKind.RenderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     Required(RenderChartType, () => CreateMissingToken(KustoFacts.ChartTypes)),
+                    List(DeprecatedRenderProperty),
                     Optional(RenderWithClause),
-                    (keyword, chart, withClause) => (QueryOperator)new RenderOperator(keyword, chart, withClause, null))
+                    (keyword, chart, parameters, withClause) => (QueryOperator)new RenderOperator(keyword, chart, parameters, withClause, null))
                 .WithTag("<render>");
 
             var PrintOperator =

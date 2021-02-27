@@ -17,7 +17,7 @@ namespace Kusto.Language.Generator
     /// A utility class for writing the text of other programs.
     /// </summary>
     /// <remarks>This class does not take a dependency on anything not in the BCL.</remarks>
-    public class CodeGenerator
+    internal class CodeGenerator
     {
         #region Private data
         private StringWriter m_swriter;

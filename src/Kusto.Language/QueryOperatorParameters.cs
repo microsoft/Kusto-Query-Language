@@ -182,11 +182,27 @@ namespace Kusto.Language
             HintDotMaterialized
         }.ToReadOnly();
 
+        public static readonly QueryOperatorParameter RenderKind =
+            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word, values: KustoFacts.ChartKinds);
+
+        public static readonly QueryOperatorParameter RenderTitle =
+            new QueryOperatorParameter("title", QueryOperatorParameterKind.StringLiteral);
+
+        public static readonly QueryOperatorParameter RenderAccumulate =
+            new QueryOperatorParameter("accumulate", QueryOperatorParameterKind.BoolLiteral);
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> RenderParameters = new QueryOperatorParameter[]
+        {
+            RenderKind.Hide(),
+            RenderTitle.Hide(),
+            RenderAccumulate.Hide()
+        };
+
         public static readonly IReadOnlyList<QueryOperatorParameter> RenderWithProperties = new QueryOperatorParameter[]
         {
-            new QueryOperatorParameter("kind", QueryOperatorParameterKind.Word, values: KustoFacts.ChartKinds),
-            new QueryOperatorParameter("title", QueryOperatorParameterKind.StringLiteral),
-            new QueryOperatorParameter("accumulate", QueryOperatorParameterKind.BoolLiteral),
+            RenderKind,
+            RenderTitle,
+            RenderAccumulate,
             new QueryOperatorParameter("xcolumn", QueryOperatorParameterKind.Column),
             new QueryOperatorParameter("ycolumns", QueryOperatorParameterKind.ColumnList),
             new QueryOperatorParameter("anomalycolumns", QueryOperatorParameterKind.ColumnList),

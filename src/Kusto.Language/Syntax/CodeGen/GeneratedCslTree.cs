@@ -9423,20 +9423,23 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken ChartType { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public RenderWithClause WithClause { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="RenderOperator"/>.
         /// </summary>
-        internal RenderOperator(SyntaxToken renderKeyword, SyntaxToken chartType, RenderWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal RenderOperator(SyntaxToken renderKeyword, SyntaxToken chartType, SyntaxList<NamedParameter> parameters, RenderWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.RenderKeyword = Attach(renderKeyword);
             this.ChartType = Attach(chartType, optional: true);
+            this.Parameters = Attach(parameters);
             this.WithClause = Attach(withClause, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -9444,7 +9447,8 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return RenderKeyword;
                 case 1: return ChartType;
-                case 2: return WithClause;
+                case 2: return Parameters;
+                case 3: return WithClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -9455,7 +9459,8 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return nameof(RenderKeyword);
                 case 1: return nameof(ChartType);
-                case 2: return nameof(WithClause);
+                case 2: return nameof(Parameters);
+                case 3: return nameof(WithClause);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -9465,7 +9470,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 1:
-                case 2:
+                case 3:
                     return true;
                 default:
                     return false;
@@ -9478,7 +9483,8 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Keyword;
-                case 2: return CompletionHint.Clause;
+                case 2: return CompletionHint.None;
+                case 3: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -9494,7 +9500,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore()
         {
-            return new RenderOperator((SyntaxToken)RenderKeyword?.Clone(), (SyntaxToken)ChartType?.Clone(), (RenderWithClause)WithClause?.Clone(), this.SyntaxDiagnostics);
+            return new RenderOperator((SyntaxToken)RenderKeyword?.Clone(), (SyntaxToken)ChartType?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (RenderWithClause)WithClause?.Clone(), this.SyntaxDiagnostics);
         }
     }
     #endregion /* class RenderOperator */

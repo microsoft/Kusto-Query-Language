@@ -2788,6 +2788,7 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     _binder.CheckIsToken(node.ChartType, KustoFacts.ChartTypes, true, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.RenderParameters, diagnostics);
 
                     if (node.WithClause != null)
                     {
