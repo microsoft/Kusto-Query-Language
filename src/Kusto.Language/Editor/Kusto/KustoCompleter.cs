@@ -888,149 +888,24 @@ namespace Kusto.Language.Editor
                     }
                 }
 
-                HashSet<string> examples = null;
+                var examples = new HashSet<string>();
                 var possibleParameters = new List<Parameter>();
                 var knownParameter = false;
 
                 foreach (var sig in signatures)
                 {
-                    // check for special cases
-                    if (argumentIndex == 0)
+                    // check for examples based off of ReturnTypeKind.Parameter0XXX
+                    if (argumentIndex == 0
+                        && TryGetReturnTypeKindCompletions(sig.ReturnKind, position, contextNode, builder))
                     {
-                        switch (sig.ReturnKind)
-                        {
-                            case ReturnTypeKind.Parameter0Cluster:
-                                // show the known cluster names
-                                builder.AddRange(GetMemberNameExamples(this.code.Globals.Clusters));
-                                GetStringValuesInScope(position, contextNode, builder);
-                                return CompletionMode.Isolated;
-
-                            case ReturnTypeKind.Parameter0Database:
-                                // show either the dotted cluster's database names or the global cluster's database names
-                                if (GetLeftOfFunctionCall(contextNode) is Expression cpl)
-                                {
-                                    if (cpl.ResultType is ClusterSymbol cc)
-                                    {
-                                        builder.AddRange(GetMemberNameExamples(cc.Databases));
-                                    }
-                                }
-                                else
-                                {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Cluster.Databases));
-                                }
-
-                                GetStringValuesInScope(position, contextNode, builder);
-                                return CompletionMode.Isolated;
-
-                            case ReturnTypeKind.Parameter0Table:
-                                // show either the dotted database's table names or the global database's table names
-                                if (GetLeftOfFunctionCall(contextNode) is Expression dpl)
-                                {
-                                    if (dpl.ResultType is DatabaseSymbol ds)
-                                    {
-                                        builder.AddRange(GetMemberNameExamples(ds.Tables));
-                                    }
-                                }
-                                else
-                                {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.Tables));
-                                }
-
-                                GetStringValuesInScope(position, contextNode, builder);
-                                return CompletionMode.Isolated;
-
-                            case ReturnTypeKind.Parameter0ExternalTable:
-                                // show either the dotted database's table names or the global database's table names
-                                if (GetLeftOfFunctionCall(contextNode) is Expression edpl)
-                                {
-                                    if (edpl.ResultType is DatabaseSymbol ds)
-                                    {
-                                        builder.AddRange(GetMemberNameExamples(ds.ExternalTables));
-                                    }
-                                }
-                                else
-                                {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.ExternalTables));
-                                }
-
-                                GetStringValuesInScope(position, contextNode, builder);
-                                return CompletionMode.Isolated;
-
-                            case ReturnTypeKind.Parameter0MaterializedView:
-                                // show either the dotted database's table names or the global database's table names
-                                if (GetLeftOfFunctionCall(contextNode) is Expression mvdpl)
-                                {
-                                    if (mvdpl.ResultType is DatabaseSymbol ds)
-                                    {
-                                        builder.AddRange(GetMemberNameExamples(ds.MaterializedViews));
-                                    }
-                                }
-                                else
-                                {
-                                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.MaterializedViews));
-                                }
-
-                                GetStringValuesInScope(position, contextNode, builder);
-                                return CompletionMode.Isolated;
-                        }
+                        return CompletionMode.Isolated;
                     }
 
-                    // check for examples
+                    // check for examples based on parameters
                     possibleParameters.Clear();
-
-                    if (name != null)
-                    {
-                        var ap = sig.GetParameter(name);
-                        if (ap != Signature.UnknownParameter)
-                        {
-                            possibleParameters.Add(sig.GetParameter(name));
-                            knownParameter = true;
-                        }
-                    }
-                    else if (argumentIndex < arguments.Count)
-                    {
-                        if (argumentIndex == arguments.Count - 1 && arguments[argumentIndex].IsMissing)
-                        {
-                            var prevArgs = arguments.Take(argumentIndex).ToList();
-                            sig.GetNextPossibleParameters(prevArgs, possibleParameters);
-                            if (possibleParameters.Count > 0)
-                            {
-                                knownParameter = true;
-                            }
-                        }
-                        else
-                        {
-                            var argParams = sig.GetArgumentParameters(arguments);
-                            var ap = argParams[argumentIndex];
-                            if (ap != Signature.UnknownParameter)
-                            {
-                                possibleParameters.Add(ap);
-                                knownParameter = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        sig.GetNextPossibleParameters(arguments, possibleParameters);
-                        if (possibleParameters.Count > 0)
-                        {
-                            knownParameter = true;
-                        }
-                    }
-
-                    foreach (var p in possibleParameters)
-                    {
-                        if (p.Examples.Count > 0)
-                        {
-                            if (examples == null)
-                                examples = new HashSet<string>();
-
-                            foreach (var ex in p.Examples)
-                            {
-                                examples.Add(ex);
-                            }
-                        }
-                    }
+                    GetPossibleParameters(sig, arguments, name, argumentIndex, possibleParameters);
+                    knownParameter |= possibleParameters.Count > 0;
+                    GetParameterExamples(sig, arguments, possibleParameters, examples);
                 }
 
                 // if we got through all the signature and did not match a known parameter
@@ -1052,42 +927,210 @@ namespace Kusto.Language.Editor
             return CompletionMode.Combined;
         }
 
-        private void GetStringValuesInScope(int position, SyntaxNode contextNode, CompletionBuilder builder)
+        private static void GetParameterExamples(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<Parameter> possibleParameters, HashSet<string> examples)
         {
-            var symbols = new List<Symbol>();
-            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, SymbolMatch.Local, IncludeFunctionKind.All, symbols, this.cancellationToken);
-
-            for (int i = symbols.Count - 1; i >= 0; i--)
+            foreach (var p in possibleParameters)
             {
-                if (!TryGetScalarType(symbols[i], out var type) || type != ScalarTypes.String)
+                if (p.Examples.Count > 0)
                 {
-                    symbols.RemoveAt(i);
+                    foreach (var ex in p.Examples)
+                    {
+                        examples.Add(ex);
+                    }
                 }
-            }
 
-            foreach (var symbol in symbols)
-            {
-                var item = GetSymbolCompletionItem(symbol, contextNode, nameOnly: false);
-                builder.Add(item);
+                if (signature.Symbol is FunctionSymbol)
+                {
+                    if (p.TypeKind == ParameterTypeKind.Declared)
+                    {
+                        foreach (var type in p.DeclaredTypes)
+                        {
+                            GetTypeExamples(type, examples);
+                        }
+                    }
+                }
+                else if (signature.Symbol is OperatorSymbol op)
+                {
+                    GetOperatorExamples(op, arguments, possibleParameters, examples);
+                }
             }
         }
 
-        private bool TryGetScalarType(Symbol symbol, out TypeSymbol type)
+        private static void GetTypeExamples(TypeSymbol type, HashSet<string> examples)
+        {
+            if (type == ScalarTypes.Bool)
+            {
+                examples.Add("false");
+                examples.Add("true");
+            }
+        }
+
+        private static void GetOperatorExamples(OperatorSymbol symbol, IReadOnlyList<Expression> arguments, IReadOnlyList<Parameter> possibleParameters, HashSet<string> examples)
+        {
+            if (symbol == Operators.Equal
+                || symbol == Operators.NotEqual
+                || symbol == Operators.EqualTilde
+                || symbol == Operators.GreaterThan
+                || symbol == Operators.GreaterThanOrEqual
+                || symbol == Operators.LessThan
+                || symbol == Operators.LessThanOrEqual)
+            {
+                if (arguments.Count > 0)
+                {
+                    var type = arguments[0].ResultType;
+                    GetTypeExamples(type, examples);
+                }
+            }
+        }
+
+        private bool TryGetReturnTypeKindCompletions(ReturnTypeKind kind, int position, SyntaxNode contextNode, CompletionBuilder builder)
+        {
+            switch (kind)
+            {
+                case ReturnTypeKind.Parameter0Cluster:
+                    // show the known cluster names
+                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Clusters));
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
+                case ReturnTypeKind.Parameter0Database:
+                    // show either the dotted cluster's database names or the global cluster's database names
+                    if (GetLeftOfFunctionCall(contextNode) is Expression cpl)
+                    {
+                        if (cpl.ResultType is ClusterSymbol cc)
+                        {
+                            builder.AddRange(GetMemberNameExamples(cc.Databases));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Cluster.Databases));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
+                case ReturnTypeKind.Parameter0Table:
+                    // show either the dotted database's table names or the global database's table names
+                    if (GetLeftOfFunctionCall(contextNode) is Expression dpl)
+                    {
+                        if (dpl.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.Tables));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.Tables));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
+                case ReturnTypeKind.Parameter0ExternalTable:
+                    // show either the dotted database's table names or the global database's table names
+                    if (GetLeftOfFunctionCall(contextNode) is Expression edpl)
+                    {
+                        if (edpl.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.ExternalTables));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.ExternalTables));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
+                case ReturnTypeKind.Parameter0MaterializedView:
+                    // show either the dotted database's table names or the global database's table names
+                    if (GetLeftOfFunctionCall(contextNode) is Expression mvdpl)
+                    {
+                        if (mvdpl.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.MaterializedViews));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.MaterializedViews));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        private static void GetPossibleParameters(Signature sig, IReadOnlyList<Expression> arguments, string parameterName, int argumentIndex, List<Parameter> possibleParameters)
+        {
+            if (parameterName != null)
+            {
+                var ap = sig.GetParameter(parameterName);
+                if (ap != Signature.UnknownParameter)
+                {
+                    possibleParameters.Add(sig.GetParameter(parameterName));
+                }
+            }
+            else if (argumentIndex < arguments.Count)
+            {
+                if (argumentIndex == arguments.Count - 1 && arguments[argumentIndex].IsMissing)
+                {
+                    var prevArgs = arguments.Take(argumentIndex).ToList();
+                    sig.GetNextPossibleParameters(prevArgs, possibleParameters);
+                }
+                else
+                {
+                    var argParams = sig.GetArgumentParameters(arguments);
+                    var ap = argParams[argumentIndex];
+                    if (ap != Signature.UnknownParameter)
+                    {
+                        possibleParameters.Add(ap);
+                    }
+                }
+            }
+            else
+            {
+                sig.GetNextPossibleParameters(arguments, possibleParameters);
+            }
+        }
+
+        /// <summary>
+        /// Get's completion items for local variables in scope that are type requested type
+        /// </summary>
+        private void GetMatchingSymbolCompletions(SymbolMatch match, ScalarSymbol type, int position, SyntaxNode contextNode, CompletionBuilder builder)
+        {
+            // first get all items in scope
+            var symbols = new List<Symbol>();
+            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, match, IncludeFunctionKind.All, symbols, this.cancellationToken);
+
+            // get completion items for the symbols with a matching scalar type
+            foreach (var symbol in symbols)
+            {
+                if (GetScalarType(symbol) == type)
+                {
+                    var item = GetSymbolCompletionItem(symbol, contextNode, nameOnly: false);
+                    builder.Add(item);
+                }
+            }
+        }
+
+        private ScalarSymbol GetScalarType(Symbol symbol)
         {
             switch (symbol)
             {
                 case ParameterSymbol ps:
-                    type = ps.Type;
-                    return true;
+                    return ps.Type as ScalarSymbol;
                 case VariableSymbol vs:
-                    type = vs.Type;
-                    return true;
+                    return vs.Type as ScalarSymbol;
                 case ColumnSymbol cs:
-                    type = cs.Type;
-                    return true;
+                    return cs.Type as ScalarSymbol;
                 default:
-                    type = null;
-                    return false;
+                    return null;
             }
         }
 
