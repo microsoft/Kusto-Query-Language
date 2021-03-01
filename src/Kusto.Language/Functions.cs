@@ -2243,14 +2243,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol HasIpv4 =
             new FunctionSymbol("__has_ipv4", ScalarTypes.Bool,
-                new Parameter("text", ScalarTypes.String),
+                new Parameter("text", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
         public static readonly FunctionSymbol HasIpv4Prefix =
             new FunctionSymbol("__has_ipv4_prefix", ScalarTypes.Bool,
-                new Parameter("text", ScalarTypes.String),
+                new Parameter("text", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip_prefix", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
