@@ -1417,8 +1417,8 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowMaterializedViewExtents =
             new CommandSymbol(nameof(ShowMaterializedViewExtents),
-                 $"show materialized-view MaterializedViewName=<materializedview> extents [{ExtentIdList}] [hot] [details]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+                 $"show materialized-view MaterializedViewName=<materializedview> extents [{ExtentIdList}] [hot]",
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
 
         public static readonly CommandSymbol AlterMaterializedView =
             new CommandSymbol(nameof(AlterMaterializedView),
@@ -1654,24 +1654,24 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterExtents =
             new CommandSymbol(nameof(ShowClusterExtents), 
                 "show cluster extents [hot]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
 
         private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains')! Tag=<string>, and }+";
 
         public static readonly CommandSymbol ShowDatabaseExtents =
             new CommandSymbol(nameof(ShowDatabaseExtents),
                 $"show database DatabaseName=<database> extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
 
         public static readonly CommandSymbol ShowTableExtents =
             new CommandSymbol(nameof(ShowTableExtents),
                 $"show table TableName=<table> extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
 
         public static readonly CommandSymbol ShowTablesExtents =
             new CommandSymbol(nameof(ShowTablesExtents),
                 $"show tables {TableNameList} extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, AssignedDataNodes: string, LoadedDataNodes: string, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, Partition: string)");
+                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
 
         private static readonly string MergeExtentsResult =
             "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
