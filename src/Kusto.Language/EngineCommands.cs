@@ -1030,6 +1030,25 @@ namespace Kusto.Language
 
         #endregion
 
+        #region AutoDelete
+
+        public static readonly CommandSymbol ShowTablePolicyAutoDelete =
+            new CommandSymbol(nameof(ShowTablePolicyAutoDelete),
+                "show table TableName=(<database_table>) policy auto_delete",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterTablePolicyAutoDelete =
+            new CommandSymbol(nameof(AlterTablePolicyAutoDelete),
+                "alter table TableName=<database_table> policy auto_delete AutoDeletePolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteTablePolicyAutoDelete =
+            new CommandSymbol(nameof(DeleteTablePolicyAutoDelete),
+                "delete table TableName=<database_table> policy auto_delete",
+                PolicyResult);
+
+        #endregion 
+
         #region Callout
         public static readonly CommandSymbol ShowClusterPolicyCallout =
             new CommandSymbol(nameof(ShowClusterPolicyCallout),
@@ -1983,6 +2002,11 @@ namespace Kusto.Language
                 ShowClusterPolicyRowStore,
                 AlterClusterPolicyRowStore,
                 AlterMergeClusterPolicyRowStore,
+
+                // Auto Delete
+                ShowTablePolicyAutoDelete, 
+                AlterTablePolicyAutoDelete, 
+                DeleteTablePolicyAutoDelete,
 
                 // Sandbox
                 ShowClusterPolicySandbox,
