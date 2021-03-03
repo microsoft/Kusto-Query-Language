@@ -116,7 +116,7 @@ These are:
 |`barchart`     |`default`          |Each "bar" stands on its own.      |
 |               |`unstacked`        |Same as `default`.                 |
 |               |`stacked`          |Stack "bars".                      |
-|               |`stacked100`       |Stack "bard" and stretch each one to the same width as the others.|
+|               |`stacked100`       |Stack "bars" and stretch each one to the same width as the others.|
 |`columnchart`  |`default`          |Each "column" stands on its own.   |
 |               |`unstacked`        |Same as `default`.                 |
 |               |`stacked`          |Stack "columns" one atop the other.|
