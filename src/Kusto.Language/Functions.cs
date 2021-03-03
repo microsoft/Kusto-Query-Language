@@ -1510,6 +1510,12 @@ namespace Kusto.Language
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol ArraySum =
+           new FunctionSymbol("array_sum", ScalarTypes.Real,
+               new Parameter("series", ScalarTypes.Dynamic))
+           .WithResultNameKind(ResultNameKind.None)
+           .Hide();
+
         public static readonly FunctionSymbol SeriesFft =
             new FunctionSymbol("series_fft",
                 (table, args, sig) => MakePrefixedTuple(sig, "series", args,
@@ -2510,6 +2516,7 @@ namespace Kusto.Language
             SeriesLessEquals,
             SeriesEquals,
             SeriesNotEquals,
+            ArraySum,
             SeriesSeasonal,
             SeriesDecompose,
             SeriesDecomposeForecast,
