@@ -467,7 +467,7 @@
     <PackageReference Include="Bridge.Min" Version="17.10.1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\Directory.Build.targets')" />
-  <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(KustoGlobalPackagesFolder)\.nuget\packages\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
+  <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(NuGetPackageRoot)\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />
     <BridgeCompilerTask Assembly="@(IntermediateAssembly)" AssemblyName="$(AssemblyName)" AssembliesPath="$(OutDir)" CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)" Configuration="$(Configuration)" DefineConstants="$(DefineConstants)" OutDir="$(OutDir)" OutputPath="$(OutputPath)" OutputType="$(OutputType)" Platform="$(Platform)" ProjectPath="$(MSBuildProjectFullPath)" RootNamespace="$(RootNamespace)" Sources="@(Compile)" />
