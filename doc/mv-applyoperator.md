@@ -109,11 +109,13 @@ and *SubQuery* has the same syntax of any query statement.
 **Notes**
 
 * Unlike the [`mv-expand`](./mvexpandoperator.md) operator, the `mv-apply` operator
-  supports array expansion only. There's no support for expanding property bags.
+  does not support `bagexpand=array` expansion. If the expression to be expanded
+  is a property bag and not an array, it is possible to use an inner `mv-expand`
+  operator (see example below).
 
 ## Examples
 
-## Getting the largest element from the array
+### Getting the largest element from the array
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -132,7 +134,7 @@ _data
 |1    |[1, 3, 5, 7]|7      |
 |0    |[2, 4, 6, 8]|8      |
 
-## Calculating the sum of the largest two elements in an array
+### Calculating the sum of the largest two elements in an array
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -152,7 +154,7 @@ _data
 |1    |[1,3,5,7]|12       |
 |0    |[2,4,6,8]|14       |
 
-## Using `with_itemindex` for working with a subset of the array
+### Using `with_itemindex` for working with a subset of the array
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -174,6 +176,34 @@ _data
 |4|9|
 |3|8|
 |4|10|
+
+### Applying mv-apply to a property bag
+
+In the following example, `mv-apply` is used in combination with an
+inner `mv-expand` to remove empty values from a property bag:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+datatable(col1:string, col2: string ) 
+[ 
+ 'aa', '',
+ 'cc', 'dd'
+]
+| as T
+| extend values = pack_all()
+| mv-apply values on 
+(
+    mv-expand kind = array  values
+    | where isnotempty(values[1])
+    | summarize EmptyValuesRemoved = make_bag(pack(tostring(values[0]), values[1]))
+)
+```
+
+|col1|col2|EmptyValuesRemoved|
+|---|---|---|
+|aa||{<br>  "col1": "aa"<br>}|
+|cc|dd|{<br>  "col1": "cc",<br>  "col2": "dd"<br>}|
+
 
 ## See also
 
