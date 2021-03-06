@@ -199,8 +199,8 @@ namespace Kusto.Language.Parsing
                 // only match rule if parts are adjacent (no whitespace)
                 If(And(
                     Token(SyntaxKind.OpenBraceToken),
-                    Match(t => t.Kind == SyntaxKind.IdentifierToken && t.TriviaWidth == 0),
-                    Match(t => t.Kind == SyntaxKind.CloseBraceToken && t.TriviaWidth == 0)),
+                    Match(t => t.Kind == SyntaxKind.IdentifierToken && t.Trivia.Length == 0),
+                    Match(t => t.Kind == SyntaxKind.CloseBraceToken && t.Trivia.Length == 0)),
                 Rule(
                     Token(SyntaxKind.OpenBraceToken),
                     Token(SyntaxKind.IdentifierToken),
@@ -500,7 +500,7 @@ namespace Kusto.Language.Parsing
                     var number = source.Peek(start + 1);
                     if (sign != null && number != null
                         && (sign.Kind == SyntaxKind.PlusToken || sign.Kind == SyntaxKind.MinusToken)
-                        && number.TriviaWidth == 0
+                        && number.Trivia.Length == 0
                         && (number.Kind == SyntaxKind.LongLiteralToken
                         || number.Kind == SyntaxKind.RealLiteralToken)
                         && number.Text.Length > 0 && char.IsDigit(number.Text[0]))

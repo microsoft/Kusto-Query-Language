@@ -186,8 +186,8 @@ namespace Kusto.Language.Editor
         /// </summary>
         private Parser<LexicalToken> GetBestGrammarAtPosition(int position)
         {
-            var offset = GetTokenIndex(position);
-            var source = new ArraySource<LexicalToken>(_code.LexerTokens);
+            var offset = _code.GetTokenIndex(position);
+            var source = new ArraySource<LexicalToken>(_code.GetLexicalTokens());
 
             Parser<LexicalToken> bestGrammar = null;
             int bestLength = -1;
@@ -207,30 +207,6 @@ namespace Kusto.Language.Editor
             });
 
             return bestGrammar;
-        }
-
-        /// <summary>
-        /// Gets the index of the token that includes the text position.
-        /// </summary>
-        private int GetTokenIndex(int position)
-        {
-            if (_code.LexerTokens.Count == 0)
-                return 0;
-
-            if (position >= _code.LexerTokens[_code.LexerTokens.Count - 1].End)
-                return _code.LexerTokens.Count - 1;
-
-            var offset = _code.LexerTokens.BinarySearch(t =>
-            {
-                if (position < t.TriviaStart)
-                    return 1;
-                else if (position >= t.End)
-                    return -1;
-                else
-                    return 0;
-            });
-
-            return offset >= 0 ? offset : 0;
         }
 
         private QuickInfoItem GetDiagnosticInfo(int position, CancellationToken cancellationToken)

@@ -207,20 +207,20 @@ namespace Kusto.Language.Editor
 
         public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
         {
-            var firstToken = Parsing.LexicalGrammar.GetFirstToken(this.Text);
+            var firstToken = Parsing.TokenParser.Default.ParseToken(this.Text, 0);
             if (firstToken != null && firstToken.Text.Length > 0)
             {
                 var start = 0;
                 var end = start + Parsing.TextFacts.TrimEnd(this.Text);
 
                 // without better language knowledge, just use from start of first token to end of first line as the text to show when collapesed.
-                var nextLineBreakStart = Parsing.TextFacts.GetNextLineBreakStart(this.Text, firstToken.TextStart);
+                var nextLineBreakStart = Parsing.TextFacts.GetNextLineBreakStart(this.Text, firstToken.Trivia.Length);
                 var collapsedTextEnd = nextLineBreakStart >= 0 ? nextLineBreakStart : Text.Length;
 
                 // trim off any extra trailing whitespace from collapsed text
-                var collapsedTextLength = Parsing.TextFacts.TrimEnd(this.Text, firstToken.TextStart, collapsedTextEnd - firstToken.TextStart);
+                var collapsedTextLength = Parsing.TextFacts.TrimEnd(this.Text, firstToken.Trivia.Length, collapsedTextEnd - firstToken.Trivia.Length);
 
-                var collapsedText = this.Text.Substring(firstToken.TextStart, collapsedTextLength);
+                var collapsedText = this.Text.Substring(firstToken.Trivia.Length, collapsedTextLength);
 
                 return new OutlineInfo(new[] { new OutlineRange(start, end - start, collapsedText) });
             }
@@ -266,7 +266,8 @@ namespace Kusto.Language.Editor
         public override string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken)
         {
             // use kusto lexer to identify tokens and trivia (as best guess)
-            var list = new SyntaxList<SyntaxToken>(Parsing.LexicalGrammar.GetTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
+            var parser = new Parsing.TokenParser();
+            var list = new SyntaxList<SyntaxToken>(parser.ParseTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
             return list.ToString(KustoCodeService.GetIncludeTrivia(kind));
         }
 

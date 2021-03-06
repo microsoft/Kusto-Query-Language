@@ -163,9 +163,8 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool ShouldComplete(int position)
         {
-            var tokenOffset = GetTokenIndex(position);
-            var token = this.code.LexerTokens[tokenOffset];
-            var previous = tokenOffset > 0 ? this.code.LexerTokens[tokenOffset - 1] : null;
+            var token = this.code.Syntax.GetTokenAt(position);
+            var previous = token.GetPreviousToken();
             var affinity = GetTokenWithAffinity(position) ?? token;
 
             var leftOrSurrounding = (position == token.TriviaStart)
@@ -228,7 +227,7 @@ namespace Kusto.Language.Editor
             return false;
         }
 
-        private static bool IsInsideLiteral(LexicalToken token, int position)
+        private static bool IsInsideLiteral(SyntaxToken token, int position)
         {
             return token.Kind.GetCategory() == SyntaxCategory.Literal
                 && (position >= token.TextStart && position <= token.End);
@@ -626,13 +625,6 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private static bool HasAffinity(LexicalToken token, int position)
-        {
-            return (position > token.TextStart && position < token.End)
-                || position == token.TextStart && IsNameToken(token.Kind)
-                || position == token.End && IsNameToken(token.Kind);
-        }
-
         internal static bool HasAffinity(SyntaxToken token, int position)
         {
             return (position > token.TextStart && position < token.End)
@@ -644,15 +636,10 @@ namespace Kusto.Language.Editor
         /// Get the token that the position has affinity with,
         /// or null if the position does not have affinity (in whitespace between tokens).
         /// </summary>
-        private LexicalToken GetTokenWithAffinity(int position)
+        private SyntaxToken GetTokenWithAffinity(int position)
         {
-            // there are no tokens..
-            if (this.code.LexerTokens.Count == 0)
-                return null;
-
-            var tokenOffset = GetTokenIndex(position);
-            var token = this.code.LexerTokens[tokenOffset];
-            var previous = tokenOffset > 0 ? this.code.LexerTokens[tokenOffset - 1] : null;
+            var token = this.code.Syntax.GetTokenAt(position);
+            var previous = token.GetPreviousToken();
 
             if (HasAffinity(token, position))
             {
@@ -1850,9 +1837,9 @@ namespace Kusto.Language.Editor
         /// </summary>
         private void ScanGrammarAtPosition(int position, Action<Parser<LexicalToken>> action)
         {
-            var offset = GetTokenIndex(position);
+            var offset = this.code.GetTokenIndex(position);
 
-            var source = new ArraySource<LexicalToken>(this.code.LexerTokens);
+            var source = new ArraySource<LexicalToken>(this.code.GetLexicalTokens());
 
 #if DEBUG
             // maintain a path from the outer grammar rule to the one being considered on each callback
@@ -1905,30 +1892,6 @@ namespace Kusto.Language.Editor
                 return expr;
 
             return null;
-        }
-
-        /// <summary>
-        /// Gets the index of the token that includes the text position.
-        /// </summary>
-        private int GetTokenIndex(int position)
-        {
-            if (this.code.LexerTokens.Count == 0)
-                return 0;
-
-            if (position >= this.code.LexerTokens[this.code.LexerTokens.Count - 1].End)
-                return this.code.LexerTokens.Count - 1;
-
-            var offset = this.code.LexerTokens.BinarySearch(t =>
-            {
-                if (position < t.TriviaStart)
-                    return 1;
-                else if (position >= t.End)
-                    return -1;
-                else
-                    return 0;
-            });
-
-            return offset >= 0 ? offset : 0;
         }
 
         private bool IncludeSyntax(CompletionItem item, int position, CompletionHint hints, SymbolMatch match, Expression left)

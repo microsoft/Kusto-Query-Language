@@ -11,7 +11,7 @@ namespace Kusto.Language.Syntax
     /// <summary>
     /// A single token in the syntax grammar.
     /// </summary>
-    public abstract class SyntaxToken : SyntaxElement, Parsing.IToken
+    public abstract class SyntaxToken : SyntaxElement
     {
         protected SyntaxToken(IReadOnlyList<Diagnostic> diagnostics)
             : base(diagnostics)

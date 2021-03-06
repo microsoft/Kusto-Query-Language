@@ -263,6 +263,9 @@
     <Compile Include="..\Kusto.Language\Parser\LexicalGrammar.cs">
       <Link>Src\LexicalGrammar.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Parser\TokenParser.cs">
+      <Link>Src\TokenParser.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Parser\LexicalToken.cs">
       <Link>Src\LexicalToken.cs</Link>
     </Compile>
@@ -448,6 +451,9 @@
     </Compile>
     <Compile Include="..\Kusto.Language\Utils\SafeList.cs">
       <Link>Src\SafeList.cs</Link>
+    </Compile>
+    <Compile Include="..\Kusto.Language\Utils\SubstringMap.cs">
+      <Link>Src\SubstringMap.cs</Link>
     </Compile>
     <Compile Include="..\Kusto.Language\Utils\StringTable.cs">
       <Link>Src\StringTable.cs</Link>

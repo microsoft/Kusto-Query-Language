@@ -302,16 +302,9 @@ namespace Kusto.Language.Editor
             {
                 try
                 {
-                    if (code.LexerTokens.Count > 0)
-                    {
-                        var collapsedText = GetOutlineCollapsedText(code);
-                        var length = TextFacts.TrimEnd(this.Text, 0, this.Text.Length);
-                        return new OutlineInfo(new[] { new OutlineRange(0, length, collapsedText) });
-                    }
-                    else
-                    {
-                        return OutlineInfo.Empty;
-                    }
+                    var collapsedText = GetOutlineCollapsedText(code);
+                    var length = TextFacts.TrimEnd(this.Text, 0, this.Text.Length);
+                    return new OutlineInfo(new[] { new OutlineRange(0, length, collapsedText) });
                 }
                 catch (Exception)
                 {
@@ -324,15 +317,15 @@ namespace Kusto.Language.Editor
         private static string GetOutlineCollapsedText(KustoCode code)
         {
             var builder = new StringBuilder();
-            for (int i = 0; i < code.LexerTokens.Count; i++)
+
+            for (var token = code.Syntax.GetFirstToken(); token != null; token = token.GetNextToken())
             {
-                var token = code.LexerTokens[i];
                 if (token.Text == "|" || token.Text == ";")
                     break;
 
                 if (token.Trivia.Length > 0)
                 {
-                    if (i == 0)
+                    if (builder.Length == 0)
                     {
                         builder.Append(token.Trivia);
                     }
@@ -347,7 +340,6 @@ namespace Kusto.Language.Editor
 
             return builder.ToString();
         }
-
 
         public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
         {

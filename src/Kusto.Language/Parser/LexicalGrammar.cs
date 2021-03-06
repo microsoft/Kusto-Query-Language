@@ -196,7 +196,7 @@ namespace Kusto.Language.Parsing
                         ? null
                         : new Diagnostic[] { DiagnosticFacts.GetMissingText(expectedEndChars) };
 
-                    return new LexicalToken(trivia.Offset, kind, trivia.Value, text, dx);
+                    return new LexicalToken(kind, trivia.Value, text, dx);
                 });
 
         private static RightParser<char, LexicalToken> GooCheckedToken(LeftValue<OffsetValue<string>> left, Parser<char> gooScanner, SyntaxKind kind) =>
@@ -213,7 +213,7 @@ namespace Kusto.Language.Parsing
                 TextAndOffset(Trivia),
                 _trivia => Best(
                     Rule(_trivia, KeywordOrPunctuationInfo,
-                        (trivia, info) => new LexicalToken(trivia.Offset, info.Kind, trivia.Value, info.Text)),
+                        (trivia, info) => new LexicalToken(info.Kind, trivia.Value, info.Text)),
                     EndCheckedToken(_trivia, SingleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "'"),
                     EndCheckedToken(_trivia, DoubleQuoteStringLiteral, SyntaxKind.StringLiteralToken, "\""),
                     EndCheckedToken(_trivia, MultiLineStringLiteral, SyntaxKind.StringLiteralToken, KustoFacts.MultiLineStringQuote),
@@ -227,19 +227,19 @@ namespace Kusto.Language.Parsing
                     GooCheckedToken(_trivia, PrefixedRealLiteral, SyntaxKind.RealLiteralToken),
                     GooCheckedToken(_trivia, PrefixedDecimalLiteral, SyntaxKind.DecimalLiteralToken),
                     Rule(_trivia, Text(BooleanLiteral),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.BooleanLiteralToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.BooleanLiteralToken, trivia.Value, text)),
                     Rule(_trivia, Text(LongLiteral),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.LongLiteralToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.LongLiteralToken, trivia.Value, text)),
                     Rule(_trivia, Text(RealLiteral),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.RealLiteralToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.RealLiteralToken, trivia.Value, text)),
                     Rule(_trivia, Text(TimespanLiteral),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.TimespanLiteralToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.TimespanLiteralToken, trivia.Value, text)),
                     Rule(_trivia, Text(Identifier),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.IdentifierToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.IdentifierToken, trivia.Value, text)),
                     Rule(_trivia, Text(Directive),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.DirectiveToken, trivia.Value, text)),
+                        (trivia, text) => new LexicalToken(SyntaxKind.DirectiveToken, trivia.Value, text)),
                     Rule(_trivia, Text(Any),
-                        (trivia, text) => new LexicalToken(trivia.Offset, SyntaxKind.BadToken, trivia.Value, text, new[] { DiagnosticFacts.GetUnexpectedCharacter(text) }))
+                        (trivia, text) => new LexicalToken(SyntaxKind.BadToken, trivia.Value, text, new[] { DiagnosticFacts.GetUnexpectedCharacter(text) }))
                     ));
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace Kusto.Language.Parsing
                 TextAndOffset(Trivia),
                 _trivia =>
                     If(Fails(Any),
-                        Rule(_trivia, (trivia) => new LexicalToken(trivia.Offset, SyntaxKind.EndOfTextToken, trivia.Value, null))));
+                        Rule(_trivia, (trivia) => new LexicalToken(SyntaxKind.EndOfTextToken, trivia.Value, null))));
 
         /// <summary>
         /// Any token including EndOfText token.

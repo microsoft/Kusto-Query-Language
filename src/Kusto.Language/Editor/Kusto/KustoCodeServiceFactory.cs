@@ -75,7 +75,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         private static string GetFirstKustoToken(string text)
         {
-            var firstToken = Parsing.LexicalGrammar.GetFirstToken(text);
+            var firstToken = Parsing.TokenParser.Default.ParseToken(text, 0);
             return firstToken?.Text ?? string.Empty;
         }
     }

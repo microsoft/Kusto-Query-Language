@@ -12,18 +12,8 @@ namespace Kusto.Language.Parsing
     /// the language grammar such as an identifier, keyword or punctuation.
     /// </summary>
     [DebuggerDisplay("{DebugText}")]
-    public class LexicalToken : IToken
+    public class LexicalToken
     {
-        /// <summary>
-        /// The starting position of the token (including trivia) in the source text.
-        /// </summary>
-        public int TriviaStart { get; }
-
-        /// <summary>
-        /// The length of the token in characters (including trivia)
-        /// </summary>
-        public int FullWidth { get; }
-
         /// <summary>
         /// The kind of the token
         /// </summary>
@@ -44,30 +34,23 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
-        public LexicalToken(int start, SyntaxKind kind, string trivia, string text, IReadOnlyList<Diagnostic> diagnostics = null)
+        public LexicalToken(SyntaxKind kind, string trivia, string text, IReadOnlyList<Diagnostic> diagnostics = null)
         {
-            this.TriviaStart = start;
             this.Kind = kind;
             this.Trivia = trivia ?? "";
             this.Text = text ?? "";
-            this.FullWidth = this.Trivia.Length + this.Text.Length;
             this.Diagnostics = diagnostics ?? Diagnostic.NoDiagnostics;
         }
 
         /// <summary>
-        /// The character position after the end of this token.
+        /// The combined length of the trivia and text of the token
         /// </summary>
-        public int End => TriviaStart + FullWidth;
-
-        public int TriviaWidth => this.Trivia.Length;
-
-        public int TextStart => this.TriviaStart + this.Trivia.Length;
-
-        public int Width => this.Text.Length;
+        public int Length => this.Trivia.Length + this.Text.Length;
 
         private string DebugText => this.Text.Length > 0 ? this.Text : SyntaxFacts.GetText(this.Kind);
     }
 
+#if false
     public interface IToken
     {
         /// <summary>
@@ -105,4 +88,5 @@ namespace Kusto.Language.Parsing
         /// </summary>
         string Text { get; }
     }
+#endif
 }

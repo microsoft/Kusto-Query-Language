@@ -66,11 +66,7 @@ namespace Kusto.Language
         /// These are kept around to make reparsing faster, and are used by completion.
         /// </summary>
         private readonly LexicalToken[] lexerTokens;
-
-        /// <summary>
-        /// the tokens produced by the lexer.
-        /// </summary>
-        internal IReadOnlyList<LexicalToken> LexerTokens => this.lexerTokens;
+        private readonly List<int> lexerTokenStarts;
 
         /// <summary>
         /// The local cache to use for binding.  Stored here to aid debugging.
@@ -91,6 +87,7 @@ namespace Kusto.Language
             bool hasSemantics, 
             TypeSymbol resultType,
             LexicalToken[] lexerTokens, 
+            List<int> lexerTokenStarts,
             LocalBindingCache localCache)
         {
             this.Text = text;
@@ -101,6 +98,7 @@ namespace Kusto.Language
             this.HasSemantics = hasSemantics;
             this.ResultType = resultType;
             this.lexerTokens = lexerTokens;
+            this.lexerTokenStarts = lexerTokenStarts;
             this.localCache = localCache;
         }
 
@@ -114,8 +112,9 @@ namespace Kusto.Language
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
-            var tokens = LexicalGrammar.GetTokens(text, alwaysProduceEndToken: true);
-            return Create(text, globals, tokens, analyze: false, cancellationToken: default(CancellationToken));
+            var tokens = TokenParser.Default.ParseTokens(text, alwaysProduceEndToken: true);
+            var starts = GetTokenStarts(tokens);
+            return Create(text, globals, tokens, starts, analyze: false, cancellationToken: default(CancellationToken));
         }
 
         /// <summary>
@@ -129,14 +128,32 @@ namespace Kusto.Language
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
-            var tokens = LexicalGrammar.GetTokens(text, alwaysProduceEndToken: true);
-            return Create(text, globals, tokens, analyze: true, cancellationToken: cancellationToken);
+            var tokens = TokenParser.Default.ParseTokens(text, alwaysProduceEndToken: true);
+            var starts = GetTokenStarts(tokens);
+            return Create(text, globals, tokens, starts, analyze: true, cancellationToken: cancellationToken);
+        }
+
+        public static List<int> GetTokenStarts(LexicalToken[] tokens)
+        {
+            var starts = new List<int>(tokens.Length + 1);
+            int start = 0;
+            
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                starts.Add(start);
+                start = start + tokens[i].Length;
+            }
+
+            // add one more for the end
+            starts.Add(start);
+
+            return starts;
         }
 
         /// <summary>
         /// Creates a new <see cref="KustoCode"/> form the already parsed lexical tokens.
         /// </summary>
-        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, bool analyze, CancellationToken cancellationToken)
+        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, List<int> tokenStarts, bool analyze, CancellationToken cancellationToken)
         {
             Parser<LexicalToken> grammar;
             SyntaxNode syntax;
@@ -183,7 +200,7 @@ namespace Kusto.Language
                 }
             }
 
-            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, localCache);
+            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, tokenStarts, localCache);
         }
 
         /// <summary>
@@ -236,7 +253,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, this.Globals, this.lexerTokens, analyze: true, cancellationToken);
+                return Create(this.Text, this.Globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
             }
         }
 
@@ -251,7 +268,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, analyze: this.HasSemantics, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, cancellationToken);
             }
         }
 
@@ -260,7 +277,7 @@ namespace Kusto.Language
         /// </summary>
         public static string GetKind(string text)
         {
-            var token = LexicalGrammar.GetFirstToken(text);
+            var token = TokenParser.Default.ParseToken(text, 0);
 
             if (token != null)
             {
@@ -345,6 +362,34 @@ namespace Kusto.Language
             }
 
             return TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
+        }
+
+        /// <summary>
+        /// Gets the index of the token that includes the text position.
+        /// </summary>
+        public int GetTokenIndex(int position)
+        {
+            if (this.lexerTokens.Length == 0)
+                return 0;
+
+            var lastTokenIndex = this.lexerTokens.Length - 1;
+            var lastToken = this.lexerTokens[lastTokenIndex];
+            var lastTokenStart = this.lexerTokenStarts[lastTokenIndex];
+            if (position >= lastTokenStart + lastToken.Length)
+                return this.lexerTokens.Length - 1;
+
+            var index = this.lexerTokenStarts.BinarySearch(position);
+            index = index >= 0 ? index : ~index - 1;
+
+            return index;
+        }
+
+        /// <summary>
+        /// The lexical tokens produced during parsing.
+        /// </summary>
+        public IReadOnlyList<LexicalToken> GetLexicalTokens()
+        {
+            return this.lexerTokens;
         }
     }
 
