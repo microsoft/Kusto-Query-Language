@@ -1474,6 +1474,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitMatch(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitMatch(this, arg);
+        }
+
         public override int Scan(Source<TInput> source, int start)
         {
             return this.Consumer(source, start);
@@ -1519,6 +1524,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitMatch(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitMatch(this, arg);
         }
 
         public override int Scan(Source<TInput> source, int start)
@@ -1577,6 +1587,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitNot(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitNot(this, arg);
+        }
+
         public override int Parse(Source<TInput> source, int inputStart, List<object> output, int outputStart)
         {
             return Scan(source, inputStart);
@@ -1618,6 +1633,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitFails(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitFails(this, arg);
         }
 
         public override int Parse(Source<TInput> source, int inputStart, List<object> output, int outputStart)
@@ -1715,6 +1735,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitRule(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitRule(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new RuleParser<TInput, TProducer>(this.Parsers, this.ListProducer, this.ResultProducer);
@@ -1724,8 +1749,9 @@ namespace Kusto.Language.Parsing
         {
             var len = 0;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start + len);
 
                 if (n < 0)
@@ -1757,8 +1783,9 @@ namespace Kusto.Language.Parsing
             int originalOutputCount = output.Count;
 
             // invoke each parser in sequence.. if one fails then the whole is in error
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 int n = parser.Parse(input, inputStart + length, output, output.Count);
                 if (n < 0)
                 {
@@ -1799,6 +1826,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitProduce(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitProduce(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -1858,6 +1890,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitOptional(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitOptional(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -1929,6 +1966,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitRequired(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitRequired(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new RequiredParser<TInput, TOutput>(this.Parser, this.Producer);
@@ -1991,6 +2033,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitFirst(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitFirst(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new FirstParser<TInput, TOutput>(this.Parsers);
@@ -2025,8 +2072,9 @@ namespace Kusto.Language.Parsing
             int minLength = -1;
             var originalOutputCount = output.Count;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 output.SetCount(originalOutputCount);
 
                 var length = parser.Parse(source, inputStart, output, outputStart);
@@ -2048,8 +2096,9 @@ namespace Kusto.Language.Parsing
         {
             int minLength = -1;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start);
                 if (n >= 0)
                     return n;
@@ -2084,6 +2133,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitBest(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitBest(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -2130,8 +2184,9 @@ namespace Kusto.Language.Parsing
             int max = -1;
             int min = -1;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start);
                 if (n > max)
                     max = n;
@@ -2149,6 +2204,7 @@ namespace Kusto.Language.Parsing
         private readonly Func<TOutput, TOutput, int> _fnBetter;
 
         public IReadOnlyList<Parser<TInput, TOutput>> Parsers => _parsers;
+        public Func<TOutput, TOutput, int> Better => _fnBetter;
 
         public BestParser(
             IReadOnlyList<Parser<TInput, TOutput>> parsers, 
@@ -2168,6 +2224,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitBest(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitBest(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -2320,8 +2381,9 @@ namespace Kusto.Language.Parsing
             int max = -1;
             int min = -1;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start);
                 if (n > max)
                     max = n;
@@ -2418,6 +2480,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitConvert(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitConvert(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new ConvertParser<TInput, TOutput>(this.Pattern, this.ListProducer, this.SingleProducer);
@@ -2480,6 +2547,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitIf(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitIf(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new IfParser<TInput, TOutput>(this.Test, this.Parser);
@@ -2534,6 +2606,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitForward(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitForward(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new ForwardParser<TInput, TOutput>(this.DeferredParser);
@@ -2571,7 +2648,7 @@ namespace Kusto.Language.Parsing
 
                 if (s_callDepth > MaxCallDepth)
                 {
-                    return SafeParser.ParseSafe((Parser<TInput>)this.DeferredParser(), source, inputStart, output, outputStart);
+                    return SafeParser.ParseSafe(this.DeferredParser(), source, inputStart, output, outputStart);
                 }
 
                 return this.DeferredParser().Parse(source, inputStart, output, outputStart);
@@ -2624,6 +2701,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitMap(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitMap(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -2813,6 +2895,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitApply(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitApply(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new ApplyParser<TInput, TLeft, TOutput>(this.ApplyKind, this.LeftParser, this.RightParser);
@@ -2916,6 +3003,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitSequence(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitSequence(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new SequenceParser<TInput>(this.Parsers);
@@ -2926,8 +3018,9 @@ namespace Kusto.Language.Parsing
             int length = 0;
             var originalOutputCount = output.Count;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var len = parser.Parse(source, inputStart + length, output, output.Count);
 
                 if (len < 0)
@@ -2946,8 +3039,9 @@ namespace Kusto.Language.Parsing
         {
             var len = 0;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start + len);
 
                 if (n < 0)
@@ -2980,6 +3074,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitOneOrMore(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitOneOrMore(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -3058,6 +3157,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitZeroOrMore(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitZeroOrMore(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new ZeroOrMoreParser<TInput>(this.Parser, this.ZeroOrOne);
@@ -3122,6 +3226,11 @@ namespace Kusto.Language.Parsing
             return visitor.VisitFirst(this);
         }
 
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitFirst(this, arg);
+        }
+
         protected override Parser<TInput> Clone()
         {
             return new FirstParser<TInput>(this.Parsers);
@@ -3154,8 +3263,9 @@ namespace Kusto.Language.Parsing
         {
             int minLength = -1;
 
-            foreach (var parser in _parsers)
+            for (int i = 0; i < _parsers.Length; i++)
             {
+                var parser = _parsers[i];
                 var n = parser.Scan(source, start);
                 if (n >= 0)
                     return n;
@@ -3192,6 +3302,11 @@ namespace Kusto.Language.Parsing
         public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
         {
             return visitor.VisitIf(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitIf(this, arg);
         }
 
         protected override Parser<TInput> Clone()
@@ -3268,5 +3383,30 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitZeroOrMore(ZeroOrMoreParser<TInput> parser);
     }
 
-#endregion
+    public abstract class ParserVisitor<TInput, TArg, TResult>
+    {
+        public abstract TResult VisitApply<TLeft, TOutput>(ApplyParser<TInput, TLeft, TOutput> parser, TArg arg);
+        public abstract TResult VisitBest<TOutput>(BestParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitBest(BestParser<TInput> parser, TArg arg);
+        public abstract TResult VisitConvert<TOutput>(ConvertParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitFails(FailsParser<TInput> parser, TArg arg);
+        public abstract TResult VisitFirst<TOutput>(FirstParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitFirst(FirstParser<TInput> parser, TArg arg);
+        public abstract TResult VisitForward<TOutput>(ForwardParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitIf<TOutput>(IfParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitIf(IfParser<TInput> parser, TArg arg);
+        public abstract TResult VisitMap<TOutput>(MapParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitMatch(MatchParser<TInput> parser, TArg arg);
+        public abstract TResult VisitMatch<TOutput>(MatchParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitNot(NotParser<TInput> parser, TArg arg);
+        public abstract TResult VisitOneOrMore(OneOrMoreParser<TInput> parser, TArg arg);
+        public abstract TResult VisitOptional<TOutput>(OptionalParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitProduce<TOutput>(ProduceParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitRequired<TOutput>(RequiredParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitRule<TOutput>(RuleParser<TInput, TOutput> parser, TArg arg);
+        public abstract TResult VisitSequence(SequenceParser<TInput> parser, TArg arg);
+        public abstract TResult VisitZeroOrMore(ZeroOrMoreParser<TInput> parser, TArg arg);
+    }
+
+    #endregion
 }

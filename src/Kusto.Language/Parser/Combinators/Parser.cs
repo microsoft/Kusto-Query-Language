@@ -141,6 +141,11 @@ namespace Kusto.Language.Parsing
         public abstract TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor);
 
         /// <summary>
+        /// Invokes the corresponding <see cref="ParserVisitor{TInput, TArg, TResult}"/> visit method.
+        /// </summary>
+        public abstract TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg);
+
+        /// <summary>
         /// Parses input source items and produces zero or more output items.
         /// </summary>
         public abstract int Parse(Source<TInput> input, int inputStart, List<object> output, int outputStart);
