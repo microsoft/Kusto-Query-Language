@@ -1774,7 +1774,7 @@ namespace Kusto.Language
         
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol(nameof(StoredQueryResultSet),
-                $"set stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
+                $"set [async] stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static string StoredQueryResultsShowSchema =
