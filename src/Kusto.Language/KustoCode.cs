@@ -176,7 +176,7 @@ namespace Kusto.Language
                 default:
                     var queryBlock = QueryGrammar.From(globals).QueryBlock;
                     grammar = queryBlock;
-                    syntax = queryBlock.ParseFirst(tokens);
+                    syntax = QueryParser.ParseQuery(tokens);
                     break;
             }
 

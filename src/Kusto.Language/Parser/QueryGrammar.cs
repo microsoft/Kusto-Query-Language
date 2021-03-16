@@ -51,6 +51,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, FunctionBody> FunctionBody { get; private set; }
         public Parser<LexicalToken, FunctionParameters> FunctionParameters { get; private set; }
         public Parser<LexicalToken, Expression> Expression { get; private set; }
+        public Parser<LexicalToken, Expression> UnnamedExpression { get; private set; }
         public Parser<LexicalToken, QueryOperator> FollowingPipeElementExpression { get; private set; }
         public Parser<LexicalToken, NameDeclaration> SimpleNameDeclaration { get; private set; }
         public Parser<LexicalToken, Expression> SimpleNameDeclarationExpression { get; private set; }
@@ -92,7 +93,7 @@ namespace Kusto.Language.Parsing
                 Forward(() => ExpressionCore)
                 .WithTag("<expression>");
 
-            var UnnamedExpression =
+            this.UnnamedExpression =
                 Forward(() => UnnamedExpressionCore)
                 .WithTag("<expression>");
 
@@ -1260,16 +1261,6 @@ namespace Kusto.Language.Parsing
                     Required(SchemaMultipartType, MissingSchema),
                     (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
-            var ExternalDataWithClauseNamedParameter =
-                Rule(
-                    SimpleNameDeclaration,
-                    RequiredToken(SyntaxKind.EqualToken),
-                    Required(
-                        First(Literal, AsTokenLiteral(Token(SyntaxKind.IdentifierToken)), KeywordTokenLiteral),
-                        MissingValue),
-                    (name, equalToken, value) =>
-                        new NamedParameter(name, equalToken, value));
-
             var ExternalDataWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
@@ -1287,7 +1278,7 @@ namespace Kusto.Language.Parsing
                     List(AnyQueryOperatorParameter),
                     Required(SchemaMultipartType, MissingSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Expression, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
+                    CommaList(Literal, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     Optional(ExternalDataWithClause),
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>

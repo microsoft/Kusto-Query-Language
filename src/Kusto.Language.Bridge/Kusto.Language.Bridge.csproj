@@ -272,6 +272,9 @@
     <Compile Include="..\Kusto.Language\Parser\QueryGrammar.cs">
       <Link>Src\QueryGrammar.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Parser\QueryParser.cs">
+      <Link>Src\QueryParser.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Parser\ScannerExtensions.cs">
       <Link>Src\ScannerExtensions.cs</Link>
     </Compile>

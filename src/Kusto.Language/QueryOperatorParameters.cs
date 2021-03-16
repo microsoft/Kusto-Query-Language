@@ -115,7 +115,9 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> DistinctParameters = new QueryOperatorParameter[]
         {
-            // no known parameters
+            HintDotShuffleKey,
+            HintDotStrategy.WithValues(KustoFacts.SummarizeHintStrategies),
+            HintDotNumPartitions
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> EvaluateParameters = new QueryOperatorParameter[]
@@ -190,6 +192,12 @@ namespace Kusto.Language
 
         public static readonly QueryOperatorParameter RenderAccumulate =
             new QueryOperatorParameter("accumulate", QueryOperatorParameterKind.BoolLiteral);
+
+        public static readonly QueryOperatorParameter RenderWithDeprecated =
+            new QueryOperatorParameter("with", QueryOperatorParameterKind.StringLiteral).WithHasNoEquals(true);
+
+        public static readonly QueryOperatorParameter RenderByDeprecated =
+            new QueryOperatorParameter("by", QueryOperatorParameterKind.ColumnList).WithHasNoEquals(true);
 
         public static readonly IReadOnlyList<QueryOperatorParameter> RenderParameters = new QueryOperatorParameter[]
         {
@@ -388,9 +396,15 @@ namespace Kusto.Language
         public bool IsHidden { get; }
 
         /// <summary>
+        /// True if the parameter is typed with no equals token between the name and value
+        /// </summary>
+        public bool HasNoEquals { get; }
+
+        /// <summary>
         /// Any additional names that the parameter can be referenced by.
         /// </summary>
         public IReadOnlyList<string> Aliases { get; }
+
 
         private QueryOperatorParameter(
             string name, 
@@ -399,6 +413,7 @@ namespace Kusto.Language
             IEnumerable<string> values, 
             bool isRepeatable, 
             bool isHidden,
+            bool hasNoEquals,
             IReadOnlyList<string> aliases)
         {
             this.Name = name;
@@ -407,6 +422,7 @@ namespace Kusto.Language
             this.IsCaseSensitive = isCaseSensitive;
             this.IsRepeatable = isRepeatable;
             this.IsHidden = isHidden;
+            this.HasNoEquals = hasNoEquals;
             this.Aliases = aliases.ToReadOnly();
         }
 
@@ -417,7 +433,7 @@ namespace Kusto.Language
             IEnumerable<string> values = null, 
             bool isRepeatable = false,
             IReadOnlyList<string> aliases = null)
-            : this(name, kind, caseSensitive, values, isRepeatable, false, aliases)
+            : this(name, kind, caseSensitive, values, isRepeatable, false, false, aliases)
         {
         }
 
@@ -425,7 +441,7 @@ namespace Kusto.Language
         {
             if (this.IsHidden != isHidden)
             {
-                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, this.Values, this.IsRepeatable, isHidden, this.Aliases);
+                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, this.Values, this.IsRepeatable, isHidden, this.HasNoEquals, this.Aliases);
             }
             else
             {
@@ -437,7 +453,19 @@ namespace Kusto.Language
         {
             if (this.Values != values)
             {
-                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, values, this.IsRepeatable, this.IsHidden, this.Aliases);
+                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, values, this.IsRepeatable, this.IsHidden, this.HasNoEquals, this.Aliases);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        public QueryOperatorParameter WithHasNoEquals(bool hasNoEquals)
+        {
+            if (this.HasNoEquals != hasNoEquals)
+            {
+                return new QueryOperatorParameter(this.Name, this.Kind, this.IsCaseSensitive, this.Values, this.IsRepeatable, this.IsHidden, hasNoEquals, this.Aliases);
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Linq;
 
 namespace Kusto.Language.Parsing
@@ -161,7 +162,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Matches one or more lexical tokens to the corresponding text.
         /// </summary>
-        private static int MatchesText(Source<LexicalToken> source, int start, string text)
+        public static int MatchesText(Source<LexicalToken> source, int start, string text)
         {
             // consume all lexical tokens with combined text that matches the specified text
             int textOffset = 0;
@@ -195,7 +196,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Create a <see cref="SyntaxToken"/> from one or more <see cref="LexicalToken"/>.
         /// </summary>
-        private static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text)
+        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text)
         {
             if (length == 1)
             {
