@@ -2074,6 +2074,30 @@ namespace Kusto.Language.Parsing
 
         private Expression ParseUnnamedExpression()
         {
+            // shortcut for identifier/literal followed by punctuation that would end an expression
+            switch (PeekToken(1).Kind)
+            {
+                case SyntaxKind.CommaToken:
+                case SyntaxKind.CloseParenToken:
+                case SyntaxKind.CloseBraceToken:
+                case SyntaxKind.CloseBracketToken:
+                case SyntaxKind.BarToken:
+                    switch (PeekToken().Kind)
+                    {
+                        case SyntaxKind.IdentifierToken:
+                        case SyntaxKind.BooleanLiteralToken:
+                        case SyntaxKind.LongLiteralToken:
+                        case SyntaxKind.RealLiteralToken:
+                        case SyntaxKind.DecimalLiteralToken:
+                        case SyntaxKind.DateTimeLiteralToken:
+                        case SyntaxKind.TimespanLiteralToken:
+                        case SyntaxKind.GuidLiteralToken:
+                        case SyntaxKind.IntLiteralToken:
+                            return ParsePrimaryExpression();
+                    }
+                    break;
+            }
+
             if (_depth > MaxDepth)
             {
                 return SafeParseUnnamedExpression();
@@ -2119,9 +2143,9 @@ namespace Kusto.Language.Parsing
         private static Func<QueryParser, Expression> FnParseUnnamedExpression =
             qp => qp.ParseUnnamedExpression();
 
-        #endregion
+#endregion
 
-        #region Query operator parameters
+#region Query operator parameters
 
         private Expression ParseAnyQueryOperatorParameterValue()
         {
@@ -2457,9 +2481,9 @@ namespace Kusto.Language.Parsing
             return list;
         }
 
-        #endregion
+#endregion
 
-        #region Entity Names
+#region Entity Names
 
         private Expression ParseBracketedEntityNamePathElementSelector() =>
             ParseBracketedWildcardedNameReference()
@@ -2527,11 +2551,11 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region Query Operators
+#region Query Operators
 
-        #region consume 
+#region consume 
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_consumeOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.ConsumeParameters);
@@ -2548,9 +2572,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region count
+#region count
 
         private CountAsIdentifierClause ParseCountAsIdentifierClause()
         {
@@ -2579,9 +2603,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region executeAndCache
+#region executeAndCache
 
         private ExecuteAndCacheOperator ParseExecuteAndCacheOperator()
         {
@@ -2594,9 +2618,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region extend
+#region extend
 
         private ExtendOperator ParseExtendOperator()
         {
@@ -2610,9 +2634,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region facet
+#region facet
 
         private FacetWithClause ParseFacetWithClause()
         {
@@ -2653,9 +2677,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region filter / where
+#region filter / where
 
         private static readonly IReadOnlyList<SyntaxKind> s_filterOperatorKeywords =
             new[] { SyntaxKind.WhereKeyword, SyntaxKind.FilterKeyword };
@@ -2676,9 +2700,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region getschema
+#region getschema
 
         private GetSchemaOperator ParseGetSchemaOperator()
         {
@@ -2691,9 +2715,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region find
+#region find
 
         private Expression ParseFindOperand()
         {
@@ -2809,9 +2833,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region search
+#region search
 
         private Expression ParseSearchPredicate()
         {
@@ -2846,9 +2870,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region fork
+#region fork
 
         private int ScanNameEqualsClause(int offset = 0)
         {
@@ -2919,31 +2943,61 @@ namespace Kusto.Language.Parsing
         private QueryOperator ParseForkPipeQueryOperator() =>
             ParseQueryOperator();
 
-        #endregion
+#endregion
 
-        #region partition
+#region partition
+
+        private PartitionQuery ParsePartitionQuery()
+        {
+            var open = ParseToken(SyntaxKind.OpenBraceToken);
+            if (open != null)
+            {
+                var expr = ParseExpression() ?? CreateMissingExpression();
+                var close = ParseRequiredToken(SyntaxKind.CloseBraceToken);
+                return new PartitionQuery(open, expr, close);
+            }
+
+            return null;
+        }
+
+        private PartitionSubquery ParsePartitionUnscopedSubquery()
+        {
+            var open = ParseToken(SyntaxKind.OpenParenToken);
+            if (open != null)
+            {
+                var expr = ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression();
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new PartitionSubquery(null, open, expr, close);
+            }
+
+            return null;
+        }
+
+        private PartitionSubquery ParsePartitionScopedSubquery()
+        {
+            var inKeyword = ParseToken(SyntaxKind.InKeyword);
+            if (inKeyword != null)
+            {
+                var scope = ParseFunctionCallExpression() ?? ParseDynamicLiteral() ?? CreateMissingExpression();
+                var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var expr = ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression();
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new PartitionSubquery(new PartitionScope(inKeyword, scope), open, expr, close);
+            }
+
+            return null;
+        }
 
         private PartitionOperand ParsePartitionOperand()
         {
             switch (PeekToken().Kind)
             {
                 case SyntaxKind.OpenBraceToken:
-                    return new PartitionQuery(
-                        ParseToken(),
-                        ParseExpression() ?? CreateMissingExpression(),
-                        ParseRequiredToken(SyntaxKind.CloseBraceToken));
+                    return ParsePartitionQuery();
                 case SyntaxKind.OpenParenToken:
-                    return new PartitionSubquery(
-                        null,
-                        ParseRequiredToken(SyntaxKind.OpenParenToken),
-                        ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression(),
-                        ParseRequiredToken(SyntaxKind.CloseParenToken));
+                    return ParsePartitionUnscopedSubquery();
                 case SyntaxKind.InKeyword:
-                    return new PartitionSubquery(
-                        new PartitionScope(ParseToken(), ParseFunctionCallExpression() ?? ParseDynamicLiteral() ?? CreateMissingExpression()),
-                        ParseRequiredToken(SyntaxKind.OpenParenToken),
-                        ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression(),
-                        ParseRequiredToken(SyntaxKind.CloseParenToken));
+                    return ParsePartitionScopedSubquery();
                 default:
                     return null;
             }
@@ -2974,9 +3028,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region join
+#region join
 
         private JoinConditionClause ParseJoinOnClause()
         {
@@ -3026,9 +3080,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region lookup
+#region lookup
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_lookupOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.LookupParameters);
@@ -3047,9 +3101,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region make-series
+#region make-series
 
         private DefaultExpressionClause ParseDefaultExpressionClause()
         {
@@ -3174,9 +3228,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region mv-expand
+#region mv-expand
 
         private ToTypeOfClause ParseToTypeOfClause()
         {
@@ -3270,9 +3324,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region mv-apply
+#region mv-apply
 
         private MvApplyExpression ParseMvApplyExpression()
         {
@@ -3389,9 +3443,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region evaluate
+#region evaluate
 
         private EvaluateSchemaClause ParseEvaluateSchemaClause()
         {
@@ -3422,9 +3476,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region parse / parse-where
+#region parse / parse-where
 
         private SyntaxNode ParseParseWithExpression()
         {
@@ -3469,9 +3523,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region project / project-rename / project-away / project-keep / project-reorder
+#region project / project-rename / project-away / project-keep / project-reorder
 
         private ProjectOperator ParseProjectOperator()
         {
@@ -3554,9 +3608,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region sample / sample-distinct
+#region sample / sample-distinct
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_sampleOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.SampleParameters);
@@ -3592,9 +3646,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region reduce
+#region reduce
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_reduceOperatorWithParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.ReduceWithParameters);
@@ -3629,9 +3683,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region summarize
+#region summarize
 
         private bool ScanSummarizeByClauseExpressionListEnd()
         {
@@ -3676,9 +3730,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region distinct
+#region distinct
 
         private Expression ParseDistinctExpression()
         {
@@ -3705,9 +3759,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region take
+#region take
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_takeOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.TakeParameters);
@@ -3725,9 +3779,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region order / sort
+#region order / sort
 
         private SyntaxToken CreateMissingFirstOrLastToken() =>
             SyntaxToken.Missing("", SyntaxKind.FirstKeyword, new[] { DiagnosticFacts.GetMissingFirstOrLast() });
@@ -3796,9 +3850,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region scan
+#region scan
 
         private ScanAssignment ParseScanAssignment()
         {
@@ -3923,9 +3977,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region top / top-nested / top-hitters
+#region top / top-nested / top-hitters
 
         private TopHittersByClause ParseTopHittersByClause()
         {
@@ -4029,9 +4083,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region union
+#region union
 
         private Expression ParseUnionExpression()
         {
@@ -4068,9 +4122,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region as
+#region as
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_asOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.AsParameters);
@@ -4088,9 +4142,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region serialize
+#region serialize
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_serializeOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.SerializedParameters);
@@ -4108,9 +4162,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region range
+#region range
 
         private RangeOperator ParseRangeOperator()
         {
@@ -4131,9 +4185,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region invoke
+#region invoke
 
         private InvokeOperator ParseInvokeOperator()
         {
@@ -4147,9 +4201,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region render
+#region render
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_renderOperatorWithPropertiesMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.RenderWithProperties);
@@ -4217,11 +4271,11 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Query Expressions
+#region Query Expressions
 
         private QueryOperator ParseQueryOperator()
         {
@@ -4397,9 +4451,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region let
+#region let
 
         private MaterializeExpression ParseMaterializeExpression()
         {
@@ -4620,9 +4674,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region declare query_parameters
+#region declare query_parameters
 
         private QueryParametersStatement ParseQueryParametersStatement()
         {
@@ -4639,9 +4693,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region restrict
+#region restrict
 
         private Expression ParseRestrictExpression()
         {
@@ -4668,9 +4722,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region declare pattern
+#region declare pattern
 
         private PatternPathValue ParsePatternPathValue()
         {
@@ -4793,11 +4847,11 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Query Block
+#region Query Block
 
         private Statement ParseQueryBlockStatement()
         {
@@ -4935,8 +4989,7 @@ namespace Kusto.Language.Parsing
                     var right = operandStack.Pop();
                     var left = operandStack.Pop();
                     var exprKind = GetInfixOperationKind(op.Kind);
-                    expr = new BinaryExpression(exprKind, left, op, right);
-                    operandStack.Push(expr);
+                    operandStack.Push(new BinaryExpression(exprKind, left, op, right));
                 }
 
                 if (precidence == InfixPrecidence.None)
@@ -4950,26 +5003,25 @@ namespace Kusto.Language.Parsing
                     case SyntaxKind.InCsKeyword:
                     case SyntaxKind.NotInKeyword:
                     case SyntaxKind.NotInCsKeyword:
-                        expr = new InExpression(GetInfixOperationKind(opKind), expr, opToken, ParseRequiredInOperatorExpressionList());
-                        operandStack.Push(expr);
+                        var left = operandStack.Pop();
+                        operandStack.Push(new InExpression(GetInfixOperationKind(opKind), left, opToken, ParseRequiredInOperatorExpressionList()));
                         break;
                     case SyntaxKind.HasAnyKeyword:
-                        expr = new HasAnyExpression(SyntaxKind.HasAnyExpression, expr, opToken, ParseRequiredInOperatorExpressionList());
-                        operandStack.Push(expr);
+                        left = operandStack.Pop();
+                        operandStack.Push(new HasAnyExpression(SyntaxKind.HasAnyExpression, left, opToken, ParseRequiredInOperatorExpressionList()));
                         break;
                     case SyntaxKind.HasAllKeyword:
-                        expr = new HasAllExpression(SyntaxKind.HasAllExpression, expr, opToken, ParseRequiredInOperatorExpressionList());
-                        operandStack.Push(expr);
+                        left = operandStack.Pop();
+                        operandStack.Push(new HasAllExpression(SyntaxKind.HasAllExpression, left, opToken, ParseRequiredInOperatorExpressionList()));
                         break;
                     case SyntaxKind.BetweenKeyword:
                     case SyntaxKind.NotBetweenKeyword:
-                        expr = new BetweenExpression(GetInfixOperationKind(opKind), expr, opToken, ParseRequiredExpressionCouple());
-                        operandStack.Push(expr);
+                        left = operandStack.Pop();
+                        operandStack.Push(new BetweenExpression(GetInfixOperationKind(opKind), left, opToken, ParseRequiredExpressionCouple()));
                         break;
                     default:
                         operatorStack.Push(opToken);
-                        expr = ParsePrimaryExpression2() ?? CreateMissingExpression();
-                        operandStack.Push(expr);
+                        operandStack.Push(ParsePrimaryExpression2() ?? CreateMissingExpression());
                         break;
                 }
             }
