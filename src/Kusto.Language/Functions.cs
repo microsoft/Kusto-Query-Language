@@ -2248,18 +2248,16 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol HasIpv4 =
-            new FunctionSymbol("__has_ipv4", ScalarTypes.Bool,
+            new FunctionSymbol("has_ipv4", ScalarTypes.Bool,
                 new Parameter("text", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasIpv4Prefix =
-            new FunctionSymbol("__has_ipv4_prefix", ScalarTypes.Bool,
+            new FunctionSymbol("has_ipv4_prefix", ScalarTypes.Bool,
                 new Parameter("text", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip_prefix", ScalarTypes.String))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region All
