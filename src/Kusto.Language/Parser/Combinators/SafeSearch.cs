@@ -75,6 +75,7 @@ namespace Kusto.Language.Parsing
             this.stack = new List<SearchState>();
             this.stackPosition = -1;
             this.scanner = new StackSafeScanner<TInput>(source);
+            Initialize(source, beforeAction, afterAction);
         }
 
         public void Initialize(Source<TInput> source, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction)

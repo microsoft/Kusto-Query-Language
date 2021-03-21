@@ -685,19 +685,12 @@ namespace Kusto.Language.Editor
         {
             var match = SymbolMatch.None;
 
-            ScanGrammarAtPosition(position, g =>
-            {
-                this.cancellationToken.ThrowIfCancellationRequested();
+            var annotations = GetGrammarAnnotations(position);
 
-                for (int i = 0, n = g.Annotations.Count; i < n; i++)
-                {
-                    var hint = g.Annotations[i] as CompletionHint?;
-                    if (hint != null)
-                    {
-                        match |= GetSymbolMatch(hint.Value);
-                    }
-                }
-            });
+            foreach (var hint in annotations.OfType<CompletionHint>())
+            {
+                match |= GetSymbolMatch(hint);
+            }
 
             return match;
         }
@@ -1751,6 +1744,36 @@ namespace Kusto.Language.Editor
             var match = GetSymbolMatch(position);
             var expr = GetCompleteExpressionLeftOfPosition(position);
 
+            var annotations = GetGrammarAnnotations(position);
+
+            // add in any completion hints associated with this parser
+            foreach (var hint in annotations.OfType<CompletionHint>())
+            {
+                hints |= hint;
+            }
+
+            // consider all completion items associated with this parser
+            foreach (var item in annotations.OfType<CompletionItem>())
+            {
+                if (IncludeSyntax(item, position, hints, match, expr))
+                {
+                    if (ShouldAugmentSyntaxCompletionItem(item))
+                    {
+                        var augmentedItem = GetAugmentedCompletionItem(item);
+                        builder.Add(augmentedItem);
+                    }
+                    else
+                    {
+                        builder.Add(item);
+                    }
+                }
+            }
+
+#if false
+            var hints = GetCompletionHint(position);
+            var match = GetSymbolMatch(position);
+            var expr = GetCompleteExpressionLeftOfPosition(position);
+
             // look for completions in the grammar elements corresponding to the text position
             ScanGrammarAtPosition(position, p =>
             {
@@ -1782,6 +1805,7 @@ namespace Kusto.Language.Editor
                     }
                 }
             });
+#endif
         }
 
         private CompletionItem GetAugmentedCompletionItem(CompletionItem item)
@@ -1832,42 +1856,143 @@ namespace Kusto.Language.Editor
             }
         }
 
+        private IReadOnlyList<object> _annotations;
+        private int _annotationPosition;
+
         /// <summary>
-        /// Scans for all the grammar rules that are considered for the token at the specified text position.
+        /// Gets the annotations on the grammar rules that are invoke for the token at the specified text position.
         /// </summary>
-        private void ScanGrammarAtPosition(int position, Action<Parser<LexicalToken>> action)
+        private IReadOnlyList<object> GetGrammarAnnotations(int position)
         {
-            var offset = this.code.GetTokenIndex(position);
+            if (_annotations != null && _annotationPosition == position)
+                return _annotations;
 
-            var source = new ArraySource<LexicalToken>(this.code.GetLexicalTokens());
+            var parsers = new List<Parser<LexicalToken>>();
 
-#if DEBUG
-            // maintain a path from the outer grammar rule to the one being considered on each callback
-            var path = new List<Parser<LexicalToken>>();
-#endif
+            // look for completions in the grammar elements corresponding to the text position
+            GetAnnotatedParsers(position, parsers);
 
-            this.code.Grammar.Search(source, 0, false, (_parser, _source, _start, _prevWasMissing) =>
+            _annotations = parsers.SelectMany(p => p.Annotations).ToList();
+            _annotationPosition = position;
+
+            return _annotations;
+        }
+
+        /// <summary>
+        /// Gets a list of all annotated parsers that are invoked for the token at the specified text position.
+        /// </summary>
+        private void GetAnnotatedParsers(int position, List<Parser<LexicalToken>> annotatedParsers)
+        {
+            // find a possible better starting point than the start of the whole query
+            GetGrammarSearchContext(position, out var startPosition, out var grammar);
+
+            var startIndex = this.code.GetTokenIndex(startPosition);
+            var matchIndex = this.code.GetTokenIndex(position);
+
+            // use a source that only includes relevant tokens (so we dont bother with tokens beyond)
+            var tokens = this.code.GetLexicalTokens();
+            var source = new ArraySource<LexicalToken>(tokens, 0, matchIndex + 1);
+
+            // search through the grammar until we get to all the parsers that are applied to the token at the matching index
+            grammar.Search(source, startIndex, false, (_parser, _source, _start, _prevWasMissing) =>
             {
-#if DEBUG
-                path.Add(_parser);
-#endif
-
-                if (_start == offset && !_prevWasMissing)
+                if (_start == matchIndex
+                    && !_prevWasMissing // don't consider parsers that were invoked immediately after a missing value
+                    && _parser.Annotations.Count > 0)
                 {
-                    action(_parser);
+                    annotatedParsers.Add(_parser);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Find a nearby starting point (contextNode) and grammar rule to search with
+        /// </summary>
+        private void GetGrammarSearchContext(int position, out int searchStart, out Parser<LexicalToken> grammar)
+        {
+            var token = GetTokenLeftOfPosition(position);
+
+            if (token != null)
+            {
+                var queryGrammar = QueryGrammar.From(GlobalState.Default);
+                var node = token.Parent;
+
+                for (; node != null; node = node.Parent)
+                {
+                    switch (node)
+                    {
+                        case QueryOperator op:
+                            searchStart = op.TextStart;
+
+                            // the query operator on right of pipe
+                            if (op.Parent is PipeExpression pipe && pipe.Operator == op)
+                            {
+                                grammar = queryGrammar.PipeSubExpression;
+                                return;
+                            }
+
+                            // places where we know a normal pipe expression to exist
+                            if (op.Parent is ParenthesizedExpression
+                                || op.Parent is ExpressionStatement
+                                || op.Parent is FunctionBody)
+                            {
+                                grammar = queryGrammar.PipeExpression;
+                                return;
+                            }
+
+                            // otherwise back up further (to containing operator, etc) for 
+                            // better starting point
+                            break;
+                        case PipeExpression pe:
+                            // this is meant to handle the case of: XXX | $
+                            if (position >= pe.Bar.TriviaStart
+                                && pe.Expression is PipeExpression priorPipe)
+                            {
+                                searchStart = priorPipe.Operator.TextStart;
+                                grammar = queryGrammar.PipeSubExpression;
+                                return;
+                            }
+                            break;
+                        case FunctionBody body:
+                            searchStart = body.TextStart;
+                            grammar = queryGrammar.FunctionBody;
+                            return;
+                        case Statement stat:
+                            searchStart = stat.TextStart;
+                            grammar = queryGrammar.StatementList;
+                            return;
+                        case SeparatedElement<Statement> _:
+                            searchStart = node.TextStart;
+                            grammar = queryGrammar.StatementList;
+                            return;
+                        case FunctionCallExpression fc:
+                            // for argument list
+                            if (position > fc.Name.End)
+                            {
+                                searchStart = fc.TextStart;
+                                grammar = queryGrammar.UnnamedExpression;
+                                return;
+                            }
+                            break;
+                        case SeparatedElement<Expression> se:
+                            var parent = se.Parent?.Parent;
+                            if (parent is DataTableExpression)
+                            {
+                                searchStart = se.TextStart;
+                                grammar = queryGrammar.LiteralList;
+                                return;
+                            }
+                            break;
+                        case Command _:
+                            searchStart = node.TextStart;
+                            grammar = code.Grammar; // use entire command block grammar
+                            return;
+                    }
                 }
             }
-#if DEBUG
-            ,
-            (_parser) =>
-            {
-                if (path.Count > 0 && path[path.Count - 1] == _parser)
-                {
-                    path.RemoveAt(path.Count - 1);
-                }
-            }
-#endif
-            );
+
+            searchStart = this.code.Syntax.TextStart;
+            grammar = this.code.Grammar;
         }
 
         private SyntaxToken GetTokenLeftOfPosition(int position)

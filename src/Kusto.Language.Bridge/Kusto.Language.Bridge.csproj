@@ -245,6 +245,9 @@
     <Compile Include="..\Kusto.Language\Parser\Combinators\SafeSearch.cs">
       <Link>Src\SafeSearch.cs</Link>
     </Compile>
+    <Compile Include="..\Kusto.Language\Parser\Combinators\Searcher.cs">
+      <Link>Src\Searcher.cs</Link>
+    </Compile>
     <Compile Include="..\Kusto.Language\Parser\Combinators\Source.cs">
       <Link>Src\Source.cs</Link>
     </Compile>

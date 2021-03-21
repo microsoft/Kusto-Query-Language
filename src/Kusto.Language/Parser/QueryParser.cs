@@ -2170,28 +2170,28 @@ namespace Kusto.Language.Parsing
 
         private Expression ParseQueryOperatorParameterValue(QueryOperatorParameter queryParameter, Func<QueryParser, bool> fnEndNameList = null)
         {
-            switch (queryParameter.Kind)
+            switch (queryParameter.ValueKind)
             {
-                case QueryOperatorParameterKind.StringLiteral:
+                case QueryOperatorParameterValueKind.StringLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingStringLiteral();
-                case QueryOperatorParameterKind.BoolLiteral:
+                case QueryOperatorParameterValueKind.BoolLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingBoolLiteral();
-                case QueryOperatorParameterKind.IntegerLiteral:
-                case QueryOperatorParameterKind.NumericLiteral:
-                case QueryOperatorParameterKind.SummableLiteral:
+                case QueryOperatorParameterValueKind.IntegerLiteral:
+                case QueryOperatorParameterValueKind.NumericLiteral:
+                case QueryOperatorParameterValueKind.SummableLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingLongLiteral();
-                case QueryOperatorParameterKind.ScalarLiteral:
+                case QueryOperatorParameterValueKind.ScalarLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingValue();
-                case QueryOperatorParameterKind.Word:
-                case QueryOperatorParameterKind.WordOrNumber:
+                case QueryOperatorParameterValueKind.Word:
+                case QueryOperatorParameterValueKind.WordOrNumber:
                     if (queryParameter.Values.Count > 0)
                         return ParseTokenLiteral(queryParameter.Values) ?? ParseAnyQueryOperatorParameterValue() ?? CreateMissingTokenLiteral(queryParameter.Values);
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingValue();
-                case QueryOperatorParameterKind.NameDeclaration:
+                case QueryOperatorParameterValueKind.NameDeclaration:
                     return ParseNameDeclaration() ?? ParseAnyQueryOperatorParameterValue() ?? CreateMissingNameDeclaration();
-                case QueryOperatorParameterKind.Column:
+                case QueryOperatorParameterValueKind.Column:
                     return ParseNameReference() ?? ParseAnyQueryOperatorParameterValue() ?? CreateMissingNameReference();
-                case QueryOperatorParameterKind.ColumnList:
+                case QueryOperatorParameterValueKind.ColumnList:
                     return ParseNameReferenceList(fnEndNameList ?? FnScanQueryOperatorParameterNameListEnd);
                 default:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingValue();

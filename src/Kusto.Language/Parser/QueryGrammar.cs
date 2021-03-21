@@ -50,9 +50,13 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxList<SeparatedElement<Statement>>> StatementList { get; private set; }
         public Parser<LexicalToken, FunctionBody> FunctionBody { get; private set; }
         public Parser<LexicalToken, FunctionParameters> FunctionParameters { get; private set; }
-        public Parser<LexicalToken, Expression> Expression { get; private set; }
-        public Parser<LexicalToken, Expression> UnnamedExpression { get; private set; }
+        public Parser<LexicalToken, QueryOperator> QueryOperator { get; private set; }
+        public Parser<LexicalToken, Expression> PipeExpression { get; private set; }
+        public Parser<LexicalToken, Expression> PipeSubExpression { get; private set; }
         public Parser<LexicalToken, QueryOperator> FollowingPipeElementExpression { get; private set; }
+        public Parser<LexicalToken, Expression> Expression { get; private set; }
+        public Parser<LexicalToken, Expression> NamedExpression { get; private set; }
+        public Parser<LexicalToken, Expression> UnnamedExpression { get; private set; }
         public Parser<LexicalToken, NameDeclaration> SimpleNameDeclaration { get; private set; }
         public Parser<LexicalToken, Expression> SimpleNameDeclarationExpression { get; private set; }
         public Parser<LexicalToken, NameDeclaration> BracketedNameDeclaration { get; private set; }
@@ -64,6 +68,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, Expression> SimpleNameReference { get; private set; }
         public Parser<LexicalToken, Expression> Literal { get; private set; }
         public Parser<LexicalToken, Expression> StringLiteral { get; private set; }
+        public Parser<LexicalToken, SyntaxList<SeparatedElement<Expression>>> LiteralList { get; private set; }
         public Parser<LexicalToken, SkippedTokens> SkippedTokens { get; private set; }
 
         /// <summary>
@@ -129,11 +134,11 @@ namespace Kusto.Language.Parsing
                 Forward(() => ForkPipeExpressionCore)
                 .WithTag("<fork-pipe-expression>");
 
-            var PipeExpression =
+            this.PipeExpression =
                 Forward(() => PipeExpressionCore)
                 .WithTag("<pipe-expression>");
 
-            var PipeSubExpression =
+            this.PipeSubExpression =
                 Forward(() => PipeSubExpressionCore)
                 .WithTag("<pipe-sub-expression>");
 
@@ -716,9 +721,9 @@ namespace Kusto.Language.Parsing
                 if (parameter.IsHidden)
                     return HiddenToken(parameter.Name);
 
-                switch (parameter.Kind)
+                switch (parameter.ValueKind)
                 {
-                    case QueryOperatorParameterKind.StringLiteral:
+                    case QueryOperatorParameterValueKind.StringLiteral:
                         return Token(parameter.Name, ctext: $"{parameter.Name}=\"|\"");
                     default:
                         return Token(parameter.Name, ctext: $"{parameter.Name}=");
@@ -727,31 +732,31 @@ namespace Kusto.Language.Parsing
 
             Parser<LexicalToken, NamedParameter> QueryParameter(QueryOperatorParameter parameter, IReadOnlyList<QueryOperatorParameter> allParameters = null)
             {
-                switch (parameter.Kind)
+                switch (parameter.ValueKind)
                 {
-                    case QueryOperatorParameterKind.StringLiteral:
+                    case QueryOperatorParameterValueKind.StringLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue,
                             MissingStringLiteral);
-                    case QueryOperatorParameterKind.BoolLiteral:
+                    case QueryOperatorParameterValueKind.BoolLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter), 
                             First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue), 
                             MissingBooleanLiteral);
-                    case QueryOperatorParameterKind.IntegerLiteral:
-                    case QueryOperatorParameterKind.NumericLiteral:
-                    case QueryOperatorParameterKind.SummableLiteral:
+                    case QueryOperatorParameterValueKind.IntegerLiteral:
+                    case QueryOperatorParameterValueKind.NumericLiteral:
+                    case QueryOperatorParameterValueKind.SummableLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue, 
                             MissingLongLiteral);
-                    case QueryOperatorParameterKind.ScalarLiteral:
+                    case QueryOperatorParameterValueKind.ScalarLiteral:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue);
-                    case QueryOperatorParameterKind.Word:
-                    case QueryOperatorParameterKind.WordOrNumber:
+                    case QueryOperatorParameterValueKind.Word:
+                    case QueryOperatorParameterValueKind.WordOrNumber:
                         return parameter.Values.Count > 0
                             ? NamedParameter(
                                 QueryParameterName(parameter), 
@@ -761,18 +766,18 @@ namespace Kusto.Language.Parsing
                                 QueryParameterName(parameter),
                                 AnyQueryOperatorParameterValue,
                                 MissingTokenLiteral("token"));
-                    case QueryOperatorParameterKind.NameDeclaration:
+                    case QueryOperatorParameterValueKind.NameDeclaration:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             First(SimpleNameDeclarationExpression, AnyQueryOperatorParameterValue),
                             MissingNameDeclarationExpression);
-                    case QueryOperatorParameterKind.Column:
+                    case QueryOperatorParameterValueKind.Column:
                         return NamedParameter(
                             QueryParameterName(parameter),
                             First(SimpleNameReference, AnyQueryOperatorParameterValue), 
                             MissingNameReference,
                             expressionHint: CompletionHint.Column);
-                    case QueryOperatorParameterKind.ColumnList:
+                    case QueryOperatorParameterValueKind.ColumnList:
                         var allParameterNames = allParameters.Select(p => p.Name).ToList();
                         var nameRule = If(Not(Token(allParameterNames)), SimpleNameReference.Cast<NameReference>());
                         var nameList = NameReferenceList(nameRule);
@@ -781,7 +786,7 @@ namespace Kusto.Language.Parsing
                             First(nameList, AnyQueryOperatorParameterValue),
                             expressionHint: CompletionHint.Column);
                     default:
-                        throw new InvalidOperationException($"Unhandled query operator parameter kind: {parameter.Kind}");
+                        throw new InvalidOperationException($"Unhandled query operator parameter kind: {parameter.ValueKind}");
                 }
             }
 
@@ -834,7 +839,7 @@ namespace Kusto.Language.Parsing
                     (openParen, list, closeParen) =>
                         new RenameList(openParen, list, closeParen));
 
-            var NamedExpression =
+            this.NamedExpression =
                 First(
                     If(And(RenameName, Token(SyntaxKind.EqualToken)),
                         Rule(RenameName, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, MissingExpression),
@@ -1243,13 +1248,16 @@ namespace Kusto.Language.Parsing
             #endregion
 
             #region Query Operators
+
+            this.LiteralList = CommaList(Literal, MissingExpressionNode, allowTrailingComma: true);
+
             var DataTableExpression =
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DataTableParameters),
                     Required(SchemaMultipartType, MissingSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Literal, MissingExpressionNode, allowTrailingComma: true),
+                    LiteralList,
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (keyword, parameters, schema, openBracket, values, closeBracket) =>
                         (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
@@ -2301,7 +2309,8 @@ namespace Kusto.Language.Parsing
                     InvokeOperator,
                     ScanOperator);
 
-            var AllQueryOperator =
+            // all operators
+            this.QueryOperator =
                 First(PrePipeQueryOperator, PostPipeQueryOperator);
 
             ForkPipeOperatorCore =
@@ -2332,7 +2341,7 @@ namespace Kusto.Language.Parsing
                     InvokeOperator,
                     ExecuteAndCacheOperator,
                     ScanOperator,
-                    AllQueryOperator.Hide()); // allow other query operators to parser, but fail in binding
+                    QueryOperator.Hide()); // allow other query operators to parser, but fail in binding
 
             ForkPipeExpressionCore =
                 ApplyZeroOrMore(

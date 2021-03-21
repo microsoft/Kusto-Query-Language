@@ -97,5 +97,10 @@ namespace Kusto.Language.Symbols
         /// A query option (assigned via set statement)
         /// </summary>
         Option,
+
+        /// <summary>
+        /// A query operator parameter
+        /// </summary>
+        QueryOperatorParameter,
     }
 }

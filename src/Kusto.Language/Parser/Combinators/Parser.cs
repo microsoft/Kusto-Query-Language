@@ -165,7 +165,8 @@ namespace Kusto.Language.Parsing
         /// <param name="afterAction">The action to take after a parser and all its nested parsers have been considered.</param>
         public SearchResult Search(Source<TInput> input, int inputStart, bool prevWasMissing, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction = null)
         {
-            return SafeSearcher.SearchSafe(this, input, inputStart, prevWasMissing, beforeAction, afterAction);
+            //return SafeSearcher.SearchSafe(this, input, inputStart, prevWasMissing, beforeAction, afterAction);
+            return Searcher<TInput>.Search(this, input, inputStart, prevWasMissing, beforeAction, afterAction);
         }
 
         /// <summary>

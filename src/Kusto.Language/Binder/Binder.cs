@@ -4962,6 +4962,8 @@ namespace Kusto.Language.Binding
 
                 if (qop != null)
                 {
+                    SetSemanticInfo(parameter.Name, new SemanticInfo(qop, ScalarTypes.Unknown));
+
                     if (!qop.IsRepeatable)
                     {
                         if (namesAlreadySpecified.Contains(qop.Name)
@@ -4988,43 +4990,43 @@ namespace Kusto.Language.Binding
         {
             if (!IsQueryOperatorParameterKind(parameter, qop))
             {
-                switch (qop.Kind)
+                switch (qop.ValueKind)
                 {
-                    case QueryOperatorParameterKind.IntegerLiteral:
+                    case QueryOperatorParameterValueKind.IntegerLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsInteger(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.NumericLiteral:
+                    case QueryOperatorParameterValueKind.NumericLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsNumber(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.ScalarLiteral:
+                    case QueryOperatorParameterValueKind.ScalarLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsScalar(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.SummableLiteral:
+                    case QueryOperatorParameterValueKind.SummableLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsSummable(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.StringLiteral:
+                    case QueryOperatorParameterValueKind.StringLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsExactType(parameter.Expression, ScalarTypes.String, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.BoolLiteral:
+                    case QueryOperatorParameterValueKind.BoolLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsExactType(parameter.Expression, ScalarTypes.Bool, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Column:
+                    case QueryOperatorParameterValueKind.Column:
                         CheckIsColumn(parameter.Expression, diagnostics);
                         break;
-                    case QueryOperatorParameterKind.Word:
-                    case QueryOperatorParameterKind.WordOrNumber:
+                    case QueryOperatorParameterValueKind.Word:
+                    case QueryOperatorParameterValueKind.WordOrNumber:
                         CheckIsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
                         break;
                 }
 
-                if (qop.Kind != QueryOperatorParameterKind.Word 
-                    && qop.Kind != QueryOperatorParameterKind.WordOrNumber
+                if (qop.ValueKind != QueryOperatorParameterValueKind.Word 
+                    && qop.ValueKind != QueryOperatorParameterValueKind.WordOrNumber
                     && qop.Values != null 
                     && qop.Values.Count > 0)
                 {
@@ -5037,48 +5039,48 @@ namespace Kusto.Language.Binding
         private bool IsQueryOperatorParameterKind(NamedParameter parameter, QueryOperatorParameter qop)
         {
             var type = GetResultTypeOrError(parameter.Expression);
-            switch (qop.Kind)
+            switch (qop.ValueKind)
             {
-                case QueryOperatorParameterKind.IntegerLiteral:
+                case QueryOperatorParameterValueKind.IntegerLiteral:
                     if (!(parameter.Expression.IsLiteral && IsInteger(type)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.NumericLiteral:
+                case QueryOperatorParameterValueKind.NumericLiteral:
                     if (!(parameter.Expression.IsLiteral && IsNumber(type)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.ScalarLiteral:
+                case QueryOperatorParameterValueKind.ScalarLiteral:
                     if (!(parameter.Expression.IsLiteral && type.IsScalar))
                         return false;
                     break;
-                case QueryOperatorParameterKind.SummableLiteral:
+                case QueryOperatorParameterValueKind.SummableLiteral:
                     if (!(parameter.Expression.IsLiteral && IsSummable(type)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.StringLiteral:
+                case QueryOperatorParameterValueKind.StringLiteral:
                     if (!(parameter.Expression.IsLiteral && IsType(parameter.Expression, ScalarTypes.String)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.BoolLiteral:
+                case QueryOperatorParameterValueKind.BoolLiteral:
                     if (!(parameter.Expression.IsLiteral && IsType(parameter.Expression, ScalarTypes.Bool)))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Column:
+                case QueryOperatorParameterValueKind.Column:
                     if (!(GetReferencedSymbol(parameter.Expression) is ColumnSymbol))
                         return false;
                     break;
-                case QueryOperatorParameterKind.Word:
+                case QueryOperatorParameterValueKind.Word:
                     if (!IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
-                case QueryOperatorParameterKind.WordOrNumber:
+                case QueryOperatorParameterValueKind.WordOrNumber:
                     if (!IsNumber(type) && !IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
             }
 
-            if (qop.Kind != QueryOperatorParameterKind.Word 
-                && qop.Kind != QueryOperatorParameterKind.WordOrNumber
+            if (qop.ValueKind != QueryOperatorParameterValueKind.Word 
+                && qop.ValueKind != QueryOperatorParameterValueKind.WordOrNumber
                 && qop.Values != null
                 && qop.Values.Count > 0)
             {
