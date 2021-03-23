@@ -642,15 +642,21 @@ namespace Kusto.Language.Parsing
 
             #endregion
 
-            #region Named Parameters / Query Operator Parameters
+            #region Query Operator Parameters
 
-            Parser<LexicalToken, NamedParameter> NamedParameter(Parser<LexicalToken, SyntaxToken> tokenParser, Parser<LexicalToken, Expression> valueParser, Func<Expression> missingValue = null, CompletionHint expressionHint = CompletionHint.None) =>
-                Rule(
+            Parser<LexicalToken, NamedParameter> QParameter(
+                Parser<LexicalToken, SyntaxToken> tokenParser, 
+                Parser<LexicalToken, Expression> valueParser, 
+                Func<Expression> missingValue = null, 
+                CompletionHint expressionHint = CompletionHint.None)
+            {
+                return Rule(
                     AsIdentifierNameDeclaration(tokenParser),
                     RequiredToken(SyntaxKind.EqualToken),
                     Required(valueParser, missingValue ?? MissingValue),
                     (name, equal, value) =>
                         new NamedParameter(name, equal, value, expressionHint));
+            }
 
             Parser<LexicalToken, Expression> NameReferenceList(Parser<LexicalToken, NameReference> nameParser) =>
                 Rule(
@@ -670,11 +676,6 @@ namespace Kusto.Language.Parsing
                     Literal.Hide(),
                     IdentifierOrKeywordTokenLiteral,
                     SimpleNameReference);
-
-            // all parameters declared in QueryOperatorParameters (hidden)
-            // These have better matched parsing of the parameter value and just the names
-            var DeclaredQueryOperatorParameter =
-                First(QueryOperatorParameters.AllKnownParameters.Select(p => QueryParameter(p, QueryOperatorParameters.AllKnownParameters)).ToArray());
 
             // allow for query operator parameter names to have otherwise illegal punctuation inside them
             var ScanAnyQueryOperatorParameterName =
@@ -698,24 +699,6 @@ namespace Kusto.Language.Parsing
                         SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
                 .WithTag("<query-operator-parameter-name>");
 
-            var AnyQueryOperatorParameter =
-                First(
-                    DeclaredQueryOperatorParameter,
-                    If(And(AnyQueryOperatorParameterName, Token(SyntaxKind.EqualToken)),
-                        NamedParameter(
-                            AnyQueryOperatorParameterName,
-                            AnyQueryOperatorParameterValue)))
-                .WithTag("<any-query-operator-parameter>");
-
-            // just like AnyQueryOperatorParameters, except it only allows known parameter names
-            // this is used for situations where a grammar rule like named-expression occurs next (like filter)
-            var KnownQueryOperatorParameter =
-                First(
-                    DeclaredQueryOperatorParameter,
-                    NamedParameter(
-                        HiddenToken(KustoFacts.KnownQueryOperatorParameterNames),
-                        AnyQueryOperatorParameterValue));
-
             Parser<LexicalToken, SyntaxToken> QueryParameterName(QueryOperatorParameter parameter)
             {
                 if (parameter.IsHidden)
@@ -735,44 +718,44 @@ namespace Kusto.Language.Parsing
                 switch (parameter.ValueKind)
                 {
                     case QueryOperatorParameterValueKind.StringLiteral:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue,
                             MissingStringLiteral);
                     case QueryOperatorParameterValueKind.BoolLiteral:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter), 
                             First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue), 
                             MissingBooleanLiteral);
                     case QueryOperatorParameterValueKind.IntegerLiteral:
                     case QueryOperatorParameterValueKind.NumericLiteral:
                     case QueryOperatorParameterValueKind.SummableLiteral:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue, 
                             MissingLongLiteral);
                     case QueryOperatorParameterValueKind.ScalarLiteral:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue);
                     case QueryOperatorParameterValueKind.Word:
                     case QueryOperatorParameterValueKind.WordOrNumber:
                         return parameter.Values.Count > 0
-                            ? NamedParameter(
+                            ? QParameter(
                                 QueryParameterName(parameter), 
                                 First(AsTokenLiteral(Token(parameter.Values)), AnyQueryOperatorParameterValue),
                                 MissingTokenLiteral(parameter.Values))
-                            : NamedParameter(
+                            : QParameter(
                                 QueryParameterName(parameter),
                                 AnyQueryOperatorParameterValue,
                                 MissingTokenLiteral("token"));
                     case QueryOperatorParameterValueKind.NameDeclaration:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter),
                             First(SimpleNameDeclarationExpression, AnyQueryOperatorParameterValue),
                             MissingNameDeclarationExpression);
                     case QueryOperatorParameterValueKind.Column:
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter),
                             First(SimpleNameReference, AnyQueryOperatorParameterValue), 
                             MissingNameReference,
@@ -781,7 +764,7 @@ namespace Kusto.Language.Parsing
                         var allParameterNames = allParameters.Select(p => p.Name).ToList();
                         var nameRule = If(Not(Token(allParameterNames)), SimpleNameReference.Cast<NameReference>());
                         var nameList = NameReferenceList(nameRule);
-                        return NamedParameter(
+                        return QParameter(
                             QueryParameterName(parameter), 
                             First(nameList, AnyQueryOperatorParameterValue),
                             expressionHint: CompletionHint.Column);
@@ -789,6 +772,29 @@ namespace Kusto.Language.Parsing
                         throw new InvalidOperationException($"Unhandled query operator parameter kind: {parameter.ValueKind}");
                 }
             }
+
+            // all parameters declared in QueryOperatorParameters (hidden)
+            // These have better matched parsing of the parameter value and just the names
+            var DeclaredQueryOperatorParameter =
+                First(QueryOperatorParameters.AllKnownParameters.Select(p => QueryParameter(p, QueryOperatorParameters.AllKnownParameters)).ToArray());
+
+            var AnyQueryOperatorParameter =
+                First(
+                    DeclaredQueryOperatorParameter,
+                    If(And(AnyQueryOperatorParameterName, Token(SyntaxKind.EqualToken)),
+                        QParameter(
+                            AnyQueryOperatorParameterName,
+                            AnyQueryOperatorParameterValue)))
+                .WithTag("<any-query-operator-parameter>");
+
+            // just like AnyQueryOperatorParameters, except it only allows known parameter names
+            // this is used for situations where a grammar rule like named-expression occurs next (like filter)
+            var KnownQueryOperatorParameter =
+                First(
+                    DeclaredQueryOperatorParameter,
+                    QParameter(
+                        HiddenToken(KustoFacts.KnownQueryOperatorParameterNames),
+                        AnyQueryOperatorParameterValue));
 
             Parser<LexicalToken, SyntaxList<NamedParameter>> QueryParameterList(IReadOnlyList<QueryOperatorParameter> parameters, bool knownParametersOnly = false)
             {
