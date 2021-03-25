@@ -11,7 +11,10 @@ ms.date: 10/23/2018
 ---
 # replace()
 
-Replace all regex matches with another string.
+Replace all regex matches with another string. 
+
+> [!NOTE]
+> If you do not need regex matching, use [translate()](translatefunction.md).
 
 ## Syntax
 

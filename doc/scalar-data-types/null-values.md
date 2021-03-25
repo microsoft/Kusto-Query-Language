@@ -25,15 +25,15 @@ Thus, the following returns a single row full of nulls:
 print bool(null), datetime(null), dynamic(null), guid(null), int(null), long(null), real(null), double(null), time(null)
 ```
 
-> [!WARNING]
-> Please note that currently the `string` type doesn't support null values. For string type, use the [isempty()](../isemptyfunction.md) and the [isnotempty()](../isnotemptyfunction.md) functions.
+> [!NOTE]
+>Currently the `string` type doesn't support null values. For string type, use the [isempty()](../isemptyfunction.md) and the [isnotempty()](../isnotemptyfunction.md) functions.
 
 ## Comparing null to something
 
-The null value does not compare equal to any other value of the data type,
-including itself. To determine if some
-value is the null value, use the [isnull()](../isnullfunction.md) function
-, the [isnotnull()](../isnotnullfunction.md) function for numeric types, 
+The null value does not compare to any other value of the data type,
+including itself, with the following exceptions: equal (==) and not equal (!=) operators when comparing with non-null values.
+
+To determine if some value is the null value, use the [isnull()](../isnullfunction.md) function, the [isnotnull()](../isnotnullfunction.md) function for numeric types, 
 and the [isempty()](../isemptyfunction.md) and the [isnotempty()](../isnotemptyfunction.md) 
 functions for the string type. 
 
@@ -43,17 +43,20 @@ For example:
 datatable(val:int)[5, int(null)]
 | extend IsBiggerThan3 = val > 3
 | extend IsBiggerThan3OrNull = val > 3 or isnull(val)
+| extend IsEqualToNull = val == int(null)
+| extend IsNotEqualToNull = val != int(null)
 ```
 
 Results:
 
-|val | IsBiggerThan3 | IsBiggerThan3OrNull |
-|---|---|--------|
-| 5 | true | true |
-| &nbsp; | &nbsp; | true| 	
+|val | IsBiggerThan3 | IsBiggerThan3OrNull | IsEqualToNull | IsNotEqualToNull|
+|---|---|--------|--------|--------|
+| 5 | true | true | false | true|
+| &nbsp; | &nbsp; | true| &nbsp; | &nbsp;|
+
 
 > [!NOTE]
-> In EngineV2, a null comparison expression returns a boolean result. In EngineV3, any comparison with null returns `null`. 
+> In EngineV2, a null comparison expression returns a boolean result. EngineV3 behaves as described [above](#comparing-null-to-something). However, since null coalesces to false in a boolean expression, the result in filter expressions is compatible between both engines.    
 
 ## Binary operations on null
 
@@ -75,7 +78,7 @@ Results:
 
 ## Null expression in filter
 
-If an expression in the context of the filter operation such as in the [where operator](../whereoperator.md) returns null, the expression will be coalesced to `false`. In EngineV2, a null comparison expression returns boolean result.  
+If an expression in the context of the filter operation such as in the [where operator](../whereoperator.md) returns null, the expression will be coalesced to `false`.  
 
 Example:
 
@@ -83,12 +86,7 @@ Example:
 datatable(ival:int, sval:string)[5, "a", int(null), "b"]
 | where ival != 5
 ```
-Results in EngineV3:
-
-|ival|sval|
-|---|---|
-	
-Results in EngineV2:
+Results:
 
 |ival|sval|
 |---|---|

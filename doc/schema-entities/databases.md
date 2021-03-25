@@ -20,3 +20,4 @@ Each database has its own permissions set, based on [Role Based Access Control (
 
 * Database names must follow the rules for [entity names](./entity-names.md).
 * Maximum limit of databases per cluster is 10,000.
+* Queries combining data from multiple tables in the same database and queries combining data from multiple databases in the same cluster have comparable performance. 

@@ -32,7 +32,7 @@ additional aliases you can use to refer to them and a roughly equivalent
 | `bool`     | `boolean`            | `System.Boolean`                  | `int8`      |
 | `datetime` | `date`               | `System.DateTime`                 | `datetime`  |
 | `dynamic`  |                      | `System.Object`                   | `array` or `dictionary` or any of the other values |
-| `guid`     | `uuid`, `uniqueid`   | `System.Guid`                     | `guid`      |
+| `guid`     |                      | `System.Guid`                     | `guid`      |
 | `int`      |                      | `System.Int32`                    | `int`       |
 | `long`     |                      | `System.Int64`                    | `long`      |
 | `real`     | `double`             | `System.Double`                   | `real`      |

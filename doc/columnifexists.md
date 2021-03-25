@@ -39,5 +39,5 @@ ColumnOrDefault(tableName:string, columnName:string)
 }
 
 
-ColumnOrDefault("StormEvents", "Captial");
+ColumnOrDefault("StormEvents", "Capital");
 ```
