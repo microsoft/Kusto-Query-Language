@@ -1113,6 +1113,16 @@ namespace Kusto.Language
                 new Parameter("column_name", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("defaultValue", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.FirstArgumentValueIfColumn);
+
+        public static readonly FunctionSymbol Around = new FunctionSymbol("around", ScalarTypes.Bool,
+                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("center", ParameterTypeKind.Scalar),
+                new Parameter("delta", ParameterTypeKind.Scalar))
+            // TODO: Check how is it possible to define different type combinations:
+            // (datetime, datetime, timespan)
+            // (numeric, numeric, numeric)
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region bitwise functions
@@ -2431,6 +2441,7 @@ namespace Kusto.Language
             IsEmpty,
             ColumnIfExists_Depricated,
             ColumnIfExists,
+            Around,
 #endregion
 
 #region bitwise functions
