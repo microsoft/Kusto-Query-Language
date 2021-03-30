@@ -87,10 +87,7 @@ namespace Kusto.Language.Symbols
                 throw new ArgumentNullException(nameof(schema));
             }
 
-            // Use null for GlobalState to avoid cycle in definitions.
-            var parser = QueryGrammar.From(null).SchemaType;
-
-            var schemaType = parser.ParseFirst(schema);
+            var schemaType = QueryParser.ParseSchemaType(schema);
             if (schemaType == null)
             {
                 throw new InvalidOperationException($"Invalid schema: {schema}");

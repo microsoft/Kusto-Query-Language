@@ -3198,9 +3198,8 @@ namespace Kusto.Language.Binding
                 {
                     try
                     {
-                        var functionBodyGrammar = QueryGrammar.From(_globals).FunctionBody;
                         var bodyText = GetFunctionBody(signature);
-                        var body = functionBodyGrammar.ParseFirst(bodyText, alwaysProduceEOF: false);
+                        var body = QueryParser.ParseFunctionBody(bodyText);
 
                         if (body != null)
                         {

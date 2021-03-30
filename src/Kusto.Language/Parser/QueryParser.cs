@@ -14,21 +14,61 @@ namespace Kusto.Language.Parsing
         private readonly Source<LexicalToken> _source;
         private int _pos;
 
-        private QueryParser(LexicalToken[] tokens)
+        private QueryParser(LexicalToken[] tokens, int start = 0)
         {
             _tokens = tokens;
             _source = new ArraySource<LexicalToken>(tokens);
-            _pos = 0;
+            _pos = start;
         }
 
-        public static Expression ParseExpression(LexicalToken[] tokens)
+        public static Expression ParseExpression(LexicalToken[] tokens, int start = 0)
         {
-            return new QueryParser(tokens).ParseExpression();
+            return new QueryParser(tokens, start).ParseExpression();
+        }
+       
+        public static Expression ParseExpression(string text)
+        {
+            return ParseExpression(TokenParser.Default.ParseTokens(text));
         }
 
-        public static QueryBlock ParseQuery(LexicalToken[] tokens)
+        public static QueryBlock ParseQuery(LexicalToken[] tokens, int start = 0)
         {
-            return new QueryParser(tokens).ParseQuery();
+            return new QueryParser(tokens, start).ParseQuery();
+        }
+
+        public static QueryBlock ParseQuery(string text)
+        {
+            return ParseQuery(TokenParser.Default.ParseTokens(text));
+        }
+
+        public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0)
+        {
+            return new QueryParser(tokens, start).ParseFunctionBody();
+        }
+
+        public static FunctionBody ParseFunctionBody(string text)
+        {
+            return ParseFunctionBody(TokenParser.Default.ParseTokens(text));
+        }
+
+        public static Expression ParseLiteral(LexicalToken[] tokens, int start = 0)
+        {
+            return new QueryParser(tokens, start).ParseLiteral();
+        }
+
+        public static Expression ParseLiteral(string text)
+        {
+            return ParseLiteral(TokenParser.Default.ParseTokens(text));
+        }
+
+        public static SchemaTypeExpression ParseSchemaType(LexicalToken[] tokens, int start = 0)
+        {
+            return new QueryParser(tokens, start).ParseSchemaType();
+        }
+
+        public static SchemaTypeExpression ParseSchemaType(string text)
+        {
+            return ParseSchemaType(TokenParser.Default.ParseTokens(text));
         }
 
         #region Reset Points

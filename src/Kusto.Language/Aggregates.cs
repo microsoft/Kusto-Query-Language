@@ -440,12 +440,12 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ArgMin =
             new FunctionSymbol("arg_min",
                 new Signature(
-                    GetArgMinMaxResult,
+                    (table, args) => GetArgMinMaxResult(table, args, "min"),
                     Tabularity.Scalar,
                     new Parameter("minimized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
-                    GetArgMinMaxResult,
+                    (table, args) => GetArgMinMaxResult(table, args, "min"),
                     Tabularity.Scalar,
                     new Parameter("minimized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)));
@@ -453,47 +453,66 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ArgMax =
             new FunctionSymbol("arg_max",
                 new Signature(
-                    GetArgMinMaxResult,
+                    (table, args) => GetArgMinMaxResult(table, args, "max"), 
                     Tabularity.Scalar,
                     new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
-                    GetArgMinMaxResult,
+                    (table, args) => GetArgMinMaxResult(table, args, "max"),
                     Tabularity.Scalar,
                     new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
-        private static TypeSymbol GetArgMinMaxResult(TableSymbol table, IReadOnlyList<Expression> args)
+        private static TypeSymbol GetArgMinMaxResult(TableSymbol table, IReadOnlyList<Expression> args, string prefix)
         {
             var columns = new List<ColumnSymbol>();
             var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
 
-            for (int i = 0; i < args.Count; i++)
+            if (args.Count > 0)
             {
-                var arg = args[i];
+                var primaryArg = args[0];
+                var primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
 
-                if (arg is StarExpression)
+                for (int i = 0; i < args.Count; i++)
                 {
-                    foreach (var c in table.Columns)
+                    var arg = args[i];
+
+                    if (arg is StarExpression)
                     {
-                        if (!doNotRepeat.Contains(c))
+                        foreach (var c in table.Columns)
                         {
-                            columns.Add(c);
+                            if (!doNotRepeat.Contains(c))
+                            {
+                                columns.Add(c);
+                            }
                         }
                     }
-                }
-                else if (arg.ReferencedSymbol is ColumnSymbol c)
-                {
-                    // don't let * repeat this column
-                    doNotRepeat.Add(c);
+                    else if (arg.ReferencedSymbol is ColumnSymbol c)
+                    {
+                        // don't let * repeat this column
+                        doNotRepeat.Add(c);
 
-                    // change identity of explicitly referenced columns so won't match same columns already in projection list
-                    columns.Add(new ColumnSymbol(c.Name, c.Type));
-                }
-                else
-                {
-                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, "column"), arg.ResultType);
-                    columns.Add(col);
+                        // change identity of explicitly referenced columns so won't match same columns already in projection list
+                        columns.Add(new ColumnSymbol(c.Name, c.Type));
+                    }
+                    else
+                    {
+                        var expName = Binding.Binder.GetExpressionResultName(arg, null);
+                        if (expName == null)
+                        {
+                            if (i == 0)
+                            {
+                                expName = prefix + "_";
+                            }
+                            else
+                            {
+                                expName = prefix + "_" + primaryColName + "_arg" + i;
+                            }
+                        }
+
+                        var col = new ColumnSymbol(expName, arg.ResultType);
+                        columns.Add(col);
+                    }
                 }
             }
 
@@ -502,16 +521,16 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ArgMin_Depricated =
             new FunctionSymbol("argmin",
-                    new Signature(
-                        GetArgMinMaxDepResult,
-                        Tabularity.Scalar,
-                        new Parameter("minimized", ParameterTypeKind.Orderable),
-                        new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
-                    new Signature(
-                        GetArgMinMaxDepResult,
-                        Tabularity.Scalar,
-                        new Parameter("minimized", ParameterTypeKind.Orderable),
-                        new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
+                new Signature(
+                    GetArgMinMaxDepResult,
+                    Tabularity.Scalar,
+                    new Parameter("minimized", ParameterTypeKind.Orderable),
+                    new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
+                new Signature(
+                    GetArgMinMaxDepResult,
+                    Tabularity.Scalar,
+                    new Parameter("minimized", ParameterTypeKind.Orderable),
+                    new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNamePrefix("min")
             .Obsolete("arg_min")
             .Hide();
@@ -524,7 +543,7 @@ namespace Kusto.Language
                     new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
-                    GetArgMinMaxDepResult,
+                        GetArgMinMaxDepResult,
                     Tabularity.Scalar,
                     new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.Star)))
@@ -539,7 +558,7 @@ namespace Kusto.Language
             if (args.Count > 0)
             {
                 var primaryArg = args[0];
-                var primaryColName = Binding.Binder.GetExpressionResultName(primaryArg, "column");
+                var primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
                 var primaryCol = new ColumnSymbol(primaryColName, primaryArg.ResultType);
                 columns.Add(primaryCol);
 
@@ -566,7 +585,10 @@ namespace Kusto.Language
                     }
                     else
                     {
-                        var col = new ColumnSymbol(primaryColName + "_" + Binding.Binder.GetExpressionResultName(arg, "column"), arg.ResultType);
+                        var expName = Binding.Binder.GetExpressionResultName(arg, null);
+                        if (expName == null)
+                            expName = "arg" + i;
+                        var col = new ColumnSymbol(primaryColName + "_" + expName, arg.ResultType);
                         columns.Add(col);
                     }
                 }
