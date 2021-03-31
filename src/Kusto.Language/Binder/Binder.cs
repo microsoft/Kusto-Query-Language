@@ -3198,8 +3198,7 @@ namespace Kusto.Language.Binding
                 {
                     try
                     {
-                        var bodyText = GetFunctionBody(signature);
-                        var body = QueryParser.ParseFunctionBody(bodyText);
+                        var body = GetUnboundFunctionBody(signature);
 
                         if (body != null)
                         {
@@ -3355,7 +3354,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Builds an expanded declaration of the function customized given the arguments used at the call site.
         /// </summary>
-        private string GetFunctionBody(Signature signature)
+        private static string GetFunctionBodyText(Signature signature)
         {
             var body = signature.Body.Trim();
 
@@ -3366,6 +3365,19 @@ namespace Kusto.Language.Binding
                 body += "\n}";
 
             return body;
+        }
+
+        private static FunctionBody GetUnboundFunctionBody(Signature signature)
+        {
+            if (signature.Declaration != null)
+            {
+                return (FunctionBody)signature.Declaration.Clone();
+            }
+            else
+            {
+                var text = GetFunctionBodyText(signature);
+                return QueryParser.ParseFunctionBody(text);
+            }
         }
 
         private static TypeSymbol GetRepresentativeType(Parameter parameter)

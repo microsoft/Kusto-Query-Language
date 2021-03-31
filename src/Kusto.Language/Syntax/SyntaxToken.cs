@@ -286,7 +286,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// A <see cref="SyntaxToken"/> that encodes the text and kind
         /// </summary>
-        private class TextAndKindToken : SyntaxToken
+        private sealed class TextAndKindToken : SyntaxToken
         {
             private readonly string trivia;
             private readonly string text;
@@ -314,11 +314,28 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// A <see cref="SyntaxToken"/> for a literal value.
         /// </summary>
-        private class LiteralToken : TextAndKindToken
+        private sealed class LiteralToken : SyntaxToken
         {
+            private readonly string trivia;
+            private readonly string text;
+            private readonly SyntaxKind kind;
+
+            public override string Trivia => this.trivia;
+            public override string Text => text;
+
+            public override SyntaxKind Kind => this.kind;
+
             public LiteralToken(string trivia, string text, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
-                : base(trivia, text, kind, diagnostics)
+                : base(diagnostics)
             {
+                this.trivia = trivia ?? "";
+                this.text = text;
+                this.kind = kind;
+            }
+
+            protected override SyntaxElement CloneCore()
+            {
+                return new LiteralToken(this.Trivia, this.Text, this.Kind, this.SyntaxDiagnostics);
             }
 
             public override bool IsLiteral => true;

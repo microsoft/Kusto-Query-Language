@@ -84,7 +84,7 @@ namespace Kusto.Language.Syntax
 
         protected override SyntaxElement CloneCore()
         {
-            return new SeparatedElement<TElement>((TElement)this.Element.Clone(), this.Separator.Clone());
+            return new SeparatedElement<TElement>((TElement)this.Element.Clone(), this.Separator?.Clone());
         }
 
         public static SeparatedElement<TElement> Empty() => new SeparatedElement<TElement>(null, null);
