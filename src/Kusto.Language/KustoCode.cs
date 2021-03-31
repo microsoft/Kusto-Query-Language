@@ -112,7 +112,7 @@ namespace Kusto.Language
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
-            var tokens = TokenParser.Default.ParseTokens(text, alwaysProduceEndToken: true);
+            var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
             var starts = GetTokenStarts(tokens);
             return Create(text, globals, tokens, starts, analyze: false, cancellationToken: default(CancellationToken));
         }
@@ -128,7 +128,7 @@ namespace Kusto.Language
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
-            var tokens = TokenParser.Default.ParseTokens(text, alwaysProduceEndToken: true);
+            var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
             var starts = GetTokenStarts(tokens);
             return Create(text, globals, tokens, starts, analyze: true, cancellationToken: cancellationToken);
         }
@@ -277,7 +277,7 @@ namespace Kusto.Language
         /// </summary>
         public static string GetKind(string text)
         {
-            var token = TokenParser.Default.ParseToken(text, 0);
+            var token = TokenParser.ParseToken(text, 0);
 
             if (token != null)
             {

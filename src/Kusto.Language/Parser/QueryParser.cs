@@ -28,7 +28,7 @@ namespace Kusto.Language.Parsing
        
         public static Expression ParseExpression(string text)
         {
-            return ParseExpression(TokenParser.Default.ParseTokens(text));
+            return ParseExpression(TokenParser.ParseTokens(text));
         }
 
         public static QueryBlock ParseQuery(LexicalToken[] tokens, int start = 0)
@@ -38,7 +38,7 @@ namespace Kusto.Language.Parsing
 
         public static QueryBlock ParseQuery(string text)
         {
-            return ParseQuery(TokenParser.Default.ParseTokens(text));
+            return ParseQuery(TokenParser.ParseTokens(text));
         }
 
         public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0)
@@ -48,7 +48,7 @@ namespace Kusto.Language.Parsing
 
         public static FunctionBody ParseFunctionBody(string text)
         {
-            return ParseFunctionBody(TokenParser.Default.ParseTokens(text));
+            return ParseFunctionBody(TokenParser.ParseTokens(text));
         }
 
         public static Expression ParseLiteral(LexicalToken[] tokens, int start = 0)
@@ -58,7 +58,7 @@ namespace Kusto.Language.Parsing
 
         public static Expression ParseLiteral(string text)
         {
-            return ParseLiteral(TokenParser.Default.ParseTokens(text));
+            return ParseLiteral(TokenParser.ParseTokens(text));
         }
 
         public static SchemaTypeExpression ParseSchemaType(LexicalToken[] tokens, int start = 0)
@@ -68,7 +68,7 @@ namespace Kusto.Language.Parsing
 
         public static SchemaTypeExpression ParseSchemaType(string text)
         {
-            return ParseSchemaType(TokenParser.Default.ParseTokens(text));
+            return ParseSchemaType(TokenParser.ParseTokens(text));
         }
 
         #region Reset Points

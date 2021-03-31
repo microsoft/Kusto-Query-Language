@@ -539,7 +539,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static IEnumerable<TParser> ParseAll<TParser>(this Parser<LexicalToken, TParser> parser, string text, bool alwaysProduceEndToken = false)
         {
-            return ParseAll(parser, TokenParser.Default.ParseTokens(text, alwaysProduceEndToken));
+            return ParseAll(parser, TokenParser.ParseTokens(text, alwaysProduceEndToken));
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static TParser ParseFirst<TParser>(this Parser<LexicalToken, TParser> parser, string text, bool alwaysProduceEOF = false)
         {
-            return ParseFirst(parser, TokenParser.Default.ParseTokens(text, alwaysProduceEOF));
+            return ParseFirst(parser, TokenParser.ParseTokens(text, alwaysProduceEOF));
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static int ScanFirst(this Parser<LexicalToken> parser, string text, bool alwaysProduceEOF = false)
         {
-            var source = new ArraySource<LexicalToken>(TokenParser.Default.ParseTokens(text, alwaysProduceEOF));
+            var source = new ArraySource<LexicalToken>(TokenParser.ParseTokens(text, alwaysProduceEOF));
             return parser.Scan(source, 0);
         }
 

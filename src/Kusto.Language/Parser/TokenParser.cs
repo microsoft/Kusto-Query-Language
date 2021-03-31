@@ -8,7 +8,7 @@ using Kusto.Language.Utils;
 namespace Kusto.Language.Parsing
 {
     /// <summary>
-    /// Parses tokens for Kusto query language
+    /// Parses <see cref="LexicalToken"/> for Kusto query language
     /// </summary>
     public class TokenParser
     {
@@ -19,7 +19,7 @@ namespace Kusto.Language.Parsing
             _stringTable = stringTable;
         }
 
-        public TokenParser()
+        private TokenParser()
             : this(new StringTable())
         {
         }
@@ -27,29 +27,39 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A default instance of the <see cref="TokenParser"/>
         /// </summary>
-        public static readonly TokenParser Default =
+        private static readonly TokenParser Default =
             new TokenParser(null);
+
+        /// <summary>
+        /// Parses the token at the starting position in the text.
+        /// </summary>
+        public static LexicalToken ParseToken(string text, int start = 0, bool alwaysProduceEndToken = false)
+        {
+            return Default.Parse(text, start, alwaysProduceEndToken);
+        }
 
         /// <summary>
         /// Parses all the tokens in the text.
         /// </summary>
-        public LexicalToken[] ParseTokens(string text, bool alwaysProduceEndToken = false)
+        public static LexicalToken[] ParseTokens(string text, bool alwaysProduceEndToken = false)
         {
             var tokens = new List<LexicalToken>();
-            this.ParseTokens(text, tokens, alwaysProduceEndToken);
+            ParseTokens(text, tokens, alwaysProduceEndToken);
             return tokens.ToArray();
         }
 
         /// <summary>
         /// Parses all the tokens in the text.
         /// </summary>
-        public void ParseTokens(string text, List<LexicalToken> tokens, bool alwaysProduceEndToken = false)
+        public static void ParseTokens(string text, List<LexicalToken> tokens, bool alwaysProduceEndToken = false)
         {
+            var parser = new TokenParser();
+
             LexicalToken token;
             var pos = 0;
             do
             {
-                token = ParseToken(text, pos, alwaysProduceEndToken);
+                token = parser.Parse(text, pos, alwaysProduceEndToken);
                 if (token == null)
                     break;
                 tokens.Add(token);
@@ -61,7 +71,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Parses the token at the starting offset in the text.
         /// </summary>
-        public LexicalToken ParseToken(string text, int start, bool alwaysProduceEndToken = false)
+        private LexicalToken Parse(string text, int start, bool alwaysProduceEndToken)
         {
             LexicalToken tok;
 
@@ -434,7 +444,11 @@ namespace Kusto.Language.Parsing
             return char.IsLetterOrDigit(ch) || ch == '_';
         }
 
-        private static int ScanIdentifier(string text, int start)
+        /// <summary>
+        /// Returns the number of characters in the identifier or -1 if there is no
+        /// identitifer at the starting position.
+        /// </summary>
+        public static int ScanIdentifier(string text, int start = 0)
         {
             int pos = start;
 
@@ -613,7 +627,11 @@ namespace Kusto.Language.Parsing
         private static readonly SubstringMap<bool> TimespanSuffixMap =
             new SubstringMap<bool>(TimespanSuffixes.Select(s => new KeyValuePair<string, bool>(s, true)));
 
-        private static int ScanStringLiteral(string text, int start)
+        /// <summary>
+        /// Returns the number of characters that are part of the string literal, or -1 if the text
+        /// at the starting position is not a string literal.
+        /// </summary>
+        public static int ScanStringLiteral(string text, int start = 0)
         {
             var pos = start;
 
@@ -888,6 +906,25 @@ namespace Kusto.Language.Parsing
             }
 
             return pos > start ? pos - start : -1;
+        }
+
+        /// <summary>
+        /// Returns the number of characters in the client parameter of -1 if
+        /// there is not client parameter at the starting position.
+        /// </summary>
+        public static int ScanClientParameter(string text, int start = 0)
+        {
+            if (Peek(text, start) == '{')
+            {
+                var idLen = ScanIdentifier(text, start + 1);
+                if (idLen > 0)
+                {
+                    if (Peek(text, start + idLen + 1) == '}')
+                        return idLen + 2;
+                }
+            }
+
+            return -1;
         }
 
         private static char Peek(string text, int position)

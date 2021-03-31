@@ -207,7 +207,7 @@ namespace Kusto.Language.Editor
 
         public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
         {
-            var firstToken = Parsing.TokenParser.Default.ParseToken(this.Text, 0);
+            var firstToken = Parsing.TokenParser.ParseToken(this.Text, 0);
             if (firstToken != null && firstToken.Text.Length > 0)
             {
                 var start = 0;
@@ -266,8 +266,7 @@ namespace Kusto.Language.Editor
         public override string GetMinimalText(MinimalTextKind kind, CancellationToken cancellationToken)
         {
             // use kusto lexer to identify tokens and trivia (as best guess)
-            var parser = new Parsing.TokenParser();
-            var list = new SyntaxList<SyntaxToken>(parser.ParseTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
+            var list = new SyntaxList<SyntaxToken>(Parsing.TokenParser.ParseTokens(this.Text).Select(t => SyntaxToken.From(t)).ToArray());
             return list.ToString(KustoCodeService.GetIncludeTrivia(kind));
         }
 
@@ -290,7 +289,6 @@ namespace Kusto.Language.Editor
 
         internal IReadOnlyList<ClientParameter> GetClientParameters(string blockText, int offsetInScript)
         {
-            Parsing.TextSource src = null;
             List<ClientParameter> list = null;
 
             var start = 0;
@@ -299,12 +297,7 @@ namespace Kusto.Language.Editor
                 var openBrace = blockText.IndexOf("{", start);
                 if (openBrace >= 0)
                 {
-                    if (src == null)
-                    {
-                        src = new Parsing.TextSource(blockText);
-                    }
-
-                    var len = Parsing.LexicalGrammar.ClientParameter.Scan(src, openBrace);
+                    var len = Parsing.TokenParser.ScanClientParameter(blockText, openBrace);
                     if (len > 0)
                     {
                         if (list == null)

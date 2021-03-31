@@ -263,9 +263,6 @@
     <Compile Include="..\Kusto.Language\Parser\KustoFacts.cs">
       <Link>Src\KustoFacts.cs</Link>
     </Compile>
-    <Compile Include="..\Kusto.Language\Parser\LexicalGrammar.cs">
-      <Link>Src\LexicalGrammar.cs</Link>
-    </Compile>
     <Compile Include="..\Kusto.Language\Parser\TokenParser.cs">
       <Link>Src\TokenParser.cs</Link>
     </Compile>

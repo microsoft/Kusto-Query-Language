@@ -319,7 +319,7 @@ namespace Kusto.Language
         /// True if the text can an identifier in all places that declare or reference names.
         /// </summary>
         public static bool CanBeIdentifier(string text) =>
-            !IsKeyword(text) && LexicalGrammar.Identifier.Matches(text);
+            !IsKeyword(text) && TokenParser.ScanIdentifier(text) == text.Length;
 
         /// <summary>
         /// True if the text is a keyword.
