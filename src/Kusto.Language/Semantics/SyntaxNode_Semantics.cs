@@ -77,7 +77,7 @@ namespace Kusto.Language.Syntax
                 ? (Func<SyntaxElement, bool>)((SyntaxElement e) => e.ContainsSyntaxDiagnostics)
                 : null;
 
-            SyntaxElement.Walk(root, 
+            SyntaxElement.WalkElements(root, 
                 fnBefore: element =>
                 {
                     if (element.HasSyntaxDiagnostics && includeSyntax)

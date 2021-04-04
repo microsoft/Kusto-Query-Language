@@ -13,7 +13,6 @@ namespace Kusto.Language.Syntax
     public abstract class SyntaxList : SyntaxNode //, IReadOnlyList<SyntaxElement>
     {
         private readonly SyntaxElement[] elements;
-        private readonly int fullWidth;
 
         protected SyntaxList(SyntaxElement[] elements, IReadOnlyList<Diagnostic> diagnostics)
             : base(diagnostics)
@@ -25,9 +24,7 @@ namespace Kusto.Language.Syntax
                 this.elements[i] = Attach(elements[i]);
             }
 
-            Init();
-
-            this.fullWidth = this.ComputeFullWidth();
+            this.Init();
         }
 
         public override SyntaxKind Kind => SyntaxKind.List;
@@ -58,8 +55,6 @@ namespace Kusto.Language.Syntax
         /// Get the child of this element at the specified index.
         /// </summary>
         public override SyntaxElement GetChild(int index) => this.elements[index];
-
-        public override int FullWidth => this.fullWidth;
 
         protected IReadOnlyList<SyntaxElement> GetElements()
         {

@@ -36,6 +36,15 @@ namespace Kusto.Language.Syntax
         public abstract void Accept(SyntaxVisitor visitor);
 
         public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
+
+        /// <summary>
+        /// Invokes the action for this node and its descendant nodes, in lexical order, top down.
+        /// </summary>
+        /// <param name="action">The action that is invoked for each <see cref="SyntaxNode"/></param>
+        public void WalkNodes(Action<SyntaxNode> action)
+        {
+            WalkNodes(this, action);
+        }
     }
 
     public partial class Expression

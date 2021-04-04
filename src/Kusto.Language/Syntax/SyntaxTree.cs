@@ -15,10 +15,29 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxNode Root { get; }
 
+        public SyntaxTree(SyntaxNode root)
+        {
+            this.Root = root;
+            root.InitializeTriviaStarts();
+        }
+
+        private int _depth = -1;
+
         /// <summary>
         /// The maximal depth of the nodes in the tree.
         /// </summary>
-        public int Depth { get; }
+        public int Depth
+        {
+            get
+            {
+                if (_depth == -1)
+                {
+                    _depth = ComputeMaxDepth(this.Root);
+                }
+
+                return _depth;
+            }
+        }
 
         /// <summary>
         /// True if the tree depth is shallow enough to allow stack recursion
@@ -26,21 +45,15 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public bool IsSafeToRecurse => Depth <= KustoCode.MaxAnalyzableSyntaxDepth;
 
-        public SyntaxTree(SyntaxNode root)
-        {
-            this.Root = root;
-            this.Depth = ComputeMaxDepth(root);
-        }
-
         /// <summary>
         /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
         /// </summary>
-        private static int ComputeMaxDepth(SyntaxElement root)
+        private static int ComputeMaxDepth(SyntaxNode root)
         {
             var maxDepth = 0;
             var depth = 0;
 
-            SyntaxElement.Walk(
+            SyntaxElement.WalkNodes(
                 root,
                 fnBefore: e =>
                 {

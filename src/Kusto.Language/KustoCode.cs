@@ -182,8 +182,6 @@ namespace Kusto.Language
 
             var tree = new SyntaxTree(syntax);
 
-            syntax.InitializeTriviaStarts();
-
             LocalBindingCache localCache = null;
             TypeSymbol resultType = null;
             var analyzed = false;

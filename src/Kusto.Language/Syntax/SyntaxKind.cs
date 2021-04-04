@@ -8,7 +8,7 @@
     /// Be sure to also add a new entry referencing it to the
     /// <see cref="SyntaxFacts"/> table.
     /// </remarks>
-    public enum SyntaxKind
+    public enum SyntaxKind : short
     {
         None = 0,
 

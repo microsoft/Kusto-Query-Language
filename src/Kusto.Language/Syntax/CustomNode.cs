@@ -15,7 +15,6 @@ namespace Kusto.Language.Syntax
     {
         private readonly IReadOnlyList<CustomElementDescriptor> shape;
         private readonly IReadOnlyList<SyntaxElement> elements;
-        private readonly int fullWidth;
 
         public CustomNode(IReadOnlyList<CustomElementDescriptor> shape, IReadOnlyList<SyntaxElement> elements, IReadOnlyList<Diagnostic> diagnostics)
             : base(diagnostics)
@@ -42,15 +41,12 @@ namespace Kusto.Language.Syntax
             }
 
             this.Init();
-            this.fullWidth = ComputeFullWidth();
         }
 
         public CustomNode(IReadOnlyList<CustomElementDescriptor> shape, params SyntaxElement[] elements)
             : this(shape, elements, null)
         {
         }
-
-        public override int FullWidth => this.fullWidth;
 
         public override SyntaxKind Kind => SyntaxKind.CustomNode;
 

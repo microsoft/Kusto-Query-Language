@@ -8,8 +8,6 @@ namespace Kusto.Language.Syntax
 
     public abstract class SeparatedElement : SyntaxNode
     {
-        private readonly int fullWidth;
-
         /// <summary>
         /// The element in a list
         /// </summary>
@@ -26,10 +24,7 @@ namespace Kusto.Language.Syntax
             this.Element = Attach(element);
             this.Separator = Attach(separator, optional: true);
             this.Init();
-            this.fullWidth = ComputeFullWidth();
         }
-
-        public override int FullWidth => this.fullWidth;
 
         public override SyntaxKind Kind => SyntaxKind.SeparatedElement;
 

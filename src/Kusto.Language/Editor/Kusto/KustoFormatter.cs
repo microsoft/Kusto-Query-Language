@@ -84,7 +84,7 @@ namespace Kusto.Language.Editor
             if (node == null)
                 return;
 
-            for (int i = 0; i < node.ChildCount; i++)
+            for (int i = 0, n = node.ChildCount; i < n; i++)
             {
                 var child = node.GetChild(i);
 
@@ -110,9 +110,9 @@ namespace Kusto.Language.Editor
                         }
                     }
 
-                    if (child is SyntaxNode n)
+                    if (child is SyntaxNode sn)
                     {
-                        WriteFormattedText(n, childIndentation);
+                        WriteFormattedText(sn, childIndentation);
                     }
                     else if (child is SyntaxToken t2)
                     {
@@ -278,12 +278,12 @@ namespace Kusto.Language.Editor
             {
                 // visit children first so token rules (being more general) get added first
                 // and node rules (being more specific) get added later.
-                for (int i = 0; i < node.ChildCount; i++)
+                for (int i = 0, n = node.ChildCount; i < n; i++)
                 {
                     var child = node.GetChild(i);
-                    if (child is SyntaxNode n)
+                    if (child is SyntaxNode sn)
                     {
-                        IdentifyFormattingRules(n);
+                        IdentifyFormattingRules(sn);
                     }
                     else if (child is SyntaxToken t)
                     {

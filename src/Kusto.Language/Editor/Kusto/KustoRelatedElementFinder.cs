@@ -122,7 +122,7 @@ namespace Kusto.Language.Editor
             var parent = token.Parent;
             var index = parent.GetChildIndex(token);
 
-            for (int i = index + 1; i < parent.ChildCount; i++)
+            for (int i = index + 1, n = parent.ChildCount; i < n; i++)
             {
                 var child = parent.GetChild(i);
                 if (child is SyntaxToken t && t.Text == matchingText)

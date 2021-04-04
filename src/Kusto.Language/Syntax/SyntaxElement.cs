@@ -19,12 +19,17 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// The parent node of this element, or extended data. Use property to access this value.
         /// </summary>
-        private object parent;
+        public SyntaxNode Parent { get; private set; }
 
         /// <summary>
         /// State flags that combine up the tree.
         /// </summary>
         private Flags flags;
+
+        /// <summary>
+        /// Addition information (diagnostics, semantic info) associated with this element
+        /// </summary>
+        private ExtendedData extendedData;
 
         /// <summary>
         /// Kind of token
@@ -49,7 +54,7 @@ namespace Kusto.Language.Syntax
         {
             int offset = 0;
 
-            for (int i = 0; i < this.ChildCount; i++)
+            for (int i = 0, n = this.ChildCount; i < n; i++)
             {
                 var child = this.GetChild(i);
                 if (child != null)
@@ -164,23 +169,24 @@ namespace Kusto.Language.Syntax
 
         internal class ExtendedData
         {
-            public SyntaxNode Parent;
+            //public SyntaxNode Parent;
             public IReadOnlyList<Diagnostic> SyntaxDiagnostics;
             public SemanticInfo SemanticInfo;
         }
 
         internal ExtendedData GetExtendedData(bool create)
         {
-            var data = this.parent as ExtendedData;
+            var data = this.extendedData;
             if (data == null && create)
             {
-                data = new ExtendedData { Parent = this.parent as SyntaxNode };
-                Interlocked.CompareExchange(ref this.parent, data, this.parent);
-                data = this.parent as ExtendedData;
+                var tmp = new ExtendedData();
+                Interlocked.CompareExchange(ref this.extendedData, tmp, null);
+                data = this.extendedData;
             }
 
             return data;
         }
+
         #endregion
 
         /// <summary>
@@ -194,36 +200,6 @@ namespace Kusto.Language.Syntax
         public virtual bool IsMissing => this.Width == 0 && this.ContainsSyntaxDiagnostics;
 
         #region navigation
-        /// <summary>
-        /// The parent node of this element.
-        /// </summary>
-        public SyntaxNode Parent
-        {
-            get
-            {
-                var node = this.parent as SyntaxNode;
-                if (node != null)
-                    return node;
-
-                var data = this.parent as ExtendedData;
-                if (data != null)
-                    return data.Parent;
-
-                return null;
-            }
-
-            private set
-            {
-                // can only be set once
-                Interlocked.CompareExchange(ref this.parent, value, null);
-
-                var data = this.parent as ExtendedData;
-                if (data != null)
-                {
-                    Interlocked.CompareExchange(ref data.Parent, value, null);
-                }
-            }
-        }
 
         /// <summary>
         /// The root element
@@ -654,7 +630,7 @@ namespace Kusto.Language.Syntax
         /// <param name="action">The action that is invoked for each <see cref="SyntaxElement"/></param>
         public void WalkElements(Action<SyntaxElement> action)
         {
-            Walk(this, action);
+            WalkElements(this, action);
         }
 
         /// <summary>
@@ -664,7 +640,7 @@ namespace Kusto.Language.Syntax
         /// <param name="fnBefore">An optional function that is invoked for each element before any child elements are visited.</param>
         /// <param name="fnAfter">An optional function that is invoked for each element after any child elements have been visited.</param>
         /// <param name="fnDescend">An optional function that determines whether the children of an element are visited.</param>
-        public static void Walk(
+        public static void WalkElements(
             SyntaxElement root, 
             Action<SyntaxElement> fnBefore = null, 
             Action<SyntaxElement> fnAfter = null,
@@ -715,13 +691,70 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
+        /// Walks this node and its descendants in lexical order, invoking the actions for each <see cref="SyntaxElement"/> including the root node.
+        /// </summary>
+        /// <param name="root">The root node of the walk. The walk includes this node and any descendant nodes.</param>
+        /// <param name="fnBefore">An optional function that is invoked for each node before any child nodes are visited.</param>
+        /// <param name="fnAfter">An optional function that is invoked for each node after any child nodes have been visited.</param>
+        /// <param name="fnDescend">An optional function that determines whether the child nodes of an node are visited.</param>
+        public static void WalkNodes(
+            SyntaxNode root,
+            Action<SyntaxNode> fnBefore = null,
+            Action<SyntaxNode> fnAfter = null,
+            Func<SyntaxNode, bool> fnDescend = null)
+        {
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+
+            var node = root;
+            var childIndex = 0;
+
+            // the root before walking children
+            fnBefore?.Invoke(root);
+
+            while (node != null)
+            {
+                if (childIndex < node.ChildCount && childIndex >= 0 && (fnDescend == null || fnDescend(node)))
+                {
+                    // walk down
+                    var child = node.GetChild(childIndex) as SyntaxNode;
+                    if (child != null)
+                    {
+                        node = child;
+                        childIndex = 0;
+
+                        // before walking children
+                        fnBefore?.Invoke(node);
+                    }
+                    else
+                    {
+                        childIndex++;
+                    }
+                }
+                else
+                {
+                    // after walking children
+                    fnAfter?.Invoke(node);
+
+                    // stop if we are done with root node
+                    if (node == root)
+                        break;
+
+                    // walk up
+                    childIndex = node.IndexInParent + 1;
+                    node = node.Parent;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the next <see cref="SyntaxElement"/> sibling of this element or null if there is no next sibling.
         /// </summary>
         public SyntaxElement GetNextSibling(bool includeZeroWidthElements = false)
         {
             if (this.Parent != null)
             {
-                for (int i = this.IndexInParent + 1; i < this.Parent.ChildCount && i >= 0; i++)
+                for (int i = this.IndexInParent + 1, n = this.Parent.ChildCount; i < n && i >= 0; i++)
                 {
                     var sibling = this.Parent.GetChild(i);
                     if (sibling != null && (includeZeroWidthElements || sibling.FullWidth > 0))
@@ -924,7 +957,7 @@ namespace Kusto.Language.Syntax
 
         internal void InitializeTriviaStarts()
         {
-            SyntaxElement.Walk(
+            SyntaxElement.WalkElements(
                 this.Root,
                 fnBefore: element =>
                 {
@@ -965,7 +998,7 @@ namespace Kusto.Language.Syntax
         {
             int width = 0;
 
-            for (int i = 0; i < this.ChildCount; i++)
+            for (int i = 0, n = this.ChildCount; i < n; i++)
             {
                 var child = this.GetChild(i);
                 if (child != null)

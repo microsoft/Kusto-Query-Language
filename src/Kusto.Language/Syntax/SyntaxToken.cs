@@ -236,15 +236,18 @@ namespace Kusto.Language.Syntax
         {
             private readonly string trivia;
             private readonly string text;
+            private readonly int fullWidth;
 
             public override string Trivia => this.trivia;
             public override string Text => this.text;
+            public override int FullWidth => this.fullWidth;
 
             public IdentifierToken(string trivia, string text, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
             {
                 this.trivia = trivia ?? "";
                 this.text = text;
+                this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
             public override SyntaxKind Kind => SyntaxKind.IdentifierToken;
@@ -264,15 +267,18 @@ namespace Kusto.Language.Syntax
         {
             private readonly string trivia;
             private readonly SyntaxKind kind;
+            private readonly int fullWidth;
 
             public override string Trivia => this.trivia;
             public override SyntaxKind Kind => this.kind;
+            public override int FullWidth => this.fullWidth;
 
             public KindToken(string trivia, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
             {
                 this.trivia = trivia ?? "";
                 this.kind = kind;
+                this.fullWidth = this.trivia.Length + SyntaxFacts.GetText(this.Kind).Length;
             }
 
             public override string Text => SyntaxFacts.GetText(this.Kind);
@@ -291,11 +297,12 @@ namespace Kusto.Language.Syntax
             private readonly string trivia;
             private readonly string text;
             private readonly SyntaxKind kind;
+            private readonly int fullWidth;
 
             public override string Trivia => this.trivia;
             public override string Text => text;
-
             public override SyntaxKind Kind => this.kind;
+            public override int FullWidth => this.fullWidth;
 
             public TextAndKindToken(string trivia, string text, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
@@ -303,6 +310,7 @@ namespace Kusto.Language.Syntax
                 this.trivia = trivia ?? "";
                 this.text = text;
                 this.kind = kind;
+                this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
             protected override SyntaxElement CloneCore()
@@ -319,11 +327,12 @@ namespace Kusto.Language.Syntax
             private readonly string trivia;
             private readonly string text;
             private readonly SyntaxKind kind;
+            private readonly int fullWidth;
 
             public override string Trivia => this.trivia;
             public override string Text => text;
-
             public override SyntaxKind Kind => this.kind;
+            public override int FullWidth => this.fullWidth;
 
             public LiteralToken(string trivia, string text, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
@@ -331,6 +340,7 @@ namespace Kusto.Language.Syntax
                 this.trivia = trivia ?? "";
                 this.text = text;
                 this.kind = kind;
+                this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
             protected override SyntaxElement CloneCore()
@@ -637,8 +647,8 @@ namespace Kusto.Language.Syntax
             private readonly SyntaxKind kind;
 
             public override string Trivia => this.trivia;
-
             public override SyntaxKind Kind => this.kind;
+            public override int FullWidth => this.trivia.Length;
 
             public MissingToken(string trivia, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
