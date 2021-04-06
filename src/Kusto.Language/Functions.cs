@@ -1522,9 +1522,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ArraySum =
            new FunctionSymbol("array_sum", ScalarTypes.Real,
-               new Parameter("series", ScalarTypes.Dynamic))
-           .WithResultNameKind(ResultNameKind.None)
-           .Hide();
+               new Parameter("array", ScalarTypes.Dynamic))
+           .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesFft =
             new FunctionSymbol("series_fft",
