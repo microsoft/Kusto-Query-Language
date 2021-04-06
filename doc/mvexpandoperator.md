@@ -57,7 +57,7 @@ as determined in the following way:
 
 1. For each *ColumnName* or *ArrayExpression* that is expanded, the number of output records
    is determined for each value as explained [below](#modes-of-expansion). For each input record, the maximum number of output records is calculated. All arrays or property bags are expanded "in parallel"
-   so that missing values (if any) are replaced by null values.
+   so that missing values (if any) are replaced by null values. Elements are expanded into rows in the order that they appear in the original array/bag.
 
 1. If the dynamic value is null, then a single record is produced for that value (null).
    If the dynamic value is an empty array or property bag, no record is produced for that value.

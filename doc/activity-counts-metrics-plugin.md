@@ -37,9 +37,9 @@ Returns a table that has: total count values, distinct count values, distinct co
 
 Output table schema is:
 
-|`TimelineColumn`|`dim1`|...|`dim_n`|`count`|`dcount`|`new_dcount`|`aggregated_dcount`
-|---|---|---|---|---|---|---|---|---|
-|type: as of *`TimelineColumn`*|..|..|..|long|long|long|long|long
+|`TimelineColumn`|`dim1`|...|`dim_n`|`count`|`dcount`|`new_dcount`|`aggregated_dcount`|
+|---|---|---|---|---|---|---|---|
+|type: as of *`TimelineColumn`*|..|..|..|long|long|long|long|
 
 
 * *`TimelineColumn`*: The time window start time.

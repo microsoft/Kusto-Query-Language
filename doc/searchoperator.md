@@ -141,5 +141,5 @@ union C*, TF | search "billg" or "davec" or "steveb"
 
   |# |Tip                                                                                  |Prefer                                        |Over                                                                    |
   |--|-------------------------------------------------------------------------------------|----------------------------------------------|------------------------------------------------------------------------|
-  | 1| Prefer to use a single `search` operator over several consecutive `search` operators|`search "billg" and ("steveb" or "satyan")`   |<code>search "billg" &#124; search "steveb" or "satyan"<code>           ||
-  | 2| Prefer to filter inside the `search` operator                                       |`search "billg" and "steveb"`                 |<code>search * &#124; where * has "billg" and * has "steveb"<code>      ||
+  | 1| Prefer to use a single `search` operator over several consecutive `search` operators|`search "billg" and ("steveb" or "satyan")`   |<code>search "billg" &#124; search "steveb" or "satyan"<code>           |
+  | 2| Prefer to filter inside the `search` operator                                       |`search "billg" and "steveb"`                 |<code>search * &#124; where * has "billg" and * has "steveb"<code>      |

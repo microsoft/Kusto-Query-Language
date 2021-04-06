@@ -64,7 +64,7 @@ the query, it replaces each pattern invocation with the corresponding pattern bo
 declare pattern app = (applicationId:string)[eventType:string]
 {
     ("ApplicationX").["StopEvents"] = { database("AppX").Events | where EventType == "StopEvent" };
-    ("ApplicationX").["StartEvents"] = { database(applicationId).Events | where EventType == eventType } ;
+    ("ApplicationX").["StartEvents"] = { database("AppX").Events | where EventType == "StartEvents" } ;
 };
 app("ApplicationX").StartEvents
 | join kind=inner app("ApplicationX").StopEvents on CorrelationId
