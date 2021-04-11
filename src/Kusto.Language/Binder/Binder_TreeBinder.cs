@@ -65,21 +65,30 @@ namespace Kusto.Language.Binding
 
             public override void VisitPathExpression(PathExpression node)
             {
-                node.Expression.Accept(this);
-
-                // result type of left-side expression is in scope after the dot.
-                var oldPathScope = _binder._pathScope;
-                _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
-                try
+                // bracketed expressions are not evaluated in scope of the left-hand side
+                if (node.Selector is BracketedExpression)
                 {
-                    node.Selector.Accept(this);
+                    base.VisitPathExpression(node);
+                    return;
                 }
-                finally
+                else
                 {
-                    _binder._pathScope = oldPathScope;
-                }
+                    node.Expression.Accept(this);
 
-                BindNode(node);
+                    // result type of left-side expression is in scope after the dot.
+                    var oldPathScope = _binder._pathScope;
+                    _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
+                    try
+                    {
+                        node.Selector.Accept(this);
+                    }
+                    finally
+                    {
+                        _binder._pathScope = oldPathScope;
+                    }
+
+                    BindNode(node);
+                }
             }
 
             public override void VisitPipeExpression(PipeExpression node)

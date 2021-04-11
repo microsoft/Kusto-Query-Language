@@ -1473,7 +1473,7 @@ namespace Kusto.Language.Parsing
 
         private Expression ParsePrimaryPathSelector()
         {
-            var selector = ParsePathElementSelector();
+            var selector = ParseRootPathElementSelector();
             if (selector != null)
             {
                 var dataScope = ParseDataScopeClause();
@@ -1511,6 +1511,18 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        private Expression ParseRootPathElementSelector()
+        {
+            if (PeekToken().Kind == SyntaxKind.OpenBracketToken)
+            {
+                return ParseRootBracketedPathElementSelector();
+            }
+            else
+            {
+                return ParseBarePathElementSelector();
+            }
+        }
+
         private Expression ParseBarePathElementSelector()
         {
             if (PeekToken().Kind == SyntaxKind.AtToken)
@@ -1521,6 +1533,17 @@ namespace Kusto.Language.Parsing
             {
                 return ParseNameReference();
             }
+        }
+
+        private Expression ParseRootBracketedPathElementSelector()
+        {
+            if (PeekToken().Kind == SyntaxKind.OpenBracketToken)
+            {
+                return ParseBracketedWildcardedNameReference()
+                    ?? ParseBracketedNameReference();
+            }
+
+            return null;
         }
 
         private Expression ParseBracketedPathElementSelector()
@@ -1534,7 +1557,6 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-
 
         private Expression ParseBracketedExpression()
         {
@@ -1773,7 +1795,7 @@ namespace Kusto.Language.Parsing
 
             var expr = ParsePrimaryExpression();
 
-            while (true)
+            while (expr != null)
             {
                 var kind = PeekToken().Kind;
                 if (kind == SyntaxKind.DotToken)
@@ -2531,7 +2553,7 @@ namespace Kusto.Language.Parsing
 
         private Expression ParseEntityPathExpression()
         {
-            var expr = ParsePathElementSelector();
+            var expr = ParseRootPathElementSelector();
 
             if (expr != null)
             {

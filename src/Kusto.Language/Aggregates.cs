@@ -386,13 +386,18 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Any =
             new FunctionSymbol("any",
                 new Signature(
-                    GetAnyResult,
-                    Tabularity.Scalar,
-                    new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 1, maxOccurring: MaxRepeat)),
+                    ReturnTypeKind.Parameter0,
+                    new Parameter("expr", ParameterTypeKind.Scalar)),
                 new Signature(
                     GetAnyResult,
                     Tabularity.Scalar,
-                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)));
+                    new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 2, maxOccurring: MaxRepeat)),
+                new Signature(
+                    GetAnyResult,
+                    Tabularity.Scalar,
+                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("any");
 
         public static readonly FunctionSymbol AnyIf =
             new FunctionSymbol("anyif",
@@ -419,17 +424,22 @@ namespace Kusto.Language
                     {
                         if (!doNotRepeat.Contains(c))
                         {
-                            columns.Add(c.WithName("any_" + c.Name));
+                            columns.Add(c);
                         }
                     }
                 }
                 else if (arg.ReferencedSymbol is ColumnSymbol c)
                 {
-                    columns.Add(c.WithName("any_" + c.Name));
+                    columns.Add(c);
+                }
+                else if (args.Count == 1)
+                {
+                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, ""), arg.ResultType);
+                    columns.Add(col);
                 }
                 else
                 {
-                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, "column"), arg.ResultType);
+                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, "arg" + i), arg.ResultType);
                     columns.Add(col);
                 }
             }

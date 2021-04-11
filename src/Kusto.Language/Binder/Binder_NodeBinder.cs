@@ -2995,10 +2995,6 @@ namespace Kusto.Language.Binding
                     var matchIdColumnName = (matchIdParam != null && matchIdParam.Expression is NameDeclaration matchNd) ? matchNd.SimpleName : "match_id";
                     columns.Add(new ColumnSymbol(matchIdColumnName, ScalarTypes.Long));
 
-                    var stepNameParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == QueryOperatorParameters.WithStepName.Name);
-                    var stepColumnName = (stepNameParam != null && stepNameParam.Expression is NameDeclaration stepNd) ? stepNd.SimpleName : "step";
-                    columns.Add(new ColumnSymbol(stepColumnName, ScalarTypes.String));
-
                     var resultTable = new TableSymbol(columns)
                         .WithInheritableProperties(RowScopeOrEmpty);
 

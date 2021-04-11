@@ -4271,9 +4271,9 @@ namespace Kusto.Language.Binding
                         }
                         break;
 
-                    case CompoundNamedExpression c:
+                    case CompoundNamedExpression cn:
                         {
-                            if (GetResultTypeOrError(c.Expression) is TupleSymbol tupleType)
+                            if (GetResultTypeOrError(cn.Expression) is TupleSymbol tupleType)
                             {
                                 for (int i = 0; i < tupleType.Columns.Count; i++)
                                 {
@@ -4281,9 +4281,9 @@ namespace Kusto.Language.Binding
                                     type = columnType ?? col.Type;
 
                                     // if element has name declaration then use name declaration rule
-                                    if (i < c.Names.Names.Count)
+                                    if (i < cn.Names.Names.Count)
                                     {
-                                        var nameDecl = c.Names.Names[i].Element;
+                                        var nameDecl = cn.Names.Names[i].Element;
                                         var name = nameDecl.SimpleName;
                                         col = new ColumnSymbol(name, type);
 
@@ -4295,7 +4295,7 @@ namespace Kusto.Language.Binding
                                             builder.DoNotAdd(tupleType.Columns[i]);
                                         }
                                     }
-                                    else if (GetReferencedSymbol(c.Expression) is FunctionSymbol fs1)
+                                    else if (GetReferencedSymbol(cn.Expression) is FunctionSymbol fs1)
                                     {
                                         AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, aggregates);
                                     }
@@ -4307,15 +4307,37 @@ namespace Kusto.Language.Binding
                                 }
 
                                 // any additional names without matching tuple members gets a diagnostic
-                                for (int i = tupleType.Members.Count; i < c.Names.Names.Count; i++)
+                                for (int i = tupleType.Members.Count; i < cn.Names.Names.Count; i++)
                                 {
-                                    var nameDecl = c.Names.Names[i];
+                                    var nameDecl = cn.Names.Names[i];
                                     diagnostics.Add(DiagnosticFacts.GetTheNameDoesNotHaveCorrespondingExpression().WithLocation(nameDecl));
+                                }
+                            }
+                            else if (cn.Names.Names.Count == 1)
+                            {
+                                var expr = cn.Expression;
+                                var name = cn.Names.Names[0].Element;
+                                if (expr.ReferencedSymbol is ColumnSymbol c)
+                                {
+                                    col = new ColumnSymbol(name.SimpleName, columnType ?? c.Type);
+                                    builder.Declare(col, diagnostics, name, replace: true);
+                                    SetSemanticInfo(name, CreateSemanticInfo(col));
+
+                                    if (doNotRepeat)
+                                    {
+                                        builder.DoNotAdd(c);
+                                    }
+                                }
+                                else
+                                {
+                                    col = new ColumnSymbol(name.SimpleName, columnType ?? GetResultTypeOrError(cn.Expression));
+                                    builder.Declare(col, diagnostics, name, replace: isExtend);
+                                    SetSemanticInfo(name, CreateSemanticInfo(col));
                                 }
                             }
                             else
                             {
-                                diagnostics.Add(DiagnosticFacts.GetTheExpressionDoesNotHaveMultipleValues().WithLocation(c.Names));
+                                diagnostics.Add(DiagnosticFacts.GetTheExpressionDoesNotHaveMultipleValues().WithLocation(cn.Names));
                             }
                         }
                         break;

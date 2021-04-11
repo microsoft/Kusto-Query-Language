@@ -2041,7 +2041,7 @@ namespace Kusto.Language.Parsing
 
             var ScanOrderByClause =
                 Rule(
-                    Token(SyntaxKind.OrderKeyword),
+                    HiddenToken(SyntaxKind.OrderKeyword), // not yet supported
                     RequiredToken(SyntaxKind.ByKeyword),
                     CommaList(SortExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionKeyword, SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (order, by, list) =>
@@ -2049,7 +2049,7 @@ namespace Kusto.Language.Parsing
 
             var ScanPartitionByClause =
                 Rule(
-                    Token(SyntaxKind.PartitionKeyword),
+                    HiddenToken(SyntaxKind.PartitionKeyword), // not yet supported
                     RequiredToken(SyntaxKind.ByKeyword),
                     CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (partition, by, list) =>
@@ -2065,7 +2065,7 @@ namespace Kusto.Language.Parsing
 
             var ScanOperator =
                 Rule(
-                    HiddenToken(SyntaxKind.ScanKeyword), // private while this is alpha
+                    Token(SyntaxKind.ScanKeyword), 
                     QueryParameterList(QueryOperatorParameters.ScanParameters),
                     Optional(ScanOrderByClause),
                     Optional(ScanPartitionByClause),

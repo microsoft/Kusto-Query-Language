@@ -69,9 +69,6 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter WithSource =
             new QueryOperatorParameter("withsource", QueryOperatorParameterValueKind.NameDeclaration, aliases: new[] { "with_source" });
 
-        public static readonly QueryOperatorParameter WithStepName =
-            new QueryOperatorParameter("with_step_name", QueryOperatorParameterValueKind.NameDeclaration);
-
         public static readonly IReadOnlyList<QueryOperatorParameter> AllKnownParameters = new QueryOperatorParameter[]
         {
             BagExpansion.Hide(),
@@ -92,8 +89,7 @@ namespace Kusto.Language
             Threshold.Hide(),
             WithMatchId.Hide(),
             WithItemIndex.Hide(),
-            WithSource.Hide(),
-            WithStepName.Hide()
+            WithSource.Hide()
         };
 
         // parameters sets for specific operators
@@ -248,9 +244,8 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ScanParameters = new QueryOperatorParameter[]
         {
-            Kind.WithValues(KustoFacts.ScanOperatorKinds),
+            Kind.WithValues(KustoFacts.ScanOperatorKinds).Hide(),
             WithMatchId,
-            WithStepName,
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SearchParameters = new QueryOperatorParameter[]
