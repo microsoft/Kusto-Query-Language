@@ -2263,6 +2263,7 @@ namespace Kusto.Language.Parsing
 
             var PrePipeQueryOperator =
                 First(
+                    EvaluateOperator,
                     FindOperator,
                     SearchOperator,
                     UnionOperator,

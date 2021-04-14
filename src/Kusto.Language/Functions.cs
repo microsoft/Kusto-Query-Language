@@ -1389,8 +1389,11 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackArray =
-            new FunctionSymbol("pack_array", ScalarTypes.Dynamic,
-                new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+            new FunctionSymbol("pack_array", 
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("value", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -1913,8 +1916,10 @@ namespace Kusto.Language
             new FunctionSymbol("abs",
                 new Signature(ScalarTypes.Long,
                     new Parameter("number", ParameterTypeKind.Integer)),
-                new Signature(ScalarTypes.Real,
-                    new Parameter("number", ParameterTypeKind.RealOrDecimal)))
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("number", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.TimeSpan,
+                    new Parameter("number", ScalarTypes.TimeSpan)))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 

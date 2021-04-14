@@ -346,6 +346,29 @@ namespace Kusto.Language.Editor
             return false;
         }
 
+        private bool IsQueryPart(SyntaxElement element, int contextChildIndex)
+        {
+            if (element.Root is QueryBlock)
+                return true;
+
+            if (element.Root is CommandBlock)
+            {
+                // right of <| or | is query
+                if (contextChildIndex > 0
+                    && element.GetChild(contextChildIndex - 1) is SyntaxToken e
+                    && (e.Text == "<|" || e.Text == "|"))
+                {
+                    return true;
+                }
+
+                // part of a function body
+                if (element.GetFirstAncestorOrSelf<FunctionBody>() != null)
+                    return true;
+            }
+
+            return false;
+        }
+
         private CompletionMode GetSymbolCompletions(int position, CompletionBuilder builder)
         {
             CompletionHint hint = CompletionHint.None;
@@ -1768,44 +1791,6 @@ namespace Kusto.Language.Editor
                     }
                 }
             }
-
-#if false
-            var hints = GetCompletionHint(position);
-            var match = GetSymbolMatch(position);
-            var expr = GetCompleteExpressionLeftOfPosition(position);
-
-            // look for completions in the grammar elements corresponding to the text position
-            ScanGrammarAtPosition(position, p =>
-            {
-                this.cancellationToken.ThrowIfCancellationRequested();
-
-                if (p.Annotations.Count > 0)
-                {
-                    // add in any completion hints associated with this parser
-                    foreach (var hint in p.Annotations.OfType<CompletionHint>())
-                    {
-                        hints |= hint;
-                    }
-
-                    // consider all completion items associated with this parser
-                    foreach (var item in p.Annotations.OfType<CompletionItem>())
-                    {
-                        if (IncludeSyntax(item, position, hints, match, expr))
-                        {
-                            if (ShouldAugmentSyntaxCompletionItem(item))
-                            {
-                                var augmentedItem = GetAugmentedCompletionItem(item);
-                                builder.Add(augmentedItem);
-                            }
-                            else
-                            {
-                                builder.Add(item);
-                            }
-                        }
-                    }
-                }
-            });
-#endif
         }
 
         private CompletionItem GetAugmentedCompletionItem(CompletionItem item)
@@ -1944,27 +1929,37 @@ namespace Kusto.Language.Editor
                             // better starting point
                             break;
                         case PipeExpression pe:
-                            // this is meant to handle the case of: XXX | $
-                            if (position >= pe.Bar.TriviaStart
-                                && pe.Expression is PipeExpression priorPipe)
+                            // this is meant to handle the case of: XXX | YYY | $
+                            if (position >= pe.Bar.TriviaStart)
                             {
-                                searchStart = priorPipe.Operator.TextStart;
-                                grammar = queryGrammar.PipeSubExpression;
-                                return;
-                            }
+                                if (pe.Expression is PipeExpression priorPipe)
+                                {
+                                    searchStart = priorPipe.Operator.TextStart;
+                                    grammar = queryGrammar.PipeSubExpression;
+                                    return;
+                                }
+                            }                            
                             break;
                         case FunctionBody body:
                             searchStart = body.TextStart;
                             grammar = queryGrammar.FunctionBody;
                             return;
                         case Statement stat:
-                            searchStart = stat.TextStart;
-                            grammar = queryGrammar.StatementList;
-                            return;
+                            if (IsQueryPart(node, 0))
+                            {
+                                searchStart = stat.TextStart;
+                                grammar = queryGrammar.StatementList;
+                                return;
+                            }
+                            break;
                         case SeparatedElement<Statement> _:
-                            searchStart = node.TextStart;
-                            grammar = queryGrammar.StatementList;
-                            return;
+                            if (IsQueryPart(node, 0))
+                            {
+                                searchStart = node.TextStart;
+                                grammar = queryGrammar.StatementList;
+                                return;
+                            }
+                            break;
                         case FunctionCallExpression fc:
                             // for argument list
                             if (position > fc.Name.End)
@@ -1991,6 +1986,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
+            // otherwise use the grammar associated with the entire source
             searchStart = this.code.Syntax.TextStart;
             grammar = this.code.Grammar;
         }
