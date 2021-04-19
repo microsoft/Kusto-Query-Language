@@ -122,6 +122,9 @@ namespace Kusto.Language
         public static readonly OptionSymbol QueryResultsCacheMaxAge =
             new OptionSymbol("query_results_cache_max_age", "If positive, controls the maximum age of the cached query results which Kusto is allowed to return", ScalarTypes.TimeSpan);
 
+        public static readonly OptionSymbol QueryResultsCachePerShardEnabled =
+            new OptionSymbol("query_results_cache_per_shard", "If set, enables per-shard query cache.", ScalarTypes.Bool);
+
         public static readonly OptionSymbol RequestBlockRowLevelSecurity =
             new OptionSymbol("request_block_row_level_security", "If specified, blocks access to tables for which row_level_security policy is enabled", ScalarTypes.Bool);
 
@@ -206,6 +209,7 @@ namespace Kusto.Language
             QueryParquetInShardEngine,
             QueryResultsApplyGetSchema,
             QueryResultsCacheMaxAge,
+            QueryResultsCachePerShardEnabled,
             RequestBlockRowLevelSecurity,
             RequestCalloutDisabled,
             RequestDescription,
