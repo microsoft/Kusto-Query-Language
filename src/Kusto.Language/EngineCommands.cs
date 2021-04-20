@@ -1494,6 +1494,11 @@ namespace Kusto.Language
                 "alter materialized-view MaterializedViewNameName=<materializedview> autoUpdateSchema (true|false)",
                 ShowMaterializedViewResult);
 
+        public static readonly CommandSymbol ClearMaterializedViewData =
+           new CommandSymbol(nameof(ClearMaterializedViewData),
+               "clear materialized-view MaterializedViewNameName=<materializedview> data",
+               "(ExtentId: guid, TableName: string, CreatedOn: datetime)");
+
         #endregion
 
         #region System Information Commands
@@ -2125,6 +2130,7 @@ namespace Kusto.Language
                 ShowMaterializedViewPolicyCaching, 
                 ShowMaterializedViewPolicyMerge,
                 AlterMaterializedView, 
+                ClearMaterializedViewData,
                 DropMaterializedView, 
                 EnableDisableMaterializedView, 
                 ShowMaterializedViewPrincipals,
