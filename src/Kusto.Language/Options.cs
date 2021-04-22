@@ -24,12 +24,6 @@ namespace Kusto.Language
                 "The property is an array of materialized views names and the shuffle keys to use.\r\n" +
                 "examples: 'dynamic(", ScalarTypes.Dynamic);
 
-        public static readonly OptionSymbol MaterializedViewBroadcastQuery =
-            new OptionSymbol("materialized_view_broadcast",
-                "An hint to use broadcast strategy for materialized views that are referenced in the query.\r\n" +
-                "The property is an array of materialized views names.\r\n" +
-                "examples: 'dynamic(", ScalarTypes.Dynamic);
-
         public static readonly OptionSymbol MaxEntitiesToUnion =
             new OptionSymbol("query_max_entities_in_union", "Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
 
@@ -112,9 +106,6 @@ namespace Kusto.Language
 
         public static readonly OptionSymbol QueryNow =
             new OptionSymbol("query_now", "Overrides the datetime value returned by the now(0s) function.", ScalarTypes.DateTime);
-
-        public static readonly OptionSymbol QueryParquetInShardEngine =
-            new OptionSymbol("query_parquet_in_shard_engine", "Force a Parquet external_table/externaldata query to run in EngineV3 (true) or EngineV2 (false)", ScalarTypes.Bool);
         
         public static readonly OptionSymbol QueryResultsApplyGetSchema =
             new OptionSymbol("query_results_apply_getschema", "If set, retrieves the schema of each tabular data in the results of the query instead of the data itself.", ScalarTypes.Bool);
@@ -175,7 +166,6 @@ namespace Kusto.Language
             DeferPartialQueryFailures,
             DoNotImpersonate,
             MaterializedViewShuffleQuery,
-            MaterializedViewBroadcastQuery,
             MaxEntitiesToUnion,
             MaxMemoryConsumptionPerIterator,
             MaxMemoryConsumptionPerQueryPerNode,
@@ -206,7 +196,6 @@ namespace Kusto.Language
             QueryForceRowLevelSecurity,
             QueryLanguage,
             QueryNow,
-            QueryParquetInShardEngine,
             QueryResultsApplyGetSchema,
             QueryResultsCacheMaxAge,
             QueryResultsCachePerShardEnabled,
