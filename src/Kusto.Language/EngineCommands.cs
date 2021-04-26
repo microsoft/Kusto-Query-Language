@@ -1572,7 +1572,9 @@ namespace Kusto.Language
                     new ColumnSymbol("IngestionCapacityUtilization", ScalarTypes.Real),
                     new ColumnSymbol("ShardsWarmingStatus", ScalarTypes.String),
                     new ColumnSymbol("ShardsWarmingTemperature", ScalarTypes.Real),
-                    new ColumnSymbol("ShardsWarmingDetails", ScalarTypes.String)
+                    new ColumnSymbol("ShardsWarmingDetails", ScalarTypes.String),
+                    new ColumnSymbol("StoredQueryResultsInProgress", ScalarTypes.Long),
+                    new ColumnSymbol("HotDataDiskSpaceUsage", ScalarTypes.Real)
                 ));
 
         public static readonly CommandSymbol ShowCapacity =
