@@ -22,12 +22,4 @@ There are many ways to contribute to Kusto Query Language.
 * Review the [source code changes](https://github.com/microsoft/Kusto-Query-Language/commits/master).
 * Engage with other Kusto Query Language users and developers on [StackOverflow](https://stackoverflow.com/questions/tagged/kusto-query-language).
 
-## Microsoft Open Source Code of Conduct
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-
-Resources:
-
-* [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/)
-* [Microsoft Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
-* Contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with questions or concerns
+[!INCLUDE [Code of conduct](CODE_OF_CONDUCT.md)]
