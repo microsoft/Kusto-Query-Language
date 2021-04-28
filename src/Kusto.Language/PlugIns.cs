@@ -513,6 +513,13 @@ namespace Kusto.Language
                  new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat)
                  );
 
+        public static readonly FunctionSymbol RowsNear =
+             new FunctionSymbol("rows_near",
+                (table, args) => table,
+                Tabularity.Tabular,
+                new Parameter("NumRows", ParameterTypeKind.Integer, ArgumentKind.Constant),
+                new Parameter("NumRowsAfter", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring:0));
+
         public static readonly FunctionSymbol SessionCount =
              new FunctionSymbol("session_count",
                  (table, args, signature) =>
@@ -654,6 +661,7 @@ namespace Kusto.Language
             Python,
             R,
             RollingPercentile,
+            RowsNear,
             SessionCount,
             SequenceDetect,
             SlidingWindowCounts,
