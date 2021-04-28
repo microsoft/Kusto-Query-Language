@@ -4883,6 +4883,13 @@ namespace Kusto.Language.Binding
             if (targetType == ScalarTypes.Unknown && sourceType.IsScalar)
                 return true;
 
+            // a single column tuple is assignable to a scalar
+            if (sourceType.Kind == SymbolKind.Tuple 
+                && targetType.Kind == SymbolKind.Scalar
+                && sourceType is TupleSymbol stt 
+                && stt.Columns.Count == 1)
+                return SymbolsAssignable(targetType, stt.Columns[0].Type);
+
             if (targetType.Kind != sourceType.Kind)
                 return false;
 

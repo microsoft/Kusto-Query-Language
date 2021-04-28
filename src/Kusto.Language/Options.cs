@@ -155,6 +155,12 @@ namespace Kusto.Language
         public static readonly OptionSymbol ValidatePermissions =
             new OptionSymbol("validate_permissions", "Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol RequestUser =
+           new OptionSymbol("request_user", "Request user to be used in the traces.", ScalarTypes.String);
+
+        public static readonly OptionSymbol RequestAppName =
+           new OptionSymbol("request_app_name", "Request application name to be used in the traces.", ScalarTypes.String);
+
 #if QUERY_COLD_DATA_SCAN_MAX_RECORDS
         public static readonly OptionSymbol QueryColdDataScanMaxRecords =
             new OptionSymbol("query_cold_data_scan_max_records", "Enables limiting query to scanning no more than N records of the cold data.", ScalarTypes.Long);
@@ -212,6 +218,8 @@ namespace Kusto.Language
             TruncationMaxRecords,
             TruncationMaxSize,
             ValidatePermissions,
+            RequestUser,
+            RequestAppName
         };
     }
 }
