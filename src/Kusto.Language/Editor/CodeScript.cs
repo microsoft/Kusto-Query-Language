@@ -167,6 +167,7 @@ namespace Kusto.Language.Editor
             bool allWhitespace = true; // until proven otherwise
             bool newBlockNextWhitespaceLine = false; // no prior block
             bool newBlockNextNonWhitespaceLine = false; // already added first block
+            bool firstOnLine = true;
             int lineStart = 0;
 
             for (int i = 0, n = text.Length; i < n;)
@@ -203,14 +204,33 @@ namespace Kusto.Language.Editor
                     lineStart = i;
                     lineStarts.Add(lineStart);
                     allWhitespace = true;
+                    firstOnLine = true;
+                    continue;
+                }
+
+                // skip over multi-line string literals that are first non-whitespace on line
+                // this allows blank lines to exist inside multi-line string literals
+                // without mistaking of ``` appearing inside other string literals or comments
+                if (firstOnLine && text[i] == '`')
+                {
+                    var ml = Parsing.TokenParser.ScanStringLiteral(text, i);
+                    if (ml > 0)
+                    {
+                        i += ml;
+                        firstOnLine = false;
+                        allWhitespace = false;
+                        continue;
+                    }
+                }
+                
+                if (!char.IsWhiteSpace(text[i]))
+                {
+                    i++;
+                    allWhitespace = false;
+                    firstOnLine = false;
                 }
                 else
                 {
-                    if (!char.IsWhiteSpace(text[i]))
-                    {
-                        allWhitespace = false;
-                    }
-
                     i++;
                 }
             }
