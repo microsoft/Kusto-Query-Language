@@ -477,6 +477,12 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol Lz4CompressDynamicArray =
+            new FunctionSymbol("__lz4_compress_dynamic_array_to_base64_string", ScalarTypes.String,
+                new Parameter("dynamic", ScalarTypes.Dynamic))
+            .ConstantFoldable()
+            .Hide()
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region parsing functions
@@ -2352,6 +2358,7 @@ namespace Kusto.Language
             ZlibCompressString,
             GzipDecompressString,
             GzipCompressString,
+            Lz4CompressDynamicArray,
             #endregion
 
 #region parsing functions
