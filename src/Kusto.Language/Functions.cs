@@ -2278,6 +2278,28 @@ namespace Kusto.Language
                 new Parameter("text", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip_prefix", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol HasAnyIpv4 =
+            new FunctionSymbol("has_any_ipv4",
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ips", ScalarTypes.String, maxOccurring: MaxRepeat)),
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ips", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
+        public static readonly FunctionSymbol HasAnyIpv4Prefix =
+            new FunctionSymbol("has_any_ipv4_prefix",
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ip_prefixes", ScalarTypes.String, maxOccurring: MaxRepeat)),
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ip_prefixes", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region All
@@ -2633,6 +2655,8 @@ namespace Kusto.Language
             InternalFunnelCompletion,
             HasIpv4,
             HasIpv4Prefix,
+            HasAnyIpv4,
+            HasAnyIpv4Prefix,
             RowNumber,
             RowCumSum,
             RowRank,
