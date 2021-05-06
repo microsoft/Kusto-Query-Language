@@ -2135,6 +2135,13 @@ namespace Kusto.Language
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol S2CellToPolygon =
+            new FunctionSymbol("geo_s2cell_to_polygon", ScalarTypes.Dynamic,
+                new Parameter("s2cell", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region other
@@ -2619,6 +2626,7 @@ namespace Kusto.Language
             GeoLineDensify,
             GeoLineValidate,
             S2CellToCentralPoint,
+            S2CellToPolygon,
             #endregion
 
             #region ip-matching functions

@@ -4140,6 +4140,17 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private enum ProjectionStyle
+        {
+            Default,
+            Extend,
+            Print,
+            Rename,
+            Replace,
+            Reorder,
+            Summarize
+        }
+
         /// <summary>
         /// Creates projection columns for all the expressions.
         /// </summary>
@@ -4147,11 +4158,7 @@ namespace Kusto.Language.Binding
             SyntaxList<SeparatedElement<Expression>> expressions, 
             ProjectionBuilder builder,
             List<Diagnostic> diagnostics,
-            bool isRename = false,
-            bool isReplace = false,
-            bool isReorder = false,
-            bool isExtend = false,
-            bool aggregates = false,
+            ProjectionStyle style = ProjectionStyle.Default,
             bool doNotRepeat = false)
         {
             foreach (var elem in expressions)
@@ -4160,11 +4167,7 @@ namespace Kusto.Language.Binding
                     elem.Element,
                     builder,
                     diagnostics,
-                    isRename: isRename,
-                    isReplace: isReplace,
-                    isReorder: isReorder,
-                    isExtend: isExtend,
-                    aggregates: aggregates,
+                    style: style,
                     doNotRepeat: doNotRepeat);
             }
         }
@@ -4176,11 +4179,7 @@ namespace Kusto.Language.Binding
             Expression expression,
             ProjectionBuilder builder,
             List<Diagnostic> diagnostics,
-            bool isRename = false,
-            bool isReplace = false,
-            bool isReorder = false,
-            bool isExtend = false,
-            bool aggregates = false,
+            ProjectionStyle style = ProjectionStyle.Default,
             bool doNotRepeat = false,
             TypeSymbol columnType = null,
             string columnName = null)
@@ -4195,7 +4194,7 @@ namespace Kusto.Language.Binding
                 expression = oe.Expression;
             }
 
-            if (isRename)
+            if (style == ProjectionStyle.Rename)
             {
                 switch (expression)
                 {
@@ -4243,7 +4242,7 @@ namespace Kusto.Language.Binding
                                 {
                                     if (GetReferencedSymbol(n.Expression) is FunctionSymbol fs1)
                                     {
-                                        AddFunctionTupleResultColumn(fs1, tu.Columns[i], builder, doNotRepeat, aggregates);
+                                        AddFunctionTupleResultColumn(fs1, tu.Columns[i], builder, doNotRepeat, style == ProjectionStyle.Summarize);
                                     }
                                     else
                                     {
@@ -4265,7 +4264,7 @@ namespace Kusto.Language.Binding
                             else
                             {
                                 col = new ColumnSymbol(n.Name.SimpleName, columnType ?? GetResultTypeOrError(n.Expression));
-                                builder.Declare(col, diagnostics, n.Name, replace: isExtend);
+                                builder.Declare(col, diagnostics, n.Name, replace: style == ProjectionStyle.Extend);
                                 SetSemanticInfo(n.Name, CreateSemanticInfo(col));
                             }
                         }
@@ -4287,7 +4286,7 @@ namespace Kusto.Language.Binding
                                         var name = nameDecl.SimpleName;
                                         col = new ColumnSymbol(name, type);
 
-                                        builder.Declare(col, diagnostics, nameDecl, replace: isExtend);
+                                        builder.Declare(col, diagnostics, nameDecl, replace: style == ProjectionStyle.Extend);
                                         SetSemanticInfo(nameDecl, CreateSemanticInfo(col));
 
                                         if (doNotRepeat)
@@ -4297,12 +4296,12 @@ namespace Kusto.Language.Binding
                                     }
                                     else if (GetReferencedSymbol(cn.Expression) is FunctionSymbol fs1)
                                     {
-                                        AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, aggregates);
+                                        AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, style == ProjectionStyle.Summarize);
                                     }
                                     else
                                     {
                                         // not-declared so make unique column
-                                        builder.Add(col, replace: isExtend, doNotRepeat: doNotRepeat);
+                                        builder.Add(col, replace: style == ProjectionStyle.Extend, doNotRepeat: doNotRepeat);
                                     }
                                 }
 
@@ -4331,7 +4330,7 @@ namespace Kusto.Language.Binding
                                 else
                                 {
                                     col = new ColumnSymbol(name.SimpleName, columnType ?? GetResultTypeOrError(cn.Expression));
-                                    builder.Declare(col, diagnostics, name, replace: isExtend);
+                                    builder.Declare(col, diagnostics, name, replace: style == ProjectionStyle.Extend);
                                     SetSemanticInfo(name, CreateSemanticInfo(col));
                                 }
                             }
@@ -4343,19 +4342,27 @@ namespace Kusto.Language.Binding
                         break;
 
                     case FunctionCallExpression f:
-                        if (GetResultType(f) is TupleSymbol ts
-                            && GetReferencedSymbol(f) is FunctionSymbol fs)
+                        var ftype = GetResultTypeOrError(f);
+                        var ts = ftype as TupleSymbol;
+
+                        if (ts != null && ts.Columns.Count == 1 && style == ProjectionStyle.Print)
+                        {
+                            var name = GetFunctionResultName(f, null, _rowScope);
+                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ts.Columns[0].Type);
+                            builder.Add(col, name ?? "Column", replace: false);
+                        }
+                        else if (ts != null && GetReferencedSymbol(f) is FunctionSymbol fs)
                         {
                             foreach (ColumnSymbol c in ts.Members)
                             {
-                                AddFunctionTupleResultColumn(fs, c, builder, doNotRepeat, aggregates);
+                                AddFunctionTupleResultColumn(fs, c, builder, doNotRepeat, style == ProjectionStyle.Summarize);
                             }
                         }
                         else
                         {
                             var name = GetFunctionResultName(f, null, _rowScope);
-                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? GetResultTypeOrError(f));
-                            builder.Add(col, name ?? "Column", replace: isExtend);
+                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ftype);
+                            builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
                         }
                         break;
 
@@ -4371,14 +4378,14 @@ namespace Kusto.Language.Binding
                         if (rs is ColumnSymbol column)
                         {
                             // if the expression is a column reference, then consider it a declaration
-                            builder.Declare(column.WithType(columnType ?? column.Type), diagnostics, expression, replace: isReplace);
+                            builder.Declare(column.WithType(columnType ?? column.Type), diagnostics, expression, replace: style == ProjectionStyle.Replace);
 
                             if (doNotRepeat)
                             {
                                 builder.DoNotAdd(column);
                             }
                         }
-                        else if (rs is GroupSymbol group && isReorder)
+                        else if (rs is GroupSymbol group && style == ProjectionStyle.Reorder)
                         {
                             var members = s_symbolListPool.AllocateFromPool();
                             try
@@ -4428,7 +4435,7 @@ namespace Kusto.Language.Binding
                             {
                                 var name = GetExpressionResultName(expression, null);
                                 col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? GetResultTypeOrError(expression));
-                                builder.Add(col, name ?? "Column", replace: isExtend);
+                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
                             }
                         }
                         break;

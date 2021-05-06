@@ -1273,7 +1273,7 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), declare: true, doNotRepeat: true);
-                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, isRename: true);
+                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, style: ProjectionStyle.Rename);
 
                     var resultTable = new TableSymbol(builder.GetProjection())
                         .WithInheritableProperties(RowScopeOrEmpty);
@@ -1295,7 +1295,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, isReorder: true, doNotRepeat: true);
+                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, style: ProjectionStyle.Reorder, doNotRepeat: true);
 
                     // add any remaining columns not explicit in projection
                     foreach (var col in RowScopeOrEmpty.Columns)
@@ -1328,7 +1328,7 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
-                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, isExtend: true);
+                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, style: ProjectionStyle.Extend);
 
                     var resultType = new TableSymbol(builder.GetProjection())
                         .WithInheritableProperties(RowScopeOrEmpty);
@@ -1360,7 +1360,7 @@ namespace Kusto.Language.Binding
                     }
 
                     // all columns corresponding to aggregate expressions
-                    _binder.CreateProjectionColumns(node.Aggregates, builder, diagnostics, aggregates: true);
+                    _binder.CreateProjectionColumns(node.Aggregates, builder, diagnostics, style: ProjectionStyle.Summarize);
 
                     var resultTable = new TableSymbol(builder.GetProjection())
                         .WithInheritableProperties(RowScopeOrEmpty)
@@ -2519,7 +2519,7 @@ namespace Kusto.Language.Binding
                             _binder.CheckIsType(agg.DefaultExpression, _binder.GetResultTypeOrError(agg.Expression), Conversion.Promotable, diagnostics);
                         }
 
-                        _binder.CreateProjectionColumns(agg.Expression, builder, diagnostics, aggregates: true, columnType: ScalarTypes.Dynamic);
+                        _binder.CreateProjectionColumns(agg.Expression, builder, diagnostics, style: ProjectionStyle.Summarize, columnType: ScalarTypes.Dynamic);
                     }
 
                     if (node.OnClause != null)
@@ -2587,7 +2587,7 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsExactType(expr.Expression, ScalarTypes.Dynamic, diagnostics);
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol ?? expr.Expression.ResultType; 
-                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, isReplace: true, columnType: type);
+                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, style: ProjectionStyle.Replace, columnType: type);
                     }
 
                     var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
@@ -2652,7 +2652,7 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsExactType(expr.Expression, ScalarTypes.Dynamic, diagnostics);
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol ?? expr.Expression.ResultType;
-                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, isReplace: true);
+                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, style: ProjectionStyle.Replace);
                     }
 
                     var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
@@ -2734,7 +2734,7 @@ namespace Kusto.Language.Binding
                         var expr = node.Expressions[i].Element;
                         _binder.CheckIsScalar(expr, diagnostics);
 
-                        _binder.CreateProjectionColumns(expr, builder, diagnostics, columnName: "print_" + i);
+                        _binder.CreateProjectionColumns(expr, builder, diagnostics, style: ProjectionStyle.Print, columnName: "print_" + i);
                     }
 
                     var resultType = new TableSymbol(builder.GetProjection());

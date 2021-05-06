@@ -31,10 +31,17 @@ namespace Kusto.Language.Editor
                         node.Kind == SyntaxKind.ContainsCsExpression ||
                         node.Kind == SyntaxKind.NotContainsCsExpression)
                     {
-                        diagnostics.Add(dx.WithLocation(node.Operator));
+                        // only report if db column is being used directly
+                        if (IsDbColumn(node.Left, code.Globals))
+                        {
+                            diagnostics.Add(dx.WithLocation(node.Operator));
+                        }
                     }
                 }
             });
+
+        private static bool IsDbColumn(Expression expr, GlobalState globals) =>
+            expr.ReferencedSymbol is ColumnSymbol c && globals.GetTable(c) != null;
 
         // KS501 & KS502
         public static readonly KustoAnalyzer AvoidUsingIsNullStringComparison =
@@ -53,9 +60,7 @@ namespace Kusto.Language.Editor
                 foreach (var node in code.Syntax.GetDescendants<BinaryExpression>())
                 {
                     if (!node.Right.IsConstant && !node.Left.IsConstant)
-                    {
                         continue;
-                    }
 
                     if (node.Kind == SyntaxKind.EqualExpression ||
                         node.Kind == SyntaxKind.HasExpression ||
@@ -77,6 +82,10 @@ namespace Kusto.Language.Editor
 
                         if (!string.IsNullOrEmpty(constValue) && constValue.Length < 4)
                         {
+                            // only report if db column is being used directly
+                            if (!IsDbColumn(node.Right, code.Globals) && !IsDbColumn(node.Left, code.Globals))
+                                continue;
+
                             diagnostics.Add(dx.WithLocation(node));
                         }
                     }
