@@ -720,14 +720,14 @@ namespace Kusto.Language.Parsing
 
                 createOptional: elem =>
                     new ParserInfo(
-                        Optional(elem.Parser),
+                        Optional(GetElementParser(elem)),
                         new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: true),
                         elem.Missing),
 
                 createRequired: elem =>
                     new ParserInfo(
-                        Required(elem.Parser, elem.Missing),
-                        elem.Element,
+                        Required(GetElementParser(elem), elem.Missing),
+                        new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: false),
                         elem.Missing),
 
                 createTagged: (elem, tag) =>
@@ -768,23 +768,23 @@ namespace Kusto.Language.Parsing
                                 new CustomNode(shape, elemList.Cast<SyntaxElement>().ToArray()));
 
                         return new ParserInfo(
-                            parser, 
-                            list[0].Element, 
+                            parser,
+                            new CustomElementDescriptor(list[0].Element.CompletionHint, isOptional: false), 
                             () => new CustomNode(shape, list.Select(t => t.Missing()).ToArray()));
                     }
                 },
 
                 createAlternation: list =>
                     new ParserInfo(
-                        Best(list.Select(t => t.Parser).ToArray()), 
-                        list[0].Element, 
+                        Best(list.Select(t => GetElementParser(t)).ToArray()),
+                        new CustomElementDescriptor(list[0].Element.CompletionHint, isOptional: false), 
                         list[0].Missing, 
                         list[0].IsTerm),
 
                 createZeroOrMore: elem =>
                     new ParserInfo(
                         List(
-                            elem.Parser,
+                            GetElementParser(elem),
                             elem.Missing,
                             oneOrMore: false,
                             producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
@@ -794,7 +794,7 @@ namespace Kusto.Language.Parsing
                 createOneOrMore: elem =>
                     new ParserInfo(
                         List(
-                            elem.Parser,
+                            GetElementParser(elem),
                             elem.Missing,
                             oneOrMore: true,
                             producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
@@ -804,9 +804,8 @@ namespace Kusto.Language.Parsing
                 createZeroOrMoreSeparated: (elem, sep) =>
                     new ParserInfo(
                         OList(
-                            elem.Parser,
+                            GetElementParser(elem),
                             sep.Parser,
-                            elem.Parser,
                             elem.Missing,
                             missingSeparator: null, //sep.Missing,
                             endOfList: null, //notEndOfList
@@ -819,7 +818,7 @@ namespace Kusto.Language.Parsing
                 createOneOrMoreSeparated: (elem, sep) =>
                     new ParserInfo(
                         OList(
-                            elem.Parser,
+                            GetElementParser(elem),
                             sep.Parser,
                             elem.Missing,
                             missingSeparator: null,
@@ -832,6 +831,23 @@ namespace Kusto.Language.Parsing
                 );
 
             return Parsers<char>.Rule(grammar, g => g.Parser);
+        }
+
+        private static Parser<LexicalToken, SyntaxElement> GetElementParser(ParserInfo info)
+        {
+            // element has a tag name then we need to preserve it by wrapping in CustomNode
+            // so it appears in the syntax tree
+            if (info.Element.Name == "")
+            {
+                return info.Parser;
+            }
+            else
+            {
+                return Produce<SyntaxElement>(
+                    info.Parser, 
+                    elem => 
+                        new CustomNode(new[] { info.Element }, (SyntaxElement)elem[0]));
+            }
         }
    }
 }
