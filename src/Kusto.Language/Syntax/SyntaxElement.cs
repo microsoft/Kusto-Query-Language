@@ -34,7 +34,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Kind of token
         /// </summary>
-        public abstract SyntaxKind Kind { get; }
+        public virtual SyntaxKind Kind => SyntaxKind.None;
 
         /// <summary>
         /// For debugger display only.
@@ -229,7 +229,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// The number of immediate child elements this element has.
         /// </summary>
-        public abstract int ChildCount { get; }
+        public virtual int ChildCount => 0;
 
         /// <summary>
         /// Get the child element of this node at the specified index.
@@ -992,7 +992,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// The full width (in characters) of this element including leading trivia.
         /// </summary>
-        public abstract int FullWidth { get; }
+        public virtual int FullWidth => 0;
 
         protected int ComputeFullWidth()
         {

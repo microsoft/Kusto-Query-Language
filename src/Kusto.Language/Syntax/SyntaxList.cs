@@ -29,7 +29,7 @@ namespace Kusto.Language.Syntax
 
         public override SyntaxKind Kind => SyntaxKind.List;
 
-        public abstract Type ElementType { get; }
+        public virtual Type ElementType => null;
 
         /// <summary>
         /// Gets the element at the index.

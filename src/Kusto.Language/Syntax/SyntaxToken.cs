@@ -21,12 +21,12 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Any whitespace or comments preceding this token.
         /// </summary>
-        public abstract string Trivia { get; }
+        public virtual string Trivia => "";
 
         /// <summary>
         /// The raw text of the token
         /// </summary>
-        public abstract string Text { get; }
+        public virtual string Text => "";
 
         /// <summary>
         /// The value of the literal.

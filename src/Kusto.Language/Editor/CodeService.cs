@@ -12,12 +12,12 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The kind of code found in the text (see <see cref="CodeKinds"/>).
         /// </summary>
-        public abstract string Kind { get; }
+        public virtual string Kind => "";
 
         /// <summary>
         /// The text of the code.
         /// </summary>
-        public abstract string Text { get; }
+        public virtual string Text => "";
 
         /// <summary>
         /// Determines if the feature is supported at the position within the text.

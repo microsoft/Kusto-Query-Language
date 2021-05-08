@@ -17,7 +17,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The <see cref="SymbolKind"/> of the symbol.
         /// </summary>
-        public abstract SymbolKind Kind { get; }
+        public virtual SymbolKind Kind => SymbolKind.None;
 
         protected Symbol(string name)
         {

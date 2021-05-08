@@ -141,7 +141,7 @@ namespace Kusto.Language.Syntax
 
     public partial class Name
     {
-        public abstract string SimpleName { get; }
+        public virtual string SimpleName => "";
     }
 
     public partial class TokenName
