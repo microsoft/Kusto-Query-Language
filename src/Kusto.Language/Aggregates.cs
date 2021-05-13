@@ -497,7 +497,7 @@ namespace Kusto.Language
                             }
                         }
                     }
-                    else if (arg.ReferencedSymbol is ColumnSymbol c)
+                    else if (GetResultColumn(arg) is ColumnSymbol c)
                     {
                         // don't let * repeat this column
                         doNotRepeat.Add(c);
@@ -527,6 +527,51 @@ namespace Kusto.Language
             }
 
             return new TupleSymbol(columns);
+        }
+
+        private static ColumnSymbol GetResultColumn(Expression expr)
+        {
+            if (expr.ReferencedSymbol is ColumnSymbol c)
+            {
+                return c;
+            }
+            else if (expr is FunctionCallExpression fc 
+                && IsConversionFunction(fc)
+                && fc.ArgumentList.Expressions.Count == 1
+                && fc.ArgumentList.Expressions[0].Element.ReferencedSymbol is ColumnSymbol ac
+                && fc.ResultType == ac.Type)
+            {
+                // this is a no-op conversion with column argument, so use argument column as 
+                // the column reference for this expression too.
+                return ac;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static bool IsConversionFunction(Expression expr)
+        {
+            return expr.ReferencedSymbol is FunctionSymbol fs
+                && IsConversionFunction(fs);
+        }
+
+        private static bool IsConversionFunction(FunctionSymbol fn)
+        {
+            return fn == Functions.ToBool
+                || fn == Functions.ToBool
+                || fn == Functions.ToDateTime
+                || fn == Functions.ToDecimal
+                || fn == Functions.ToDouble
+                || fn == Functions.ToDynamic_
+                || fn == Functions.ToGuid
+                || fn == Functions.ToInt
+                || fn == Functions.ToLong
+                || fn == Functions.ToReal
+                || fn == Functions.ToString
+                || fn == Functions.ToTime
+                || fn == Functions.ToTimespan;
         }
 
         public static readonly FunctionSymbol ArgMin_Depricated =
@@ -567,13 +612,24 @@ namespace Kusto.Language
 
             if (args.Count > 0)
             {
-                var primaryArg = args[0];
-                var primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
-                var primaryCol = new ColumnSymbol(primaryColName, primaryArg.ResultType);
-                columns.Add(primaryCol);
-
                 // determine columns in by expression
                 var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
+
+                var primaryArg = args[0];
+                string primaryColName;
+
+                if (GetResultColumn(primaryArg) is ColumnSymbol pc)
+                {
+                    doNotRepeat.Add(pc);
+                    columns.Add(pc);
+                    primaryColName = pc.Name;
+                }
+                else
+                {
+                    primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
+                    var primaryCol = new ColumnSymbol(primaryColName, primaryArg.ResultType);
+                    columns.Add(primaryCol);
+                }
 
                 for (int i = 1; i < args.Count; i++)
                 {
@@ -589,8 +645,9 @@ namespace Kusto.Language
                             }
                         }
                     }
-                    else if (arg.ReferencedSymbol is ColumnSymbol c)
+                    else if (GetResultColumn(arg) is ColumnSymbol c)
                     {
+                        doNotRepeat.Add(c);
                         columns.Add(c.WithName(primaryColName + "_" + c.Name));
                     }
                     else
