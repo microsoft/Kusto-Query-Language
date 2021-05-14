@@ -29,9 +29,21 @@ namespace Kusto.Language.Editor
             return true;
         }
 
+        public override bool TryGetCachedDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            diagnostics = null;
+            return false;
+        }
+
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
         {
             return EmptyReadOnlyList<Diagnostic>.Instance;
+        }
+
+        public override bool TryGetCachedAnalyzerDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            diagnostics = null;
+            return false;
         }
 
         public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(IReadOnlyList<string> analyzers, bool waitForAnalysis, CancellationToken cancellationToken = default)

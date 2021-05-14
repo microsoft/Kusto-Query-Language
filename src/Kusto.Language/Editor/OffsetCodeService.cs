@@ -94,6 +94,21 @@ namespace Kusto.Language.Editor
             }
         }
 
+        public override bool TryGetCachedDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            if (_service.TryGetCachedDiagnostics(out diagnostics))
+            {
+                if (diagnostics.Count > 0 && _offset > 0)
+                {
+                    diagnostics = diagnostics.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken)
         {
             var result = _service.GetDiagnostics(waitForAnalysis, cancellationToken);
@@ -105,6 +120,21 @@ namespace Kusto.Language.Editor
             {
                 return result;
             }
+        }
+
+        public override bool TryGetCachedAnalyzerDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            if (_service.TryGetCachedAnalyzerDiagnostics(out diagnostics))
+            {
+                if (diagnostics.Count > 0 && _offset > 0)
+                {
+                    diagnostics = diagnostics.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(

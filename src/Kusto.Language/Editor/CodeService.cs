@@ -28,11 +28,21 @@ namespace Kusto.Language.Editor
         public abstract bool IsFeatureSupported(string feature, int position = -1);
 
         /// <summary>
+        /// Gets the diagnostics if already computed.
+        /// </summary>
+        public abstract bool TryGetCachedDiagnostics(out IReadOnlyList<Diagnostic> diagnostics);
+
+        /// <summary>
         /// Gets the diagnostics for the code.
         /// </summary>
         /// <param name="waitForAnalysis">If false, only return pre-computed results if any.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets the analyzers diagnostics if already computed.
+        /// </summary>
+        public abstract bool TryGetCachedAnalyzerDiagnostics(out IReadOnlyList<Diagnostic> diagnostics);
 
         /// <summary>
         /// Gets any additional diagnostics for the code.

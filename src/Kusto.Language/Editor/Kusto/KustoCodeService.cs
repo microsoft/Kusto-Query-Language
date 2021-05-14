@@ -153,6 +153,12 @@ namespace Kusto.Language.Editor
             }
         }
 
+        public override bool TryGetCachedDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            diagnostics = this.lazyDiagnostics;
+            return diagnostics != null;
+        }
+
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.lazyDiagnostics == null
@@ -172,6 +178,12 @@ namespace Kusto.Language.Editor
             }
 
             return this.lazyDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+        }
+
+        public override bool TryGetCachedAnalyzerDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
+        {
+            diagnostics = this.lazyExtendedDiagnostics;
+            return diagnostics != null;
         }
 
         public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
