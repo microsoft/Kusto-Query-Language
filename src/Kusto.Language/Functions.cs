@@ -2129,6 +2129,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeohashToPolygon =
+            new FunctionSymbol("geo_geohash_to_polygon", ScalarTypes.Dynamic,
+                new Parameter("geohash", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPointToS2Cell =
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
                 new Parameter("longitude", ParameterTypeKind.Number),
@@ -2655,6 +2662,7 @@ namespace Kusto.Language
             GeoLineValidate,
             GeoPointToGeohash,
             GeohashToCentralPoint,
+            GeohashToPolygon,
             GeoPointToS2Cell,
             GeoS2CellToCentralPoint,
             GeoS2CellToPolygon,
