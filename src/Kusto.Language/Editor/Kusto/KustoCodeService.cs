@@ -50,7 +50,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Returns true if the text appears parsable
         /// </summary>
-        private static bool CanBeParsed(string text) => text.Length <= 1024 * 1024;
+        private static bool CanBeParsed(string text) => text.Length <= 4 * 1024 * 1024;
 
         /// <summary>
         /// Determines if the parsed syntax can be analyzed

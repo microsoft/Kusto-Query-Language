@@ -93,18 +93,18 @@ namespace Kusto.Language.Editor
                     var spacingKind = SpacingKind.AlignOnly;
                     var childIndentation = indentation;
 
-                    if (_spacingRules.TryGetValue(child, out var spacing))
+                    if (TryGetSpacingRule(child, out var spacing))
                     {
                         spacingKind = spacing.GetKind();
                     }
 
-                    if (_alignmentRules.TryGetValue(child, out var alignment))
+                    if (TryGetAlignmentRule(child, out var alignment))
                     {
                         if (alignment.RelativeToElement == null)
                         {
                             childIndentation += alignment.IndentationDelta;
                         }
-                        else if (_elementIndentations.TryGetValue(alignment.RelativeToElement, out var elementIndentation))
+                        else if (TryGetIndentation(alignment.RelativeToElement, out var elementIndentation))
                         {
                             childIndentation = elementIndentation + alignment.IndentationDelta;
                         }
@@ -119,14 +119,36 @@ namespace Kusto.Language.Editor
                         WriteToken(t2, childIndentation, spacingKind);
                         _elementIndentations.Add(t2, childIndentation);
                     }
-
-                    if (i == 0)
-                    {
-                        // the indentation of the parent node is the same as the indentation of the first element
-                        _elementIndentations.Add(node, childIndentation);
-                    }
                 }
             }
+        }
+
+        private bool TryGetSpacingRule(SyntaxElement element, out SpacingRule rule)
+        {
+            return _spacingRules.TryGetValue(element, out rule);
+        }
+
+        private bool TryGetAlignmentRule(SyntaxElement element, out AlignmentRule rule)
+        {
+            return _alignmentRules.TryGetValue(element, out rule);
+        }
+
+        private bool TryGetIndentation(SyntaxElement element, out int indentation)
+        {
+            if (_elementIndentations.TryGetValue(element, out indentation))
+                return true;
+
+            // if no specific indentation is recorded for a node,
+            // use the indentation of its first token
+            if (element is SyntaxNode node)
+            {
+                var token = element.GetFirstToken();
+
+                if (token != null && _elementIndentations.TryGetValue(token, out indentation))
+                    return true;
+            }
+
+            return false;
         }
 
         private void WriteToken(SyntaxToken token, int indentation, SpacingKind spacingKind = SpacingKind.AsIs)
@@ -266,9 +288,9 @@ namespace Kusto.Language.Editor
 
             _builder.Append(s_Spaces, 0, Math.Min(indentation, s_Spaces.Length));
         }
-        #endregion
+#endregion
 
-        #region Identifying formatting rules
+#region Identifying formatting rules
         /// <summary>
         /// Identify formatting rules for all nodes and tokens.
         /// </summary>
@@ -287,17 +309,20 @@ namespace Kusto.Language.Editor
                     }
                     else if (child is SyntaxToken t)
                     {
-                        IdentifyTokenSpacing(t);
+                        AddTokenRules(t);
                     }
                 }
 
-                IdentifyNodeSpacing(node);
+                AddNodeRules(node);
             }
         }
 
-        private void IdentifyTokenSpacing(SyntaxToken token)
+        /// <summary>
+        /// Add spacing and alignment rules for individual tokens
+        /// </summary>
+        private void AddTokenRules(SyntaxToken token)
         {
-            // don't adjust spacing in genernal if there are already line breaks
+            // don't adjust spacing if there are already line breaks in the trivia
             if (TextFacts.HasLineBreaks(token.Trivia))
                 return;
 
@@ -385,7 +410,47 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private void IdentifyNodeSpacing(SyntaxNode n)
+        /// <summary>
+        /// Add spacing and alignment rules specific to types of nodes
+        /// </summary>
+        private void AddNodeRules(SyntaxNode node)
+        {
+            AddSubElementRules(node);
+
+            switch (node)
+            {
+                case PipeExpression pe:
+                    AddPipeExpressionRules(pe);
+                    break;
+
+                case FunctionDeclaration fd:
+                    AddFunctionDeclarationRules(fd);
+                    break;
+
+                case SeparatedElement se:
+                    // semicolons?
+                    if (se.Separator?.Kind == SyntaxKind.SemicolonToken
+                        && se.Element is LetStatement)
+                    {
+                        AddSemicolonRules(se);
+                    }
+                    break;
+
+                case BracketedExpression be:
+                    AddBracketExpressionRules(be);
+                    break;
+
+                case Statement st:
+                    AddStatementRules(st);
+                    break;
+
+                case DataTableExpression dt:
+                    AddDataTableExpressionRules(dt);
+                    break;
+            }
+        }
+
+        private void AddSubElementRules(SyntaxNode n)
         {
             if ((n.Parent is Statement && !(n.Parent is ExpressionStatement))
                 || n.Parent is QueryOperator
@@ -401,118 +466,231 @@ namespace Kusto.Language.Editor
                 if (n is Clause)
                 {
                     AddRule(n.GetFirstToken(),
-                        new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(n.Parent)));
+                        new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(n.Parent)));
                 }
             }
+        }
 
-            switch (n)
+        private void AddPipeExpressionRules(PipeExpression pe)
+        {
+            switch (_options.PipeOperatorStyle)
             {
-                case PipeExpression pe:
-                    switch (_options.PipeOperatorStyle)
+                case PlacementStyle.Smart:
+                    var entirePipeExpression = pe.GetFirstAncestorOrSelf<SyntaxNode>(a => !(a.Parent is PipeExpression));
+
+                    // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                    AddRule(pe.Bar, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entirePipeExpression, excluded: pe.Bar)));
+
+                    // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
+                    var opToken = pe.Operator.GetFirstToken();
+                    AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+
+                    // adjust first token to new line if query is part of a parenthesized expression
+                    if (entirePipeExpression == pe && pe.Parent is ParenthesizedExpression)
+                    {
+                        var firstToken = pe.GetFirstToken();
+                        AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entirePipeExpression, excluded: firstToken)));
+                    }
+                    break;
+
+                case PlacementStyle.NewLine:
+                    // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                    AddRule(pe.Bar, SpacingRule.From(SpacingKind.NewLine));
+
+                    // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
+                    opToken = pe.Operator.GetFirstToken();
+                    AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                    break;
+            }
+        }
+
+        private void AddSemicolonRules(SeparatedElement se)
+        {
+            switch (_options.SemicolonStyle)
+            {
+                case PlacementStyle.Smart:
+                    AddRule(se.Separator, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines((SyntaxNode)se.Element)));
+                    AddRule(se.Separator, IndentRule(se));
+                    break;
+
+                case PlacementStyle.NewLine:
+                    AddRule(se.Separator, SpacingRule.From(SpacingKind.NewLine));
+                    AddRule(se.Separator, IndentRule(se));
+                    break;
+            }
+        }
+
+        private void AddFunctionDeclarationRules(FunctionDeclaration fd)
+        {
+            var letStatement = fd.Parent;
+
+            AddBrackettingStyleRules(fd.Body.OpenBrace, fd.Body.CloseBrace, letStatement);
+
+            // assign spacing for each statement in body
+            foreach (var statement in fd.Body.Statements)
+            {
+                var firstToken = statement.GetFirstToken();
+                AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(fd.Body, inclusive: true, excluded: firstToken)));
+            }
+
+            // indent all statements relative to let statement
+            AddRule(fd.Body.Statements, IndentRule(letStatement));
+
+            // also apply same rules to final body expression
+            if (fd.Body.Expression != null)
+            {
+                var firstToken = fd.Body.Expression.GetFirstToken();
+                AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(fd.Body, inclusive: true, excluded: firstToken)));
+                AddRule(fd.Body.Expression, IndentRule(letStatement));
+            }
+        }
+
+        private void AddBracketExpressionRules(BracketedExpression be)
+        {
+            if (be.Parent is ElementExpression)
+            {
+                // no space between expression and open bracket
+                AddRule(be.OpenBracket, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
+            }
+        }
+
+        private void AddStatementRules(Statement st)
+        {
+            var first = st.GetFirstToken();
+            if (first != null)
+            {
+                var prev = first.GetPreviousToken();
+                if (prev != null)
+                {
+                    switch (_options.StatementStyle)
                     {
                         case PlacementStyle.Smart:
-                            var entirePipeExpression = pe.GetFirstAncestorOrSelf<SyntaxNode>(a => !(a.Parent is PipeExpression));
-
-                            // place this pipe expression's | on a new line if there are any new lines in the whole expression
-                            AddRule(pe.Bar, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(entirePipeExpression, excluded: pe.Bar)));
-
-                            // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                            var opToken = pe.Operator.GetFirstToken();
-                            AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
-
-                            // adjust first token to new line if query is part of a parenthesized expression
-                            if (entirePipeExpression == pe && pe.Parent is ParenthesizedExpression)
+                            if (st.Parent is SeparatedElement<Statement> se
+                                && se.Parent is SyntaxList<SeparatedElement<Statement>> list)
                             {
-                                var firstToken = pe.GetFirstToken();
-                                AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(entirePipeExpression, excluded: firstToken)));
+                                AddRule(first, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(list, excluded: first)));
                             }
                             break;
 
                         case PlacementStyle.NewLine:
-                            // place this pipe expression's | on a new line if there are any new lines in the whole expression
-                            AddRule(pe.Bar, SpacingRule.From(SpacingKind.NewLine));
-
-                            // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                            opToken = pe.Operator.GetFirstToken();
-                            AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                            AddRule(first, SpacingRule.From(SpacingKind.NewLine));
                             break;
                     }
-                    break;
-
-                case FunctionDeclaration fd:
-                    var letStatement = fd.Parent;
-
-                    AddBrackettingStyleRules(fd.Body.OpenBrace, fd.Body.CloseBrace, letStatement);
-
-                    foreach (var statement in fd.Body.Statements)
-                    {
-                        var firstToken = statement.GetFirstToken();
-                        AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(fd.Body, inclusive: true, excluded: firstToken)));
-                    }
-
-                    AddRule(fd.Body.Statements, IndentRule(letStatement));
-
-                    if (fd.Body.Expression != null)
-                    {
-                        var firstToken = fd.Body.Expression.GetFirstToken();
-                        AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(fd.Body, inclusive: true, excluded: firstToken)));
-                        AddRule(fd.Body.Expression, IndentRule(letStatement));
-                    }
-                    break;
-
-                case SeparatedElement se:
-                    // semicolons?
-                    if (se.Separator?.Kind == SyntaxKind.SemicolonToken
-                        && se.Element is LetStatement)
-                    {
-                        switch (_options.SemicolonStyle)
-                        {
-                            case PlacementStyle.Smart:
-                                AddRule(se.Separator, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines((SyntaxNode)se.Element)));
-                                AddRule(se.Separator, IndentRule(se));
-                                break;
-
-                            case PlacementStyle.NewLine:
-                                AddRule(se.Separator, SpacingRule.From(SpacingKind.NewLine));
-                                AddRule(se.Separator, IndentRule(se));
-                                break;
-                        }
-                    }
-                    break;
-
-                case BracketedExpression be:
-                    if (be.Parent is ElementExpression)
-                    {
-                        // no space between expression and open bracket
-                        AddRule(be.OpenBracket, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
-                    }
-                    break;
-
-                case Statement st:
-                    var first = st.GetFirstToken();
-                    if (first != null)
-                    {
-                        var prev = first.GetPreviousToken();
-                        if (prev != null)
-                        {
-                            switch (_options.StatementStyle)
-                            {
-                                case PlacementStyle.Smart:
-                                    if (st.Parent is SeparatedElement<Statement> se
-                                        && se.Parent is SyntaxList<SeparatedElement<Statement>> list)
-                                    {
-                                        AddRule(first, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(list, excluded: first)));
-                                    }
-                                    break;
-
-                                case PlacementStyle.NewLine:
-                                    AddRule(first, SpacingRule.From(SpacingKind.NewLine));
-                                    break;
-                            }
-                        }
-                    }
-                    break;
+                }
             }
+        }
+
+        private const int ArbitraryMaxSingleLineDataTableWidth = 80;
+        private const int ArbitraryMaxSingleLineSchemaWidth = 60;
+        private const int ArbitraryMaxSingleLineRowWidth = 80;
+        private const int ArbitraryMaxValueWidth = 40;
+
+        private void AddDataTableExpressionRules(DataTableExpression dt)
+        {
+            // do nothing if whole declaration is small and on one line
+            if (dt.Width <= ArbitraryMaxSingleLineDataTableWidth
+                && !SpansMultipleLines(dt))
+                return;
+
+            var relativeTo = (SyntaxNode)dt.GetFirstAncestor<Statement>() ?? dt;
+
+            var schemaColumns = dt.Schema.Columns.Count;
+
+            // add schema rules
+            if (dt.Schema.Width > ArbitraryMaxSingleLineSchemaWidth
+                || SpansMultipleLines(dt.Schema))
+            {
+                AddBrackettingStyleRules(dt.Schema.OpenParen, dt.Schema.CloseParen, relativeTo);
+
+                for (int i = 0; i < dt.Schema.Columns.Count; i++)
+                {
+                    var token = dt.Schema.Columns[i].GetFirstToken();
+                    AddRule(token, SpacingRule.From(SpacingKind.NewLine));
+                    AddRule(token, IndentRule(relativeTo));
+                }
+            }
+
+            // add value rules
+            var valueColumns = schemaColumns > 1
+                ? schemaColumns
+                : GetBalancedColumnCount(dt.Values);
+
+            AddBrackettingStyleRules(dt.OpenBracket, dt.CloseBracket, relativeTo);
+
+            // place rows of values on separate lines
+            for (int i = 0; i < dt.Values.Count; i++)
+            {
+                var token = dt.Values[i].Element.GetFirstToken();
+                if (token != null)
+                {
+                    if ((i % valueColumns) == 0)
+                    {
+                        AddRule(token, SpacingRule.From(SpacingKind.NewLine));
+                        AddRule(token, IndentRule(relativeTo));
+                    }
+                    else
+                    {
+                        AddRule(token, SpacingRule.From(SpacingKind.SingleSpace));
+                    }
+                }
+            }
+        }
+
+        private static int GetBalancedColumnCount(SyntaxList<SeparatedElement<Expression>> expressions)
+        {
+            // if any value is too wide, then place all on separate lines
+            if (GetMaximumValueWidth(expressions) >= ArbitraryMaxValueWidth)
+                return 1;
+
+            // determine if better to display as multiple columns
+            int columns = 10;
+
+            while (true)
+            {
+                if (GetMaximumRowWidth(expressions, columns) <= ArbitraryMaxSingleLineRowWidth)
+                {
+                    return columns;
+                }
+
+                if (columns > 4)
+                {
+                    columns -= 2;
+                    continue;
+                }
+
+                return 1;
+            }
+        }
+
+        private static int GetMaximumValueWidth(SyntaxList<SeparatedElement<Expression>> expressions)
+        {
+            int maxWidth = 0;
+
+            for (int i = 0; i < expressions.Count; i++)
+            {
+                var width = expressions[i].Element.Width;
+                if (width > maxWidth)
+                    maxWidth = width;
+            }
+
+            return maxWidth;
+        }
+
+        private static int GetMaximumRowWidth(SyntaxList<SeparatedElement<Expression>> expressions, int columns)
+        {
+            int maxWidth = 0;
+
+            for (int firstColumnInRow = 0; firstColumnInRow < expressions.Count; firstColumnInRow += columns)
+            {
+                var lastColumnInRow = Math.Min(expressions.Count - 1, firstColumnInRow + columns - 1);
+                var start = expressions[firstColumnInRow].TriviaStart;
+                var end = expressions[lastColumnInRow].End;
+                var width = end - start;
+                if (width > maxWidth)
+                    maxWidth = width;
+            }
+
+            return maxWidth;
         }
 
         private void AddBrackettingStyleRules(SyntaxToken open, SyntaxToken close, SyntaxNode alignedTo)
@@ -521,7 +699,7 @@ namespace Kusto.Language.Editor
             {
                 case BrackettingStyle.Vertical:
                     AddRule(open,
-                        new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(open, close, inclusive: true, excluded: open))
+                        new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: open))
                             .Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine)));
 
                     var next = open.GetNextToken();
@@ -532,7 +710,7 @@ namespace Kusto.Language.Editor
 
                     AddRule(open, new AlignmentRule(alignedTo));
                     AddRule(close,
-                        new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close))
+                        new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close))
                             .Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine)));
                     AddRule(close, new AlignmentRule(alignedTo));
                     break;
@@ -547,26 +725,12 @@ namespace Kusto.Language.Editor
                     }
 
                     AddRule(close,
-                        new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close))
+                        new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close))
                             .Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine)));
                     AddRule(close, new AlignmentRule(alignedTo));
                     break;
             }
         }
-
-#if false
-        private void AddListElementRules<TElement>(SyntaxList<SeparatedElement<TElement>> list, SyntaxToken relativeTo)
-            where TElement : SyntaxNode
-        {
-            AddRule(list, IndentRule(relativeTo));
-
-            for (int i = 0; i < list.ChildCount; i++)
-            {
-                var se = list[i];
-                AddRule(se.Element, new SpacingRule(SpacingKind.NewLine, () => DidOrWillSpanMultipleLines(list, inclusive: true)));
-            }
-        }
-#endif
 
         private static bool IsIdentifierOrKeyword(SyntaxToken token)
         {
@@ -840,7 +1004,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Returns true if the tokens were originally on different lines.
         /// </summary>
-        private static bool DidSpanMultipleLines(SyntaxToken first, SyntaxToken last, bool inclusive = false, SyntaxToken excluded = null)
+        private static bool SpansMultipleLines(SyntaxToken first, SyntaxToken last, bool inclusive = false, SyntaxToken excluded = null)
         {
             if (first != null && last != null)
             {
@@ -868,25 +1032,25 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Returns true if the tokens of the node were originally on different lines.
+        /// Returns true if the tokens of the node are currently on different lines.
         /// </summary>
-        private static bool DidSpanMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
+        private static bool SpansMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
         {
             if (node != null)
             {
-                return DidSpanMultipleLines(node.GetFirstToken(), node.GetLastToken(), inclusive, excluded);
+                return SpansMultipleLines(node.GetFirstToken(), node.GetLastToken(), inclusive, excluded);
             }
 
             return false;
         }
 
         /// <summary>
-        /// Returns true if the tokens were originally or will end up on different lines.
+        /// Returns true if the tokens are currently or will end up on different lines.
         /// Returns null if the outcome is unknown due to cyclic dependencies between formatting rules.
         /// </summary>
-        private bool DidOrWillSpanMultipleLines(SyntaxToken first, SyntaxToken last, bool inclusive = false, SyntaxToken excluded = null)
+        private bool SpansOrWillSpanMultipleLines(SyntaxToken first, SyntaxToken last, bool inclusive = false, SyntaxToken excluded = null)
         {
-            if (DidSpanMultipleLines(first, last, inclusive, excluded))
+            if (SpansMultipleLines(first, last, inclusive, excluded))
             {
                 return true;
             }
@@ -895,11 +1059,11 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Returns true if the tokens of the node were originally or will end up on different lines.
+        /// Returns true if the tokens of the node are currently or will end up on different lines.
         /// </summary>
-        private bool DidOrWillSpanMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
+        private bool SpansOrWillSpanMultipleLines(SyntaxNode node, bool inclusive = false, SyntaxToken excluded = null)
         {
-            if (DidSpanMultipleLines(node, inclusive, excluded))
+            if (SpansMultipleLines(node, inclusive, excluded))
             {
                 return true;
             }

@@ -870,9 +870,24 @@ namespace Kusto.Language
                 "alter-merge table TableName=<table> policy partitioning Policy=<string>",
                 PolicyResult);
 
+        public static readonly CommandSymbol AlterMaterializedViewPolicyPartitioning =
+            new CommandSymbol(nameof(AlterMaterializedViewPolicyPartitioning),
+                "alter materialized-view MaterializedViewName=<materializedview> policy partitioning Policy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeMaterializedViewPolicyPartitioning =
+            new CommandSymbol(nameof(AlterMergeMaterializedViewPolicyPartitioning),
+                "alter-merge materialized-view MaterializedViewName=<materializedview> policy partitioning Policy=<string>",
+                PolicyResult);
+
         public static readonly CommandSymbol DeleteTablePolicyPartitioning =
             new CommandSymbol(nameof(DeleteTablePolicyPartitioning),
                 "delete table TableName=<table> policy partitioning",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteMaterializedViewPolicyPartitioning =
+            new CommandSymbol(nameof(DeleteMaterializedViewPolicyPartitioning),
+                "delete materialized-view MaterializedViewName=<materializedview> policy partitioning",
                 PolicyResult);
         #endregion
 
@@ -1420,6 +1435,11 @@ namespace Kusto.Language
             new CommandSymbol(nameof(ShowMaterializedViewPolicyMerge),
                 "show materialized-view MaterializedViewName=<materializedview> policy merge",
                 PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyPartitioning =
+           new CommandSymbol(nameof(ShowMaterializedViewPolicyPartitioning),
+               "show materialized-view MaterializedViewName=<materializedview> policy partitioning",
+               PolicyResult);
 
         public static readonly CommandSymbol ShowMaterializedViewExtents =
             new CommandSymbol(nameof(ShowMaterializedViewExtents),
@@ -2108,6 +2128,8 @@ namespace Kusto.Language
                 AlterMaterializedViewFolder, 
                 AlterMaterializedViewAutoUpdateSchema, 
                 AlterMaterializedViewLookback,
+                AlterMaterializedViewPolicyPartitioning,
+                AlterMergeMaterializedViewPolicyPartitioning,
                 CreateMaterializedView,
                 CreateOrAlterMaterializedView,
                 ShowMaterializedView,
@@ -2118,11 +2140,13 @@ namespace Kusto.Language
                 ShowMaterializedViewPolicyMerge,
                 AlterMaterializedView, 
                 ClearMaterializedViewData,
+                DeleteMaterializedViewPolicyPartitioning,
                 DropMaterializedView, 
                 EnableDisableMaterializedView, 
                 ShowMaterializedViewPrincipals,
                 ShowMaterializedViewSchemaAsJson, 
                 ShowMaterializedViewCslSchema,
+                ShowMaterializedViewPolicyPartitioning,
                 #endregion 
 
                 #region System Information Commands
