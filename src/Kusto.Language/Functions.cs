@@ -216,10 +216,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExtractJson =
             new FunctionSymbol("extractjson",
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("jsonPath", ScalarTypes.String),
+                    new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("jsonText", ScalarTypes.String)),
                 new Signature(ReturnTypeKind.ParameterNLiteral,
-                    new Parameter("jsonPath", ScalarTypes.String),
+                    new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("jsonText", ScalarTypes.String),
                     new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
             .WithResultNameKind(ResultNameKind.None)
@@ -366,6 +366,7 @@ namespace Kusto.Language
            new FunctionSymbol("totime", ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Hide()
+		   .Obsolete("totimespan")
            .ConstantFoldable()
            .WithResultNameKind(ResultNameKind.FirstArgument);
 
@@ -596,14 +597,12 @@ namespace Kusto.Language
                 new Parameter("ip", ScalarTypes.String),
                 new Parameter("ip_range", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // unhide in Jan-2021
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv4NetmaskSuffix =
            new FunctionSymbol("ipv4_netmask_suffix", ScalarTypes.Long,
                new Parameter("ip", ScalarTypes.String))
            .WithResultNameKind(ResultNameKind.None)
-           .Hide() // unhide in Jan-2021
            .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv4IsPrivate =
@@ -1134,8 +1133,7 @@ namespace Kusto.Language
             // TODO: Check how is it possible to define different type combinations:
             // (datetime, datetime, timespan)
             // (numeric, numeric, numeric)
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region bitwise functions
@@ -2331,8 +2329,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Bool,
                     new Parameter("text", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ips", ScalarTypes.Dynamic)))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasAnyIpv4Prefix =
             new FunctionSymbol("has_any_ipv4_prefix",
@@ -2342,8 +2339,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Bool,
                     new Parameter("text", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ip_prefixes", ScalarTypes.Dynamic)))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region All

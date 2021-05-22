@@ -471,36 +471,58 @@ namespace Kusto.Language.Editor
             }
         }
 
+        private const int ArbitraryMaxSingleLineQueryWidth = 80;
+
         private void AddPipeExpressionRules(PipeExpression pe)
         {
-            switch (_options.PipeOperatorStyle)
+            if (pe.Parent is PipeExpression)
+                return;
+
+            var entireQuery = pe;
+
+            var style = _options.PipeOperatorStyle;
+
+            if (!SpansMultipleLines(entireQuery) && entireQuery.Width > ArbitraryMaxSingleLineQueryWidth)
+                style = PlacementStyle.NewLine;
+
+            for (;  pe != null; pe = pe.Expression as PipeExpression)
             {
-                case PlacementStyle.Smart:
-                    var entirePipeExpression = pe.GetFirstAncestorOrSelf<SyntaxNode>(a => !(a.Parent is PipeExpression));
+                var barToken = pe.Bar;
 
-                    // place this pipe expression's | on a new line if there are any new lines in the whole expression
-                    AddRule(pe.Bar, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entirePipeExpression, excluded: pe.Bar)));
+                switch (style)
+                {
+                    case PlacementStyle.Smart:
+                        // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                        AddRule(barToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entireQuery, excluded: barToken)));
 
-                    // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                    var opToken = pe.Operator.GetFirstToken();
-                    AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                        // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
+                        var opToken = pe.Operator.GetFirstToken();
+                        AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
 
-                    // adjust first token to new line if query is part of a parenthesized expression
-                    if (entirePipeExpression == pe && pe.Parent is ParenthesizedExpression)
-                    {
-                        var firstToken = pe.GetFirstToken();
-                        AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entirePipeExpression, excluded: firstToken)));
-                    }
-                    break;
+                        // adjust first token to new line if query is part of a parenthesized expression
+                        if (entireQuery == pe)
+                        {
+                            var firstToken = pe.GetFirstToken();
+                            var prevToken = firstToken.GetPreviousToken();
 
-                case PlacementStyle.NewLine:
-                    // place this pipe expression's | on a new line if there are any new lines in the whole expression
-                    AddRule(pe.Bar, SpacingRule.From(SpacingKind.NewLine));
+                            if (prevToken != null && (
+                                prevToken.Kind == SyntaxKind.OpenParenToken
+                                || prevToken.Kind == SyntaxKind.OpenBraceToken))
+                            {
+                                AddRule(firstToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entireQuery, excluded: firstToken)));
+                            }
+                        }
+                        break;
 
-                    // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                    opToken = pe.Operator.GetFirstToken();
-                    AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
-                    break;
+                    case PlacementStyle.NewLine:
+                        // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                        AddRule(barToken, SpacingRule.From(SpacingKind.NewLine));
+
+                        // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
+                        opToken = pe.Operator.GetFirstToken();
+                        AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                        break;
+                }
             }
         }
 

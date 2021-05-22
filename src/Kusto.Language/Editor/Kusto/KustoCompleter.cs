@@ -1299,10 +1299,10 @@ namespace Kusto.Language.Editor
                 match |= SymbolMatch.Scalar | SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local;
 
             if ((hint & CompletionHint.Tabular) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.MaterializedView;
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local;
 
             if ((hint & CompletionHint.Expression) != 0)
-                match |= SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Tabular;
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Column;
 
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
