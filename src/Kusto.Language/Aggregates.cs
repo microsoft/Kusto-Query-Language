@@ -389,15 +389,27 @@ namespace Kusto.Language
                     ReturnTypeKind.Parameter0,
                     new Parameter("expr", ParameterTypeKind.Scalar)),
                 new Signature(
-                    GetAnyResult,
+                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: null),
                     Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 2, maxOccurring: MaxRepeat)),
                 new Signature(
-                    GetAnyResult,
+                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: null),
                     Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("any");
+
+        public static readonly FunctionSymbol TakeAny =
+           new FunctionSymbol("take_any",
+               new Signature(
+                   (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
+                   Tabularity.Scalar,
+                   new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 1, maxOccurring: MaxRepeat)),
+                 new Signature(
+                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
+                    Tabularity.Scalar,
+                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)))
+            .Hide();
 
         public static readonly FunctionSymbol AnyIf =
             new FunctionSymbol("anyif",
@@ -408,9 +420,19 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("anyif");
 
-        public static TypeSymbol GetAnyResult(TableSymbol table, IReadOnlyList<Expression> args)
+        public static readonly FunctionSymbol TakeAnyIf =
+           new FunctionSymbol("take_anyif",
+               new Signature(
+                   ReturnTypeKind.Parameter0,
+                   new Parameter("expr", ParameterTypeKind.Scalar),
+                   new Parameter("predicate", ScalarTypes.Bool)))
+            .WithResultNameKind(ResultNameKind.FirstArgument)
+            .Hide();
+
+        public static TypeSymbol GetAnyResult(TableSymbol table, IReadOnlyList<Expression> args, string unnamedExpressionPrefix)
         {
             var columns = new List<ColumnSymbol>();
+            var prefix = unnamedExpressionPrefix ?? string.Empty;
 
             var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
 
@@ -432,14 +454,15 @@ namespace Kusto.Language
                 {
                     columns.Add(c);
                 }
-                else if (args.Count == 1)
-                {
-                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, ""), arg.ResultType);
-                    columns.Add(col);
-                }
                 else
                 {
-                    var col = new ColumnSymbol(Binding.Binder.GetExpressionResultName(arg, "arg" + i), arg.ResultType);
+                    var expName = Binding.Binder.GetExpressionResultName(arg, "");
+                    if (string.IsNullOrEmpty(expName))
+                    {
+                        expName = prefix + "arg" + i;
+                    }
+
+                    var col = new ColumnSymbol(expName, arg.ResultType);
                     columns.Add(col);
                 }
             }
@@ -710,7 +733,9 @@ namespace Kusto.Language
             VarianceIf,
             Variancep,
             Any,
+            TakeAny,
             AnyIf,
+            TakeAnyIf,
             ArgMin,
             ArgMax,
             ArgMin_Depricated,
