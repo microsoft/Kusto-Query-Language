@@ -221,6 +221,34 @@ namespace Kusto.Language.Symbols
             return new Parameter(parameter.Name, parameter.Type, minOccurring: isOptional ? 0 : 1, defaultValue: defaultValue, description: parameter.Description);
         }
 
+        public static Parameter From(FunctionParameter declaration)
+        {
+            var name = declaration.NameAndType.Name.SimpleName;
+            var type = Binding.Binder.GetDeclaredType(declaration.NameAndType.Type);
+            var defvalue = declaration.DefaultValue?.Value ?? null;
+            return new Parameter(name, type, defaultValue: defvalue);
+        }
+
+        public static IReadOnlyList<Parameter> From(FunctionParameters declaration)
+        {
+            var list = new List<Parameter>();
+            
+            foreach (var pelem in declaration.Parameters)
+            {
+                list.Add(From(pelem.Element));
+            }
+
+            return list;
+        }
+
+        public static IReadOnlyList<Parameter> ParseList(string parameters)
+        {
+            var fp = Parsing.QueryParser.ParseFunctionParameters(parameters);
+            return (fp != null)
+                ? From(fp)
+                : EmptyReadOnlyList<Parameter>.Instance;
+        }
+
         /// <summary>
         /// True if the type of the parameter is dependant on arguments.
         /// </summary>

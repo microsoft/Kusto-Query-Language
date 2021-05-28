@@ -1330,7 +1330,7 @@ namespace Kusto.Language.Binding
             return name.Parent is FunctionCallExpression fn && fn.Name == name;
         }
 
-        public bool IsInsideFunctionDeclaration(SyntaxNode location)
+        public bool IsInsideDatabaseFunctionDeclaration(SyntaxNode location)
         {
             // this is true when during expansion binding of database functions
             if (_currentFunction != null)
@@ -1474,7 +1474,7 @@ namespace Kusto.Language.Binding
                 {
                     // don't match the database functions that have same name as database tables
                     // if we are inside declaration of a database function
-                    if (IsInsideFunctionDeclaration(location) &&
+                    if (IsInsideDatabaseFunctionDeclaration(location) &&
                         _currentDatabase.GetAnyTable(name) != null)
                     {
                         match &= ~SymbolMatch.Function;
@@ -1654,7 +1654,7 @@ namespace Kusto.Language.Binding
                         else
                         {
                             return new SemanticInfo(
-                                new TableSymbol().WithIsOpen(true),
+                                new TableSymbol(name).WithIsOpen(true),
                                 DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
                         }
                     }
@@ -1728,8 +1728,16 @@ namespace Kusto.Language.Binding
                 {
                     return true;
                 }
+                
+                // if database().x then x is expected to be tabular
+                if (element.Parent is PathExpression pt 
+                    && pt.Selector == element
+                    && pt.Expression.ResultType is DatabaseSymbol)
+                {
+                    return true;
+                }
 
-                // use completion hint to help us determine is context is tabular
+                // use completion hint to help us determine if context is tabular
                 var hint = element.Parent.GetCompletionHint(element.IndexInParent);
 
                 if (hint == Editor.CompletionHint.Table
@@ -2057,7 +2065,8 @@ namespace Kusto.Language.Binding
         private SignatureResult GetSignatureResult(
             Signature signature,
             IReadOnlyList<Expression> arguments,
-            IReadOnlyList<TypeSymbol> argumentTypes)
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            List<Diagnostic> diagnostics = null)
         {
             if (arguments == null)
                 throw new ArgumentNullException(nameof(arguments));
@@ -2069,7 +2078,7 @@ namespace Kusto.Language.Binding
             try
             {
                 signature.GetArgumentParameters(arguments, argumentParameters);
-                return GetSignatureResult(signature, arguments, argumentTypes, argumentParameters);
+                return GetSignatureResult(signature, arguments, argumentTypes, argumentParameters, diagnostics);
             }
             finally
             {
@@ -2084,8 +2093,8 @@ namespace Kusto.Language.Binding
             Signature signature,
             IReadOnlyList<Expression> arguments,
             IReadOnlyList<TypeSymbol> argumentTypes,
-            IReadOnlyList<Parameter> argumentParameters
-            )
+            IReadOnlyList<Parameter> argumentParameters,
+            List<Diagnostic> diagnostics = null)
         {
             if (arguments == null)
                 throw new ArgumentNullException(nameof(arguments));
@@ -2151,7 +2160,7 @@ namespace Kusto.Language.Binding
                     if (iArg >= 0 && iArg < arguments.Count 
                         && TryGetLiteralStringValue(arguments[iArg], out var databaseName))
                     {
-                        return GetDatabase(databaseName);
+                        return GetDatabaseFunctionResult(databaseName, arguments[iArg], diagnostics);
                     }
                     else
                     {
@@ -2163,7 +2172,7 @@ namespace Kusto.Language.Binding
                     if (iArg >= 0 && iArg < arguments.Count 
                         && TryGetLiteralStringValue(arguments[iArg], out var tableName))
                     {
-                        return GetTableFunctionResult(tableName);
+                        return GetTableFunctionResult(tableName, arguments[iArg], diagnostics);
                     }
                     else
                     {
@@ -2175,7 +2184,7 @@ namespace Kusto.Language.Binding
                     if (iArg >= 0 && iArg < arguments.Count 
                         && TryGetLiteralStringValue(arguments[iArg], out var externalTableName))
                     {
-                        return GetExternalTableFunctionResult(externalTableName);
+                        return GetExternalTableFunctionResult(externalTableName, arguments[iArg], diagnostics);
                     }
                     else
                     {
@@ -2186,7 +2195,7 @@ namespace Kusto.Language.Binding
                     if (iArg >= 0 && iArg < arguments.Count 
                         && TryGetLiteralStringValue(arguments[iArg], out var materializedViewName))
                     {
-                        return GetMaterializedViewFunctionResult(materializedViewName);
+                        return GetMaterializedViewFunctionResult(materializedViewName, arguments[iArg], diagnostics);
                     }
                     else
                     {
@@ -2281,19 +2290,32 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the database addressable in the current context.
         /// </summary>
-        private TypeSymbol GetDatabase(string name)
+        private TypeSymbol GetDatabaseFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var cluster = _pathScope as ClusterSymbol ?? _currentCluster;
-            return GetDatabase(name, cluster) ?? (TypeSymbol)ErrorSymbol.Instance;
+            var db = GetDatabase(name, cluster);
+
+            if (db == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(name).WithLocation(location));
+                }
+
+                db = GetOpenDatabase(name, cluster);
+            }
+
+            return db;
         }
 
         /// <summary>
         /// Gets the result of calling the table() function in the current context.
         /// </summary>
-        private TypeSymbol GetTableFunctionResult(string name)
+        private TypeSymbol GetTableFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var pathDb = _pathScope as DatabaseSymbol;
 
+            // check for local table first
             if (pathDb == null)
             {
                 var match = SymbolMatch.Table | SymbolMatch.Local;
@@ -2309,40 +2331,69 @@ namespace Kusto.Language.Binding
                         var result = GetResultType(symbols[0]);
                         return result as TableSymbol ?? (TypeSymbol)ErrorSymbol.Instance;
                     }
-                    else
-                    {
-                        return GetTable(name, _currentDatabase)
-                            ?? (TypeSymbol)ErrorSymbol.Instance;
-                    }
                 }
                 finally
                 {
                     s_symbolListPool.ReturnToPool(symbols);
                 }
             }
-            else 
+
+            var db = pathDb ?? _currentDatabase;
+            var table = GetTable(name, db);
+
+            if (table == null)
             {
-                return GetTable(name, pathDb ?? _currentDatabase)
-                    ?? (TypeSymbol)ErrorSymbol.Instance;
+                if (diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
+                }
+
+                table = GetOpenTable(name, db);
             }
+
+            return table;
         }
 
         /// <summary>
         /// Gets the result of calling the external_table() function in the current context.
         /// </summary>
-        private TypeSymbol GetExternalTableFunctionResult(string name)
+        private TypeSymbol GetExternalTableFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
-            return db.GetExternalTable(name) ?? (TypeSymbol)ErrorSymbol.Instance;
+            var table = db.GetExternalTable(name);
+
+            if (table == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownExternalTable(name).WithLocation(location));
+                }
+
+                table = new TableSymbol(name).WithIsExternal(true).WithIsOpen(true);
+            }
+
+            return table;
         }
 
         /// <summary>
         /// Gets the result of calling the materialized_view() function in the current context.
         /// </summary>
-        private TypeSymbol GetMaterializedViewFunctionResult(string name)
+        private TypeSymbol GetMaterializedViewFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
-            return db.GetMaterializedView(name) ?? (TypeSymbol)ErrorSymbol.Instance;
+            var table = db.GetMaterializedView(name);
+
+            if (table == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownMaterializedView(name).WithLocation(location));
+                }
+
+                table = new TableSymbol(name).WithIsMaterializedView(true).WithIsOpen(true);
+            }
+
+            return table;
         }
 
         /// <summary>
@@ -2990,7 +3041,7 @@ namespace Kusto.Language.Binding
                 if (matchingSignatures.Count == 1)
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
-                    var sigResult = GetSignatureResult(matchingSignatures[0], arguments, argumentTypes);
+                    var sigResult = GetSignatureResult(matchingSignatures[0], arguments, argumentTypes, diagnostics);
                     return new SemanticInfo(fn, sigResult.Type, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), expander: sigResult.Expander);
                 }
                 else

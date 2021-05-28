@@ -2,11 +2,15 @@
   <PropertyGroup>
     <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="'$(KustoProps)' != 'true'" />
   <PropertyGroup>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Library</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
+    <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' and '$(KustoProps)' != 'true'">
     <DebugSymbols>true</DebugSymbols>
@@ -18,21 +22,6 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <GenerateDocumentation>true</GenerateDocumentation>
-    <DocumentationFile>$(OutputPath)\$(AssemblyName).XML</DocumentationFile>
-    <!-- This is a missing documentation comment warning: disabling -->
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Update="Syntax\CodeGen\GeneratedCslTree.cs">
       <DependentUpon>GeneratedCslTree.tt</DependentUpon>
@@ -47,5 +36,4 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\Directory.Build.targets')" />
 </Project>

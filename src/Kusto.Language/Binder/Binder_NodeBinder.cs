@@ -578,12 +578,20 @@ namespace Kusto.Language.Binding
             private SemanticInfo VisitWildcardedNameReference(NameReference node, SyntaxToken pattern)
             {
                 var list = s_symbolListPool.AllocateFromPool();
+                var filteredList = s_symbolListPool.AllocateFromPool();
                 var matchingList = s_symbolListPool.AllocateFromPool();
 
                 try
                 {
-                    _binder.GetSymbolsInContext(node, SymbolMatch.Table | SymbolMatch.Column | SymbolMatch.Local, IncludeFunctionKind.All, list);
-                    GetWildcardSymbols(pattern.Text, list, matchingList);
+                    var match = IsInTabularContext(node)
+                        ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Tabular
+                        : SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar;
+
+                    _binder.GetSymbolsInContext(node, match, IncludeFunctionKind.LocalFunctions | IncludeFunctionKind.DatabaseFunctions, list);
+
+                    FilterVisibleSymbols(node, list, filteredList);
+
+                    GetWildcardSymbols(pattern.Text, filteredList, matchingList);
 
                     if (matchingList.Count == 1)
                     {
@@ -606,7 +614,61 @@ namespace Kusto.Language.Binding
                 finally
                 {
                     s_symbolListPool.ReturnToPool(list);
+                    s_symbolListPool.ReturnToPool(filteredList);
                     s_symbolListPool.ReturnToPool(matchingList);
+                }
+            }
+
+            private static readonly ObjectPool<Dictionary<string, Symbol>> s_symbolMapPool =
+                new ObjectPool<Dictionary<string, Symbol>>(() => new Dictionary<string, Symbol>(), d => d.Clear());
+
+            private void FilterVisibleSymbols(SyntaxNode location, IReadOnlyList<Symbol> symbols, List<Symbol> filteredSymbols)
+            {
+                bool isInsideDatabaseFunctionDeclaration = _binder.IsInsideDatabaseFunctionDeclaration(location);
+
+                var map = s_symbolMapPool.AllocateFromPool();
+                try
+                {
+                    foreach (var symbol in symbols)
+                    {
+                        // pick between for tables and functions with same name
+                        if (map.TryGetValue(symbol.Name, out var existingSymbol))
+                        {
+                            if (symbol is TableSymbol tab
+                                && existingSymbol is FunctionSymbol fs
+                                && fs.MinArgumentCount == 0
+                                && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
+                                && isInsideDatabaseFunctionDeclaration)
+                            {
+                                // if inside database function declaration choose the table over the function
+                                map[symbol.Name] = tab;
+                            }
+                            else if (symbol is FunctionSymbol fs2
+                                && fs2.MinArgumentCount == 0
+                                && existingSymbol is TableSymbol tab2
+                                && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
+                                && !isInsideDatabaseFunctionDeclaration)
+                            {
+                                // otherwise choose the function over the table
+                                map[symbol.Name] = fs2;
+                            }
+                        }
+                        else if (symbol is FunctionSymbol fs3
+                            && fs3.MinArgumentCount > 0)
+                        {
+                            // do not add functions that require arguments
+                        }
+                        else
+                        {
+                            map.Add(symbol.Name, symbol);
+                        }
+                    }
+
+                    filteredSymbols.AddRange(map.Values);
+                }
+                finally
+                {
+                    s_symbolMapPool.ReturnToPool(map);
                 }
             }
 
@@ -3195,9 +3257,9 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-            #endregion
+#endregion
 
-            #region statements
+#region statements
             public override SemanticInfo VisitAliasStatement(AliasStatement node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

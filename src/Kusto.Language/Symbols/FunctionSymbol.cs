@@ -7,7 +7,6 @@ namespace Kusto.Language.Symbols
     using System;
     using Utils;
 
-
     public enum ResultNameKind
     {
         /// <summary>
@@ -210,6 +209,11 @@ namespace Kusto.Language.Symbols
 
         public FunctionSymbol(string name, string body, params Parameter[] parameters)
             : this(name, new[] { new Signature(body, Tabularity.Unspecified, parameters) })
+        {
+        }
+
+        public FunctionSymbol(string name, string parameterList, string body, string description = null)
+            : this(name, new[] { new Signature(body, Tabularity.Unspecified, Parameter.ParseList(parameterList)) }, description)
         {
         }
 

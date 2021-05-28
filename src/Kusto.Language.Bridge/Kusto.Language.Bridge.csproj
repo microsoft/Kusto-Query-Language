@@ -2,7 +2,14 @@
   <PropertyGroup>
     <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props') And '$(KustoProps)' != 'true'" />
+  <PropertyGroup>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
+    <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -475,7 +482,6 @@
     <PackageReference Include="Bridge" Version="17.10.1" />
     <PackageReference Include="Bridge.Min" Version="17.10.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('..\Directory.Build.targets')" />
   <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(NuGetPackageRoot)\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />

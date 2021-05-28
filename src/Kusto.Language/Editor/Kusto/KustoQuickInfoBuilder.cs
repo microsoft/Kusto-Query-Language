@@ -154,12 +154,16 @@ namespace Kusto.Language.Editor
                     {
                         return QuickInfoKind.Variable;
                     }
-                case ScalarSymbol s:
+                case ScalarSymbol _:
                     return QuickInfoKind.Type;
-                case CommandSymbol cs:
+                case CommandSymbol _:
                     return QuickInfoKind.Command;
-                case OptionSymbol os:
+                case OptionSymbol _:
                     return QuickInfoKind.Option;
+                case GroupSymbol gs:
+                    if (gs.Members.Count > 0)
+                        return GetItemKind(gs.Members[0]);
+                    return QuickInfoKind.Text;
                 default:
                     return QuickInfoKind.Text;
             }
@@ -256,17 +260,25 @@ namespace Kusto.Language.Editor
 
     public static class SymbolDisplay
     {
-        public static void GetSymbolDisplay(Symbol symbol, TypeSymbol type, List<ClassifiedText> texts)
+        public static void GetSymbolDisplay(Symbol symbol, TypeSymbol type, List<ClassifiedText> texts, bool showDescription = true)
         {
             if (symbol is GroupSymbol gs)
             {
-                for (int i = 0; i < gs.Members.Count; i++)
+                var lines = Math.Min(gs.Members.Count, 5);
+
+                for (int i = 0; i < lines; i++)
                 {
                     var subsym = gs.Members[i];
                     if (i > 0)
                         texts.Add(new ClassifiedText("\n"));
+
                     // TODO: get the correct types for the sub symbols
-                    GetSymbolDisplay(subsym, null, texts);
+                    GetSymbolDisplay(subsym, null, texts, showDescription: false);
+                }
+
+                if (lines < gs.Members.Count)
+                {
+                    texts.Add(new ClassifiedText($"\n+ ({gs.Members.Count - lines}) additional"));
                 }
             }
             else if (symbol is ScalarSymbol)
@@ -300,10 +312,13 @@ namespace Kusto.Language.Editor
                     GetTypeDisplay(type, texts);
                 }
 
-                var description = GetDescription(symbol);
-                if (!string.IsNullOrEmpty(description))
+                if (showDescription)
                 {
-                    texts.Add(new ClassifiedText(ClassificationKind.Comment, "\n\n" + description));
+                    var description = GetDescription(symbol);
+                    if (!string.IsNullOrEmpty(description))
+                    {
+                        texts.Add(new ClassifiedText(ClassificationKind.Comment, "\n\n" + description));
+                    }
                 }
             }
         }

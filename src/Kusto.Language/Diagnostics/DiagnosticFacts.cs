@@ -694,6 +694,26 @@ namespace Kusto.Language
             return new Diagnostic("KS206", "The argument value must be orderable: a number, timespan, datetime, string or boolean.");
         }
 
+        public static Diagnostic GetNameDoesNotReferToAnyKnownCluster(string name)
+        {
+            return new Diagnostic("KS207", $"The name '{name}' does not refer to any known cluster.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownDatabase(string name)
+        {
+            return new Diagnostic("KS208", $"The name '{name}' does not refer to any known database.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownExternalTable(string name)
+        {
+            return new Diagnostic("KS209", $"The name '{name}' does not refer to any known external table.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownMaterializedView(string name)
+        {
+            return new Diagnostic("KS210", $"The name '{name}' does not refer to any known materialized view.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

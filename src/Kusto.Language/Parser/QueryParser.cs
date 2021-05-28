@@ -41,6 +41,16 @@ namespace Kusto.Language.Parsing
             return ParseQuery(TokenParser.ParseTokens(text));
         }
 
+        public static FunctionParameters ParseFunctionParameters(LexicalToken[] tokens, int start = 0)
+        {
+            return new QueryParser(tokens, start).ParseFunctionParameters();
+        }
+
+        public static FunctionParameters ParseFunctionParameters(string text)
+        {
+            return ParseFunctionParameters(TokenParser.ParseTokens(text));
+        }
+
         public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0)
         {
             return new QueryParser(tokens, start).ParseFunctionBody();
