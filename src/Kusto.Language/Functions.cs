@@ -129,8 +129,7 @@ namespace Kusto.Language
             new FunctionSymbol("regex_quote", ScalarTypes.String,
                 new Parameter("string", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // shanisolomon to unhide after May 23rd.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol IndexOf =
             new FunctionSymbol("indexof", ScalarTypes.Long,
