@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
+    <AssemblyName>Kusto.Language</AssemblyName>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="'$(KustoProps)' != 'true'" />
   <PropertyGroup>
