@@ -291,6 +291,26 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with either
+        /// the cluster with the same name replaced with the new cluster
+        /// or the new cluster added.
+        /// </summary>
+        public GlobalState AddOrReplaceCluster(ClusterSymbol cluster)
+        {
+            if (cluster == ClusterSymbol.Unknown
+                || cluster == this.Cluster
+                || this.Clusters.Contains(cluster))
+            {
+                return this;
+            }
+            else
+            {
+                var newClusters = AddOrReplace(this.Clusters, cluster);
+                return WithClusterList(newClusters);
+            }
+        }
+
+        /// <summary>
         /// Constructs a new <see cref="GlobalState"/> with the specified default cluster.
         /// </summary>
         public GlobalState WithCluster(ClusterSymbol cluster)
@@ -301,7 +321,7 @@ namespace Kusto.Language
             }
             else if (cluster == ClusterSymbol.Unknown)
             {
-                return With(cluster: cluster, database: DatabaseSymbol.Unknown);
+                return With(cluster: ClusterSymbol.Unknown, database: DatabaseSymbol.Unknown);
             }
             else if (this.Clusters.Contains(cluster))
             {
@@ -312,20 +332,40 @@ namespace Kusto.Language
             else
             {
                 // add new cluster or replace existing cluster with same name
-                var newClusters = new List<ClusterSymbol>(this.Clusters);
+                var newClusters = AddOrReplace(this.Clusters, cluster);
+                return WithClusterList(newClusters).WithCluster(cluster);
+            }
+        }
 
-                var existingCluster = GetCluster(cluster.Name);
-                if (existingCluster != null)
+        private static IReadOnlyList<T> AddOrReplace<T>(IReadOnlyList<T> list, T newElement)
+            where T: Symbol
+        {
+            var existingElement = list.FirstOrDefault(s => s.Name == newElement.Name);
+            if (existingElement == newElement)
+            {
+                return list;
+            }
+            else
+            {
+                var newList = new List<T>(list);
+                if (existingElement != null)
                 {
-                    var index = newClusters.IndexOf(existingCluster);
-                    newClusters[index] = cluster;
+                    var index = newList.IndexOf(existingElement);
+                    if (index >= 0)
+                    {
+                        newList[index] = newElement;
+                    }
+                    else
+                    {
+                        newList.Add(newElement);
+                    }
                 }
                 else
                 {
-                    newClusters.Add(cluster);
+                    newList.Add(newElement);
                 }
 
-                return WithClusterList(newClusters).WithCluster(cluster);
+                return newList;
             }
         }
 
@@ -403,8 +443,9 @@ namespace Kusto.Language
         {
             name = KustoFacts.GetHostName(name) ?? name;
 
-            if (KustoFacts.IsClusterHostName(name, this.Cluster.Name)
-                || (KustoFacts.IsClusterShortName(name, this.Cluster.Name) && KustoFacts.IsKustoWindowsNet(this.Cluster.Name)))
+            if (this.Cluster != ClusterSymbol.Unknown
+                && (KustoFacts.IsClusterHostName(name, this.Cluster.Name)
+                    || (KustoFacts.IsClusterShortName(name, this.Cluster.Name) && KustoFacts.IsKustoWindowsNet(this.Cluster.Name))))
             {
                 return this.Cluster;
             }

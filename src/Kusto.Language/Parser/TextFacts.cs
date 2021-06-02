@@ -43,6 +43,22 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        public static bool IsWhitespaceOnly(string text)
+        {
+            return IsWhitespaceOnly(text, 0, text.Length);
+        }
+
+        public static bool IsWhitespaceOnly(string text, int start, int length)
+        {
+            for (int i = start, n = Math.Min(text.Length, start + length); i < n; i++)
+            {
+                if (!IsWhitespace(text[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
         public static bool IsLineBreakStart(char ch)
         {
             switch (ch)

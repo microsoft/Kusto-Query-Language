@@ -1336,8 +1336,8 @@ namespace Kusto.Language.Editor
             }
             else
             {
-                // no context node?, we must be at the root of the tree
-                return CompletionHint.Query;
+                // no context node?
+                return CompletionHint.None;
             }
         }
 
@@ -1362,7 +1362,9 @@ namespace Kusto.Language.Editor
 
             // if this child was optional and empty then also get hints from following child slots
             // if contextNode is list, then it can have followers too
-            if (IsChildEmpty(contextNode, childIndex) || contextNode is SyntaxList)
+            if (IsChildEmpty(contextNode, childIndex) 
+                || IsChildOnNewLine(contextNode, childIndex)
+                || contextNode is SyntaxList)
             {
                 while (contextNode != null)
                 {
@@ -1370,8 +1372,11 @@ namespace Kusto.Language.Editor
                     for (int i = childIndex + 1, n = contextNode.ChildCount; i < n; i++)
                     {
                         // if next child is not missing or empty then we've already got all the hints
-                        if (!IsChildMissingOrEmpty(contextNode, i))
+                        if (!IsChildMissingOrEmpty(contextNode, i)
+                            && !IsChildOnNewLine(contextNode, i))
+                        {
                             return hint;
+                        }
 
                         hint |= GetChildHint(contextNode, i, defaultHint);
 
@@ -1436,6 +1441,18 @@ namespace Kusto.Language.Editor
         {
             var child = node.GetChild(index);
             return (child == null || child.Width == 0) && !IsChildMissing(node, index);
+        }
+
+        private static bool IsChildOnNewLine(SyntaxNode node, int index)
+        {
+            if (node.GetChild(index) is SyntaxElement child
+                && child.GetFirstToken() is SyntaxToken token)
+            {
+                var firstLB = TextFacts.GetNextLineBreakStart(token.Trivia, 0);
+                return firstLB >= 0 && TextFacts.IsWhitespaceOnly(token.Trivia, 0, firstLB);
+            }
+
+            return false;
         }
 
         private static ObjectPool<List<Parameter>> s_parameterListPool =
@@ -1757,9 +1774,32 @@ namespace Kusto.Language.Editor
                 contextChildIndex = GetChildIndex(contextNode, position);
                 return true;
             }
+            
+            if (position > token.TriviaStart && position < token.TextStart && !hasAffinity)
+            {
+                // if we got here then there was no ancestor with empty child, so no syntax hole to fill
+                // yet we are also inside trivia and only whitespace until end of line, meaning the next syntax part
+                // is on a separate line, so allow completions to produce the same list as for syntax slot that contains
+                // the next part
+                var nextLBStart = TextFacts.GetNextLineBreakStart(token.Trivia, position - token.TriviaStart);
+                if (nextLBStart >= 0 && TextFacts.IsWhitespaceOnly(token.Trivia, 0, nextLBStart))
+                {
+                    var prevToken = token.GetPreviousToken();
+                    if (prevToken != null)
+                    {
+                        contextNode = SyntaxElement.GetCommonAncestor(prevToken, token);
+                        if (contextNode != null)
+                        {
+                            contextChildIndex = contextNode.GetDescendantIndex(token);
+                            return contextChildIndex >= 0;
+                        }
+                    }
+                }
+            }
 
             return false;
         }
+
 
         private void GetSyntaxCompletions(int position, CompletionBuilder builder)
         {

@@ -297,6 +297,16 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public int GetChildIndex(SyntaxElement child)
         {
+            if (child.Parent == this)
+            {
+                return child.IndexInParent;
+            }
+            else
+            {
+                return -1;
+            }
+
+#if false
             for (int i = 0, n = this.ChildCount; i < n; i++)
             {
                 if (this.GetChild(i) == child)
@@ -304,6 +314,7 @@ namespace Kusto.Language.Syntax
             }
 
             return -1;
+#endif
         }
 
         /// <summary>
@@ -323,6 +334,68 @@ namespace Kusto.Language.Syntax
                 return depth;
             }
         }
+
+        /// <summary>
+        /// Gets the common ancestor between two elements a & b.
+        /// </summary>
+        public static SyntaxNode GetCommonAncestor(SyntaxElement a, SyntaxElement b)
+        {
+            if (a == null || b == null)
+                return null;
+
+            var da = a.Depth;
+            var db = b.Depth;
+
+            while (da > db && da > 0)
+            {
+                a = a.Parent;
+                da--;
+            }
+
+            while (db > da && db > 0)
+            {
+                b = b.Parent;
+                db--;
+            }
+
+            if (da > 0 && a.Parent == b.Parent)
+            {
+                return a.Parent;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the child node index for the subtree that the descendant is part of
+        /// </summary>
+        public int GetDescendantIndex(SyntaxElement descendant)
+        {
+            if (descendant == null)
+                return -1;
+
+            if (descendant.Parent != this)
+            {
+                var d = this.Depth;
+                var dd = descendant.Depth;
+
+                while (dd > d + 1)
+                {
+                    descendant = descendant.Parent;
+                    dd--;
+                }
+            }
+
+            if (descendant.Parent == this)
+            {
+                return descendant.IndexInParent;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
 
         /// <summary>
         /// Returns true if this element is the ancestor of the specified element.

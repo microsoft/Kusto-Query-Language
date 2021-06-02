@@ -1517,7 +1517,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowDiagnostics =
             new CommandSymbol(nameof(ShowDiagnostics),
-                "show diagnostics",
+                "show diagnostics [with '(' scope '=' Scope=(cluster | workloadgroup) ')']",
                 new TableSymbol(
                     new ColumnSymbol("IsHealthy", ScalarTypes.Bool),
                     new ColumnSymbol("EnvironmentDescription", ScalarTypes.String),
