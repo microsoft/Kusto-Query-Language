@@ -1847,6 +1847,7 @@ declare namespace Kusto.Language {
         MaterializedView: Kusto.Language.Symbols.FunctionSymbol | null;
         StoredQueryResult: Kusto.Language.Symbols.FunctionSymbol | null;
         Strcat: Kusto.Language.Symbols.FunctionSymbol | null;
+        Strcat2: Kusto.Language.Symbols.FunctionSymbol | null;
         StrcatArray: Kusto.Language.Symbols.FunctionSymbol | null;
         ArrayStrcat: Kusto.Language.Symbols.FunctionSymbol | null;
         StrcatDelim: Kusto.Language.Symbols.FunctionSymbol | null;
