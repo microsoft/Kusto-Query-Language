@@ -53,6 +53,12 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol Strcat2 =
+            new FunctionSymbol("strcat2", ScalarTypes.String,
+                new Parameter("arg", ParameterTypeKind.Scalar, maxOccurring: 64))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
         public static readonly FunctionSymbol StrcatArray =
             new FunctionSymbol("strcat_array", ScalarTypes.String,
                 new Parameter("array", ScalarTypes.Dynamic),
