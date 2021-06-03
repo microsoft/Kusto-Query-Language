@@ -6,6 +6,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
     <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
@@ -28,7 +29,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs" />
+    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs;..\Kusto.Language\bin\**;..\Kusto.Language\obj\**;myinnerproj\**.*" />
     <None Include="bridge.json" />
   </ItemGroup>
   <ItemGroup>
