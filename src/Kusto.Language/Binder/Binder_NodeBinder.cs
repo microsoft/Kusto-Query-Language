@@ -295,7 +295,7 @@ namespace Kusto.Language.Binding
                                         if (_binder._rowScope != null)
                                         {
                                             // include all columns in scope
-                                            columns.AddRange(_binder.GetDeclaredAndInferredColumns(_binder._rowScope));
+                                            columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
                                         }
                                         else
                                         {

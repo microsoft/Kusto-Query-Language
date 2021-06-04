@@ -336,7 +336,7 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Gets the common ancestor between two elements a & b.
+        /// Gets the common ancestor between two elements a and b.
         /// </summary>
         public static SyntaxNode GetCommonAncestor(SyntaxElement a, SyntaxElement b)
         {

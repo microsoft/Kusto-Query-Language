@@ -714,6 +714,11 @@ namespace Kusto.Language
             return new Diagnostic("KS210", $"The name '{name}' does not refer to any known materialized view.");
         }
 
+        public static Diagnostic GetNameDoesNotReferToAnyKnownFunction(string name)
+        {
+            return new Diagnostic("KS211", $"The name '{name}' does not refer to any known function.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -1636,11 +1636,30 @@ namespace Kusto.Language.Binding
                         {
                             return null;
                         }
+                        else if (_pathScope is DatabaseSymbol ds)
+                        {
+                            if (ds != null && ds.IsOpen)
+                            {
+                                return new SemanticInfo(new TableSymbol("").WithIsOpen(true));
+                            }
+                            else
+                            {
+                                return new SemanticInfo(
+                                    new TableSymbol("").WithIsOpen(true),
+                                    DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
+                            }
+                        }
+                        else if (IsInTabularContext(location))
+                        {
+                            return new SemanticInfo(
+                                new TableSymbol("").WithIsOpen(true),
+                                DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
+                        }
                         else
                         {
                             return new SemanticInfo(
                                 ErrorSymbol.Instance,
-                                DiagnosticFacts.GetFunctionNotDefined(name).WithLocation(location));
+                                DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
                         }
                     }
                     else if (IsInTabularContext(location))
@@ -1650,6 +1669,11 @@ namespace Kusto.Language.Binding
                             return new SemanticInfo(
                                 new TableSymbol().WithIsOpen(true),
                                 DiagnosticFacts.GetFuzzyUnionOperandNotDefined(name).WithLocation(location));
+                        }
+                        else if (_pathScope is DatabaseSymbol ds
+                            && ds.IsOpen)
+                        {
+                            return new SemanticInfo(new TableSymbol(name).WithIsOpen(true));
                         }
                         else
                         {
@@ -2998,14 +3022,8 @@ namespace Kusto.Language.Binding
             }
             else if (!symbol.IsError)
             {
-                if (symbol is TableSymbol && IsInTabularContext(functionCall) && IsFuzzyUnionOperand(functionCall))
-                {
-                    return functionCall.Name.GetSemanticInfo();
-                }
-                else
-                {
-                    return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameIsNotAFunction(functionCall.Name.SimpleName).WithLocation(functionCall.Name));
-                }
+                // the name was not a known function or pattern, but we decided to give it a result type, so let's use it
+                return functionCall.Name.GetSemanticInfo();
             }
             else if (IsFuzzyUnionOperand(functionCall))
             {
@@ -3648,7 +3666,7 @@ namespace Kusto.Language.Binding
             var columns = s_columnListPool.AllocateFromPool();
             try
             {
-                GetDeclaredAndInferredColumns(_rowScope, columns);
+                GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
 
                 if (node.DeclareClause != null)
                 {
@@ -4418,7 +4436,7 @@ namespace Kusto.Language.Binding
                         break;
 
                     case StarExpression s:
-                        foreach (ColumnSymbol c in GetDeclaredAndInferredColumns(_rowScope))
+                        foreach (ColumnSymbol c in GetDeclaredAndInferredColumns(RowScopeOrEmpty))
                         {
                             builder.Add(c, replace: true, doNotRepeat: doNotRepeat);
                         }
