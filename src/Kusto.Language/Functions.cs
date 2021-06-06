@@ -2130,8 +2130,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_geohash_to_polygon", ScalarTypes.Dynamic,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointToS2Cell =
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
@@ -2151,8 +2150,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_s2cell_to_polygon", ScalarTypes.Dynamic,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointToH3Cell =
             new FunctionSymbol("geo_point_to_h3cell", ScalarTypes.String,
@@ -2160,22 +2158,19 @@ namespace Kusto.Language
                 new Parameter("latitude", ParameterTypeKind.Number),
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToCentralPoint =
             new FunctionSymbol("geo_h3cell_to_central_point", ScalarTypes.Dynamic,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToPolygon =
             new FunctionSymbol("geo_h3cell_to_polygon", ScalarTypes.Dynamic,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
         #endregion
 
         #region other
