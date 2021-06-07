@@ -11,6 +11,8 @@ namespace Kusto.Language
             new CommandSymbol[]
             {
                 EngineCommands.ShowVersion
+
+                // Adding commetn
             };
     }
 }
