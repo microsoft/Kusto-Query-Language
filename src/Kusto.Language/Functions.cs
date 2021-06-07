@@ -1689,63 +1689,133 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesAdd =
-            new FunctionSymbol("series_add", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_add",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSubtract =
-            new FunctionSymbol("series_subtract", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_subtract", 
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesMultiply =
-            new FunctionSymbol("series_multiply", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_multiply", 
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesDivide =
-            new FunctionSymbol("series_divide", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_divide", 
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesGreater =
-            new FunctionSymbol("series_greater", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_greater",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesGreaterEquals =
-            new FunctionSymbol("series_greater_equals", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_greater_equals",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesLess =
-            new FunctionSymbol("series_less", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_less",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesLessEquals =
-            new FunctionSymbol("series_less_equals", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_less_equals",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesEquals =
-            new FunctionSymbol("series_equals", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_equals",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesNotEquals =
-            new FunctionSymbol("series_not_equals", ScalarTypes.Dynamic,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_not_equals",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSeasonal =
