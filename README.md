@@ -1,20 +1,25 @@
-# Kusto Query Language
+# This is a forked version of Kusto Query Language, do not expect compatibility
+
+# Original README
+
+
+## Kusto Query Language
 
 Kusto Query Language is a simple yet powerful language to query structured, semi-structured and unstructured data. It assumes relational data model of tables and columns with a minimal set of data types. The language is very expressive, easy to read and understand the query intent, and optimized for authoring experiences.
 
-## Content
+### Content
 
 This repo contains a C# parser and a semantic analyzer as well as a translator project that generates the same libraries in Java Script. See [usage examples](src/Kusto.Language/readme.md)
 
-## API Package
+### API Package
 
 This source code is also available as a [package on nuget.org](https://www.nuget.org/packages/Microsoft.Azure.Kusto.Language/)
 
-## Query Editor
+### Query Editor
 
 If you need to provide a query authoring experience for the language, consider using the [Kusto language plugin for the Monaco Editor](https://github.com/Azure/monaco-kusto)
 
-## Contribute
+### Contribute
 
 There are many ways to contribute to Kusto Query Language.
 
@@ -22,7 +27,7 @@ There are many ways to contribute to Kusto Query Language.
 * Review the [source code changes](https://github.com/microsoft/Kusto-Query-Language/commits/master).
 * Engage with other Kusto Query Language users and developers on [StackOverflow](https://stackoverflow.com/questions/tagged/kusto-query-language).
 
-## Microsoft Open Source Code of Conduct
+### Microsoft Open Source Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
