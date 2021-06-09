@@ -1,16 +1,12 @@
 {
-  "name": "@kusto/language-service-next",
-  "version": "0.0.47",
-  "description": "Azure Data Explorer (a.k.a Kusto) language service for javascript",
+  "name": "@axiomhq/language-service-next",
+  "version": "0.1.0",
+  "description": "APL language service for javascript",
   "author": {
-    "name": "Microsoft"
+    "name": "neil@axiom.co"
   },
   "license": "MIT",
-  "keywords": [
-    "Azure Data Explorer",
-    "ADE",
-    "kusto"
-  ],
+  "keywords": [],
   "main": "./Kusto.Language.Bridge.js",
   "types": "./Kusto.Language.Bridge.d.ts"
 }
