@@ -150,6 +150,22 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("avgif");
 
+        public static readonly FunctionSymbol Histogram =
+            new FunctionSymbol("histogram",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("expr", ParameterTypeKind.Summable),
+                    new Parameter("buckets", ParameterTypeKind.Integer, minOccurring: 0 )))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("histogram");
+       
+        public static readonly FunctionSymbol TopK =
+                new FunctionSymbol("topk",
+                    new Signature(ScalarTypes.Dynamic,
+                        new Parameter("expr", ParameterTypeKind.NotRealOrBool),
+                        new Parameter("k", ParameterTypeKind.Integer, minOccurring: 0)))
+                .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+                .WithResultNamePrefix("topk");
+
         public static readonly FunctionSymbol MakeList_Depricated =
             new FunctionSymbol("makelist", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar),
@@ -708,6 +724,8 @@ namespace Kusto.Language
             MaxIf,
             Avg,
             AvgIf,
+            Histogram,
+            TopK,
             MakeList_Depricated,
             MakeList,
             MakeListIf,

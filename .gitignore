@@ -332,3 +332,4 @@ ASALocalRun/
 
 # Build artefacts
 /src/Kusto.Language/bin
+/src/Kusto.Language.Bridge/bin/Release/
