@@ -436,6 +436,16 @@ namespace Kusto.Language.Editor
                     }
                     break;
 
+                case SyntaxList list:
+                    if (list.Count > 1
+                        && list[0] is SeparatedElement listElem
+                        && listElem.Separator?.Kind == SyntaxKind.CommaToken
+                        && IsDirectQueryOperatorPart(list))
+                    {
+                        AddQueryOperatorCommaListRules(list);
+                    }
+                    break;
+
                 case BracketedExpression be:
                     AddBracketExpressionRules(be);
                     break;
@@ -447,7 +457,72 @@ namespace Kusto.Language.Editor
                 case DataTableExpression dt:
                     AddDataTableExpressionRules(dt);
                     break;
+
+                case BinaryExpression be:
+                    AddBinaryOperatorChainRules(be);
+                    break;
             }
+        }
+
+        private const int ArbitraryMaxBinaryOperatorChainWidth = 80;
+
+        /// <summary>
+        //  Place operator that is part of an operator chain that is part of a query operator or clause (not nested in parens, etc)
+        //  on new line if the overall chain is large.
+        /// </summary>
+        private void AddBinaryOperatorChainRules(BinaryExpression be)
+        {
+            if (IsChainableBinaryOperator(be.Kind)
+                && IsDirectQueryOperatorPart(be)
+                && !SpansMultipleLines(be)
+                && be.Width > ArbitraryMaxBinaryOperatorChainWidth)
+            {
+                var depth = GetBinaryOperatorChainDepth(be);
+                if (depth > 1)
+                {
+                    var op = be;
+                    while (op != null && op.Kind == be.Kind)
+                    {
+                        AddRule(op.Operator, SpacingRule.From(SpacingKind.NewLine));
+                        op = op.Left as BinaryExpression;
+                    }
+                }
+            }
+        }
+
+        private static bool IsDirectQueryOperatorPart(SyntaxNode node)
+        {
+            return node.Parent is QueryOperator 
+                || node.Parent is Clause;
+        }
+
+        private static bool IsChainableBinaryOperator(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.AndExpression:
+                case SyntaxKind.OrExpression:
+                //case SyntaxKind.AddExpression:
+                    return true;
+                default:
+                    return false;
+            }
+
+        }
+
+        private static int GetBinaryOperatorChainDepth(BinaryExpression be)
+        {
+            int count = 1;
+
+            while (be != null
+                && be.Left is BinaryExpression left 
+                && left.Operator.Kind == be.Operator.Kind)
+            {
+                count++;
+                be = left;
+            }
+
+            return count;
         }
 
         private void AddSubElementRules(SyntaxNode n)
@@ -457,7 +532,7 @@ namespace Kusto.Language.Editor
                 || n.Parent is Command)
             {
                 // sub elements of statements/commands/query-operators are all indented.
-                if (n.Parent.GetChildIndex(n) > 0) // except for first token
+                if (n.IndexInParent > 0) // except for first token
                 {
                     AddRule(n, IndentRule());
                 }
@@ -540,6 +615,31 @@ namespace Kusto.Language.Editor
                     AddRule(se.Separator, IndentRule(se));
                     break;
             }
+        }
+
+        private const int ArbitraryMaxCommaListWidthWidth = 80;
+
+        private void AddQueryOperatorCommaListRules(SyntaxList list)
+        {
+            if (list.Width > ArbitraryMaxCommaListWidthWidth
+                && !SpansMultipleLines(list))
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var elem = (SyntaxNode)list[i];
+                    AddRule(elem, SpacingRule.From(SpacingKind.NewLine));
+                }
+            }
+#if false   // consider triggering new lines for lists that is already split across lines
+            else
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var elem = (SyntaxNode)list[i];
+                    AddRule(elem, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(list)));
+                }
+            }
+#endif
         }
 
         private void AddFunctionDeclarationRules(FunctionDeclaration fd)
