@@ -546,7 +546,9 @@ namespace Kusto.Language
         {
             var builder = new StringBuilder();
 
-            for (int i = start, end = start + length; i < end; i++)
+            int i = start;
+            int end = start + length;
+            while (i < end)
             {
                 var ch = text[i];
                 if (ch == '\\' && i + 1 < end)
@@ -558,84 +560,110 @@ namespace Kusto.Language
                         case '"':
                         case '\\':
                             builder.Append(ch2);
-                            i++;
+                            i += 2;
                             break;
                         case 'a':
                             builder.Append('\a');
-                            i++;
+                            i += 2;
                             break;
                         case 'b':
                             builder.Append('\b');
-                            i++;
+                            i += 2;
                             break;
                         case 'f':
                             builder.Append('\f');
-                            i++;
+                            i += 2;
                             break;
                         case 'n':
                             builder.Append('\n');
-                            i++;
+                            i += 2;
                             break;
                         case 'r':
                             builder.Append('\r');
-                            i++;
+                            i += 2;
                             break;
                         case 't':
                             builder.Append('\t');
-                            i++;
+                            i += 2;
                             break;
                         case 'v':
                             builder.Append('\v');
-                            i++;
+                            i += 2;
                             break;
                         case 'u':
+                            // 4 char hex encoded character
+                            i += 2;
+                            builder.Append((char)DecodeHex(text, 4, ref i));
+                            break;
+#if !BRIDGE
                         case 'U':
+                            // 8 char hex encoded character (two surrogate pairs)
+                            i += 2;
+                            var hex = DecodeHex(text, 8, ref i);
+                            var converted = char.ConvertFromUtf32(hex);
+                            builder.Append(converted);
+                            break;
+#endif
                         case 'x':
-                            // hex encoded character
-                            builder.Append(DecodeHex(text, ref i));
+                            // 2 char hex encoded character (not same as C#)
+                            i += 2;
+                            builder.Append((char)DecodeHex(text, 2, ref i));
                             break;
                         default:
-                            // octal encoded character
-                            builder.Append(DecodeOctal(text, ref i));
+                            if (char.IsDigit(ch2))
+                            {
+                                // octal encoded character
+                                i++;
+                                builder.Append((char)DecodeOctal(text, 3, ref i));
+                            }
+                            else
+                            {
+                                // just this character?
+                                i += 2;
+                                builder.Append(ch2);
+                            }
                             break;
                     }
                 }
                 else
                 {
                     builder.Append(ch);
+                    i++;
                 }
             }
 
             return builder.ToString();
         }
 
-        private static char DecodeOctal(string text, ref int index)
+        private static int DecodeOctal(string text, int length, ref int index)
         {
-            long value = 0;
+            int value = 0;
+            int count = 0;
 
-            for (;  index < text.Length && char.IsDigit(text[index]); index++)
+            for (; count < 3 && index < text.Length && char.IsDigit(text[index]); count++, index++)
             {
                 value = (value << 3) + (text[index] - '0');
             }
 
-            return unchecked((char)value);
+            return value;
         }
 
-        private static char DecodeHex(string text, ref int index)
+        private static int DecodeHex(string text, int length, ref int index)
         {
-            long value = 0;
+            int value = 0;
+            int count = 0;
 
-            for (; index < text.Length; index++)
+            for (; count < length && index < text.Length; count++, index++)
             {
                 var ch = text[index];
 
                 if (ch >= 'a' && ch <= 'f')
                 {
-                    value = (value << 4) + (ch - 'a');
+                    value = (value << 4) + (ch - 'a' + 10);
                 }
                 else if (ch >= 'A' && ch <= 'F')
                 {
-                    value = (value << 4) + (ch - 'A');
+                    value = (value << 4) + (ch - 'A' + 10);
                 }
                 else if (ch >= '0' && ch <= '9')
                 {
@@ -647,7 +675,7 @@ namespace Kusto.Language
                 }
             }
 
-            return (char)value;
+            return value;
         }
 
         private static string DecodeDoubleQuotes(string text, int start, int length, char quote)
