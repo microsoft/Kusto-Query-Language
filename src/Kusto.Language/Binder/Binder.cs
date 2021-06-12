@@ -4306,6 +4306,10 @@ namespace Kusto.Language.Binding
                                     builder.DoNotAdd(tu.Columns[0]);
                                 }
 
+                                // don't add unnamed tuple columns if print style
+                                if (style == ProjectionStyle.Print)
+                                    break;
+
                                 // all other columns are not declared, so they must be unique
                                 for (int i = 1; i < tu.Members.Count; i++)
                                 {
@@ -4363,14 +4367,17 @@ namespace Kusto.Language.Binding
                                             builder.DoNotAdd(tupleType.Columns[i]);
                                         }
                                     }
-                                    else if (GetReferencedSymbol(cn.Expression) is FunctionSymbol fs1)
+                                    else if (style != ProjectionStyle.Print)
                                     {
-                                        AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, style == ProjectionStyle.Summarize);
-                                    }
-                                    else
-                                    {
-                                        // not-declared so make unique column
-                                        builder.Add(col, replace: style == ProjectionStyle.Extend, doNotRepeat: doNotRepeat);
+                                        if (GetReferencedSymbol(cn.Expression) is FunctionSymbol fs1)
+                                        {
+                                            AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, style == ProjectionStyle.Summarize);
+                                        }
+                                        else
+                                        {
+                                            // not-declared so make unique column
+                                            builder.Add(col, replace: style == ProjectionStyle.Extend, doNotRepeat: doNotRepeat);
+                                        }
                                     }
                                 }
 
@@ -4414,11 +4421,15 @@ namespace Kusto.Language.Binding
                         var ftype = GetResultTypeOrError(f);
                         var ts = ftype as TupleSymbol;
 
-                        if (ts != null && ts.Columns.Count == 1 && style == ProjectionStyle.Print)
+                        if (style == ProjectionStyle.Print 
+                            && columnName != null
+                            && (ts == null || ts.Columns.Count == 1))
                         {
-                            var name = GetFunctionResultName(f, null, _rowScope);
-                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ts.Columns[0].Type);
-                            builder.Add(col, name ?? "Column", replace: false);
+                            if (ts != null && ts.Columns.Count == 1)
+                                ftype = ts.Columns[0].Type;
+
+                            col = new ColumnSymbol(columnName, columnType ?? ftype);
+                            builder.Add(col, columnName, replace: false);
                         }
                         else if (ts != null && GetReferencedSymbol(f) is FunctionSymbol fs)
                         {
@@ -4499,11 +4510,18 @@ namespace Kusto.Language.Binding
                             if (!type.IsError && !type.IsScalar)
                             {
                                 diagnostics.Add(DiagnosticFacts.GetScalarTypeExpected().WithLocation(expression));
+                                type = ScalarTypes.Unknown;
+                            }
+                            
+                            if (style == ProjectionStyle.Print && columnName != null)
+                            {
+                                col = new ColumnSymbol(columnName, columnType ?? type);
+                                builder.Add(col, columnName, replace: false);
                             }
                             else
                             {
                                 var name = GetExpressionResultName(expression, null);
-                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? GetResultTypeOrError(expression));
+                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? type);
                                 builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
                             }
                         }
