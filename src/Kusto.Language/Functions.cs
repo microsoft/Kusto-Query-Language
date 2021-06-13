@@ -177,11 +177,11 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.String,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroup", ScalarTypes.Long),
-                    new Parameter("text", ScalarTypes.String)),
+                    new Parameter("source", ScalarTypes.String)),
                 new Signature(ReturnTypeKind.ParameterNLiteral,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroup", ScalarTypes.Long),
-                    new Parameter("text", ScalarTypes.String),
+                    new Parameter("source", ScalarTypes.String),
                     new Parameter("typeLiteral", ScalarTypes.Type, ArgumentKind.Literal)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -190,11 +190,11 @@ namespace Kusto.Language
              new FunctionSymbol("extractall",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                    new Parameter("text", ScalarTypes.String)),
+                    new Parameter("source", ScalarTypes.String)),
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroups", ScalarTypes.Dynamic),
-                    new Parameter("text", ScalarTypes.String)))
+                    new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Obsolete("extract_all")
@@ -204,11 +204,11 @@ namespace Kusto.Language
             new FunctionSymbol("extract_all",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                    new Parameter("text", ScalarTypes.String)),
+                    new Parameter("source", ScalarTypes.String)),
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroups", ScalarTypes.Dynamic),
-                    new Parameter("text", ScalarTypes.String)))
+                    new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -228,34 +228,43 @@ namespace Kusto.Language
             new FunctionSymbol("replace", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("rewrite", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("text", ScalarTypes.String))
+                new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol ReplaceRegex =
+            new FunctionSymbol("replace_regex", ScalarTypes.String,
+                new Parameter("source", ScalarTypes.String),
+                new Parameter("lookup_regex", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("rewrite_pattern", ScalarTypes.String, ArgumentKind.Constant))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // shanisolomon to unhide after July 1st.
 
         public static readonly FunctionSymbol TrimStart =
             new FunctionSymbol("trim_start", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("text", ScalarTypes.String))
+                new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol TrimEnd =
             new FunctionSymbol("trim_end", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("text", ScalarTypes.String))
+                new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Trim =
             new FunctionSymbol("trim", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("text", ScalarTypes.String))
+                new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol CountOf =
             new FunctionSymbol("countof", ScalarTypes.Long,
-                new Parameter("text", ScalarTypes.String),
+                new Parameter("source", ScalarTypes.String),
                 new Parameter("search", ScalarTypes.String),
                 new Parameter("kind", ScalarTypes.String, ArgumentKind.Literal, new object[] { "normal", "regex" }, isCaseSensitive: true, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
@@ -265,7 +274,7 @@ namespace Kusto.Language
             new FunctionSymbol("translate", ScalarTypes.String,
                 new Parameter("searchList", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("replacementList", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("text", ScalarTypes.String))
+                new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -2375,33 +2384,33 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol HasIpv4 =
             new FunctionSymbol("has_ipv4", ScalarTypes.Bool,
-                new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                new Parameter("source", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasIpv4Prefix =
             new FunctionSymbol("has_ipv4_prefix", ScalarTypes.Bool,
-                new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                new Parameter("source", ParameterTypeKind.StringOrDynamic),
                 new Parameter("ip_prefix", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasAnyIpv4 =
             new FunctionSymbol("has_any_ipv4",
                 new Signature(ScalarTypes.Bool,
-                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("source", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ips", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
-                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("source", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ips", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasAnyIpv4Prefix =
             new FunctionSymbol("has_any_ipv4_prefix",
                 new Signature(ScalarTypes.Bool,
-                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("source", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ip_prefixes", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
-                    new Parameter("text", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("source", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ip_prefixes", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
         #endregion
@@ -2442,6 +2451,7 @@ namespace Kusto.Language
             ExtractAll,
             ExtractJson,
             Replace,
+            ReplaceRegex,
             TrimStart,
             TrimEnd,
             Trim,

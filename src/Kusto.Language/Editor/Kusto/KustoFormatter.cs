@@ -467,8 +467,8 @@ namespace Kusto.Language.Editor
         private const int ArbitraryMaxBinaryOperatorChainWidth = 80;
 
         /// <summary>
-        //  Place operator that is part of an operator chain that is part of a query operator or clause (not nested in parens, etc)
-        //  on new line if the overall chain is large.
+        ///  Place operator that is part of an operator chain that is part of a query operator or clause (not nested in parens, etc)
+        ///  on new line if the overall chain is large.
         /// </summary>
         private void AddBinaryOperatorChainRules(BinaryExpression be)
         {
