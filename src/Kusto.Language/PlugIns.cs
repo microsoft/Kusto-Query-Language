@@ -517,6 +517,7 @@ namespace Kusto.Language
              new FunctionSymbol("rows_near",
                 (table, args) => table,
                 Tabularity.Tabular,
+                new Parameter("Condition", ScalarTypes.Bool, ArgumentKind.Expression),
                 new Parameter("NumRows", ParameterTypeKind.Integer, ArgumentKind.Constant),
                 new Parameter("NumRowsAfter", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring:0));
 

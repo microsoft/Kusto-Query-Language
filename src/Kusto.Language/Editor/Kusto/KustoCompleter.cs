@@ -417,9 +417,9 @@ namespace Kusto.Language.Editor
                 // don't show invoke functions that would not match the row schema
                 if (isInvoke && rowScope != null && !rowScope.IsOpen)
                 {
-                    if (symbol is FunctionSymbol fs && !IsApplicable(fs, rowScope))
+                    if (symbol is FunctionSymbol fs && !IsInvokeApplicable(fs, rowScope))
                         continue;
-                    if (symbol is VariableSymbol vs && vs.Type is FunctionSymbol vfs && !IsApplicable(vfs, rowScope))
+                    if (symbol is VariableSymbol vs && vs.Type is FunctionSymbol vfs && !IsInvokeApplicable(vfs, rowScope))
                         continue;
                 }
 
@@ -436,13 +436,10 @@ namespace Kusto.Language.Editor
             return CompletionMode.Combined;
         }
 
-        private bool IsApplicable(FunctionSymbol function, Symbol implicitFirstArgumentType)
+        private bool IsInvokeApplicable(FunctionSymbol function, Symbol implicitFirstArgumentType)
         {
             if (function == Functions.Cluster
-                || function == Functions.Database
-                || function == Functions.Table
-                || function == Functions.ExternalTable
-                || function == Functions.MaterializedView)
+                || function == Functions.Database)
             {
                 return true;
             }
