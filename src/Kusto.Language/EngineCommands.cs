@@ -137,6 +137,29 @@ namespace Kusto.Language
             new CommandSymbol(nameof(ShowDatabasesSchemaAsJson),
                 "show databases '(' { DatabaseName=<database> [if_later_than Version=<string>], ',' }+ ')' schema as json",
                 "(DatabaseSchema: string)");
+
+        private readonly static string DatabaseIngestionMappingResult =
+           "(Name: string, Kind: string, Mapping: string, LastUpdatedOn: datetime, Database: string)";
+
+        public static readonly CommandSymbol CreateDatabaseIngestionMapping =
+            new CommandSymbol(nameof(CreateDatabaseIngestionMapping),
+                "create database DatabaseName=<database> ingestion! MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                DatabaseIngestionMappingResult);
+
+        public static readonly CommandSymbol AlterDatabaseIngestionMapping =
+            new CommandSymbol(nameof(AlterDatabaseIngestionMapping),
+                "alter database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                DatabaseIngestionMappingResult);
+
+        public static readonly CommandSymbol ShowDatabaseIngestionMappings =
+            new CommandSymbol(nameof(ShowDatabaseIngestionMappings),
+                "show database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mappings",
+                DatabaseIngestionMappingResult);
+
+        public static readonly CommandSymbol DropDatabaseIngestionMapping =
+            new CommandSymbol(nameof(DropDatabaseIngestionMapping),
+                "drop database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                DatabaseIngestionMappingResult);
         #endregion
 
         #region Tables
@@ -1838,6 +1861,10 @@ namespace Kusto.Language
                 ShowDatabaseSchemaAsCslScript,
                 ShowDatabasesSchema,
                 ShowDatabasesSchemaAsJson,
+                CreateDatabaseIngestionMapping,
+                AlterDatabaseIngestionMapping,
+                ShowDatabaseIngestionMappings,
+                DropDatabaseIngestionMapping,
 
                 // Tables
                 ShowTables,

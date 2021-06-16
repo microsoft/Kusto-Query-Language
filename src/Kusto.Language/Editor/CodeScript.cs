@@ -167,8 +167,8 @@ namespace Kusto.Language.Editor
             bool allWhitespace = true; // until proven otherwise
             bool newBlockNextWhitespaceLine = false; // no prior block
             bool newBlockNextNonWhitespaceLine = false; // already added first block
-            bool firstOnLine = true;
             int lineStart = 0;
+            int skipToEnd = 0;  // region to ignore linebreaks informing block breaks
 
             for (int i = 0, n = text.Length; i < n;)
             {
@@ -178,7 +178,7 @@ namespace Kusto.Language.Editor
                     i += lb;
 
                     // next block start happens after one all whitespace line gap
-                    if (allWhitespace)
+                    if (allWhitespace && i > skipToEnd)
                     {
                         if (newBlockNextWhitespaceLine)
                         {
@@ -204,30 +204,35 @@ namespace Kusto.Language.Editor
                     lineStart = i;
                     lineStarts.Add(lineStart);
                     allWhitespace = true;
-                    firstOnLine = true;
                     continue;
                 }
 
-                // skip over multi-line string literals that are first non-whitespace on line
-                // this allows blank lines to exist inside multi-line string literals
-                // without mistaking of ``` appearing inside other string literals or comments
-                if (firstOnLine && text[i] == '`')
+                if (i >= skipToEnd)
                 {
-                    var ml = Parsing.TokenParser.ScanStringLiteral(text, i);
-                    if (ml > 0)
+                    // skip over strings in case they contain blank lines
+                    // or they may contain characters that would otherwise appear to be the start
+                    // of multi-line string
+                    int strlen = Parsing.TokenParser.ScanStringLiteral(text, i);
+                    if (strlen > 0)
                     {
-                        i += ml;
-                        firstOnLine = false;
-                        allWhitespace = false;
-                        continue;
+                        skipToEnd = i + strlen;
+                    }
+                    else
+                    {
+                        // skip over comments as they may contain characters that appear to be the start
+                        // of a multi-line string
+                        int commentLen = Parsing.TokenParser.ScanComment(text, i);
+                        if (commentLen > 0)
+                        {
+                            skipToEnd = i + commentLen;
+                        }
                     }
                 }
-                
+
                 if (!char.IsWhiteSpace(text[i]))
                 {
                     i++;
                     allWhitespace = false;
-                    firstOnLine = false;
                 }
                 else
                 {
@@ -317,5 +322,7 @@ namespace Kusto.Language.Editor
         {
             return Parsing.TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
         }
+
+        public IReadOnlyList<int> LineStarts => this.lineStarts;
     }
 }

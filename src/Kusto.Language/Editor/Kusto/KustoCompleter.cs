@@ -258,6 +258,9 @@ namespace Kusto.Language.Editor
                 case CompletionKind.Example:
                     return OrderingRank.Literal;
 
+                case CompletionKind.QueryPrefix:
+                    return OrderingRank.Keyword;
+
                 case CompletionKind.Keyword:
                     return OrderingRank.Keyword;
 
@@ -296,7 +299,6 @@ namespace Kusto.Language.Editor
                 case CompletionKind.ScalarPrefix:
                 case CompletionKind.TabularPrefix:
                 case CompletionKind.TabularSuffix:
-                case CompletionKind.QueryPrefix:
                 case CompletionKind.Identifier:
                 case CompletionKind.Cluster:
                 case CompletionKind.Database:

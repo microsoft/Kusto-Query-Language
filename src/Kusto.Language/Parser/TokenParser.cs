@@ -403,7 +403,7 @@ namespace Kusto.Language.Parsing
             return pos - start;
         }
 
-        private static int ScanTrivia(string text, int start)
+        public static int ScanTrivia(string text, int start)
         {
             var pos = start;
             char ch;
@@ -413,11 +413,14 @@ namespace Kusto.Language.Parsing
                 if (char.IsWhiteSpace(ch))
                 {
                     pos++;
+                    continue;
                 }
-                else if (ch == '/' 
-                    && Peek(text, pos + 1) == '/')
+
+                var commentLen = ScanComment(text, pos);
+                if (commentLen > 0)
                 {
-                    pos = GetNextLineStart(text, pos);
+                    pos += commentLen;
+                    continue;
                 }
                 else
                 {
@@ -426,6 +429,18 @@ namespace Kusto.Language.Parsing
             }
 
             return pos - start;
+        }
+
+        public static int ScanComment(string text, int start)
+        {
+            if (Peek(text, start) == '/' 
+                && Peek(text, start + 1) == '/')
+            {
+                var end = GetNextLineStart(text, start);
+                return end - start;
+            }
+
+            return 0;
         }
 
         private static int GetNextLineStart(string text, int start)

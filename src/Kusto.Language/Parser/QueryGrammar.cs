@@ -2065,7 +2065,7 @@ namespace Kusto.Language.Parsing
 
             var ScanOperator =
                 Rule(
-                    Token(SyntaxKind.ScanKeyword), 
+                    Token(SyntaxKind.ScanKeyword, CompletionKind.QueryPrefix), 
                     QueryParameterList(QueryOperatorParameters.ScanParameters),
                     Optional(ScanOrderByClause),
                     Optional(ScanPartitionByClause),
