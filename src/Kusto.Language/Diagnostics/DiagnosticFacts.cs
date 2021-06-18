@@ -175,7 +175,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetParsePatternUsingStarAfterStringColumnIsAmbiguous()
         {
-            return new Diagnostic("KS103", "Using * after parsing a string column is abmiguous.");
+            return new Diagnostic("KS103", "Using * after parsing a string column is ambiguous.");
         }
 
         public static Diagnostic GetInvalidPatternPart()
@@ -434,7 +434,7 @@ namespace Kusto.Language
         }
 
         public static Diagnostic GetExpressionMustHaveType<S>(IReadOnlyList<S> types)
-            where S: Symbol
+            where S : Symbol
         {
             if (types.Count == 1)
             {
@@ -448,7 +448,7 @@ namespace Kusto.Language
         }
 
         public static Diagnostic GetExpressionMustHaveType<S>(params S[] types)
-            where S: Symbol
+            where S : Symbol
         {
             return GetExpressionMustHaveType((IReadOnlyList<S>)types);
         }
@@ -684,7 +684,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetFuzzyUnionOperandNotDefined(string name)
         {
-            return new Diagnostic("KS205", 
+            return new Diagnostic("KS205",
                 $"The fuzzy union operand '{name}' does not refer to any known table, tabular variable or function.")
                 .WithSeverity(DiagnosticSeverity.Warning);
         }

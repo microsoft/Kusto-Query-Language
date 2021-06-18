@@ -142,6 +142,10 @@ namespace Kusto.Language.Editor
                         case SyntaxKind.ColonToken:
                         case SyntaxKind.EqualToken:
                             return true;
+
+                        // could be leading part of some keywords
+                        case SyntaxKind.BangToken:
+                            return true;
                     }
 
                     // just typed leading part of one of these tokens
@@ -635,7 +639,7 @@ namespace Kusto.Language.Editor
             return op is InvokeOperator && (fc == null || fc.TextStart < op.TextStart);
         }
 
-        private static bool IsNameToken(SyntaxKind kind)
+        private static bool IsNameLikeToken(SyntaxKind kind)
         {
             switch (kind.GetCategory())
             {
@@ -643,15 +647,16 @@ namespace Kusto.Language.Editor
                 case SyntaxCategory.Keyword:
                     return true;
                 default:
-                    return false;
+                    // ! can be start of some keywords
+                    return kind == SyntaxKind.BangToken;
             }
         }
 
         internal static bool HasAffinity(SyntaxToken token, int position)
         {
             return (position > token.TextStart && position < token.End)
-                || position == token.TextStart && IsNameToken(token.Kind)
-                || position == token.End && IsNameToken(token.Kind);
+                || position == token.TextStart && IsNameLikeToken(token.Kind)
+                || position == token.End && IsNameLikeToken(token.Kind);
         }
 
         /// <summary>
