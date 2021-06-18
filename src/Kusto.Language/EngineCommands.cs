@@ -569,6 +569,11 @@ namespace Kusto.Language
             new CommandSymbol(nameof(DeleteTablePolicyCaching),
                 "delete table <database_table> policy caching",
                 PolicyResult);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyCaching =
+            new CommandSymbol(nameof(DeleteDatabasePolicyCaching),
+                "delete database <database> policy caching",
+                PolicyResult);
         #endregion
 
         #region IngestionTime
@@ -1944,6 +1949,7 @@ namespace Kusto.Language
                 AlterMaterializedViewPolicyCaching,
                 AlterClusterPolicyCaching,
                 DeleteTablePolicyCaching,
+                DeleteDatabasePolicyCaching,
 
                 // IngestionTime
                 AlterTablePolicyIngestionTime,
