@@ -143,22 +143,22 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateDatabaseIngestionMapping =
             new CommandSymbol(nameof(CreateDatabaseIngestionMapping),
-                "create database DatabaseName=<database> ingestion! MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "create database DatabaseName=<database> ingestion! MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
                 DatabaseIngestionMappingResult);
 
         public static readonly CommandSymbol AlterDatabaseIngestionMapping =
             new CommandSymbol(nameof(AlterDatabaseIngestionMapping),
-                "alter database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "alter database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
                 DatabaseIngestionMappingResult);
 
         public static readonly CommandSymbol ShowDatabaseIngestionMappings =
             new CommandSymbol(nameof(ShowDatabaseIngestionMappings),
-                "show database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mappings",
+                "show database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mappings",
                 DatabaseIngestionMappingResult);
 
         public static readonly CommandSymbol DropDatabaseIngestionMapping =
             new CommandSymbol(nameof(DropDatabaseIngestionMapping),
-                "drop database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "drop database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string>",
                 DatabaseIngestionMappingResult);
         #endregion
 
@@ -280,27 +280,27 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateTableIngestionMapping =
             new CommandSymbol(nameof(CreateTableIngestionMapping),
-                "create table TableName=<name> ingestion! MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "create table TableName=<name> ingestion! MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol AlterTableIngestionMapping =
             new CommandSymbol(nameof(AlterTableIngestionMapping),
-                "alter table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string> MappingFormat=<string>",
+                "alter table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowTableIngestionMappings =
             new CommandSymbol(nameof(ShowTableIngestionMappings),
-                "show table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc) mappings",
+                "show table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mappings",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol ShowTableIngestionMapping =
             new CommandSymbol(nameof(ShowTableIngestionMapping),
-                "show table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "show table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string>",
                 TableIngestionMappingResult);
 
         public static readonly CommandSymbol DropTableIngestionMapping =
             new CommandSymbol(nameof(DropTableIngestionMapping),
-                "drop table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc) mapping MappingName=<string>",
+                "drop table TableName=<table> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string>",
                 TableIngestionMappingResult);
         #endregion
 
