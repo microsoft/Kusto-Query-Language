@@ -497,6 +497,29 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(hint: Editor.CompletionHint.Literal),
                     () => (SyntaxElement)Q.MissingStringLiteral());
 
+            var BracketedStringLiteral =
+                Convert(
+                    And(
+                        Token("["),
+                        ZeroOrMore(Match(t => 
+                            t.Text != "]"
+                            && t.Text != "["
+                            && !TextFacts.HasLineBreaks(t.Trivia)
+                            && !TextFacts.HasLineBreaks(t.Text))),
+                        Optional(Token("]"))),
+                    (IReadOnlyList<LexicalToken> list) =>
+                    {
+                        var text = string.Concat(list.Select(e => (e != list[0] ? e.Trivia : "") + e.Text));
+                        return (Expression)new LiteralExpression(SyntaxKind.StringLiteralExpression,
+                            SyntaxToken.Literal(list[0].Trivia, text, SyntaxKind.StringLiteralToken));
+                    }).WithTag("<bracketed-string>");
+
+            var KustoBracketedStringLiteralInfo =
+                new ParserInfo(
+                    BracketedStringLiteral.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(hint: Editor.CompletionHint.Literal),
+                    () => (SyntaxElement)Q.MissingStringLiteral());
+
             var KustoGuidLiteralInfo =
                 new ParserInfo(
                     AnyGuidLiteralOrString.Cast<SyntaxElement>(),
@@ -684,6 +707,7 @@ namespace Kusto.Language.Parsing
                         case "timespan": return KustoValueInfo;
                         case "datetime": return KustoValueInfo;
                         case "string": return KustoStringLiteralInfo;
+                        case "bracketed_string": return KustoBracketedStringLiteralInfo;
                         case "bool": return KustoValueInfo;
                         case "long": return KustoValueInfo;
                         case "int": return KustoValueInfo;

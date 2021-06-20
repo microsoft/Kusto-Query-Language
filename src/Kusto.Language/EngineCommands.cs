@@ -545,29 +545,72 @@ namespace Kusto.Language
                 "show table TableName=(<database_table> | '*') policy caching",
                 PolicyResult);
 
+        public static readonly CommandSymbol ShowColumnPolicyCaching =
+            new CommandSymbol(nameof(ShowColumnPolicyCaching),
+                "show column ColumnName=(<database_table_column> | '*') policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewPolicyCaching =
+            new CommandSymbol(nameof(ShowMaterializedViewPolicyCaching),
+                "show materialized-view MaterializedViewName=<materializedview> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowClusterPolicyCaching =
+            new CommandSymbol(nameof(ShowClusterPolicyCaching),
+                "show cluster policy caching",
+                PolicyResult);
+
+        private static readonly string HotPolicy = 
+            "(hot '='! Timespan=<timespan> | hotdata '='! HotData=<timespan> hotindex '='! HotIndex=<timespan>)";
+
         public static readonly CommandSymbol AlterDatabasePolicyCaching =
             new CommandSymbol(nameof(AlterDatabasePolicyCaching),
-                "alter database DatabaseName=<database> policy caching hot '=' Timespan=<timespan>",
+                $"alter database DatabaseName=<database> policy caching {HotPolicy}",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyCaching =
             new CommandSymbol(nameof(AlterTablePolicyCaching),
-                "alter table TableName=<database_table> policy caching hot '=' Timespan=<timespan>",
+                $"alter table TableName=<database_table> policy caching {HotPolicy}",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterColumnPolicyCaching =
+            new CommandSymbol(nameof(AlterColumnPolicyCaching),
+                $"alter column ColumnName=<database_table_column> policy caching {HotPolicy}",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMaterializedViewPolicyCaching =
             new CommandSymbol(nameof(AlterMaterializedViewPolicyCaching),
-                "alter materialized-view MaterializedViewName=<materializedview> policy caching hot '=' Timespan=<timespan>",
+                $"alter materialized-view MaterializedViewName=<materializedview> policy caching {HotPolicy}",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterClusterPolicyCaching =
             new CommandSymbol(nameof(AlterClusterPolicyCaching),
-                "alter cluster policy caching hot '=' Timespan=<timespan>",
+                $"alter cluster policy caching {HotPolicy}",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyCaching =
+            new CommandSymbol(nameof(DeleteDatabasePolicyCaching),
+                "delete database DatabaseName=<database> policy caching",
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyCaching =
             new CommandSymbol(nameof(DeleteTablePolicyCaching),
-                "delete table <database_table> policy caching",
+                "delete table TableName=<database_table> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteColumnPolicyCaching =
+            new CommandSymbol(nameof(DeleteColumnPolicyCaching),
+                "delete column ColumnName=<database_table_column> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteMaterializedViewPolicyCaching =
+            new CommandSymbol(nameof(DeleteMaterializedViewPolicyCaching),
+                "delete materialized-view MaterializedViewName=<materializedview> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteClusterPolicyCaching =
+            new CommandSymbol(nameof(DeleteClusterPolicyCaching),
+                "delete cluster policy caching",
                 PolicyResult);
         #endregion
 
@@ -1449,11 +1492,6 @@ namespace Kusto.Language
                 "show materialized-view MaterializedViewName=<materializedview> policy retention",
                 PolicyResult);
 
-        public static readonly CommandSymbol ShowMaterializedViewPolicyCaching =
-            new CommandSymbol(nameof(ShowMaterializedViewPolicyCaching),
-                "show materialized-view MaterializedViewName=<materializedview> policy caching",
-                PolicyResult);
-
         public static readonly CommandSymbol ShowMaterializedViewPolicyMerge =
             new CommandSymbol(nameof(ShowMaterializedViewPolicyMerge),
                 "show materialized-view MaterializedViewName=<materializedview> policy merge",
@@ -1676,12 +1714,27 @@ namespace Kusto.Language
                 "show basicauth users",
                 "(UserName: string)");
 
+        public static readonly CommandSymbol CreateBasicAuthUser =
+            new CommandSymbol(nameof(CreateBasicAuthUser),
+                "create basicauth user UserName=<string> [password Password=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropBasicAuthUser =
+            new CommandSymbol(nameof(DropBasicAuthUser),
+                "drop basicauth user UserName=<string>",
+                UnknownResult);
+
         public static readonly CommandSymbol ShowCache =
             new CommandSymbol(nameof(ShowCache),
                 "show cache",
                 "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, " +
                 "TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, " +
                 "MemoryCacheDetails: string, DiskCacheDetails: string)");
+
+        public static readonly CommandSymbol AlterCache =
+            new CommandSymbol(nameof(AlterCache),
+                "alter cache on ('*' | NodeList=<bracketed_string>) Action=<bracketed_string>",
+                UnknownResult);
 
         public static readonly CommandSymbol ShowCommands =
             new CommandSymbol(nameof(ShowCommands),
@@ -1843,6 +1896,7 @@ namespace Kusto.Language
                 ShowDatabaseDetails,
                 ShowDatabaseIdentity,
                 ShowDatabasePolicies,
+                ShowDatabaseDataStats,
                 ShowClusterDatabases,
                 ShowClusterDatabasesDetails,
                 ShowClusterDatabasesIdentity,
@@ -1921,6 +1975,7 @@ namespace Kusto.Language
                 DropExternalTable,
                 CreateExternalTable,
                 AlterExternalTable,
+                CreateOrAlterExternalTable,
                 CreateExternalTableMapping,
                 AlterExternalTableMapping,
                 ShowExternalTableMapping,
@@ -1938,12 +1993,22 @@ namespace Kusto.Language
                 #region Policy Commands
                 // Caching
                 ShowDatabasePolicyCaching,
-                AlterDatabasePolicyCaching,
                 ShowTablePolicyCaching,
+                ShowColumnPolicyCaching,
+                ShowMaterializedViewPolicyCaching,
+                ShowClusterPolicyCaching,
+
+                AlterDatabasePolicyCaching,
                 AlterTablePolicyCaching,
+                AlterColumnPolicyCaching,
                 AlterMaterializedViewPolicyCaching,
                 AlterClusterPolicyCaching,
+
+                DeleteDatabasePolicyCaching,
                 DeleteTablePolicyCaching,
+                DeleteColumnPolicyCaching,
+                DeleteMaterializedViewPolicyCaching,
+                DeleteClusterPolicyCaching,
 
                 // IngestionTime
                 AlterTablePolicyIngestionTime,
@@ -2163,7 +2228,6 @@ namespace Kusto.Language
                 ShowMaterializedViews, 
                 ShowMaterializedViewExtents,
                 ShowMaterializedViewPolicyRetention, 
-                ShowMaterializedViewPolicyCaching, 
                 ShowMaterializedViewPolicyMerge,
                 AlterMaterializedView, 
                 ClearMaterializedViewData,
@@ -2180,19 +2244,29 @@ namespace Kusto.Language
                 ShowCluster,
                 ShowDiagnostics,
                 ShowCapacity,
+
                 ShowOperations,
                 ShowOperationDetails,
+
                 ShowJournal,
                 ShowDatabaseJournal,
                 ShowClusterJournal,
+
                 ShowQueries,
                 ShowRunningQueries,
                 CancelQuery,
                 ShowQueryPlan,
+
                 ShowBasicAuthUsers,
+                CreateBasicAuthUser,
+                DropBasicAuthUser,
+
                 ShowCache,
+                AlterCache,
+
                 ShowCommands,
                 ShowCommandsAndQueries,
+
                 ShowIngestionFailures,
                 #endregion
 

@@ -469,24 +469,26 @@ namespace Kusto.Language
             if (start >= literal.Length)
                 return string.Empty;
 
-            var quote = literal[start];
+            var startQuote = literal[start];
+            var bracketed = startQuote == '[';
+            var endQuote = bracketed ? ']' : startQuote;
 
             start++; // do not include quote in value
 
-            if (end > 0 && literal[end - 1] == quote)
+            if (end > 0 && literal[end - 1] == endQuote)
                 end--; // do not include end quote in value
 
             if (end <= start)
             {
                 return string.Empty;
             }
-            else if (!verbatim && literal.IndexOf('\\', start) >= start)
+            else if (!verbatim && !bracketed && literal.IndexOf('\\', start) >= start)
             {
                 return DecodeEscapes(literal, start, end - start);
             }
-            else if (verbatim && HasInteriorQuote(literal, start, end, quote))
+            else if (verbatim && !bracketed && HasInteriorQuote(literal, start, end, endQuote))
             {
-                return DecodeDoubleQuotes(literal, start, end - start, quote);
+                return DecodeDoubleQuotes(literal, start, end - start, endQuote);
             }
             else if (start > 0 || end < literal.Length)
             {
