@@ -439,7 +439,7 @@ namespace Kusto.Language.Syntax
                     }
                 }
             }
- 
+
             private static int GetPrefixLength(string text)
             {
                 int i = 0;
@@ -488,8 +488,8 @@ namespace Kusto.Language.Syntax
                 int length;
                 GetValueSpan(text, out start, out length);
 
-                return (start == 0 && length == text.Length) 
-                    ? text 
+                return (start == 0 && length == text.Length)
+                    ? text
                     : text.Substring(start, length);
             }
 
@@ -560,7 +560,8 @@ namespace Kusto.Language.Syntax
                 // find number/word split
                 int split = 0;
                 char ch;
-                while (split < valueText.Length && char.IsDigit(ch = valueText[split]))
+                while (split < valueText.Length
+                    && char.IsDigit(ch = valueText[split]) || (valueText[split] == '.'))
                 {
                     split++;
                 }
