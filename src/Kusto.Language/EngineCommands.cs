@@ -454,7 +454,7 @@ namespace Kusto.Language
                 { (PartitionName=<name> | datetime_pattern '('! DateTimeFormat=<string> ',' PartitionName=<name> ')')
                  [PathSeparator=<string>] }+ ')']
               ]
-              dataformat '='! DataFormatKind=(avro | apacheavro | csv | json | multijson | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile)
+              dataformat '='! DataFormatKind=(avro | apacheavro | csv | json | multijson | orc | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile)
               '(' { StorageConnectionString=<string>, ',' }+ ')'
               [with '('! { PropertyName=<name> '='! Value=<value>, ',' }+ ')']";
 
