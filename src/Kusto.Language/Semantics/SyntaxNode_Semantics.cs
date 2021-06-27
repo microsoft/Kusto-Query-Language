@@ -138,9 +138,28 @@ namespace Kusto.Language.Syntax
     public abstract partial class Expression
     {
         /// <summary>
-        /// The <see cref="TypeSymbol"/> that is the result type of the expression.
+        /// The result type of the expression.
         /// </summary>
-        public TypeSymbol ResultType => GetSemanticInfo()?.ResultType;
+        public TypeSymbol ResultType
+        {
+            get
+            {
+                var type = this.RawResultType;
+
+                // don't show type as tuple if it only has one column
+                if (type is TupleSymbol ts && ts.Columns.Count == 1)
+                {
+                    return ts.Columns[0].Type;
+                }
+
+                return type;
+            }
+        }
+
+        /// <summary>
+        /// The unadjusted result type of the expression.
+        /// </summary>
+        public TypeSymbol RawResultType => GetSemanticInfo()?.ResultType;
 
         /// <summary>
         /// True if the expression is considered constant.

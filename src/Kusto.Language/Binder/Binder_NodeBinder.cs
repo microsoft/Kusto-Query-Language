@@ -2748,11 +2748,11 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 try
                 {
-                    TypeSymbol colType = _binder.GetResultTypeOrError(node.Expression);
+                    TypeSymbol colType = node.Expression?.ResultType ?? ErrorSymbol.Instance;
 
                     if (node.ToTypeOf != null)
                     {
-                        colType = _binder.GetReferencedSymbol(node.ToTypeOf.TypeOf) as TypeSymbol ?? ErrorSymbol.Instance;
+                        colType = node.ToTypeOf?.TypeOf?.ResultType as TypeSymbol ?? ErrorSymbol.Instance;
                     }
 
                     return new SemanticInfo(colType, diagnostics);

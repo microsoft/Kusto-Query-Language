@@ -405,7 +405,7 @@ namespace Kusto.Language.Binding
                 // copy final semantic info of function call to name node, unless binding the name was an error
                 if (node.Name.ResultType == null || !node.Name.ResultType.IsError)
                 {
-                    var fcInfo = _binder.GetSemanticInfo(node);
+                    var fcInfo = node.GetSemanticInfo();
                     _binder.SetSemanticInfo(node.Name, new SemanticInfo(fcInfo?.ReferencedSymbol, fcInfo?.ResultType));
                 }
             }
@@ -695,7 +695,7 @@ namespace Kusto.Language.Binding
                     node.Subquery.Accept(this);
 
                     // apply sub-query's semantic info back to overall apply operator
-                    var subqueryInfo = _binder.GetSemanticInfo(node.Subquery);
+                    var subqueryInfo = node.Subquery.GetSemanticInfo();
 
                     if (oldRowScope != null)
                     {

@@ -521,11 +521,6 @@ namespace Kusto.Language.Binding
         }
 
 #region Semantic Info accessors
-        private SemanticInfo GetSemanticInfo(SyntaxNode node)
-        {
-            return node?.GetSemanticInfo();
-        }
-
         private void SetSemanticInfo(SyntaxNode node, SemanticInfo info)
         {
             if (node != null)
@@ -535,28 +530,19 @@ namespace Kusto.Language.Binding
         }
 
         private TypeSymbol GetResultTypeOrError(Expression expression) =>
-            GetSemanticInfo(expression)?.ResultType ?? ErrorSymbol.Instance;
+            expression?.ResultType ?? ErrorSymbol.Instance;
 
         private TypeSymbol GetResultType(Expression expression) =>
-            GetSemanticInfo(expression)?.ResultType;
+            expression?.ResultType;
 
         private Symbol GetReferencedSymbol(Expression expression) =>
-            GetSemanticInfo(expression)?.ReferencedSymbol;
+            expression?.ReferencedSymbol;
 
         private bool GetIsConstant(Expression expression) =>
-            GetSemanticInfo(expression)?.IsConstant ?? false;
+            expression?.IsConstant ?? false;
 #endregion
 
 #region Symbol access/caching
-        /// <summary>
-        /// Gets the cluster for the specified name, or an empty open cluster.
-        /// </summary>
-        private ClusterSymbol GetCluster(string name)
-        {
-            var cluster = _globals.GetCluster(name);
-            return cluster ?? GetOpenCluster(name);
-        }
-
         private Dictionary<string, ClusterSymbol> _openClusters;
 
         private ClusterSymbol GetOpenCluster(string name)
@@ -2172,7 +2158,7 @@ namespace Kusto.Language.Binding
                     if (iArg >= 0 && iArg < arguments.Count 
                         && TryGetLiteralStringValue(arguments[iArg], out var clusterName))
                     {
-                        return GetCluster(clusterName);
+                        return GetClusterFunctionResult(clusterName, arguments[iArg], diagnostics);
                     }
                     else
                     {
@@ -2309,6 +2295,25 @@ namespace Kusto.Language.Binding
                 value = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Gets the cluster for the specified name, or an empty open cluster.
+        /// </summary>
+        private ClusterSymbol GetClusterFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        {
+            var cluster = _globals.GetCluster(name);
+            if (cluster == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownCluster(name).WithLocation(location));
+                }
+
+                cluster = GetOpenCluster(name);
+            }
+
+            return cluster;
         }
 
         /// <summary>
@@ -4294,7 +4299,7 @@ namespace Kusto.Language.Binding
                     case SimpleNamedExpression n:
                         {
                             // single name assigned from multi-value tuple just assigns the first value. equivalant to (name) = tuple
-                            if (GetResultType(n.Expression) is TupleSymbol tu)
+                            if (n.Expression.RawResultType is TupleSymbol tu)
                             {
                                 // first column has declared name so it uses declared name add/replace rule
                                 col = new ColumnSymbol(n.Name.SimpleName, columnType ?? tu.Columns[0].Type);
@@ -4345,7 +4350,7 @@ namespace Kusto.Language.Binding
 
                     case CompoundNamedExpression cn:
                         {
-                            if (GetResultTypeOrError(cn.Expression) is TupleSymbol tupleType)
+                            if (cn.Expression.RawResultType is TupleSymbol tupleType)
                             {
                                 for (int i = 0; i < tupleType.Columns.Count; i++)
                                 {
@@ -4418,7 +4423,7 @@ namespace Kusto.Language.Binding
                         break;
 
                     case FunctionCallExpression f:
-                        var ftype = GetResultTypeOrError(f);
+                        var ftype = f.RawResultType ?? ErrorSymbol.Instance;
                         var ts = ftype as TupleSymbol;
 
                         if (style == ProjectionStyle.Print 
