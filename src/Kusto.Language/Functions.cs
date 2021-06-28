@@ -241,6 +241,15 @@ namespace Kusto.Language
             .ConstantFoldable()
             .Hide(); // shanisolomon to unhide after July 1st.
 
+        public static readonly FunctionSymbol ReplaceString =
+            new FunctionSymbol("replace_string", ScalarTypes.String,
+                new Parameter("text", ScalarTypes.String),
+                new Parameter("lookup", ScalarTypes.String),
+                new Parameter("rewrite", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // shanisolomon to unhide after July 20th.
+
         public static readonly FunctionSymbol TrimStart =
             new FunctionSymbol("trim_start", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
@@ -2452,6 +2461,7 @@ namespace Kusto.Language
             ExtractJson,
             Replace,
             ReplaceRegex,
+            ReplaceString,
             TrimStart,
             TrimEnd,
             Trim,
