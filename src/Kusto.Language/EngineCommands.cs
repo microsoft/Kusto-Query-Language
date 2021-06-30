@@ -1233,6 +1233,37 @@ namespace Kusto.Language
                 PolicyResult);
         #endregion
 
+        #region Extent Tags Retention
+        public static readonly CommandSymbol ShowTablePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(ShowTablePolicyExtentTagsRetention),
+                "show table TableName=(<database_table> | '*') policy extent_tags_retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowDatabasePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(ShowDatabasePolicyExtentTagsRetention),
+                "show database DatabaseName=(<database> | '*') policy extent_tags_retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterTablePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(AlterTablePolicyExtentTagsRetention),
+                "alter table TableName=<database_table> policy extent_tags_retention ExtentTagsRetentionPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterDatabasePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(AlterDatabasePolicyExtentTagsRetention),
+                "alter database DatabaseName=<database> policy extent_tags_retention ExtentTagsRetentionPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteTablePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(DeleteTablePolicyExtentTagsRetention),
+                "delete table TableName=<database_table> policy extent_tags_retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyExtentTagsRetention =
+            new CommandSymbol(nameof(DeleteDatabasePolicyExtentTagsRetention),
+                "delete database DatabaseName=<database> policy extent_tags_retention",
+                PolicyResult);
+        #endregion
         #endregion
 
         #region Security Role Commands
@@ -2161,6 +2192,14 @@ namespace Kusto.Language
                 DeleteDatabasePolicyDiagnostics,
                 AlterMergeDatabasePolicyDiagnostics,
                 AlterMergeClusterPolicyDiagnostics,
+                
+                // Extent tags retention
+                ShowDatabasePolicyExtentTagsRetention,
+                ShowTablePolicyExtentTagsRetention,
+                AlterDatabasePolicyExtentTagsRetention,
+                AlterTablePolicyExtentTagsRetention,
+                DeleteDatabasePolicyExtentTagsRetention,
+                DeleteTablePolicyExtentTagsRetention,
                 #endregion
 
                 #region Security Role Commands
