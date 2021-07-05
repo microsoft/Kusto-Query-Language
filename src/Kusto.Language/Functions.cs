@@ -83,7 +83,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Strrep =
             new FunctionSymbol("strrep", ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar),
-                new Parameter("multiplier", ScalarTypes.Long))
+                new Parameter("multiplier", ScalarTypes.Long),
+                new Parameter("delimiter", ParameterTypeKind.Scalar, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
