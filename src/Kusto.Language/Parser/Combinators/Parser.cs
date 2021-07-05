@@ -84,11 +84,11 @@ namespace Kusto.Language.Parsing
                 {
                     if (string.IsNullOrEmpty(this.Tag))
                     {
-                        this.description = GrammarBuilder.BuildGrammar(this);
+                        this.description = Describer.Describe(this);
                     }
                     else
                     {
-                        this.description = $"{this.Tag}: {GrammarBuilder.BuildGrammar(this.WithTag(null))}";
+                        this.description = $"{this.Tag}: {Describer.Describe(this.WithTag(null))}";
                     }
                 }
 

@@ -8,25 +8,25 @@ namespace Kusto.Language.Parsing
     /// <summary>
     /// Builds a textual representation of a parser's grammar.
     /// </summary>
-    public static class GrammarBuilder
+    public static class Describer
     {
         /// <summary>
         /// Returns a textual representation of a parser's grammar.
         /// </summary>
-        public static string BuildGrammar<TInput>(Parser<TInput> parser, bool showRequired = false)
+        public static string Describe<TInput>(Parser<TInput> parser, bool showRequired = false)
         {
-            var builder = new Builder<TInput>(showRequired);
+            var builder = new Writer<TInput>(showRequired);
             builder.Visit(parser);
             return builder.ToString();
         }
 
-        private class Builder<TInput> : ParserVisitor<TInput>
+        private class Writer<TInput> : ParserVisitor<TInput>
         {
             private StringBuilder builder;
             private string separator;
             private bool showRequired;
 
-            public Builder(bool showRequired)
+            public Writer(bool showRequired)
             {
                 this.builder = new StringBuilder();
                 this.showRequired = showRequired;
@@ -77,7 +77,7 @@ namespace Kusto.Language.Parsing
 
             private void WriteRequired(Parser<TInput> parser)
             {
-                var nested = new Builder<TInput>(this.showRequired);
+                var nested = new Writer<TInput>(this.showRequired);
                 nested.Visit(parser);
 
                 if (nested.separator != null)
@@ -106,14 +106,14 @@ namespace Kusto.Language.Parsing
 
             private void WriteSeparated(string separator, IReadOnlyList<Parser<TInput>> parsers)
             {
-                var builders = new List<Builder<TInput>>();
+                var builders = new List<Writer<TInput>>();
 
                 for (int i = 0, n = parsers.Count; i < n; i++)
                 {
                     var parser = parsers[i];
                     if (!parser.IsHidden)
                     {
-                        var nestedBuilder = new Builder<TInput>(this.showRequired);
+                        var nestedBuilder = new Writer<TInput>(this.showRequired);
 
                         nestedBuilder.Visit(parser);
 
@@ -154,9 +154,9 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            private void WriteBracketed(string startBracket, string endBracket, Parser<TInput> parser, Action<Parser<TInput>, Builder<TInput>> action = null)
+            private void WriteBracketed(string startBracket, string endBracket, Parser<TInput> parser, Action<Parser<TInput>, Writer<TInput>> action = null)
             {
-                var nestedBuilder = new Builder<TInput>(this.showRequired);
+                var nestedBuilder = new Writer<TInput>(this.showRequired);
                 nestedBuilder.Visit(parser);
 
                 var text = nestedBuilder.ToString();

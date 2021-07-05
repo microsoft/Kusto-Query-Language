@@ -397,7 +397,8 @@ namespace Kusto.Language
                     Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("any");
+            .WithResultNamePrefix("any")
+            .Obsolete("take_any");
 
         public static readonly FunctionSymbol TakeAny =
            new FunctionSymbol("take_any",
@@ -408,8 +409,7 @@ namespace Kusto.Language
                  new Signature(
                     (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
                     Tabularity.Scalar,
-                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)))
-            .Hide();
+                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.Star)));
 
         public static readonly FunctionSymbol AnyIf =
             new FunctionSymbol("anyif",
@@ -418,7 +418,8 @@ namespace Kusto.Language
                     new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("anyif");
+            .WithResultNamePrefix("anyif")
+            .Obsolete("take_anyif");
 
         public static readonly FunctionSymbol TakeAnyIf =
            new FunctionSymbol("take_anyif",
@@ -426,8 +427,7 @@ namespace Kusto.Language
                    ReturnTypeKind.Parameter0,
                    new Parameter("expr", ParameterTypeKind.Scalar),
                    new Parameter("predicate", ScalarTypes.Bool)))
-            .WithResultNameKind(ResultNameKind.FirstArgument)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static TypeSymbol GetAnyResult(TableSymbol table, IReadOnlyList<Expression> args, string unnamedExpressionPrefix)
         {

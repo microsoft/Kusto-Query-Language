@@ -1898,23 +1898,28 @@ namespace Kusto.Language
                 $"set [async] stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
                 UnknownResult);
 
-        private static string StoredQueryResultsShowSchema =
+        private static string StoredQueryResultsShowResult =
             "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
 
         public static readonly CommandSymbol StoredQueryResultsShow =
-            new CommandSymbol(nameof(StoredQueryResultsShow), 
-                "show stored_query_results",
-                StoredQueryResultsShowSchema);
+            new CommandSymbol(nameof(StoredQueryResultsShow),
+                "show stored_query_results [with '('! { PropertyName=<name> '='! Value=<value>, ',' } ')'!]",
+                StoredQueryResultsShowResult);
+
+        public static readonly CommandSymbol StoredQueryResultShowSchema =
+            new CommandSymbol(nameof(StoredQueryResultShowSchema),
+                "show stored_query_result StoredQueryResultName=<name> schema",
+                "(StoredQueryResult:string, Schema:string)");
 
         public static readonly CommandSymbol StoredQueryResultDrop =
             new CommandSymbol(nameof(StoredQueryResultDrop),
                 "drop stored_query_result StoredQueryResultName=<name>",
-                StoredQueryResultsShowSchema);
+                StoredQueryResultsShowResult);
 
         public static readonly CommandSymbol StoredQueryResultsDrop =
             new CommandSymbol(nameof(StoredQueryResultsDrop),
                 "drop stored_query_results by user Principal=<string>",
-                StoredQueryResultsShowSchema);
+                StoredQueryResultsShowResult);
 
         #endregion
 
@@ -2332,6 +2337,7 @@ namespace Kusto.Language
                 // StoredQueryResults
                 StoredQueryResultSet,
                 StoredQueryResultsShow,
+                StoredQueryResultShowSchema,
                 StoredQueryResultDrop,
                 StoredQueryResultsDrop,
             };

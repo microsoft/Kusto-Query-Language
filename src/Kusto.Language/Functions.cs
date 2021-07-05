@@ -383,7 +383,7 @@ namespace Kusto.Language
            new FunctionSymbol("totime", ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Hide()
-		   .Obsolete("totimespan")
+           .Obsolete("totimespan")
            .ConstantFoldable()
            .WithResultNameKind(ResultNameKind.FirstArgument);
 

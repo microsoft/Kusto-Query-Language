@@ -13,20 +13,20 @@ namespace Kusto.Language.Binding
     {
         private readonly LocalScope _outerScope;
         private Dictionary<string, Symbol> _symbols;
-        private LocalScope _sharedScope;
+        private LocalScope _sharedSymbols;
 
         private LocalScope(Dictionary<string, Symbol> symbols, LocalScope outerScope, LocalScope sharedScope)
         {
             _symbols = symbols;
             _outerScope = GetMinimalOuterScope(outerScope);
-            _sharedScope = sharedScope;
+            _sharedSymbols = sharedScope;
         }
 
         private static LocalScope GetMinimalOuterScope(LocalScope outerScope)
         {
             while (outerScope != null 
                 && outerScope._symbols == null 
-                && outerScope._sharedScope == null)
+                && outerScope._sharedSymbols == null)
             {
                 outerScope = outerScope._outerScope;
             }
@@ -49,7 +49,7 @@ namespace Kusto.Language.Binding
         public bool ContainsSymbol(string name)
         {
             return (_symbols != null && _symbols.ContainsKey(name))
-                || (_sharedScope != null && _sharedScope.ContainsSymbol(name));
+                || (_sharedSymbols != null && _sharedSymbols.ContainsSymbol(name));
         }
 
         /// <summary>
@@ -61,11 +61,11 @@ namespace Kusto.Language.Binding
             // can be shared w/o fear of modification (basically copy-on-fear-of-writing).
             if (_symbols != null && _symbols.Count > 0)
             {
-                _sharedScope = new LocalScope(_symbols, null, _sharedScope);
+                _sharedSymbols = new LocalScope(_symbols, null, _sharedSymbols);
                 _symbols = null;
             }
 
-            return new LocalScope(null, _outerScope, _sharedScope);
+            return new LocalScope(null, _outerScope, _sharedSymbols);
         }
 
         /// <summary>
@@ -100,9 +100,12 @@ namespace Kusto.Language.Binding
 
         /// <summary>
         /// Gets all the matching symbols in the scope, and then from any outer scopes.
+        /// If any named matches are found in this scope, all other named matches from outer scopes are ignored.
         /// </summary>
         public void GetSymbols(string name, SymbolMatch match, List<Symbol> symbols)
         {
+            var originalCount = symbols.Count;
+
             if (_symbols != null)
             {
                 if (name != null)
@@ -110,14 +113,13 @@ namespace Kusto.Language.Binding
                     if (_symbols.TryGetValue(name, out var decl) && decl.Matches(name, match))
                     {
                         symbols.Add(decl);
-                        return;
                     }
                 }
                 else
                 {
                     foreach (var symbol in _symbols.Values)
                     {
-                        if (symbol.Matches(name, match))
+                        if (symbol.Matches(match))
                         {
                             symbols.Add(symbol);
                         }
@@ -125,12 +127,14 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            if (_sharedScope != null)
+            if (_sharedSymbols != null
+                && (name == null || symbols.Count == originalCount))
             {
-                _sharedScope.GetSymbols(name, match, symbols);
+                _sharedSymbols.GetSymbols(name, match, symbols);
             }
 
-            if (_outerScope != null)
+            if (_outerScope != null
+                && (name == null || symbols.Count == originalCount))
             {
                 _outerScope.GetSymbols(name, match, symbols);
             }

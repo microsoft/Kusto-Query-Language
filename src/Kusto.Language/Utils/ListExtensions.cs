@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Kusto.Language.Utils
 {
-    internal static class ListExtensions
+    public static class ListExtensions
     {
         public static IReadOnlyList<T> ToReadOnly<T>(this IEnumerable<T> list)
         {
@@ -58,22 +58,6 @@ namespace Kusto.Language.Utils
 
             // not found
             return -1;
-        }
-
-        /// <summary>
-        /// True if the collection contains the item
-        /// </summary>
-        private static bool Contains<T>(IReadOnlyList<T> list, T item)
-            where T : class
-        {
-            for (int i = 0, n = list.Count; i < n; i++)
-            {
-                var c = list[i];
-                if (c == item)
-                    return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -176,7 +160,6 @@ namespace Kusto.Language.Utils
 
             return -1;
         }
-
     }
 
     /// <summary>

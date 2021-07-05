@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Kusto.Language.Syntax;
 
 namespace Kusto.Language.Parsing
@@ -9,11 +10,7 @@ namespace Kusto.Language.Parsing
     using static CharScanners;
     using static Parsers<char>;
 
-    /// <summary>
-    /// A factory for creating parsers that parse a simple grammar grammar.
-    /// </summary>
-    ///
-    // grammar grammar
+    // The grammar grammar:
     //
     // alternation:
     // s1 | s2      one or more sequences one of which must occur
@@ -38,29 +35,73 @@ namespace Kusto.Language.Parsing
     // { a, e }*    list of zero or more alternations (a) separated by element (e)
     // { a, e }+    list of one or more alternations (a) separated by element (e)
     // ( a )        grouped alternation
-    // <name>       external grammar rule
-    //
-    public static class GrammarGrammar
+    // <name>       external grammar rule reference
+
+    /// <summary>
+    /// A parser that parsers a grammar for grammars.
+    /// </summary>
+    public static class GrammarParser
     {
+        /// <summary>
+        /// Try to parse the grammar grammar.
+        /// Returns true if parse succeeds.
+        /// </summary>
+        /// <param name="text">The grammar grammar.</param>
+        /// <param name="grammar">The resulting grammar tree.</param>
+        /// <param name="length">The number of characters consumed by parsing.</param>
+        /// <returns>True if the parse succeeds.</returns>
+        public static bool TryParse(string text, out Grammar grammar, out int length)
+        {
+            var parser = GetParser();
+            var result = parser.Parse(text);
+            grammar = result.Value;
+            length = result.Length;
+            return result.Succeeded;
+        }
+
+        /// <summary>
+        /// Try to parse the grammar grammar.
+        /// Returns true if parse succeeds.
+        /// </summary>
+        /// <param name="text">The grammar grammar.</param>
+        /// <param name="grammar">The resulting grammar tree.</param>
+        /// <returns>True if the parse succeeds.</returns>
+        public static bool TryParse(string text, out Grammar grammar) =>
+            TryParse(text, out grammar, out _);
+
+        /// <summary>
+        /// Parses the grammar grammar and returns the resulting <see cref="Grammar"/>.
+        /// </summary>
+        /// <param name="text">The grammar grammar.</param>
+        /// <returns></returns>
+        public static Grammar Parse(string text)
+        {
+            TryParse(text, out var grammar);
+            return grammar;
+        }
+
         /// <summary>
         /// Creates a parser that parses the grammar grammar.
         /// </summary>
-        public static Parser<char, TResult> CreateParser<TResult>(
-            Func<string, TResult> getRule,
-            Func<OffsetValue<string>, TResult> createTerm,
-            Func<TResult, TResult> createOptional,
-            Func<TResult, TResult> createRequired,
-            Func<TResult, string, TResult> createTagged,
-            Func<IReadOnlyList<TResult>, TResult> createSequence,
-            Func<IReadOnlyList<TResult>, TResult> createAlternation,
-            Func<TResult, TResult> createZeroOrMore,
-            Func<TResult, TResult> createOneOrMore,
-            Func<TResult, TResult, TResult> createZeroOrMoreSeparated,
-            Func<TResult, TResult, TResult> createOneOrMoreSeparated)
-            where TResult : class
+        private static Parser<char, Grammar> GetParser()
+        {
+            if (_grammarParser == null)
+            {
+                _grammarParser = CreateParser();
+            }
+
+            return _grammarParser;
+        }
+
+        private static Parser<char, Grammar> _grammarParser;
+
+        /// <summary>
+        /// Creates a parser that parses the grammar grammar and builds custom results.
+        /// </summary>
+        private static Parser<char, Grammar> CreateParser()
         {
             // build the parser that parsers the simple grammar grammar
-            Parser<char, TResult> elementCore = null;
+            Parser<char, Grammar> elementCore = null;
             var element = Forward(() => elementCore);
 
             var WhitespaceCount =
@@ -104,30 +145,20 @@ namespace Kusto.Language.Parsing
 
             var term =
                 First(
-                    Rule(IdentifierAndOffset, text => createTerm(text)),
-                    Rule(StringLiteralAndOffset, text => createTerm(new OffsetValue<string>(text.Offset, KustoFacts.GetStringLiteralValue(text.Value)))))
+                    Rule(Identifier, text => (Grammar)new TokenGrammar(text)),
+                    Rule(StringLiteral, text => (Grammar)new TokenGrammar(KustoFacts.GetStringLiteralValue(text))))
                     .WithTag("<term>");
 
             var rule =
                 Rule(
                     Token("<"), Text(OneOrMore(Not(Token(">")))), Token(">"),
-                    (open, name, close) =>
-                    {
-                        var ruleValue = getRule(name);
-                        if (ruleValue == null)
-                        {
-                            throw new InvalidOperationException($"Unknown rule <{name}>");
-                        }
-                        else
-                        {
-                            return ruleValue;
-                        }
-                    }).WithTag("<rule>");
+                    (open, name, close) => (Grammar)new RuleGrammar(name))
+                .WithTag("<rule>");
 
             var sequence = Produce(
                 OneOrMore(element),
-                (IReadOnlyList<TResult> list) =>
-                    list.Count == 1 ? list[0] : createSequence(list.ToList()))
+                (IReadOnlyList<Grammar> list) =>
+                    list.Count == 1 ? list[0] : new SequenceGrammar(list.ToList()))
                 .WithTag("<sequence>");
 
             var alternation =
@@ -143,21 +174,21 @@ namespace Kusto.Language.Parsing
                     {
                         if (list.Count == 1)
                         {
-                            return (TResult)list[0].Element;
+                            return list[0].Element;
                         }
                         else
                         {
-                            return createAlternation(list.Select(eas => eas.Element).OfType<TResult>().ToArray());
+                            return new AlternationGrammar(list.Select(eas => eas.Element).OfType<Grammar>().ToArray());
                         }
                     }).WithTag("<alternation>");
 
             var separator = Rule(Token(","), term, (colon, word) => word);
 
             var repeatition = Rule(
-                    Token("{"), 
-                    alternation, 
+                    Token("{"),
+                    alternation,
                     Optional(separator),
-                    Token("}"), 
+                    Token("}"),
                     Optional(First(Token("+"), Token("*"))),
                 (open, elem, sep, close, kind) =>
                 {
@@ -165,36 +196,22 @@ namespace Kusto.Language.Parsing
 
                     if (zeroOrMore)
                     {
-                        if (sep != null)
-                        {
-                            return createZeroOrMoreSeparated(elem, sep);
-                        }
-                        else
-                        {
-                            return createZeroOrMore(elem);
-                        }
+                        return (Grammar)new ZeroOrMoreGrammar(elem, sep);
                     }
                     else
                     {
-                        if (sep != null)
-                        {
-                            return createOneOrMoreSeparated(elem, sep);
-                        }
-                        else
-                        {
-                            return createOneOrMore(elem);
-                        }
+                        return (Grammar)new OneOrMoreGrammar(elem, sep);
                     }
                 }).WithTag("<repetition>");
 
             var grouped = Rule(
                 Token("("), alternation, Token(")"),
-                (open, parser, close) => parser)
+                (open, grammar, close) => grammar)
                 .WithTag("<grouping>");
 
             var optional = Rule(
                 Token("["), alternation, Token("]"),
-                (open, tuplet, close) => createOptional(tuplet))
+                (open, optioned, close) => (Grammar)new OptionalGrammar(optioned))
                 .WithTag("<optional>");
 
             var primaryElement =
@@ -215,22 +232,22 @@ namespace Kusto.Language.Parsing
                         _left =>
                             First(
                                 Rule(_left, Token("!"),
-                                    (left, bang) => createRequired(left))
+                                    (left, bang) => (Grammar)new RequiredGrammar(left))
                                     .WithTag("<required>"),
 
                                 // alternative to [] 
                                 Rule(_left, Token("?"),
-                                    (left, question) => createOptional(left))
+                                    (left, question) => (Grammar)new OptionalGrammar(left))
                                     .WithTag("<optional>"),
-                        
+
                                 // alternative to { }*
                                 Rule(_left, Token("*"),
-                                    (left, star) => createZeroOrMore(left))
+                                    (left, star) => (Grammar)new ZeroOrMoreGrammar(left))
                                     .WithTag("<zero-or-more>"),
 
                                 // alternative to { }+
                                 Rule(_left, Token("+"),
-                                    (left, plus) => createOneOrMore(left))
+                                    (left, plus) => (Grammar)new OneOrMoreGrammar(left))
                                     .WithTag("<one-or-more>")
                                     )));
 
@@ -239,11 +256,11 @@ namespace Kusto.Language.Parsing
                 First(
                     If(And(Identifier, Token("=")),
                         Rule(Identifier, Token("="), postfixPrimary,
-                            (id, eq, elem) => createTagged(elem, id))),
+                            (id, eq, elem) => (Grammar)new TaggedGrammar(id, elem))),
 
                     If(And(StringLiteral, Token("=")),
                         Rule(StringLiteral, Token("="), postfixPrimary,
-                            (str, eq, elem) => createTagged(elem, KustoFacts.GetStringLiteralValue(str)))),
+                            (str, eq, elem) => (Grammar)new TaggedGrammar(KustoFacts.GetStringLiteralValue(str), elem))),
 
                     postfixPrimary
                     );
