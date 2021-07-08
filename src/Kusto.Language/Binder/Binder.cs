@@ -4423,31 +4423,46 @@ namespace Kusto.Language.Binding
                         break;
 
                     case FunctionCallExpression f:
-                        var ftype = f.RawResultType ?? ErrorSymbol.Instance;
-                        var ts = ftype as TupleSymbol;
-
-                        if (style == ProjectionStyle.Print 
-                            && columnName != null
-                            && (ts == null || ts.Columns.Count == 1))
+                        // check for trivial case of no-op conversion operator
+                        col = GetResultColumn(f);
+                        if (col != null)
                         {
-                            if (ts != null && ts.Columns.Count == 1)
-                                ftype = ts.Columns[0].Type;
+                            // if the expression is a column reference, then consider it a declaration
+                            builder.Declare(col.WithType(columnType ?? col.Type), diagnostics, expression, replace: style == ProjectionStyle.Replace);
 
-                            col = new ColumnSymbol(columnName, columnType ?? ftype);
-                            builder.Add(col, columnName, replace: false);
-                        }
-                        else if (ts != null && GetReferencedSymbol(f) is FunctionSymbol fs)
-                        {
-                            foreach (ColumnSymbol c in ts.Members)
+                            if (doNotRepeat)
                             {
-                                AddFunctionTupleResultColumn(fs, c, builder, doNotRepeat, style == ProjectionStyle.Summarize);
+                                builder.DoNotAdd(col);
                             }
                         }
                         else
                         {
-                            var name = GetFunctionResultName(f, null, _rowScope);
-                            col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ftype);
-                            builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
+                            var ftype = f.RawResultType ?? ErrorSymbol.Instance;
+                            var ts = ftype as TupleSymbol;
+
+                            if (style == ProjectionStyle.Print
+                                && columnName != null
+                                && (ts == null || ts.Columns.Count == 1))
+                            {
+                                if (ts != null && ts.Columns.Count == 1)
+                                    ftype = ts.Columns[0].Type;
+
+                                col = new ColumnSymbol(columnName, columnType ?? ftype);
+                                builder.Add(col, columnName, replace: false);
+                            }
+                            else if (ts != null && GetReferencedSymbol(f) is FunctionSymbol fs)
+                            {
+                                foreach (ColumnSymbol c in ts.Members)
+                                {
+                                    AddFunctionTupleResultColumn(fs, c, builder, doNotRepeat, style == ProjectionStyle.Summarize);
+                                }
+                            }
+                            else
+                            {
+                                var name = GetFunctionResultName(f, null, _rowScope);
+                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ftype);
+                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
+                            }
                         }
                         break;
 
@@ -4460,14 +4475,15 @@ namespace Kusto.Language.Binding
 
                     default:
                         var rs = GetReferencedSymbol(expression);
-                        if (rs is ColumnSymbol column)
+                        col = GetResultColumn(expression);
+                        if (col != null)
                         {
                             // if the expression is a column reference, then consider it a declaration
-                            builder.Declare(column.WithType(columnType ?? column.Type), diagnostics, expression, replace: style == ProjectionStyle.Replace);
+                            builder.Declare(col.WithType(columnType ?? col.Type), diagnostics, expression, replace: style == ProjectionStyle.Replace);
 
                             if (doNotRepeat)
                             {
-                                builder.DoNotAdd(column);
+                                builder.DoNotAdd(col);
                             }
                         }
                         else if (rs is GroupSymbol group && style == ProjectionStyle.Reorder)
@@ -4535,15 +4551,65 @@ namespace Kusto.Language.Binding
             }
         }
 
+        public static ColumnSymbol GetResultColumn(Expression expr)
+        {
+            if (expr == null)
+            {
+                return null;
+            }
+            else if (expr.ReferencedSymbol is ColumnSymbol c)
+            {
+                return c;
+            }
+            else if (expr is FunctionCallExpression fc
+                && IsConversionFunction(fc)
+                && fc.ArgumentList.Expressions.Count == 1
+                && fc.ArgumentList.Expressions[0].Element.ReferencedSymbol is ColumnSymbol ac
+                && fc.ResultType == ac.Type)
+            {
+                // this is a no-op conversion with column argument, so use argument column as 
+                // the column reference for this expression too.
+                return ac;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static bool IsConversionFunction(Expression expr)
+        {
+            return expr.ReferencedSymbol is FunctionSymbol fs
+                && IsConversionFunction(fs);
+        }
+
+        public static bool IsConversionFunction(FunctionSymbol fn)
+        {
+            return fn == Functions.ToBool
+                || fn == Functions.ToBool
+                || fn == Functions.ToDateTime
+                || fn == Functions.ToDecimal
+                || fn == Functions.ToDouble
+                || fn == Functions.ToDynamic_
+                || fn == Functions.ToGuid
+                || fn == Functions.ToInt
+                || fn == Functions.ToLong
+                || fn == Functions.ToReal
+                || fn == Functions.ToString
+                || fn == Functions.ToTime
+                || fn == Functions.ToTimespan;
+        }
+
         private void AddFunctionTupleResultColumn(FunctionSymbol function, ColumnSymbol column, ProjectionBuilder builder, bool doNotRepeat, bool isAggregate)
         {
-            if (builder.CanAdd(column))
+            //if (builder.CanAdd(column))
             {
                 var prefix = function.ResultNamePrefix;
 
                 if (prefix != null)
                 {
-                    builder.Add(column.WithName(function.ResultNamePrefix + "_" + column.Name), doNotRepeat: doNotRepeat);
+                    var prefixedColumn = column.WithName(function.ResultNamePrefix + "_" + column.Name);
+                    builder.Add(prefixedColumn, doNotRepeat: doNotRepeat);
                 }
                 else
                 {

@@ -89,6 +89,17 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Ignore any further attempt to add any of these columns to the projection.
+        /// </summary>
+        public void DoNotAddAny(IEnumerable<ColumnSymbol> columns)
+        {
+            foreach (var col in columns)
+            {
+                DoNotAdd(col);
+            }
+        }
+
+        /// <summary>
         /// True if an attempt to add the column will succeed.
         /// </summary>
         public bool CanAdd(ColumnSymbol column)

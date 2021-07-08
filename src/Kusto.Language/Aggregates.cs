@@ -450,10 +450,6 @@ namespace Kusto.Language
                         }
                     }
                 }
-                else if (arg.ReferencedSymbol is ColumnSymbol c)
-                {
-                    columns.Add(c);
-                }
                 else
                 {
                     var expName = Binding.Binder.GetExpressionResultName(arg, "");
@@ -552,50 +548,8 @@ namespace Kusto.Language
             return new TupleSymbol(columns);
         }
 
-        private static ColumnSymbol GetResultColumn(Expression expr)
-        {
-            if (expr.ReferencedSymbol is ColumnSymbol c)
-            {
-                return c;
-            }
-            else if (expr is FunctionCallExpression fc 
-                && IsConversionFunction(fc)
-                && fc.ArgumentList.Expressions.Count == 1
-                && fc.ArgumentList.Expressions[0].Element.ReferencedSymbol is ColumnSymbol ac
-                && fc.ResultType == ac.Type)
-            {
-                // this is a no-op conversion with column argument, so use argument column as 
-                // the column reference for this expression too.
-                return ac;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private static bool IsConversionFunction(Expression expr)
-        {
-            return expr.ReferencedSymbol is FunctionSymbol fs
-                && IsConversionFunction(fs);
-        }
-
-        private static bool IsConversionFunction(FunctionSymbol fn)
-        {
-            return fn == Functions.ToBool
-                || fn == Functions.ToBool
-                || fn == Functions.ToDateTime
-                || fn == Functions.ToDecimal
-                || fn == Functions.ToDouble
-                || fn == Functions.ToDynamic_
-                || fn == Functions.ToGuid
-                || fn == Functions.ToInt
-                || fn == Functions.ToLong
-                || fn == Functions.ToReal
-                || fn == Functions.ToString
-                || fn == Functions.ToTime
-                || fn == Functions.ToTimespan;
-        }
+        private static ColumnSymbol GetResultColumn(Expression expr) =>
+            Kusto.Language.Binding.Binder.GetResultColumn(expr);
 
         public static readonly FunctionSymbol ArgMin_Depricated =
             new FunctionSymbol("argmin",
