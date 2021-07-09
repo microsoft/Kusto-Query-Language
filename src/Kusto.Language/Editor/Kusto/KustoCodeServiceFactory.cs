@@ -66,17 +66,29 @@ namespace Kusto.Language.Editor
         /// </summary>
         private static bool IsSql(string text)
         {
-            var firstToken = GetFirstKustoToken(text);
-            return string.Compare(firstToken, "select", ignoreCase: true) == 0;
-        }
-
-        /// <summary>
-        /// Gets the text of the first token as understood using Kusto syntax.
-        /// </summary>
-        private static string GetFirstKustoToken(string text)
-        {
             var firstToken = Parsing.TokenParser.ParseToken(text, 0);
-            return firstToken?.Text ?? string.Empty;
+            if (firstToken == null)
+                return false;
+
+            // if it starts with kusto comments then it is not SQL
+            if (!Parsing.TextFacts.IsWhitespaceOnly(firstToken.Trivia))
+                return false;
+
+            // check for -- which is sql line comment start
+            // since kusto does not have -- token, check for two adjacent dash tokens
+            if (firstToken.Text == "-")
+            {
+                var secondToken = Parsing.TokenParser.ParseToken(text, firstToken.Length);
+                if (secondToken != null 
+                    && secondToken.Text == "-" 
+                    && secondToken.Trivia.Length == 0)
+                {
+                    return true;
+                }
+            }
+
+            // check for known sql query keyword
+            return string.Compare(firstToken.Text, "select", ignoreCase: true) == 0;
         }
     }
 }
