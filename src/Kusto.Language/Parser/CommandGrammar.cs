@@ -138,39 +138,7 @@ namespace Kusto.Language.Parsing
             // include parsers for all command symbols
             var queryParser = QueryGrammar.From(globals);
             var parserFactory = new CommandParserFactory(queryParser, command);
-            var commandParsers = globals.Commands.Select(c => parserFactory.CreateCommandParser(c)).ToArray();
-
-            // use Best combinator with function to pick which output is better when there are ambiguities
-            var bestCommandParsers = Best(commandParsers, (command1, command2) =>
-            {
-                // neither command has diagnostics, neither is better
-                if (!command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
-                    return 0;
-
-                // command1 has diagnostics, command1 is not better than command2
-                if (command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
-                    return -1;
-
-                // command2 has diagnostics, command1 is better
-                if (!command1.ContainsSyntaxDiagnostics && command2.ContainsSyntaxDiagnostics)
-                    return 1;
-
-                var dx1 = command1.GetContainedSyntaxDiagnostics();
-                var dx2 = command2.GetContainedSyntaxDiagnostics();
-
-                // command1 first diagnostic occurs lexically after command2 first diagnostics, command1 is better
-                if (dx1[0].Start > dx2[0].Start)
-                    return 1;
-
-                // command1 first diagnostic occurs lexically before command2 first diagnostic, command1 is not better
-                if (dx1[0].Start < dx2[0].Start)
-                    return -1;
-
-                // don't compare number of diagnostics, since we want to favor what happens early rather than later
-
-                // otherwise neither is better
-                return 0;
-            });
+            var bestCommandParsers = parserFactory.CreateCommandParser(globals.Commands);
 
             commandCore =
                 First(

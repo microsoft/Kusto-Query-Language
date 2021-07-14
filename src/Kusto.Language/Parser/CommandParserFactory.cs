@@ -68,6 +68,89 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        public Parser<LexicalToken, Command> CreateCommandParser(string commandName, Grammar contentGrammar)
+        {
+            var contentParser = CreateContentParser(commandName, contentGrammar);
+            if (contentParser != null)
+            {
+                return Rule(
+                    Token(SyntaxKind.DotToken),
+                    contentParser,
+                    (dot, custom) => (Command)new CustomCommand(commandName, dot, custom))
+                    .WithTag($"<{commandName}>");
+            }
+            else
+            {
+                return Match(t => false, lt => (Command)null);
+            }
+        }
+
+        private struct CommandAndGrammar
+        {
+            public readonly CommandSymbol Symbol;
+            public readonly Grammar Grammar;
+
+            public CommandAndGrammar(CommandSymbol symbol, Grammar grammar)
+            {
+                this.Symbol = symbol;
+                this.Grammar = grammar;
+            }
+        }
+
+        /// <summary>
+        /// Creates a unified command parser for all command symbols
+        /// </summary>
+        public Parser<LexicalToken, Command> CreateCommandParser(IReadOnlyList<CommandSymbol> commandSymbols)
+        {
+            var commandAndGrammars = commandSymbols.Select(s => new CommandAndGrammar(s, ParseCommandGrammar(s.Name, s.Grammar)))
+                .Where(x => x.Grammar != null)
+                .ToList();
+
+            var commandAndAdjustedGrammars = commandAndGrammars.Select(
+                cag => new CommandAndGrammar(cag.Symbol, CommandGrammarUtils.Adjust(cag.Grammar)))
+                .ToList();
+
+            var orderedCommandAndGrammars = GrammarReorderer.Reorder(commandAndAdjustedGrammars, cag => cag.Grammar);
+
+            var commandParsers = orderedCommandAndGrammars.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar))
+                .ToArray();
+
+            // use Best combinator with function to pick which output is better when there are ambiguities
+            var bestCommandParsers = Best(commandParsers, (command1, command2) => CompareBetterSyntax(command1, command2));
+            return bestCommandParsers;
+        }
+
+        private static int CompareBetterSyntax(SyntaxElement command1, SyntaxElement command2)
+        {
+            // neither command has diagnostics, neither is better
+            if (!command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                return 0;
+
+            // command1 has diagnostics, command1 is not better than command2
+            if (command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                return -1;
+
+            // command2 has diagnostics, command1 is better
+            if (!command1.ContainsSyntaxDiagnostics && command2.ContainsSyntaxDiagnostics)
+                return 1;
+
+            var dx1 = command1.GetContainedSyntaxDiagnostics();
+            var dx2 = command2.GetContainedSyntaxDiagnostics();
+
+            // command1 first diagnostic occurs lexically after command2 first diagnostics, command1 is better
+            if (dx1[0].Start > dx2[0].Start)
+                return 1;
+
+            // command1 first diagnostic occurs lexically before command2 first diagnostic, command1 is not better
+            if (dx1[0].Start < dx2[0].Start)
+                return -1;
+
+            // don't compare number of diagnostics, since we want to favor what happens early rather than later
+
+            // otherwise neither is better
+            return 0;
+        }
+
         /// <summary>
         /// Creates the parser for a command's content (everything after the first dot)
         /// </summary>
@@ -75,17 +158,29 @@ namespace Kusto.Language.Parsing
         /// <param name="commandGrammar">The grammar of the command (does not include the initial dot).</param>
         public Parser<LexicalToken, SyntaxElement> CreateContentParser(string commandName, string commandGrammar)
         {
+            var contentGrammar = ParseCommandGrammar(commandName, commandGrammar);
+            
+            if (contentGrammar != null)
+            {
+                var adjustedGrammar = CommandGrammarUtils.Adjust(contentGrammar);
+                return CreateContentParser(commandName, adjustedGrammar);
+            }
+
+            return null;
+        }
+
+        private Grammar ParseCommandGrammar(string commandName, string commandGrammar)
+        {
             try
             {
-                if (GrammarParser.TryParse(commandGrammar, out var grammar, out var length))
+                if (GrammarParser.TryParse(commandGrammar, out var contentGrammar, out var length))
                 {
                     if (length != commandGrammar.Length)
                     {
                         Ensure.IsTrue(false, $"control command grammar {commandName} failed to parse fully at offset ({length}): {commandGrammar}");
                     }
 
-                    var info = _translator.Translate(grammar);
-                    return info.Parser;
+                    return contentGrammar;
                 }
                 else
                 {
@@ -97,6 +192,12 @@ namespace Kusto.Language.Parsing
             }
 
             return null;
+        }
+
+        private Parser<LexicalToken, SyntaxElement> CreateContentParser(string commandName, Grammar contentGrammar)
+        {
+            var info = _translator.Translate(contentGrammar);
+            return info.Parser;
         }
 
         internal class ParserInfo
@@ -174,7 +275,8 @@ namespace Kusto.Language.Parsing
                 var infos = grammar.Alternatives.Select(a => a.Accept(this)).ToArray();
 
                 return new ParserInfo(
-                    Best(infos.Select(t => GetElementParser(t)).ToArray()),
+                    //Best(infos.Select(t => GetElementParser(t)).ToArray(), CompareBetterSyntax),
+                    First(infos.Select(t => GetElementParser(t)).ToArray()),
                     new CustomElementDescriptor(infos[0].Element.CompletionHint, isOptional: false),
                     infos[0].Missing,
                     infos[0].IsTerm);
@@ -251,24 +353,7 @@ namespace Kusto.Language.Parsing
                 {
                     var shape = list.Select(t => t.Element).ToArray();
 
-                    var parsers = new List<Parser<LexicalToken>>();
-
-                    bool required = false;
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var t = list[i];
-
-                        // everything after first element or first sequence of terms will be required
-                        // this enables building appropriate custom nodes with missing elements that cue correct completion.
-                        var notRequired = i == 0 || (i == 1 && t.IsTerm);
-                        required |= !notRequired;
-
-                        var p = required && !t.Parser.IsOptional
-                            ? Required(t.Parser, t.Missing)
-                            : t.Parser;
-
-                        parsers.Add(p);
-                    }
+                    var parsers = list.Select(t => t.Parser).ToArray();
 
                     var parser = Produce<SyntaxElement>(
                         Sequence(parsers.ToArray()),

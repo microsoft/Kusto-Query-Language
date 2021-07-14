@@ -11,11 +11,39 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public abstract class GrammarRewriter : GrammarVisitor<Grammar>
     {
-        public override Grammar VisitAlternation(AlternationGrammar grammar) =>
-            grammar.With(VisitList(grammar.Alternatives));
+        public override Grammar VisitAlternation(AlternationGrammar grammar)
+        {
+            var newList = VisitList(grammar.Alternatives);
+            if (newList.Count == 0)
+            {
+                return null;
+            }
+            else if (newList.Count == 1)
+            {
+                return newList[0];
+            }
+            else
+            {
+                return grammar.With(newList);
+            }
+        }
 
-        public override Grammar VisitSequence(SequenceGrammar grammar) =>
-            grammar.With(VisitList(grammar.Steps));
+        public override Grammar VisitSequence(SequenceGrammar grammar)
+        {
+            var newList = VisitList(grammar.Steps);
+            if (newList.Count == 0)
+            {
+                return null;
+            }
+            else if (newList.Count == 1)
+            {
+                return newList[0];
+            }
+            else
+            {
+                return grammar.With(newList);
+            }
+        }
 
         public override Grammar VisitOneOrMore(OneOrMoreGrammar grammar) =>
             grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this));

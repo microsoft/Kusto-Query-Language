@@ -618,6 +618,14 @@ namespace Kusto.Language.Parsing
             var numberLen = ScanDigits(text, start);
             if (numberLen <= 0)
                 return -1;
+            if (Peek(text, start + numberLen) == '.')
+            {
+                var fractionLen = ScanDigits(text, start + numberLen + 1);
+                if (fractionLen >= 0)
+                {
+                    numberLen += fractionLen + 1;
+                }
+            }
             var suffixMatch = TimespanSuffixMap.GetLongestMatch(text, start + numberLen);
             if (suffixMatch.Key.Length <= 0)
                 return -1;

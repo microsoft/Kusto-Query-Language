@@ -143,7 +143,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateDatabaseIngestionMapping =
             new CommandSymbol(nameof(CreateDatabaseIngestionMapping),
-                "create database DatabaseName=<database> ingestion! MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
+                "create database DatabaseName=<name> ingestion! MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mapping MappingName=<string> MappingFormat=<string>",
                 DatabaseIngestionMappingResult);
 
         public static readonly CommandSymbol AlterDatabaseIngestionMapping =

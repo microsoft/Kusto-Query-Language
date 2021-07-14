@@ -8,8 +8,30 @@ namespace Kusto.Language.Parsing
     /// <summary>
     /// The base definition of a grammar tree nodes.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{DebugText}")]
     public abstract class Grammar
     {
+        private readonly int _hashCode;
+
+        protected Grammar(int hashCode)
+        {
+            _hashCode = hashCode;
+        }
+
+        public override int GetHashCode() => _hashCode;
+
+        protected static int ComputeHashCode(IReadOnlyList<Grammar> items)
+        {
+            int hc = 0;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                hc += items[i].GetHashCode();
+            }
+
+            return hc;
+        }
+
         public abstract TResult Accept<TResult>(GrammarVisitor<TResult> visitor);
 
         public bool IsEquivalentTo(Grammar grammar) =>
@@ -95,6 +117,46 @@ namespace Kusto.Language.Parsing
             GrammarWriter.WriteTo(builder, this, style);
             return builder.ToString();
         }
+
+        private string DebugText => $"{Kind}: {ToString()}";
+
+        private string Kind
+        {
+            get
+            {
+                switch (this)
+                {
+                    case TokenGrammar _:
+                        return "Token";
+                    case RuleGrammar _:
+                        return "Rule";
+                    case SequenceGrammar _:
+                        return "Sequence";
+                    case AlternationGrammar _:
+                        return "Alternation";
+                    case OptionalGrammar _:
+                        return "Optional";
+                    case RequiredGrammar _:
+                        return "Required";
+                    case OneOrMoreGrammar _:
+                        return "OneOrMore";
+                    case ZeroOrMoreGrammar _:
+                        return "ZeroOrMore";
+                    case TaggedGrammar _:
+                        return "Tagged";
+                    default:
+                        return "Unknown";
+                };
+            }
+        }
+    }
+
+    public sealed class GrammarEquivalenceComparer : IEqualityComparer<Grammar>
+    {
+        public bool Equals(Grammar x, Grammar y) => x.IsEquivalentTo(y);
+        public int GetHashCode(Grammar g) => g.GetHashCode();
+
+        public static readonly GrammarEquivalenceComparer Instance = new GrammarEquivalenceComparer();
     }
 
     /// <summary>
@@ -105,6 +167,7 @@ namespace Kusto.Language.Parsing
         public IReadOnlyList<Grammar> Steps { get; }
 
         public SequenceGrammar(IReadOnlyList<Grammar> steps)
+            : base(ComputeHashCode(steps))
         {
             if (steps == null)
                 throw new ArgumentNullException(nameof(steps));
@@ -128,6 +191,7 @@ namespace Kusto.Language.Parsing
         public IReadOnlyList<Grammar> Alternatives { get; }
 
         public AlternationGrammar(IReadOnlyList<Grammar> alternatives)
+            : base(ComputeHashCode(alternatives))
         {
             if (alternatives == null)
                 throw new ArgumentNullException(nameof(alternatives));
@@ -151,6 +215,7 @@ namespace Kusto.Language.Parsing
         public Grammar Optioned { get; }
 
         public OptionalGrammar(Grammar optioned)
+            : base(optioned.GetHashCode())
         {
             this.Optioned = optioned;
         }
@@ -170,6 +235,7 @@ namespace Kusto.Language.Parsing
         public Grammar Required { get; }
 
         public RequiredGrammar(Grammar required)
+            : base(required.GetHashCode())
         {
             this.Required = required;
         }
@@ -191,6 +257,7 @@ namespace Kusto.Language.Parsing
         public Grammar Separator { get; }
 
         public ZeroOrMoreGrammar(Grammar repeated, Grammar separator = null)
+            : base(repeated.GetHashCode() + (separator?.GetHashCode() ?? 0))
         {
             this.Repeated = repeated;
             this.Separator = separator;
@@ -215,6 +282,7 @@ namespace Kusto.Language.Parsing
         public Grammar Separator { get; }
 
         public OneOrMoreGrammar(Grammar repeated, Grammar separator = null)
+            : base(repeated.GetHashCode() + (separator?.GetHashCode() ?? 0))
         {
             this.Repeated = repeated;
             this.Separator = separator;
@@ -238,6 +306,7 @@ namespace Kusto.Language.Parsing
         public Grammar Tagged { get; }
 
         public TaggedGrammar(string tag, Grammar tagged)
+            : base(tagged.GetHashCode())
         {
             this.Tag = tag;
             this.Tagged = tagged;
@@ -260,6 +329,7 @@ namespace Kusto.Language.Parsing
         public string TokenText { get; }
 
         public TokenGrammar(string tokenText)
+            : base(tokenText.GetHashCode())
         {
             this.TokenText = tokenText;
         }
@@ -279,6 +349,7 @@ namespace Kusto.Language.Parsing
         public string RuleName { get; }
 
         public RuleGrammar(string ruleName)
+            : base(ruleName.GetHashCode())
         {
             this.RuleName = ruleName;
         }
@@ -304,5 +375,41 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitTagged(TaggedGrammar grammar);
         public abstract TResult VisitToken(TokenGrammar grammar);
         public abstract TResult VisitRule(RuleGrammar grammar);
+    }
+
+    /// <summary>
+    /// A base visitor class for implementing grammar tree rewriters.
+    /// The default implementations of this class handle reconstructing parent nodes when child nodes are changed.
+    /// </summary>
+    public abstract class DefaultGrammarVisitor<TResult> : GrammarVisitor<TResult>
+    {
+        public abstract TResult DefaultVisit(Grammar grammar);
+
+        public override TResult VisitAlternation(AlternationGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitOneOrMore(OneOrMoreGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitOptional(OptionalGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitRequired(RequiredGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitRule(RuleGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitSequence(SequenceGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitTagged(TaggedGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitToken(TokenGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitZeroOrMore(ZeroOrMoreGrammar grammar) =>
+            DefaultVisit(grammar);
     }
 }

@@ -473,10 +473,18 @@ namespace Kusto.Language.Syntax
                 {
                     start = prefixLen + 1; // include (
 
+                    // trim leading whitespace
+                    while (start < text.Length && Parsing.TextFacts.IsWhitespace(text[start]))
+                        start++;
+
                     if (text.EndsWith(")"))
                     {
                         end = text.Length - 1;
                     }
+
+                    // trim trailing whitespace
+                    while (end > start + 1 && Parsing.TextFacts.IsWhitespace(text[end - 1]))
+                        end--;
                 }
 
                 length = end - start;
@@ -520,29 +528,61 @@ namespace Kusto.Language.Syntax
             private static int GetIntValue(string text)
             {
                 var valueText = GetValueText(text);
-                Int32.TryParse(valueText, out var result);
-                return result;
+                switch (valueText)
+                {
+                    case "min":
+                        return Int32.MinValue;
+                    case "max":
+                        return Int32.MaxValue;
+                    default:
+                        Int32.TryParse(valueText, out var result);
+                        return result;
+                }
             }
 
             private static long GetLongValue(string text)
             {
                 var valueText = GetValueText(text);
-                Int64.TryParse(valueText, out var result);
-                return result;
+                switch (valueText)
+                {
+                    case "min":
+                        return Int64.MinValue;
+                    case "max":
+                        return Int64.MaxValue;
+                    default:
+                        Int64.TryParse(valueText, out var result);
+                        return result;
+                }
             }
 
             private static double GetRealValue(string text)
             {
                 var valueText = GetValueText(text);
-                Double.TryParse(valueText, out var result);
-                return result;
+                switch (valueText)
+                {
+                    case "min":
+                        return Double.MinValue;
+                    case "max":
+                        return Double.MaxValue;
+                    default:
+                        Double.TryParse(valueText, out var result);
+                        return result;
+                }
             }
 
             private static decimal GetDecimalValue(string text)
             {
                 var valueText = GetValueText(text);
-                Decimal.TryParse(valueText, out var result);
-                return result;
+                switch (valueText)
+                {
+                    case "min":
+                        return Decimal.MinValue;
+                    case "max":
+                        return Decimal.MaxValue;
+                    default:
+                        Decimal.TryParse(valueText, out var result);
+                        return result;
+                }
             }
 
             private static TimeSpan GetTimeSpanValue(string text)
@@ -556,6 +596,13 @@ namespace Kusto.Language.Syntax
                     return result;
                 }
 #endif
+                switch (valueText)
+                {
+                    case "min":
+                        return TimeSpan.MinValue;
+                    case "max":
+                        return TimeSpan.MaxValue;
+                }
 
                 // find number/word split
                 int split = 0;
@@ -625,8 +672,16 @@ namespace Kusto.Language.Syntax
             private static DateTime GetDateTimeValue(string text)
             {
                 var valueText = GetValueText(text);
-                DateTime.TryParse(valueText, out var result);
-                return result;
+                switch (valueText)
+                {
+                    case "min":
+                        return DateTime.MinValue;
+                    case "max":
+                        return DateTime.MaxValue;
+                    default:
+                        DateTime.TryParse(valueText, out var result);
+                        return result;
+                }
             }
 
             private static Guid GetGuidValue(string text)
@@ -634,11 +689,6 @@ namespace Kusto.Language.Syntax
                 var valueText = GetValueText(text);
                 Guid.TryParse(valueText, out var result);
                 return result;
-            }
-
-            private static string GetTypeOfValue(string text)
-            {
-                return GetValueText(text);
             }
         }
 
