@@ -439,7 +439,7 @@ namespace Kusto.Language
 
         private static readonly string CreateOrAlterExternalTableGrammar =
             @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
-              kind '='! TableKind=(blob | adl | sql)
+              kind '='! TableKind=(blob | adl)
               [partition by!
                '('
                 {PartitionName=<name> ':'!

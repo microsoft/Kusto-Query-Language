@@ -34,6 +34,15 @@ namespace Kusto.Language.Parsing
 
         public abstract TResult Accept<TResult>(GrammarVisitor<TResult> visitor);
 
+        /// <summary>
+        /// Apply the mapping function to all the grammar nodes in the tree.
+        /// </summary>
+        public Grammar Apply(Func<Grammar, Grammar> mapper)
+        {
+            var treeMapper = new GrammarTreeMapper(mapper);
+            return this.Accept(treeMapper);
+        }
+
         public bool IsEquivalentTo(Grammar grammar) =>
             AreEquivalent(this, grammar);
 
