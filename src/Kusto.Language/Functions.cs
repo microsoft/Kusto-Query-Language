@@ -145,7 +145,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol IndexOfRegex =
             new FunctionSymbol("indexof_regex", ScalarTypes.Long,
                 new Parameter("string", ParameterTypeKind.Scalar),
-                new Parameter("match", ParameterTypeKind.Scalar),
+                new Parameter("match", ParameterTypeKind.Scalar, ArgumentKind.Constant),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("occurence", ParameterTypeKind.Integer, minOccurring: 0))
