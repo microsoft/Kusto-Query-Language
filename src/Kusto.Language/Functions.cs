@@ -231,7 +231,9 @@ namespace Kusto.Language
                 new Parameter("rewrite", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable();
+            .ConstantFoldable()
+            .Obsolete("replace_regex' or 'replace_string") // added ' for better message formatting
+            .Hide();
 
         public static readonly FunctionSymbol ReplaceRegex =
             new FunctionSymbol("replace_regex", ScalarTypes.String,
@@ -239,8 +241,7 @@ namespace Kusto.Language
                 new Parameter("lookup_regex", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("rewrite_pattern", ScalarTypes.String, ArgumentKind.Constant))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // shanisolomon to unhide after July 1st.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol ReplaceString =
             new FunctionSymbol("replace_string", ScalarTypes.String,
@@ -248,8 +249,7 @@ namespace Kusto.Language
                 new Parameter("lookup", ScalarTypes.String),
                 new Parameter("rewrite", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // shanisolomon to unhide after July 20th.
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol TrimStart =
             new FunctionSymbol("trim_start", ScalarTypes.String,
