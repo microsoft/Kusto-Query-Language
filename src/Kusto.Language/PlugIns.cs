@@ -363,10 +363,10 @@ namespace Kusto.Language
                 new Parameter("TimelineColumn", ParameterTypeKind.Summable, ArgumentKind.Column),
                 new Parameter("Start", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant),
-                new Parameter("Step", ParameterTypeKind.Summable, ArgumentKind.Constant),
+                new Parameter("BinSize", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("StateColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
                 new Parameter("Sequence", ScalarTypes.Dynamic, ArgumentKind.Constant),
-                new Parameter("MaxSequenceWindows", ScalarTypes.Dynamic, ArgumentKind.Constant));
+                new Parameter("MaxSequencePeriods", ScalarTypes.Dynamic, ArgumentKind.Constant));
 
         public static readonly IReadOnlyList<ColumnSymbol> HttpRequestColumns = new[] {
             new ColumnSymbol("ResponseHeaders", ScalarTypes.Dynamic),
