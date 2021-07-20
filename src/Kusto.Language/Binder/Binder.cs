@@ -4342,7 +4342,7 @@ namespace Kusto.Language.Binding
                             else
                             {
                                 col = new ColumnSymbol(n.Name.SimpleName, columnType ?? GetResultTypeOrError(n.Expression));
-                                builder.Declare(col, diagnostics, n.Name, replace: style == ProjectionStyle.Extend);
+                                builder.Declare(col, diagnostics, n.Name, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                 SetSemanticInfo(n.Name, CreateSemanticInfo(col));
                             }
                         }
@@ -4364,7 +4364,7 @@ namespace Kusto.Language.Binding
                                         var name = nameDecl.SimpleName;
                                         col = new ColumnSymbol(name, type);
 
-                                        builder.Declare(col, diagnostics, nameDecl, replace: style == ProjectionStyle.Extend);
+                                        builder.Declare(col, diagnostics, nameDecl, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                         SetSemanticInfo(nameDecl, CreateSemanticInfo(col));
 
                                         if (doNotRepeat)
@@ -4381,7 +4381,7 @@ namespace Kusto.Language.Binding
                                         else
                                         {
                                             // not-declared so make unique column
-                                            builder.Add(col, replace: style == ProjectionStyle.Extend, doNotRepeat: doNotRepeat);
+                                            builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend, doNotRepeat: doNotRepeat);
                                         }
                                     }
                                 }
@@ -4411,7 +4411,7 @@ namespace Kusto.Language.Binding
                                 else
                                 {
                                     col = new ColumnSymbol(name.SimpleName, columnType ?? GetResultTypeOrError(cn.Expression));
-                                    builder.Declare(col, diagnostics, name, replace: style == ProjectionStyle.Extend);
+                                    builder.Declare(col, diagnostics, name, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                     SetSemanticInfo(name, CreateSemanticInfo(col));
                                 }
                             }
@@ -4461,7 +4461,7 @@ namespace Kusto.Language.Binding
                             {
                                 var name = GetFunctionResultName(f, null, _rowScope);
                                 col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ftype);
-                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
+                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
                         break;
@@ -4543,7 +4543,7 @@ namespace Kusto.Language.Binding
                             {
                                 var name = GetExpressionResultName(expression, null);
                                 col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? type);
-                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Extend);
+                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
                         break;
