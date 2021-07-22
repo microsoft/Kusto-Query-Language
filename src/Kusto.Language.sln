@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kusto.Language", "Kusto.Language\Kusto.Language.csproj", "{31238C2B-3226-4012-A3C9-5B9E77381566}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kusto.Language.Bridge", "Kusto.Language.Bridge\Kusto.Language.Bridge.csproj", "{58657E20-75AB-426E-9C34-5A3020B79D74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31238C2B-3226-4012-A3C9-5B9E77381566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31238C2B-3226-4012-A3C9-5B9E77381566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31238C2B-3226-4012-A3C9-5B9E77381566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31238C2B-3226-4012-A3C9-5B9E77381566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58657E20-75AB-426E-9C34-5A3020B79D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58657E20-75AB-426E-9C34-5A3020B79D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58657E20-75AB-426E-9C34-5A3020B79D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58657E20-75AB-426E-9C34-5A3020B79D74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2FDA944D-9EDA-493B-B086-E1E6E7475205}
+	EndGlobalSection
+EndGlobal
