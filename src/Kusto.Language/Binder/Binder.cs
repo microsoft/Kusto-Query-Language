@@ -3769,7 +3769,8 @@ namespace Kusto.Language.Binding
             }
             else
             {
-                return _currentDatabase.Tables;
+                // no in clause or row scope, so all tables in universe then!
+                return GetImpliedTables();
             }
         }
 
@@ -3806,7 +3807,69 @@ namespace Kusto.Language.Binding
             }
             else
             {
-                return _currentDatabase.Tables;
+                // no in clause or row scope, so all tables in universe then!
+                return GetImpliedTables();
+            }
+        }
+
+        /// <summary>
+        /// Gets all the tables accessible to the current operator through osmosis,
+        /// not from pipe operator or sub clause.
+        /// </summary>
+        private IReadOnlyList<TableSymbol> GetImpliedTables()
+        {
+            // include current database's tables and any views in scope
+            var declaredViews = s_tableListPool.AllocateFromPool();
+            try
+            {
+                GetViewsInScope(declaredViews);
+                if (declaredViews.Count > 0)
+                {
+                    return _currentDatabase.Tables.Concat(declaredViews).ToList();
+                }
+                else
+                {
+                    return _currentDatabase.Tables;
+                }
+            }
+            finally
+            {
+                s_tableListPool.ReturnToPool(declaredViews);
+            }
+        }
+
+        /// <summary>
+        /// Gets all the declared views in scope
+        /// </summary>
+        private void GetViewsInScope(List<TableSymbol> views)
+        {
+            var localSymbols = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                // get all declared tabular functions
+                _localScope.GetSymbols(SymbolMatch.Tabular | SymbolMatch.Function, localSymbols);
+
+                // pick out just view function declarations
+                foreach (var sym in localSymbols)
+                {
+                    if (sym is FunctionSymbol fs 
+                        && fs.MinArgumentCount == 0)
+                    {
+                        var decl = fs.Signatures[0].Declaration;
+                        if (decl != null && decl.Parent is FunctionDeclaration fd && fd.ViewKeyword != null)
+                        {
+                            var fts = fs.GetReturnType(_globals) as TableSymbol;
+                            if (fts != null)
+                            {
+                                views.Add(fts);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(localSymbols);
             }
         }
 

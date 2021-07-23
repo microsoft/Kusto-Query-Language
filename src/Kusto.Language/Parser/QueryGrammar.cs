@@ -1183,9 +1183,9 @@ namespace Kusto.Language.Parsing
             var ExpressionCouple =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(FunctionCallOrPath, MissingExpression),
+                    Required(InvocationExpression, MissingExpression),
                     RequiredToken(SyntaxKind.DotDotToken),
-                    Required(FunctionCallOrPath, MissingExpression),
+                    Required(InvocationExpression, MissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, first, dotDot, second, closeParen) =>

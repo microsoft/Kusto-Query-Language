@@ -141,7 +141,8 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets all the matching symbols in the scope.
+        /// Gets all the matching symbols in the scope, and then from any outer scopes.
+        /// If any named matches are found in this scope, all other named matches from outer scopes are ignored.
         /// </summary>
         public void GetSymbols(SymbolMatch match, List<Symbol> symbols)
         {

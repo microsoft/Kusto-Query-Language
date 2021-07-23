@@ -138,7 +138,7 @@ namespace Kusto.Language
                 new Parameter("match", ParameterTypeKind.Scalar),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("occurence", ParameterTypeKind.Integer, minOccurring: 0))
+                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -148,7 +148,7 @@ namespace Kusto.Language
                 new Parameter("match", ParameterTypeKind.Scalar, ArgumentKind.Constant),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("occurence", ParameterTypeKind.Integer, minOccurring: 0))
+                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -1279,7 +1279,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ArrayIndexOf =
             new FunctionSymbol("array_index_of", ScalarTypes.Long,
                 new Parameter("array", ScalarTypes.Dynamic),
-                new Parameter("value", ParameterTypeKind.Scalar))
+                new Parameter("value", ParameterTypeKind.Scalar),
+                new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
+                new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
+                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetHasElement =

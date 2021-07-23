@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs" />
+    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\obj\**\*.cs;..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs" />
     <None Include="bridge.json" />
   </ItemGroup>
   <ItemGroup>
