@@ -719,6 +719,13 @@ namespace Kusto.Language
             return new Diagnostic("KS211", $"The name '{name}' does not refer to any known function.");
         }
 
+        public static Diagnostic GetBestEffortUnionOperandNotDefined(string name)
+        {
+            return new Diagnostic("KS212",
+                            $"The best_effort union operand '{name}' does not refer to any known table, tabular variable or function.")
+                            .WithSeverity(DiagnosticSeverity.Warning);
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

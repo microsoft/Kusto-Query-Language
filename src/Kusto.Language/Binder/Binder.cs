@@ -1618,7 +1618,7 @@ namespace Kusto.Language.Binding
                                     DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
                             }
                         }
-                        else if (IsFuzzyUnionOperand(location))
+                        else if (IsFuzzyUnionOperand(location) || IsBestEffortUnionOperand(location))
                         {
                             return null;
                         }
@@ -1650,7 +1650,13 @@ namespace Kusto.Language.Binding
                     }
                     else if (IsInTabularContext(location))
                     {
-                        if (IsFuzzyUnionOperand(location))
+                        if (IsBestEffortUnionOperand(location))
+                        {
+                            return new SemanticInfo(
+                               new TableSymbol().WithIsOpen(true),
+                               DiagnosticFacts.GetBestEffortUnionOperandNotDefined(name).WithLocation(location));
+                        }
+                        else if(IsFuzzyUnionOperand(location))
                         {
                             return new SemanticInfo(
                                 new TableSymbol().WithIsOpen(true),
@@ -1767,6 +1773,22 @@ namespace Kusto.Language.Binding
         /// </summary>
         private static bool IsFuzzyUnionOperand(SyntaxElement element)
         {
+            return IsBoolParamUnionOperand(element, parameterKind: QueryOperatorParameters.IsFuzzy);
+        }
+
+        /// <summary>
+        /// Determine if the element is the operand of a best effort union
+        /// </summary>
+        private static bool IsBestEffortUnionOperand(SyntaxElement element)
+        {
+            return IsBoolParamUnionOperand(element, parameterKind: QueryOperatorParameters.BestEffort);
+        }
+
+        /// <summary>
+        /// Determine if the element is the operand of fuzzy/best effort union
+        /// </summary>
+        private static bool IsBoolParamUnionOperand(SyntaxElement element, QueryOperatorParameter parameterKind)
+        {
             if (element.Parent is FunctionCallExpression fc && fc.Name == element)
             {
                 element = element.Parent;
@@ -1790,16 +1812,16 @@ namespace Kusto.Language.Binding
 
                 if (context is UnionOperator uo)
                 {
-                    var np = uo.Parameters.GetParameter(QueryOperatorParameters.IsFuzzy);
+                    var np = uo.Parameters.GetParameter(parameterKind);
                     return np != null && np.Expression.ConstantValue is bool b && b;
                 }
             }
 
             return false;
         }
-#endregion
+        #endregion
 
-#region Operator binding
+        #region Operator binding
         private SemanticInfo GetBinaryOperatorInfo(OperatorKind kind, Expression left, Expression right, SyntaxElement location)
         {
             return GetBinaryOperatorInfo(kind, left, GetResultTypeOrError(left), right, GetResultTypeOrError(right), location);
@@ -3029,6 +3051,12 @@ namespace Kusto.Language.Binding
             {
                 // the name was not a known function or pattern, but we decided to give it a result type, so let's use it
                 return functionCall.Name.GetSemanticInfo();
+            }
+            else if (IsBestEffortUnionOperand(functionCall))
+            {
+                return new SemanticInfo(
+                    new TableSymbol().WithIsOpen(true),
+                    DiagnosticFacts.GetBestEffortUnionOperandNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
             }
             else if (IsFuzzyUnionOperand(functionCall))
             {

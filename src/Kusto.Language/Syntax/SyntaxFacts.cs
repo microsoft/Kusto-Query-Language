@@ -65,6 +65,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.BagExpansionKeyword, "bagexpansion"),
                 new SyntaxData(SyntaxKind.BasicAuthKeyword, "basicauth", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.BestEffortKeyword, "best_effort", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.BetweenKeyword, "between", opKind: OperatorKind.Between),
                 new SyntaxData(SyntaxKind.BinKeyword, "bin", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.BinLegacyKeyword, "bin_legacy"),

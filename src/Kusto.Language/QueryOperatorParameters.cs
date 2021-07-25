@@ -54,6 +54,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter IsFuzzy =
             new QueryOperatorParameter("isfuzzy", QueryOperatorParameterValueKind.BoolLiteral);
 
+        public static readonly QueryOperatorParameter BestEffort =
+            new QueryOperatorParameter("best_effort", QueryOperatorParameterValueKind.BoolLiteral);
+
         public static readonly QueryOperatorParameter Kind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word);
 
@@ -72,6 +75,7 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> AllKnownParameters = new QueryOperatorParameter[]
         {
             BagExpansion.Hide(),
+            BestEffort.Hide(),
             Characters.Hide(),
             DecodeBlocks.Hide(),
             Flags.Hide(),
@@ -291,6 +295,7 @@ namespace Kusto.Language
             Kind.WithValues(KustoFacts.UnionKinds),
             WithSource,
             IsFuzzy,
+            BestEffort,
             HintDotConcurrency,
             HintDotSpread
         }.ToReadOnly();
