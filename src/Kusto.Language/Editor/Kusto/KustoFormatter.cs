@@ -368,13 +368,13 @@ namespace Kusto.Language.Editor
                     case SyntaxKind.ColonToken:
                     case SyntaxKind.SemicolonToken:
                     case SyntaxKind.DotToken:
-                    case SyntaxKind.DotDotToken:
                         if (token.Trivia != "")
                         {
                             AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
                         }
                         break;
 
+                    case SyntaxKind.DotDotToken:
                     case SyntaxKind.BarToken:
                         if (token.Trivia != " ")
                         {
@@ -389,7 +389,6 @@ namespace Kusto.Language.Editor
                     case SyntaxKind.OpenBraceToken:
                     case SyntaxKind.OpenBracketToken:
                     case SyntaxKind.OpenParenToken:
-                    case SyntaxKind.DotDotToken:
                     case SyntaxKind.DotToken:
                         if (token.Trivia != "")
                         {
@@ -401,6 +400,7 @@ namespace Kusto.Language.Editor
                     case SyntaxKind.ColonToken:
                     case SyntaxKind.BarToken:
                     case SyntaxKind.SemicolonToken:
+                    case SyntaxKind.DotDotToken:
                         if (token.Trivia != " ")
                         {
                             AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
