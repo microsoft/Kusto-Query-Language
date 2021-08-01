@@ -970,8 +970,7 @@ namespace Kusto.Language
           new FunctionSymbol("hash_sha1", ScalarTypes.String,
               new Parameter("source", ParameterTypeKind.NotDynamic))
           .WithResultNameKind(ResultNameKind.None)
-          .ConstantFoldable()
-          .Hide(); // atefsawaed to unhide after 25 July 2021
+          .ConstantFoldable();
 
         public static readonly FunctionSymbol HashCombine =
           new FunctionSymbol("hash_combine", ScalarTypes.Long,
@@ -1758,6 +1757,19 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesDivide =
             new FunctionSymbol("series_divide", 
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol SeriesPow =
+            new FunctionSymbol("series_pow",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("series1", ScalarTypes.Dynamic),
                     new Parameter("series2", ScalarTypes.Dynamic)),
@@ -2689,6 +2701,7 @@ namespace Kusto.Language
             SeriesSubtract,
             SeriesMultiply,
             SeriesDivide,
+            SeriesPow,
             SeriesGreater,
             SeriesGreaterEquals,
             SeriesLess,
