@@ -2031,7 +2031,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.StepKeyword),
                     Required(RenameName, MissingNameDeclaration), // name
-                    Optional(Token(SyntaxKind.OptionalKeyword)),
+                    Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported
                     RequiredToken(SyntaxKind.ColonToken),
                     Required(UnnamedExpression, MissingExpression),
                     Optional(ScanComputationClause),
