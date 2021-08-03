@@ -155,6 +155,11 @@ namespace Kusto.Language
             "auto", "left", "local", "right"
         };
 
+        public static readonly IReadOnlyList<string> PluginHintRemotes = new string[]
+        {
+            "local", "auto"
+        };
+
         public static readonly IReadOnlyList<string> JoinHintStrategies = new string[]
         {
             "broadcast", "centralized", "shuffle"

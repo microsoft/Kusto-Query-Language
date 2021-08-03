@@ -122,7 +122,8 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> EvaluateParameters = new QueryOperatorParameter[]
         {
-            HintDotDistribution
+            HintDotDistribution,
+            HintDotRemote.WithValues(KustoFacts.PluginHintRemotes)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ExternalDataWithClauseProperties = new QueryOperatorParameter[]
