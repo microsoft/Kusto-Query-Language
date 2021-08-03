@@ -442,6 +442,9 @@ namespace Kusto.Language
 
                 if (arg is StarExpression)
                 {
+                    // don't repeat any of the by clause columns
+                    GetByClauseColumns(arg, doNotRepeat);
+
                     foreach (var c in table.Columns)
                     {
                         if (!doNotRepeat.Contains(c))
@@ -508,6 +511,9 @@ namespace Kusto.Language
 
                     if (arg is StarExpression)
                     {
+                        // don't repeat any of the by clause columns
+                        GetByClauseColumns(arg, doNotRepeat);
+
                         foreach (var c in table.Columns)
                         {
                             if (!doNotRepeat.Contains(c))
@@ -546,6 +552,21 @@ namespace Kusto.Language
             }
 
             return new TupleSymbol(columns);
+        }
+
+        private static void GetByClauseColumns(Expression starArg, HashSet<ColumnSymbol> columns)
+        {
+            var summarize = starArg.GetFirstAncestor<SummarizeOperator>();
+            if (summarize != null && summarize.ByClause != null)
+            {
+                for (int i = 0; i < summarize.ByClause.Expressions.Count; i++)
+                {
+                    var expr = summarize.ByClause.Expressions[i].Element;
+                    var col = GetResultColumn(expr);
+                    if (col != null)
+                        columns.Add(col);
+                }
+            }
         }
 
         private static ColumnSymbol GetResultColumn(Expression expr) =>
@@ -614,6 +635,9 @@ namespace Kusto.Language
 
                     if (arg is StarExpression)
                     {
+                        // don't repeat any of the by clause columns
+                        GetByClauseColumns(arg, doNotRepeat);
+
                         foreach (var c in table.Columns)
                         {
                             if (c != primaryArg.ReferencedSymbol && !doNotRepeat.Contains(c))

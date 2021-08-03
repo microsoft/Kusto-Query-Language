@@ -85,6 +85,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        [System.Diagnostics.DebuggerDisplay("{DebugText}")]
         private struct CommandAndGrammar
         {
             public readonly CommandSymbol Symbol;
@@ -95,6 +96,9 @@ namespace Kusto.Language.Parsing
                 this.Symbol = symbol;
                 this.Grammar = grammar;
             }
+
+            private string DebugText =>
+                $"{Symbol.Name}: {Grammar.ToString()}";
         }
 
         /// <summary>
@@ -106,13 +110,9 @@ namespace Kusto.Language.Parsing
                 .Where(x => x.Grammar != null)
                 .ToList();
 
-            var commandAndAdjustedGrammars = commandAndGrammars.Select(
-                cag => new CommandAndGrammar(cag.Symbol, CommandGrammarUtils.Adjust(cag.Grammar)))
-                .ToList();
+            var adjustedCommandAndGrammars = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
 
-            var orderedCommandAndGrammars = GrammarReorderer.Reorder(commandAndAdjustedGrammars, cag => cag.Grammar);
-
-            var commandParsers = orderedCommandAndGrammars.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar))
+            var commandParsers = adjustedCommandAndGrammars.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar))
                 .ToArray();
 
             // use Best combinator with function to pick which output is better when there are ambiguities
@@ -162,14 +162,55 @@ namespace Kusto.Language.Parsing
             
             if (contentGrammar != null)
             {
-                var adjustedGrammar = CommandGrammarUtils.Adjust(contentGrammar);
+                var adjustedGrammar = Adjust(contentGrammar);
                 return CreateContentParser(commandName, adjustedGrammar);
             }
 
             return null;
         }
 
-        private Grammar ParseCommandGrammar(string commandName, string commandGrammar)
+        /// <summary>
+        /// Transform all the item grammars to work best when put together as a single parser
+        /// </summary>
+        public static IReadOnlyList<T> Adjust<T>(IReadOnlyList<T> items, Func<T, Grammar> grammarSelector, Func<T, Grammar, T> grammarUpdater)
+        {
+            var unrolled = items.Select(i => grammarUpdater(i, GrammarUnroller.Unroll(grammarSelector(i)))).ToList();
+
+            var simplified = unrolled.Select(i => grammarUpdater(i, GrammarSimplifier.Simplify(grammarSelector(i)))).ToList();
+
+            var required = GrammarRequirer.Require(simplified, grammarSelector, grammarUpdater);
+
+            return required;
+        }
+
+        public static IReadOnlyList<CommandSymbol> GetAdjustedCommands(IReadOnlyList<CommandSymbol> commandSymbols)
+        {
+            var commandAndGrammars = commandSymbols.Select(s => new CommandAndGrammar(s, ParseCommandGrammar(s.Name, s.Grammar)))
+                .Where(x => x.Grammar != null)
+                .ToList();
+
+            var adjustedCommandAndGrammars = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
+
+            return adjustedCommandAndGrammars.Select(cag => new CommandSymbol(cag.Symbol.Name, cag.Grammar.ToString(), cag.Symbol.ResultSchema)).ToList();
+        }
+
+        /// <summary>
+        /// includes all the grammar transformations used by command parser factory
+        /// </summary>
+        public static Grammar Adjust(Grammar grammar)
+        {
+            grammar = GrammarUnroller.Unroll(grammar);
+
+            // reorder alternations so keywords don't get swallowed by name/identifier rules.
+            grammar = GrammarReorderer.Reorder(grammar);
+
+            // add require rules to make grammar partially parseable
+            grammar = GrammarRequirer.Require(grammar);
+
+            return grammar;
+        }
+
+        private static Grammar ParseCommandGrammar(string commandName, string commandGrammar)
         {
             try
             {

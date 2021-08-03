@@ -43,6 +43,32 @@ namespace Kusto.Language.Parsing
             return this.Accept(treeMapper);
         }
 
+        /// <summary>
+        /// Performs a deep copy of the grammar tree
+        /// </summary>
+        public Grammar Clone()
+        {
+            switch (this)
+            {
+                case TokenGrammar tg:
+                    return new TokenGrammar(tg.TokenText);
+                case RuleGrammar rg:
+                    return new RuleGrammar(rg.RuleName);
+                default:
+                    return Apply(g => {
+                        switch (g)
+                        {
+                            case TokenGrammar t:
+                                return new TokenGrammar(t.TokenText);
+                            case RuleGrammar r:
+                                return new RuleGrammar(r.RuleName);
+                            default:
+                                return g;
+                        }
+                    });
+            }
+        }
+
         public bool IsEquivalentTo(Grammar grammar) =>
             AreEquivalent(this, grammar);
 
@@ -185,6 +211,11 @@ namespace Kusto.Language.Parsing
             this.Steps = steps;
         }
 
+        public SequenceGrammar(params Grammar[] steps)
+            : this((IReadOnlyList<Grammar>)steps)
+        {
+        }
+
         public override TResult Accept<TResult>(GrammarVisitor<TResult> visitor) =>
             visitor.VisitSequence(this);
 
@@ -207,6 +238,11 @@ namespace Kusto.Language.Parsing
             if (alternatives.Count < 2)
                 throw new InvalidOperationException($"Number of alternatives must be 2 or more");
             this.Alternatives = alternatives;
+        }
+
+        public AlternationGrammar(params Grammar[] alternatives)
+            : this((IReadOnlyList<Grammar>)alternatives)
+        {
         }
 
         public override TResult Accept<TResult>(GrammarVisitor<TResult> visitor) =>

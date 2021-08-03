@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace Kusto.Language.Parsing
 {
     /// <summary>
-    /// Rewrites sequences with leading optional elements into alternate paths with and without the optional element.
+    /// Rewrites sequences with optional elements into alternate paths with and without the optional element.
     /// </summary>
-    internal class GrammarUnroller
+    public class GrammarUnroller
     {
         public static Grammar Unroll(Grammar grammar)
         {
@@ -22,36 +22,88 @@ namespace Kusto.Language.Parsing
             public override Grammar DefaultVisit(Grammar grammar) =>
                 grammar;
 
+            private static bool IsOptional(Grammar grammar)
+            {
+                switch (grammar)
+                {
+                    case OptionalGrammar _:
+                    case ZeroOrMoreGrammar _:
+                        return true;
+                    case TaggedGrammar tg:
+                        return IsOptional(tg.Tagged);
+                    default:
+                        return false;
+                }
+            }
+
             public override Grammar VisitSequence(SequenceGrammar grammar)
             {
-                var step = grammar.Steps[0];
+                var newSteps = VisitSteps(grammar.Steps);
 
-                if (step is OptionalGrammar opt)
+                if (newSteps.Count == 0)
                 {
-                    // first step is optional, so split into two alternatives, with and without
-                    var listWithout = grammar.Steps.Skip(1).ToList();
-                    var listWith = new[] { opt.Optioned }.Concat(listWithout).ToList();
-
-                    return new AlternationGrammar(
-                        new[] {
-                            new SequenceGrammar(listWith),
-                            new SequenceGrammar(listWithout)
-                        });
+                    return null;
                 }
-                else if (step is ZeroOrMoreGrammar zero)
+                else if (newSteps.Count == 1)
                 {
-                    // first step is zero-or-more, so split into two alternatives, one with one-ore-more, and one without
-                    var listWithout = grammar.Steps.Skip(1).ToList();
-                    var listWith = new[] { new OneOrMoreGrammar(zero.Repeated, zero.Separator) }.Concat(listWithout).ToList();
-
-                    return new AlternationGrammar(
-                        new[] {
-                            new SequenceGrammar(listWith),
-                            new SequenceGrammar(listWithout)
-                        });
+                    return newSteps[0];
                 }
+                else
+                {
+                    return grammar.With(newSteps);
+                }
+            }
 
-                return grammar;
+            public IReadOnlyList<Grammar> VisitSteps(IReadOnlyList<Grammar> steps)
+            {
+                if (steps.Any(s => s is OptionalGrammar || s is ZeroOrMoreGrammar))
+                {
+                    var newSteps = new List<Grammar>(steps.Count + 2);
+
+                    for (int i = 0; i < steps.Count; i++)
+                    {
+                        var step = steps[i];
+                        var nextStep = i < steps.Count - 1 ? steps[i + 1] : null;
+
+                        if (nextStep != null && !IsOptional(nextStep))
+                        {
+                            if (step is OptionalGrammar opt)
+                            {
+                                // [a] b -> (b | a b)
+                                var newStep = new AlternationGrammar(
+                                    nextStep,
+                                    new SequenceGrammar(
+                                        opt.Optioned,
+                                        nextStep.Clone()));
+                                newSteps.Add(newStep);
+                                i++; // skip next step
+                                continue;
+                            }
+#if false
+                            else if (step is ZeroOrMoreGrammar zero)
+                            {
+                                // {a} b -> (b | {a}+ b)
+                                var newStep = new AlternationGrammar(
+                                    nextStep,
+                                    new SequenceGrammar(
+                                        new OneOrMoreGrammar(zero.Repeated, zero.Separator),
+                                        nextStep.Clone()));
+                                newSteps.Add(newStep);
+                                i++; // skip next step
+                                continue;
+                            }
+#endif
+                        }
+
+                        newSteps.Add(step);
+                    }
+
+                    return newSteps;
+                }
+                else
+                {
+                    return steps;
+                }
             }
         }
     }

@@ -8,12 +8,12 @@ namespace Kusto.Language.Parsing
     /// Reorders alternations to place sequences with explicit terms ahead of 
     /// sequences of optional terms.
     /// </summary>
-    internal class GrammarReorderer
+    public class GrammarReorderer
     {
         /// <summary>
         /// Reorders all the contained alternations
         /// </summary>
-        public static Grammar ReorderAlternations(Grammar root)
+        public static Grammar Reorder(Grammar root)
         {
             return root.Accept(s_treeMapper);
         }

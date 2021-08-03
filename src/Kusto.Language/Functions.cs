@@ -727,10 +727,10 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
         private static readonly string[] s_dateDiffLiteralValues =
-            new[] { "Year", "Quarter", "Month", "Week", "Day", "Hour", "Minute", "Second", "Millisecond", "Microsecond", "Nanosecond" };
+            new[] { "year", "quarter", "month", "week", "day", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond" };
 
         private static readonly string[] s_datePartLiteralValues =
-            new[] { "Year", "Quarter", "Month", "WeekOfYear", "Day", "DayOfYear", "Hour", "Minute", "Second", "Millisecond", "Microsecond", "Nanosecond" };
+            new[] { "year", "quarter", "month", "week_of_year", "day", "dayOfYear", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond" };
 
         public static readonly FunctionSymbol DatetimeAdd =
             new FunctionSymbol("datetime_add", ScalarTypes.DateTime,

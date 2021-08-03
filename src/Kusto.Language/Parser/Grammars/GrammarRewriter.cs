@@ -13,7 +13,8 @@ namespace Kusto.Language.Parsing
     {
         public override Grammar VisitAlternation(AlternationGrammar grammar)
         {
-            var newList = VisitList(grammar.Alternatives);
+            var newList = VisitAlternatives(grammar.Alternatives);
+
             if (newList.Count == 0)
             {
                 return null;
@@ -28,9 +29,13 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        public virtual IReadOnlyList<Grammar> VisitAlternatives(IReadOnlyList<Grammar> alternatives) =>
+            VisitList(alternatives);
+
         public override Grammar VisitSequence(SequenceGrammar grammar)
         {
-            var newList = VisitList(grammar.Steps);
+            var newList = VisitSteps(grammar.Steps);
+
             if (newList.Count == 0)
             {
                 return null;
@@ -44,6 +49,9 @@ namespace Kusto.Language.Parsing
                 return grammar.With(newList);
             }
         }
+
+        public virtual IReadOnlyList<Grammar> VisitSteps(IReadOnlyList<Grammar> steps) =>
+            VisitList(steps);
 
         public override Grammar VisitOneOrMore(OneOrMoreGrammar grammar) =>
             grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this));
