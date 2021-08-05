@@ -1233,6 +1233,23 @@ namespace Kusto.Language
                 PolicyResult);
         #endregion
 
+        #region Weak Consistency Query
+        public static readonly CommandSymbol ShowClusterPolicyQueryWeakConsistency =
+            new CommandSymbol(nameof(ShowClusterPolicyQueryWeakConsistency),
+                "show cluster policy query_weak_consistency",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyQueryWeakConsistency =
+            new CommandSymbol(nameof(AlterClusterPolicyQueryWeakConsistency),
+                "alter cluster policy query_weak_consistency Policy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyQueryWeakConsistency =
+            new CommandSymbol(nameof(AlterMergeClusterPolicyQueryWeakConsistency),
+                "alter-merge cluster policy query_weak_consistency Policy=<string>",
+                PolicyResult);
+        #endregion
+
         #region Extent Tags Retention
         public static readonly CommandSymbol ShowTablePolicyExtentTagsRetention =
             new CommandSymbol(nameof(ShowTablePolicyExtentTagsRetention),
@@ -2188,6 +2205,11 @@ namespace Kusto.Language
                 ShowClusterPolicyMultiDatabaseAdmins,
                 AlterClusterPolicyMultiDatabaseAdmins,
                 AlterMergeClusterPolicyMultiDatabaseAdmins,
+
+                // Query Weak Consistency
+                ShowClusterPolicyQueryWeakConsistency,
+                AlterClusterPolicyQueryWeakConsistency,
+                AlterMergeClusterPolicyQueryWeakConsistency,
 
                 // Diagnostics Settings
                 ShowDatabasePolicyDiagnostics,

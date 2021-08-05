@@ -252,6 +252,7 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 missingElement,
                 missingSeparator,
+                missingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -264,7 +265,8 @@ namespace Kusto.Language.Parsing
         /// <param name="primaryElementParser">The parser for the primary element.</param>
         /// <param name="separatorParser">The parser for each separator.</param>
         /// <param name="secondaryElementParser">The parser for any element after the first separator.</param>
-        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="missingPrimaryElement">An optional function that constructs a new element to be used when the primary element is missing (between two separators).</param>
+        /// <param name="missingSecondaryElement">An optional function that constructs a new element to be used when the secondary element is missing (between two separators).</param>
         /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
@@ -274,8 +276,9 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TElement> primaryElementParser,
             Parser<TInput, TSeparator> separatorParser,
             Parser<TInput, TElement> secondaryElementParser,
-            Func<TElement> missingElement, // optional
+            Func<TElement> missingPrimaryElement, // optional
             Func<TSeparator> missingSeparator, // optional
+            Func<TElement> missingSecondaryElement, // optional
             Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -287,8 +290,8 @@ namespace Kusto.Language.Parsing
             if (secondaryElementParser == null)
                 secondaryElementParser = primaryElementParser;
 
-            var requiredPrimaryElementParser = missingElement != null ? Required(primaryElementParser, missingElement) : primaryElementParser;
-            var requiredSecondaryElementParser = missingElement != null ? Required(secondaryElementParser, missingElement) : secondaryElementParser;
+            var requiredPrimaryElementParser = missingPrimaryElement != null ? Required(primaryElementParser, missingPrimaryElement) : primaryElementParser;
+            var requiredSecondaryElementParser = missingSecondaryElement != null ? Required(secondaryElementParser, missingSecondaryElement) : secondaryElementParser;
             var requiredSeparatorParser = missingSeparator != null ? Required(separatorParser, missingSeparator) : separatorParser;
             Func<TProducer> emptyList = () => producer(new object[] { });
 
@@ -321,7 +324,7 @@ namespace Kusto.Language.Parsing
                     {
                         secondaryParser = First(
                             secondaryParser,
-                            // check for missing secondardy element between two separators
+                            // check for missing secondary element between two separators
                             If(Not(endOfList), Sequence(requiredSeparatorParser, secondaryElementParser)).Hide());
                     }
 
@@ -400,6 +403,7 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TElement> secondaryElementParser,
             Func<TElement> missingElement, // optional
             Func<TSeparator> missingSeparator, // optional
+            Func<TElement> missingSecondaryElement, // optional
             Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -411,6 +415,7 @@ namespace Kusto.Language.Parsing
                 secondaryElementParser,
                 missingElement,
                 missingSeparator,
+                missingSecondaryElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -445,6 +450,7 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 missingElement,
                 missingSeparator,
+                missingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -472,6 +478,7 @@ namespace Kusto.Language.Parsing
                 secondaryElementParser,
                 missingElement: null,
                 missingSeparator: null,
+                missingSecondaryElement: null,
                 endOfList: null,
                 oneOrMore: oneOrMore,
                 allowTrailingSeparator: false,
@@ -497,6 +504,7 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 missingElement: null,
                 missingSeparator: null,
+                missingSecondaryElement: null,
                 endOfList: null,
                 oneOrMore: oneOrMore,
                 allowTrailingSeparator: false,

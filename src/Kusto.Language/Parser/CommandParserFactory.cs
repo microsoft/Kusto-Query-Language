@@ -328,12 +328,14 @@ namespace Kusto.Language.Parsing
                 var elem = grammar.Repeated.Accept(this);
                 var sep = grammar.Separator?.Accept(this);
 
+                var elementParser = GetElementParser(elem);
+
                 if (sep == null)
                 {
                     return new ParserInfo(
                         List(
-                            GetElementParser(elem),
-                            elem.Missing,
+                            elementParser,
+                            missingElement: null,
                             oneOrMore: true,
                             producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
                         new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: false),
@@ -341,12 +343,15 @@ namespace Kusto.Language.Parsing
                 }
                 else
                 {
+
                     return new ParserInfo(
                         OList(
-                            GetElementParser(elem),
+                            elementParser,
                             sep.Parser,
-                            elem.Missing,
+                            elementParser,
+                            missingPrimaryElement: null,
                             missingSeparator: null,
+                            missingSecondaryElement: elem.Missing,
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,

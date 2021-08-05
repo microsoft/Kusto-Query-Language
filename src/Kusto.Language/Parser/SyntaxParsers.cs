@@ -455,6 +455,7 @@ namespace Kusto.Language.Parsing
                 secondaryElementParser,
                 () => (TElement)missingElement.Clone(),
                 () => CreateMissingToken(separatorKind),
+                () => (TElement)missingElement.Clone(),
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
