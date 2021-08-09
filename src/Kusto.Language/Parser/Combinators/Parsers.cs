@@ -393,6 +393,7 @@ namespace Kusto.Language.Parsing
         /// <param name="secondaryElementParser">The parser for any elements after the first separator.</param>
         /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
         /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="missingSecondaryElement">An optional function that constructs a new element to be used when a second element is missing (between two separators).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
