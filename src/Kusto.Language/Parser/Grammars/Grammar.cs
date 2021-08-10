@@ -300,20 +300,22 @@ namespace Kusto.Language.Parsing
     {
         public Grammar Repeated { get; }
         public Grammar Separator { get; }
+        public bool AllowTrailingSeparator { get; }
 
-        public ZeroOrMoreGrammar(Grammar repeated, Grammar separator = null)
+        public ZeroOrMoreGrammar(Grammar repeated, Grammar separator = null, bool allowTrailingSeparator = false)
             : base(repeated.GetHashCode() + (separator?.GetHashCode() ?? 0))
         {
             this.Repeated = repeated;
             this.Separator = separator;
+            this.AllowTrailingSeparator = allowTrailingSeparator;
         }
 
         public override TResult Accept<TResult>(GrammarVisitor<TResult> visitor) =>
             visitor.VisitZeroOrMore(this);
 
-        public ZeroOrMoreGrammar With(Grammar repeated, Grammar separator) =>
-            (this.Repeated != repeated || this.Separator != separator)
-                ? new ZeroOrMoreGrammar(repeated, separator)
+        public ZeroOrMoreGrammar With(Grammar repeated, Grammar separator, bool allowTrailingSeparator) =>
+            (this.Repeated != repeated || this.Separator != separator || this.AllowTrailingSeparator != allowTrailingSeparator)
+                ? new ZeroOrMoreGrammar(repeated, separator, allowTrailingSeparator)
                 : this;
     }
 
@@ -325,20 +327,22 @@ namespace Kusto.Language.Parsing
     {
         public Grammar Repeated { get; }
         public Grammar Separator { get; }
+        public bool AllowTrailingSeparator { get; }
 
-        public OneOrMoreGrammar(Grammar repeated, Grammar separator = null)
+        public OneOrMoreGrammar(Grammar repeated, Grammar separator = null, bool allowTrailingSeparator = false)
             : base(repeated.GetHashCode() + (separator?.GetHashCode() ?? 0))
         {
             this.Repeated = repeated;
             this.Separator = separator;
+            this.AllowTrailingSeparator = allowTrailingSeparator;
         }
 
         public override TResult Accept<TResult>(GrammarVisitor<TResult> visitor) =>
             visitor.VisitOneOrMore(this);
 
-        public OneOrMoreGrammar With(Grammar repeated, Grammar separator) =>
-            (this.Repeated != repeated || this.Separator != separator)
-                ? new OneOrMoreGrammar(repeated, separator)
+        public OneOrMoreGrammar With(Grammar repeated, Grammar separator, bool allowTrailingSeparator) =>
+            (this.Repeated != repeated || this.Separator != separator || this.AllowTrailingSeparator != allowTrailingSeparator)
+                ? new OneOrMoreGrammar(repeated, separator, allowTrailingSeparator)
                 : this;
     }
 

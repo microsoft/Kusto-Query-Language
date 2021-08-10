@@ -182,7 +182,11 @@ namespace Kusto.Language.Parsing
                         }
                     }).WithTag("<alternation>");
 
-            var separator = Rule(Token(","), term, (colon, word) => word);
+            var separator = Rule(
+                Token(","), 
+                term, 
+                Optional(Token("+")),
+                (comma, word, plus) => new SeparatorInfo(word, plus != null));
 
             var repeatition = Rule(
                     Token("{"),
@@ -196,11 +200,11 @@ namespace Kusto.Language.Parsing
 
                     if (zeroOrMore)
                     {
-                        return (Grammar)new ZeroOrMoreGrammar(elem, sep);
+                        return (Grammar)new ZeroOrMoreGrammar(elem, sep?.Separator, sep?.AllowTrailing ?? false);
                     }
                     else
                     {
-                        return (Grammar)new OneOrMoreGrammar(elem, sep);
+                        return (Grammar)new OneOrMoreGrammar(elem, sep?.Separator, sep?.AllowTrailing ?? false);
                     }
                 }).WithTag("<repetition>");
 
@@ -268,6 +272,17 @@ namespace Kusto.Language.Parsing
             elementCore = taggedPrimary;
 
             return alternation;
+        }
+
+        private class SeparatorInfo
+        {
+            public Grammar Separator { get; }
+            public bool AllowTrailing { get; }
+            public SeparatorInfo(Grammar separator, bool AllowTrailing)
+            {
+                this.Separator = separator;
+                this.AllowTrailing = AllowTrailing;
+            }
         }
     }
 }

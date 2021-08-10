@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Kusto.Language.Parsing
 {
+    using Utils;
+
     public enum GrammarStyle
     {
         /// <summary>
@@ -74,10 +76,14 @@ namespace Kusto.Language.Parsing
                     {
                         _builder.Append(", ");
                         Write(grammar.Separator);
+
+                        if (grammar.AllowTrailingSeparator)
+                        {
+                            _builder.Append("+");
+                        }
                     }
 
                     _builder.Append("}+");
-                    return false;
                 }
                 else
                 {
@@ -100,28 +106,32 @@ namespace Kusto.Language.Parsing
 
             public override bool VisitOptional(OptionalGrammar grammar)
             {
+                WriteOptional(grammar.Optioned);
+                return true;
+            }
+
+            private void WriteOptional(Grammar optioned)
+            {
                 if (_style == GrammarStyle.Brackets)
                 {
                     _builder.Append("[");
-                    Write(grammar.Optioned);
+                    Write(optioned);
                     _builder.Append("]");
                 }
                 else
                 {
-                    switch (grammar.Optioned)
+                    switch (optioned)
                     {
                         case TokenGrammar _:
                         case RuleGrammar _:
-                            Write(grammar.Optioned);
+                            Write(optioned);
                             break;
                         default:
-                            WriteParens(grammar.Optioned);
+                            WriteParens(optioned);
                             break;
                     }
                     _builder.Append("?");
                 }
-
-                return true;
             }
 
             public override bool VisitRequired(RequiredGrammar grammar)
@@ -234,6 +244,11 @@ namespace Kusto.Language.Parsing
                     {
                         _builder.Append(", ");
                         Write(grammar.Separator);
+
+                        if (grammar.AllowTrailingSeparator)
+                        {
+                            _builder.Append("+");
+                        }
                     }
 
                     _builder.Append("}");

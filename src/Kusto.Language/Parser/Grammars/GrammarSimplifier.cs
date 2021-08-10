@@ -73,32 +73,87 @@ namespace Kusto.Language.Parsing
             {
                 List<Grammar> newSteps = null;
 
-                for (int i = 0; i < steps.Count; i++)
+                for (int i = 0; i < steps.Count;)
                 {
                     var step = steps[i];
 
-                    // convert: a b (c a b)* => {a b, c}
-                    if (step is ZeroOrMoreGrammar z
-                        && z.Separator == null
-                        && z.Repeated is SequenceGrammar zseq
-                        && zseq.Steps.Count - 1 is int len
-                        && len <= i
-                        && AreEquivalent(steps, i - len, zseq.Steps, 1, len))
+                    switch (step)
                     {
-                        newSteps = newSteps ?? steps.ToList();
-                        var newSeqSteps = zseq.Steps.ToList();
-                        newSeqSteps.RemoveAt(0); // remove separator
-                        var newSeparator = zseq.Steps[0];
-                        var newRepeated = newSeqSteps.Count == 1 ? newSeqSteps[0] : new SequenceGrammar(newSeqSteps);
-                        var newZ = new OneOrMoreGrammar(newRepeated, newSeparator);
-                        newSteps[i] = newZ;
-                        newSteps.RemoveRange(i - len, newSeqSteps.Count); // remove all repeated outer steps
+                        case ZeroOrMoreGrammar zom:
+                            // convert: a b (c a b)* => {a b, c}+
+                            if (zom.Separator == null
+                                && zom.Repeated is SequenceGrammar zseq
+                                && zseq.Steps.Count - 1 is int len
+                                && len <= i
+                                && AreEquivalent(steps, i - len, zseq.Steps, 1, len))
+                            {
+                                newSteps = newSteps ?? steps.ToList();
+                                var newSeqSteps = zseq.Steps.ToList();
+                                newSeqSteps.RemoveAt(0); // remove separator
+                                var newSeparator = zseq.Steps[0];
+                                var newRepeated = newSeqSteps.Count == 1 ? newSeqSteps[0] : new SequenceGrammar(newSeqSteps);
+                                var newZ = new OneOrMoreGrammar(newRepeated, newSeparator);
+                                newSteps[i] = newZ;
+                                newSteps.RemoveRange(i - len, newSeqSteps.Count); // remove all repeated outer steps
+                                steps = newSteps;
+                                // adjust outer steps and continue looking for more separated repetitions
+                                i -= len;
+                                continue;
+                            }
 
-                        // adjust outer steps and continue looking for more separated repetitions
-                        steps = newSteps;
-                        i -= len;
-                        continue;
+                            // convert: a? (c a)* => {a, c}
+                            // this conversion is technically not correct, but unfortunately this pattern is 
+                            // appears in the antlr command grammars, probably unintentionally.
+                            // should have been written as:  (a (c a)*)?
+                            if (zom.Separator == null
+                                && zom.Repeated is SequenceGrammar zseq2
+                                && zseq2.Steps.Count == 2
+                                && i > 0
+                                && steps[i - 1] is OptionalGrammar opt2
+                                && zseq2.Steps[1].IsEquivalentTo(opt2.Optioned))
+                            {
+                                newSteps = newSteps ?? steps.ToList();
+                                newSteps[i] = new ZeroOrMoreGrammar(zseq2.Steps[1], zseq2.Steps[0]);
+                                newSteps.RemoveAt(i - 1);
+                                steps = newSteps;
+                                i -= 1;
+                                continue;
+                            }
+
+                            // convert: {a, c} [c] => {a, c+}
+                            if (zom.Separator != null
+                                && !zom.AllowTrailingSeparator
+                                && i < steps.Count - 1
+                                && steps[i + 1] is OptionalGrammar opt1
+                                && opt1.Optioned.IsEquivalentTo(zom.Separator))
+                            {
+                                newSteps = newSteps ?? steps.ToList();
+                                newSteps.RemoveAt(i + 1); // remove extraneous trailing separator
+                                newSteps[i] = zom.With(zom.Repeated, zom.Separator, true);
+                                steps = newSteps;
+                                continue;
+                            }
+                            break;
+
+                        case OneOrMoreGrammar oom:
+                            if (oom.Separator != null
+                                && !oom.AllowTrailingSeparator
+                                && i < steps.Count - 1
+                                && steps[i + 1] is OptionalGrammar opt3
+                                && opt3.Optioned.IsEquivalentTo(oom.Separator))
+                            {
+                                // convert: (c a)+ [c] => {a, c+}+
+                                newSteps = newSteps ?? steps.ToList();
+                                newSteps.RemoveAt(i + 1); // remove extraneous trailing separator
+                                newSteps[i] = oom.With(oom.Repeated, oom.Separator, true);
+                                steps = newSteps;
+                                continue;
+                            }
+                            break;
                     }
+
+                    // nothing special, advance to next step
+                    i++;
                 }
 
                 return steps;
@@ -131,26 +186,26 @@ namespace Kusto.Language.Parsing
 
                     // o(o(e)) => o(e)
                     case OneOrMoreGrammar o when o.Separator == null:
-                        return grammar.With(o.Repeated, newSeparator);
+                        return grammar.With(o.Repeated, newSeparator, false);
                     case OneOrMoreGrammar o when newSeparator == null:
-                        return grammar.With(o.Repeated, o.Separator);
+                        return grammar.With(o.Repeated, o.Separator, false);
 
                     // o(z(e)) => z(e)
                     case ZeroOrMoreGrammar z when z.Separator == null:
-                        return new ZeroOrMoreGrammar(z.Repeated, newSeparator);
+                        return new ZeroOrMoreGrammar(z.Repeated, newSeparator, grammar.AllowTrailingSeparator);
                     case ZeroOrMoreGrammar z when newSeparator == null:
-                        return new ZeroOrMoreGrammar(z.Repeated, z.Separator);
+                        return new ZeroOrMoreGrammar(z.Repeated, z.Separator, z.AllowTrailingSeparator);
 
                     // o(opt(e)) => z(e)
                     case OptionalGrammar o:
-                        return new ZeroOrMoreGrammar(o.Optioned, newSeparator);
+                        return new ZeroOrMoreGrammar(o.Optioned, newSeparator, grammar.AllowTrailingSeparator);
 
                     default:
                         if (newRepeated == grammar.Repeated
                             && newSeparator == grammar.Separator)
                             return grammar;
 
-                        return grammar.With(newRepeated, newSeparator);
+                        return grammar.With(newRepeated, newSeparator, grammar.AllowTrailingSeparator);
                 }
             }
 
@@ -167,27 +222,26 @@ namespace Kusto.Language.Parsing
 
                     // z(o(g)) => z(g)
                     case OneOrMoreGrammar o when o.Separator == null:
-                        return grammar.With(o.Repeated, newSeparator);
+                        return grammar.With(o.Repeated, newSeparator, false);
                     case OneOrMoreGrammar o when newSeparator == null:
-                        return grammar.With(o.Repeated, o.Separator);
+                        return grammar.With(o.Repeated, o.Separator, false);
 
                     // z(z(g)) => z(g)
                     case ZeroOrMoreGrammar z when z.Separator == null:
-                        return grammar.With(z.Repeated, newSeparator);
+                        return grammar.With(z.Repeated, newSeparator, grammar.AllowTrailingSeparator);
                     case ZeroOrMoreGrammar z when newSeparator == null:
-                        return grammar.With(z.Repeated, z.Separator);
+                        return grammar.With(z.Repeated, z.Separator, z.AllowTrailingSeparator);
 
                     // z(opt(e)) => z(e)
                     case OptionalGrammar o:
-                        return grammar.With(o.Optioned, newSeparator);
+                        return grammar.With(o.Optioned, newSeparator, grammar.AllowTrailingSeparator);
 
                     default:
                         if (newRepeated == grammar.Repeated
-                            || newSeparator == grammar.Separator)
+                            && newSeparator == grammar.Separator)
                             return grammar;
 
-
-                        return grammar.With(newRepeated, newSeparator);
+                        return grammar.With(newRepeated, newSeparator, grammar.AllowTrailingSeparator);
                 }
             }
 

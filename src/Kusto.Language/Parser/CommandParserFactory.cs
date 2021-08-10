@@ -679,6 +679,17 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(hint: Editor.CompletionHint.None),
                     () => (SyntaxElement)Q.MissingNameDeclaration());
 
+            var WildcardedNameDeclaration =
+                Rule(queryParser.WildcardedIdentifier,
+                    id => new NameDeclaration(
+                        new WildcardedName(id)));
+
+            var KustoWildcardedNameDeclarationInfo =
+                new ParserInfo(
+                    WildcardedNameDeclaration.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(hint: Editor.CompletionHint.None),
+                    () => (SyntaxElement)Q.MissingNameReference());;
+
             var KustoColumnNameInfo =
                 new ParserInfo(
                     ColumnNameReference.Cast<SyntaxElement>(),
@@ -844,6 +855,7 @@ namespace Kusto.Language.Parsing
                     { "type", KustoTypeInfo },
                     { "guid", KustoGuidLiteralInfo },
                     { "name", KustoNameDeclarationInfo },
+                    { "wildcarded_name", KustoWildcardedNameDeclarationInfo },
                     { "column", KustoColumnNameInfo },
                     { "table_column", KustoTableColumnNameInfo },
                     { "database_table_column", KustoDatabaseTableColumnNameInfo },

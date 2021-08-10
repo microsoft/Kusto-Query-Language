@@ -97,7 +97,7 @@ namespace Kusto.Language.Parsing
                 return Compare(x, ay.Alternatives[0]);
             }
 
-            // token always beats non-token
+            // explicit token always beats non-token
             var tx = fx.Grammar as TokenGrammar;
             var ty = fy.Grammar as TokenGrammar;
 

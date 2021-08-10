@@ -66,6 +66,8 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, TypeExpression> ParamTypeExtended { get; private set; }
         public Parser<LexicalToken, SchemaTypeExpression> SchemaType { get; private set; }
         public Parser<LexicalToken, Expression> SimpleNameReference { get; private set; }
+        public Parser<LexicalToken, Expression> WildcardedNameReference { get; private set; }
+        public Parser<LexicalToken, SyntaxToken> WildcardedIdentifier { get; private set; }
         public Parser<LexicalToken, Expression> Literal { get; private set; }
         public Parser<LexicalToken, Expression> StringLiteral { get; private set; }
         public Parser<LexicalToken, SyntaxList<SeparatedElement<Expression>>> LiteralList { get; private set; }
@@ -937,14 +939,14 @@ namespace Kusto.Language.Parsing
                                 || t.Kind.GetCategory() == SyntaxCategory.Keyword)
                                 && t.Trivia.Length == 0)));
 
-            var WildcardedIdentifier =
+            this.WildcardedIdentifier =
                 Convert(
                     ScanWildcard.Hide(),
                     (IReadOnlyList<LexicalToken> list) =>
                         SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
                 .WithTag("<wildcard>");
 
-            var WildcardedNameReference =
+            this.WildcardedNameReference =
                 Convert(
                     ScanWildcard.Hide(),
                     (IReadOnlyList<LexicalToken> list) => (Expression)

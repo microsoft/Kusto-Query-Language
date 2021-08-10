@@ -54,10 +54,10 @@ namespace Kusto.Language.Parsing
             VisitList(steps);
 
         public override Grammar VisitOneOrMore(OneOrMoreGrammar grammar) =>
-            grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this));
+            grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this), grammar.AllowTrailingSeparator);
 
         public override Grammar VisitZeroOrMore(ZeroOrMoreGrammar grammar) =>
-            grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this));
+            grammar.With(grammar.Repeated.Accept(this), grammar.Separator?.Accept(this), grammar.AllowTrailingSeparator);
 
         public override Grammar VisitOptional(OptionalGrammar grammar) =>
             grammar.With(grammar.Optioned.Accept(this));
