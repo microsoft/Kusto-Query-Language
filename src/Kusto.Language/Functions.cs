@@ -152,6 +152,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol HasAnyIndex =
+            new FunctionSymbol("has_any_index", ScalarTypes.Long,
+                new Parameter("source", ParameterTypeKind.StringOrDynamic),
+                new Parameter("values", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // atefsawaed to unhide after 22/08/2021
+
         public static readonly FunctionSymbol Reverse =
             new FunctionSymbol("reverse", ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar))
@@ -2475,6 +2483,7 @@ namespace Kusto.Language
             RegexQuote,
             IndexOf,
             IndexOfRegex,
+            HasAnyIndex,
             Reverse,
             Split,
             ParseCommandLine,
