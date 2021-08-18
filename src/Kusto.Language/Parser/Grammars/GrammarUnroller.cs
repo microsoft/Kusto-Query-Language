@@ -65,16 +65,17 @@ namespace Kusto.Language.Parsing
                         var step = steps[i];
                         var nextStep = i < steps.Count - 1 ? steps[i + 1] : null;
 
-                        if (nextStep != null && !IsOptional(nextStep))
+                        // consider: including all following steps
+                        if (nextStep != null /*&& !IsOptional(nextStep)*/)
                         {
                             if (step is OptionalGrammar opt)
                             {
-                                // [a] b -> (b | a b)
+                                // [a] b -> (a b | b)
                                 var newStep = new AlternationGrammar(
-                                    nextStep,
                                     new SequenceGrammar(
                                         opt.Optioned,
-                                        nextStep.Clone()));
+                                        nextStep),
+                                    nextStep.Clone());
                                 newSteps.Add(newStep);
                                 i++; // skip next step
                                 continue;

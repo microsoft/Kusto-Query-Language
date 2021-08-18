@@ -39,11 +39,74 @@ namespace Kusto.Language.Parsing
                 if (newAlts.Count == 1)
                     return newAlts[0];
 
-                if (newAlts == grammar.Alternatives)
+                var nonOptionalAlts = MakeNonOptional(newAlts);
+                if (nonOptionalAlts != newAlts)
+                {
+                    return new OptionalGrammar(grammar.With(nonOptionalAlts));
+                }
+                else if (newAlts == grammar.Alternatives)
+                {
                     return grammar;
-
-                return grammar.With(newAlts);
+                }
+                else
+                {
+                    return grammar.With(newAlts);
+                }
             }
+
+            /// <summary>
+            /// Makes alternatives non-optional
+            /// </summary>
+            private static IReadOnlyList<Grammar> MakeNonOptional(IReadOnlyList<Grammar> alternatives)
+            {
+                if (alternatives.Any(a => IsOptional(a)))
+                {
+                    List<Grammar> newAlts = null;
+
+                    for (int i = 0; i < alternatives.Count; i++)
+                    {
+                        var alt = alternatives[i];
+                        var newAlt = MakeNonOptional(alt);
+                        if (newAlt != alt)
+                        {
+                            alternatives = newAlts = newAlts ?? alternatives.ToList();
+                            newAlts[i] = newAlt;
+                        }
+                    }
+                }
+
+                return alternatives;
+            }
+
+            private static bool IsOptional(Grammar grammar)
+            {
+                switch (grammar)
+                {
+                    case OptionalGrammar _:
+                    case ZeroOrMoreGrammar _:
+                        return true;
+                    case TaggedGrammar tg:
+                        return IsOptional(tg.Tagged);
+                    default:
+                        return false;
+                }
+            }
+
+            private static Grammar MakeNonOptional(Grammar grammar)
+            {
+                switch (grammar)
+                {
+                    case OptionalGrammar opt:
+                        return opt.Optioned;
+                    case ZeroOrMoreGrammar zom:
+                        return new OneOrMoreGrammar(zom.Repeated, zom.Separator, zom.AllowTrailingSeparator);
+                    case TaggedGrammar tagged:
+                        return tagged.With(tagged.Tag, MakeNonOptional(tagged.Tagged));
+                    default:
+                        return grammar;
+                }
+            }
+
 
             public override Grammar VisitSequence(SequenceGrammar grammar)
             {
@@ -180,23 +243,21 @@ namespace Kusto.Language.Parsing
 
                 switch (newRepeated)
                 {
-                    // o(null) => null
+                    // (null)+ => null
                     case null:
                         return null;
 
-                    // o(o(e)) => o(e)
-                    case OneOrMoreGrammar o when o.Separator == null:
-                        return grammar.With(o.Repeated, newSeparator, false);
+                    // (e+)+ => e+
+                    // ({e, s}+)+ => {e, s}+
                     case OneOrMoreGrammar o when newSeparator == null:
                         return grammar.With(o.Repeated, o.Separator, false);
 
-                    // o(z(e)) => z(e)
-                    case ZeroOrMoreGrammar z when z.Separator == null:
-                        return new ZeroOrMoreGrammar(z.Repeated, newSeparator, grammar.AllowTrailingSeparator);
+                    // (e*)+ => e*
+                    // ({e, s})+ => {e, s}
                     case ZeroOrMoreGrammar z when newSeparator == null:
                         return new ZeroOrMoreGrammar(z.Repeated, z.Separator, z.AllowTrailingSeparator);
 
-                    // o(opt(e)) => z(e)
+                    // (e?)+ => e*
                     case OptionalGrammar o:
                         return new ZeroOrMoreGrammar(o.Optioned, newSeparator, grammar.AllowTrailingSeparator);
 
@@ -216,23 +277,20 @@ namespace Kusto.Language.Parsing
 
                 switch (newRepeated)
                 {
-                    // z(null) => null
+                    // (null)* => null
                     case null:
                         return null;
 
-                    // z(o(g)) => z(g)
-                    case OneOrMoreGrammar o when o.Separator == null:
-                        return grammar.With(o.Repeated, newSeparator, false);
+                    // (g+)* => g*
                     case OneOrMoreGrammar o when newSeparator == null:
                         return grammar.With(o.Repeated, o.Separator, false);
 
-                    // z(z(g)) => z(g)
-                    case ZeroOrMoreGrammar z when z.Separator == null:
-                        return grammar.With(z.Repeated, newSeparator, grammar.AllowTrailingSeparator);
+                    // (g*)+ => g*
+                    // ({g, s})+ => {g, s}
                     case ZeroOrMoreGrammar z when newSeparator == null:
                         return grammar.With(z.Repeated, z.Separator, z.AllowTrailingSeparator);
 
-                    // z(opt(e)) => z(e)
+                    // (e?)+ => e*
                     case OptionalGrammar o:
                         return grammar.With(o.Optioned, newSeparator, grammar.AllowTrailingSeparator);
 
@@ -251,23 +309,23 @@ namespace Kusto.Language.Parsing
 
                 switch (newOptioned)
                 {
-                    // opt(null) => null
+                    // null? => null
                     case null:
                         return null;
 
-                    // opt(o(g)) => z(g);
+                    // (g+)? => g*
                     case OneOrMoreGrammar o:
                         return new ZeroOrMoreGrammar(o.Repeated, o.Separator);
 
-                    // opt(z(g)) => z(g)
+                    // (g*)? => g*
                     case ZeroOrMoreGrammar _:
                         return newOptioned;
 
-                    // opt(opt(g)) => opt(g)
+                    // (g?)? => g?
                     case OptionalGrammar _:
                         return newOptioned;
 
-                    // opt(req(g)) => req(g)
+                    // (g!)? => g!
                     case RequiredGrammar r:
                         return r;
 
@@ -285,13 +343,13 @@ namespace Kusto.Language.Parsing
 
                 switch (newRequired)
                 {
-                    // req(null) => null
+                    // (null)! => null
                     case null:
                         return null;
-                    // req(opt(g)) => opt(g)
+                    // (g?)! => g?
                     case OptionalGrammar o:
                         return o;
-                    // req(req(g)) => req(g)
+                    // (g!)! => g!
                     case RequiredGrammar r:
                         return r;
                     default:

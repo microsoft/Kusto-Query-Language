@@ -185,7 +185,7 @@ namespace Kusto.Language.Parsing
             var separator = Rule(
                 Token(","), 
                 term, 
-                Optional(Token("+")),
+                Optional(Token("~")),
                 (comma, word, plus) => new SeparatorInfo(word, plus != null));
 
             var repeatition = Rule(

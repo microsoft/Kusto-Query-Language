@@ -79,7 +79,7 @@ namespace Kusto.Language.Parsing
 
                         if (grammar.AllowTrailingSeparator)
                         {
-                            _builder.Append("+");
+                            _builder.Append("~");
                         }
                     }
 
@@ -247,7 +247,7 @@ namespace Kusto.Language.Parsing
 
                         if (grammar.AllowTrailingSeparator)
                         {
-                            _builder.Append("+");
+                            _builder.Append("~");
                         }
                     }
 

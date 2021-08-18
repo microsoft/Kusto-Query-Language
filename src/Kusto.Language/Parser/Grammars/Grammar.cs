@@ -69,6 +69,51 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        public bool Any(Func<Grammar, bool> predicate)
+        {
+            return First(predicate) != null;
+        }
+
+        public Grammar First(Func<Grammar, bool> predicate)
+        {
+            if (predicate(this))
+                return this;
+
+            switch (this)
+            {
+                case SequenceGrammar sg:
+                    foreach (var step in sg.Steps)
+                    {
+                        var result = step.First(predicate);
+                        if (result != null)
+                            return result;
+                    }
+                    return null;
+                case AlternationGrammar ag:
+                    foreach (var alt in ag.Alternatives)
+                    {
+                        var result = alt.First(predicate);
+                        if (result != null)
+                            return result;
+                    }
+                    return null;
+                case OptionalGrammar og:
+                    return og.Optioned.First(predicate);
+                case RequiredGrammar rg:
+                    return rg.Required.First(predicate);
+                case TaggedGrammar tg:
+                    return tg.Tagged.First(predicate);
+                case OneOrMoreGrammar oom:
+                    return oom.Repeated.First(predicate)
+                        ?? oom.Separator?.First(predicate);
+                case ZeroOrMoreGrammar zom:
+                    return zom.Repeated.First(predicate)
+                        ?? zom.Separator?.First(predicate);
+                default:
+                    return null;
+            }
+        }
+
         public bool IsEquivalentTo(Grammar grammar) =>
             AreEquivalent(this, grammar);
 

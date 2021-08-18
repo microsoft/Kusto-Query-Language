@@ -116,39 +116,40 @@ namespace Kusto.Language.Parsing
                 .ToArray();
 
             // use Best combinator with function to pick which output is better when there are ambiguities
-            var bestCommandParsers = Best(commandParsers, (command1, command2) => CompareBetterSyntax(command1, command2));
+            var bestCommandParsers = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
             return bestCommandParsers;
+            //return First(commandParsers);
         }
 
-        private static int CompareBetterSyntax(SyntaxElement command1, SyntaxElement command2)
+        private static bool IsBetterSyntax(SyntaxElement command1, SyntaxElement command2)
         {
             // neither command has diagnostics, neither is better
             if (!command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
-                return 0;
+                return false;
 
             // command1 has diagnostics, command1 is not better than command2
             if (command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
-                return -1;
+                return false;
 
             // command2 has diagnostics, command1 is better
             if (!command1.ContainsSyntaxDiagnostics && command2.ContainsSyntaxDiagnostics)
-                return 1;
+                return true;
 
             var dx1 = command1.GetContainedSyntaxDiagnostics();
             var dx2 = command2.GetContainedSyntaxDiagnostics();
 
             // command1 first diagnostic occurs lexically after command2 first diagnostics, command1 is better
             if (dx1[0].Start > dx2[0].Start)
-                return 1;
+                return true;
 
             // command1 first diagnostic occurs lexically before command2 first diagnostic, command1 is not better
             if (dx1[0].Start < dx2[0].Start)
-                return -1;
+                return false;
 
             // don't compare number of diagnostics, since we want to favor what happens early rather than later
 
             // otherwise neither is better
-            return 0;
+            return false;
         }
 
         /// <summary>
@@ -178,7 +179,10 @@ namespace Kusto.Language.Parsing
 
             var simplified = unrolled.Select(i => grammarUpdater(i, GrammarSimplifier.Simplify(grammarSelector(i)))).ToList();
 
-            var required = GrammarRequirer.Require(simplified, grammarSelector, grammarUpdater);
+            // reorder nested alternations so keywords don't get swallowed by name/identifier rules.
+            var reordered = simplified.Select(i => grammarUpdater(i, GrammarReorderer.Reorder(grammarSelector(i)))).ToList();
+
+            var required = GrammarRequirer.Require(reordered, grammarSelector, grammarUpdater);
 
             return required;
         }
@@ -200,6 +204,8 @@ namespace Kusto.Language.Parsing
         public static Grammar Adjust(Grammar grammar)
         {
             grammar = GrammarUnroller.Unroll(grammar);
+
+            grammar = GrammarSimplifier.Simplify(grammar);
 
             // reorder alternations so keywords don't get swallowed by name/identifier rules.
             grammar = GrammarReorderer.Reorder(grammar);

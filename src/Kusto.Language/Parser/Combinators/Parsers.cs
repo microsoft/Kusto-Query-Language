@@ -58,7 +58,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that yields the result of the parser that produced the best output item.
         /// </summary>
-        public static Parser<TInput, TOutput> Best<TOutput>(Parser<TInput, TOutput>[] parsers, Func<TOutput, TOutput, int> fnBetter) =>
+        public static Parser<TInput, TOutput> Best<TOutput>(Parser<TInput, TOutput>[] parsers, Func<TOutput, TOutput, bool> fnBetter) =>
             new BestParser<TInput, TOutput>(parsers, fnBetter);
 
         /// <summary>
@@ -2210,19 +2210,19 @@ namespace Kusto.Language.Parsing
     public sealed class BestParser<TInput, TOutput> : Parser<TInput, TOutput>
     {
         private readonly Parser<TInput, TOutput>[] _parsers;
-        private readonly Func<TOutput, TOutput, int> _fnBetter;
+        private readonly Func<TOutput, TOutput, bool> _fnIsBetter;
 
         public IReadOnlyList<Parser<TInput, TOutput>> Parsers => _parsers;
-        public Func<TOutput, TOutput, int> Better => _fnBetter;
+        public Func<TOutput, TOutput, bool> IsBetter => _fnIsBetter;
 
         public BestParser(
             IReadOnlyList<Parser<TInput, TOutput>> parsers, 
-            Func<TOutput, TOutput, int> fnBetter = null)
+            Func<TOutput, TOutput, bool> fnIsBetter = null)
         {
             Ensure.ArgumentNotNull(parsers, nameof(parsers));
             Ensure.ElementsNotNull(parsers, nameof(parsers));
             _parsers = parsers.ToArray();
-            _fnBetter = fnBetter;
+            _fnIsBetter = fnIsBetter;
         }
 
         public override void Accept(ParserVisitor<TInput> visitor)
@@ -2268,7 +2268,7 @@ namespace Kusto.Language.Parsing
                         candidates.Clear();
                     }
                 }
-                else if (length == maxLength && bestParser >= 0 && _fnBetter != null)
+                else if (length == maxLength && bestParser >= 0 && _fnIsBetter != null)
                 {
                     if (candidates == null)
                     {
@@ -2294,7 +2294,7 @@ namespace Kusto.Language.Parsing
                     for (int i = 0; i < candidates.Count; i++)
                     {
                         var otherV = candidates[i].Parse(source, start).Value;
-                        if (_fnBetter(otherV, bestV) > 0)
+                        if (_fnIsBetter(otherV, bestV))
                         {
                             bestV = otherV;
                         }
@@ -2337,7 +2337,7 @@ namespace Kusto.Language.Parsing
                         candidates.Clear();
                     }
                 }
-                else if (length == maxLength && bestParser >= 0 && _fnBetter != null)
+                else if (length == maxLength && bestParser >= 0 && _fnIsBetter != null)
                 {
                     if (candidates == null)
                     {
@@ -2368,7 +2368,7 @@ namespace Kusto.Language.Parsing
                         var otherV = (TOutput)output[outputStart];
                         output.SetCount(outputStart);
 
-                        if (_fnBetter(otherV, bestV) > 0)
+                        if (_fnIsBetter(otherV, bestV))
                         {
                             bestV = otherV;
                         }

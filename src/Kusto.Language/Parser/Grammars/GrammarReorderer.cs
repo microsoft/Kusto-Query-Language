@@ -86,15 +86,19 @@ namespace Kusto.Language.Parsing
             var ay = fy.Grammar as AlternationGrammar;
             if (ax != null && ay != null)
             {
-                return Compare(ax.Alternatives[0], ay.Alternatives[0]);
+                var lastX = GetOrderedLast(ax.Alternatives);
+                var lastY = GetOrderedLast(ay.Alternatives);
+                return Compare(lastX, lastY);
             }
             else if (ax != null)
             {
-                return Compare(ax.Alternatives[0], y);
+                var lastX = GetOrderedLast(ax.Alternatives);
+                return Compare(lastX, y);
             }
             else if (ay != null)
             {
-                return Compare(x, ay.Alternatives[0]);
+                var lastY = GetOrderedLast(ay.Alternatives);
+                return Compare(x, lastY);
             }
 
             // explicit token always beats non-token
@@ -104,7 +108,7 @@ namespace Kusto.Language.Parsing
             if (tx != null && ty != null)
             {
                 // both are tokens, use text ordering
-                var result = tx.TokenText.CompareTo(ty.TokenText);
+                var result = CompareNames(tx.TokenText, ty.TokenText);
                 if (result != 0)
                     return result;
             }
@@ -156,6 +160,34 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets the grammar in the list that would be ordered last
+        /// </summary>
+        private Grammar GetOrderedLast(IReadOnlyList<Grammar> grammars)
+        {
+            var worst = grammars[0];
+            for (int i = 1; i < grammars.Count; i++)
+            {
+                if (Compare(grammars[i], worst) > 0)
+                    worst = grammars[i];
+            }
+
+            return worst;
+        }
+
+        private static int CompareNames(string name1, string name2)
+        {
+            // order alphabetically up to min length 
+            var minLen = Math.Min(name1.Length, name2.Length);
+            var result = string.Compare(name1, 0, name2, 0, minLen);
+            if (result != 0)
+                return result;
+
+            // if one is a subset of the other, then the longer one wins
+            // this keeps keywords like aa and aa-bb from picking aa when input matches aa-bb
+            return name2.Length - name1.Length;
+        }
+
         private int CompareSequence(SequenceGrammar sx, SequenceGrammar sy)
         {
             var n = Math.Min(sx.Steps.Count, sy.Steps.Count);
@@ -199,6 +231,9 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        /// <summary>
+        /// True if the grammar rule can fail to match
+        /// </summary>
         private static bool IsFallible(Grammar grammar)
         {
             switch (grammar)
@@ -219,12 +254,21 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        /// <summary>
+        /// True if any grammar rule can fail to match
+        /// </summary>
         private static bool IsFallible(IReadOnlyList<Grammar> steps) =>
             IsFallible(steps, 0, steps.Count);
 
+        /// <summary>
+        /// True if any grammar rule can fail to match
+        /// </summary>
         private static bool IsFallible(IReadOnlyList<Grammar> steps, int start) =>
             IsFallible(steps, start, steps.Count - start);
 
+        /// <summary>
+        /// True if any grammar rule can fail to match
+        /// </summary>
         private static bool IsFallible(IReadOnlyList<Grammar> steps, int start, int length)
         {
             for (int i = start, n = start + length; i < n; i++)

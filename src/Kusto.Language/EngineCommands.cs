@@ -839,12 +839,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterColumnPolicyEncoding =
             new CommandSymbol(nameof(AlterColumnPolicyEncoding),
-                "alter column ColumnName=<table_column> policy encoding EncodingPolicy=<string>",
+                "alter column ColumnName=<database_table_column> policy encoding EncodingPolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterColumnPolicyEncodingType =
             new CommandSymbol(nameof(AlterColumnPolicyEncodingType),
-                "alter column ColumnName=<table_column> policy encoding type '=' EncodingPolicyType=<string>",
+                "alter column ColumnName=<database_table_column> policy encoding type '=' EncodingPolicyType=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeDatabasePolicyEncoding =
