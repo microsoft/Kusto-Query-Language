@@ -726,6 +726,11 @@ namespace Kusto.Language
                             .WithSeverity(DiagnosticSeverity.Warning);
         }
 
+        public static Diagnostic GetClientParametersNotSupported()
+        {
+            return new Diagnostic("KS213", "Client parameters are not supported or enabled.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -63,6 +63,11 @@ namespace Kusto.Language
         public IReadOnlyList<OptionSymbol> Options { get; }
 
         /// <summary>
+        /// All the properties and their values
+        /// </summary>
+        private IReadOnlyList<PropertyAndValue> Properties { get; }
+
+        /// <summary>
         /// The <see cref="KustoCache"/> used to store additional accumulated global state.
         /// If caching is not enabled for this <see cref="GlobalState"/> this property will return null.
         /// </summary>
@@ -99,6 +104,11 @@ namespace Kusto.Language
         private Dictionary<string, OptionSymbol> optionMap;
 
         /// <summary>
+        /// Name to <see cref="GlobalState"/> lookup map
+        /// </summary>
+        private Dictionary<GlobalStateProperty, object> propertyMap;
+
+        /// <summary>
         /// Symbol (database) to <see cref="ClusterSymbol"/> reverse lookup map
         /// </summary>
         private Dictionary<Symbol, ClusterSymbol> reverseClusterMap;
@@ -127,6 +137,7 @@ namespace Kusto.Language
             IReadOnlyList<CommandSymbol> commands,
             IReadOnlyList<ParameterSymbol> parameters,
             IReadOnlyList<OptionSymbol> options,
+            IReadOnlyList<PropertyAndValue> properties,
             KustoCache cache,
             Dictionary<Symbol, ClusterSymbol> reverseClusterMap,
             Dictionary<Symbol, DatabaseSymbol> reverseDatabaseMap,
@@ -136,7 +147,8 @@ namespace Kusto.Language
             Dictionary<string, FunctionSymbol> pluginMap,
             Dictionary<OperatorKind, OperatorSymbol> operatorMap,
             Dictionary<string, CommandSymbol> commandMap,
-            Dictionary<string, OptionSymbol> optionMap)
+            Dictionary<string, OptionSymbol> optionMap,
+            Dictionary<GlobalStateProperty, object> propertyMap)
         {
             this.Clusters = clusters ?? EmptyReadOnlyList<ClusterSymbol>.Instance;
             this.Cluster = cluster ?? ClusterSymbol.Unknown;
@@ -148,6 +160,7 @@ namespace Kusto.Language
             this.Commands = commands ?? EmptyReadOnlyList<CommandSymbol>.Instance;
             this.Parameters = parameters ?? EmptyReadOnlyList<ParameterSymbol>.Instance;
             this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
+            this.Properties = properties ?? EmptyReadOnlyList<PropertyAndValue>.Instance;
             this.Cache = cache != null ? cache.WithGlobals(this) : null;
             this.reverseClusterMap = reverseClusterMap;
             this.reverseDatabaseMap = reverseDatabaseMap;
@@ -158,6 +171,7 @@ namespace Kusto.Language
             this.operatorMap = operatorMap;
             this.commandMap = commandMap;
             this.optionMap = optionMap;
+            this.propertyMap = propertyMap;
         }
 
         /// <summary>
@@ -177,6 +191,7 @@ namespace Kusto.Language
                 this.Commands,
                 this.Parameters,
                 this.Options,
+                this.Properties,
                 this.Cache,
                 this.reverseClusterMap,
                 this.reverseDatabaseMap,
@@ -186,7 +201,8 @@ namespace Kusto.Language
                 this.pluginMap,
                 this.operatorMap,
                 this.commandMap,
-                this.optionMap);
+                this.optionMap,
+                this.propertyMap);
         }
 
         /// <summary>
@@ -204,6 +220,7 @@ namespace Kusto.Language
             Optional<IReadOnlyList<CommandSymbol>> commands = default(Optional<IReadOnlyList<CommandSymbol>>),
             Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>),
             Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>),
+            Optional<IReadOnlyList<PropertyAndValue>> properties = default(Optional<IReadOnlyList<PropertyAndValue>>),
             Optional<KustoCache> cache = default(Optional<KustoCache>))
         {
             var useClusters = clusters.HasValue ? clusters.Value : this.Clusters;
@@ -216,6 +233,7 @@ namespace Kusto.Language
             var useCommands = commands.HasValue ? commands.Value : this.Commands;
             var useParameters = parameters.HasValue ? parameters.Value : this.Parameters;
             var useOptions = options.HasValue ? options.Value : this.Options;
+            var useProperties = properties.HasValue ? properties.Value : this.Properties;
             var useCache = cache.HasValue ? cache.Value : this.Cache;
 
             if (useClusters != this.Clusters
@@ -228,6 +246,7 @@ namespace Kusto.Language
                 || useCommands != this.Commands
                 || useParameters != this.Parameters
                 || useOptions != this.Options
+                || useProperties != this.Properties
                 || useCache != this.Cache)
             {
                 return new GlobalState(
@@ -241,6 +260,7 @@ namespace Kusto.Language
                     useCommands,
                     useParameters,
                     useOptions,
+                    useProperties,
                     useCache,
                     useClusters == this.Clusters ? this.reverseClusterMap : null,
                     useClusters == this.Clusters ? this.reverseDatabaseMap : null,
@@ -250,7 +270,8 @@ namespace Kusto.Language
                     usePlugins == this.PlugIns ? this.pluginMap : null,
                     useOperators == this.Operators ? this.operatorMap : null,
                     useCommands == this.Commands ? this.commandMap : null,
-                    useOptions == this.Options ? this.optionMap : null);
+                    useOptions == this.Options ? this.optionMap : null,
+                    useProperties == this.Properties ? this.propertyMap : null);
             }
             else
             {
@@ -754,6 +775,96 @@ namespace Kusto.Language
             return option;
         }
 
+        private class PropertyAndValue
+        {
+            public GlobalStateProperty Property { get; }
+            public object Value { get; }
+
+            public PropertyAndValue(GlobalStateProperty property, object value)
+            {
+                this.Property = property;
+                this.Value = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the value for the specified property
+        /// </summary>
+        public T GetProperty<T>(GlobalStateProperty<T> property)
+        {
+            if (this.Properties.Count == 0)
+            {
+                return property.DefaultValue;
+            }
+            else if (this.propertyMap == null)
+            {
+                var map = this.Properties.ToDictionary(pv => pv.Property, pv => pv.Value);
+                Interlocked.CompareExchange(ref this.propertyMap, map, null);
+            }
+
+            if (this.propertyMap.TryGetValue(property, out var value))
+            {
+                return (T)value;
+            }
+            else
+            {
+                return property.DefaultValue;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> instance with the property added or replaced.
+        /// </summary>
+        public GlobalState WithProperty<T>(GlobalStateProperty<T> property, T value)
+        {
+            List<PropertyAndValue> list = null;
+
+            bool hasCurrentValue = false;
+            object currentValue = default;
+
+            // look for existing property (w/o forcing map to be populated)
+            if (this.propertyMap != null)
+            {
+                hasCurrentValue = this.propertyMap.TryGetValue(property, out currentValue);
+            }
+            else
+            {
+                var currentPropAndValue = this.Properties.FirstOrDefault(p => p.Property == property);
+                if (currentPropAndValue != null)
+                {
+                    hasCurrentValue = true;
+                    currentValue = currentPropAndValue.Value;
+                }
+            }
+
+            // if it already exists, replace it
+            if (hasCurrentValue)
+            {
+                if (object.Equals(currentValue, value))
+                {
+                    // the same value already exists
+                    return this;
+                }
+
+                list = this.Properties.ToList();
+                var index = list.FindIndex(p => p.Property == property);
+                if (index >= 0)
+                {
+                    list[index] = new PropertyAndValue(property, value);
+                    return With(properties: list.AsReadOnly());
+                }
+            }
+
+            // otherwise add it to the end
+            if (list == null)
+            {
+                list = this.Properties.ToList();
+            }
+
+            list.Add(new PropertyAndValue(property, value));
+            return With(properties: list.AsReadOnly());
+        }
+
         private static Optional<T> Optional<T>(T value) => new Optional<T>(value);
 
         private static GlobalState s_default;
@@ -780,6 +891,7 @@ namespace Kusto.Language
                             Language.EngineCommands.All,
                             EmptyReadOnlyList<ParameterSymbol>.Instance,
                             Language.Options.All,
+                            EmptyReadOnlyList<PropertyAndValue>.Instance,
                             cache: null,
                             reverseClusterMap: null,
                             reverseDatabaseMap: null,
@@ -789,12 +901,34 @@ namespace Kusto.Language
                             pluginMap: null,
                             operatorMap: null,
                             commandMap: null,
-                            optionMap: null);
+                            optionMap: null,
+                            propertyMap: null);
                     Interlocked.CompareExchange(ref s_default, globals, null);
                 }
 
                 return s_default;
             }
+        }
+    }
+
+    public abstract class GlobalStateProperty
+    {
+        public string Name { get; }
+
+        protected GlobalStateProperty(string name)
+        {
+            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+        }
+    }
+
+    public class GlobalStateProperty<T> : GlobalStateProperty
+    {
+        public T DefaultValue { get; }
+
+        public GlobalStateProperty(string name, T defaultValue = default)
+            : base(name)
+        {
+            this.DefaultValue = defaultValue;
         }
     }
 }

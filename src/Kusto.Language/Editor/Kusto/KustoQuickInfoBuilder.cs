@@ -171,46 +171,8 @@ namespace Kusto.Language.Editor
 
         private QuickInfoItem GetSyntaxInfo(int position)
         {
-#if false
-            var token = _code.Syntax.GetTokenAt(position);
-            if (token != null && (token.Kind == SyntaxKind.IdentifierToken || token.Kind.GetCategory() == SyntaxCategory.Keyword))
-            {
-                var grammar = GetBestGrammarAtPosition(position);
-                if (grammar != null)
-                {
-                    return grammar.Description;
-                }
-            }
-#endif
+            // place holder for adding information for the current grammar
             return null;
-        }
-
-        /// <summary>
-        /// Scans for all the grammar rules that are considered for the token at the specified text position.
-        /// </summary>
-        private Parser<LexicalToken> GetBestGrammarAtPosition(int position)
-        {
-            var offset = _code.GetTokenIndex(position);
-            var source = new ArraySource<LexicalToken>(_code.GetLexicalTokens());
-
-            Parser<LexicalToken> bestGrammar = null;
-            int bestLength = -1;
-
-            _code.Grammar.Search(source, (_parser, _source, _start, _prevWasMissing) =>
-            {
-                // capture the best grammar
-                if (_start == offset && _parser.Tag != null)
-                {
-                    var scanLength = _parser.Scan(source, _start);
-                    if (scanLength > bestLength)
-                    {
-                        bestGrammar = _parser;
-                        bestLength = scanLength;
-                    }
-                }
-            });
-
-            return bestGrammar;
         }
 
         private QuickInfoItem GetDiagnosticInfo(int position, CancellationToken cancellationToken)

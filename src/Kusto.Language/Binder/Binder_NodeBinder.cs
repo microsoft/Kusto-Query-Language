@@ -568,8 +568,10 @@ namespace Kusto.Language.Binding
                     case BracketedWildcardedName bwc:
                         return VisitWildcardedNameReference(node, bwc.Pattern);
                     case BracedName _:
-                        // client parameter does not bind to anything
-                        return new SemanticInfo(ScalarTypes.Unknown);
+                        // error if client parameters not supported
+                        var dx = _binder._globals.GetProperty(Properties.AllowClientParameters) ? null : DiagnosticFacts.GetClientParametersNotSupported().WithLocation(node);
+                        // client parameter does not have a known type
+                        return new SemanticInfo(ScalarTypes.Unknown, dx);
                     default:
                         throw new NotImplementedException();
                 }

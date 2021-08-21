@@ -154,29 +154,6 @@ namespace Kusto.Language.Parsing
         /// Returns the number of source items that are successfully matched by this parser, or a negative number indicating failure.
         /// </summary>
         public abstract int Scan(Source<TInput> input, int inputStart);
-
-        /// <summary>
-        /// Scans the input and invokes the action for each nested parser that is considered.
-        /// </summary>
-        /// <param name="input">The input source.</param>
-        /// <param name="inputStart">The starting offset within the input source.</param>
-        /// <param name="prevWasMissing">True if the previous rule considered was required and determined to be missing.</param>
-        /// <param name="beforeAction">The action to take just before the search considers a parser or any of its nested parsers.</param>
-        /// <param name="afterAction">The action to take after a parser and all its nested parsers have been considered.</param>
-        public SearchResult Search(Source<TInput> input, int inputStart, bool prevWasMissing, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction = null)
-        {
-            //return SafeSearcher.SearchSafe(this, input, inputStart, prevWasMissing, beforeAction, afterAction);
-            return Searcher<TInput>.Search(this, input, inputStart, prevWasMissing, beforeAction, afterAction);
-        }
-
-        /// <summary>
-        /// Scans the input and invokes the action for each nested parser that is considered.
-        /// </summary>
-        /// <param name="input">The input source.</param>
-        /// <param name="beforeAction">The action to take just before the search considers a parser or any of its nested parsers.</param>
-        /// <param name="afterAction">The action to take after a parser and all its nested parsers have been considered.</param>
-        public SearchResult Search(Source<TInput> input, SearchAction<TInput> beforeAction, Action<Parser<TInput>> afterAction = null) =>
-            Search(input, 0, false, beforeAction, afterAction);
     }
 
     public struct ParseResult<TOutput>
