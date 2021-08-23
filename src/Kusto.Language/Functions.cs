@@ -157,8 +157,7 @@ namespace Kusto.Language
                 new Parameter("source", ParameterTypeKind.StringOrDynamic),
                 new Parameter("values", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // atefsawaed to unhide after 22/08/2021
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Reverse =
             new FunctionSymbol("reverse", ScalarTypes.String,
