@@ -18,7 +18,7 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public class CommandParserFactory
     {
-        private readonly GrammarTranslator _translator;
+        private readonly IReadOnlyDictionary<string, ParserInfo> _rulesMap;
 
         /// <summary>
         /// Constructs a new <see cref="CommandParserFactory"/>
@@ -27,8 +27,7 @@ namespace Kusto.Language.Parsing
         /// <param name="commandParser">An command parser used that represents the set of all parsable commands.</param>
         internal CommandParserFactory(QueryGrammar queryParser, Parser<LexicalToken, Command> commandParser)
         {
-            var rulesMap = CreateRulesMap(queryParser, commandParser);
-            _translator = new GrammarTranslator(rulesMap);
+            _rulesMap = CreateRulesMap(queryParser, commandParser);
         }
 
         /// <summary>
@@ -68,9 +67,9 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        public Parser<LexicalToken, Command> CreateCommandParser(string commandName, Grammar contentGrammar)
+        public Parser<LexicalToken, Command> CreateCommandParser(string commandName, Grammar contentGrammar, GrammarAnalysis analysis)
         {
-            var contentParser = CreateContentParser(commandName, contentGrammar);
+            var contentParser = CreateContentParser(commandName, contentGrammar, analysis);
             if (contentParser != null)
             {
                 return Rule(
@@ -110,9 +109,9 @@ namespace Kusto.Language.Parsing
                 .Where(x => x.Grammar != null)
                 .ToList();
 
-            var adjustedCommandAndGrammars = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
+            var adjustedResult = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
 
-            var commandParsers = adjustedCommandAndGrammars.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar))
+            var commandParsers = adjustedResult.items.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar, adjustedResult.analysis))
                 .ToArray();
 
             // use Best combinator with function to pick which output is better when there are ambiguities
@@ -164,7 +163,7 @@ namespace Kusto.Language.Parsing
             if (contentGrammar != null)
             {
                 var adjustedGrammar = Adjust(contentGrammar);
-                return CreateContentParser(commandName, adjustedGrammar);
+                return CreateContentParser(commandName, adjustedGrammar, GrammarAnalysis.Empty);
             }
 
             return null;
@@ -173,7 +172,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Transform all the item grammars to work best when put together as a single parser
         /// </summary>
-        public static IReadOnlyList<T> Adjust<T>(IReadOnlyList<T> items, Func<T, Grammar> grammarSelector, Func<T, Grammar, T> grammarUpdater)
+        private static (IReadOnlyList<T> items, GrammarAnalysis analysis) Adjust<T>(IReadOnlyList<T> items, Func<T, Grammar> grammarSelector, Func<T, Grammar, T> grammarUpdater)
         {
             var unrolled = items.Select(i => grammarUpdater(i, GrammarUnroller.Unroll(grammarSelector(i)))).ToList();
 
@@ -182,9 +181,9 @@ namespace Kusto.Language.Parsing
             // reorder nested alternations so keywords don't get swallowed by name/identifier rules.
             var reordered = simplified.Select(i => grammarUpdater(i, GrammarReorderer.Reorder(grammarSelector(i)))).ToList();
 
-            var required = GrammarRequirer.Require(reordered, grammarSelector, grammarUpdater);
+            var requireResult = GrammarRequirer.Require(reordered, grammarSelector, grammarUpdater);
 
-            return required;
+            return requireResult;
         }
 
         public static IReadOnlyList<CommandSymbol> GetAdjustedCommands(IReadOnlyList<CommandSymbol> commandSymbols)
@@ -193,9 +192,9 @@ namespace Kusto.Language.Parsing
                 .Where(x => x.Grammar != null)
                 .ToList();
 
-            var adjustedCommandAndGrammars = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
+            var adjustedResult = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
 
-            return adjustedCommandAndGrammars.Select(cag => new CommandSymbol(cag.Symbol.Name, cag.Grammar.ToString(), cag.Symbol.ResultSchema)).ToList();
+            return adjustedResult.items.Select(cag => new CommandSymbol(cag.Symbol.Name, cag.Grammar.ToString(), cag.Symbol.ResultSchema)).ToList();
         }
 
         /// <summary>
@@ -211,7 +210,7 @@ namespace Kusto.Language.Parsing
             grammar = GrammarReorderer.Reorder(grammar);
 
             // add require rules to make grammar partially parseable
-            grammar = GrammarRequirer.Require(grammar);
+            grammar = GrammarRequirer.Require(grammar).grammar;
 
             return grammar;
         }
@@ -241,9 +240,10 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private Parser<LexicalToken, SyntaxElement> CreateContentParser(string commandName, Grammar contentGrammar)
+        private Parser<LexicalToken, SyntaxElement> CreateContentParser(string commandName, Grammar contentGrammar, GrammarAnalysis analysis)
         {
-            var info = _translator.Translate(contentGrammar);
+            var translator = new GrammarTranslator(_rulesMap, analysis);
+            var info = translator.Translate(contentGrammar);
             return info.Parser;
         }
 
@@ -299,10 +299,14 @@ namespace Kusto.Language.Parsing
         private class GrammarTranslator : GrammarVisitor<ParserInfo>
         {
             private readonly IReadOnlyDictionary<string, ParserInfo> _rulesMap;
+            private readonly GrammarAnalysis _analysis;
 
-            public GrammarTranslator(IReadOnlyDictionary<string, ParserInfo> rulesMap)
+            public GrammarTranslator(
+                IReadOnlyDictionary<string, ParserInfo> rulesMap,
+                GrammarAnalysis analysis)
             {
                 _rulesMap = rulesMap;
+                _analysis = analysis;
             }
 
             private Grammar _first;
@@ -389,7 +393,33 @@ namespace Kusto.Language.Parsing
 
             public override ParserInfo VisitRule(RuleGrammar grammar)
             {
-                _rulesMap.TryGetValue(grammar.RuleName, out var info);
+                if (_rulesMap.TryGetValue(grammar.RuleName, out var info))
+                {
+                    // if this rule is a name-like rule, then return a parser that 
+                    // ignores all alterative tokens that can appear at the same lexical position.
+                    if (IsNameLike(grammar.RuleName))
+                    {
+                        var altTerms = _analysis.GetAlternativeTerms(grammar);
+                        if (altTerms.Count > 1) // do not count this grammar
+                        {
+                            var altTokens = altTerms
+                                .OfType<TokenGrammar>()
+                                .Select(g => g.TokenText)
+                                .Distinct()
+                                .ToList();
+
+                            if (altTokens.Count > 0)
+                            {
+                                var altParsers = altTokens.Select(tk => MatchText(tk)).ToArray();
+                                var newParser = altParsers.Length == 1
+                                    ? If(Not(altParsers[0]), info.Parser)
+                                    : If(Not(First(altParsers)), info.Parser);
+                                return new ParserInfo(newParser, info.Element, info.Missing, info.IsTerm);
+                            }
+                        }
+                    }
+                }
+
                 return info;
             }
 
@@ -696,6 +726,20 @@ namespace Kusto.Language.Parsing
                     new CustomElementDescriptor(hint: Editor.CompletionHint.None),
                     () => (SyntaxElement)Q.MissingNameReference());;
 
+            // either name.wildname or wildname
+            var QualifiedWildcardedNameDeclaration =
+                First(
+                    If(And(queryParser.SimpleNameDeclaration, Token("."), queryParser.WildcardedIdentifier),
+                        Rule(queryParser.SimpleNameDeclaration, Token("."), Required(WildcardedNameDeclaration.Cast<Expression>(), Q.MissingNameReference),
+                            (qual, dot, name) => (Expression)new PathExpression(qual, dot, name))),
+                    WildcardedNameDeclaration.Cast<Expression>());
+
+            var KustoQualifiedWildcardedNameDeclarationInfo =
+                new ParserInfo(
+                    QualifiedWildcardedNameDeclaration.Cast<SyntaxElement>(),
+                    new CustomElementDescriptor(hint: Editor.CompletionHint.None),
+                    () => (SyntaxElement)Q.MissingNameReference()); ;
+
             var KustoColumnNameInfo =
                 new ParserInfo(
                     ColumnNameReference.Cast<SyntaxElement>(),
@@ -862,6 +906,7 @@ namespace Kusto.Language.Parsing
                     { "guid", KustoGuidLiteralInfo },
                     { "name", KustoNameDeclarationInfo },
                     { "wildcarded_name", KustoWildcardedNameDeclarationInfo },
+                    { "qualified_wildcarded_name", KustoQualifiedWildcardedNameDeclarationInfo },
                     { "column", KustoColumnNameInfo },
                     { "table_column", KustoTableColumnNameInfo },
                     { "database_table_column", KustoDatabaseTableColumnNameInfo },
@@ -878,6 +923,29 @@ namespace Kusto.Language.Parsing
                     { "input_data", KustoInputText },
                     { "bracketed_input_data", KustoBracketedInputText }
                 };
+        }
+
+        private static bool IsNameLike(string ruleName)
+        {
+            switch (ruleName)
+            {
+                case "name":
+                case "wildcarded_name":
+                case "qualified_wildcarded_name":
+                case "column":
+                case "table_column":
+                case "database_table_column":
+                case "table":
+                case "externaltable":
+                case "materializedview":
+                case "database_table":
+                case "database":
+                case "cluster":
+                case "function":
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

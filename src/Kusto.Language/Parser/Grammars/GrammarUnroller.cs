@@ -56,7 +56,7 @@ namespace Kusto.Language.Parsing
 
             public IReadOnlyList<Grammar> VisitSteps(IReadOnlyList<Grammar> steps)
             {
-                if (steps.Any(s => s is OptionalGrammar || s is ZeroOrMoreGrammar))
+                if (steps.Any(s => IsOptional(s)))
                 {
                     var newSteps = new List<Grammar>(steps.Count + 2);
 
@@ -66,8 +66,15 @@ namespace Kusto.Language.Parsing
                         var nextStep = i < steps.Count - 1 ? steps[i + 1] : null;
 
                         // consider: including all following steps
-                        if (nextStep != null /*&& !IsOptional(nextStep)*/)
+                        if (nextStep != null)
                         {
+                            if (step is TaggedGrammar tg  
+                                && tg.Tagged is OptionalGrammar tgo)
+                            {
+                                // rewrite: n=x? to (n=x)?
+                                step = new OptionalGrammar(new TaggedGrammar(tg.Tag, tgo.Optioned));
+                            }
+
                             if (step is OptionalGrammar opt)
                             {
                                 // [a] b -> (a b | b)

@@ -15,7 +15,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Make all grammar elements that are part of nested alternations required after each alternative becomes sufficiently unique.
         /// </summary>
-        public static Grammar Require(Grammar grammar)
+        public static (Grammar grammar, GrammarAnalysis analysis) Require(Grammar grammar)
         {
             if (grammar is AlternationGrammar alt)
             {
@@ -23,14 +23,15 @@ namespace Kusto.Language.Parsing
             }
             else
             {
-                return Require(new[] { grammar })[0];
+                var result = Require(new[] { grammar });
+                return (result.grammars[0], result.analysis);
             }
         }
 
         /// <summary>
         /// Make all grammar elements in each alternatives required after each becomes sufficiently unique.
         /// </summary>
-        public static IReadOnlyList<Grammar> Require(IReadOnlyList<Grammar> alternatives)
+        public static (IReadOnlyList<Grammar> grammars, GrammarAnalysis analysis) Require(IReadOnlyList<Grammar> alternatives)
         {
             return Require(alternatives, alt => alt, (alt, newAlt) => newAlt);
         }
@@ -38,18 +39,17 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Make all grammar elements in each alternatives required after each becomes sufficiently unique.
         /// </summary>
-        public static IReadOnlyList<T> Require<T>(IReadOnlyList<T> alternatives, Func<T, Grammar> grammarSelector, Func<T, Grammar, T> grammarUpdater)
+        public static (IReadOnlyList<T> items, GrammarAnalysis analysis) Require<T>(IReadOnlyList<T> alternatives, Func<T, Grammar> grammarSelector, Func<T, Grammar, T> grammarUpdater)
         {
             // order the alternatives in a manner that groups alternatives with similar sequences together.
             // this allows placing required nodes around sequence steps to enable parsing of partial inputs
             // to choose the best alternative
-
             var orderedTs = GrammarReorderer.Reorder(alternatives, grammarSelector).ToList();
 
             var orderedAlts = orderedTs.Select(grammarSelector).ToList();
 
-            // Get the terms for each alternative that are unique relative to other alternatives
-            var analysis = AnalyzeUniqueness(orderedAlts);
+            // analyze all the alternative grammars
+            var analysis = GrammarAnalysis.Create(orderedAlts);
 
             for (int i = 0; i < orderedTs.Count; i++)
             {
@@ -64,18 +64,18 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            return orderedTs;
+            return (orderedTs, analysis);
         }
 
-        private static Grammar RequireAlternation(AlternationGrammar grammar)
+        private static (Grammar grammar, GrammarAnalysis analysis) RequireAlternation(AlternationGrammar grammar)
         {
             // order the alternatives in a manner that groups alternatives with similar sequences together.
             // this allows placing required nodes around sequence steps to enable parsing of partial inputs
             // to choose the best alternative
             var orderedAlts = GrammarReorderer.Reorder(grammar.Alternatives);
 
-            // Get the terms for each alternative that are unique relative to the other alternatives
-            var analysis = AnalyzeUniqueness(orderedAlts);
+            // analyze all the alternative grammars
+            var analysis = GrammarAnalysis.Create(orderedAlts);
 
             List<Grammar> newAlts = null;
 
@@ -96,13 +96,13 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            return grammar.With(newAlts ?? orderedAlts);
+            return (grammar.With(newAlts ?? orderedAlts), analysis);
         }
 
         /// <summary>
         /// Makes grammar elements required after the first unique term
         /// </summary>
-        private static Grammar MakeRequiredAfterFirstUniqueTerm(Grammar grammar, UniquenessAnalysis analysis)
+        private static Grammar MakeRequiredAfterFirstUniqueTerm(Grammar grammar, GrammarAnalysis analysis)
         {
             switch (grammar)
             {
@@ -129,7 +129,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static AlternationGrammar MakeRequiredAfterFirstUniqueTerm(AlternationGrammar grammar, UniquenessAnalysis analysis)
+        private static AlternationGrammar MakeRequiredAfterFirstUniqueTerm(AlternationGrammar grammar, GrammarAnalysis analysis)
         {
             List<Grammar> newAlts = null;
 
@@ -158,7 +158,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Makes grammar elements required after the first unique term
         /// </summary>
-        private static Grammar MakeRequiredAfterFirstUniqueTerm(SequenceGrammar seq, UniquenessAnalysis analysis)
+        private static Grammar MakeRequiredAfterFirstUniqueTerm(SequenceGrammar seq, GrammarAnalysis analysis)
         {
             // determine which steps can be ignored from being required
             int ignoreCount;
@@ -251,7 +251,7 @@ namespace Kusto.Language.Parsing
 
                 case AlternationGrammar alt:
                     // an internal alternation that is being fully required, so re-apply require logic to its parts
-                    var newAlt = RequireAlternation(alt);
+                    var newAlt = RequireAlternation(alt).grammar;
                     return new RequiredGrammar(newAlt);
 
                 case TaggedGrammar t:
@@ -295,7 +295,7 @@ namespace Kusto.Language.Parsing
 
                 case AlternationGrammar alt:
                     // note: alt node itself is required, so do require fixup for all alternatives too.
-                    return RequireAlternation(alt);
+                    return RequireAlternation(alt).grammar;
 
                 case TaggedGrammar t:
                     return t.With(t.Tag, MakeRequiredAfterFirstFallibleElement(t.Tagged));
@@ -371,15 +371,6 @@ namespace Kusto.Language.Parsing
                 : seq;
         }
 
-        /// <summary>
-        /// Gets a set of terms that are the first unique terms in each alternative relative to the other alternatives.
-        /// </summary>
-        private static UniquenessAnalysis AnalyzeUniqueness(IReadOnlyList<Grammar> alternatives)
-        {
-            // return new AlignmentAnalysis(alternatives);
-            return new MergeAnalysis(alternatives);
-        }
-
         private static bool IsRequiredOrOptional(Grammar g)
         {
             switch (g)
@@ -423,7 +414,7 @@ namespace Kusto.Language.Parsing
             return -1;
         }
 
-        private static int GetIndexOfStepWithFirstUniqueTerm(IReadOnlyList<Grammar> steps, UniquenessAnalysis analysis)
+        private static int GetIndexOfStepWithFirstUniqueTerm(IReadOnlyList<Grammar> steps, GrammarAnalysis analysis)
         {
             for (int i = 0; i < steps.Count; i++)
             {
@@ -476,615 +467,6 @@ namespace Kusto.Language.Parsing
                     return IsOptional(tg.Tagged);
                 default:
                     return false;
-            }
-        }
-    }
-
-    internal abstract class UniquenessAnalysis
-    {
-        public abstract bool IsUnique(Grammar term);
-    }
-
-#if false  // prior analysis style.. keeping around for in case we need to revert forward
-    internal class AlignmentAnalysis : UniquenessAnalysis
-    {
-        private readonly HashSet<Grammar> _uniqueTerms;
-
-        public AlignmentAnalysis(IReadOnlyList<Grammar> alternatives)
-        {
-            _uniqueTerms = new HashSet<Grammar>();
-            GetUniqueTerms(alternatives, 0, alternatives.Count, 0);
-        }
-
-        public override bool IsUnique(Grammar term)
-        {
-            return _uniqueTerms.Contains(term);
-        }
-
-        private static int MaxNthTerm = 10;
-
-        private readonly ObjectPool<List<Grammar>> _grammarPool =
-            new ObjectPool<List<Grammar>>(() => new List<Grammar>(), list => list.Clear());
-
-        /// <summary>
-        /// Gets a set of terms that are the first unique terms in each alternative relative to the other alternatives,
-        /// for a range of alternatives.
-        /// </summary>
-        private void GetUniqueTerms(
-            IReadOnlyList<Grammar> alternatives, int start, int length, int nthTerm)
-        {
-            var end = start + length;
-            var subStart = start;
-            var subStartTerms = _grammarPool.AllocateFromPool();
-            var subEndTerms = _grammarPool.AllocateFromPool();
-
-            try
-            {
-                var subStartAlt = alternatives[subStart];
-                GetNthTerms(subStartAlt, nthTerm, subStartTerms);
-
-                for (int i = start + 1; i < end; i++)
-                {
-                    var subEndAlt = alternatives[i];
-                    subEndTerms.Clear();
-                    GetNthTerms(subEndAlt, nthTerm, subEndTerms);
-
-                    if (!Overlaps(subStartTerms, subEndTerms))
-                    {
-                        var subLen = i - subStart;
-                        if (subLen == 1)
-                        {
-                            // subStart is unique in the nth position
-                            AddUniqueTerms(subStartTerms);
-                        }
-                        else if (nthTerm < MaxNthTerm)
-                        {
-                            // otherwise attempt to differentiate this sub range
-                            GetUniqueTerms(alternatives, subStart, subLen, nthTerm + 1);
-                        }
-
-                        subStartTerms.Clear();
-                        subStartTerms.AddRange(subEndTerms);
-                        subEndTerms.Clear();
-                        subStart = i;
-                        subStartAlt = subEndAlt;
-
-                        if (subLen > 1)
-                        {
-                            // make nth term of last alt appear as unique (even if it is not)
-                            subEndAlt = alternatives[i - 1];
-                            GetNthTerms(subEndAlt, nthTerm, subEndTerms);
-                            AddUniqueTerms(subEndTerms);
-                            subEndTerms.Clear();
-                        }
-                        continue;
-                    }
-                }
-
-                if (subStart > start)
-                {
-                    // there is a remaining sub range at the end
-                    var subLen = end - subStart;
-                    if (subLen == 1)
-                    {
-                        // subStart is unique in the nth position
-                        AddUniqueTerms(subStartTerms);
-                    }
-                    else if (nthTerm < MaxNthTerm)
-                    {
-                        // otherwise attempt to differentiate this sub range
-                        GetUniqueTerms(alternatives, subStart, subLen, nthTerm + 1);
-                    }
-                }
-                else if (length == 1)
-                {
-                    // 1 item range is unique in the nth term always
-                    AddUniqueTerms(subStartTerms);
-                }
-                else if (nthTerm < MaxNthTerm)
-                {
-                    // no unique terms in this entire range, try to differentiate by n+1 term
-                    GetUniqueTerms(alternatives, start, length, nthTerm + 1);
-                }
-
-                if (end - subStart > 1)
-                {
-                    // make nth term of last alt appear as unique (even if it is not)
-                    var endAlt = alternatives[end - 1];
-                    subEndTerms.Clear();
-                    GetNthTerms(endAlt, nthTerm, subEndTerms);
-                    AddUniqueTerms(subEndTerms);
-                    subEndTerms.Clear();
-                }
-            }
-            finally
-            {
-                _grammarPool.ReturnToPool(subEndTerms);
-                _grammarPool.ReturnToPool(subStartTerms);
-            }
-        }
-
-        private static bool Overlaps(List<Grammar> a, List<Grammar> b) =>
-            b.Any(g => a.Contains(g, GrammarEquivalenceComparer.Instance));
-
-        private void AddUniqueTerms(IReadOnlyList<Grammar> items)
-        {
-            _uniqueTerms.UnionWith(items);
-        }
-
-        private static void GetNthTerms(Grammar g, int n, List<Grammar> terms)
-        {
-            GetNthTermsMin(g, n, terms);
-        }
-
-        /// <summary>
-        /// Get all the terms that occur at the nth position, considering only the min length of alternatives
-        /// </summary>
-        private static void GetNthTermsMin(Grammar g, int n, List<Grammar> terms)
-        {
-            switch (g)
-            {
-                case TokenGrammar _:
-                case RuleGrammar _:
-                    if (n == 0)
-                    {
-                        terms.Add(g);
-                    }
-                    break;
-                case SequenceGrammar seq:
-                    var totalSize = 0;
-                    foreach (var s in seq.Steps)
-                    {
-                        var size = GetMinSize(s);
-                        if (n < totalSize + size)
-                        {
-                            GetNthTermsMin(s, n - totalSize, terms);
-                            return;
-                        }
-                        totalSize += size;
-                    }
-                    break;
-                case AlternationGrammar alt:
-                    foreach (var a in alt.Alternatives)
-                    {
-                        var size = GetMinSize(a);
-                        if (n < size)
-                        {
-                            GetNthTermsMin(a, n, terms);
-                        }
-                    }
-                    break;
-                case OneOrMoreGrammar oom:
-                    GetNthTermsMin(oom.Repeated, n, terms);
-                    break;
-                case ZeroOrMoreGrammar _:
-                    break;
-                case OptionalGrammar _:
-                    break;
-                case RequiredGrammar req:
-                    GetNthTermsMin(req.Required, n, terms);
-                    break;
-                case TaggedGrammar tag:
-                    GetNthTermsMin(tag.Tagged, n, terms);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unhandled grammar {g.GetType().Name}");
-            }
-        }
-
-        private static int GetMinSize(Grammar g)
-        {
-            switch (g)
-            {
-                case TokenGrammar _:
-                case RuleGrammar _:
-                    return 1;
-                case SequenceGrammar seq:
-                    var totalSize = 0;
-                    foreach (var s in seq.Steps)
-                    {
-                        var size = GetMinSize(s);
-                        totalSize += size;
-                    }
-                    return totalSize;
-                case AlternationGrammar alt:
-                    var minSize = 0;
-                    foreach (var a in alt.Alternatives)
-                    {
-                        var size = GetMinSize(a);
-                        if (minSize == 0 || size < minSize)
-                            minSize = size;
-                    }
-                    return minSize;
-                case OneOrMoreGrammar oom:
-                    return GetMinSize(oom.Repeated);
-                case ZeroOrMoreGrammar _:
-                    return 0;
-                case OptionalGrammar _:
-                    return 0;
-                case RequiredGrammar req:
-                    return GetMinSize(req.Required);
-                case TaggedGrammar tag:
-                    return GetMinSize(tag.Tagged);
-                default:
-                    throw new InvalidOperationException($"Unhandled grammar {g.GetType().Name}");
-            }
-        }
-    }
-#endif
-
-    internal class MergeAnalysis : UniquenessAnalysis
-    {
-        private readonly IReadOnlyList<Grammar> _alternatives;
-        private readonly IReadOnlyList<GrammarGraph> _graphs;
-        private readonly GrammarGraph _mergedGraph;
-        private readonly HashSet<Grammar> _uniqueTerms;
-
-        public MergeAnalysis(IReadOnlyList<Grammar> alternatives)
-        {
-            _alternatives = alternatives;
-
-            if (alternatives.Count == 1)
-            {
-                _mergedGraph = new GrammarGraph(alternatives);
-                _graphs = new[] { _mergedGraph };
-            }
-            else
-            {
-                _graphs = alternatives.Select(r => new GrammarGraph(r)).ToList();
-                _mergedGraph = new GrammarGraph(alternatives);
-            }
-
-            _uniqueTerms = new HashSet<Grammar>();
-            _mergedGraph.GetUniqueTerms(_uniqueTerms);
-
-            // record extra grammar nodes as unique (even though they may not be)
-            // when the occur for the last time
-            AddBlockEnds(0, _alternatives.Count, 0);
-        }
-
-        public override bool IsUnique(Grammar term)
-        {
-            return _uniqueTerms.Contains(term);
-        }
-
-        private static int MaxNthTerm = 10;
-
-        private static readonly ObjectPool<List<Grammar>> s_grammarListPool =
-            new ObjectPool<List<Grammar>>(() => new List<Grammar>(), hs => hs.Clear());
-
-        /// <summary>
-        /// Gets a set of terms that are the first unique terms in each alternative relative to the other alternatives,
-        /// for a range of alternatives.
-        /// </summary>
-        private void AddBlockEnds(
-            int start, int length, int nthTerm)
-        {
-            var end = start + length;
-            var subStart = start;
-            var subStartTerms = s_grammarListPool.AllocateFromPool();
-            var subEndTerms = s_grammarListPool.AllocateFromPool();
-
-            try
-            {
-                var subStartAlt = _alternatives[subStart];
-                var subStartGraph = _graphs[subStart];
-                subStartGraph.GetNthTerms(nthTerm, subStartTerms);
-
-                for (int i = start + 1; i < end; i++)
-                {
-                    var subEndAlt = _alternatives[i];
-                    var subEndGraph = _graphs[i];
-                    subEndTerms.Clear();
-                    subEndGraph.GetNthTerms(nthTerm, subEndTerms);
-
-                    if (!Overlaps(subStartTerms, subEndTerms))
-                    {
-                        var subLen = i - subStart;
-                        if (subLen == 1)
-                        {
-                            // subStart is unique in the nth position
-                            //AddUniqueTerms(subStartTerms);
-                        }
-                        else if (nthTerm < MaxNthTerm)
-                        {
-                            // otherwise attempt to differentiate this sub range
-                            AddBlockEnds(subStart, subLen, nthTerm + 1);
-                        }
-
-                        subStartTerms.Clear();
-                        subStartTerms.AddRange(subEndTerms);
-                        subEndTerms.Clear();
-                        subStart = i;
-                        subStartAlt = subEndAlt;
-                        subStartGraph = subEndGraph;
-
-                        if (subLen > 1)
-                        {
-                            // make nth term of last alt appear as unique (even if it is not)
-                            subEndAlt = _alternatives[i - 1];
-                            subEndGraph = _graphs[i - 1];
-                            subEndGraph.GetNthTerms(nthTerm, subEndTerms);
-                            AddUniqueTerms(subEndTerms);
-                            subEndTerms.Clear();
-                        }
-                        continue;
-                    }
-                }
-
-                if (subStart > start)
-                {
-                    // there is a remaining sub range at the end
-                    var subLen = end - subStart;
-                    if (subLen == 1)
-                    {
-                        // subStart is unique in the nth position
-                        //AddUniqueTerms(subStartTerms);
-                    }
-                    else if (nthTerm < MaxNthTerm)
-                    {
-                        // otherwise attempt to differentiate this sub range
-                        AddBlockEnds(subStart, subLen, nthTerm + 1);
-                    }
-                }
-                else if (length == 1)
-                {
-                    // 1 item range is unique in the nth term always
-                    //AddUniqueTerms(subStartTerms);
-                }
-                else if (nthTerm < MaxNthTerm)
-                {
-                    // no unique terms in this entire range, try to differentiate by n+1 term
-                    AddBlockEnds(start, length, nthTerm + 1);
-                }
-
-                if (end - subStart > 1)
-                {
-                    // make nth term of last alt appear as unique (even if it is not)
-                    var endAlt = _alternatives[end - 1];
-                    var endGraph = _graphs[end - 1];
-                    subEndTerms.Clear();
-                    endGraph.GetNthTerms(nthTerm, subEndTerms);
-                    AddUniqueTerms(subEndTerms);
-                    subEndTerms.Clear();
-                }
-            }
-            finally
-            {
-                s_grammarListPool.ReturnToPool(subEndTerms);
-                s_grammarListPool.ReturnToPool(subStartTerms);
-            }
-        }
-
-        private static bool Overlaps(List<Grammar> a, List<Grammar> b)
-        {
-            return b.Any(g => a.Contains(g, GrammarEquivalenceComparer.Instance));
-        }
-
-        private void AddUniqueTerms(List<Grammar> items)
-        {
-            _uniqueTerms.UnionWith(items);
-        }
-    }
-
-    /// <summary>
-    /// A class that models the merger of a set of alternate grammars
-    /// </summary>
-    internal class GrammarGraph
-    {
-        private readonly Node _root;
-#if DEBUG
-        private readonly Dictionary<Grammar, Node> _grammarToNodeMap;
-#endif
-
-        public GrammarGraph()
-        {
-            _root = new Node(null);
-
-#if DEBUG
-            _grammarToNodeMap = new Dictionary<Grammar, Node>();
-#endif
-        }
-
-        public GrammarGraph(Grammar grammar)
-            : this()
-        {
-            Add(grammar);
-        }
-
-        public GrammarGraph(IReadOnlyList<Grammar> alternates)
-            : this()
-        {
-            foreach (var alt in alternates)
-            {
-                Add(alt);
-            }
-        }
-
-        /// <summary>
-        /// Adds all the grammar terms in the grammar tree
-        /// </summary>
-        public void Add(Grammar root)
-        {
-            Add(_root, root, null);
-        }
-
-        /// <summary>
-        /// Get all the terms that occur only once along their path
-        /// </summary>
-        public void GetUniqueTerms(HashSet<Grammar> terms)
-        {
-            _root.GetUniqueTerms(terms);
-        }
-
-        /// <summary>
-        /// Gets all the terms that can match the nth input item
-        /// </summary>
-        public void GetNthTerms(int n, List<Grammar> terms)
-        {
-            _root.GetNthTerms(n, terms);
-        }
-
-        private void Add(Node root, Grammar grammar, HashSet<Node> nextNodes)
-        {
-            switch (grammar)
-            {
-                case TokenGrammar _:
-                case RuleGrammar _:
-                    var nn = root.AddTerm(grammar);
-                    nextNodes?.Add(nn);
-#if DEBUG
-                    if (_grammarToNodeMap.ContainsKey(grammar))
-                    {
-                        // not sure yet to do anything about this
-                        // System.Diagnostics.Debug.Fail("Grammar already assigned to a node");
-                    }
-                    else
-                    {
-                        _grammarToNodeMap.Add(grammar, nn);
-                    }
-#endif
-                    break;
-                case SequenceGrammar seq:
-                    AddSteps(seq, 0, root, nextNodes);
-                    break;
-                case AlternationGrammar alt:
-                    foreach (var a in alt.Alternatives)
-                    {
-                        Add(root, a, nextNodes);
-                    }
-                    break;
-                case OneOrMoreGrammar oom:
-                    Add(root, oom.Repeated, nextNodes);
-                    break;
-                case ZeroOrMoreGrammar zom:
-                    // add root for zero case
-                    nextNodes?.Add(root);
-                    Add(root, zom.Repeated, nextNodes);
-                    break;
-                case OptionalGrammar opt:
-                    // add root for zero case
-                    nextNodes?.Add(root);
-                    Add(root, opt.Optioned, nextNodes);
-                    break;
-                case RequiredGrammar req:
-                    Add(root, req.Required, nextNodes);
-                    break;
-                case TaggedGrammar tag:
-                    Add(root, tag.Tagged, nextNodes);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unhandled grammar {grammar.GetType().Name}");
-            }
-        }
-
-        private void AddSteps(SequenceGrammar grammar, int iStep, Node root, HashSet<Node> finalNext)
-        {
-            var isFinal = iStep == grammar.Steps.Count - 1;
-
-            HashSet<Node> stepNext = !isFinal
-                ? s_nodeListPool.AllocateFromPool()
-                : finalNext;
-
-            var step = grammar.Steps[iStep];
-            Add(root, step, stepNext);
-
-            if (!isFinal)
-            {
-                AddSteps(grammar, iStep + 1, stepNext, finalNext);
-                s_nodeListPool.ReturnToPool(stepNext);
-            }
-        }
-
-        private void AddSteps(SequenceGrammar grammar, int iStep, HashSet<Node> roots, HashSet<Node> finalNext)
-        {
-            var isFinal = iStep == grammar.Steps.Count - 1;
-            HashSet<Node> stepNext = !isFinal ? s_nodeListPool.AllocateFromPool() : finalNext;
-
-            foreach (var root in roots)
-            {
-                var step = grammar.Steps[iStep];
-                Add(root, step, stepNext);
-            }
-
-            if (!isFinal)
-            {
-                AddSteps(grammar, iStep + 1, stepNext, finalNext);
-                s_nodeListPool.ReturnToPool(stepNext);
-            }
-        }
-
-        private static readonly ObjectPool<HashSet<Node>> s_nodeListPool =
-            new ObjectPool<HashSet<Node>>(() => new HashSet<Node>(), hs => hs.Clear());
-
-        private class Node
-        {
-            // all the grammar terms from alternate sources that branched to here
-            private readonly HashSet<Grammar> _terms;
-
-            // all the branches for common terms 
-            private readonly Dictionary<Grammar, Node> _branches;
-
-            public Node(Grammar term)
-            {
-                _terms = new HashSet<Grammar>();
-                _branches = new Dictionary<Grammar, Node>(GrammarEquivalenceComparer.Instance);
-                if (term != null)
-                {
-                    _terms.Add(term);
-                }
-            }
-
-            public Node AddTerm(Grammar term)
-            {
-                if (!_branches.TryGetValue(term, out var nextNode))
-                {
-                    nextNode = new Node(term);
-                    _branches.Add(term, nextNode);
-                }
-                else
-                {
-                    nextNode._terms.Add(term);
-                }
-
-                return nextNode;
-            }
-
-            public Node GetNext(Grammar term)
-            {
-                _branches.TryGetValue(term, out var nextNode);
-                return nextNode;
-            }
-
-            public void GetUniqueTerms(HashSet<Grammar> terms)
-            {
-                if (_terms.Count == 1)
-                {
-                    // get the unique term here
-                    terms.UnionWith(_terms);
-                }
-                else
-                {
-                    foreach (var node in _branches.Values)
-                    {
-                        node.GetUniqueTerms(terms);
-                    }
-                }
-            }
-
-            public void GetNthTerms(int n, List<Grammar> terms)
-            {
-                if (n >= 0)
-                {
-                    foreach (var node in _branches.Values)
-                    {
-                        node.GetNthTerms(n - 1, terms);
-                    }
-                }
-                else
-                {
-                    terms.AddRange(_terms);
-                }
             }
         }
     }

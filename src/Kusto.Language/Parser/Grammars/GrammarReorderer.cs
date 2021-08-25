@@ -125,12 +125,12 @@ namespace Kusto.Language.Parsing
 
             // otherwise rule always beats non-rule
             var rx = fx.Grammar as RuleGrammar;
-            var ry = fx.Grammar as RuleGrammar;
+            var ry = fy.Grammar as RuleGrammar;
 
             if (rx != null && ry != null)
             {
                 // both are rules, use rule name ordering
-                var result = rx.RuleName.CompareTo(ry.RuleName);
+                var result = CompareRuleNames(rx.RuleName, ry.RuleName);
                 if (result != 0)
                     return result;
             }
@@ -186,6 +186,11 @@ namespace Kusto.Language.Parsing
             // if one is a subset of the other, then the longer one wins
             // this keeps keywords like aa and aa-bb from picking aa when input matches aa-bb
             return name2.Length - name1.Length;
+        }
+
+        private static int CompareRuleNames(string name1, string name2)
+        {
+            return GetRulePriority(name1) - GetRulePriority(name2);
         }
 
         private int CompareSequence(SequenceGrammar sx, SequenceGrammar sy)
@@ -318,5 +323,47 @@ namespace Kusto.Language.Parsing
                     return new Element(g, false);
             }
         }
+
+        private static int GetRulePriority(string ruleName)
+        {
+            if (s_rulePriority.TryGetValue(ruleName, out var priority))
+                return priority;
+            return 100; // some number larger than any in the table below
+        }
+
+        private static readonly IReadOnlyDictionary<string, int> s_rulePriority =
+            new Dictionary<string, int>()
+        {
+                { "bracketed_string", 0 },
+                { "value", 1 },
+                { "timespan", 1 },
+                { "datetime", 1 },
+                { "string", 1 },
+                { "bool", 1 },
+                { "long", 1 },
+                { "int", 1 },
+                { "decimal", 1 },
+                { "real", 1 },
+                { "type", 1 },
+                { "guid", 1 },
+                { "qualified_wildcarded_name", 2 },
+                { "wildcarded_name", 3 },
+                { "database_table_column", 4 },
+                { "database_table", 4 },
+                { "table_column", 4 },
+                { "name", 5 },
+                { "column", 5 },
+                { "table", 5 },
+                { "externaltable", 5 },
+                { "materializedview", 5 },
+                { "database", 5 },
+                { "cluster", 5 },
+                { "function", 5 },
+                { "function_declaration", 6 },
+                { "function_body", 6 },
+                { "input_query", 6 },
+                { "bracketed_input_data", 6 },
+                { "input_data", 7 },
+        };
     }
 }
