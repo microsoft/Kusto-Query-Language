@@ -480,6 +480,20 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol Base64DecodeToGuid =
+            new FunctionSymbol("base64_decode_toguid", ScalarTypes.Guid,
+                new Parameter("base64_string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 5/Sep 
+
+        public static readonly FunctionSymbol Base64EncodeFromGuid =
+            new FunctionSymbol("base64_encode_fromguid", ScalarTypes.String,
+                new Parameter("guid", ScalarTypes.Guid))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 5/Sep 
+
         public static readonly FunctionSymbol Base64EncodeFromArray =
             new FunctionSymbol("base64_encode_fromarray", ScalarTypes.String,
                 new Parameter("base64_string_decodced_as_array", ScalarTypes.Dynamic))
@@ -2532,6 +2546,8 @@ namespace Kusto.Language
             Base64EncodeFromArray,
             Base64DecodeString,
             Base64DecodeToString,
+            Base64DecodeToGuid,
+            Base64EncodeFromGuid,
             ZlibDecompressString,
             ZlibCompressString,
             GzipDecompressString,
