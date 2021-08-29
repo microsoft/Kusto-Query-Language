@@ -1098,6 +1098,39 @@ namespace Kusto.Language
 
         #endregion
 
+        #region ManagedIdentity
+        public static readonly CommandSymbol ShowDatabasePolicyManagedIdentity =
+            new CommandSymbol(nameof(ShowDatabasePolicyManagedIdentity),
+                "show database DatabaseName=<database> policy managed_identity",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowClusterPolicyManagedIdentity =
+            new CommandSymbol(nameof(ShowClusterPolicyManagedIdentity),
+                "show cluster policy managed_identity",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterDatabasePolicyManagedIdentity =
+            new CommandSymbol(nameof(AlterDatabasePolicyManagedIdentity),
+                "alter database DatabaseName=<database> policy managed_identity ManagedIdentityPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyManagedIdentity =
+            new CommandSymbol(nameof(AlterClusterPolicyManagedIdentity),
+                "alter cluster policy managed_identity ManagedIdentityPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyManagedIdentity =
+            new CommandSymbol(nameof(DeleteDatabasePolicyManagedIdentity),
+                "delete database DatabaseName=<database> policy managed_identity",
+                PolicyResult);
+
+        public static readonly CommandSymbol DeleteClusterPolicyManagedIdentity =
+            new CommandSymbol(nameof(DeleteClusterPolicyManagedIdentity),
+                "delete cluster policy managed_identity",
+                PolicyResult);
+
+        #endregion
+
         #region AutoDelete
 
         public static readonly CommandSymbol ShowTablePolicyAutoDelete =
@@ -2076,6 +2109,14 @@ namespace Kusto.Language
                 ShowMaterializedViewPolicyRowLevelSecurity,
                 AlterMaterializedViewPolicyRowLevelSecurity,
                 DeleteMaterializedViewPolicyRowLevelSecurity,
+
+                // ManagedIdentity
+                ShowDatabasePolicyManagedIdentity,
+                ShowClusterPolicyManagedIdentity,
+                AlterDatabasePolicyManagedIdentity,
+                AlterClusterPolicyManagedIdentity,
+                DeleteDatabasePolicyManagedIdentity,
+                DeleteClusterPolicyManagedIdentity,
 
                 // Retention
                 ShowTablePolicyRetention,
