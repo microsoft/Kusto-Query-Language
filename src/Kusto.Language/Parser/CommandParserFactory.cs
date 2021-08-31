@@ -294,6 +294,13 @@ namespace Kusto.Language.Parsing
                     return this;
                 return new ParserInfo(this.Parser, element, this.Missing, this.IsTerm);
             }
+
+            public ParserInfo WithMissing(Func<SyntaxElement> missing)
+            {
+                if (this.Missing == missing)
+                    return this;
+                return new ParserInfo(this.Parser, this.Element, missing, this.IsTerm);
+            }
         }
 
         private class GrammarTranslator : GrammarVisitor<ParserInfo>
@@ -385,10 +392,81 @@ namespace Kusto.Language.Parsing
             {
                 var elem = grammar.Required.Accept(this);
 
+                // because required grammar rules can be used as catch-alls
+                // if there are alternate terms, replace diagnostic for missing case
+                // with one that includes all alternates.
+                var alts = _analysis.GetAlternativeTerms(grammar.Required);
+                if (alts.Count > 1
+                    && alts.Any(a => !a.IsEquivalentTo(grammar.Required)))
+                {
+                    if (grammar.Required is TokenGrammar tg
+                        || grammar.Required is RuleGrammar rg)
+                    {
+                        var minAlts = alts
+                            .Where(g => g is TokenGrammar || g is RuleGrammar)
+                            .Distinct(GrammarComparer.Instance)
+                            .OrderBy(g => g, GrammarComparer.Instance)
+                            .ToArray();
+
+                        // put elem into separate captured local
+                        var oldElem = elem;
+                        elem = elem.WithMissing(() =>
+                        {
+                            var syntax = oldElem.Missing().Clone(includeDiagnostics: false);
+                            return syntax.WithAdditionalDiagnostics(GetTermsExpected(minAlts));
+                        });
+                    }
+                }
+
                 return new ParserInfo(
                     Required(GetElementParser(elem), elem.Missing),
                     new CustomElementDescriptor(elem.Element.CompletionHint, isOptional: false),
                     elem.Missing);
+            }
+
+            private static Diagnostic GetTermsExpected(Grammar[] grammars)
+            {
+                var terms = grammars.Select(g => GetDiagnosticTerm(g)).Distinct().ToArray();
+                return DiagnosticFacts.GetTermsExpected(terms);
+            }
+
+            private static string GetDiagnosticTerm(Grammar grammar)
+            {
+                switch (grammar)
+                {
+                    case TokenGrammar tg:
+                        return $"'{tg.TokenText}'";
+                    case RuleGrammar rg:
+                        switch (rg.RuleName)
+                        {
+                            case "name":
+                                return "a name";
+                            case "wildcarded_name":
+                            case "qualified_wildcarded_name":
+                                return "a wildcarded name";
+                            case "column":
+                            case "table_column":
+                            case "database_table_column":
+                                return "a column name";
+                            case "table":
+                            case "database_table":
+                                return "a table name";
+                            case "externaltable":
+                                return "an external table name";
+                            case "materializedview":
+                                return "a materialized view name";
+                            case "database":
+                                return "a database name";
+                            case "cluster":
+                                return "a cluster name";
+                            case "function":
+                                return "a database function name";
+                            default:
+                                return rg.RuleName;
+                        }
+                    default:
+                        throw new InvalidOperationException($"Unhandled grammar type: '{grammar.GetType().Name}'");
+                }
             }
 
             public override ParserInfo VisitRule(RuleGrammar grammar)

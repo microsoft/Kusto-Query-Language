@@ -15,6 +15,12 @@ namespace Kusto.Language.Parsing
         public abstract bool IsUnique(Grammar term);
 
         /// <summary>
+        /// Returns true if the grammar element is not unique, but it occurs as part of last alternative in 
+        /// list of alternatives.
+        /// </summary>
+        public abstract bool IsLastNonUnique(Grammar term);
+
+        /// <summary>
         /// Gets a list of alternative terms that can appear in the same position as the given grammar term.
         /// This list will include the specified term as one of the alternatives.
         /// </summary>
@@ -46,6 +52,7 @@ namespace Kusto.Language.Parsing
         private readonly IReadOnlyList<GrammarGraph> _graphs;
         private readonly GrammarGraph _mergedGraph;
         private readonly HashSet<Grammar> _uniqueTerms;
+        private readonly HashSet<Grammar> _lastTerms;
         private Dictionary<Grammar, IReadOnlyList<Grammar>> _alternativeMap;
 
         public MergeAnalysis(IReadOnlyList<Grammar> alternatives)
@@ -71,11 +78,12 @@ namespace Kusto.Language.Parsing
             _uniqueTerms = new HashSet<Grammar>();
             _mergedGraph.GetUniqueTerms(_uniqueTerms);
 
+            _lastTerms = new HashSet<Grammar>();
             if (alternatives.Count > 0)
             {
-                // record extra grammar nodes as unique (even though they may not be)
-                // when they occur for the last time within the set of alternatives
-                AddBlockEnds(0, _alternatives.Count, 0);
+                // determine the set of non-unique grammar nodes that
+                // occur for the last time within the set of alternatives
+                AddLastTerms(0, _alternatives.Count, 0);
             }
         }
 
@@ -84,16 +92,20 @@ namespace Kusto.Language.Parsing
             return _uniqueTerms.Contains(term);
         }
 
+        public override bool IsLastNonUnique(Grammar term)
+        {
+            return _lastTerms.Contains(term);
+        }
+
         private static int MaxNthTerm = 10;
 
         private static readonly ObjectPool<List<Grammar>> s_grammarListPool =
             new ObjectPool<List<Grammar>>(() => new List<Grammar>(), hs => hs.Clear());
 
         /// <summary>
-        /// Gets a set of terms that are the first unique terms in each alternative relative to the other alternatives,
-        /// for a range of alternatives.
+        /// Compute the set of non-unique terms that appear last in the sequence of alternate grammar paths
         /// </summary>
-        private void AddBlockEnds(
+        private void AddLastTerms(
             int start, int length, int nthTerm)
         {
             var end = start + length;
@@ -117,15 +129,10 @@ namespace Kusto.Language.Parsing
                     if (!Overlaps(subStartTerms, subEndTerms))
                     {
                         var subLen = i - subStart;
-                        if (subLen == 1)
-                        {
-                            // subStart is unique in the nth position
-                            //AddUniqueTerms(subStartTerms);
-                        }
-                        else if (nthTerm < MaxNthTerm)
+                        if (nthTerm < MaxNthTerm)
                         {
                             // otherwise attempt to differentiate this sub range
-                            AddBlockEnds(subStart, subLen, nthTerm + 1);
+                            AddLastTerms(subStart, subLen, nthTerm + 1);
                         }
 
                         subStartTerms.Clear();
@@ -137,11 +144,11 @@ namespace Kusto.Language.Parsing
 
                         if (subLen > 1)
                         {
-                            // make nth term of last alt appear as unique (even if it is not)
+                            // mark nth term of last alt as last
                             subEndAlt = _alternatives[i - 1];
                             subEndGraph = _graphs[i - 1];
                             subEndGraph.GetNthTerms(nthTerm, subEndTerms);
-                            AddUniqueTerms(subEndTerms);
+                            AddLastTerms(subEndTerms);
                             subEndTerms.Clear();
                         }
                         continue;
@@ -160,28 +167,23 @@ namespace Kusto.Language.Parsing
                     else if (nthTerm < MaxNthTerm)
                     {
                         // otherwise attempt to differentiate this sub range
-                        AddBlockEnds(subStart, subLen, nthTerm + 1);
+                        AddLastTerms(subStart, subLen, nthTerm + 1);
                     }
-                }
-                else if (length == 1)
-                {
-                    // 1 item range is unique in the nth term always
-                    //AddUniqueTerms(subStartTerms);
                 }
                 else if (nthTerm < MaxNthTerm)
                 {
                     // no unique terms in this entire range, try to differentiate by n+1 term
-                    AddBlockEnds(start, length, nthTerm + 1);
+                    AddLastTerms(start, length, nthTerm + 1);
                 }
 
                 if (end - subStart > 1)
                 {
-                    // make nth term of last alt appear as unique (even if it is not)
+                    // mark nth term of last alt as last
                     var endAlt = _alternatives[end - 1];
                     var endGraph = _graphs[end - 1];
                     subEndTerms.Clear();
                     endGraph.GetNthTerms(nthTerm, subEndTerms);
-                    AddUniqueTerms(subEndTerms);
+                    AddLastTerms(subEndTerms);
                     subEndTerms.Clear();
                 }
             }
@@ -192,14 +194,14 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        private void AddLastTerms(List<Grammar> items)
+        {
+            _lastTerms.UnionWith(items);
+        }
+
         private static bool Overlaps(List<Grammar> a, List<Grammar> b)
         {
             return b.Any(g => a.Contains(g, GrammarEquivalenceComparer.Instance));
-        }
-
-        private void AddUniqueTerms(List<Grammar> items)
-        {
-            _uniqueTerms.UnionWith(items);
         }
 
         public override IReadOnlyList<Grammar> GetAlternativeTerms(Grammar term)

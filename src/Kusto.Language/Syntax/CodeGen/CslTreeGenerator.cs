@@ -613,16 +613,16 @@ namespace Kusto.Language.Generator
                                     if (args.Length > 0)
                                         args = args + ", ";
 
-                                    args = args + string.Join(", ", c.Properties.Select(p => p.IsSyntax ? $"({p.Type}){p.Name}?.Clone()" : p.Name));
+                                    args = args + string.Join(", ", c.Properties.Select(p => p.IsSyntax ? $"({p.Type}){p.Name}?.Clone(includeDiagnostics)" : p.Name));
                                 }
 
                                 if (args.Length > 0)
                                     args = args + ", ";
 
-                                args = args + "this.SyntaxDiagnostics";
+                                args = args + "(includeDiagnostics ? this.SyntaxDiagnostics : null)";
 
                                 m_writer.WriteEmptyLineIfNeeded();
-                                m_writer.WriteScope($"protected override SyntaxElement CloneCore()", () =>
+                                m_writer.WriteScope($"protected override SyntaxElement CloneCore(bool includeDiagnostics)", () =>
                                 {
                                     m_writer.WriteLine($"return new {c.Name}({args});");
                                 });

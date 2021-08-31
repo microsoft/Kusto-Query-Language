@@ -1114,9 +1114,9 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Creates a copy of this <see cref="SyntaxElement"/>
         /// </summary>
-        public SyntaxElement Clone() => CloneCore();
+        public SyntaxElement Clone(bool includeDiagnostics = true) => CloneCore(includeDiagnostics);
 
-        protected abstract SyntaxElement CloneCore();
+        protected abstract SyntaxElement CloneCore(bool includeDiagnostics);
 #endregion
 
 #region ToString

@@ -31,7 +31,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Creates a copy of this <see cref="SyntaxNode"/>
         /// </summary>
-        public new SyntaxNode Clone() => (SyntaxNode)this.CloneCore();
+        public new SyntaxNode Clone(bool includeDiagnostics = true) => (SyntaxNode)this.CloneCore(includeDiagnostics);
 
         public abstract void Accept(SyntaxVisitor visitor);
 

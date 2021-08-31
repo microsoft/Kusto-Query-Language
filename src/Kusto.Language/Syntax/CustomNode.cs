@@ -109,9 +109,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCustom(this);
         }
 
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            var clonedElements = this.elements.Select(e => e.Clone()).ToArray();
+            var clonedElements = this.elements.Select(e => e.Clone(includeDiagnostics)).ToArray();
             return new CustomNode(this.shape, clonedElements);
         }
     }

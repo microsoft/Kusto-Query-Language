@@ -32,6 +32,12 @@ namespace Kusto.Language
             return new Diagnostic("KS004", "Malformed literal");
         }
 
+        public static Diagnostic GetTermsExpected(params string[] terms)
+        {
+            var list = terms.ToArray().Join(", ", " or ");
+            return new Diagnostic("KS005", $"Expected: {list}");
+        }
+
         public static Diagnostic GetTokenExpected(params SyntaxKind[] kinds)
         {
             return GetTokenExpected((IReadOnlyList<SyntaxKind>)kinds);
@@ -44,8 +50,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetTokenExpected(IEnumerable<string> texts)
         {
-            var list = texts.Select(t => $"'{t}'").ToArray().Join(", ", " or ");
-            return new Diagnostic("KS005", $"Expected: {list}");
+            return GetTermsExpected(texts.Select(t => $"'{t}'").ToArray());
         }
 
         public static Diagnostic GetTokenExpected(params string[] tokens)

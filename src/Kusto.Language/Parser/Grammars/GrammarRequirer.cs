@@ -418,7 +418,7 @@ namespace Kusto.Language.Parsing
         {
             for (int i = 0; i < steps.Count; i++)
             {
-                if (steps[i].Any(g => analysis.IsUnique(g)))
+                if (steps[i].Any(g => analysis.IsUnique(g) || analysis.IsLastNonUnique(g)))
                     return i;
             }
 

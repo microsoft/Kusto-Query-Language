@@ -98,9 +98,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDirectiveBlock(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DirectiveBlock((SyntaxToken)DirectiveToken?.Clone(), (SyntaxList<SyntaxToken>)SkippedTokens?.Clone(), (SyntaxToken)EndOfText?.Clone(), this.SyntaxDiagnostics);
+            return new DirectiveBlock((SyntaxToken)DirectiveToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxToken>)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfText?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DirectiveBlock */
@@ -159,9 +159,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSkippedTokens(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SkippedTokens((SyntaxList<SyntaxToken>)Tokens?.Clone(), this.SyntaxDiagnostics);
+            return new SkippedTokens((SyntaxList<SyntaxToken>)Tokens?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SkippedTokens */
@@ -244,9 +244,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitQueryBlock(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new QueryBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(), (SkippedTokens)SkippedTokens?.Clone(), (SyntaxToken)EndOfQuery?.Clone(), this.SyntaxDiagnostics);
+            return new QueryBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfQuery?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class QueryBlock */
@@ -356,9 +356,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTypeOfLiteralExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TypeOfLiteralExpression((SyntaxToken)TypeOfKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Types?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new TypeOfLiteralExpression((SyntaxToken)TypeOfKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Types?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TypeOfLiteralExpression */
@@ -423,9 +423,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBadQueryOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BadQueryOperator((SyntaxToken)Keyword?.Clone(), this.SyntaxDiagnostics);
+            return new BadQueryOperator((SyntaxToken)Keyword?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BadQueryOperator */
@@ -496,9 +496,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCompoundStringLiteralExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CompoundStringLiteralExpression((SyntaxList<SyntaxToken>)Tokens?.Clone(), this.SyntaxDiagnostics);
+            return new CompoundStringLiteralExpression((SyntaxList<SyntaxToken>)Tokens?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CompoundStringLiteralExpression */
@@ -569,9 +569,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTokenName(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TokenName((SyntaxToken)Name?.Clone(), this.SyntaxDiagnostics);
+            return new TokenName((SyntaxToken)Name?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TokenName */
@@ -654,9 +654,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBracketedName(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BracketedName((SyntaxToken)OpenBracket?.Clone(), (Expression)Name?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new BracketedName((SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (Expression)Name?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BracketedName */
@@ -719,9 +719,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBracedName(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BracedName((SyntaxToken)OpenBrace?.Clone(), (SyntaxToken)Name?.Clone(), (SyntaxToken)CloseBrace?.Clone(), this.SyntaxDiagnostics);
+            return new BracedName((SyntaxToken)OpenBrace?.Clone(includeDiagnostics), (SyntaxToken)Name?.Clone(includeDiagnostics), (SyntaxToken)CloseBrace?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BracedName */
@@ -780,9 +780,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitWildcardedName(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new WildcardedName((SyntaxToken)Pattern?.Clone(), this.SyntaxDiagnostics);
+            return new WildcardedName((SyntaxToken)Pattern?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class WildcardedName */
@@ -859,9 +859,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBracketedWildcardedName(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BracketedWildcardedName((SyntaxToken)OpenBracket?.Clone(), (SyntaxToken)Pattern?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new BracketedWildcardedName((SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxToken)Pattern?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BracketedWildcardedName */
@@ -917,9 +917,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNameDeclaration(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NameDeclaration((Name)Name?.Clone(), this.SyntaxDiagnostics);
+            return new NameDeclaration((Name)Name?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NameDeclaration */
@@ -978,9 +978,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNameReference(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NameReference((Name)Name?.Clone(), Match, this.SyntaxDiagnostics);
+            return new NameReference((Name)Name?.Clone(includeDiagnostics), Match, (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NameReference */
@@ -1047,9 +1047,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitLiteralExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new LiteralExpression(this.Kind, (SyntaxToken)Token?.Clone(), this.SyntaxDiagnostics);
+            return new LiteralExpression(this.Kind, (SyntaxToken)Token?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class LiteralExpression */
@@ -1114,9 +1114,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitStarExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new StarExpression((SyntaxToken)AsteriskToken?.Clone(), this.SyntaxDiagnostics);
+            return new StarExpression((SyntaxToken)AsteriskToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class StarExpression */
@@ -1181,9 +1181,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitAtExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new AtExpression((SyntaxToken)AtToken?.Clone(), this.SyntaxDiagnostics);
+            return new AtExpression((SyntaxToken)AtToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class AtExpression */
@@ -1281,9 +1281,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJsonPair(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JsonPair((SyntaxToken)Name?.Clone(), (SyntaxToken)Colon?.Clone(), (Expression)Value?.Clone(), this.SyntaxDiagnostics);
+            return new JsonPair((SyntaxToken)Name?.Clone(includeDiagnostics), (SyntaxToken)Colon?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JsonPair */
@@ -1366,9 +1366,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJsonObjectExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JsonObjectExpression((SyntaxToken)OpenBrace?.Clone(), (SyntaxList<SeparatedElement<JsonPair>>)Pairs?.Clone(), (SyntaxToken)CloseBrace?.Clone(), this.SyntaxDiagnostics);
+            return new JsonObjectExpression((SyntaxToken)OpenBrace?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<JsonPair>>)Pairs?.Clone(includeDiagnostics), (SyntaxToken)CloseBrace?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JsonObjectExpression */
@@ -1451,9 +1451,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJsonArrayExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JsonArrayExpression((SyntaxToken)OpenBracket?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new JsonArrayExpression((SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JsonArrayExpression */
@@ -1545,9 +1545,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDynamicExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DynamicExpression((SyntaxToken)Dynamic?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new DynamicExpression((SyntaxToken)Dynamic?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DynamicExpression */
@@ -1629,9 +1629,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitParenthesizedExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ParenthesizedExpression((SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ParenthesizedExpression((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ParenthesizedExpression */
@@ -1714,9 +1714,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExpressionList(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExpressionList((SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ExpressionList((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExpressionList */
@@ -1817,9 +1817,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExpressionCouple(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExpressionCouple((SyntaxToken)OpenParen?.Clone(), (Expression)First?.Clone(), (SyntaxToken)DotDot?.Clone(), (Expression)Second?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ExpressionCouple((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)First?.Clone(includeDiagnostics), (SyntaxToken)DotDot?.Clone(includeDiagnostics), (Expression)Second?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExpressionCouple */
@@ -1894,9 +1894,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPrefixUnaryExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PrefixUnaryExpression(this.Kind, (SyntaxToken)Operator?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new PrefixUnaryExpression(this.Kind, (SyntaxToken)Operator?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PrefixUnaryExpression */
@@ -1979,9 +1979,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBinaryExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BinaryExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (Expression)Right?.Clone(), this.SyntaxDiagnostics);
+            return new BinaryExpression(this.Kind, (Expression)Left?.Clone(includeDiagnostics), (SyntaxToken)Operator?.Clone(includeDiagnostics), (Expression)Right?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BinaryExpression */
@@ -2065,9 +2065,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitInExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new InExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (ExpressionList)Right?.Clone(), this.SyntaxDiagnostics);
+            return new InExpression(this.Kind, (Expression)Left?.Clone(includeDiagnostics), (SyntaxToken)Operator?.Clone(includeDiagnostics), (ExpressionList)Right?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class InExpression */
@@ -2151,9 +2151,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitHasAnyExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new HasAnyExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (ExpressionList)Right?.Clone(), this.SyntaxDiagnostics);
+            return new HasAnyExpression(this.Kind, (Expression)Left?.Clone(includeDiagnostics), (SyntaxToken)Operator?.Clone(includeDiagnostics), (ExpressionList)Right?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class HasAnyExpression */
@@ -2237,9 +2237,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitHasAllExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new HasAllExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (ExpressionList)Right?.Clone(), this.SyntaxDiagnostics);
+            return new HasAllExpression(this.Kind, (Expression)Left?.Clone(includeDiagnostics), (SyntaxToken)Operator?.Clone(includeDiagnostics), (ExpressionList)Right?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class HasAllExpression */
@@ -2322,9 +2322,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBetweenExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BetweenExpression(this.Kind, (Expression)Left?.Clone(), (SyntaxToken)Operator?.Clone(), (ExpressionCouple)Right?.Clone(), this.SyntaxDiagnostics);
+            return new BetweenExpression(this.Kind, (Expression)Left?.Clone(includeDiagnostics), (SyntaxToken)Operator?.Clone(includeDiagnostics), (ExpressionCouple)Right?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BetweenExpression */
@@ -2398,9 +2398,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFunctionCallExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FunctionCallExpression((NameReference)Name?.Clone(), (ExpressionList)ArgumentList?.Clone(), this.SyntaxDiagnostics);
+            return new FunctionCallExpression((NameReference)Name?.Clone(includeDiagnostics), (ExpressionList)ArgumentList?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FunctionCallExpression */
@@ -2496,9 +2496,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitToScalarExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ToScalarExpression((SyntaxToken)ToScalar?.Clone(), (NamedParameter)KindParameter?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ToScalarExpression((SyntaxToken)ToScalar?.Clone(includeDiagnostics), (NamedParameter)KindParameter?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ToScalarExpression */
@@ -2594,9 +2594,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitToTableExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ToTableExpression((SyntaxToken)ToTable?.Clone(), (NamedParameter)KindParameter?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ToTableExpression((SyntaxToken)ToTable?.Clone(includeDiagnostics), (NamedParameter)KindParameter?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ToTableExpression */
@@ -2682,9 +2682,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMaterializedViewCombineExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MaterializedViewCombineExpression((SyntaxToken)MaterializedViewCombineKeyword?.Clone(), (MaterializedViewCombineNameClause)ViewName?.Clone(), (MaterializedViewCombineClause)BaseClause?.Clone(), (MaterializedViewCombineClause)DeltaClause?.Clone(), (MaterializedViewCombineClause)AggregationsClause?.Clone(), this.SyntaxDiagnostics);
+            return new MaterializedViewCombineExpression((SyntaxToken)MaterializedViewCombineKeyword?.Clone(includeDiagnostics), (MaterializedViewCombineNameClause)ViewName?.Clone(includeDiagnostics), (MaterializedViewCombineClause)BaseClause?.Clone(includeDiagnostics), (MaterializedViewCombineClause)DeltaClause?.Clone(includeDiagnostics), (MaterializedViewCombineClause)AggregationsClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MaterializedViewCombineExpression */
@@ -2758,9 +2758,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMaterializedViewCombineNameClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MaterializedViewCombineNameClause((SyntaxToken)OpenParen?.Clone(), (Expression)Value?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new MaterializedViewCombineNameClause((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MaterializedViewCombineNameClause */
@@ -2840,9 +2840,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMaterializedViewCombineClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MaterializedViewCombineClause((SyntaxToken)Keyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new MaterializedViewCombineClause((SyntaxToken)Keyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MaterializedViewCombineClause */
@@ -2939,9 +2939,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSimpleNamedExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SimpleNamedExpression((NameDeclaration)Name?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new SimpleNamedExpression((NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SimpleNamedExpression */
@@ -3024,9 +3024,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitRenameList(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RenameList((SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NameDeclaration>>)Names?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new RenameList((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NameDeclaration>>)Names?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RenameList */
@@ -3109,9 +3109,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCompoundNamedExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CompoundNamedExpression((RenameList)Names?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new CompoundNamedExpression((RenameList)Names?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CompoundNamedExpression */
@@ -3182,9 +3182,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBracketedExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BracketedExpression((SyntaxToken)OpenBracket?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new BracketedExpression((SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BracketedExpression */
@@ -3265,9 +3265,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPathExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PathExpression((Expression)Expression?.Clone(), (SyntaxToken)Dot?.Clone(), (Expression)Selector?.Clone(), this.SyntaxDiagnostics);
+            return new PathExpression((Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)Dot?.Clone(includeDiagnostics), (Expression)Selector?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PathExpression */
@@ -3331,9 +3331,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitElementExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ElementExpression((Expression)Expression?.Clone(), (Expression)Selector?.Clone(), this.SyntaxDiagnostics);
+            return new ElementExpression((Expression)Expression?.Clone(includeDiagnostics), (Expression)Selector?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ElementExpression */
@@ -3404,9 +3404,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPipeExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PipeExpression((Expression)Expression?.Clone(), (SyntaxToken)Bar?.Clone(), (QueryOperator)Operator?.Clone(), this.SyntaxDiagnostics);
+            return new PipeExpression((Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)Bar?.Clone(includeDiagnostics), (QueryOperator)Operator?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PipeExpression */
@@ -3507,9 +3507,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitRangeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RangeOperator((SyntaxToken)RangeToken?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)FromToken?.Clone(), (Expression)From?.Clone(), (SyntaxToken)ToToken?.Clone(), (Expression)To?.Clone(), (SyntaxToken)StepToken?.Clone(), (Expression)Step?.Clone(), this.SyntaxDiagnostics);
+            return new RangeOperator((SyntaxToken)RangeToken?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)FromToken?.Clone(includeDiagnostics), (Expression)From?.Clone(includeDiagnostics), (SyntaxToken)ToToken?.Clone(includeDiagnostics), (Expression)To?.Clone(includeDiagnostics), (SyntaxToken)StepToken?.Clone(includeDiagnostics), (Expression)Step?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RangeOperator */
@@ -3583,9 +3583,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNamedParameter(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NamedParameter((NameDeclaration)Name?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), ExpressionHint, this.SyntaxDiagnostics);
+            return new NamedParameter((NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), ExpressionHint, (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NamedParameter */
@@ -3650,9 +3650,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitConsumeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ConsumeOperator((SyntaxToken)ConsumeKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), this.SyntaxDiagnostics);
+            return new ConsumeOperator((SyntaxToken)ConsumeKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ConsumeOperator */
@@ -3728,9 +3728,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCountOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CountOperator((SyntaxToken)CountKeyword?.Clone(), (CountAsIdentifierClause)AsIdentifier?.Clone(), this.SyntaxDiagnostics);
+            return new CountOperator((SyntaxToken)CountKeyword?.Clone(includeDiagnostics), (CountAsIdentifierClause)AsIdentifier?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CountOperator */
@@ -3795,9 +3795,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCountAsIdentifierClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CountAsIdentifierClause((SyntaxToken)AsKeyword?.Clone(), (SyntaxToken)Identifier?.Clone(), this.SyntaxDiagnostics);
+            return new CountAsIdentifierClause((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (SyntaxToken)Identifier?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CountAsIdentifierClause */
@@ -3847,9 +3847,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExecuteAndCacheOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExecuteAndCacheOperator((SyntaxToken)ExecuteAndCacheKeyword?.Clone(), this.SyntaxDiagnostics);
+            return new ExecuteAndCacheOperator((SyntaxToken)ExecuteAndCacheKeyword?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExecuteAndCacheOperator */
@@ -3914,9 +3914,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExtendOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExtendOperator((SyntaxToken)ExtendKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ExtendOperator((SyntaxToken)ExtendKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExtendOperator */
@@ -4004,9 +4004,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFacetOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FacetOperator((SyntaxToken)FacetKeyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), (FacetWithClause)WithClause?.Clone(), this.SyntaxDiagnostics);
+            return new FacetOperator((SyntaxToken)FacetKeyword?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (FacetWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FacetOperator */
@@ -4083,9 +4083,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFacetWithOperatorClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FacetWithOperatorClause((SyntaxToken)WithKeyword?.Clone(), (QueryOperator)Operator?.Clone(), this.SyntaxDiagnostics);
+            return new FacetWithOperatorClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (QueryOperator)Operator?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FacetWithOperatorClause */
@@ -4162,9 +4162,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFacetWithExpressionClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FacetWithExpressionClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new FacetWithExpressionClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FacetWithExpressionClause */
@@ -4235,9 +4235,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFilterOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FilterOperator((SyntaxToken)Keyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Condition?.Clone(), this.SyntaxDiagnostics);
+            return new FilterOperator((SyntaxToken)Keyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FilterOperator */
@@ -4296,9 +4296,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitGetSchemaOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new GetSchemaOperator((SyntaxToken)GetSchemaKeyword?.Clone(), this.SyntaxDiagnostics);
+            return new GetSchemaOperator((SyntaxToken)GetSchemaKeyword?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class GetSchemaOperator */
@@ -4414,9 +4414,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFindOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FindOperator((SyntaxToken)FindKeyword?.Clone(), (DataScopeClause)DataScope?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (FindInClause)InClause?.Clone(), (SyntaxToken)WhereKeyword?.Clone(), (Expression)Condition?.Clone(), (FindProjectClause)Project?.Clone(), (FindProjectClause)ProjectAway?.Clone(), this.SyntaxDiagnostics);
+            return new FindOperator((SyntaxToken)FindKeyword?.Clone(includeDiagnostics), (DataScopeClause)DataScope?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (FindInClause)InClause?.Clone(includeDiagnostics), (SyntaxToken)WhereKeyword?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (FindProjectClause)Project?.Clone(includeDiagnostics), (FindProjectClause)ProjectAway?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FindOperator */
@@ -4487,9 +4487,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDataScopeClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DataScopeClause((SyntaxToken)DataScopeKeyword?.Clone(), (SyntaxToken)EqualToken?.Clone(), (SyntaxToken)Value?.Clone(), this.SyntaxDiagnostics);
+            return new DataScopeClause((SyntaxToken)DataScopeKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DataScopeClause */
@@ -4560,9 +4560,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTypedColumnReference(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TypedColumnReference((NameReference)Column?.Clone(), (SyntaxToken)ColonToken?.Clone(), (TypeExpression)Type?.Clone(), this.SyntaxDiagnostics);
+            return new TypedColumnReference((NameReference)Column?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (TypeExpression)Type?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TypedColumnReference */
@@ -4639,9 +4639,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFindInClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FindInClause((SyntaxToken)InKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new FindInClause((SyntaxToken)InKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FindInClause */
@@ -4706,9 +4706,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFindProjectClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FindProjectClause((SyntaxToken)ProjectKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Columns?.Clone(), this.SyntaxDiagnostics);
+            return new FindProjectClause((SyntaxToken)ProjectKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Columns?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FindProjectClause */
@@ -4785,9 +4785,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPackExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PackExpression((SyntaxToken)PackKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxToken)AsteriskToken?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new PackExpression((SyntaxToken)PackKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxToken)AsteriskToken?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PackExpression */
@@ -4858,9 +4858,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNameAndTypeDeclaration(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NameAndTypeDeclaration((NameDeclaration)Name?.Clone(), (SyntaxToken)Colon?.Clone(), (TypeExpression)Type?.Clone(), this.SyntaxDiagnostics);
+            return new NameAndTypeDeclaration((NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)Colon?.Clone(includeDiagnostics), (TypeExpression)Type?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NameAndTypeDeclaration */
@@ -4931,9 +4931,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPrimitiveTypeExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PrimitiveTypeExpression((SyntaxToken)Type?.Clone(), this.SyntaxDiagnostics);
+            return new PrimitiveTypeExpression((SyntaxToken)Type?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PrimitiveTypeExpression */
@@ -5028,9 +5028,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSearchOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SearchOperator((SyntaxToken)SearchKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (DataScopeClause)DataScope?.Clone(), (FindInClause)InClause?.Clone(), (Expression)Condition?.Clone(), this.SyntaxDiagnostics);
+            return new SearchOperator((SyntaxToken)SearchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (DataScopeClause)DataScope?.Clone(includeDiagnostics), (FindInClause)InClause?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SearchOperator */
@@ -5095,9 +5095,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitForkOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ForkOperator((SyntaxToken)ForkKeyword?.Clone(), (SyntaxList<ForkExpression>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ForkOperator((SyntaxToken)ForkKeyword?.Clone(includeDiagnostics), (SyntaxList<ForkExpression>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ForkOperator */
@@ -5162,9 +5162,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNameEqualsClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NameEqualsClause((NameDeclaration)Name?.Clone(), (SyntaxToken)EqualToken?.Clone(), this.SyntaxDiagnostics);
+            return new NameEqualsClause((NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NameEqualsClause */
@@ -5252,9 +5252,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitForkExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ForkExpression((NameEqualsClause)NameEquals?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ForkExpression((NameEqualsClause)NameEquals?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ForkExpression */
@@ -5354,9 +5354,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesOperator((SyntaxToken)MakeSeriesKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<MakeSeriesExpression>>)Aggregates?.Clone(), (MakeSeriesOnClause)OnClause?.Clone(), (MakeSeriesRangeClause)RangeClause?.Clone(), (MakeSeriesByClause)ByClause?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesOperator((SyntaxToken)MakeSeriesKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MakeSeriesExpression>>)Aggregates?.Clone(includeDiagnostics), (MakeSeriesOnClause)OnClause?.Clone(includeDiagnostics), (MakeSeriesRangeClause)RangeClause?.Clone(includeDiagnostics), (MakeSeriesByClause)ByClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesOperator */
@@ -5432,9 +5432,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesExpression((Expression)Expression?.Clone(), (DefaultExpressionClause)DefaultExpression?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesExpression((Expression)Expression?.Clone(includeDiagnostics), (DefaultExpressionClause)DefaultExpression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesExpression */
@@ -5505,9 +5505,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDefaultExpressionClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DefaultExpressionClause((SyntaxToken)DefaultKeyword?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new DefaultExpressionClause((SyntaxToken)DefaultKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DefaultExpressionClause */
@@ -5572,9 +5572,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesOnClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesOnClause((SyntaxToken)OnKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesOnClause((SyntaxToken)OnKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesOnClause */
@@ -5639,9 +5639,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesFromClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesFromClause((SyntaxToken)FromKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesFromClause((SyntaxToken)FromKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesFromClause */
@@ -5706,9 +5706,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesToClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesToClause((SyntaxToken)ToKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesToClause((SyntaxToken)ToKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesToClause */
@@ -5773,9 +5773,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesStepClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesStepClause((SyntaxToken)StepKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesStepClause((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesStepClause */
@@ -5858,9 +5858,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesInRangeClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesInRangeClause((SyntaxToken)InKeyword?.Clone(), (SyntaxToken)RangeKeyword?.Clone(), (ExpressionList)Arguments?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesInRangeClause((SyntaxToken)InKeyword?.Clone(includeDiagnostics), (SyntaxToken)RangeKeyword?.Clone(includeDiagnostics), (ExpressionList)Arguments?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesInRangeClause */
@@ -5943,9 +5943,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesFromToStepClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesFromToStepClause((MakeSeriesFromClause)MakeSeriesFromClause?.Clone(), (MakeSeriesToClause)MakeSeriesToClause?.Clone(), (MakeSeriesStepClause)MakeSeriesStepClause?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesFromToStepClause((MakeSeriesFromClause)MakeSeriesFromClause?.Clone(includeDiagnostics), (MakeSeriesToClause)MakeSeriesToClause?.Clone(includeDiagnostics), (MakeSeriesStepClause)MakeSeriesStepClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesFromToStepClause */
@@ -6010,9 +6010,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMakeSeriesByClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeSeriesByClause((SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new MakeSeriesByClause((SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeSeriesByClause */
@@ -6100,9 +6100,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvExpandOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvExpandOperator((SyntaxToken)MvExpandKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<MvExpandExpression>>)Expressions?.Clone(), (MvExpandRowLimitClause)RowLimitClause?.Clone(), this.SyntaxDiagnostics);
+            return new MvExpandOperator((SyntaxToken)MvExpandKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MvExpandExpression>>)Expressions?.Clone(includeDiagnostics), (MvExpandRowLimitClause)RowLimitClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvExpandOperator */
@@ -6179,9 +6179,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvExpandExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvExpandExpression((Expression)Expression?.Clone(), (ToTypeOfClause)ToTypeOf?.Clone(), this.SyntaxDiagnostics);
+            return new MvExpandExpression((Expression)Expression?.Clone(includeDiagnostics), (ToTypeOfClause)ToTypeOf?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvExpandExpression */
@@ -6246,9 +6246,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvExpandRowLimitClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvExpandRowLimitClause((SyntaxToken)LimitKeyword?.Clone(), (Expression)RowLimit?.Clone(), this.SyntaxDiagnostics);
+            return new MvExpandRowLimitClause((SyntaxToken)LimitKeyword?.Clone(includeDiagnostics), (Expression)RowLimit?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvExpandRowLimitClause */
@@ -6355,9 +6355,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvApplyOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvApplyOperator((SyntaxToken)MvApplyKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<MvApplyExpression>>)Expressions?.Clone(), (MvApplyRowLimitClause)RowLimitClause?.Clone(), (MvApplyContextIdClause)ContextIdClause?.Clone(), (SyntaxToken)OnKeyword?.Clone(), (MvApplySubqueryExpression)Subquery?.Clone(), this.SyntaxDiagnostics);
+            return new MvApplyOperator((SyntaxToken)MvApplyKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MvApplyExpression>>)Expressions?.Clone(includeDiagnostics), (MvApplyRowLimitClause)RowLimitClause?.Clone(includeDiagnostics), (MvApplyContextIdClause)ContextIdClause?.Clone(includeDiagnostics), (SyntaxToken)OnKeyword?.Clone(includeDiagnostics), (MvApplySubqueryExpression)Subquery?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvApplyOperator */
@@ -6434,9 +6434,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvApplyExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvApplyExpression((Expression)Expression?.Clone(), (ToTypeOfClause)ToTypeOf?.Clone(), this.SyntaxDiagnostics);
+            return new MvApplyExpression((Expression)Expression?.Clone(includeDiagnostics), (ToTypeOfClause)ToTypeOf?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvApplyExpression */
@@ -6501,9 +6501,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvApplyRowLimitClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvApplyRowLimitClause((SyntaxToken)LimitKeyword?.Clone(), (Expression)RowLimit?.Clone(), this.SyntaxDiagnostics);
+            return new MvApplyRowLimitClause((SyntaxToken)LimitKeyword?.Clone(includeDiagnostics), (Expression)RowLimit?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvApplyRowLimitClause */
@@ -6568,9 +6568,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvApplyContextIdClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvApplyContextIdClause((SyntaxToken)IdKeyword?.Clone(), (Expression)Id?.Clone(), this.SyntaxDiagnostics);
+            return new MvApplyContextIdClause((SyntaxToken)IdKeyword?.Clone(includeDiagnostics), (Expression)Id?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvApplyContextIdClause */
@@ -6641,9 +6641,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMvApplySubqueryExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MvApplySubqueryExpression((SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new MvApplySubqueryExpression((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MvApplySubqueryExpression */
@@ -6708,9 +6708,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitToTypeOfClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ToTypeOfClause((SyntaxToken)ToKeyword?.Clone(), (TypeOfLiteralExpression)TypeOf?.Clone(), this.SyntaxDiagnostics);
+            return new ToTypeOfClause((SyntaxToken)ToKeyword?.Clone(includeDiagnostics), (TypeOfLiteralExpression)TypeOf?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ToTypeOfClause */
@@ -6786,9 +6786,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitEvaluateSchemaClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new EvaluateSchemaClause((SyntaxToken)ColonKeyword?.Clone(), (SchemaTypeExpression)Schema?.Clone(), this.SyntaxDiagnostics);
+            return new EvaluateSchemaClause((SyntaxToken)ColonKeyword?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class EvaluateSchemaClause */
@@ -6876,9 +6876,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitEvaluateOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new EvaluateOperator((SyntaxToken)EvaluateKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (FunctionCallExpression)FunctionCall?.Clone(), (EvaluateSchemaClause)Schema?.Clone(), this.SyntaxDiagnostics);
+            return new EvaluateOperator((SyntaxToken)EvaluateKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (FunctionCallExpression)FunctionCall?.Clone(includeDiagnostics), (EvaluateSchemaClause)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class EvaluateOperator */
@@ -6961,9 +6961,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitParseOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ParseOperator((SyntaxToken)ParseKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)WithKeyword?.Clone(), (SyntaxList<SyntaxNode>)Patterns?.Clone(), this.SyntaxDiagnostics);
+            return new ParseOperator((SyntaxToken)ParseKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SyntaxNode>)Patterns?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ParseOperator */
@@ -7046,9 +7046,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitParseWhereOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ParseWhereOperator((SyntaxToken)ParseKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)WithKeyword?.Clone(), (SyntaxList<SyntaxNode>)Patterns?.Clone(), this.SyntaxDiagnostics);
+            return new ParseWhereOperator((SyntaxToken)ParseKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SyntaxNode>)Patterns?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ParseWhereOperator */
@@ -7131,9 +7131,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPartitionOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PartitionOperator((SyntaxToken)PartitionKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)ByExpression?.Clone(), (PartitionOperand)Operand?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionOperator((SyntaxToken)PartitionKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (Expression)ByExpression?.Clone(includeDiagnostics), (PartitionOperand)Operand?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PartitionOperator */
@@ -7216,9 +7216,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPartitionQuery(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PartitionQuery((SyntaxToken)OpenBrace?.Clone(), (Expression)Query?.Clone(), (SyntaxToken)CloseBrace?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionQuery((SyntaxToken)OpenBrace?.Clone(includeDiagnostics), (Expression)Query?.Clone(includeDiagnostics), (SyntaxToken)CloseBrace?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PartitionQuery */
@@ -7283,9 +7283,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPartitionScope(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PartitionScope((SyntaxToken)InKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionScope((SyntaxToken)InKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PartitionScope */
@@ -7373,9 +7373,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPartitionSubquery(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PartitionSubquery((PartitionScope)Scope?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Subquery?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new PartitionSubquery((PartitionScope)Scope?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Subquery?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PartitionSubquery */
@@ -7440,9 +7440,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitProjectOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ProjectOperator((SyntaxToken)ProjectKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ProjectOperator((SyntaxToken)ProjectKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ProjectOperator */
@@ -7507,9 +7507,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitProjectAwayOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ProjectAwayOperator((SyntaxToken)ProjectAwayKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ProjectAwayOperator((SyntaxToken)ProjectAwayKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ProjectAwayOperator */
@@ -7574,9 +7574,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitProjectKeepOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ProjectKeepOperator((SyntaxToken)ProjectKeepKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ProjectKeepOperator((SyntaxToken)ProjectKeepKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ProjectKeepOperator */
@@ -7641,9 +7641,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitProjectRenameOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ProjectRenameOperator((SyntaxToken)ProjectRenameKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ProjectRenameOperator((SyntaxToken)ProjectRenameKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ProjectRenameOperator */
@@ -7708,9 +7708,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitProjectReorderOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ProjectReorderOperator((SyntaxToken)ProjectReorderKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ProjectReorderOperator((SyntaxToken)ProjectReorderKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ProjectReorderOperator */
@@ -7781,9 +7781,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSampleOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SampleOperator((SyntaxToken)SampleKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new SampleOperator((SyntaxToken)SampleKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SampleOperator */
@@ -7866,9 +7866,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSampleDistinctOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SampleDistinctOperator((SyntaxToken)SampleDistinctKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)OfKeyword?.Clone(), (Expression)OfExpression?.Clone(), this.SyntaxDiagnostics);
+            return new SampleDistinctOperator((SyntaxToken)SampleDistinctKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)OfKeyword?.Clone(includeDiagnostics), (Expression)OfExpression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SampleDistinctOperator */
@@ -7962,9 +7962,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitReduceByOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ReduceByOperator((SyntaxToken)ReduceKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)Expression?.Clone(), (ReduceByWithClause)With?.Clone(), this.SyntaxDiagnostics);
+            return new ReduceByOperator((SyntaxToken)ReduceKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (ReduceByWithClause)With?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ReduceByOperator */
@@ -8029,9 +8029,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitReduceByWithClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ReduceByWithClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxList<SeparatedElement<NamedParameter>>)Parameters?.Clone(), this.SyntaxDiagnostics);
+            return new ReduceByWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Parameters?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ReduceByWithClause */
@@ -8119,9 +8119,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSummarizeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SummarizeOperator((SyntaxToken)SummarizeKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Aggregates?.Clone(), (SummarizeByClause)ByClause?.Clone(), this.SyntaxDiagnostics);
+            return new SummarizeOperator((SyntaxToken)SummarizeKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Aggregates?.Clone(includeDiagnostics), (SummarizeByClause)ByClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SummarizeOperator */
@@ -8186,9 +8186,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSummarizeByClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SummarizeByClause((SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new SummarizeByClause((SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SummarizeByClause */
@@ -8259,9 +8259,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDistinctOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DistinctOperator((SyntaxToken)DistinctKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new DistinctOperator((SyntaxToken)DistinctKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DistinctOperator */
@@ -8332,9 +8332,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTakeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TakeOperator((SyntaxToken)Keyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new TakeOperator((SyntaxToken)Keyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TakeOperator */
@@ -8411,9 +8411,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSortOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SortOperator((SyntaxToken)Keyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new SortOperator((SyntaxToken)Keyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SortOperator */
@@ -8478,9 +8478,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitOrderedExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new OrderedExpression((Expression)Expression?.Clone(), (OrderingClause)Ordering?.Clone(), this.SyntaxDiagnostics);
+            return new OrderedExpression((Expression)Expression?.Clone(includeDiagnostics), (OrderingClause)Ordering?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class OrderedExpression */
@@ -8557,9 +8557,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitOrderingClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new OrderingClause((SyntaxToken)AscOrDescKeyword?.Clone(), (OrderingNullsClause)NullsClause?.Clone(), this.SyntaxDiagnostics);
+            return new OrderingClause((SyntaxToken)AscOrDescKeyword?.Clone(includeDiagnostics), (OrderingNullsClause)NullsClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class OrderingClause */
@@ -8624,9 +8624,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitOrderingNullsClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new OrderingNullsClause((SyntaxToken)NullsKeyword?.Clone(), (SyntaxToken)FirstOrLastKeyword?.Clone(), this.SyntaxDiagnostics);
+            return new OrderingNullsClause((SyntaxToken)NullsKeyword?.Clone(includeDiagnostics), (SyntaxToken)FirstOrLastKeyword?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class OrderingNullsClause */
@@ -8720,9 +8720,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopHittersOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopHittersOperator((SyntaxToken)TopHittersKeyword?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)OfKeyword?.Clone(), (Expression)OfExpression?.Clone(), (TopHittersByClause)ByClause?.Clone(), this.SyntaxDiagnostics);
+            return new TopHittersOperator((SyntaxToken)TopHittersKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)OfKeyword?.Clone(includeDiagnostics), (Expression)OfExpression?.Clone(includeDiagnostics), (TopHittersByClause)ByClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopHittersOperator */
@@ -8787,9 +8787,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopHittersByClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopHittersByClause((SyntaxToken)ByKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new TopHittersByClause((SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopHittersByClause */
@@ -8872,9 +8872,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopOperator((SyntaxToken)TopKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)ByExpression?.Clone(), this.SyntaxDiagnostics);
+            return new TopOperator((SyntaxToken)TopKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (Expression)ByExpression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopOperator */
@@ -8933,9 +8933,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopNestedOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopNestedOperator((SyntaxList<SeparatedElement<TopNestedClause>>)Clauses?.Clone(), this.SyntaxDiagnostics);
+            return new TopNestedOperator((SyntaxList<SeparatedElement<TopNestedClause>>)Clauses?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopNestedOperator */
@@ -9042,9 +9042,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopNestedClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopNestedClause((SyntaxToken)TopNestedKeyword?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)OfKeyword?.Clone(), (Expression)OfExpression?.Clone(), (TopNestedWithOthersClause)WithOthersClause?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (Expression)ByExpression?.Clone(), this.SyntaxDiagnostics);
+            return new TopNestedClause((SyntaxToken)TopNestedKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)OfKeyword?.Clone(includeDiagnostics), (Expression)OfExpression?.Clone(includeDiagnostics), (TopNestedWithOthersClause)WithOthersClause?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (Expression)ByExpression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopNestedClause */
@@ -9121,9 +9121,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitTopNestedWithOthersClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new TopNestedWithOthersClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OthersKeyword?.Clone(), (SyntaxToken)Equal?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new TopNestedWithOthersClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OthersKeyword?.Clone(includeDiagnostics), (SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class TopNestedWithOthersClause */
@@ -9194,9 +9194,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitUnionOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new UnionOperator((SyntaxToken)UnionKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new UnionOperator((SyntaxToken)UnionKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class UnionOperator */
@@ -9267,9 +9267,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitAsOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new AsOperator((SyntaxToken)AsKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (NameDeclaration)Name?.Clone(), this.SyntaxDiagnostics);
+            return new AsOperator((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class AsOperator */
@@ -9340,9 +9340,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSerializeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SerializeOperator((SyntaxToken)SerializeKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new SerializeOperator((SyntaxToken)SerializeKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SerializeOperator */
@@ -9407,9 +9407,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitInvokeOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new InvokeOperator((SyntaxToken)InvokeKeyword?.Clone(), (Expression)Function?.Clone(), this.SyntaxDiagnostics);
+            return new InvokeOperator((SyntaxToken)InvokeKeyword?.Clone(includeDiagnostics), (Expression)Function?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class InvokeOperator */
@@ -9498,9 +9498,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitRenderOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RenderOperator((SyntaxToken)RenderKeyword?.Clone(), (SyntaxToken)ChartType?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (RenderWithClause)WithClause?.Clone(), this.SyntaxDiagnostics);
+            return new RenderOperator((SyntaxToken)RenderKeyword?.Clone(includeDiagnostics), (SyntaxToken)ChartType?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (RenderWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RenderOperator */
@@ -9550,9 +9550,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitNameReferenceList(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new NameReferenceList((SyntaxList<SeparatedElement<NameReference>>)Names?.Clone(), this.SyntaxDiagnostics);
+            return new NameReferenceList((SyntaxList<SeparatedElement<NameReference>>)Names?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class NameReferenceList */
@@ -9629,9 +9629,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitRenderWithClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RenderWithClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new RenderWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RenderWithClause */
@@ -9696,9 +9696,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPrintOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PrintOperator((SyntaxToken)PrintKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new PrintOperator((SyntaxToken)PrintKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PrintOperator */
@@ -9781,9 +9781,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitAliasStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new AliasStatement((SyntaxToken)AliasKeyword?.Clone(), (SyntaxToken)DatabaseKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)Equal?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new AliasStatement((SyntaxToken)AliasKeyword?.Clone(includeDiagnostics), (SyntaxToken)DatabaseKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class AliasStatement */
@@ -9860,9 +9860,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitLetStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new LetStatement((SyntaxToken)LetKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)Equal?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new LetStatement((SyntaxToken)LetKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class LetStatement */
@@ -9944,9 +9944,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFunctionDeclaration(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FunctionDeclaration((SyntaxToken)ViewKeyword?.Clone(), (FunctionParameters)Parameters?.Clone(), (FunctionBody)Body?.Clone(), this.SyntaxDiagnostics);
+            return new FunctionDeclaration((SyntaxToken)ViewKeyword?.Clone(includeDiagnostics), (FunctionParameters)Parameters?.Clone(includeDiagnostics), (FunctionBody)Body?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FunctionDeclaration */
@@ -10017,9 +10017,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFunctionParameters(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FunctionParameters((SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<FunctionParameter>>)Parameters?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new FunctionParameters((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<FunctionParameter>>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FunctionParameters */
@@ -10094,9 +10094,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFunctionParameter(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FunctionParameter((NameAndTypeDeclaration)NameAndType?.Clone(), (DefaultValueDeclaration)DefaultValue?.Clone(), this.SyntaxDiagnostics);
+            return new FunctionParameter((NameAndTypeDeclaration)NameAndType?.Clone(includeDiagnostics), (DefaultValueDeclaration)DefaultValue?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FunctionParameter */
@@ -10160,9 +10160,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDefaultValueDeclaration(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DefaultValueDeclaration((SyntaxToken)Equal?.Clone(), (Expression)Value?.Clone(), this.SyntaxDiagnostics);
+            return new DefaultValueDeclaration((SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DefaultValueDeclaration */
@@ -10257,9 +10257,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitFunctionBody(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new FunctionBody((SyntaxToken)OpenBrace?.Clone(), (SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)Semicolon?.Clone(), (SyntaxToken)CloseBrace?.Clone(), this.SyntaxDiagnostics);
+            return new FunctionBody((SyntaxToken)OpenBrace?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)Semicolon?.Clone(includeDiagnostics), (SyntaxToken)CloseBrace?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class FunctionBody */
@@ -10330,9 +10330,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSchemaTypeExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SchemaTypeExpression((SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Columns?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new SchemaTypeExpression((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Columns?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SchemaTypeExpression */
@@ -10391,9 +10391,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExpressionStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExpressionStatement((Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new ExpressionStatement((Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExpressionStatement */
@@ -10470,9 +10470,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitMaterializeExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MaterializeExpression((SyntaxToken)MaterializeKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (Expression)Expression?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new MaterializeExpression((SyntaxToken)MaterializeKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MaterializeExpression */
@@ -10554,9 +10554,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitSetOptionStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SetOptionStatement((SyntaxToken)SetKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (OptionValueClause)ValueClause?.Clone(), this.SyntaxDiagnostics);
+            return new SetOptionStatement((SyntaxToken)SetKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (OptionValueClause)ValueClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SetOptionStatement */
@@ -10621,9 +10621,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitOptionValueClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new OptionValueClause((SyntaxToken)Equal?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new OptionValueClause((SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class OptionValueClause */
@@ -10706,9 +10706,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitQueryParametersStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new QueryParametersStatement((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)QueryParametersKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<FunctionParameter>>)Parameters?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new QueryParametersStatement((SyntaxToken)DeclareKeyword?.Clone(includeDiagnostics), (SyntaxToken)QueryParametersKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<FunctionParameter>>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class QueryParametersStatement */
@@ -10797,9 +10797,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitRestrictStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RestrictStatement((SyntaxToken)RestrictKeyword?.Clone(), (SyntaxToken)AccessKeyword?.Clone(), (SyntaxToken)ToKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new RestrictStatement((SyntaxToken)RestrictKeyword?.Clone(includeDiagnostics), (SyntaxToken)AccessKeyword?.Clone(includeDiagnostics), (SyntaxToken)ToKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RestrictStatement */
@@ -10887,9 +10887,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPatternStatement(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PatternStatement((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)PatternKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (PatternDeclaration)Pattern?.Clone(), this.SyntaxDiagnostics);
+            return new PatternStatement((SyntaxToken)DeclareKeyword?.Clone(includeDiagnostics), (SyntaxToken)PatternKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (PatternDeclaration)Pattern?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PatternStatement */
@@ -11001,9 +11001,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPatternDeclaration(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PatternDeclaration((SyntaxToken)EqualToken?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Parameters?.Clone(), (SyntaxToken)CloseParen?.Clone(), (PatternPathParameter)PathParameter?.Clone(), (SyntaxToken)OpenBrace?.Clone(), (SyntaxList<PatternMatch>)Patterns?.Clone(), (SyntaxToken)CloseBrace?.Clone(), this.SyntaxDiagnostics);
+            return new PatternDeclaration((SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Parameters?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (PatternPathParameter)PathParameter?.Clone(includeDiagnostics), (SyntaxToken)OpenBrace?.Clone(includeDiagnostics), (SyntaxList<PatternMatch>)Patterns?.Clone(includeDiagnostics), (SyntaxToken)CloseBrace?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PatternDeclaration */
@@ -11074,9 +11074,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPatternPathParameter(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PatternPathParameter((SyntaxToken)OpenBracket?.Clone(), (NameAndTypeDeclaration)Parameter?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new PatternPathParameter((SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (NameAndTypeDeclaration)Parameter?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PatternPathParameter */
@@ -11170,9 +11170,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPatternMatch(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PatternMatch((ExpressionList)ParameterValues?.Clone(), (PatternPathValue)PathValue?.Clone(), (SyntaxToken)EqualToken?.Clone(), (FunctionBody)Body?.Clone(), (SyntaxToken)SemicolonToken?.Clone(), this.SyntaxDiagnostics);
+            return new PatternMatch((ExpressionList)ParameterValues?.Clone(includeDiagnostics), (PatternPathValue)PathValue?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (FunctionBody)Body?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PatternMatch */
@@ -11249,9 +11249,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitPatternPathValue(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new PatternPathValue((SyntaxToken)DotToken?.Clone(), (SyntaxToken)OpenBracket?.Clone(), (Expression)Value?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new PatternPathValue((SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class PatternPathValue */
@@ -11315,9 +11315,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDataScopeExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DataScopeExpression((Expression)Expression?.Clone(), (DataScopeClause)DataScopeClause?.Clone(), this.SyntaxDiagnostics);
+            return new DataScopeExpression((Expression)Expression?.Clone(includeDiagnostics), (DataScopeClause)DataScopeClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DataScopeExpression */
@@ -11406,9 +11406,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitDataTableExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SchemaTypeExpression)Schema?.Clone(), (SyntaxToken)OpenBracket?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(), (SyntaxToken)CloseBracket?.Clone(), this.SyntaxDiagnostics);
+            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DataTableExpression */
@@ -11514,9 +11514,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExternalDataExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExternalDataExpression((SyntaxToken)ExternalDataKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (SchemaTypeExpression)Schema?.Clone(), (SyntaxToken)OpenBracket?.Clone(), (SyntaxList<SeparatedElement<Expression>>)URIs?.Clone(), (SyntaxToken)CloseBracket?.Clone(), (ExternalDataWithClause)WithClause?.Clone(), this.SyntaxDiagnostics);
+            return new ExternalDataExpression((SyntaxToken)ExternalDataKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)URIs?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (ExternalDataWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExternalDataExpression */
@@ -11587,9 +11587,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitContextualDataTableExpression(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ContextualDataTableExpression((SyntaxToken)ContextualDataTableKeyword?.Clone(), (Expression)Id?.Clone(), (SchemaTypeExpression)Schema?.Clone(), this.SyntaxDiagnostics);
+            return new ContextualDataTableExpression((SyntaxToken)ContextualDataTableKeyword?.Clone(includeDiagnostics), (Expression)Id?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ContextualDataTableExpression */
@@ -11665,9 +11665,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitExternalDataWithClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExternalDataWithClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ExternalDataWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExternalDataWithClause */
@@ -11755,9 +11755,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJoinOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JoinOperator((SyntaxToken)JoinKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (JoinConditionClause)ConditionClause?.Clone(), this.SyntaxDiagnostics);
+            return new JoinOperator((SyntaxToken)JoinKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (JoinConditionClause)ConditionClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JoinOperator */
@@ -11834,9 +11834,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitLookupOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new LookupOperator((SyntaxToken)LookupKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (Expression)Expression?.Clone(), (JoinConditionClause)LookupClause?.Clone(), this.SyntaxDiagnostics);
+            return new LookupOperator((SyntaxToken)LookupKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (JoinConditionClause)LookupClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class LookupOperator */
@@ -11913,9 +11913,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJoinOnClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JoinOnClause((SyntaxToken)OnKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new JoinOnClause((SyntaxToken)OnKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JoinOnClause */
@@ -11980,9 +11980,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitJoinWhereClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new JoinWhereClause((SyntaxToken)WhereKeyword?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new JoinWhereClause((SyntaxToken)WhereKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class JoinWhereClause */
@@ -12104,9 +12104,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanOperator(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanOperator((SyntaxToken)ScanKeyword?.Clone(), (SyntaxList<NamedParameter>)Parameters?.Clone(), (ScanOrderByClause)OrderByClause?.Clone(), (ScanPartitionByClause)PartitionByClause?.Clone(), (ScanDeclareClause)DeclareClause?.Clone(), (SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParenToken?.Clone(), (SyntaxList<ScanStep>)Steps?.Clone(), (SyntaxToken)CloseParenToken?.Clone(), this.SyntaxDiagnostics);
+            return new ScanOperator((SyntaxToken)ScanKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (ScanOrderByClause)OrderByClause?.Clone(includeDiagnostics), (ScanPartitionByClause)PartitionByClause?.Clone(includeDiagnostics), (ScanDeclareClause)DeclareClause?.Clone(includeDiagnostics), (SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParenToken?.Clone(includeDiagnostics), (SyntaxList<ScanStep>)Steps?.Clone(includeDiagnostics), (SyntaxToken)CloseParenToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanOperator */
@@ -12183,9 +12183,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanDeclareClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanDeclareClause((SyntaxToken)DeclareKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<FunctionParameter>>)Declarations?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new ScanDeclareClause((SyntaxToken)DeclareKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<FunctionParameter>>)Declarations?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanDeclareClause */
@@ -12256,9 +12256,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanOrderByClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanOrderByClause((SyntaxToken)OrderKeyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ScanOrderByClause((SyntaxToken)OrderKeyword?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanOrderByClause */
@@ -12329,9 +12329,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanPartitionByClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanPartitionByClause((SyntaxToken)PartitionKeyword?.Clone(), (SyntaxToken)ByKeyword?.Clone(), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(), this.SyntaxDiagnostics);
+            return new ScanPartitionByClause((SyntaxToken)PartitionKeyword?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanPartitionByClause */
@@ -12438,9 +12438,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanStep(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanStep((SyntaxToken)StepKeyword?.Clone(), (NameDeclaration)Name?.Clone(), (SyntaxToken)OptionalKeyword?.Clone(), (SyntaxToken)ColonToken?.Clone(), (Expression)Condition?.Clone(), (ScanComputationClause)ComputationClause?.Clone(), (SyntaxToken)SemicolonToken?.Clone(), this.SyntaxDiagnostics);
+            return new ScanStep((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)OptionalKeyword?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (ScanComputationClause)ComputationClause?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanStep */
@@ -12505,9 +12505,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanComputationClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanComputationClause((SyntaxToken)ArrowToken?.Clone(), (SyntaxList<SeparatedElement<ScanAssignment>>)Assignments?.Clone(), this.SyntaxDiagnostics);
+            return new ScanComputationClause((SyntaxToken)ArrowToken?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<ScanAssignment>>)Assignments?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanComputationClause */
@@ -12578,9 +12578,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitScanAssignment(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanAssignment((NameReference)Name?.Clone(), (SyntaxToken)EqualToken?.Clone(), (Expression)Expression?.Clone(), this.SyntaxDiagnostics);
+            return new ScanAssignment((NameReference)Name?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanAssignment */
@@ -12668,9 +12668,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCommandWithValueClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CommandWithValueClause((SyntaxToken)WithKeyword?.Clone(), (Expression)Value?.Clone(), this.SyntaxDiagnostics);
+            return new CommandWithValueClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CommandWithValueClause */
@@ -12747,9 +12747,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCommandWithPropertyListClause(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CommandWithPropertyListClause((SyntaxToken)WithKeyword?.Clone(), (SyntaxToken)OpenParen?.Clone(), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(), (SyntaxToken)CloseParen?.Clone(), this.SyntaxDiagnostics);
+            return new CommandWithPropertyListClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CommandWithPropertyListClause */
@@ -12826,9 +12826,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitUnknownCommand(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new UnknownCommand((SyntaxToken)DotToken?.Clone(), (SyntaxList<SyntaxToken>)Parts?.Clone(), this.SyntaxDiagnostics);
+            return new UnknownCommand((SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxToken>)Parts?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class UnknownCommand */
@@ -12896,9 +12896,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCustomCommand(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CustomCommand(CommandKind, (SyntaxToken)DotToken?.Clone(), (SyntaxElement)Custom?.Clone(), this.SyntaxDiagnostics);
+            return new CustomCommand(CommandKind, (SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxElement)Custom?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CustomCommand */
@@ -12957,9 +12957,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitBadCommand(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new BadCommand((SyntaxToken)DotToken?.Clone(), this.SyntaxDiagnostics);
+            return new BadCommand((SyntaxToken)DotToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class BadCommand */
@@ -13042,9 +13042,9 @@ namespace Kusto.Language.Syntax
             return visitor.VisitCommandBlock(this);
         }
         
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CommandBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(), (SkippedTokens)SkippedTokens?.Clone(), (SyntaxToken)EndOfCommand?.Clone(), this.SyntaxDiagnostics);
+            return new CommandBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfCommand?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CommandBlock */

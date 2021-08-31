@@ -32,7 +32,7 @@ namespace Kusto.Language.Parsing
             // do stable sort
             return items
                 .Select((item, index) => (item, index))
-                .OrderBy(x => keySelector(x.item), GrammarCompararer.Instance)
+                .OrderBy(x => keySelector(x.item), GrammarComparer.Instance)
                 .ThenBy(x => x.index)
                 .Select(x => x.item)
                 .ToList();
@@ -54,9 +54,27 @@ namespace Kusto.Language.Parsing
         }
     }
 
-    internal class GrammarCompararer : IComparer<Grammar>
+    internal class GrammarComparer : IComparer<Grammar>, IEqualityComparer<Grammar>
     {
-        public static readonly GrammarCompararer Instance = new GrammarCompararer();
+        public static readonly GrammarComparer Instance = new GrammarComparer();
+
+        public bool Equals(Grammar x, Grammar y)
+        {
+            return Compare(x, y) == 0;
+        }
+
+        public int GetHashCode(Grammar grammar)
+        {
+            switch (grammar)
+            {
+                case TokenGrammar tg:
+                    return tg.TokenText.GetHashCode();
+                case RuleGrammar rg:
+                    return rg.RuleName.GetHashCode();
+                default:
+                    return 0;
+            }
+        }
 
         public int Compare(Grammar x, Grammar y)
         {

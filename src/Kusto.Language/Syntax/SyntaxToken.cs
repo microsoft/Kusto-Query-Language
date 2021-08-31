@@ -70,7 +70,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Creates a copy of this <see cref="SyntaxToken"/>
         /// </summary>
-        public new SyntaxToken Clone() => (SyntaxToken)this.CloneCore();
+        public new SyntaxToken Clone(bool includeDiagnostics = true) => (SyntaxToken)this.CloneCore(includeDiagnostics);
 
         public override string ToString(IncludeTrivia includeTrivia)
         {
@@ -254,9 +254,9 @@ namespace Kusto.Language.Syntax
 
             public override object Value => this.Text;
 
-            protected override SyntaxElement CloneCore()
+            protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new IdentifierToken(this.Trivia, this.Text, this.SyntaxDiagnostics);
+                return new IdentifierToken(this.Trivia, this.Text, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
         }
 
@@ -283,9 +283,9 @@ namespace Kusto.Language.Syntax
 
             public override string Text => SyntaxFacts.GetText(this.Kind);
 
-            protected override SyntaxElement CloneCore()
+            protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new KindToken(this.Trivia, this.Kind, this.SyntaxDiagnostics);
+                return new KindToken(this.Trivia, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
         }
 
@@ -313,9 +313,9 @@ namespace Kusto.Language.Syntax
                 this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
-            protected override SyntaxElement CloneCore()
+            protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new TextAndKindToken(this.Trivia, this.Text, this.Kind, this.SyntaxDiagnostics);
+                return new TextAndKindToken(this.Trivia, this.Text, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
         }
 
@@ -343,9 +343,9 @@ namespace Kusto.Language.Syntax
                 this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
-            protected override SyntaxElement CloneCore()
+            protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new LiteralToken(this.Trivia, this.Text, this.Kind, this.SyntaxDiagnostics);
+                return new LiteralToken(this.Trivia, this.Text, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
 
             public override bool IsLiteral => true;
@@ -712,9 +712,9 @@ namespace Kusto.Language.Syntax
 
             public override bool IsMissing => true;
 
-            protected override SyntaxElement CloneCore()
+            protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new MissingToken(this.Trivia, this.Kind, this.SyntaxDiagnostics);
+                return new MissingToken(this.Trivia, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
         }
     }

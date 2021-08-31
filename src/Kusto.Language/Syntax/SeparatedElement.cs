@@ -77,9 +77,9 @@ namespace Kusto.Language.Syntax
         {
         }
 
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SeparatedElement<TElement>((TElement)this.Element.Clone(), this.Separator?.Clone());
+            return new SeparatedElement<TElement>((TElement)this.Element.Clone(includeDiagnostics), this.Separator?.Clone(includeDiagnostics));
         }
 
         public static SeparatedElement<TElement> Empty() => new SeparatedElement<TElement>(null, null);

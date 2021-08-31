@@ -122,16 +122,16 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Creates a copy of this <see cref="SyntaxList{TElement}"/>
         /// </summary>
-        public new SyntaxList<TElement> Clone() => (SyntaxList<TElement>)this.CloneCore();
+        public new SyntaxList<TElement> Clone(bool includeDiagnostics = true) => (SyntaxList<TElement>)this.CloneCore(includeDiagnostics);
 
-        protected override SyntaxElement CloneCore()
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
             var oldElements = this.GetElements();
             var newElements = new TElement[oldElements.Count];
 
             for (int i = 0; i < newElements.Length; i++)
             {
-                newElements[i] = (TElement)oldElements[i].Clone();
+                newElements[i] = (TElement)oldElements[i].Clone(includeDiagnostics);
             }
 
             return new SyntaxList<TElement>(newElements);
