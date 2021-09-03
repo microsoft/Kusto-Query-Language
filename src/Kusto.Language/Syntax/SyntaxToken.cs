@@ -535,7 +535,8 @@ namespace Kusto.Language.Syntax
                     case "max":
                         return Int32.MaxValue;
                     default:
-                        Int32.TryParse(valueText, out var result);
+                        int result;
+                        Int32.TryParse(valueText, out result);
                         return result;
                 }
             }
@@ -550,7 +551,8 @@ namespace Kusto.Language.Syntax
                     case "max":
                         return Int64.MaxValue;
                     default:
-                        Int64.TryParse(valueText, out var result);
+                        long result;
+                        Int64.TryParse(valueText, out result);
                         return result;
                 }
             }
@@ -565,7 +567,8 @@ namespace Kusto.Language.Syntax
                     case "max":
                         return Double.MaxValue;
                     default:
-                        Double.TryParse(valueText, out var result);
+                        double result;
+                        Double.TryParse(valueText, out result);
                         return result;
                 }
             }
@@ -580,7 +583,8 @@ namespace Kusto.Language.Syntax
                     case "max":
                         return Decimal.MaxValue;
                     default:
-                        Decimal.TryParse(valueText, out var result);
+                        decimal result;
+                        Decimal.TryParse(valueText, out result);
                         return result;
                 }
             }
@@ -616,7 +620,8 @@ namespace Kusto.Language.Syntax
                 var numberText = valueText.Substring(0, split);
                 var wordText = valueText.Substring(split);
 
-                if (Double.TryParse(numberText, out var number))
+                double number;
+                if (Double.TryParse(numberText, out number))
                 {
                     switch (wordText)
                     {
@@ -679,7 +684,8 @@ namespace Kusto.Language.Syntax
                     case "max":
                         return DateTime.MaxValue;
                     default:
-                        DateTime.TryParse(valueText, out var result);
+                        DateTime result;
+                        DateTime.TryParse(valueText, out result);
                         return result;
                 }
             }
@@ -687,7 +693,8 @@ namespace Kusto.Language.Syntax
             private static Guid GetGuidValue(string text)
             {
                 var valueText = GetValueText(text);
-                Guid.TryParse(valueText, out var result);
+                Guid result;
+                Guid.TryParse(valueText, out result);
                 return result;
             }
         }

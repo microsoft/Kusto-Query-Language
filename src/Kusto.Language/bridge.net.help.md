@@ -8,5 +8,6 @@ Things that trip up Bridge.Net and cause it to crash.
 3) it has trouble with understanding overriding abstract properties. It is happier with virtual properties.
 4) it does not like use of named parameters, so just avoid it
 5) avoid goto's especially in switch (will not crash but turns it into a state-machine loop)
+6) Don't use out var with primitive types (like Int32.TryParse). Normal out works but out var causes translation errors that only fail at runtime.
 
 
