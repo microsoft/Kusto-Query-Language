@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Kusto.Language
 {
     using Symbols;
-    using Syntax;
     using Utils;
 
     /// <summary>
@@ -14,9 +12,6 @@ namespace Kusto.Language
     {
         public static readonly QueryOperatorParameter BagExpansion =
             new QueryOperatorParameter("bagexpansion", QueryOperatorParameterValueKind.Word, values: KustoFacts.MvExpandKinds).Hide();
-
-        public static readonly QueryOperatorParameter Characters =
-            new QueryOperatorParameter("characters", QueryOperatorParameterValueKind.StringLiteral);
 
         public static readonly QueryOperatorParameter DecodeBlocks =
             new QueryOperatorParameter("decodeblocks", QueryOperatorParameterValueKind.BoolLiteral, isRepeatable: false);
@@ -60,9 +55,6 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter Kind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word);
 
-        public static readonly QueryOperatorParameter Threshold =
-            new QueryOperatorParameter("threshold", QueryOperatorParameterValueKind.NumericLiteral);
-
         public static readonly QueryOperatorParameter WithMatchId =
             new QueryOperatorParameter("with_match_id", QueryOperatorParameterValueKind.NameDeclaration);
 
@@ -72,11 +64,14 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter WithSource =
             new QueryOperatorParameter("withsource", QueryOperatorParameterValueKind.NameDeclaration, aliases: new[] { "with_source" });
 
-        public static readonly IReadOnlyList<QueryOperatorParameter> AllKnownParameters = new QueryOperatorParameter[]
+        /// <summary>
+        /// All query operator parameters.
+        /// Does not include parameters used for other syntax clauses (like render with properties)
+        /// </summary>
+        public static readonly IReadOnlyList<QueryOperatorParameter> AllParameters = new QueryOperatorParameter[]
         {
             BagExpansion.Hide(),
             BestEffort.Hide(),
-            Characters.Hide(),
             DecodeBlocks.Hide(),
             Flags.Hide(),
             HintDotConcurrency.Hide(),
@@ -90,13 +85,12 @@ namespace Kusto.Language
             HintDotStrategy.Hide(),
             IsFuzzy.Hide(),
             Kind.Hide(),
-            Threshold.Hide(),
             WithMatchId.Hide(),
             WithItemIndex.Hide(),
             WithSource.Hide()
         };
 
-        // parameters sets for specific operators
+        // parameter sets for specific operators
 
         public static readonly IReadOnlyList<QueryOperatorParameter> AsParameters = new QueryOperatorParameter[]
         {
@@ -233,8 +227,8 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ReduceWithParameters = new[]
         {
-            Threshold,
-            Characters
+            new QueryOperatorParameter("threshold", QueryOperatorParameterValueKind.NumericLiteral),
+            new QueryOperatorParameter("characters", QueryOperatorParameterValueKind.StringLiteral)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> SampleParameters = new QueryOperatorParameter[]

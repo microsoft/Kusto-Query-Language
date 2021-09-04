@@ -1893,6 +1893,69 @@ namespace Kusto.Language
                     new Parameter("test_points", ParameterTypeKind.Integer)))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol SeriesExp =
+            new FunctionSymbol("series_exp",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesSign =
+            new FunctionSymbol("series_sign",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesAbs =
+            new FunctionSymbol("series_abs",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesSin =
+            new FunctionSymbol("series_sin",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesAsin =
+            new FunctionSymbol("series_asin",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesCos =
+            new FunctionSymbol("series_cos",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesAcos =
+            new FunctionSymbol("series_acos",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesTan =
+            new FunctionSymbol("series_tan",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
+        public static readonly FunctionSymbol SeriesAtan =
+            new FunctionSymbol("series_atan",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // urishapira to unhide after 11/Oct
+
         private static TypeSymbol SeriesDecomposeResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
             MakePrefixedTuple(sig, "series", args,
                 new TupleSymbol(
@@ -2732,6 +2795,15 @@ namespace Kusto.Language
             SeriesLessEquals,
             SeriesEquals,
             SeriesNotEquals,
+            SeriesExp,
+            SeriesSign,
+            SeriesAbs,
+            SeriesSin,
+            SeriesAsin,
+            SeriesCos,
+            SeriesAcos,
+            SeriesTan,
+            SeriesAtan,
             ArraySum,
             SeriesSeasonal,
             SeriesDecompose,

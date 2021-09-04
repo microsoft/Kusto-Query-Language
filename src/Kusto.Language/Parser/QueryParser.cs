@@ -8,6 +8,24 @@ using Kusto.Language.Utils;
 
 namespace Kusto.Language.Parsing
 {
+    internal enum AllowedNameKind
+    {
+        /// <summary>
+        /// Allow any name as a query operator parameter name
+        /// </summary>
+        Any,
+
+        /// <summary>
+        /// Allow any known query operator parameter name as a possible name
+        /// </summary>
+        Known,
+
+        /// <summary>
+        /// Allow only query operator parameter names specifically declared for current operator
+        /// </summary>
+        Specific
+    }
+
     public class QueryParser
     {
         private readonly LexicalToken[] _tokens;
@@ -2313,14 +2331,14 @@ namespace Kusto.Language.Parsing
 
         private NamedParameter ParseQueryOperatorParameter()
         {
-            var nameToken = ParseQueryOperatorParameterName(_allowKnownQueryOperatorParametersOnly);
+            var nameToken = ParseQueryOperatorParameterName(_queryOperatorParameterNamesAllowed);
             if (nameToken != null)
             {
                 var name = new NameDeclaration(new TokenName(nameToken));
                 var equal = ParseRequiredToken(SyntaxKind.EqualToken);
 
-                if ((_specificNameToQueryOperatorParameterMap != null
-                    && _specificNameToQueryOperatorParameterMap.TryGetValue(nameToken.Text, out var queryParameter))
+                if ((_operatorSpecificNameToQueryOperatorParameterMap != null
+                    && _operatorSpecificNameToQueryOperatorParameterMap.TryGetValue(nameToken.Text, out var queryParameter))
                     || s_nameToDefaultQueryOperatorParameterMap.TryGetValue(nameToken.Text, out queryParameter))
                 {
                     var value = ParseQueryOperatorParameterValue(queryParameter);
@@ -2338,7 +2356,7 @@ namespace Kusto.Language.Parsing
             qp => qp.ParseQueryOperatorParameter();
 
         private static IReadOnlyDictionary<string, QueryOperatorParameter> s_nameToDefaultQueryOperatorParameterMap =
-            CreateQueryOperatorParameterMap(QueryOperatorParameters.AllKnownParameters);
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.AllParameters);
 
         private static IReadOnlyDictionary<string, QueryOperatorParameter> CreateQueryOperatorParameterMap(IReadOnlyList<QueryOperatorParameter> parameters)
         {
@@ -2381,18 +2399,35 @@ namespace Kusto.Language.Parsing
         private static IReadOnlyList<string> s_multiTokenQueryOperatorParameterNames =
             s_knownQueryOperaterParameterNames.Where(IsMultiTokenName).ToList();
 
-        private bool IsKnownQueyrOperatorParameterName(string name)
+        private bool IsSpecificQueryOperatorParameterName(string name)
+        {
+            return _operatorSpecificNameToQueryOperatorParameterMap != null
+                    && _operatorSpecificNameToQueryOperatorParameterMap.ContainsKey(name);
+        }
+
+        private SyntaxToken ParseSpecificQueryOperatorParameterName()
+        {
+            var lt = PeekToken();
+            if ((lt.Kind == SyntaxKind.IdentifierToken || lt.Kind.IsKeyword())
+                && IsSpecificQueryOperatorParameterName(lt.Text))
+            {
+                return ParseToken();
+            }
+
+            return null;
+        }
+
+        private bool IsKnownQueryOperatorParameterName(string name)
         {
             return s_knownQueryOperaterParameterNames.Contains(name)
-                || (_specificNameToQueryOperatorParameterMap != null
-                    && _specificNameToQueryOperatorParameterMap.ContainsKey(name));
+                || IsSpecificQueryOperatorParameterName(name);
         }
 
         private int ScanKnownQueryOperatorParameterName(int offset = 0)
         {
             var token = PeekToken(offset);
             if ((token.Kind == SyntaxKind.IdentifierToken || token.Kind.IsKeyword())
-                && IsKnownQueyrOperatorParameterName(token.Text))
+                && IsKnownQueryOperatorParameterName(token.Text))
             {
                 return 1;
             }
@@ -2410,11 +2445,11 @@ namespace Kusto.Language.Parsing
             return -1;
         }
 
-        private SyntaxToken ParseKnownQueryOperatorParaterName()
+        private SyntaxToken ParseKnownQueryOperatorParameterName()
         {
             var lt = PeekToken();
             if ((lt.Kind == SyntaxKind.IdentifierToken || lt.Kind.IsKeyword())
-                && IsKnownQueyrOperatorParameterName(lt.Text))
+                && IsKnownQueryOperatorParameterName(lt.Text))
             {
                 return ParseToken();
             }
@@ -2479,13 +2514,18 @@ namespace Kusto.Language.Parsing
             return ScanKnownQueryOperatorParameterName(offset);
         }
 
-        private SyntaxToken ParseQueryOperatorParameterName(bool knownNamesOnly = false)
+        private SyntaxToken ParseQueryOperatorParameterName(AllowedNameKind namesAllowed = AllowedNameKind.Any)
         {
-            var name = ParseKnownQueryOperatorParaterName();
+            if (namesAllowed == AllowedNameKind.Specific)
+            {
+                return ParseSpecificQueryOperatorParameterName();
+            }
+
+            var name = ParseKnownQueryOperatorParameterName();
             if (name != null)
                 return name;
 
-            if (!knownNamesOnly)
+            if (namesAllowed == AllowedNameKind.Any)
             {
                 var len = ScanAnyQueryOperatorParameterName();
                 if (len > 0 && PeekToken(len).Kind == SyntaxKind.EqualToken)
@@ -2513,23 +2553,23 @@ namespace Kusto.Language.Parsing
             return new NameReferenceList(names);
         }
 
-        private IReadOnlyDictionary<string, QueryOperatorParameter> _specificNameToQueryOperatorParameterMap;
-        private bool _allowKnownQueryOperatorParametersOnly;
+        private IReadOnlyDictionary<string, QueryOperatorParameter> _operatorSpecificNameToQueryOperatorParameterMap;
+        private AllowedNameKind _queryOperatorParameterNamesAllowed;
 
         private SyntaxList<NamedParameter> ParseQueryOperatorParameterList(
             IReadOnlyDictionary<string, QueryOperatorParameter> nameToParameterMap = null,
-            bool knownParametersOnly = false)
+            AllowedNameKind namesAllowed = AllowedNameKind.Any)
         {
-            var oldParameters = _specificNameToQueryOperatorParameterMap;
-            var oldKnownParametersOnly = _allowKnownQueryOperatorParametersOnly;
+            var oldParameters = _operatorSpecificNameToQueryOperatorParameterMap;
+            var oldNamesAllowed = _queryOperatorParameterNamesAllowed;
 
-            _specificNameToQueryOperatorParameterMap = nameToParameterMap;
-            _allowKnownQueryOperatorParametersOnly = knownParametersOnly;
+            _operatorSpecificNameToQueryOperatorParameterMap = nameToParameterMap;
+            _queryOperatorParameterNamesAllowed = namesAllowed;
 
             var list = ParseList(FnParseQueryOperatorParameter);
 
-            _specificNameToQueryOperatorParameterMap = oldParameters;
-            _allowKnownQueryOperatorParametersOnly = oldKnownParametersOnly;
+            _operatorSpecificNameToQueryOperatorParameterMap = oldParameters;
+            _queryOperatorParameterNamesAllowed = oldNamesAllowed;
 
             return list;
         }
@@ -2537,18 +2577,18 @@ namespace Kusto.Language.Parsing
         private SyntaxList<SeparatedElement<NamedParameter>> ParseQueryOperatorParameterCommaList(
             IReadOnlyDictionary<string, QueryOperatorParameter> nameToParameterMap = null,
             Func<QueryParser, bool> fnScanEnd = null,
-            bool knownParametersOnly = false)
+            AllowedNameKind namesAllowed = AllowedNameKind.Any)
         {
-            var oldParameters = _specificNameToQueryOperatorParameterMap;
-            var oldKnownParametersOnly = _allowKnownQueryOperatorParametersOnly;
+            var oldParameters = _operatorSpecificNameToQueryOperatorParameterMap;
+            var oldNamesAllowed = _queryOperatorParameterNamesAllowed;
 
-            _specificNameToQueryOperatorParameterMap = nameToParameterMap;
-            _allowKnownQueryOperatorParametersOnly = knownParametersOnly;
+            _operatorSpecificNameToQueryOperatorParameterMap = nameToParameterMap;
+            _queryOperatorParameterNamesAllowed = namesAllowed;
 
             var list = ParseCommaList(FnParseQueryOperatorParameter, CreateMissingNamedParameter, FnScanCommonListEnd);
 
-            _specificNameToQueryOperatorParameterMap = oldParameters;
-            _allowKnownQueryOperatorParametersOnly = oldKnownParametersOnly;
+            _operatorSpecificNameToQueryOperatorParameterMap = oldParameters;
+            _queryOperatorParameterNamesAllowed = oldNamesAllowed;
 
             return list;
         }
@@ -2764,7 +2804,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.WhereKeyword) ?? ParseToken(SyntaxKind.FilterKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_filterOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_filterOperatorParameterMap, AllowedNameKind.Known);
                 var expr = ParseNamedExpression() ?? CreateMissingExpression();
                 return new FilterOperator(keyword, parameters, expr);
             }
@@ -3289,7 +3329,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.MakeSeriesKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_makeSeriesOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_makeSeriesOperatorParameterMap, AllowedNameKind.Known);
                 var expressions = ParseCommaList(FnParseMakeSeriesExpression, CreateMissingMakeSeriesExpression, FnScanMakeSeriesExpressionListEnd, oneOrMore: true);
                 var onClause = new MakeSeriesOnClause(ParseRequiredToken(SyntaxKind.OnKeyword), ParseNamedExpression() ?? CreateMissingExpression());
                 var rangeClause = ParseMakeSeriesFromToStepClause() ?? ParseRequiredMakeSeriesInRangeClause();
@@ -3387,7 +3427,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.MvExpandKeyword) ?? ParseToken(SyntaxKind.MvDashExpandKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_mvExpandOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_mvExpandOperatorParameterMap, AllowedNameKind.Known);
                 var expressions = ParseMvExpandExpressionList();
                 var rowLimit = ParseMvExpandRowLimitClause();
                 return new MvExpandOperator(keyword, parameters, expressions, rowLimit);
@@ -3503,7 +3543,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.MvApplyKeyword) ?? ParseToken(SyntaxKind.MvDashApplyKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_mvApplyOperatorParmeterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_mvApplyOperatorParmeterMap, AllowedNameKind.Known);
                 var expressions = ParseMvApplyExpressionList();
                 var rowLimit = ParseMvApplyRowLimitClause();
                 var idClause = ParseMvApplyContextIdClause();
@@ -3692,7 +3732,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.SampleKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_sampleOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_sampleOperatorParameterMap, AllowedNameKind.Known);
                 var expr = ParseNamedExpression() ?? CreateMissingExpression();
                 return new SampleOperator(keyword, parameters, expr);
             }
@@ -3708,7 +3748,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.SampleDistinctKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_sampleDistinctOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_sampleDistinctOperatorParameterMap, AllowedNameKind.Known);
                 var expr = ParseNamedExpression() ?? CreateMissingExpression();
                 var ofKeyword = ParseRequiredToken(SyntaxKind.OfKeyword);
                 var ofExpr = ParseNamedExpression() ?? CreateMissingExpression();
@@ -3793,7 +3833,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.SummarizeKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_summarizeOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_summarizeOperatorParameterMap, AllowedNameKind.Known);
                 var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanSummarizeExpressionListEnd);
                 var byClause = ParseSummarizeByClause();
                 return new SummarizeOperator(keyword, parameters, expressions, byClause);
@@ -3843,7 +3883,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.TakeKeyword) ?? ParseToken(SyntaxKind.LimitKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_takeOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_takeOperatorParameterMap, AllowedNameKind.Known);
                 var expr = ParseNamedExpression() ?? CreateMissingExpression();
                 return new TakeOperator(keyword, parameters, expr);
             }
@@ -4088,7 +4128,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.TopKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_topOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_topOperatorParameterMap, AllowedNameKind.Known);
                 var expr = ParseNamedExpression() ?? CreateMissingExpression();
                 var byKeyword = ParseRequiredToken(SyntaxKind.ByKeyword);
                 var byExpr = ParseOrderedExpression() ?? CreateMissingExpression();
@@ -4206,7 +4246,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.AsKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_asOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_asOperatorParameterMap, AllowedNameKind.Known);
                 var name = ParseNameDeclaration() ?? CreateMissingNameDeclaration();
                 return new AsOperator(keyword, parameters, name);
             }
@@ -4226,7 +4266,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.SerializeKeyword);
             if (keyword != null)
             {
-                var parameters = ParseQueryOperatorParameterList(s_serializeOperatorParameterMap, knownParametersOnly: true);
+                var parameters = ParseQueryOperatorParameterList(s_serializeOperatorParameterMap, AllowedNameKind.Known);
                 var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanCommonListEnd);
                 return new SerializeOperator(keyword, parameters, expressions);
             }
