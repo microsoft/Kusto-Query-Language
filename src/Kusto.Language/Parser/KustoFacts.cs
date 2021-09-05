@@ -68,7 +68,6 @@ namespace Kusto.Language
 
         public static string[] KnownQueryOperatorParameterNames = new string[] {
             "bagexpansion",
-            "best_effort",
             "bin_legacy",
             "decodeblocks",
             "expandoutput",

@@ -33,7 +33,6 @@
 
         BagExpansionKeyword,
         BasicAuthKeyword,
-        BestEffortKeyword,
         BetweenKeyword,
         BinKeyword,
         BinLegacyKeyword,
