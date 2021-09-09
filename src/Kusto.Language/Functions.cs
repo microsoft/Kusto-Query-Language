@@ -484,15 +484,13 @@ namespace Kusto.Language
             new FunctionSymbol("base64_decode_toguid", ScalarTypes.Guid,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // urishapira to unhide after 5/Sep 
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeFromGuid =
             new FunctionSymbol("base64_encode_fromguid", ScalarTypes.String,
                 new Parameter("guid", ScalarTypes.Guid))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // urishapira to unhide after 5/Sep 
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeFromArray =
             new FunctionSymbol("base64_encode_fromarray", ScalarTypes.String,

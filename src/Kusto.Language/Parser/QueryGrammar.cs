@@ -1922,22 +1922,36 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new ReduceByOperator(reduceKeyword, parameters, byKeyword, expr, withClause))
                 .WithTag("<reduce-by>");
 
+            var SummarizeBinClause =
+                If(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken)),
+                    Rule(
+                        Token(SyntaxKind.BinKeyword),
+                        Token(SyntaxKind.EqualToken),
+                        Required(UnnamedExpression, MissingExpression),
+                        (bin, equal, value) =>
+                            new SimpleNamedExpression(new NameDeclaration(new TokenName(bin)), equal, value)));
+
+            var SummarizeByExpression =
+                If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken))), NamedExpression);
+
             var SummarizeByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    CommaList(
-                        If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken))), NamedExpression),
-                        missingElement: MissingExpressionNode,
-                        oneOrMore: true),
-                    (byKeyword, expressions) =>
-                        new SummarizeByClause(byKeyword, expressions))
+                    CommaList(SummarizeByExpression, missingElement: MissingExpressionNode, oneOrMore: true),
+                    Optional(SummarizeBinClause.Hide()), // legacy syntax
+                    (byKeyword, expressions, binClause) =>
+                        new SummarizeByClause(byKeyword, expressions, binClause))
                 .WithTag("<summarize-by>");
+
+            var SummarizeExpression =
+                If(Not(Token(SyntaxKind.ByKeyword)),
+                    NamedExpression);
 
             var SummarizeOperator =
                 Rule(
                     Token(SyntaxKind.SummarizeKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.SummarizeParameters, AllowedNameKind.Known),
-                    SeparatedList(NamedExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
+                    SeparatedList(SummarizeExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
                     Optional(SummarizeByClause),
                     (summarizeKeyword, parameters, aggregates, byClause) =>
                         (QueryOperator)new SummarizeOperator(summarizeKeyword, parameters, aggregates, byClause))

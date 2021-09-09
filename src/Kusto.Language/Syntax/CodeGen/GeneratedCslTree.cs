@@ -8135,17 +8135,20 @@ namespace Kusto.Language.Syntax
         
         public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
         
+        public NamedExpression BinClause { get; }
+        
         /// <summary>
         /// Constructs a new instance of <see cref="SummarizeByClause"/>.
         /// </summary>
-        internal SummarizeByClause(SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal SummarizeByClause(SyntaxToken byKeyword, SyntaxList<SeparatedElement<Expression>> expressions, NamedExpression binClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.ByKeyword = Attach(byKeyword);
             this.Expressions = Attach(expressions);
+            this.BinClause = Attach(binClause, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 2;
+        public override int ChildCount => 3;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -8153,6 +8156,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return ByKeyword;
                 case 1: return Expressions;
+                case 2: return BinClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -8163,7 +8167,19 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return nameof(ByKeyword);
                 case 1: return nameof(Expressions);
+                case 2: return nameof(BinClause);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -8173,6 +8189,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Scalar;
+                case 2: return CompletionHint.None;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -8188,7 +8205,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new SummarizeByClause((SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new SummarizeByClause((SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (NamedExpression)BinClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class SummarizeByClause */

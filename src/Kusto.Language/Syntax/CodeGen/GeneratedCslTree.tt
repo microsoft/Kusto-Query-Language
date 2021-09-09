@@ -1660,6 +1660,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
         {
             new GeneratedProperty { Name = "ByKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "Expressions", Type = "SyntaxList<SeparatedElement<Expression>>", Completion="Scalar"},
+            new GeneratedProperty { Name = "BinClause", Type = "NamedExpression", Optional=true, Completion="None" }
         }
     },
 

@@ -13,30 +13,30 @@ namespace Kusto.Language.Parsing
         {
             switch (ch)
             {
-                case '\t':
-                case ' ':
-                case '\r':
-                case '\n':
-                case '\u000c':
-                case '\u00a0':
-                case '\u1680':
-                case '\u180e':
-                case '\u2000':
-                case '\u2001':
-                case '\u2002':
-                case '\u2003':
-                case '\u2004':
-                case '\u2005':
-                case '\u2006':
-                case '\u2007':
-                case '\u2008':
-                case '\u2009':
-                case '\u200a':
-                case '\u200b':
-                case '\u202f':
-                case '\u205f':
-                case '\u3000':
-                case '\uFEFF':
+                case '\t':     // tab
+                case ' ':      // space
+                case '\r':     // carriage return
+                case '\n':     // line feed
+                case '\u000c': // form feed
+                case '\u00a0': // no break space
+                case '\u1680': // ogham space mark
+                case '\u180e': // mongolian vowel separator
+                case '\u2000': // en quad
+                case '\u2001': // em quad
+                case '\u2002': // en space
+                case '\u2003': // em space
+                case '\u2004': // three-per-em space
+                case '\u2005': // four-per-em space
+                case '\u2006': // six-per-em space
+                case '\u2007': // figure space
+                case '\u2008': // punctuation space
+                case '\u2009': // thin space
+                case '\u200a': // hair space
+                case '\u200b': // zero width space
+                case '\u202f': // narrow no break space
+                case '\u205f': // medium mathematical space
+                case '\u3000': // ideograph space
+                case '\uFEFF': // byte order mark
                     return true;
                 default:
                     return false;

@@ -334,7 +334,7 @@ namespace Kusto.Language.Parsing
 
             // if next is something that should also be trivia, then use more extensive scan
             var ch = Peek(text, pos);
-            if (char.IsWhiteSpace(ch))
+            if (TextFacts.IsWhitespace(ch))
             {
                 // scan additional whitespace
                 var wsLen = ScanWhitespace(text, pos);
@@ -395,7 +395,7 @@ namespace Kusto.Language.Parsing
         {
             int pos = start;
 
-            while (char.IsWhiteSpace(Peek(text, pos)))
+            while (TextFacts.IsWhitespace(Peek(text, pos)))
             {
                 pos++;
             }
@@ -410,7 +410,7 @@ namespace Kusto.Language.Parsing
 
             while ((ch = Peek(text, pos)) != '\0')
             {
-                if (char.IsWhiteSpace(ch))
+                if (TextFacts.IsWhitespace(ch))
                 {
                     pos++;
                     continue;

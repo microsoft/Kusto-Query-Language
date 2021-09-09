@@ -229,7 +229,7 @@ namespace Kusto.Language.Editor
                     }
                 }
 
-                if (!char.IsWhiteSpace(text[i]))
+                if (!Parsing.TextFacts.IsWhitespace(text[i]))
                 {
                     i++;
                     allWhitespace = false;

@@ -127,7 +127,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DupNextFailedIngestKeyword, "dup-next-failed-ingest", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.DupNextIngestKeyword, "dup-next-ingest", canBeIdentifier: true),
 
-                new SyntaxData(SyntaxKind.EarliestKeyword, "earliest"),
+                new SyntaxData(SyntaxKind.EarliestKeyword, "earliest", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.EchoKeyword, "echo", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.EffectiveKeyword, "effective", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.EnableKeyword, "enable", canBeIdentifier: true),

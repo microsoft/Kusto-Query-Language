@@ -3795,9 +3795,27 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region summarize
+        #region summarize
+
+        private NamedExpression ParseSummarizeByBinClause()
+        {
+            // this is support for legacy syntax
+            if (PeekToken().Kind == SyntaxKind.BinKeyword
+                && PeekToken(1).Kind == SyntaxKind.EqualToken)
+            {
+                var keyword = ParseToken(SyntaxKind.BinKeyword);
+                var equal = ParseToken(SyntaxKind.EqualToken);
+                var value = ParseUnnamedExpression() ?? CreateMissingExpression();
+                return new SimpleNamedExpression(
+                    new NameDeclaration(new TokenName(keyword)),
+                    equal,
+                    value);
+            }
+
+            return null;
+        }
 
         private bool ScanSummarizeByClauseExpressionListEnd()
         {
@@ -3815,12 +3833,13 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanSummarizeByClauseExpressionListEnd, oneOrMore: true);
-                return new SummarizeByClause(keyword, expressions);
-
+                var binClause = ParseSummarizeByBinClause();
+                return new SummarizeByClause(keyword, expressions, binClause);
             }
 
             return null;
         }
+
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_summarizeOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.SummarizeParameters);
