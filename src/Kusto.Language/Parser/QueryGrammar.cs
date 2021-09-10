@@ -2249,10 +2249,10 @@ namespace Kusto.Language.Parsing
 
             var DeprecatedRenderByPropertyName =
                 If(Not(Or(
-                        Token(SyntaxKind.KindKeyword),  // exclude other property names from possibly by-names
-                        Token(SyntaxKind.TitleKeyword),
-                        Token(SyntaxKind.AccumulateKeyword),
-                        Token(SyntaxKind.WithKeyword))),
+                        Token("kind"),  // exclude other property names from possibly by-names
+                        Token("title"),
+                        Token("accumulate"),
+                        Token("with"))),
                     SimpleNameReference.Cast<NameReference>());
 
             var DeprecatedRenderProperty =
