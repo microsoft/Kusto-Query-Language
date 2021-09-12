@@ -54,6 +54,8 @@
         FromKeyword,
 
         GetSchemaKeyword,
+        GrannyAscKeyword,
+        GrannyDescKeyword,
 
         HasKeyword,
         HasAnyKeyword,

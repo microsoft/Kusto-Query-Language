@@ -3696,7 +3696,10 @@ namespace Kusto.Language.Parsing
             if (expr != null)
             {
                 var kind = PeekToken().Kind;
-                if (kind == SyntaxKind.AscKeyword || kind == SyntaxKind.DescKeyword)
+                if (kind == SyntaxKind.AscKeyword
+                    || kind == SyntaxKind.DescKeyword
+                    || kind == SyntaxKind.GrannyAscKeyword
+                    || kind == SyntaxKind.GrannyDescKeyword)
                 {
                     expr = new OrderedExpression(expr, ParseRequiredOrderingNoNullsClause());
                 }
@@ -3931,14 +3934,22 @@ namespace Kusto.Language.Parsing
 
         private OrderingClause ParseRequiredOrderingClause()
         {
-            var keyword = ParseToken(SyntaxKind.AscKeyword) ?? ParseToken(SyntaxKind.DescKeyword);
+            var keyword
+                = ParseToken(SyntaxKind.AscKeyword)
+                ?? ParseToken(SyntaxKind.DescKeyword)
+                ?? ParseToken(SyntaxKind.GrannyAscKeyword)
+                ?? ParseToken(SyntaxKind.GrannyDescKeyword);
             var nulls = ParseOrderingNullsClause();
             return new OrderingClause(keyword, nulls);
         }
 
         private OrderingClause ParseRequiredOrderingNoNullsClause()
         {
-            var keyword = ParseToken(SyntaxKind.AscKeyword) ?? ParseToken(SyntaxKind.DescKeyword);
+            var keyword
+                = ParseToken(SyntaxKind.AscKeyword)
+                ?? ParseToken(SyntaxKind.DescKeyword)
+                ?? ParseToken(SyntaxKind.GrannyAscKeyword)
+                ?? ParseToken(SyntaxKind.GrannyDescKeyword);
             return new OrderingClause(keyword, null);
         }
 
@@ -3952,6 +3963,8 @@ namespace Kusto.Language.Parsing
                 {
                     case SyntaxKind.AscKeyword:
                     case SyntaxKind.DescKeyword:
+                    case SyntaxKind.GrannyAscKeyword:
+                    case SyntaxKind.GrannyDescKeyword:
                     case SyntaxKind.NullsKeyword:
                         expr = new OrderedExpression(expr, ParseRequiredOrderingClause());
                         break;

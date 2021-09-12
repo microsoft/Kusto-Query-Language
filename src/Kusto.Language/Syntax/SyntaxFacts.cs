@@ -86,6 +86,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.FromKeyword, "from", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.GetSchemaKeyword, "getschema"),
+                new SyntaxData(SyntaxKind.GrannyAscKeyword, "granny-asc"),
+                new SyntaxData(SyntaxKind.GrannyDescKeyword, "granny-desc"),
 
                 new SyntaxData(SyntaxKind.HasKeyword, "has", opKind: OperatorKind.Has),
                 new SyntaxData(SyntaxKind.HasCsKeyword, "has_cs", opKind: OperatorKind.HasCs),

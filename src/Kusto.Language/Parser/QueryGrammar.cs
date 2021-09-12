@@ -2024,7 +2024,7 @@ namespace Kusto.Language.Parsing
                     _left =>
                         Rule(
                             _left,
-                            If(Or(Token(SyntaxKind.AscKeyword), Token(SyntaxKind.DescKeyword)),
+                            If(Or(Token(SyntaxKind.AscKeyword), Token(SyntaxKind.DescKeyword), Token(SyntaxKind.GrannyAscKeyword), Token(SyntaxKind.GrannyDescKeyword)),
                                 OrderingNoNullClause),
                             (left, right) => (Expression)new OrderedExpression(left, right)));
 
