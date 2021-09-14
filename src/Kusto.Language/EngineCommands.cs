@@ -1552,6 +1552,9 @@ namespace Kusto.Language
            "MaterializedTo: datetime, LastRun: datetime, LastRunResult: string, IsHealthy: bool, " +
            "IsEnabled: bool, Folder: string, DocString: string, AutoUpdateSchema: bool, EffectiveDateTime: datetime, Lookback:timespan)";
 
+        private static readonly string ShowMaterializedViewsDetailsResult =
+            "(MaterializedViewName: string, DatabaseName: string, Folder: string, DocString: string, TotalExtents: long, TotalExtentSize: real, TotalOriginalSize: real, TotalRowCount: long, HotExtents: long, HotExtentSize: real, HotOriginalSize: real, HotRowCount: long, AuthorizedPrincipals: string, RetentionPolicy: string, CachingPolicy: string, ShardingPolicy: string, MergePolicy: string, MinExtentsCreationTime: datetime, MaxExtentsCreationTime: datetime)";
+
         public static readonly CommandSymbol CreateMaterializedView =
             new CommandSymbol(nameof(CreateMaterializedView),
                 "create [async] materialized-view [with '('! { PropertyName=<name> '='! Value=<value>, ',' } ')'!] " +
@@ -1567,6 +1570,16 @@ namespace Kusto.Language
            new CommandSymbol(nameof(ShowMaterializedViews),
                "show materialized-views",
                ShowMaterializedViewResult);
+        
+        public static readonly CommandSymbol ShowMaterializedViewsDetails =
+            new CommandSymbol(nameof(ShowMaterializedViewsDetails),
+                "show materialized-views ['(' { MaterializedViewName=<materializedview>, ',' }+ ')'] details",
+                ShowMaterializedViewsDetailsResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewDetails =
+            new CommandSymbol(nameof(ShowMaterializedViewDetails),
+                "show materialized-view MaterializedViewName=<materializedview> details",
+                ShowMaterializedViewsDetailsResult);
 
         public static readonly CommandSymbol ShowMaterializedViewPolicyRetention =
             new CommandSymbol(nameof(ShowMaterializedViewPolicyRetention),
@@ -2333,6 +2346,8 @@ namespace Kusto.Language
                 CreateOrAlterMaterializedView,
                 ShowMaterializedView,
                 ShowMaterializedViews, 
+                ShowMaterializedViewDetails, 
+                ShowMaterializedViewsDetails,
                 ShowMaterializedViewExtents,
                 ShowMaterializedViewPolicyRetention, 
                 ShowMaterializedViewPolicyMerge,

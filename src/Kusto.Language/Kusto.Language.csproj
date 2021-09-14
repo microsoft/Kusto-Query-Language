@@ -10,7 +10,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
     <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' and '$(KustoProps)' != 'true'">
     <DebugSymbols>true</DebugSymbols>
