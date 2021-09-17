@@ -1441,7 +1441,7 @@ namespace Kusto.Language
 
         private static readonly string DataIngestionPropertyList =
             PropertyList(
-                "ingestionMapping | ingestionMappingReference | creationTime | extend_schema | folder | format | ingestIfNotExists | " +
+                "ingestionMapping | ingestionMappingReference | creationTime | distributed | docstring | extend_schema | folder | format | ingestIfNotExists | " +
                 "ignoreFirstRecord | persistDetails | policy_ingestionTime | recreate_schema | tags | validationPolicy | zipPattern");
 
         public static readonly CommandSymbol IngestIntoTable =
