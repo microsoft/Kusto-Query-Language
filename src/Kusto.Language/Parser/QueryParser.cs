@@ -2315,18 +2315,32 @@ namespace Kusto.Language.Parsing
                     return new NamedParameter(
                         new NameDeclaration(new TokenName(ParseToken(parameter.Name))),
                         SyntaxToken.Missing(SyntaxKind.EqualToken),
-                        ParseQueryOperatorParameterValue(parameter, fnEndNameList));
+                        ParseQueryOperatorParameterValue(parameter, fnEndNameList),
+                        GetExpressionHint(parameter));
                 }
                 else if (PeekToken(len).Kind == SyntaxKind.EqualToken)
                 {
                     return new NamedParameter(
                         new NameDeclaration(new TokenName(ParseToken(parameter.Name))),
                         ParseRequiredToken(SyntaxKind.EqualToken),
-                        ParseQueryOperatorParameterValue(parameter, fnEndNameList));
+                        ParseQueryOperatorParameterValue(parameter, fnEndNameList),
+                        GetExpressionHint(parameter));
                 }
             }
 
             return null;
+        }
+
+        private static Editor.CompletionHint GetExpressionHint(QueryOperatorParameter parameter)
+        {
+            switch (parameter.ValueKind)
+            {
+                case QueryOperatorParameterValueKind.Column:
+                case QueryOperatorParameterValueKind.ColumnList:
+                    return Editor.CompletionHint.Column;
+                default:
+                    return Editor.CompletionHint.None;
+            }
         }
 
         private NamedParameter ParseQueryOperatorParameter()
@@ -2342,7 +2356,7 @@ namespace Kusto.Language.Parsing
                     || s_nameToDefaultQueryOperatorParameterMap.TryGetValue(nameToken.Text, out queryParameter))
                 {
                     var value = ParseQueryOperatorParameterValue(queryParameter);
-                    return new NamedParameter(name, equal, value);
+                    return new NamedParameter(name, equal, value, GetExpressionHint(queryParameter));
                 }
 
                 // now a known parameter, but parse it anyway

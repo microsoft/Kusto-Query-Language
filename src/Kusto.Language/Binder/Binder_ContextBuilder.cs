@@ -120,6 +120,12 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitNamedParameter(NamedParameter node)
+            {
+                base.VisitNamedParameter(node);
+                _binder._scopeKind = ScopeKind.Normal;
+            }
+
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)
             {
                 base.VisitMakeSeriesOperator(node);
