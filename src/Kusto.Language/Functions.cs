@@ -1450,7 +1450,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("value", ParameterTypeKind.Scalar, ArgumentKind.Star)))
+                    new Parameter("value", ParameterTypeKind.Scalar, ArgumentKind.StarOnly)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -2481,7 +2481,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Long,
                     new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Column, minOccurring: 1, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Long,
-                    new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Star)))
+                    new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.StarOnly)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol NewGuid = new FunctionSymbol("new_guid", ScalarTypes.Guid)

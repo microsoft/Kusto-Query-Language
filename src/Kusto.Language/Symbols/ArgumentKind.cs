@@ -17,7 +17,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The argument must be the star expression
         /// </summary>
-        Star,
+        StarOnly,
+
+        /// <summary>
+        /// The argument may be the star expression
+        /// </summary>
+        StarAllowed,
 
         /// <summary>
         /// The argument must be an aggregate expression

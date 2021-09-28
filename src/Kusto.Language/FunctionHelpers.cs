@@ -208,7 +208,7 @@ namespace Kusto.Language
 
                 expr = Kusto.Language.Binding.Binder.GetUnderlyingExpression(expr);
 
-                if (expr.ReferencedSymbol is ColumnSymbol c)
+                if (Kusto.Language.Binding.Binder.GetResultColumn(expr) is ColumnSymbol c)
                 {
                     if (symbols == null)
                     {

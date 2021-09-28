@@ -1542,7 +1542,7 @@ namespace Kusto.Language.Editor
                 {
                     case ArgumentKind.Column:
                         return CompletionHint.Column;
-                    case ArgumentKind.Star:
+                    case ArgumentKind.StarOnly:
                         return CompletionHint.None;
                 }
 

@@ -40,7 +40,7 @@ namespace Kusto.Language
                     new Parameter("left", ParameterTypeKind.StringOrDynamic), 
                     new Parameter("right", ScalarTypes.String)),
                 new Signature(ScalarTypes.Bool,
-                    new Parameter("left", ParameterTypeKind.StringOrDynamic, ArgumentKind.Star),
+                    new Parameter("left", ParameterTypeKind.StringOrDynamic, ArgumentKind.StarOnly),
                     new Parameter("right", ScalarTypes.String)));
 
         public static readonly OperatorSymbol UnaryMinus =
@@ -165,7 +165,7 @@ namespace Kusto.Language
             new OperatorSymbol(OperatorKind.Equal,
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ParameterTypeKind.Scalar)).Hide(), // hide bool == ??
                 new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.NotBool), new Parameter("right", ParameterTypeKind.Scalar)),
-                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.NotBool, ArgumentKind.Star), new Parameter("right", ParameterTypeKind.Scalar)));
+                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.NotBool, ArgumentKind.StarOnly), new Parameter("right", ParameterTypeKind.Scalar)));
 
         public static readonly OperatorSymbol NotEqual =
             new OperatorSymbol(OperatorKind.NotEqual,

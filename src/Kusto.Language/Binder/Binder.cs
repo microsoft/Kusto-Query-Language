@@ -2866,10 +2866,12 @@ namespace Kusto.Language.Binding
 
             if (argument is StarExpression)
             {
-                return (parameter.ArgumentKind == ArgumentKind.Star)
-                    ? ParameterMatchKind.Exact : ParameterMatchKind.None;
+                return (parameter.ArgumentKind == ArgumentKind.StarOnly
+                    || parameter.ArgumentKind == ArgumentKind.StarAllowed)
+                        ? ParameterMatchKind.Exact 
+                        : ParameterMatchKind.None;
             }
-            else if (parameter.ArgumentKind == ArgumentKind.Star)
+            else if (parameter.ArgumentKind == ArgumentKind.StarOnly)
             {
                 return ParameterMatchKind.None;
             }
@@ -6023,14 +6025,15 @@ namespace Kusto.Language.Binding
             {
                 if (argument is StarExpression && signature.Symbol.Kind != SymbolKind.Operator)
                 {
-                    if (parameter.ArgumentKind != ArgumentKind.Star)
+                    if (parameter.ArgumentKind != ArgumentKind.StarOnly
+                        && parameter.ArgumentKind != ArgumentKind.StarAllowed)
                     {
                         diagnostics.Add(DiagnosticFacts.GetStarExpressionNotAllowed().WithLocation(argument));
                     }
-                    else if (argumentIndex < argumentTypes.Count - 1)
-                    {
-                        diagnostics.Add(DiagnosticFacts.GetStarExpressionMustBeLastArgument().WithLocation(argument));
-                    }
+                    //else if (argumentIndex < argumentTypes.Count - 1)
+                    //{
+                    //    diagnostics.Add(DiagnosticFacts.GetStarExpressionMustBeLastArgument().WithLocation(argument));
+                    //}
                 }
                 else
                 {
