@@ -13,10 +13,15 @@ namespace Kusto.Language.Binding
     internal partial class Binder
     {
         /// <summary>
-        /// The <see cref="ContextBuilder"/> is a <see cref="SyntaxVisitor"/> that recreates
-        /// the <see cref="Binder"/> state that existed for a <see cref="SyntaxNode"/> during the full semantic analysis
-        /// of the <see cref="TreeBinder"/> without actually doing the full analysis.
+        /// The <see cref="ContextBuilder"/> is a <see cref="SyntaxVisitor"/> that puts
+        /// a <see cref="Binder"/> into the same state that existed for a given <see cref="SyntaxNode"/> during 
+        /// the full semantic analysis.
         /// </summary>
+        /// <remarks>
+        /// The <see cref="ContextBuilder"/> works by walking the syntax tree upwards from a node at
+        /// a given position, recreating the state for the ancestor nodes first and refining that state
+        /// on the walk back to down the original node.
+        /// </remarks>
         private class ContextBuilder : DefaultSyntaxVisitor
         {
             private readonly Binder _binder;

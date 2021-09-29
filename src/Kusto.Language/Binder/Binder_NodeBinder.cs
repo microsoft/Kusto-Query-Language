@@ -25,9 +25,7 @@ namespace Kusto.Language.Binding
             }
 
             public TableSymbol RowScopeOrEmpty => _binder.RowScopeOrEmpty;
-
             public TableSymbol RightRowScopeOrEmpty => _binder.RightRowScopeOrEmpty;
-
 
             #region declarations
             public override SemanticInfo VisitNameAndTypeDeclaration(NameAndTypeDeclaration node)
