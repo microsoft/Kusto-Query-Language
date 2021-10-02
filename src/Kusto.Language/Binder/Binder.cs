@@ -4588,17 +4588,28 @@ namespace Kusto.Language.Binding
             {
                 case NameReference n:
                     return n.SimpleName;
-                case BracketedExpression be
-                    when be.Expression.Kind == SyntaxKind.StringLiteralExpression
-                        || be.Expression.Kind == SyntaxKind.CompoundStringLiteralExpression:
-                    return (string)be.Expression.LiteralValue;
+                case BracketedExpression be:
+                    if (be.Expression.IsLiteral
+                        && be.Expression.ResultType is ScalarSymbol bet
+                        && (bet == ScalarTypes.String || bet == ScalarTypes.Long || bet == ScalarTypes.Int))
+                    {
+                        return be.Expression.LiteralValue.ToString();
+                    }
+                    return defaultName;
                 case PathExpression p:
                     if (p.Expression.ResultType == ScalarTypes.Dynamic
                         || p.Expression.ResultType == ScalarTypes.Unknown)
                     {
                         var left = GetExpressionResultName(p.Expression, null);
                         var right = GetExpressionResultName(p.Selector, null);
-                        return $"{left}_{right}";
+                        if (!string.IsNullOrWhiteSpace(left))
+                        {
+                            return $"{left}_{right}";
+                        }
+                        else
+                        {
+                            return right;
+                        }
                     }
                     else
                     {
@@ -4610,7 +4621,14 @@ namespace Kusto.Language.Binding
                     {
                         var left = GetExpressionResultName(e.Expression, null);
                         var right = GetExpressionResultName(e.Selector, null);
-                        return $"{left}_{right}";
+                        if (!string.IsNullOrWhiteSpace(left))
+                        {
+                            return $"{left}_{right}";
+                        }
+                        else
+                        {
+                            return right;
+                        }
                     }
                     else
                     {

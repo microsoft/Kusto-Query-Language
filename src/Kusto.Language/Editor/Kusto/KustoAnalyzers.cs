@@ -176,6 +176,44 @@ namespace Kusto.Language.Editor
                 }
             });
 
+        public static readonly KustoAnalyzer AvoidUsingLegacyPartition = KustoAnalyzer.Create(
+            nameof(AvoidUsingLegacyPartition),
+            new Diagnostic(
+                "KS507",
+                category: DiagnosticCategory.General,
+                severity: DiagnosticSeverity.Suggestion,
+                description: "It is recommended to use the `native` or `shuffle` strategy of the partition operator. The legacy mode is limited to 64 partitions and is less efficient than the `native` or `shuffle` strategies."),
+            (code, dx, diagnostics) =>
+            {
+                foreach (var node in code.Syntax.GetDescendants<PartitionOperator>())
+                {
+                    bool isUsingLegacyStrategy = true;
+                    if (node.Parameters.Count > 0)
+                    {
+                        foreach (var parameter in node.Parameters)
+                        {
+                            if (parameter.Name.SimpleName.Equals(SyntaxKind.HintDotStrategyKeyword.GetText()))
+                            {
+                                if (parameter.Expression.IsLiteral)
+                                {
+                                    isUsingLegacyStrategy = parameter.Expression.LiteralValue.Equals("legacy");
+                                }
+                                else
+                                {
+                                    // invalid value is provided to the hint.strategy. it will fail anyway. no need to produce a warning message.
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    if (isUsingLegacyStrategy)
+                    {
+                        diagnostics.Add(dx.WithLocation(node));
+                    }
+                }
+            });
+
         private static bool IsInFilter(SyntaxNode node)
         {
             return node.GetFirstAncestor<FilterOperator>() != null;
@@ -287,7 +325,8 @@ namespace Kusto.Language.Editor
                  AvoidUsingFormatDatetimeInPredicate,
                  AvoidUsingObsoleteFunctions,
                  AvoidJoinWithoutKind,
-                 StdevTimespanConversion
+                 StdevTimespanConversion,
+                 AvoidUsingLegacyPartition
              }
              .ToReadOnly();
     }

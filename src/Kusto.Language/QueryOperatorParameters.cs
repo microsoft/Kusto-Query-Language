@@ -172,7 +172,8 @@ namespace Kusto.Language
         {
             HintDotConcurrency,
             HintDotSpread,
-            HintDotMaterialized
+            HintDotMaterialized,
+            HintDotStrategy.WithValues(KustoFacts.PartitionHintStrategies)
         }.ToReadOnly();
 
         public static readonly QueryOperatorParameter RenderKind =

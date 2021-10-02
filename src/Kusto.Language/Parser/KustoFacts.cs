@@ -169,6 +169,11 @@ namespace Kusto.Language
             "shuffle"
         };
 
+        public static readonly IReadOnlyList<string> PartitionHintStrategies = new string[]
+        {
+            "shuffle", "native", "legacy"
+        };
+
         public static readonly IReadOnlyList<string> OrderByHintStrategies = new string[]
         {
             "splitBlock", "multipleBlocks"
