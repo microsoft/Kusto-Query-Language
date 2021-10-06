@@ -346,6 +346,19 @@ namespace Kusto.Language
             return symbols.ToReadOnly();
         }
 
+        /// <summary>
+        /// Gets the symbol that would be referenced by the name, if the name were to occur at the position in the text.
+        /// </summary>
+        public Symbol GetSpeculativeReferencedSymbol(int position, string name, SymbolMatch match = SymbolMatch.Any, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (this.HasSemantics)
+            {
+                return Binder.GetReferencedSymbol(this.Tree, position, name, this.Globals, match, cancellationToken);
+            }
+
+            return null;
+        }
+
         private List<int> lineStarts;
 
         /// <summary>

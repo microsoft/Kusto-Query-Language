@@ -698,6 +698,37 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Gets the symbol that would be referenced at the specified location.
+        /// </summary>
+        public static Symbol GetReferencedSymbol(SyntaxTree tree, int position, string name, GlobalState globals, SymbolMatch match, CancellationToken cancellationToken)
+        {
+            if (tree.IsSafeToRecurse)
+            {
+                globals = globals.WithCache();
+                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
+                lock (bindingCache)
+                {
+                    var binder = new Binder(
+                        globals,
+                        globals.Cluster,
+                        globals.Database,
+                        null, // currentFunction
+                        GetDefaultOuterScope(globals),
+                        bindingCache,
+                        localBindingCache: null,
+                        semanticInfoSetter: null,
+                        cancellationToken: cancellationToken);
+                    var startNode = GetStartNode(tree.Root, position);
+                    binder.SetContext(startNode, position);
+                    var info = binder.BindName(name, match, startNode);
+                    return info?.ReferencedSymbol;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Gets the <see cref="TableSymbol"/> that is in scope as the implicit set of columns accessible within a query.
         /// </summary>
         public static TableSymbol GetRowScope(SyntaxTree tree, int position, GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
@@ -1175,7 +1206,7 @@ namespace Kusto.Language.Binding
                 && fn.Parent is EvaluateOperator;
         }
 
-        private SemanticInfo BindName(string name, SymbolMatch match, Expression location)
+        private SemanticInfo BindName(string name, SymbolMatch match, SyntaxNode location)
         {
             if (name == "")
                 return ErrorInfo;

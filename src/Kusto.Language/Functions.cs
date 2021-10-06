@@ -1359,7 +1359,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         private static readonly Parameter m_ArraySort_ArraysArg = new Parameter("arrays", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 64);
-        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1);
+        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0, maxOccurring: 1);
 
         public static readonly FunctionSymbol ArraySortAsc =
             new FunctionSymbol("array_sort_asc",

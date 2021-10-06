@@ -103,6 +103,8 @@ namespace Kusto.Language.Parsing
                     return rg.Required.First(predicate);
                 case TaggedGrammar tg:
                     return tg.Tagged.First(predicate);
+                case HiddenGrammar ht:
+                    return ht.Hidden.First(predicate);
                 case OneOrMoreGrammar oom:
                     return oom.Repeated.First(predicate)
                         ?? oom.Separator?.First(predicate);
@@ -117,6 +119,14 @@ namespace Kusto.Language.Parsing
         public bool IsEquivalentTo(Grammar grammar) =>
             AreEquivalent(this, grammar);
 
+
+        public static Grammar Unhidden(Grammar g)
+        {
+            while (g is HiddenGrammar h)
+                g = h.Hidden;
+            return g;
+        }
+
         public static bool AreEquivalent(Grammar a, Grammar b)
         {
             if (a == b)
@@ -124,6 +134,9 @@ namespace Kusto.Language.Parsing
 
             if (a == null || b == null)
                 return false;
+
+            a = Unhidden(a);
+            b = Unhidden(b);
 
             if (a.GetType() == b.GetType())
             {
@@ -224,6 +237,8 @@ namespace Kusto.Language.Parsing
                         return "ZeroOrMore";
                     case TaggedGrammar _:
                         return "Tagged";
+                    case HiddenGrammar _:
+                        return "Hidden";
                     default:
                         return "Unknown";
                 };
@@ -416,6 +431,28 @@ namespace Kusto.Language.Parsing
     }
 
     /// <summary>
+    /// A grammar element that represents a grammar with name tag.
+    /// </summary>
+    public sealed class HiddenGrammar : Grammar
+    {
+        public Grammar Hidden { get; }
+
+        public HiddenGrammar(Grammar hidden)
+            : base(hidden.GetHashCode())
+        {
+            this.Hidden = hidden;
+        }
+
+        public override TResult Accept<TResult>(GrammarVisitor<TResult> visitor) =>
+            visitor.VisitHidden(this);
+
+        public HiddenGrammar With(Grammar hidden) =>
+            hidden != this.Hidden
+                ? new HiddenGrammar(hidden)
+                : this;
+    }
+
+    /// <summary>
     /// A grammar element that represents an expected word or punctuation.
     /// </summary>
     public sealed class TokenGrammar : Grammar
@@ -467,6 +504,7 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitZeroOrMore(ZeroOrMoreGrammar grammar);
         public abstract TResult VisitOneOrMore(OneOrMoreGrammar grammar);
         public abstract TResult VisitTagged(TaggedGrammar grammar);
+        public abstract TResult VisitHidden(HiddenGrammar grammar);
         public abstract TResult VisitToken(TokenGrammar grammar);
         public abstract TResult VisitRule(RuleGrammar grammar);
     }
@@ -498,6 +536,9 @@ namespace Kusto.Language.Parsing
             DefaultVisit(grammar);
 
         public override TResult VisitTagged(TaggedGrammar grammar) =>
+            DefaultVisit(grammar);
+
+        public override TResult VisitHidden(HiddenGrammar grammar) =>
             DefaultVisit(grammar);
 
         public override TResult VisitToken(TokenGrammar grammar) =>

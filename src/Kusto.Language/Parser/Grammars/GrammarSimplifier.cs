@@ -87,6 +87,8 @@ namespace Kusto.Language.Parsing
                         return true;
                     case TaggedGrammar tg:
                         return IsOptional(tg.Tagged);
+                    case HiddenGrammar hg:
+                        return IsOptional(hg.Hidden);
                     default:
                         return false;
                 }
@@ -102,6 +104,8 @@ namespace Kusto.Language.Parsing
                         return new OneOrMoreGrammar(zom.Repeated, zom.Separator, zom.AllowTrailingSeparator);
                     case TaggedGrammar tagged:
                         return tagged.With(tagged.Tag, MakeNonOptional(tagged.Tagged));
+                    case HiddenGrammar hidden:
+                        return hidden.With(MakeNonOptional(hidden.Hidden));
                     default:
                         return grammar;
                 }
@@ -377,6 +381,16 @@ namespace Kusto.Language.Parsing
                     return null;
 
                 return grammar.With(grammar.Tag, newTagged);
+            }
+
+            public override Grammar VisitHidden(HiddenGrammar grammar)
+            {
+                var newHidden = grammar.Hidden.Accept(this);
+                if (newHidden == null)
+                    return null;
+                if (newHidden == grammar.Hidden)
+                    return grammar;
+                return grammar.With(newHidden);
             }
 
             public override Grammar VisitRule(RuleGrammar grammar) =>

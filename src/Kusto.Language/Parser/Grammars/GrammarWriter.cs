@@ -205,6 +205,13 @@ namespace Kusto.Language.Parsing
                 return true;
             }
 
+            public override bool VisitHidden(HiddenGrammar grammar)
+            {
+                _builder.Append("#");
+                Write(grammar.Hidden);
+                return true;
+            }
+
             private static bool IsSimpleToken(string text)
             {
                 for (int i = 0; i < text.Length; i++)

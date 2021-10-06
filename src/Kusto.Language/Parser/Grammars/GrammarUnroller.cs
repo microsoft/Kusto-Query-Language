@@ -31,6 +31,8 @@ namespace Kusto.Language.Parsing
                         return true;
                     case TaggedGrammar tg:
                         return IsOptional(tg.Tagged);
+                    case HiddenGrammar hg:
+                        return IsOptional(hg.Hidden);
                     default:
                         return false;
                 }

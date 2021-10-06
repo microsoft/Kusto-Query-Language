@@ -288,6 +288,13 @@ namespace Kusto.Language.Parsing
                 this.IsTerm = isTerm;
             }
 
+            public ParserInfo WithParser(Parser<LexicalToken, SyntaxElement> parser)
+            {
+                if (this.Parser == parser)
+                    return this;
+                return new ParserInfo(parser, this.Element, this.Missing, this.IsTerm);
+            }
+
             public ParserInfo WithElement(CustomElementDescriptor element)
             {
                 if (this.Element == element)
@@ -531,6 +538,12 @@ namespace Kusto.Language.Parsing
             {
                 var elem = grammar.Tagged.Accept(this);
                 return elem.WithElement(elem.Element.WithName(grammar.Tag));
+            }
+
+            public override ParserInfo VisitHidden(HiddenGrammar grammar)
+            {
+                var elem = grammar.Hidden.Accept(this);
+                return elem.WithParser(elem.Parser.Hide());
             }
 
             public override ParserInfo VisitToken(TokenGrammar grammar)

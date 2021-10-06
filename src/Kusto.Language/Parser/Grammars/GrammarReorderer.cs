@@ -78,6 +78,9 @@ namespace Kusto.Language.Parsing
 
         public int Compare(Grammar x, Grammar y)
         {
+            x = Grammar.Unhidden(x);
+            y = Grammar.Unhidden(y);
+
             if (x == y)
                 return 0;
 
@@ -266,6 +269,8 @@ namespace Kusto.Language.Parsing
                     return true;
                 case TaggedGrammar t:
                     return IsFallible(t.Tagged);
+                case HiddenGrammar h:
+                    return IsFallible(h.Hidden);
                 case OneOrMoreGrammar oom:
                     return IsFallible(oom.Repeated);
                 case SequenceGrammar seq:
@@ -337,6 +342,8 @@ namespace Kusto.Language.Parsing
                     return new Element(GetFirstElement(req.Required).Grammar, true);
                 case TaggedGrammar tag:
                     return GetFirstElement(tag.Tagged);
+                case HiddenGrammar hid:
+                    return GetFirstElement(hid.Hidden);
                 default:
                     return new Element(g, false);
             }

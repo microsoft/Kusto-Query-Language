@@ -43,6 +43,9 @@ namespace Kusto.Language.Parsing
         public override Grammar VisitTagged(TaggedGrammar grammar) =>
             Map(base.VisitTagged(grammar));
 
+        public override Grammar VisitHidden(HiddenGrammar grammar) =>
+            Map(base.VisitHidden(grammar));
+
         public override Grammar VisitRule(RuleGrammar grammar) =>
             Map(base.VisitRule(grammar));
 

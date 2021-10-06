@@ -121,6 +121,9 @@ namespace Kusto.Language.Parsing
                 case TaggedGrammar tag:
                     Add(root, tag.Tagged, nextNodes);
                     break;
+                case HiddenGrammar hid:
+                    Add(root, hid.Hidden, nextNodes);
+                    break;
                 default:
                     throw new InvalidOperationException($"Unhandled grammar {grammar.GetType().Name}");
             }

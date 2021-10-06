@@ -112,6 +112,8 @@ namespace Kusto.Language.Parsing
                     return MakeRequiredAfterFirstUniqueTerm(alt, analysis);
                 case TaggedGrammar tg:
                     return tg.With(tg.Tag, MakeRequiredAfterFirstUniqueTerm(tg.Tagged, analysis));
+                case HiddenGrammar hg:
+                    return hg.With(MakeRequiredAfterFirstUniqueTerm(hg.Hidden, analysis));
                 case OneOrMoreGrammar oom:
                     return oom.With(MakeRequiredAfterFirstUniqueTerm(oom.Repeated, analysis), oom.Separator, oom.AllowTrailingSeparator);
                 case ZeroOrMoreGrammar zom:
@@ -258,6 +260,9 @@ namespace Kusto.Language.Parsing
                     // require the tagged sub-grammar
                     return t.With(t.Tag, MakeRequired(t.Tagged));
 
+                case HiddenGrammar h:
+                    return h.With(MakeRequired(h.Hidden));
+
                 case TokenGrammar _:
                 case RuleGrammar _:
                     // add require to this grammar node
@@ -299,6 +304,9 @@ namespace Kusto.Language.Parsing
 
                 case TaggedGrammar t:
                     return t.With(t.Tag, MakeRequiredAfterFirstFallibleElement(t.Tagged));
+
+                case HiddenGrammar h:
+                    return h.With(MakeRequiredAfterFirstFallibleElement(h.Hidden));
 
                 case TokenGrammar _:
                 case RuleGrammar _:
@@ -381,6 +389,8 @@ namespace Kusto.Language.Parsing
                     return true;
                 case TaggedGrammar t:
                     return IsRequiredOrOptional(t.Tagged);
+                case HiddenGrammar h:
+                    return IsRequiredOrOptional(h.Hidden);
                 case SequenceGrammar s:
                     return IsAllRequiredOrOptional(s.Steps);
                 default:
@@ -430,7 +440,7 @@ namespace Kusto.Language.Parsing
             for (int i = 0; i < steps.Count; i++)
             {
                 // see through tags
-                var step = GetUntaggedGrammar(steps[i]);
+                var step = GetUntaggedUnhiddenGrammar(steps[i]);
 
                 if (step is RequiredGrammar)
                 {
@@ -441,11 +451,22 @@ namespace Kusto.Language.Parsing
             return -1;
         }
 
-        private static Grammar GetUntaggedGrammar(Grammar g)
+        private static Grammar GetUntaggedUnhiddenGrammar(Grammar g)
         {
-            while (g is TaggedGrammar t)
+            while (true)
             {
-                g = t.Tagged;
+                if (g is TaggedGrammar t)
+                {
+                    g = t.Tagged;
+                }
+                else if (g is HiddenGrammar h)
+                {
+                    g = h.Hidden;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return g;
@@ -454,7 +475,8 @@ namespace Kusto.Language.Parsing
         private static bool IsTerm(Grammar grammar) =>
             grammar is TokenGrammar
             || grammar is RuleGrammar
-            || (grammar is TaggedGrammar tg && IsTerm(tg.Tagged));
+            || (grammar is TaggedGrammar tg && IsTerm(tg.Tagged))
+            || (grammar is HiddenGrammar hg && IsTerm(hg.Hidden));
 
         private static bool IsOptional(Grammar grammar)
         {
@@ -465,6 +487,8 @@ namespace Kusto.Language.Parsing
                     return true;
                 case TaggedGrammar tg:
                     return IsOptional(tg.Tagged);
+                case HiddenGrammar hg:
+                    return IsOptional(hg.Hidden);
                 default:
                     return false;
             }

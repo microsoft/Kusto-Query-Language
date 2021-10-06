@@ -305,6 +305,47 @@ namespace Kusto.Language.Editor
                 }
             });
 
+        public static readonly KustoAnalyzer ColumnHasSameNameAsVariable = KustoAnalyzer.Create(
+            nameof(ColumnHasSameNameAsVariable),
+            new Diagnostic(
+                "KS510",
+                category: DiagnosticCategory.Correctness,
+                severity: DiagnosticSeverity.Warning,
+                description: "A variable or parameter is ignored in favor of a column with the same name."),
+            (code, dx, diagnostics, ct) =>
+            {
+                var variableNames = new HashSet<string>();
+
+                SyntaxNode.WalkNodes(code.Syntax, node =>
+                {
+                    if (node is LetStatement ls
+                        && ls.Name.ReferencedSymbol is VariableSymbol vs
+                        && vs.Type is ScalarSymbol)
+                    {
+                        variableNames.Add(ls.Name.SimpleName);
+                    }
+                    else if (node is FunctionParameter fp
+                        && fp.NameAndType.Name.ResultType is ScalarSymbol)
+                    {
+                        variableNames.Add(fp.NameAndType.Name.SimpleName);
+                    }
+                    else if (node is NameReference name)
+                    {
+                        // check if a column reference has the same name as a variable
+                        if (name.ReferencedSymbol is ColumnSymbol c
+                            && variableNames.Contains(c.Name))
+                        {
+                            // if the name would have bound to a variable or parameter then add a warning
+                            var symbol = code.GetSpeculativeReferencedSymbol(name.TextStart, c.Name, SymbolMatch.Local, ct);
+                            if (symbol != null)
+                            {
+                                diagnostics.Add(dx.WithLocation(name));
+                            }
+                        }
+                    }
+                });
+            });
+
         private static bool IsArgumentOfFunction(Expression argument, FunctionSymbol symbol)
         {
             return argument.Parent is SeparatedElement<Expression> el
@@ -326,7 +367,8 @@ namespace Kusto.Language.Editor
                  AvoidUsingObsoleteFunctions,
                  AvoidJoinWithoutKind,
                  StdevTimespanConversion,
-                 AvoidUsingLegacyPartition
+                 AvoidUsingLegacyPartition,
+                 ColumnHasSameNameAsVariable
              }
              .ToReadOnly();
     }

@@ -25,6 +25,7 @@ namespace Kusto.Language.Parsing
     // e ?          optional element
     // e *          zero or more of the same element
     // e +          one or more of the same element
+    // # e           hidden element
     // tag = e      element with tag
     // 'tag' = e    element with tag
     // [ a ]        optional alternation
@@ -255,18 +256,24 @@ namespace Kusto.Language.Parsing
                                     .WithTag("<one-or-more>")
                                     )));
 
+            var hiddenPrimary =
+                First(
+                    Rule(Token("#"), postfixPrimary, 
+                        (hat, hidden) => (Grammar)new HiddenGrammar(hidden)).WithTag("<hidden>"),
+                    postfixPrimary);
+
             // allow for tag=elem
             var taggedPrimary =
                 First(
                     If(And(Identifier, Token("=")),
-                        Rule(Identifier, Token("="), postfixPrimary,
+                        Rule(Identifier, Token("="), hiddenPrimary,
                             (id, eq, elem) => (Grammar)new TaggedGrammar(id, elem))),
 
                     If(And(StringLiteral, Token("=")),
-                        Rule(StringLiteral, Token("="), postfixPrimary,
+                        Rule(StringLiteral, Token("="), hiddenPrimary,
                             (str, eq, elem) => (Grammar)new TaggedGrammar(KustoFacts.GetStringLiteralValue(str), elem))),
 
-                    postfixPrimary
+                    hiddenPrimary
                     );
 
             elementCore = taggedPrimary;
