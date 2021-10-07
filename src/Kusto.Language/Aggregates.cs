@@ -557,10 +557,14 @@ namespace Kusto.Language
 
         private static bool CanAddArgMinMaxResultColumn(int argIndex, ColumnSymbol column, HashSet<ColumnSymbol> byClauseColumns, HashSet<ColumnSymbol> doNotRepeat, bool anyStar)
         {
+            if (argIndex == 0)
+                return true;
+
+            if (!anyStar)
+                return true;
+
             return !doNotRepeat.Contains(column)
-                && (argIndex == 0 
-                    || !anyStar
-                    || !byClauseColumns.Contains(column));
+                && !byClauseColumns.Contains(column);
         }
 
         private static ColumnSymbol GetResultColumn(Expression expr) =>

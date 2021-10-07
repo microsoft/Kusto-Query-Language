@@ -58,7 +58,7 @@ namespace Kusto.Language
             new OptionSymbol("query_bin_auto_size", "When evaluating the bin_auto() function, the bin size value to use.");
 
         public static readonly OptionSymbol QueryConsistency =
-            new OptionSymbol("queryconsistency", "Controls query consistency.", ScalarTypes.String, new[] { "'strongconsistency'", "'normalconsistency'", "'weakconsistency'" });
+            new OptionSymbol("queryconsistency", "Controls query consistency.", ScalarTypes.String, new[] { "'strongconsistency'", "'weakconsistency'", "'affinitizedweakconsistency'", "'databaseaffinitizedweakconsistency'" });
 
         public static readonly OptionSymbol QueryCursorAfterDefault =
             new OptionSymbol("query_cursor_after_default", "The default parameter value of the cursor_after() function when called without parameters.", ScalarTypes.String);
