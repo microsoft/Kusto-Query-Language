@@ -13,7 +13,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Returns a textual representation of a parser's grammar.
         /// </summary>
-        public static string Describe<TInput>(Parser<TInput> parser, bool showRequired = false)
+        public static string Describe<TInput>(Parser<TInput> parser, bool showRequired = true)
         {
             var builder = new Writer<TInput>(showRequired);
             builder.Visit(parser);

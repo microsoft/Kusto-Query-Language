@@ -486,6 +486,44 @@ namespace Kusto.Language
                 "create external table ExternalTableName=<externaltable> mapping MappingName=<string> MappingFormat=<string>",
                 TableIngestionMappingResult);
 
+        public static readonly CommandSymbol SetExternalTableAdmins =
+            new CommandSymbol(nameof(SetExternalTableAdmins),
+                "set external table externalTableName=<externaltable> admins (none [skip-results] | '(' {principal=<string>, ','}+ ')' [skip-results] [notes=<string>])",
+                UnknownResult);
+
+        public static readonly CommandSymbol AddExternalTableAdmins =
+            new CommandSymbol(nameof(AddExternalTableAdmins),
+                "add external table externalTableName=<externaltable> admins '(' {principal=<string>, ','}+ ')' [skip-results] [notes=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropExternalTableAdmins =
+            new CommandSymbol(nameof(DropExternalTableAdmins),
+                "drop external table externalTableName=<externaltable> admins '(' {principal=<string>, ','}+ ')' [skip-results] [notes=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterExternalTableDocString =
+            new CommandSymbol(nameof(AlterExternalTableDocString),
+                "alter external table tableName=<externaltable> docstring docStringValue=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterExternalTableFolder =
+            new CommandSymbol(nameof(AlterExternalTableFolder),
+                "alter external table tableName=<externaltable> folder folderValue=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowExternalTablePrincipals =
+            new CommandSymbol(nameof(ShowExternalTablePrincipals),
+                "show external table tableName=<externaltable> principals",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowFabric =
+            new CommandSymbol(nameof(ShowFabric),
+                "show fabric id=<name>",
+                UnknownResult);
+
+
+
+
         public static readonly CommandSymbol AlterExternalTableMapping =
             new CommandSymbol(nameof(AlterExternalTableMapping),
                 "alter external table ExternalTableName=<externaltable> mapping MappingName=<string> MappingFormat=<string>",
@@ -1491,7 +1529,7 @@ namespace Kusto.Language
         #endregion
 
         #region Data Ingestion
-        private static readonly string SourceDataLocatorList = "'(' { SourceDataLocator=<string>, ',' }+ ')'";
+        private static readonly string PathOrPathList = "(Path=<string> | '(' { Path=<string>, ',' }+ ')')";
 
         private static string PropertyList(string propertyNameRule = null) =>
             string.IsNullOrEmpty(propertyNameRule)
@@ -1505,7 +1543,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol IngestIntoTable =
             new CommandSymbol(nameof(IngestIntoTable),
-                $"ingest [async] into table! TableName=<table> {SourceDataLocatorList} [{DataIngestionPropertyList}]",
+                $"ingest [async] into table! TableName=<table> {PathOrPathList} [{DataIngestionPropertyList}]",
                 "(ExtentId: guid, ItemLoaded: string, Duration: string, HasErrors: string, OperationId: guid)");
 
         public static readonly CommandSymbol IngestInlineIntoTable =
@@ -2162,6 +2200,77 @@ namespace Kusto.Language
                 "show database cache query_results",
                 UnknownResult);
 
+        public static readonly CommandSymbol ShowDatabasesManagementGroups =
+            new CommandSymbol(nameof(ShowDatabasesManagementGroups),
+                "show databases management groups",
+                UnknownResult);
+
+        //public static readonly CommandSymbol ShowDatabasesPolicies =
+        //    new CommandSymbol(nameof(ShowDatabasesPolicies),
+        //        "show databases '(' {DatabaseName=<database>, ','} ')' policies '(' {policyName=<name>, ','} ')'",
+        //        UnknownResult);
+
+        //public static readonly CommandSymbol ShowDatabasesPrincipals =
+        //    new CommandSymbol(nameof(ShowDatabasesPrincipals),
+        //        $"show databases '(' {{DatabaseName=<database>, ','}} ')' principals [from tenants '(' {{tenant=<string>, ','}} ')'] [{PropertyList()}]",
+        //        UnknownResult);
+
+        public static readonly CommandSymbol AlterDatabaseStorageKeys =
+            new CommandSymbol(nameof(AlterDatabaseStorageKeys),
+                $"alter [async] database databaseName=<database> storage keys [{PropertyList()}] decryption-certificate-thumbprint thumbprint=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ClearDatabaseCacheStreamingIngestionSchema =
+            new CommandSymbol(nameof(ClearDatabaseCacheStreamingIngestionSchema),
+                "clear database cache streamingingestion schema",
+                UnknownResult);
+
+        public static readonly CommandSymbol ClearDatabaseCacheQueryWeakConsistency =
+            new CommandSymbol(nameof(ClearDatabaseCacheQueryWeakConsistency),
+                "clear database cache query_weak_consistency",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowEntitySchema =
+            new CommandSymbol(nameof(ShowEntitySchema),
+                $"show entity entity=<name> schema as json [in databases '(' {{item=<string>, ','}}+ ')'] [except excludedFunctions=<string>] [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowExtentDetails =
+            new CommandSymbol(nameof(ShowExtentDetails),
+                "show extent [details] (eid=<guid> | tname=<name>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol AttachExtentsIntoTableByContainer =
+            new CommandSymbol(nameof(AttachExtentsIntoTableByContainer),
+                "attach extents into table tableName=<table> by container containerUri=<string> {eid=<guid>}+",
+                UnknownResult);
+
+        public static readonly CommandSymbol AttachExtentsIntoTableByMetadata =
+            new CommandSymbol(nameof(AttachExtentsIntoTableByMetadata),
+                "attach [async] extents {into table tableName=<table>} by metadata csl=('<|' <input_query>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterExtentTagsFromQuery =
+            new CommandSymbol(nameof(AlterExtentTagsFromQuery),
+                "alter [async] extent tags '(' {t=<string>, ','}+ ')' csl=('<|' <input_query>)",
+                UnknownResult);
+
+        //public static readonly CommandSymbol DropExtentTagsFromQuery =
+        //    new CommandSymbol(nameof(DropExtentTagsFromQuery),
+        //        "drop [async] extent tags csl=('<|' <input_query>)",
+        //        UnknownResult);
+
+        //public static readonly CommandSymbol DropExtentTagsFromTable =
+        //    new CommandSymbol(nameof(DropExtentTagsFromTable),
+        //        "drop [async] extent tags from table tableName=<table> '(' {t=<string>, ','}+ ')'",
+        //        UnknownResult);
+
+        public static readonly CommandSymbol DropExtentTagsRetention =
+            new CommandSymbol(nameof(DropExtentTagsRetention),
+                "drop extent tags retention",
+                UnknownResult);
+
+
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
             new CommandSymbol[]
@@ -2633,6 +2742,27 @@ namespace Kusto.Language
                 ShowClusterStorageKeysHash,
                 ClearDatabaseCacheQueryResults,
                 ShowDatabaseCacheQueryResults,
+                ShowDatabasesManagementGroups,
+                //ShowDatabasesPolicies,
+                //ShowDatabasesPrincipals,
+                AlterDatabaseStorageKeys,
+                ClearDatabaseCacheStreamingIngestionSchema,
+                ClearDatabaseCacheQueryWeakConsistency,
+                ShowEntitySchema,
+                ShowExtentDetails,
+                AttachExtentsIntoTableByContainer,
+                AttachExtentsIntoTableByMetadata,
+                AlterExtentTagsFromQuery,
+                //DropExtentTagsFromQuery,
+                //DropExtentTagsFromTable,
+                DropExtentTagsRetention,
+                SetExternalTableAdmins,
+                AddExternalTableAdmins,
+                DropExternalTableAdmins,
+                AlterExternalTableDocString,
+                AlterExternalTableFolder,
+                ShowExternalTablePrincipals,
+                ShowFabric,
 
             };
     }
