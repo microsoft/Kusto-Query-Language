@@ -159,8 +159,13 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowDatabaseIngestionMappings =
             new CommandSymbol(nameof(ShowDatabaseIngestionMappings),
-                "show database DatabaseName=<database> ingestion MappingKind=(csv | json | avro | parquet | orc | w3clogfile) mappings",
+                $"show database [databaseName=<database>] ingestion [kind=(csv | avro | apacheavro | json | parquet | sstream | orc | w3clogfile)] mappings [name=<string>] [{PropertyList()}]",
                 DatabaseIngestionMappingResult);
+
+        public static readonly CommandSymbol ShowIngestionMappings =
+            new CommandSymbol(nameof(ShowIngestionMappings),
+                $"show [cluster] ingestion [kind=(csv | avro | apacheavro | json | parquet | sstream | orc | w3clogfile)] mappings [{PropertyList()}]",
+                UnknownResult);
 
         public static readonly CommandSymbol DropDatabaseIngestionMapping =
             new CommandSymbol(nameof(DropDatabaseIngestionMapping),
@@ -2270,6 +2275,77 @@ namespace Kusto.Language
                 "drop extent tags retention",
                 UnknownResult);
 
+        public static readonly CommandSymbol AlterFollowerClusterConfiguration =
+            new CommandSymbol(nameof(AlterFollowerClusterConfiguration),
+                "alter follower cluster configuration from leaderClusterMetadataPath=<string> (follow-authorized-principals '=' followAuthorizedPrincipals=<bool> | default-principals-modification-kind '=' modificationKind=(none | union | replace) | default-caching-policies-modification-kind '=' modificationKind=(none | union | replace))",
+                UnknownResult);
+
+        public static readonly CommandSymbol AddFollowerDatabaseAuthorizedPrincipals =
+            new CommandSymbol(nameof(AddFollowerDatabaseAuthorizedPrincipals),
+                "add follower database dbName=<database> [from leaderClusterMetadataPath=<string>] operationRole=(admins | users | viewers | unrestrictedviewers | monitors) '(' {principal=<string>, ','}+ ')' [notes=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropFollowerDatabaseAuthorizedPrincipals =
+            new CommandSymbol(nameof(DropFollowerDatabaseAuthorizedPrincipals),
+                "drop follower database dbName=<database> operationRole=(admins | users | viewers | unrestrictedviewers | monitors) [from leaderClusterMetadataPath=<string>] '(' {principal=<string>, ','}+ ')'",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterFollowerDatabaseAuthorizedPrincipals =
+            new CommandSymbol(nameof(AlterFollowerDatabaseAuthorizedPrincipals),
+                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] policy caching (hotdata '=' hotDataToken=<timespan> hotindex '=' hotIndexToken=<timespan> | hot '=' hotToken=<timespan>) hotWindows=[[','] {hot_window '=' p=(d1=<datetime> '..' d2=<datetime>), ','}+]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropFollowerDatabasePolicyCaching =
+            new CommandSymbol(nameof(DropFollowerDatabasePolicyCaching),
+                "delete follower database dbName=<database> policy caching",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterFollowerDatabaseChildEntities =
+            new CommandSymbol(nameof(AlterFollowerDatabaseChildEntities),
+                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] (tables | external tables | materialized-views) entityListKind=(exclude | include) operationName=(add | drop) '(' {ename=<wildcarded_name>, ','}+ ')'",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterFollowerDatabaseConfiguration =
+            new CommandSymbol(nameof(AlterFollowerDatabaseConfiguration),
+                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] (principals-modification-kind '=' modificationKind=(none | union | replace) | caching-policies-modification-kind '=' modificationKind=(none | union | replace) | prefetch-extents '=' prefetchExtents=<bool> | metadata serializedDatabaseMetadataOverride=<string>)",
+                UnknownResult);
+
+        //public static readonly CommandSymbol AddFollowerDatabase =
+        //    new CommandSymbol(nameof(AddFollowerDatabase),
+        //        "add follower database databaseName=<database> from leaderClusterMetadataPath=<string> metadata serializedDatabaseMetadataOverride=<string> | add follower (database databaseName=<wildcarded_name> [tables [exclude '(' {tableName=<wildcarded_name>, ','}+ ')'] [include '(' {tableName=<wildcarded_name>, ','}+ ')']] [external tables [exclude '(' {externalTableName=<wildcarded_name>, ','}+ ')'] [include '(' {externalTableName=<wildcarded_name>, ','}+ ')']] [materialized-views [exclude '(' {materializedViewName=<wildcarded_name>, ','}+ ')'] [include '(' {materializedViewName=<wildcarded_name>, ','}+ ')']] | databases '(' {databaseName=<database>, ','}+ ')') from leaderClusterMetadataPath=<string> [default-principals-modification-kind '=' modificationKind=(none | union | replace)] [default-caching-policies-modification-kind '=' modificationKind=(none | union | replace)]",
+        //        UnknownResult);
+
+        public static readonly CommandSymbol DropFollowerDatabases =
+            new CommandSymbol(nameof(DropFollowerDatabases),
+                "drop follower (database databaseName=<database> | databases '(' {databaseName=<database>, ','}+ ')') from leaderClusterMetadataPath=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowFollowerDatabase =
+            new CommandSymbol(nameof(ShowFollowerDatabase),
+                "show follower (database databaseName=<database> | databases ['(' {databaseName=<database>, ','} ')'])",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterFollowerTablesPolicyCaching =
+            new CommandSymbol(nameof(AlterFollowerTablesPolicyCaching),
+                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] (table name=<table> | materialized-view name=<materializedview> | tables '(' {name=<name>, ','}+ ')' | materialized-views '(' {name=<name>, ','}+ ')') policy caching (hotdata '=' hotDataToken=<timespan> hotindex '=' hotIndexToken=<timespan> | hot '=' hotToken=<timespan>) hotWindows=[[','] {hot_window '=' p=(d1=<datetime> '..' d2=<datetime>), ','}+]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropFollowerTablesPolicyCaching =
+            new CommandSymbol(nameof(DropFollowerTablesPolicyCaching),
+                "delete follower database dbName=<database> (table name=<table> | materialized-view name=<materializedview> | tables '(' {name=<name>, ','}+ ')' | materialized-views '(' {name=<name>, ','}+ ')') policy caching",
+                UnknownResult);
+
+
+        public static readonly CommandSymbol ShowFreshness =
+            new CommandSymbol(nameof(ShowFreshness),
+                "show freshness tableName=<table> [column columnName=<column>] [threshold threshold=<long>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowFunctionSchemaAsJson =
+            new CommandSymbol(nameof(ShowFunctionSchemaAsJson),
+                "show function functionName=<function> schema as json",
+                UnknownResult);
+
 
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
@@ -2763,6 +2839,21 @@ namespace Kusto.Language
                 AlterExternalTableFolder,
                 ShowExternalTablePrincipals,
                 ShowFabric,
+                AlterFollowerClusterConfiguration,
+                AddFollowerDatabaseAuthorizedPrincipals,
+                DropFollowerDatabaseAuthorizedPrincipals,
+                AlterFollowerDatabaseAuthorizedPrincipals,
+                DropFollowerDatabasePolicyCaching,
+                AlterFollowerDatabaseChildEntities,
+                AlterFollowerDatabaseConfiguration,
+                //AddFollowerDatabase,
+                DropFollowerDatabases,
+                ShowFollowerDatabase,
+                AlterFollowerTablesPolicyCaching,
+                DropFollowerTablesPolicyCaching,
+                ShowFreshness,
+                ShowFunctionSchemaAsJson,
+                ShowIngestionMappings,
 
             };
     }
