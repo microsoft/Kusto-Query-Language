@@ -28,6 +28,11 @@ namespace Kusto.Language
         public DatabaseSymbol Database { get; }
 
         /// <summary>
+        /// The default domain suffix
+        /// </summary>
+        public string Domain { get; }
+
+        /// <summary>
         /// Known functions.
         /// </summary>
         public IReadOnlyList<FunctionSymbol> Functions { get; }
@@ -127,6 +132,7 @@ namespace Kusto.Language
         /// Constructs a new <see cref="GlobalState"/> instance.
         /// </summary>
         private GlobalState(
+            string domain,
             IReadOnlyList<ClusterSymbol> clusters,
             ClusterSymbol cluster,
             DatabaseSymbol database,
@@ -150,6 +156,7 @@ namespace Kusto.Language
             Dictionary<string, OptionSymbol> optionMap,
             Dictionary<GlobalStateProperty, object> propertyMap)
         {
+            this.Domain = domain ?? KustoFacts.KustoWindowsNet;
             this.Clusters = clusters ?? EmptyReadOnlyList<ClusterSymbol>.Instance;
             this.Cluster = cluster ?? ClusterSymbol.Unknown;
             this.Database = database ?? DatabaseSymbol.Unknown;
@@ -181,6 +188,7 @@ namespace Kusto.Language
         public GlobalState Copy()
         {
             return new GlobalState(
+                this.Domain,
                 this.Clusters,
                 this.Cluster,
                 this.Database,
@@ -210,6 +218,7 @@ namespace Kusto.Language
         /// optional arguments is different than the current corresponding value.
         /// </summary>
         private GlobalState With(
+            Optional<string> domain = default(Optional<string>),
             Optional<IReadOnlyList<ClusterSymbol>> clusters = default(Optional<IReadOnlyList<ClusterSymbol>>),
             Optional<ClusterSymbol> cluster = default(Optional<ClusterSymbol>),
             Optional<DatabaseSymbol> database = default(Optional<DatabaseSymbol>),
@@ -223,6 +232,7 @@ namespace Kusto.Language
             Optional<IReadOnlyList<PropertyAndValue>> properties = default(Optional<IReadOnlyList<PropertyAndValue>>),
             Optional<KustoCache> cache = default(Optional<KustoCache>))
         {
+            var useDomain = domain.HasValue ? domain.Value : this.Domain;
             var useClusters = clusters.HasValue ? clusters.Value : this.Clusters;
             var useCluster = cluster.HasValue ? cluster.Value : this.Cluster;
             var useDatabase = database.HasValue ? database.Value : this.Database;
@@ -236,7 +246,8 @@ namespace Kusto.Language
             var useProperties = properties.HasValue ? properties.Value : this.Properties;
             var useCache = cache.HasValue ? cache.Value : this.Cache;
 
-            if (useClusters != this.Clusters
+            if (useDomain != this.Domain
+                || useClusters != this.Clusters
                 || useCluster != this.Cluster
                 || useDatabase != this.Database
                 || useFunctions != this.Functions
@@ -250,6 +261,7 @@ namespace Kusto.Language
                 || useCache != this.Cache)
             {
                 return new GlobalState(
+                    useDomain,
                     useClusters,
                     useCluster,
                     useDatabase,
@@ -356,6 +368,14 @@ namespace Kusto.Language
                 var newClusters = AddOrReplace(this.Clusters, cluster);
                 return WithClusterList(newClusters).WithCluster(cluster);
             }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified default domain suffix.
+        /// </summary>
+        public GlobalState WithDomain(string domain)
+        {
+            return With(domain: domain);
         }
 
         private static IReadOnlyList<T> AddOrReplace<T>(IReadOnlyList<T> list, T newElement)
@@ -465,15 +485,14 @@ namespace Kusto.Language
             name = KustoFacts.GetHostName(name) ?? name;
 
             if (this.Cluster != ClusterSymbol.Unknown
-                && (KustoFacts.IsClusterHostName(name, this.Cluster.Name)
-                    || (KustoFacts.IsClusterShortName(name, this.Cluster.Name) && KustoFacts.IsKustoWindowsNet(this.Cluster.Name))))
+                && (KustoFacts.IsHostName(name, this.Cluster.Name)
+                    || (KustoFacts.IsShortHostName(name, this.Cluster.Name, this.Domain))))
             {
                 return this.Cluster;
             }
 
-            return this.Clusters.FirstOrDefault(c => KustoFacts.IsClusterHostName(name, c.Name))
-                ?? this.Clusters.FirstOrDefault(c => KustoFacts.IsClusterShortName(name, c.Name) && KustoFacts.IsKustoWindowsNet(c.Name))
-                ?? this.Clusters.FirstOrDefault(c => KustoFacts.IsClusterShortName(name, c.Name));
+            return this.Clusters.FirstOrDefault(c => KustoFacts.IsHostName(name, c.Name))
+                ?? this.Clusters.FirstOrDefault(c => KustoFacts.IsShortHostName(name, c.Name, this.Domain));
         }
 
         /// <summary>
@@ -881,6 +900,7 @@ namespace Kusto.Language
                 {
                     var globals =
                         new GlobalState(
+                            KustoFacts.KustoWindowsNet,
                             EmptyReadOnlyList<ClusterSymbol>.Instance,
                             ClusterSymbol.Unknown,
                             DatabaseSymbol.Unknown,

@@ -709,37 +709,19 @@ namespace Kusto.Language
             return builder.ToString();
         }
 
-        private static readonly string HostNamePrefix = "://";
-        private static readonly string KustoWindowsNet = ".kusto.windows.net";
+        private const string HostNamePrefix = "://";
+        public static readonly string KustoWindowsNet = ".kusto.windows.net";
 
         /// <summary>
         /// Returns true if the name matches the host name.
         /// </summary>
-        public static bool IsClusterHostName(string name, string hostName)
+        public static bool IsHostName(string name, string hostName)
         {
-            return string.Compare(name, hostName, ignoreCase: true) == 0;
+            return string.Compare(name, hostName, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
         /// <summary>
-        /// Returns true if the hostname ends with .kusto.windows.net.
-        /// </summary>
-        public static bool IsKustoWindowsNet(string hostname)
-        {
-            return hostname.EndsWith(KustoWindowsNet, StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Returns true if the name is the short name prefix of the cluster host name.
-        /// </summary>
-        public static bool IsClusterShortName(string name, string hostName)
-        {
-            // supplied name is the first part of XXX.YYY ?
-            return !name.Contains(".")
-                && hostName.StartsWith(name + ".", StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Gets the host name from a possible cluster uri
+        /// Gets the host name from a possible uri
         /// </summary>
         public static string GetHostName(string clusterUriOrName)
         {
@@ -763,6 +745,94 @@ namespace Kusto.Language
             {
                 return clusterUriOrName.Substring(start, end - start);
             }
+        }
+
+        /// <summary>
+        /// Gets the full name of a host given the short or full name.
+        /// </summary>
+        public static string GetFullHostName(string hostname, string defaultDomainSuffix)
+        {
+            if (IsPossibleShortHostName(hostname)
+                && !string.IsNullOrEmpty(defaultDomainSuffix)
+                && defaultDomainSuffix[0] == '.')
+            {
+                return hostname + defaultDomainSuffix;
+            }
+            else
+            {
+                return hostname;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the hostname has a short name
+        /// </summary>
+        public static bool HasShortHostName(string hostname, string defaultDomainSuffix)
+        {
+            // the full name has a short name, if it is in the default domain and the remaining prefix qualifies as a short name.
+            return !string.IsNullOrEmpty(defaultDomainSuffix)
+                && defaultDomainSuffix[0] == '.'
+                && hostname.EndsWith(defaultDomainSuffix, StringComparison.OrdinalIgnoreCase)
+                && hostname.Length > defaultDomainSuffix.Length
+                && IsPossibleShortHostName(hostname, 0, hostname.Length - defaultDomainSuffix.Length);
+        }
+
+        /// <summary>
+        /// Returns true if the name is the short name of the host name.
+        /// </summary>
+        public static bool IsShortHostName(string name, string hostName, string defaultDomainSuffix)
+        {
+            // supplied name is the first part of xxx.YYY.ZZZ or xxx.xxx.YYY.ZZZ
+            if (!HasShortHostName(hostName, defaultDomainSuffix))
+                return false;
+
+            // the hostname should be the combination of the short name and the default domain suffix
+            if (name.Length + defaultDomainSuffix.Length != hostName.Length)
+                return false;
+
+            return hostName.StartsWith(name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns true if the name is a possible short host name
+        /// </summary>
+        public static bool IsPossibleShortHostName(string name)
+        {
+            return IsPossibleShortHostName(name, 0, name.Length);
+        }
+
+        private static bool IsPossibleShortHostName(string name, int start, int len)
+        {
+            // short names can have zero or one dots:  name or name.region
+            return !string.IsNullOrEmpty(name)
+                && name[name.Length - 1] != '.'
+                && CountDots(name, start, len) < 2;
+        }
+
+        private static int CountDots(string text, int start, int len)
+        {
+            int count = 0;
+
+            for (int i = start, end = start + len; i < end; i++)
+            {
+                if (text[i] == '.')
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Gets the short name given the full host name, if one exists or null if no short name exists
+        /// </summary>
+        public static string GetShortHostName(string hostName, string defaultDomainSuffix)
+        {
+            if (hostName != null && HasShortHostName(hostName, defaultDomainSuffix))
+            {
+                return hostName.Substring(0, hostName.Length - defaultDomainSuffix.Length);
+            }
+
+            return null;
         }
 
         /// <summary>

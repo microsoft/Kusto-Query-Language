@@ -2645,6 +2645,15 @@ namespace Kusto.Language.Binding
             return matches;
         }
 
+        private static bool IsDefaultValueIndicator(Parameter parameter, Expression argument)
+        {
+            return parameter.DefaultValueIndicator != null
+                && argument.ResultType == ScalarTypes.String
+                && argument is LiteralExpression lit
+                && lit.LiteralValue is string value
+                && value == parameter.DefaultValueIndicator;
+        }
+
         private ParameterMatchKind GetParameterMatchKind(
             Signature signature,
             IReadOnlyList<Parameter> argumentParameters,
@@ -2674,11 +2683,7 @@ namespace Kusto.Language.Binding
             if (argumentType == ScalarTypes.Unknown)
                 return ParameterMatchKind.Unknown;
 
-            if (parameter.DefaultValueIndicator != null
-                && argumentType == ScalarTypes.String
-                && argument is LiteralExpression lit
-                && lit.LiteralValue is string value
-                && value == parameter.DefaultValueIndicator)
+            if (IsDefaultValueIndicator(parameter, argument))
             {
                 return ParameterMatchKind.Exact;
             }
@@ -5867,10 +5872,10 @@ namespace Kusto.Language.Binding
                     {
                         diagnostics.Add(DiagnosticFacts.GetStarExpressionNotAllowed().WithLocation(argument));
                     }
-                    //else if (argumentIndex < argumentTypes.Count - 1)
-                    //{
-                    //    diagnostics.Add(DiagnosticFacts.GetStarExpressionMustBeLastArgument().WithLocation(argument));
-                    //}
+                }
+                else if (IsDefaultValueIndicator(parameter, argument))
+                {
+                    // do nothing, this is a legal value for this parameter
                 }
                 else
                 {

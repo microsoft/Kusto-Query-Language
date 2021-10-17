@@ -467,29 +467,42 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("NumberOfRows", ParameterTypeKind.Integer));
 
+        private static TableSymbol GetOutputSchema(TableSymbol input, IReadOnlyList<Expression> args)
+        {
+            if (args.Count > 0 && args[0].ReferencedSymbol is TableSymbol schema)
+            {
+                return schema;
+            }
+            else
+            {
+                return new TableSymbol().WithIsOpen(true);
+            }
+        }
+
         public static readonly FunctionSymbol CSharp =
              new FunctionSymbol("csharp",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
+                 GetOutputSchema,
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("ScriptParameters", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol Python =
              new FunctionSymbol("python",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
+                 GetOutputSchema,
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("ScriptParameters", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0),
+                 new Parameter("Artifacts", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol R =
              new FunctionSymbol("r",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // TODO: can we parse the output schema argument?
+                 GetOutputSchema,
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("ScriptParameters", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol RollingPercentile =
              new FunctionSymbol("rolling_percentile",
@@ -641,6 +654,7 @@ namespace Kusto.Language
             BagUnpack,
             Basket,
             CosmosdbSqlRequest,
+            CSharp,
             DCountIntersect,
             DiffPatterns,
             EstimateRowsCount,

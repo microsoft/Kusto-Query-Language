@@ -44,7 +44,7 @@ namespace Kusto.Language
             new QueryOperatorParameter("hint.spread", QueryOperatorParameterValueKind.WordOrNumber, values: KustoFacts.JoinHintRemotes);
 
         public static readonly QueryOperatorParameter HintDotStrategy =
-            new QueryOperatorParameter("hint.strategy", QueryOperatorParameterValueKind.Word, values: KustoFacts.JoinHintStrategies);
+            new QueryOperatorParameter("hint.strategy", QueryOperatorParameterValueKind.Word);
 
         public static readonly QueryOperatorParameter IsFuzzy =
             new QueryOperatorParameter("isfuzzy", QueryOperatorParameterValueKind.BoolLiteral);
@@ -173,6 +173,7 @@ namespace Kusto.Language
             HintDotConcurrency,
             HintDotSpread,
             HintDotMaterialized,
+            HintDotShuffleKey,
             HintDotStrategy.WithValues(KustoFacts.PartitionHintStrategies)
         }.ToReadOnly();
 

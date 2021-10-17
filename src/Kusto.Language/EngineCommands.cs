@@ -452,7 +452,7 @@ namespace Kusto.Language
 
         private static readonly string CreateOrAlterExternalTableGrammar =
             @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
-              kind '='! TableKind=(storage | blob | adl)
+              kind '='! TableKind=(storage | #blob | #adl)
               [partition by!
                '('
                 {PartitionName=<name> ':'!
@@ -2245,6 +2245,11 @@ namespace Kusto.Language
                 "show extent [details] (eid=<guid> | tname=<name>)",
                 UnknownResult);
 
+        public static readonly CommandSymbol ShowExtentColumnStorageStats =
+            new CommandSymbol(nameof(ShowExtentColumnStorageStats),
+                "show extent extentId=<guid> column columnName=<name> storage stats",
+                UnknownResult);
+
         public static readonly CommandSymbol AttachExtentsIntoTableByContainer =
             new CommandSymbol(nameof(AttachExtentsIntoTableByContainer),
                 "attach extents into table tableName=<table> by container containerUri=<string> {eid=<guid>}+",
@@ -2826,6 +2831,7 @@ namespace Kusto.Language
                 ClearDatabaseCacheQueryWeakConsistency,
                 ShowEntitySchema,
                 ShowExtentDetails,
+                ShowExtentColumnStorageStats,
                 AttachExtentsIntoTableByContainer,
                 AttachExtentsIntoTableByMetadata,
                 AlterExtentTagsFromQuery,

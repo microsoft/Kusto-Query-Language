@@ -701,7 +701,8 @@ namespace Kusto.Language
 
         public static Diagnostic GetNameDoesNotReferToAnyKnownCluster(string name)
         {
-            return new Diagnostic("KS207", $"The name '{name}' does not refer to any known cluster.");
+            return new Diagnostic("KS207", $"The name '{name}' either does not refer to a reachable cluster or no schema from it is currently available.")
+                .WithSeverity(DiagnosticSeverity.Warning);
         }
 
         public static Diagnostic GetNameDoesNotReferToAnyKnownDatabase(string name)

@@ -43,16 +43,6 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => Tabularity.Tabular;
 
         /// <summary>
-        /// Returns true if name matches this cluster's name.
-        /// </summary>
-        public bool IsCluster(string name)
-        {
-            name = KustoFacts.GetHostName(name) ?? name;
-            return KustoFacts.IsClusterHostName(name, this.Name)
-                || KustoFacts.IsClusterShortName(name, this.Name);
-        }
-
-        /// <summary>
         /// Gets the database with the specified name or returns null.
         /// </summary>
         public DatabaseSymbol GetDatabase(string databaseName)
