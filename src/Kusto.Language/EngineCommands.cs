@@ -1659,6 +1659,12 @@ namespace Kusto.Language
 
         #region Materialized Views
 
+        private static readonly string MaterializedViewCreatePropertyList =
+            PropertyList("lookback | backfill | effectiveDateTime | updateExtentsCreationTime | autoUpdateSchema | dimensionTables | folder | docString");
+
+        private static readonly string MaterializedViewAlterPropertyList =
+            PropertyList("lookback | dimensionTables");
+
         private static readonly string ShowMaterializedViewResult =
            "(Name: string, SourceTable: string, Query: string, " +
            "MaterializedTo: datetime, LastRun: datetime, LastRunResult: string, IsHealthy: bool, " +
@@ -1669,7 +1675,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateMaterializedView =
             new CommandSymbol(nameof(CreateMaterializedView),
-                "create [async] materialized-view [with '('! { PropertyName=<name> '='! Value=<value>, ',' } ')'!] " +
+                $"create [async] materialized-view [{MaterializedViewCreatePropertyList}] " +
                 "MaterializedViewName=<name> on table <table> <function_body>",
                 UnknownResult);
 
@@ -1715,12 +1721,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterMaterializedView =
             new CommandSymbol(nameof(AlterMaterializedView),
-                $"alter materialized-view MaterializedViewName=<materializedview> on table <table> <function_body>",
+                $"alter materialized-view [{MaterializedViewAlterPropertyList}] MaterializedViewName=<materializedview> on table <table> <function_body>",
                 ShowMaterializedViewResult);
 
         public static readonly CommandSymbol CreateOrAlterMaterializedView =
             new CommandSymbol(nameof(CreateOrAlterMaterializedView),
-                $"create-or-alter materialized-view MaterializedViewName=<materializedview> on table <table> <function_body>",
+                $"create-or-alter materialized-view [{MaterializedViewCreatePropertyList}] MaterializedViewName=<materializedview> on table <table> <function_body>",
                 ShowMaterializedViewResult);
 
         public static readonly CommandSymbol DropMaterializedView =
