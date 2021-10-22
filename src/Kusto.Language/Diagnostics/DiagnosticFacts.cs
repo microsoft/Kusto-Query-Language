@@ -404,10 +404,14 @@ namespace Kusto.Language
             return new Diagnostic("KS136", "The expression value must be an integer or dynamic.");
         }
 
-
         public static Diagnostic GetExpressionMustBeNumeric()
         {
             return new Diagnostic("KS137", "The expression value must be a number.");
+        }
+
+        public static Diagnostic GetExpressionMustBeNumericOrBool()
+        {
+            return new Diagnostic("KS137", "The expression value must be a number or boolean true/false.");
         }
 
         public static Diagnostic GetExpressionMustBeSummable()

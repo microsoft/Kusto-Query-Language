@@ -467,7 +467,9 @@ namespace Kusto.Language.Symbols
                 case ParameterTypeKind.IntegerOrDynamic:
                     return "integer|dynamic";
                 case ParameterTypeKind.Number:
-                    return "number";
+                   return "number";
+                case ParameterTypeKind.NumberOrBool:
+                    return "number|bool";
                 case ParameterTypeKind.RealOrDecimal:
                     return "real|decimal";
                 case ParameterTypeKind.Summable:

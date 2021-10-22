@@ -127,7 +127,8 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol LessThan =
             new OperatorSymbol(OperatorKind.LessThan,
-                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ParameterTypeKind.NumberOrBool)).Hide(), // hide bool < ???
+                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.NumberOrBool)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)),
@@ -136,7 +137,8 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol LessThanOrEqual =
             new OperatorSymbol(OperatorKind.LessThanOrEqual,
-                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ParameterTypeKind.NumberOrBool)).Hide(), // hide bool <= ???
+                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.NumberOrBool)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)),
@@ -145,7 +147,8 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol GreaterThan =
             new OperatorSymbol(OperatorKind.GreaterThan,
-                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ParameterTypeKind.NumberOrBool)).Hide(), // hide bool > ???
+                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.NumberOrBool)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)),
@@ -154,7 +157,8 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol GreaterThanOrEqual =
             new OperatorSymbol(OperatorKind.GreaterThanOrEqual,
-                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ParameterTypeKind.NumberOrBool)).Hide(), // hide bool >= ???
+                new Signature(ScalarTypes.Bool, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.NumberOrBool)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)),

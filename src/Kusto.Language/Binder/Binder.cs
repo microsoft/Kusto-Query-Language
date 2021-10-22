@@ -2755,6 +2755,11 @@ namespace Kusto.Language.Binding
                         return ParameterMatchKind.Number;
                     break;
 
+                case ParameterTypeKind.NumberOrBool:
+                    if (IsNumber(argumentType) || argumentType == ScalarTypes.Bool)
+                        return ParameterMatchKind.Number;
+                    break;
+
                 case ParameterTypeKind.Summable:
                     if (IsSummable(argumentType))
                         return ParameterMatchKind.Summable;
@@ -5326,6 +5331,21 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        private bool CheckIsNumberOrBool(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (IsNumber(type) || type == ScalarTypes.Bool)
+                return true;
+
+            if (!GetResultTypeOrError(expression).IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeNumericOrBool().WithLocation(expression));
+            }
+
+            return false;
+        }
+
         private bool CheckIsSummable(Expression expression, List<Diagnostic> diagnostics)
         {
             if (IsSummable(GetResultTypeOrError(expression)))
@@ -5924,6 +5944,10 @@ namespace Kusto.Language.Binding
 
                         case ParameterTypeKind.Number:
                             CheckIsNumber(argument, diagnostics);
+                            break;
+
+                        case ParameterTypeKind.NumberOrBool:
+                            CheckIsNumberOrBool(argument, diagnostics);
                             break;
 
                         case ParameterTypeKind.Summable:

@@ -81,7 +81,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AttachDatabase =
             new CommandSymbol(nameof(AttachDatabase),
-                "attach database [metadata] DatabaseName=<database> from (BlobContainerUrl=<string> ';' StorageAccountKey=<string> | Path=<string>)",
+                "attach database DatabaseName=<database> from (BlobContainerUrl=<string> ';' StorageAccountKey=<string> | Path=<string>)",
+                "(Step: string, Duration: string)");
+
+        public static readonly CommandSymbol AttachDatabaseMetadata =
+            new CommandSymbol(nameof(AttachDatabaseMetadata),
+                "attach database metadata DatabaseName=<database> from (BlobContainerUrl=<string> ';' StorageAccountKey=<string> | Path=<string>)",
                 "(Step: string, Duration: string)");
 
         public static readonly CommandSymbol DetachDatabase =
@@ -1419,10 +1424,39 @@ namespace Kusto.Language
         #endregion
 
         #region Security Role Commands
+
+        private static readonly string ShowPrincipalRolesResult =
+            "(Scope: string, DisplayName: string, AADObjectID: string, Role: string)";
+
         public static readonly CommandSymbol ShowPrincipalRoles =
             new CommandSymbol(nameof(ShowPrincipalRoles),
-                "show principal [Principal=<string>] roles",
-                "(Scope: string, DisplayName: string, AADObjectID: string, Role: string)");
+                $"show principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
+
+        public static readonly CommandSymbol ShowDatabasePrincipalRoles =
+            new CommandSymbol(nameof(ShowDatabasePrincipalRoles),
+                $"show database DatabaseName=<database> principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
+
+        public static readonly CommandSymbol ShowTablePrincipalRoles =
+            new CommandSymbol(nameof(ShowTablePrincipalRoles),
+                $"show table TableName=<table> principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
+
+        public static readonly CommandSymbol ShowExternalTablesPrincipalRoles =
+            new CommandSymbol(nameof(ShowExternalTablesPrincipalRoles),
+                $"show external table ExternalTableName=<externaltable> principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
+
+        public static readonly CommandSymbol ShowFunctionPrincipalRoles =
+            new CommandSymbol(nameof(ShowFunctionPrincipalRoles),
+                $"show function FunctionName=<function> principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
+
+        public static readonly CommandSymbol ShowClusterPrincipalRoles =
+            new CommandSymbol(nameof(ShowClusterPrincipalRoles),
+                $"show cluster principal (roles | Principal=<string> roles) [{PropertyList()}]",
+                ShowPrincipalRolesResult);
 
         private static readonly string ShowPrincipalsResult =
             "(Role: string, PrincipalType: string, PrincipalDisplayName: string, PrincipalObjectId: string, PrincipalFQN: string, Notes: string, RoleAssignmentIdentifier: string)";
@@ -2060,6 +2094,16 @@ namespace Kusto.Language
                      )", 
                 DropExtentResult);
 
+        public static readonly CommandSymbol DropExtentsPartitionMetadata =
+            new CommandSymbol(nameof(DropExtentsPartitionMetadata),
+                "drop extents partition metadata csl=('<|' <input_query>)",
+                UnknownResult);
+
+        //public static readonly CommandSymbol DropAsyncExtentsPartitionMetadata =
+        //    new CommandSymbol(nameof(DropAsyncExtentsPartitionMetadata),
+        //        "drop async extents partition metadata csl=('<|' <input_query>)",
+        //        UnknownResult);
+
         public static readonly CommandSymbol DropPretendExtentsByProperties =
             new CommandSymbol(nameof(DropPretendExtentsByProperties), 
                 $"drop-pretend extents {DropProperties}", 
@@ -2346,7 +2390,6 @@ namespace Kusto.Language
                 "delete follower database dbName=<database> (table name=<table> | materialized-view name=<materializedview> | tables '(' {name=<name>, ','}+ ')' | materialized-views '(' {name=<name>, ','}+ ')') policy caching",
                 UnknownResult);
 
-
         public static readonly CommandSymbol ShowFreshness =
             new CommandSymbol(nameof(ShowFreshness),
                 "show freshness tableName=<table> [column columnName=<column>] [threshold threshold=<long>]",
@@ -2357,7 +2400,205 @@ namespace Kusto.Language
                 "show function functionName=<function> schema as json",
                 UnknownResult);
 
+        public static readonly CommandSymbol SetMaterializedViewAdmins =
+            new CommandSymbol(nameof(SetMaterializedViewAdmins),
+                "set materialized-view materializedViewName=<materializedview> admins (none | '(' {principal=<string>, ','}+ ')' [notes=<string>])",
+                UnknownResult);
 
+        public static readonly CommandSymbol AddMaterializedViewAdmins =
+            new CommandSymbol(nameof(AddMaterializedViewAdmins),
+                "add materialized-view materializedViewName=<materializedview> admins '(' {principal=<string>, ','}+ ')' [notes=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropMaterializedViewAdmins =
+            new CommandSymbol(nameof(DropMaterializedViewAdmins),
+                "drop materialized-view materializedViewName=<materializedview> admins '(' {principal=<string>, ','}+ ')' [notes=<string>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol SetMaterializedViewConcurrency =
+            new CommandSymbol(nameof(SetMaterializedViewConcurrency),
+                "set materialized-view viewName=<materializedview> concurrency ['=' n=(<int> | <long>)]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ClearMaterializedViewStatistics =
+            new CommandSymbol(nameof(ClearMaterializedViewStatistics),
+                "clear materialized-view viewName=<materializedview> statistics",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewStatistics =
+            new CommandSymbol(nameof(ShowMaterializedViewStatistics),
+                "show materialized-view viewName=<materializedview> statistics",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewDiagnostics =
+            new CommandSymbol(nameof(ShowMaterializedViewDiagnostics),
+                $"show materialized-view viewName=<materializedview> diagnostics [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowMaterializedViewFailures =
+            new CommandSymbol(nameof(ShowMaterializedViewFailures),
+                "show materialized-view viewName=<materializedview> failures",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowMemory =
+            new CommandSymbol(nameof(ShowMemory),
+                "show memory [details]",
+                UnknownResult);
+
+        public static readonly CommandSymbol CancelOperation =
+            new CommandSymbol(nameof(CancelOperation),
+                $"cancel operation obj=<guid> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DisablePlugin =
+            new CommandSymbol(nameof(DisablePlugin),
+                "disable plugin pluginName=(<string> | <name>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol EnablePlugin =
+            new CommandSymbol(nameof(EnablePlugin),
+                "enable plugin name=(<string> | <name>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowPlugins =
+            new CommandSymbol(nameof(ShowPlugins),
+                $"show plugins [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowPrincipalAccess =
+            new CommandSymbol(nameof(ShowPrincipalAccess),
+                $"show principal access [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowDatabasePurgeOperation =
+            new CommandSymbol(nameof(ShowDatabasePurgeOperation),
+                "show database databaseName=<database> purge (operation obj=<guid> | operations [obj=<guid>])",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowQueryExecution =
+            new CommandSymbol(nameof(ShowQueryExecution),
+                "show queryexecution queryText=('<|' <input_query>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterPoliciesOfRetention =
+            new CommandSymbol(nameof(AlterPoliciesOfRetention),
+                "alter policies of retention [internal] policies=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol DeletePoliciesOfRetention =
+            new CommandSymbol(nameof(DeletePoliciesOfRetention),
+                "delete policies of retention '(' {entity=<string>, ','}+ ')'",
+                UnknownResult);
+
+        //public static readonly CommandSymbol AttachRowStore =
+        //    new CommandSymbol(nameof(AttachRowStore),
+        //        $"attach rowstore rowStoreName=<name> rowStoreId=<guid> writeaheadlog waLogPath=<string> [{PropertyList()}]",
+        //        UnknownResult);
+
+        public static readonly CommandSymbol CreateRowStore =
+            new CommandSymbol(nameof(CreateRowStore),
+                $"create rowstore [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropRowStore =
+            new CommandSymbol(nameof(DropRowStore),
+                "(drop | detach) rowstore rowStoreName=<name> [ifexists]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowRowStore =
+            new CommandSymbol(nameof(ShowRowStore),
+                "show rowstore rowStoreName=<name>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowRowStores =
+            new CommandSymbol(nameof(ShowRowStores),
+                "show rowstores",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowRowStoreTransactions =
+            new CommandSymbol(nameof(ShowRowStoreTransactions),
+                "show rowstore transactions",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowRowStoreSeals =
+            new CommandSymbol(nameof(ShowRowStoreSeals),
+                $"show rowstore seals tableName=<string> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowSchema =
+            new CommandSymbol(nameof(ShowSchema),
+                "show [cluster] schema [details | as json]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowCallStacks =
+            new CommandSymbol(nameof(ShowCallStacks),
+                $"show callstacks [for duration=<timespan>] [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowStreamingIngestionFailures =
+            new CommandSymbol(nameof(ShowStreamingIngestionFailures),
+                "show streamingingestion failures",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowStreamingIngestionStatistics =
+            new CommandSymbol(nameof(ShowStreamingIngestionStatistics),
+                "show streamingingestion statistics",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDropKey =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDropKey),
+                $@"alter table TableName=<database_table> rowstore_references drop key rowStoreKey=<string> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDropRowStore =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDropRowStore),
+                $@"alter table TableName=<database_table> rowstore_references drop rowstore rowStoreName=<name> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDropBlockedKeys =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDropBlockedKeys),
+                $@"alter table TableName=<database_table> rowstore_references drop blocked keys [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDisableKey =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDisableKey),
+                $@"alter table TableName=<database_table> rowstore_references disable key rowStoreKey=<string> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDisableRowStore =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDisableRowStore),
+                $@"alter table TableName=<database_table> rowstore_references disable rowstore rowStoreName=<name> [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableRowStoreReferencesDisableBlockedKeys =
+            new CommandSymbol(nameof(AlterTableRowStoreReferencesDisableBlockedKeys),
+                $@"alter table TableName=<database_table> rowstore_references disable blocked keys [{PropertyList()}]",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableColumnStatistics =
+            new CommandSymbol(nameof(AlterTableColumnStatistics),
+                "alter table TableName=<table> column statistics {c2=<name> statisticsValues2=<string>, ','}",
+                UnknownResult);
+
+        public static readonly CommandSymbol AlterTableColumnStatisticsMethod =
+            new CommandSymbol(nameof(AlterTableColumnStatisticsMethod),
+                "alter table TableName=<database_table> column statistics method '=' newMethod=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableColumnStatitics =
+            new CommandSymbol(nameof(ShowTableColumnStatitics),
+                "show table TableName=<table> column statistics",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableDimensions =
+            new CommandSymbol(nameof(ShowTableDimensions),
+                "show table TableName=<table> dimensions",
+                UnknownResult);
+
+        public static readonly CommandSymbol DeleteTableRecords =
+            new CommandSymbol(nameof(DeleteTableRecords),
+                $"delete [async] table TableName=<table> records [{PropertyList()}] csl=('<|' <input_query>)",
+                UnknownResult);
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
             new CommandSymbol[]
@@ -2377,6 +2618,7 @@ namespace Kusto.Language
                 CreateDatabasePersist,
                 CreateDatabaseVolatile,
                 AttachDatabase,
+                AttachDatabaseMetadata,
                 DetachDatabase,
                 AlterDatabasePrettyName,
                 DropDatabasePrettyName,
@@ -2670,6 +2912,11 @@ namespace Kusto.Language
 
                 #region Security Role Commands
                 ShowPrincipalRoles,
+                ShowDatabasePrincipalRoles,
+                ShowTablePrincipalRoles,
+                ShowExternalTablesPrincipalRoles,
+                ShowFunctionPrincipalRoles,
+                ShowClusterPrincipalRoles,
 
                 ShowClusterPrincipals,
                 ShowDatabasePrincipals,
@@ -2867,6 +3114,49 @@ namespace Kusto.Language
                 ShowFunctionSchemaAsJson,
                 ShowIngestionMappings,
 
+                SetMaterializedViewAdmins,
+                AddMaterializedViewAdmins,
+                DropMaterializedViewAdmins,
+                SetMaterializedViewConcurrency,
+                ClearMaterializedViewStatistics,
+                ShowMaterializedViewStatistics,
+                ShowMaterializedViewDiagnostics,
+                ShowMaterializedViewFailures,
+                ShowMemory,
+                CancelOperation,
+                DisablePlugin,
+                EnablePlugin,
+                ShowPlugins,
+                ShowPrincipalAccess,
+                ShowDatabasePurgeOperation,
+                ShowQueryExecution,
+                AlterPoliciesOfRetention,
+                DeletePoliciesOfRetention,
+                //AttachRowStore,
+                CreateRowStore,
+                DropRowStore,
+                ShowRowStore,
+                ShowRowStores,
+                ShowRowStoreTransactions,
+                ShowRowStoreSeals,
+                ShowSchema,
+                ShowCallStacks,
+                ShowStreamingIngestionFailures,
+                ShowStreamingIngestionStatistics,
+                //AlterTableRowStoreReferences,
+                AlterTableRowStoreReferencesDropKey,
+                AlterTableRowStoreReferencesDropRowStore,
+                AlterTableRowStoreReferencesDropBlockedKeys,
+                AlterTableRowStoreReferencesDisableKey,
+                AlterTableRowStoreReferencesDisableRowStore,
+                AlterTableRowStoreReferencesDisableBlockedKeys,
+                AlterTableColumnStatistics,
+                AlterTableColumnStatisticsMethod,
+                ShowTableColumnStatitics,
+                DropExtentsPartitionMetadata,
+                //DropAsyncExtentsPartitionMetadata,  
+                ShowTableDimensions,
+                DeleteTableRecords,
             };
     }
 }

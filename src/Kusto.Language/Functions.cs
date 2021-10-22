@@ -2355,6 +2355,37 @@ namespace Kusto.Language
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoH3CellChildren =
+            new FunctionSymbol("geo_h3cell_children", ScalarTypes.Dynamic,
+                new Parameter("h3cell", ScalarTypes.String),
+                new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoH3CellParent =
+            new FunctionSymbol("geo_h3cell_parent", ScalarTypes.String,
+                new Parameter("h3cell", ScalarTypes.String),
+                new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoH3CellRings =
+            new FunctionSymbol("geo_h3cell_rings", ScalarTypes.Dynamic,
+                new Parameter("h3cell", ScalarTypes.String),
+                new Parameter("distance", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoH3CellLevel =
+            new FunctionSymbol("geo_h3cell_level", ScalarTypes.Int,
+                new Parameter("h3cell", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region other
@@ -2859,6 +2890,10 @@ namespace Kusto.Language
             GeoPointToH3Cell,
             GeoH3CellToCentralPoint,
             GeoH3CellToPolygon,
+            GeoH3CellChildren,
+            GeoH3CellParent,
+            GeoH3CellRings,
+            GeoH3CellLevel,
             #endregion
 
             #region ip-matching functions

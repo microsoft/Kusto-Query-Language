@@ -55,6 +55,11 @@ namespace Kusto.Language.Symbols
         Number,
 
         /// <summary>
+        /// Any scalar numeric type (int, long, real, decimal) or bool
+        /// </summary>
+        NumberOrBool,
+
+        /// <summary>
         /// Any scalar type that is summable (number, timespan, datetime)
         /// </summary>
         Summable,

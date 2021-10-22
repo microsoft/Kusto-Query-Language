@@ -1582,6 +1582,7 @@ namespace Kusto.Language.Editor
                     case ParameterTypeKind.Cluster:
                         return CompletionHint.Cluster;
                     case ParameterTypeKind.Number:
+                    case ParameterTypeKind.NumberOrBool:
                         return CompletionHint.Number;
                     default:
                         return CompletionHint.Scalar;
@@ -1949,6 +1950,7 @@ namespace Kusto.Language.Editor
             {
                 var queryGrammar = QueryGrammar.From(GlobalState.Default);
                 var node = token.Parent;
+                var nextToken = token.GetNextToken();
 
                 for (; node != null; node = node.Parent)
                 {
@@ -2010,7 +2012,9 @@ namespace Kusto.Language.Editor
                             break;
                         case FunctionCallExpression fc:
                             // for argument list
-                            if (position > fc.Name.End)
+                            if (position > fc.ArgumentList.OpenParen.End
+                                && ((!fc.ArgumentList.CloseParen.IsMissing && position <= fc.ArgumentList.CloseParen.TextStart)
+                                    || fc.ArgumentList.CloseParen.IsMissing && nextToken != null && nextToken.Kind == SyntaxKind.EndOfTextToken))
                             {
                                 searchStart = fc.TextStart;
                                 grammar = queryGrammar.UnnamedExpression;
@@ -2251,6 +2255,9 @@ namespace Kusto.Language.Editor
 
                 case ParameterTypeKind.Number:
                     return type is ScalarSymbol s2 && s2.IsNumeric;
+
+                case ParameterTypeKind.NumberOrBool:
+                    return type is ScalarSymbol s2b && (s2b.IsNumeric || s2b == ScalarTypes.Bool);
 
                 case ParameterTypeKind.Summable:
                     return type is ScalarSymbol s3 && s3.IsSummable;
