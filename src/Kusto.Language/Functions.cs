@@ -138,17 +138,17 @@ namespace Kusto.Language
                 new Parameter("match", ParameterTypeKind.Scalar),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
+                new Parameter("occurrence", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol IndexOfRegex =
             new FunctionSymbol("indexof_regex", ScalarTypes.Long,
                 new Parameter("string", ParameterTypeKind.Scalar),
-                new Parameter("match", ParameterTypeKind.Scalar, ArgumentKind.Constant),
+                new Parameter("match", ParameterTypeKind.Scalar),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
+                new Parameter("occurrence", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -183,11 +183,11 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Extract =
             new FunctionSymbol("extract",
                 new Signature(ScalarTypes.String,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("captureGroup", ScalarTypes.Long),
                     new Parameter("source", ScalarTypes.String)),
                 new Signature(ReturnTypeKind.ParameterNLiteral,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("captureGroup", ScalarTypes.Long),
                     new Parameter("source", ScalarTypes.String),
                     new Parameter("typeLiteral", ScalarTypes.Type, ArgumentKind.Literal)))
@@ -197,10 +197,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExtractAll_Depricated =
              new FunctionSymbol("extractall",
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("source", ScalarTypes.String)),
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("captureGroups", ScalarTypes.Dynamic),
                     new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
@@ -211,10 +211,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExtractAll =
             new FunctionSymbol("extract_all",
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("source", ScalarTypes.String)),
                 new Signature(ScalarTypes.Dynamic,
-                    new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                    new Parameter("regex", ScalarTypes.String),
                     new Parameter("captureGroups", ScalarTypes.Dynamic),
                     new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
@@ -234,8 +234,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Replace =
             new FunctionSymbol("replace", ScalarTypes.String,
-                new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("rewrite", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("regex", ScalarTypes.String),
+                new Parameter("rewrite", ScalarTypes.String),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -245,8 +245,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ReplaceRegex =
             new FunctionSymbol("replace_regex", ScalarTypes.String,
                 new Parameter("source", ScalarTypes.String),
-                new Parameter("lookup_regex", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("rewrite_pattern", ScalarTypes.String, ArgumentKind.Constant))
+                new Parameter("lookup_regex", ScalarTypes.String),
+                new Parameter("rewrite_pattern", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -260,21 +260,21 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol TrimStart =
             new FunctionSymbol("trim_start", ScalarTypes.String,
-                new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("regex", ScalarTypes.String),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol TrimEnd =
             new FunctionSymbol("trim_end", ScalarTypes.String,
-                new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("regex", ScalarTypes.String),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Trim =
             new FunctionSymbol("trim", ScalarTypes.String,
-                new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("regex", ScalarTypes.String),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -289,8 +289,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Translate =
             new FunctionSymbol("translate", ScalarTypes.String,
-                new Parameter("searchList", ScalarTypes.String, ArgumentKind.Constant),
-                new Parameter("replacementList", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("searchList", ScalarTypes.String, ArgumentKind.Literal),
+                new Parameter("replacementList", ScalarTypes.String, ArgumentKind.Literal),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -1009,13 +1009,15 @@ namespace Kusto.Language
             new FunctionSymbol("iif", ReturnTypeKind.Common,
                 new Parameter("if", ScalarTypes.Bool),
                 new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic),
-                new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic));
+                new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Iff =
             new FunctionSymbol("iff", ReturnTypeKind.Common,
                 new Parameter("if", ScalarTypes.Bool),
                 new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic),
-                new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic));
+                new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Case =
             new FunctionSymbol("case",
@@ -1023,7 +1025,8 @@ namespace Kusto.Language
                     new Parameter("predicate", ScalarTypes.Bool, maxOccurring: MaxRepeat),
                     new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic, maxOccurring: MaxRepeat),
                     new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
-                .WithLayout(ParameterLayouts.BlockRepeating));
+                .WithLayout(ParameterLayouts.BlockRepeating))
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol Assert =
             new FunctionSymbol("assert", ScalarTypes.Bool,
@@ -1300,7 +1303,7 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.Scalar),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
-                new Parameter("occurrence", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0))
+                new Parameter("occurrence", ParameterTypeKind.Integer, minOccurring: 0))
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetHasElement =
@@ -1359,7 +1362,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         private static readonly Parameter m_ArraySort_ArraysArg = new Parameter("arrays", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 64);
-        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0, maxOccurring: 1);
+        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, minOccurring: 0, maxOccurring: 1);
 
         public static readonly FunctionSymbol ArraySortAsc =
             new FunctionSymbol("array_sort_asc",
