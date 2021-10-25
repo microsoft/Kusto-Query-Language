@@ -1444,7 +1444,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackAll =
-            new FunctionSymbol("pack_all", ScalarTypes.Dynamic)
+            new FunctionSymbol("pack_all", ScalarTypes.Dynamic,
+                new Parameter("ignore_null_empty", ParameterTypeKind.Scalar, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
