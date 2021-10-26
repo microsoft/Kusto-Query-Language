@@ -224,7 +224,7 @@ namespace Kusto.Language
 
         private static readonly string TableSchema = "('(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')')";
 
-        private static readonly string TableProperties = "with '(' {docstring '='! Documentation=<string> | folder '='! FolderName=<string>, ','} ')'";
+        private static readonly string TableProperties = PropertyList("docstring | folder");
 
         public static readonly CommandSymbol CreateTable =
             new CommandSymbol(nameof(CreateTable),
@@ -243,7 +243,17 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol CreateTables =
             new CommandSymbol(nameof(CreateTables),
-                $"create tables {{ TableName=<name> {TableSchema}, ',' }}+",
+                $"create tables {{ TableName=<name> {TableSchema}, ',' }}+ [{PropertyList()}]",
+                "(TableName: string, DatabaseName: string, Folder: string, DocString: string)");
+
+        public static readonly CommandSymbol CreateMergeTables =
+            new CommandSymbol(nameof(CreateMergeTables),
+                $"create-merge tables {{ TableName=<name> {TableSchema}, ',' }}+ [{PropertyList()}]",
+                "(TableName: string, DatabaseName: string, Folder: string, DocString: string)");
+
+        public static readonly CommandSymbol DefineTables =
+            new CommandSymbol(nameof(DefineTables),
+                $"define tables {{ TableName=<name> {TableSchema}, ',' }}+ [{PropertyList()}]",
                 "(TableName: string, DatabaseName: string, Folder: string, DocString: string)");
 
         public static readonly CommandSymbol AlterTable =
@@ -598,7 +608,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowTablePolicyCaching =
             new CommandSymbol(nameof(ShowTablePolicyCaching),
-                "show table TableName=(<database_table> | '*') policy caching",
+                "show table TableName=<database_table> policy caching",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyCaching =
+            new CommandSymbol(nameof(ShowTableStarPolicyCaching),
+                "show table '*' policy caching",
                 PolicyResult);
 
         public static readonly CommandSymbol ShowColumnPolicyCaching =
@@ -628,6 +643,11 @@ namespace Kusto.Language
             new CommandSymbol(nameof(AlterTablePolicyCaching),
                 $"alter table TableName=<database_table> policy caching {HotPolicy}",
                 PolicyResult);
+
+        public static readonly CommandSymbol AlterTablesPolicyCaching =
+            new CommandSymbol(nameof(AlterTablesPolicyCaching),
+                $"alter tables '(' {{TableName=<table>, ','}}+ ')' policy caching {HotPolicy} [[','] {{hot_window '=' p=(d1=<datetime> '..' d2=<datetime>), ','}}+]",
+                UnknownResult);
 
         public static readonly CommandSymbol AlterColumnPolicyCaching =
             new CommandSymbol(nameof(AlterColumnPolicyCaching),
@@ -673,7 +693,12 @@ namespace Kusto.Language
         #region IngestionTime
         public static readonly CommandSymbol ShowTablePolicyIngestionTime =
             new CommandSymbol(nameof(ShowTablePolicyIngestionTime),
-                "show table TableName=(<table> | '*') policy ingestiontime",
+                "show table TableName=<table> policy ingestiontime",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyIngestionTime =
+            new CommandSymbol(nameof(ShowTableStarPolicyIngestionTime),
+                "show table '*' policy ingestiontime",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyIngestionTime =
@@ -695,7 +720,12 @@ namespace Kusto.Language
         #region Retention
         public static readonly CommandSymbol ShowTablePolicyRetention =
             new CommandSymbol(nameof(ShowTablePolicyRetention),
-                "show table TableName=(<database_table> | '*') policy retention",
+                "show table TableName=<database_table> policy retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyRetention =
+            new CommandSymbol(nameof(ShowTableStarPolicyRetention),
+                "show table '*' policy retention",
                 PolicyResult);
 
         public static readonly CommandSymbol ShowDatabasePolicyRetention =
@@ -763,7 +793,12 @@ namespace Kusto.Language
         #region RowLevelSecurity
         public static readonly CommandSymbol ShowTablePolicyRowLevelSecurity =
             new CommandSymbol(nameof(ShowTablePolicyRowLevelSecurity),
-                "show table TableName=(<table> | '*') policy row_level_security",
+                "show table TableName=<table> policy row_level_security",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyRowLevelSecurity =
+            new CommandSymbol(nameof(ShowTableStarPolicyRowLevelSecurity),
+                "show table '*' policy row_level_security",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyRowLevelSecurity =
@@ -795,7 +830,12 @@ namespace Kusto.Language
         #region RowOrder
         public static readonly CommandSymbol ShowTablePolicyRowOrder =
             new CommandSymbol(nameof(ShowTablePolicyRowOrder),
-                "show table TableName=(<database_table> | '*') policy roworder",
+                "show table TableName=<database_table> policy roworder",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyRowOrder =
+            new CommandSymbol(nameof(ShowTableStarPolicyRowOrder),
+                "show table '*' policy roworder",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyRowOrder =
@@ -822,7 +862,12 @@ namespace Kusto.Language
         #region Update
         public static readonly CommandSymbol ShowTablePolicyUpdate =
             new CommandSymbol(nameof(ShowTablePolicyUpdate),
-                "show table TableName=(<database_table> | '*') policy update",
+                "show table TableName=<database_table> policy update",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyUpdate =
+            new CommandSymbol(nameof(ShowTableStarPolicyUpdate),
+                "show table '*' policy update",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyUpdate =
@@ -849,7 +894,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowTablePolicyIngestionBatching =
             new CommandSymbol(nameof(ShowTablePolicyIngestionBatching),
-                "show table TableName=(<database_table> | '*') policy ingestionbatching",
+                "show table TableName=<database_table> policy ingestionbatching",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyIngestionBatching =
+            new CommandSymbol(nameof(ShowTableStarPolicyIngestionBatching),
+                "show table '*' policy ingestionbatching",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyIngestionBatching =
@@ -958,7 +1008,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowTablePolicyMerge =
             new CommandSymbol(nameof(ShowTablePolicyMerge),
-                "show table TableName=(<database_table> | '*') policy merge",
+                "show table TableName=<database_table> policy merge",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyMerge =
+            new CommandSymbol(nameof(ShowTableStarPolicyMerge),
+                "show table '*' policy merge",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyMerge =
@@ -969,6 +1024,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterTablePolicyMerge =
             new CommandSymbol(nameof(AlterTablePolicyMerge),
                 "alter table TableName=<database_table> policy merge MergePolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterTablesPolicyMerge =
+            new CommandSymbol(nameof(AlterTablesPolicyMerge),
+                "alter tables '(' {TableName=<table>, ','}+ ')' policy merge policy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeDatabasePolicyMerge =
@@ -995,7 +1055,12 @@ namespace Kusto.Language
         #region Partitioning
         public static readonly CommandSymbol ShowTablePolicyPartitioning =
             new CommandSymbol(nameof(ShowTablePolicyPartitioning),
-                "show table TableName=(<database_table> | '*') policy partitioning",
+                "show table TableName=<database_table> policy partitioning",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyPartitioning =
+            new CommandSymbol(nameof(ShowTableStarPolicyPartitioning),
+                "show table '*' policy partitioning",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyPartitioning =
@@ -1032,7 +1097,12 @@ namespace Kusto.Language
         #region RestrictedViewAccess
         public static readonly CommandSymbol ShowTablePolicyRestrictedViewAccess =
             new CommandSymbol(nameof(ShowTablePolicyRestrictedViewAccess),
-                "show table TableName=(<database_table> | '*') policy restricted_view_access",
+                "show table TableName=<database_table> policy restricted_view_access",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyRestrictedViewAccess =
+            new CommandSymbol(nameof(ShowTableStarPolicyRestrictedViewAccess),
+                "show table '*' policy restricted_view_access",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyRestrictedViewAccess =
@@ -1104,7 +1174,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowTablePolicySharding =
             new CommandSymbol(nameof(ShowTablePolicySharding),
-                "show table TableName=(<database_table> | '*') policy sharding",
+                "show table TableName=<database_table> policy sharding",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicySharding =
+            new CommandSymbol(nameof(ShowTableStarPolicySharding),
+                "show table '*' policy sharding",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicySharding =
@@ -1393,7 +1468,12 @@ namespace Kusto.Language
         #region Extent Tags Retention
         public static readonly CommandSymbol ShowTablePolicyExtentTagsRetention =
             new CommandSymbol(nameof(ShowTablePolicyExtentTagsRetention),
-                "show table TableName=(<database_table> | '*') policy extent_tags_retention",
+                "show table TableName=<database_table> policy extent_tags_retention",
+                PolicyResult);
+
+        public static readonly CommandSymbol ShowTableStarPolicyExtentTagsRetention =
+            new CommandSymbol(nameof(ShowTableStarPolicyExtentTagsRetention),
+                "show table '*' policy extent_tags_retention",
                 PolicyResult);
 
         public static readonly CommandSymbol ShowDatabasePolicyExtentTagsRetention =
@@ -2575,6 +2655,16 @@ namespace Kusto.Language
                 $@"alter table TableName=<database_table> rowstore_references disable blocked keys [{PropertyList()}]",
                 UnknownResult);
 
+        public static readonly CommandSymbol SetTableRowStoreReferences =
+            new CommandSymbol(nameof(SetTableRowStoreReferences),
+                "set table TableName=<database_table> rowstore_references references=<string>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableRowStoreReferences =
+            new CommandSymbol(nameof(ShowTableRowStoreReferences),
+                "show table TableName=<database_table> rowstore_references",
+                UnknownResult);
+
         public static readonly CommandSymbol AlterTableColumnStatistics =
             new CommandSymbol(nameof(AlterTableColumnStatistics),
                 "alter table TableName=<table> column statistics {c2=<name> statisticsValues2=<string>, ','}",
@@ -2598,6 +2688,76 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTableRecords =
             new CommandSymbol(nameof(DeleteTableRecords),
                 $"delete [async] table TableName=<table> records [{PropertyList()}] csl=('<|' <input_query>)",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableColumnsClassification =
+            new CommandSymbol(nameof(ShowTableColumnsClassification),
+                "show table TableName=<table> columns classification",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableRowStores =
+            new CommandSymbol(nameof(ShowTableRowStores),
+                "show table tableName=<database_table> rowstores",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableRowStoreSealInfo =
+            new CommandSymbol(nameof(ShowTableRowStoreSealInfo),
+                "show table tableName=<database_table> rowstore_sealinfo",
+                UnknownResult);
+
+        //public static readonly CommandSymbol ShowDatabasesTablesPolicies =
+        //    new CommandSymbol(nameof(ShowDatabasesTablesPolicies),
+        //        "show databases '(' {DatabaseName=<database>, ','} ')' tables policies '(' {PolicyName=<name>, ','} ')'",
+        //        UnknownResult);
+
+        public static readonly CommandSymbol ShowTablesColumnStatistics =
+            new CommandSymbol(nameof(ShowTablesColumnStatistics),
+                "show tables column statistics older outdatewindow=<timespan>",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableUsageStatistics =
+            new CommandSymbol(nameof(ShowTableUsageStatistics),
+                "show table usage statistics [by partitionBy=<timespan>]",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowTableUsageStatisticsDetails =
+            new CommandSymbol(nameof(ShowTableUsageStatisticsDetails),
+                "show table usage statistics details",
+                UnknownResult);
+
+        public static readonly CommandSymbol CreateTempStorage =
+            new CommandSymbol(nameof(CreateTempStorage),
+                "create tempstorage",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropTempStorage =
+            new CommandSymbol(nameof(DropTempStorage),
+                "drop tempstorage older olderThan=<timespan>",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropStoredQueryResultContainers =
+            new CommandSymbol(nameof(DropStoredQueryResultContainers),
+                "drop storedqueryresultcontainers DatabaseName=<database> {containerId=<guid>}+",
+                UnknownResult);
+
+        public static readonly CommandSymbol DropUnusedStoredQueryResultContainers =
+            new CommandSymbol(nameof(DropUnusedStoredQueryResultContainers),
+                "drop unused storedqueryresultcontainers databaseName=<database>",
+                UnknownResult);
+
+        public static readonly CommandSymbol EnableDatabaseMaintenanceMode =
+            new CommandSymbol(nameof(EnableDatabaseMaintenanceMode),
+                "enable database DatabaseName=<database> maintenance_mode",
+                UnknownResult);
+
+        public static readonly CommandSymbol DisableDatabaseMaintenanceMode =
+            new CommandSymbol(nameof(DisableDatabaseMaintenanceMode),
+                "disable database DatabaseName=<database> maintenance_mode",
+                UnknownResult);
+
+        public static readonly CommandSymbol ShowQueryCallTree =
+            new CommandSymbol(nameof(ShowQueryCallTree),
+                "show query call-tree queryText=('<|' <input_query>)",
                 UnknownResult);
 
         public static IReadOnlyList<CommandSymbol> All { get; } =
@@ -2647,6 +2807,8 @@ namespace Kusto.Language
                 CreateTableBasedOnAnother,
                 CreateMergeTable,
                 CreateTables,
+                CreateMergeTables,
+                DefineTables,
                 AlterTable,
                 AlterMergeTable,
                 RenameTable,
@@ -2710,12 +2872,14 @@ namespace Kusto.Language
                 // Caching
                 ShowDatabasePolicyCaching,
                 ShowTablePolicyCaching,
+                ShowTableStarPolicyCaching,
                 ShowColumnPolicyCaching,
                 ShowMaterializedViewPolicyCaching,
                 ShowClusterPolicyCaching,
 
                 AlterDatabasePolicyCaching,
                 AlterTablePolicyCaching,
+                AlterTablesPolicyCaching,
                 AlterColumnPolicyCaching,
                 AlterMaterializedViewPolicyCaching,
                 AlterClusterPolicyCaching,
@@ -2730,10 +2894,12 @@ namespace Kusto.Language
                 AlterTablePolicyIngestionTime,
                 AlterTablesPolicyIngestionTime,
                 ShowTablePolicyIngestionTime,
+                ShowTableStarPolicyIngestionTime,
                 DeleteTablePolicyIngestionTime,
 
                 // RowLevelSecurity
                 ShowTablePolicyRowLevelSecurity,
+                ShowTableStarPolicyRowLevelSecurity,
                 AlterTablePolicyRowLevelSecurity,
                 DeleteTablePolicyRowLevelSecurity,
                 ShowMaterializedViewPolicyRowLevelSecurity,
@@ -2750,6 +2916,7 @@ namespace Kusto.Language
 
                 // Retention
                 ShowTablePolicyRetention,
+                ShowTableStarPolicyRetention,
                 ShowDatabasePolicyRetention,
                 DeleteTablePolicyRetention,
                 DeleteDatabasePolicyRetention,
@@ -2765,6 +2932,7 @@ namespace Kusto.Language
 
                 // RowOrder
                 ShowTablePolicyRowOrder,
+                ShowTableStarPolicyRowOrder,
                 DeleteTablePolicyRowOrder,
                 AlterTablePolicyRowOrder,
                 AlterTablesPolicyRowOrder,
@@ -2772,6 +2940,7 @@ namespace Kusto.Language
 
                 // Update
                 ShowTablePolicyUpdate,
+                ShowTableStarPolicyUpdate,
                 AlterTablePolicyUpdate,
                 AlterMergeTablePolicyUpdate,
                 DeleteTablePolicyUpdate,
@@ -2779,6 +2948,7 @@ namespace Kusto.Language
                 // IngestionBatching
                 ShowDatabasePolicyIngestionBatching,
                 ShowTablePolicyIngestionBatching,
+                ShowTableStarPolicyIngestionBatching,
                 AlterDatabasePolicyIngestionBatching,
                 AlterTablePolicyIngestionBatching,
                 AlterTablesPolicyIngestionBatching,
@@ -2804,8 +2974,10 @@ namespace Kusto.Language
                 // Merge
                 ShowDatabasePolicyMerge,
                 ShowTablePolicyMerge,
+                ShowTableStarPolicyMerge,
                 AlterDatabasePolicyMerge,
                 AlterTablePolicyMerge,
+                AlterTablesPolicyMerge,
                 AlterMergeDatabasePolicyMerge,
                 AlterMergeTablePolicyMerge,
                 DeleteDatabasePolicyMerge,
@@ -2813,6 +2985,7 @@ namespace Kusto.Language
 
                 // Partitioning
                 ShowTablePolicyPartitioning,
+                ShowTableStarPolicyPartitioning,
                 AlterTablePolicyPartitioning,
                 AlterMergeTablePolicyPartitioning,
                 DeleteTablePolicyPartitioning,
@@ -2825,6 +2998,7 @@ namespace Kusto.Language
 
                 // Restricted View Access
                 ShowTablePolicyRestrictedViewAccess,
+                ShowTableStarPolicyRestrictedViewAccess,
                 AlterTablePolicyRestrictedViewAccess,
                 AlterTablesPolicyRestrictedViewAccess,
                 DeleteTablePolicyRestrictedViewAccess,
@@ -2849,6 +3023,7 @@ namespace Kusto.Language
                 // Sharding
                 ShowDatabasePolicySharding,
                 ShowTablePolicySharding,
+                ShowTableStarPolicySharding,
                 AlterDatabasePolicySharding,
                 AlterTablePolicySharding,
                 AlterMergeDatabasePolicySharding,
@@ -2904,6 +3079,7 @@ namespace Kusto.Language
                 // Extent tags retention
                 ShowDatabasePolicyExtentTagsRetention,
                 ShowTablePolicyExtentTagsRetention,
+                ShowTableStarPolicyExtentTagsRetention,
                 AlterDatabasePolicyExtentTagsRetention,
                 AlterTablePolicyExtentTagsRetention,
                 DeleteDatabasePolicyExtentTagsRetention,
@@ -3150,6 +3326,8 @@ namespace Kusto.Language
                 AlterTableRowStoreReferencesDisableKey,
                 AlterTableRowStoreReferencesDisableRowStore,
                 AlterTableRowStoreReferencesDisableBlockedKeys,
+                SetTableRowStoreReferences,
+                ShowTableRowStoreReferences,
                 AlterTableColumnStatistics,
                 AlterTableColumnStatisticsMethod,
                 ShowTableColumnStatitics,
@@ -3157,6 +3335,20 @@ namespace Kusto.Language
                 //DropAsyncExtentsPartitionMetadata,  
                 ShowTableDimensions,
                 DeleteTableRecords,
+                ShowTableColumnsClassification,
+                ShowTableRowStores,
+                ShowTableRowStoreSealInfo,
+                //ShowDatabasesTablesPolicies,
+                ShowTablesColumnStatistics,
+                ShowTableUsageStatistics,
+                ShowTableUsageStatisticsDetails,
+                CreateTempStorage,
+                DropTempStorage,
+                DropStoredQueryResultContainers,
+                DropUnusedStoredQueryResultContainers,
+                EnableDatabaseMaintenanceMode,
+                DisableDatabaseMaintenanceMode,
+                ShowQueryCallTree,
             };
     }
 }
