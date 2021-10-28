@@ -6,6 +6,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
+    <DefineConstants>$(DefineConstants);BRIDGE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
     <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
