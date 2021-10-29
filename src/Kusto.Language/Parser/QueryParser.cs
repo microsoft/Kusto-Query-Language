@@ -369,6 +369,11 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.LongLiteralToken),
                 new[] { DiagnosticFacts.GetMissingNumber() });
 
+        private static readonly Func<Expression> CreateMissingRealLiteral = () =>
+            new LiteralExpression(SyntaxKind.RealLiteralExpression,
+                SyntaxToken.Missing(SyntaxKind.RealLiteralToken),
+                new[] { DiagnosticFacts.GetMissingNumber() });
+
         private static Expression CreateMissingTokenLiteral(IReadOnlyList<string> tokens = null) =>
             new LiteralExpression(SyntaxKind.TokenLiteralExpression,
                 SyntaxToken.Missing(SyntaxKind.IdentifierToken),
@@ -950,6 +955,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+#if false
         private Expression ParseNumericLiteral()
         {
             var token = PeekToken();
@@ -970,6 +976,62 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                     return ParseSignedNumericLiteral();
+            }
+
+            return null;
+        }
+#endif
+
+        private int ScanForcedRealLiteral(int offset = 0)
+        {
+            var number = PeekToken(offset);
+            if ((number.Kind == SyntaxKind.LongLiteralToken
+                || number.Kind == SyntaxKind.RealLiteralToken)
+                && number.Text.Length > 0 && char.IsDigit(number.Text[0]))
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        private Expression ParseForcedRealLiteral()
+        {
+            var token = PeekToken();
+            switch (token.Kind)
+            {
+                case SyntaxKind.LongLiteralToken:
+                case SyntaxKind.RealLiteralToken:
+                    if (token.Text.Length > 0 && char.IsDigit(token.Text[0]))
+                        return new LiteralExpression(SyntaxKind.RealLiteralExpression, ParseToken());
+                    break;
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                    return ParseSignedForcedRealLiteral();
+                case SyntaxKind.OpenBraceToken:
+                    return ParseClientParameterReference();
+            }
+
+            return null;
+        }
+
+        private Expression ParseSignedForcedRealLiteral()
+        {
+            var len = ScanSignedNumericLiteral();
+            if (len == 2)
+            {
+                var sign = ParseToken();
+                var number = ParseToken();
+                var signedNumberToken = SyntaxToken.Literal(sign.Trivia, sign.Text + number.Text, number.Kind);
+
+                switch (number.Kind)
+                {
+                    case SyntaxKind.LongLiteralToken:
+                    case SyntaxKind.RealLiteralToken:
+                        return new LiteralExpression(SyntaxKind.RealLiteralExpression, signedNumberToken);
+                }
             }
 
             return null;
@@ -1162,9 +1224,9 @@ namespace Kusto.Language.Parsing
         private static Func<QueryParser, Expression> FnParseTypeOfElement =
             qp => qp.ParseTypeOfElement();
 
-        #endregion
+#endregion
 
-        #region Schemas
+#region Schemas
         private bool ScanParamType(int offset = 0)
         {
             switch (PeekToken(offset).Kind)
@@ -1347,9 +1409,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region Non-Query Expressions
+#region Non-Query Expressions
 
         private Expression ParsePrimaryExpression()
         {
@@ -2250,6 +2312,22 @@ namespace Kusto.Language.Parsing
             return expr;
         }
 
+        private Expression ParseAnyQueryOperatorParameterForcedRealValue()
+        {
+            var expr = ParseForcedRealLiteral();
+
+            if (expr == null)
+                expr = ParseLiteral();
+
+            if (expr == null)
+                expr = ParseIdentifierOrKeywordTokenLiteral();
+
+            if (expr == null)
+                expr = ParseNameReference();
+
+            return expr;
+        }
+
         private Expression ParseTokenLiteral(IReadOnlyList<string> texts)
         {
             var token = ParseToken(texts);
@@ -2270,6 +2348,8 @@ namespace Kusto.Language.Parsing
                 case QueryOperatorParameterValueKind.NumericLiteral:
                 case QueryOperatorParameterValueKind.SummableLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingLongLiteral();
+                case QueryOperatorParameterValueKind.ForcedRealLiteral:
+                    return ParseAnyQueryOperatorParameterForcedRealValue() ?? CreateMissingRealLiteral();
                 case QueryOperatorParameterValueKind.ScalarLiteral:
                     return ParseAnyQueryOperatorParameterValue() ?? CreateMissingValue();
                 case QueryOperatorParameterValueKind.Word:
@@ -3812,9 +3892,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region summarize
+#region summarize
 
         private NamedExpression ParseSummarizeByBinClause()
         {

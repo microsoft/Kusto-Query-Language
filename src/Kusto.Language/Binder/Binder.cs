@@ -5114,6 +5114,7 @@ namespace Kusto.Language.Binding
                         CheckIsInteger(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.NumericLiteral:
+                    case QueryOperatorParameterValueKind.ForcedRealLiteral:
                         CheckIsLiteral(parameter.Expression, diagnostics);
                         CheckIsNumber(parameter.Expression, diagnostics);
                         break;
@@ -5163,6 +5164,7 @@ namespace Kusto.Language.Binding
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.NumericLiteral:
+                case QueryOperatorParameterValueKind.ForcedRealLiteral:
                     if (!(parameter.Expression.IsLiteral && IsNumber(type)))
                         return false;
                     break;

@@ -642,6 +642,28 @@ namespace Kusto.Language.Parsing
                     ClientParameterReference)
                 .WithTag("<literal>");
 
+            var ForcedSignedRealLiteral =
+                If(IsSignedNumericLiteral,
+                    Rule(
+                        First(Token(SyntaxKind.MinusToken), Token(SyntaxKind.PlusToken)).Hide(),
+                        First(LongLiteral, RealLiteral),
+                        (sign, expr) =>
+                        {
+                            // combine sign and literal into single literal token and expression
+                            var lit = (LiteralExpression)expr;
+                            var combinedToken = SyntaxToken.Literal(sign.Trivia, sign.Text + lit.Token.Text, lit.Token.Kind);
+                            return (Expression)new LiteralExpression(SyntaxKind.RealLiteralExpression, combinedToken);
+                        }));
+
+            // a numeric literal that is always encoded as a double/real literal expression
+            var ForcedRealLiteral =
+                First(
+                    Rule(
+                        First(Token(SyntaxKind.LongLiteralToken), Token(SyntaxKind.IntLiteralToken), Token(SyntaxKind.RealLiteralToken), Token(SyntaxKind.DecimalLiteralToken)),
+                        token => (Expression)new LiteralExpression(SyntaxKind.RealLiteralExpression, token)),
+                    ForcedSignedRealLiteral)
+                .WithTag("<forced-real-literal>");
+
             #endregion
 
             #region Query Operator Parameters
@@ -675,6 +697,13 @@ namespace Kusto.Language.Parsing
 
             var AnyQueryOperatorParameterValue =
                 First(
+                    Literal.Hide(),
+                    IdentifierOrKeywordTokenLiteral,
+                    SimpleNameReference);
+
+            var AnyQueryOperatorParameterForcedRealValue =
+                First(
+                    ForcedRealLiteral.Hide(),
                     Literal.Hide(),
                     IdentifierOrKeywordTokenLiteral,
                     SimpleNameReference);
@@ -736,6 +765,11 @@ namespace Kusto.Language.Parsing
                             QueryParameterName(parameter),
                             AnyQueryOperatorParameterValue, 
                             MissingLongLiteral);
+                    case QueryOperatorParameterValueKind.ForcedRealLiteral:
+                        return QParameter(
+                            QueryParameterName(parameter),
+                            AnyQueryOperatorParameterForcedRealValue,
+                            MissingRealLiteral);
                     case QueryOperatorParameterValueKind.ScalarLiteral:
                         return QParameter(
                             QueryParameterName(parameter),
@@ -2864,6 +2898,12 @@ namespace Kusto.Language.Parsing
 
         public static readonly Func<Expression> MissingLongLiteral =
             () => (Expression)MissingLongLiteralNode.Clone();
+
+        public static readonly Expression MissingRealLiteralNode =
+            new LiteralExpression(SyntaxKind.RealLiteralExpression, SyntaxToken.Missing(SyntaxKind.RealLiteralToken), new[] { DiagnosticFacts.GetMissingNumber() });
+
+        public static readonly Func<Expression> MissingRealLiteral =
+            () => (Expression)MissingRealLiteralNode.Clone();
 
         public static readonly Expression MissingStringLiteralNode =
             new LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxToken.Missing(SyntaxKind.StringLiteralToken), new[] { DiagnosticFacts.GetMissingString() });

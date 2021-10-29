@@ -214,8 +214,8 @@ namespace Kusto.Language
             new QueryOperatorParameter("yaxis", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartAxis),
             new QueryOperatorParameter("legend", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartLegends),
             new QueryOperatorParameter("ysplit", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartYSplit),
-            new QueryOperatorParameter("ymin", QueryOperatorParameterValueKind.NumericLiteral),
-            new QueryOperatorParameter("ymax", QueryOperatorParameterValueKind.NumericLiteral),
+            new QueryOperatorParameter("ymin", QueryOperatorParameterValueKind.ForcedRealLiteral),
+            new QueryOperatorParameter("ymax", QueryOperatorParameterValueKind.ForcedRealLiteral),
         };
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ReduceParameters = new[]
@@ -310,6 +310,11 @@ namespace Kusto.Language
         /// Any numeric literal value
         /// </summary>
         NumericLiteral,
+
+        /// <summary>
+        /// Any numeric literal, but represented as a double for whatever reason.
+        /// </summary>
+        ForcedRealLiteral,
 
         /// <summary>
         /// Any scalar string literal
