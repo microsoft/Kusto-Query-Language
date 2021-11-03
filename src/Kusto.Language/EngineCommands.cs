@@ -1246,12 +1246,22 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterDatabasePolicyStreamingIngestion =
             new CommandSymbol(nameof(AlterDatabasePolicyStreamingIngestion),
-                "alter database DatabaseName=<database> policy streamingingestion StreamingIngestionPolicy=<string>",
+                "alter database DatabaseName=<database> policy streamingingestion (StreamingIngestionPolicy=<string>|Status=(enable|disable))",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeDatabasePolicyStreamingIngestion =
+            new CommandSymbol(nameof(AlterMergeDatabasePolicyStreamingIngestion),
+                "alter-merge database DatabaseName=<database> policy streamingingestion StreamingIngestionPolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterTablePolicyStreamingIngestion =
             new CommandSymbol(nameof(AlterTablePolicyStreamingIngestion),
-                "alter table TableName=<database_table> policy streamingingestion StreamingIngestionPolicy=<string>",
+                "alter table TableName=<database_table> policy streamingingestion (StreamingIngestionPolicy=<string>|Status=(enable|disable))",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterMergeTablePolicyStreamingIngestion =
+            new CommandSymbol(nameof(AlterMergeTablePolicyStreamingIngestion),
+                "alter-merge table TableName=<database_table> policy streamingingestion StreamingIngestionPolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterClusterPolicyStreamingIngestion =
@@ -3039,7 +3049,9 @@ namespace Kusto.Language
                 ShowTablePolicyStreamingIngestion,
                 ShowClusterPolicyStreamingIngestion,
                 AlterDatabasePolicyStreamingIngestion,
+                AlterMergeDatabasePolicyStreamingIngestion,
                 AlterTablePolicyStreamingIngestion,
+                AlterMergeTablePolicyStreamingIngestion,
                 AlterClusterPolicyStreamingIngestion,
                 AlterMergeClusterPolicyStreamingIngestion,
                 DeleteDatabasePolicyStreamingIngestion,

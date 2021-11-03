@@ -2365,31 +2365,27 @@ namespace Kusto.Language
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellParent =
             new FunctionSymbol("geo_h3cell_parent", ScalarTypes.String,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellRings =
             new FunctionSymbol("geo_h3cell_rings", ScalarTypes.Dynamic,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("distance", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellLevel =
             new FunctionSymbol("geo_h3cell_level", ScalarTypes.Int,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
         #endregion
 
         #region other
