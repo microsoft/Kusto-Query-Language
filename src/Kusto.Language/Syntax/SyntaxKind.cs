@@ -126,6 +126,8 @@
         OrKeyword,
         OrderKeyword,
         OthersKeyword,
+        OutputLastKeyword,
+        OutputNoneKeyword,
 
         PackKeyword,
         ParseKeyword,

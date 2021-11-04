@@ -1235,8 +1235,12 @@ namespace Kusto.Language.Parsing
             var InOperatorExpressionList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)
-                        .WithCompletionHint(CompletionHint.Scalar | CompletionHint.Tabular),
+                    First(
+                        // this is a special path meant to influence completion for first argument
+                        If(Token(SyntaxKind.OpenParenToken),
+                            CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)
+                                .WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
+                        CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, list, closeParen) =>
@@ -2084,15 +2088,16 @@ namespace Kusto.Language.Parsing
 
             var ScanStep =
                 Rule(
-                    Token(SyntaxKind.StepKeyword),
-                    Required(RenameName, MissingNameDeclaration), // name
-                    Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported
+                    Token(SyntaxKind.StepKeyword),                    
+                    Required(RenameName, MissingNameDeclaration), // name                    
+                    Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported                    
+                    Optional(First(HiddenToken(SyntaxKind.OutputLastKeyword), HiddenToken(SyntaxKind.OutputNoneKeyword))),
                     RequiredToken(SyntaxKind.ColonToken),
                     Required(UnnamedExpression, MissingExpression),
                     Optional(ScanComputationClause),
                     RequiredToken(SyntaxKind.SemicolonToken),
-                    (step, name, optional, colon, predicate, computation, semi) =>
-                        new ScanStep(step, name, optional, colon, predicate, computation, semi));
+                    (step, name, optional, output, colon, predicate, computation, semi) =>
+                        new ScanStep(step, name, optional, output, colon, predicate, computation, semi));
 
             var ScanOrderByClause =
                 Rule(

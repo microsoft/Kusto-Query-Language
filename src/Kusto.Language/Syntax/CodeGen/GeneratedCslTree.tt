@@ -2497,6 +2497,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
             new GeneratedProperty { Name = "StepKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "Name", Type = "NameDeclaration", Completion="Syntax" },
             new GeneratedProperty { Name = "OptionalKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
+            new GeneratedProperty { Name = "OutputKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
             new GeneratedProperty { Name = "ColonToken", Type = "SyntaxToken", Completion="Syntax" },
             new GeneratedProperty { Name = "Condition", Type="Expression", Completion="Scalar" },
             new GeneratedProperty { Name = "ComputationClause", Type="ScanComputationClause", Optional=true, Completion="Syntax" },

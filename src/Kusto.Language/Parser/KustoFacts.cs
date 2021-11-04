@@ -229,7 +229,7 @@ namespace Kusto.Language
         {
             "nooptimization"
         };
-
+       
         public static readonly IReadOnlyList<string> LimitExamples = new string[]
         {
             "10", "100", "1000"

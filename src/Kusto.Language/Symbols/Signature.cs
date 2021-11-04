@@ -702,10 +702,10 @@ namespace Kusto.Language.Symbols
             else if (_body != null)
             {
                 var body = _body.Trim();
-                if (body.StartsWith("{"))
+                if (body.StartsWith("{", StringComparison.Ordinal))
                 {
                     body = body.Substring(1);
-                    if (body.EndsWith("}"))
+                    if (body.EndsWith("}", StringComparison.Ordinal))
                         body = body.Substring(0, body.Length - 1);
                 }
                 var code = KustoCode.Parse(body);

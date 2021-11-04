@@ -366,7 +366,7 @@ namespace Kusto.Language.Parsing
         private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
         {
             // hide any syntax that starts with _ from completion
-            if (text.StartsWith("_"))
+            if (text.StartsWith("_", StringComparison.Ordinal))
                 return null;
 
             string afterText = null;

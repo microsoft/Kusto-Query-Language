@@ -3263,10 +3263,10 @@ namespace Kusto.Language.Binding
         {
             var body = signature.Body.Trim();
 
-            if (!body.StartsWith("{"))
+            if (!body.StartsWith("{", StringComparison.Ordinal))
                 body = "{" + body;
 
-            if (!body.EndsWith("}"))
+            if (!body.EndsWith("}", StringComparison.Ordinal))
                 body += "\n}";
 
             return body;

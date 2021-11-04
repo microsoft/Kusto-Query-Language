@@ -27,7 +27,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// If true, the symbol is hidden from Intellisense.
         /// </summary>
-        public virtual bool IsHidden => this.Name.StartsWith("__"); // symbols that start with __ are internal only.
+        public virtual bool IsHidden => this.Name.StartsWith("__", StringComparison.Ordinal); // symbols that start with __ are internal only.
 
         /// <summary>
         /// True if the symbol is an error symbol.

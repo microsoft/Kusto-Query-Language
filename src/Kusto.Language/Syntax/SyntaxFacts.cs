@@ -158,6 +158,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.OrKeyword, "or", opKind: OperatorKind.Or),
                 new SyntaxData(SyntaxKind.OrderKeyword, "order"),
                 new SyntaxData(SyntaxKind.OthersKeyword, "others", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.OutputLastKeyword, "output_last", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.OutputNoneKeyword, "output_none", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.PackKeyword, "pack", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),

@@ -4134,11 +4134,12 @@ namespace Kusto.Language.Parsing
             {
                 var name = ParseNameDeclaration() ?? CreateMissingNameDeclaration();
                 var optional = ParseToken(SyntaxKind.OptionalKeyword);
+                var output = ParseToken(SyntaxKind.OutputLastKeyword)?? ParseToken(SyntaxKind.OutputNoneKeyword);
                 var colon = ParseRequiredToken(SyntaxKind.ColonToken);
                 var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
                 var computation = ParseScanComputationClause();
                 var semicolon = ParseRequiredToken(SyntaxKind.SemicolonToken);
-                return new ScanStep(keyword, name, optional, colon, expr, computation, semicolon);
+                return new ScanStep(keyword, name, optional, output, colon, expr, computation, semicolon);
             }
 
             return null;

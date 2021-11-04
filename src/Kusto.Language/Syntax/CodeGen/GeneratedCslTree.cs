@@ -12364,6 +12364,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OptionalKeyword { get; }
         
+        public SyntaxToken OutputKeyword { get; }
+        
         public SyntaxToken ColonToken { get; }
         
         public Expression Condition { get; }
@@ -12375,11 +12377,12 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="ScanStep"/>.
         /// </summary>
-        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken colonToken, Expression condition, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken outputKeyword, SyntaxToken colonToken, Expression condition, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.StepKeyword = Attach(stepKeyword);
             this.Name = Attach(name);
             this.OptionalKeyword = Attach(optionalKeyword, optional: true);
+            this.OutputKeyword = Attach(outputKeyword, optional: true);
             this.ColonToken = Attach(colonToken);
             this.Condition = Attach(condition);
             this.ComputationClause = Attach(computationClause, optional: true);
@@ -12387,7 +12390,7 @@ namespace Kusto.Language.Syntax
             this.Init();
         }
         
-        public override int ChildCount => 7;
+        public override int ChildCount => 8;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -12396,10 +12399,11 @@ namespace Kusto.Language.Syntax
                 case 0: return StepKeyword;
                 case 1: return Name;
                 case 2: return OptionalKeyword;
-                case 3: return ColonToken;
-                case 4: return Condition;
-                case 5: return ComputationClause;
-                case 6: return SemicolonToken;
+                case 3: return OutputKeyword;
+                case 4: return ColonToken;
+                case 5: return Condition;
+                case 6: return ComputationClause;
+                case 7: return SemicolonToken;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12411,10 +12415,11 @@ namespace Kusto.Language.Syntax
                 case 0: return nameof(StepKeyword);
                 case 1: return nameof(Name);
                 case 2: return nameof(OptionalKeyword);
-                case 3: return nameof(ColonToken);
-                case 4: return nameof(Condition);
-                case 5: return nameof(ComputationClause);
-                case 6: return nameof(SemicolonToken);
+                case 3: return nameof(OutputKeyword);
+                case 4: return nameof(ColonToken);
+                case 5: return nameof(Condition);
+                case 6: return nameof(ComputationClause);
+                case 7: return nameof(SemicolonToken);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12424,7 +12429,8 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 2:
-                case 5:
+                case 3:
+                case 6:
                     return true;
                 default:
                     return false;
@@ -12438,10 +12444,11 @@ namespace Kusto.Language.Syntax
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
                 case 2: return CompletionHint.Keyword;
-                case 3: return CompletionHint.Syntax;
-                case 4: return CompletionHint.Scalar;
-                case 5: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Keyword;
+                case 4: return CompletionHint.Syntax;
+                case 5: return CompletionHint.Scalar;
                 case 6: return CompletionHint.Syntax;
+                case 7: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -12457,7 +12464,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanStep((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)OptionalKeyword?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (ScanComputationClause)ComputationClause?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new ScanStep((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)OptionalKeyword?.Clone(includeDiagnostics), (SyntaxToken)OutputKeyword?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (ScanComputationClause)ComputationClause?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanStep */
