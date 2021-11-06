@@ -839,7 +839,7 @@ namespace Kusto.Language
         /// True if the text matches the pattern (*, xxx*, *xxx, *xxx*, xxx*yyy, *xxx*yyy*, ...)
         /// The * represents any zero-or-more characters.
         /// </summary>
-        public static bool Matches(string pattern, string text)
+        public static bool Matches(string pattern, string text, bool ignoreCase = false)
         {
             if (pattern == null)
                 throw new ArgumentNullException(nameof(pattern));
@@ -851,10 +851,10 @@ namespace Kusto.Language
             if (pattern.Length == 0)
                 return false;
 
-            return Matches(pattern, 0, text, 0);
+            return Matches(pattern, 0, text, 0, ignoreCase);
         }
 
-        private static bool Matches(string pattern, int patternSegmentStart, string text, int textPosition)
+        private static bool Matches(string pattern, int patternSegmentStart, string text, int textPosition, bool ignoreCase)
         {
             var asteriskPosition = pattern.IndexOf('*', patternSegmentStart);
             var sawAsterisk = asteriskPosition >= 0;
@@ -880,7 +880,7 @@ namespace Kusto.Language
                 else
                 {
                     // this is the nothing pattern before the first asterisk
-                    return Matches(pattern, nextPatternStart, text, textPosition);
+                    return Matches(pattern, nextPatternStart, text, textPosition, ignoreCase);
                 }
             }
             else if (patternSegmentStart == 0)
@@ -889,25 +889,25 @@ namespace Kusto.Language
                 {
                     // this is fixed-pattern (no asterisks before or after), so must be exact match
                     return text.Length == patternSegmentLength 
-                        && string.Compare(text, 0, pattern, 0, patternSegmentLength) == 0;
+                        && string.Compare(text, 0, pattern, 0, patternSegmentLength, ignoreCase) == 0;
                 }
                 else
                 {
                     // this is the first segment (no asterisk before) so its a starts-with pattern segment
                     if (patternSegmentLength > text.Length
-                        || string.Compare(text, 0, pattern, 0, patternSegmentLength) != 0)
+                        || string.Compare(text, 0, pattern, 0, patternSegmentLength, ignoreCase) != 0)
                     {
                         return false;
                     }
 
-                    return Matches(pattern, nextPatternStart, text, patternSegmentLength);
+                    return Matches(pattern, nextPatternStart, text, patternSegmentLength, ignoreCase);
                 }
             }
             else if (!sawAsterisk)
             {
                 // no asterisk after, so it is an ends-with pattern segment
                 return (patternSegmentLength <= text.Length - textPosition
-                        && string.Compare(text, text.Length - patternSegmentLength, pattern, patternSegmentStart, patternSegmentLength) == 0);
+                        && string.Compare(text, text.Length - patternSegmentLength, pattern, patternSegmentStart, patternSegmentLength, ignoreCase) == 0);
             }
             else
             {
@@ -916,7 +916,7 @@ namespace Kusto.Language
                 if (matchesPosition == -1)
                     return false;
 
-                return Matches(pattern, nextPatternStart, text, matchesPosition + patternSegmentLength);
+                return Matches(pattern, nextPatternStart, text, matchesPosition + patternSegmentLength, ignoreCase);
             }
         }
 

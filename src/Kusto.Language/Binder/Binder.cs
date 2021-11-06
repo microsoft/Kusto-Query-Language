@@ -358,48 +358,6 @@ namespace Kusto.Language.Binding
             return cluster;
         }
 
-        /// <summary>
-        /// Gets the named database.
-        /// </summary>
-        private DatabaseSymbol GetDatabase(string name, ClusterSymbol cluster = null)
-        {
-            cluster = cluster ?? _currentCluster;
-
-            if (cluster == _currentCluster && string.Compare(_currentDatabase.Name, name, ignoreCase: true) == 0)
-            {
-                return _currentDatabase;
-            }
-
-            if (_aliasedDatabases.TryGetValue(name, out var db))
-            {
-                return db;
-            }
-
-            var list = s_symbolListPool.AllocateFromPool();
-            try
-            {
-
-                cluster.GetMembers(name, SymbolMatch.Database, list, ignoreCase: true);
-
-                if (list.Count >= 1)
-                {
-                    return (DatabaseSymbol)list[0];
-                }
-                else if (cluster.IsOpen)
-                {
-                    return GetOpenDatabase(name, cluster);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            finally
-            {
-                s_symbolListPool.ReturnToPool(list);
-            }
-        }
-
         private Dictionary<ClusterSymbol, Dictionary<string, DatabaseSymbol>> _openDatabases;
 
         private DatabaseSymbol GetOpenDatabase(string name, ClusterSymbol cluster)
@@ -426,35 +384,6 @@ namespace Kusto.Language.Binding
             return database;
         }
 
-        /// <summary>
-        /// Gets the named table.
-        /// </summary>
-        private TableSymbol GetTable(string name, DatabaseSymbol database = null)
-        {
-            database = database ?? _currentDatabase;
-
-            var list = s_symbolListPool.AllocateFromPool();
-            try
-            {
-                database.GetMembers(name, SymbolMatch.Table, list);
-                if (list.Count >= 1)
-                {
-                    return (TableSymbol)list[0];
-                }
-                else if (database.IsOpen)
-                {
-                    return GetOpenTable(name, database);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            finally
-            {
-                s_symbolListPool.ReturnToPool(list);
-            }
-        }
 
         private Dictionary<DatabaseSymbol, Dictionary<string, TableSymbol>> _openTables;
 
@@ -780,7 +709,18 @@ namespace Kusto.Language.Binding
 
         private void GetSymbolsInContext(SyntaxNode contextNode, SymbolMatch match, IncludeFunctionKind include, List<Symbol> list)
         {
-            if (_pathScope != null)
+            if (_pathScope is GroupSymbol g
+                && IsPassThrough(g))
+            {
+                var savePathScope = _pathScope;
+                foreach (var s in g.Members)
+                {
+                    _pathScope = s;
+                    GetSymbolsInContext(contextNode, match, include, list);
+                }
+                _pathScope = savePathScope;
+            }
+            else if (_pathScope != null)
             {
                 // so far only columns, tables and functions can be dot accessed.
                 var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.Function);
@@ -804,12 +744,12 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        _pathScope.GetMembers(memberMatch, list);
+                        GetPathMembers(_pathScope, memberMatch, list);
                     }
                 }
                 else if (memberMatch != 0)
                 {
-                    _pathScope.GetMembers(memberMatch, list);
+                    GetPathMembers(_pathScope, memberMatch, list);
                 }
 
                 // any special functions from left-hand side?
@@ -902,25 +842,69 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private static void GetPathMembers(Symbol target, SymbolMatch memberMatch, List<Symbol> result)
+        {
+            if (target is GroupSymbol g && IsPassThrough(g))
+            {
+                foreach (var s in g.Members)
+                {
+                    GetPathMembers(s, memberMatch, result);
+                }
+            }
+            else
+            {
+                target.GetMembers(memberMatch, result);
+            }
+        }
+
+
+        private static void GetPathMembers(Symbol target, string name, SymbolMatch memberMatch, List<Symbol> result)
+        {
+            if (target is GroupSymbol g && IsPassThrough(g))
+            {
+                foreach (var s in g.Members)
+                {
+                    GetPathMembers(s, name, memberMatch, result);
+                }
+            }
+            else
+            {
+                target.GetMembers(name, memberMatch, result);
+            }
+        }
+
         private void GetSpecialFunctions(string name, List<Symbol> functions)
         {
             if (_pathScope != null)
             {
-                // these special methods show up as dottable methods on their respective types
-                switch (_pathScope.Kind)
+                if (_pathScope is GroupSymbol g 
+                    && g.Members.Count > 0
+                    && IsPassThrough(g))
                 {
-                    case SymbolKind.Cluster:
-                        if (name == null || Functions.Database.Name == name)
-                            functions.Add(Functions.Database);
-                        break;
-                    case SymbolKind.Database:
-                        if (name == null || Functions.Database.Name == name)
-                        {
-                            functions.Add(Functions.Table);
-                            functions.Add(Functions.ExternalTable);
-                            functions.Add(Functions.MaterializedView);
-                        }
-                        break;
+                    // use info for first symbol in group
+                    var savePathScope = _pathScope;
+                    _pathScope = g.Members[0];
+                    GetSpecialFunctions(name, functions);
+                    _pathScope = savePathScope;
+                }
+                else
+                {
+                    // these special methods show up as dottable methods on their respective types
+                    switch (_pathScope.Kind)
+                    {
+                        case SymbolKind.Cluster:
+                            if (name == null || Functions.Database.Name == name)
+                                functions.Add(Functions.Database);
+                            break;
+                        case SymbolKind.Database:
+                            if (name == null || Functions.Database.Name == name)
+                            {
+                                functions.Add(Functions.Table);
+                                functions.Add(Functions.ExternalTable);
+                                functions.Add(Functions.MaterializedView);
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -1087,6 +1071,9 @@ namespace Kusto.Language.Binding
         private static ObjectPool<List<Symbol>> s_symbolListPool =
             new ObjectPool<List<Symbol>>(() => new List<Symbol>(), list => list.Clear());
 
+        private static ObjectPool<HashSet<Symbol>> s_symbolHashSetPool =
+            new ObjectPool<HashSet<Symbol>>(() => new HashSet<Symbol>(), list => list.Clear());
+
         private static ObjectPool<List<Diagnostic>> s_diagnosticListPool =
             new ObjectPool<List<Diagnostic>>(() => new List<Diagnostic>(), list => list.Clear());
 
@@ -1206,305 +1193,374 @@ namespace Kusto.Language.Binding
                 && fn.Parent is EvaluateOperator;
         }
 
+        /// <summary>
+        /// True if member access operators (dot) on this apply to the members
+        /// as opposed to matching the members themselves.
+        /// </summary>
+        private static bool IsPassThrough(GroupSymbol group)
+        {
+            // dot access on groups of clusters or databases is meant to be 
+            // the aggregate of the dot access on all the clusters or databases
+            return group.Members.Any(m => m is DatabaseSymbol || m is ClusterSymbol);
+        }
+
         private SemanticInfo BindName(string name, SymbolMatch match, SyntaxNode location)
         {
             if (name == "")
                 return ErrorInfo;
-
-            if (_pathScope != null)
-            {
-                if (_pathScope == ScalarTypes.Dynamic)
-                {
-                    // any x.y where x is dynamic, is also dynamic
-                    return LiteralDynamicInfo;
-                }
-                else if(_pathScope == ScalarTypes.Unknown)
-                {
-                    // any x.y where x is unknown, is also unknown (though probably dynamic)
-                    return UnknownInfo;
-                }
-                else if (_pathScope == ErrorSymbol.Instance)
-                {
-                    // any x.y where x is an error, is also an error
-                    return ErrorInfo;
-                }
-            }
-            else if (name == "$left" && _rowScope != null && _rightRowScope != null)
-            {
-                var tuple = GetTuple(_rowScope);
-                return new SemanticInfo(tuple, tuple);
-            }
-            else if (name == "$right" && _rightRowScope != null)
-            {
-                var tuple = GetTuple(_rightRowScope);
-                return new SemanticInfo(tuple, tuple);
-            }
 
             var list = s_symbolListPool.AllocateFromPool();
             try
             {
                 bool allowZeroArgumentInvocation = false;
 
-                if (IsFunctionCallName(location))
+                if (_pathScope != null)
                 {
-                    if (_pathScope is DatabaseSymbol ds)
+                    if (_pathScope == ScalarTypes.Dynamic)
                     {
-                        if (name == Functions.Table.Name)
-                        {
-                            list.Add(Functions.Table);
-                        }
-                        else if (name == Functions.ExternalTable.Name)
-                        {
-                            list.Add(Functions.ExternalTable);
-                        }
-                        else if (name == Functions.MaterializedView.Name)
-                        {
-                            list.Add(Functions.MaterializedView);
-                        }
-                        else
-                        {
-                            _pathScope.GetMembers(name, SymbolMatch.Function, list);
-                        }
+                        // any x.y where x is dynamic, is also dynamic
+                        return LiteralDynamicInfo;
                     }
-                    else if (_pathScope is ClusterSymbol cs && name == Functions.Database.Name)
+                    else if (_pathScope == ScalarTypes.Unknown)
                     {
-                        list.Add(Functions.Database);
+                        // any x.y where x is unknown, is also unknown (though probably dynamic)
+                        return UnknownInfo;
+                    }
+                    else if (_pathScope == ErrorSymbol.Instance)
+                    {
+                        // any x.y where x is an error, is also an error
+                        return ErrorInfo;
+                    }
+                    else if (_pathScope is GroupSymbol grp
+                        && IsPassThrough(grp))
+                    {
+                        // get all symbols for all databases
+                        var savePathScope = _pathScope;
+                        foreach (var s in grp.Members)
+                        {
+                            _pathScope = s;
+                            var alz = GetMatchingSymbols(name, match, location, list);
+                            allowZeroArgumentInvocation |= alz;
+                        }
+                        _pathScope = savePathScope;
+
+                        MakeDistinct(list);
+                        return GetMatchingSymbolResult(name, location, list, allowZeroArgumentInvocation);
+                    }
+                }
+                else if (name == "$left" && _rowScope != null && _rightRowScope != null)
+                {
+                    var tuple = GetTuple(_rowScope);
+                    return new SemanticInfo(tuple, tuple);
+                }
+                else if (name == "$right" && _rightRowScope != null)
+                {
+                    var tuple = GetTuple(_rightRowScope);
+                    return new SemanticInfo(tuple, tuple);
+                }
+
+                if (list.Count == 0)
+                {
+                    allowZeroArgumentInvocation = GetMatchingSymbols(name, match, location, list);
+                }
+
+                return GetMatchingSymbolResult(name, location, list, allowZeroArgumentInvocation);
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private static void MakeDistinct(List<Symbol> list)
+        {
+            if (list.Count > 1)
+            {
+                var hset = s_symbolHashSetPool.AllocateFromPool();
+                var newList = s_symbolListPool.AllocateFromPool();
+                
+                foreach (var item in list)
+                {
+                    if (!hset.Contains(item))
+                    {
+                        hset.Add(item);
+                        newList.Add(item);
+                    }
+                }
+
+                list.Clear();
+                list.AddRange(newList);
+
+                s_symbolListPool.ReturnToPool(newList);
+                s_symbolHashSetPool.ReturnToPool(hset);
+            }
+        }
+
+        private bool GetMatchingSymbols(string name, SymbolMatch match, SyntaxNode location, List<Symbol> list)
+        {
+            var allowZeroArgumentInvocation = false;
+
+            if (IsFunctionCallName(location))
+            {
+                if (_pathScope is DatabaseSymbol ds)
+                {
+                    if (name == Functions.Table.Name)
+                    {
+                        list.Add(Functions.Table);
+                    }
+                    else if (name == Functions.ExternalTable.Name)
+                    {
+                        list.Add(Functions.ExternalTable);
+                    }
+                    else if (name == Functions.MaterializedView.Name)
+                    {
+                        list.Add(Functions.MaterializedView);
                     }
                     else
                     {
-                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                        _pathScope.GetMembers(name, SymbolMatch.Function, list);
+                    }
+                }
+                else if (_pathScope is ClusterSymbol cs && name == Functions.Database.Name)
+                {
+                    list.Add(Functions.Database);
+                }
+                else
+                {
+                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                }
+            }
+            else
+            {
+                // don't match the database functions that have same name as database tables
+                // if we are inside declaration of a database function
+                if (IsInsideDatabaseFunctionDeclaration(location) &&
+                    _currentDatabase.GetAnyTable(name) != null)
+                {
+                    match &= ~SymbolMatch.Function;
+                }
+
+                if (_pathScope != null)
+                {
+                    if (_pathScope is TupleSymbol tuple
+                        && tuple.RelatedTable != null
+                        && tuple.RelatedTable.IsOpen
+                        && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
+                    {
+                        list.Add(col);
+                    }
+                    else if (_pathScope is DatabaseSymbol ds)
+                    {
+                        // first look for functions
+                        _pathScope.GetMembers(name, match & SymbolMatch.Function, list);
+                        RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
+
+                        // database functions don't require argument lists to invoke
+                        allowZeroArgumentInvocation = list.Count > 0;
+
+                        if (list.Count == 0)
+                        {
+                            // next look for anything else (tables)
+                            _pathScope.GetMembers(name, match & ~SymbolMatch.Function, list);
+                        }
+
+                        // otherwise this is possible an open table
+                        if (list.Count == 0 && ds.IsOpen)
+                        {
+                            var table = GetOpenTable(name, ds);
+                            list.Add(table);
+                            return allowZeroArgumentInvocation;
+                        }
+                    }
+                    else if (!(_pathScope is TableSymbol) || IsInsideControlCommandProper(location))
+                    {
+                        _pathScope.GetMembers(name, match, list);
+                    }
+                }
+
+                // check binding against any columns in the row scope
+                if (list.Count == 0 && _rowScope != null)
+                {
+                    _rowScope.GetMembers(name, match, list);
+                }
+
+                // try secondary right-side row scope (from join operator)
+                if (list.Count == 0 && _rightRowScope != null)
+                {
+                    _rightRowScope.GetMembers(name, match, list);
+                }
+
+                // try local variables (includes any user-defined functions)
+                if (list.Count == 0)
+                {
+                    _localScope.GetSymbols(name, match, list);
+
+                    // user defined functions do not require argument list if it has no arguments
+                    allowZeroArgumentInvocation = list.Count > 0;
+                }
+
+                // look for zero-argument functions
+                if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location)
+                    && (match & SymbolMatch.Function) != 0)
+                {
+                    // database functions only (locally defined functions are already handled above)
+                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
+                    RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
+
+                    // database functions do not require argument list if it has zero arguments.
+                    allowZeroArgumentInvocation = list.Count > 0;
+                }
+
+                // other items in database (tables, etc)
+                if (list.Count == 0 && _currentDatabase != null)
+                {
+                    _currentDatabase.GetMembers(name, match, list);
+                }
+
+                // databases can be directly referenced in commands
+                if (list.Count == 0 && _currentCluster != null && (match & SymbolMatch.Database) != 0)
+                {
+                    _currentCluster.GetMembers(name, match, list);
+                }
+
+                // look for any built-in functions with matching name (even with those with parameters)
+                if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
+                {
+                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
+                }
+
+                // infer column for this otherwise unbound reference?
+                if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
+                {
+                    // table is open, so create a dynamic column for the otherwise unbound name
+                    list.Add(GetOpenColumn(name, _rowScope));
+                }
+            }
+
+            return allowZeroArgumentInvocation;
+        }
+
+        private SemanticInfo GetMatchingSymbolResult(string name, SyntaxNode location, List<Symbol> matches, bool allowZeroArgumentInvocation)
+        {
+            if (matches.Count == 1)
+            {
+                var item = matches[0];
+                var resultType = GetResultType(item);
+
+                // check for zero-parameter function invocation not part of a function call node
+                if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(location))
+                {
+                    var sig = fn.Signatures.FirstOrDefault(s => s.MinArgumentCount == 0);
+                    if (sig != null && allowZeroArgumentInvocation)
+                    {
+                        var sigResult = GetSignatureResult(sig, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                        return new SemanticInfo(item, sigResult.Type, expander: sigResult.Expander);
+                    }
+                    else
+                    {
+                        var returnType = GetCommonReturnType(fn.Signatures, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                        return new SemanticInfo(item, returnType, DiagnosticFacts.GetFunctionRequiresArgumentList(name).WithLocation(location));
                     }
                 }
                 else
                 {
-                    // don't match the database functions that have same name as database tables
-                    // if we are inside declaration of a database function
-                    if (IsInsideDatabaseFunctionDeclaration(location) &&
-                        _currentDatabase.GetAnyTable(name) != null)
-                    {
-                        match &= ~SymbolMatch.Function;
-                    }
-
-                    if (_pathScope != null)
-                    {
-                        if (_pathScope is TupleSymbol tuple
-                            && tuple.RelatedTable != null
-                            && tuple.RelatedTable.IsOpen
-                            && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
-                        {
-                            list.Add(col);
-                        }
-                        else if (_pathScope is DatabaseSymbol ds)
-                        {
-                            // first look for functions
-                            _pathScope.GetMembers(name, match & SymbolMatch.Function, list);
-                            RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
-
-                            // database functions don't require argument lists to invoke
-                            allowZeroArgumentInvocation = list.Count > 0;
-
-                            if (list.Count == 0)
-                            {
-                                // next look for anything else (tables)
-                                _pathScope.GetMembers(name, match & ~SymbolMatch.Function, list);
-                            }
-
-                            // otherwise this is possible an open table
-                            if (list.Count == 0 && ds.IsOpen)
-                            {
-                                var table = GetOpenTable(name, ds);
-                                return new SemanticInfo(table, table);
-                            }
-                        }
-                        else if (!(_pathScope is TableSymbol) || IsInsideControlCommandProper(location))
-                        {
-                            _pathScope.GetMembers(name, match, list);
-                        }
-                    }
-
-                    // check binding against any columns in the row scope
-                    if (list.Count == 0 && _rowScope != null)
-                    {
-                        _rowScope.GetMembers(name, match, list);
-                    }
-
-                    // try secondary right-side row scope (from join operator)
-                    if (list.Count == 0 && _rightRowScope != null)
-                    {
-                        _rightRowScope.GetMembers(name, match, list);
-                    }
-
-                    // try local variables (includes any user-defined functions)
-                    if (list.Count == 0)
-                    {
-                        _localScope.GetSymbols(name, match, list);
-
-                        // user defined functions do not require argument list if it has no arguments
-                        allowZeroArgumentInvocation = list.Count > 0;
-                    }
-
-                    // look for zero-argument functions
-                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location) 
-                        && (match & SymbolMatch.Function) != 0)
-                    {
-                        // database functions only (locally defined functions are already handled above)
-                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
-                        RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
-
-                        // database functions do not require argument list if it has zero arguments.
-                        allowZeroArgumentInvocation = list.Count > 0;
-                    }
-
-                    // other items in database (tables, etc)
-                    if (list.Count == 0 && _currentDatabase != null)
-                    {
-                        _currentDatabase.GetMembers(name, match, list);
-                    }
-
-                    // databases can be directly referenced in commands
-                    if (list.Count == 0 && _currentCluster != null && (match & SymbolMatch.Database) != 0)
-                    {
-                        _currentCluster.GetMembers(name, match, list);
-                    }
-
-                    // look for any built-in functions with matching name (even with those with parameters)
-                    if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
-                    {
-                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
-                    }
-
-                    // infer column for this otherwise unbound reference?
-                    if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
-                    {
-                        // table is open, so create a dynamic column for the otherwise unbound name
-                        list.Add(GetOpenColumn(name, _rowScope));
-                    }
+                    return CreateSemanticInfo(item);
                 }
-
-                if (list.Count == 1)
+            }
+            else if (matches.Count == 0)
+            {
+                if (IsFunctionCallName(location))
                 {
-                    var item = list[0];
-                    var resultType = GetResultType(item);
-
-                    // check for zero-parameter function invocation not part of a function call node
-                    if (resultType is FunctionSymbol fn && IsPossibleInvocableFunctionWithoutArgumentList(location))
+                    if (_globals.GetAggregate(name) != null && _scopeKind != ScopeKind.Aggregate)
                     {
-                        var sig = fn.Signatures.FirstOrDefault(s => s.MinArgumentCount == 0);
-                        if (sig != null && allowZeroArgumentInvocation)
+                        return new SemanticInfo(
+                            ErrorSymbol.Instance,
+                            DiagnosticFacts.GetAggregateNotAllowedInThisContext(name).WithLocation(location));
+                    }
+                    else if (_globals.GetPlugIn(name) != null && _scopeKind != ScopeKind.PlugIn)
+                    {
+                        return new SemanticInfo(
+                            ErrorSymbol.Instance,
+                            DiagnosticFacts.GetPluginNotAllowedInThisContext(name).WithLocation(location));
+                    }
+                    else if (IsEvaluateFunctionName(location))
+                    {
+                        if (PlugIns.GetPlugIn(name) != null)
                         {
-                            var sigResult = GetSignatureResult(sig, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
-                            return new SemanticInfo(item, sigResult.Type, expander: sigResult.Expander);
+                            return new SemanticInfo(
+                                ErrorSymbol.Instance,
+                                DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
                         }
                         else
                         {
-                            var returnType = GetCommonReturnType(fn.Signatures, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
-                            return new SemanticInfo(item, returnType, DiagnosticFacts.GetFunctionRequiresArgumentList(name).WithLocation(location));
-                        }
-                    }
-                    else
-                    {
-                        return CreateSemanticInfo(item);
-                    }
-                }
-                else if (list.Count == 0)
-                {
-                    if (IsFunctionCallName(location))
-                    {
-                        if (_globals.GetAggregate(name) != null && _scopeKind != ScopeKind.Aggregate)
-                        {
                             return new SemanticInfo(
                                 ErrorSymbol.Instance,
-                                DiagnosticFacts.GetAggregateNotAllowedInThisContext(name).WithLocation(location));
+                                DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
                         }
-                        else if (_globals.GetPlugIn(name) != null && _scopeKind != ScopeKind.PlugIn)
+                    }
+                    else if (IsFuzzyUnionOperand(location))
+                    {
+                        return null;
+                    }
+                    else if (_pathScope is DatabaseSymbol ds)
+                    {
+                        if (ds != null && ds.IsOpen)
                         {
-                            return new SemanticInfo(
-                                ErrorSymbol.Instance,
-                                DiagnosticFacts.GetPluginNotAllowedInThisContext(name).WithLocation(location));
+                            return new SemanticInfo(new TableSymbol("").WithIsOpen(true));
                         }
-                        else if (IsEvaluateFunctionName(location))
-                        {
-                            if (PlugIns.GetPlugIn(name) != null)
-                            {
-                                return new SemanticInfo(
-                                    ErrorSymbol.Instance,
-                                    DiagnosticFacts.GetPlugInFunctionIsNotEnabled(name).WithLocation(location));
-                            }
-                            else
-                            {
-                                return new SemanticInfo(
-                                    ErrorSymbol.Instance,
-                                    DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
-                            }
-                        }
-                        else if (IsFuzzyUnionOperand(location))
-                        {
-                            return null;
-                        }
-                        else if (_pathScope is DatabaseSymbol ds)
-                        {
-                            if (ds != null && ds.IsOpen)
-                            {
-                                return new SemanticInfo(new TableSymbol("").WithIsOpen(true));
-                            }
-                            else
-                            {
-                                return new SemanticInfo(
-                                    new TableSymbol("").WithIsOpen(true),
-                                    DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
-                            }
-                        }
-                        else if (IsInTabularContext(location))
+                        else
                         {
                             return new SemanticInfo(
                                 new TableSymbol("").WithIsOpen(true),
                                 DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
                         }
-                        else
-                        {
-                            return new SemanticInfo(
-                                ErrorSymbol.Instance,
-                                DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
-                        }
                     }
                     else if (IsInTabularContext(location))
                     {
-                        if(IsFuzzyUnionOperand(location))
-                        {
-                            return new SemanticInfo(
-                                new TableSymbol().WithIsOpen(true),
-                                DiagnosticFacts.GetFuzzyUnionOperandNotDefined(name).WithLocation(location));
-                        }
-                        else if (_pathScope is DatabaseSymbol ds
-                            && ds.IsOpen)
-                        {
-                            return new SemanticInfo(new TableSymbol(name).WithIsOpen(true));
-                        }
-                        else
-                        {
-                            return new SemanticInfo(
-                                new TableSymbol(name).WithIsOpen(true),
-                                DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
-                        }
+                        return new SemanticInfo(
+                            new TableSymbol("").WithIsOpen(true),
+                            DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
                     }
                     else
                     {
                         return new SemanticInfo(
                             ErrorSymbol.Instance,
-                            DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
+                            DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
+                    }
+                }
+                else if (IsInTabularContext(location))
+                {
+                    if (IsFuzzyUnionOperand(location))
+                    {
+                        return new SemanticInfo(
+                            new TableSymbol().WithIsOpen(true),
+                            DiagnosticFacts.GetFuzzyUnionOperandNotDefined(name).WithLocation(location));
+                    }
+                    else if (_pathScope is DatabaseSymbol ds
+                        && ds.IsOpen)
+                    {
+                        return new SemanticInfo(new TableSymbol(name).WithIsOpen(true));
+                    }
+                    else
+                    {
+                        return new SemanticInfo(
+                            new TableSymbol(name).WithIsOpen(true),
+                            DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
                     }
                 }
                 else
                 {
                     return new SemanticInfo(
-                        new GroupSymbol(list.ToList()),
                         ErrorSymbol.Instance,
-                        DiagnosticFacts.GetNameRefersToMoreThanOneItem(name).WithLocation(location));
+                        DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
                 }
             }
-            finally
+            else
             {
-                s_symbolListPool.ReturnToPool(list);
+                return new SemanticInfo(
+                    new GroupSymbol(matches.ToList()),
+                    ErrorSymbol.Instance,
+                    DiagnosticFacts.GetNameRefersToMoreThanOneItem(name).WithLocation(location));
             }
         }
 
@@ -1560,10 +1616,14 @@ namespace Kusto.Language.Binding
                 
                 // if database().x then x is expected to be tabular
                 if (element.Parent is PathExpression pt 
-                    && pt.Selector == element
-                    && pt.Expression.ResultType is DatabaseSymbol)
+                    && pt.Selector == element)
                 {
-                    return true;
+                    if (pt.Expression.ResultType is DatabaseSymbol)
+                        return true;
+
+                    if (pt.Expression.ResultType is GroupSymbol g
+                        && g.Members.Any(m => m is DatabaseSymbol))
+                        return true;
                 }
 
                 // use completion hint to help us determine if context is tabular
@@ -1616,6 +1676,7 @@ namespace Kusto.Language.Binding
 
             return false;
         }
+
         #endregion
 
         #region Operator binding
@@ -2117,6 +2178,14 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Determines if the name is a pattern (contains a *)
+        /// </summary>
+        private static bool IsPattern(string name)
+        {
+            return name.Contains("*");
+        }
+
+        /// <summary>
         /// Gets the cluster for the specified name, or an empty open cluster.
         /// </summary>
         private ClusterSymbol GetClusterFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
@@ -2136,35 +2205,144 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets the database addressable in the current context.
+        /// Gets the result for an invocation of the database() function
         /// </summary>
-        private TypeSymbol GetDatabaseFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        private TypeSymbol GetDatabaseFunctionResult(string nameOrPattern, SyntaxNode location, List<Diagnostic> diagnostics)
         {
-            var cluster = _pathScope as ClusterSymbol ?? _currentCluster;
-            var db = GetDatabase(name, cluster);
+            var db = GetMatchingDatabase(nameOrPattern, _pathScope);
 
             if (db == null)
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(name).WithLocation(location));
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(nameOrPattern).WithLocation(location));
                 }
 
-                db = GetOpenDatabase(name, cluster);
+                if (!IsPattern(nameOrPattern))
+                {
+                    // return open database regardless of container's open state to reduce cascading errors
+                    if (_pathScope == null)
+                    {
+                        db = GetOpenDatabase(nameOrPattern, _currentCluster);
+                    }
+                    else if (_pathScope is ClusterSymbol cluster)
+                    {
+                        db = GetOpenDatabase(nameOrPattern, cluster);
+                    }
+                    else if (_pathScope is GroupSymbol g)
+                    {
+                        // use the first cluster in the group 
+                        var gc = g.Members.OfType<ClusterSymbol>().FirstOrDefault();
+                        if (gc != null)
+                        {
+                            db = GetOpenDatabase(nameOrPattern, gc);
+                        }
+                    }
+                }
             }
 
             return db;
         }
 
         /// <summary>
+        /// Gets the named database or group of databases
+        /// </summary>
+        private TypeSymbol GetMatchingDatabase(string nameOrPattern, Symbol clusterOrGroup)
+        {
+            if (clusterOrGroup == _currentCluster
+                && string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0)
+            {
+                return _currentDatabase;
+            }
+
+            if (_aliasedDatabases.TryGetValue(nameOrPattern, out var db))
+            {
+                return db;
+            }
+
+            var matching = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                if (clusterOrGroup == null)
+                {
+                    GetMatchingDatabases(nameOrPattern, _currentCluster, matching);
+                }
+                else if (clusterOrGroup is ClusterSymbol cluster)
+                {
+                    GetMatchingDatabases(nameOrPattern, cluster, matching);
+                }
+                else if (clusterOrGroup is GroupSymbol group)
+                {
+                    foreach (var s in group.Members)
+                    {
+                        if (s is ClusterSymbol c)
+                        {
+                            GetMatchingDatabases(nameOrPattern, c, matching);
+                        }
+                    }
+                }
+
+                if (matching.Count == 1)
+                {
+                    return (TypeSymbol)matching[0];
+                }
+                else if (matching.Count > 1)
+                {
+                    return new GroupSymbol(matching);
+                }
+                else if (!IsPattern(nameOrPattern))
+                {
+                    if (clusterOrGroup == null && _currentCluster.IsOpen)
+                    {
+                        return GetOpenDatabase(nameOrPattern, _currentCluster);
+                    }
+                    else if (clusterOrGroup is ClusterSymbol c && c.IsOpen)
+                    {
+                        return GetOpenDatabase(nameOrPattern, c);
+                    }
+                    else if (clusterOrGroup is GroupSymbol g)
+                    {
+                        // if any cluster in the group is open, return an open database corresponding to that cluster
+                        foreach (var m in g.Members)
+                        {
+                            if (m is ClusterSymbol cs && cs.IsOpen)
+                            {
+                                return GetOpenDatabase(nameOrPattern, cs);
+                            }
+                        }
+                    }
+                }
+
+                // no matching name and cannot be open database
+                return null;
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(matching);
+            }
+        }
+
+        /// <summary>
+        /// Gets the matching databases in the specified cluster
+        /// </summary>
+        private static void GetMatchingDatabases(string nameOrPattern, ClusterSymbol cluster, List<Symbol> matches)
+        {
+            foreach (var cdb in cluster.Databases)
+            {
+                if (KustoFacts.Matches(nameOrPattern, cdb.Name, ignoreCase: true))
+                {
+                    matches.Add(cdb);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the result of calling the table() function in the current context.
         /// </summary>
-        private TypeSymbol GetTableFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        private TypeSymbol GetTableFunctionResult(string nameOrPattern, SyntaxNode location, List<Diagnostic> diagnostics)
         {
-            var pathDb = _pathScope as DatabaseSymbol;
-
             // check for local table first
-            if (pathDb == null)
+            if (_pathScope == null && !IsPattern(nameOrPattern))
             {
                 var match = SymbolMatch.Table | SymbolMatch.Local;
 
@@ -2172,7 +2350,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     // check scope for variables, etc
-                    _localScope.GetSymbols(name, match, symbols);
+                    _localScope.GetSymbols(nameOrPattern, match, symbols);
 
                     if (symbols.Count > 0)
                     {
@@ -2186,20 +2364,120 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            var db = pathDb ?? _currentDatabase;
-            var table = GetTable(name, db);
+            var table = GetMatchingDatabaseTable(nameOrPattern, _pathScope);
 
             if (table == null)
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(nameOrPattern).WithLocation(location));
                 }
 
-                table = GetOpenTable(name, db);
+                // return open table regardless of containing tables's open state to reduce cascading errors
+                if (!IsPattern(nameOrPattern))
+                {
+                    if (_pathScope == null)
+                    {
+                        table = GetOpenTable(nameOrPattern, _currentDatabase);
+                    }
+                    else if (_pathScope is DatabaseSymbol db)
+                    {
+                        table = GetOpenTable(nameOrPattern, db);
+                    }
+                    else if (_pathScope is GroupSymbol g)
+                    {
+                        // make an open table based on the first database
+                        var gdb = g.Members.OfType<DatabaseSymbol>().FirstOrDefault();
+                        if (gdb != null)
+                        {
+                            table = GetOpenTable(nameOrPattern, gdb);
+                        }
+                    }
+                }
             }
 
             return table;
+        }
+
+        /// <summary>
+        /// Gets the matching table or group of tables
+        /// </summary>
+        private TypeSymbol GetMatchingDatabaseTable(string nameOrPattern, Symbol databaseOrGroup)
+        {
+            var matches = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                if (databaseOrGroup == null)
+                {
+                    GetMatchingDatabaseTables(nameOrPattern, _currentDatabase, matches);
+                }
+                else if (databaseOrGroup is DatabaseSymbol database)
+                {
+                    GetMatchingDatabaseTables(nameOrPattern, database, matches);
+                }
+                else if (databaseOrGroup is GroupSymbol group)
+                {
+                    foreach (var s in group.Members)
+                    {
+                        if (s is DatabaseSymbol db)
+                        {
+                            GetMatchingDatabaseTables(nameOrPattern, db, matches);
+                        }
+                    }
+                }
+
+                if (matches.Count == 1)
+                {
+                    return (TableSymbol)matches[0];
+                }
+                else if (matches.Count > 1)
+                {
+                    return new GroupSymbol(matches);
+                }
+                else if (!IsPattern(nameOrPattern))
+                {
+                    if (databaseOrGroup == null && _currentDatabase.IsOpen)
+                    {
+                        return GetOpenTable(nameOrPattern, _currentDatabase);
+                    }
+                    if (databaseOrGroup is DatabaseSymbol db && db.IsOpen)
+                    {
+                        return GetOpenTable(nameOrPattern, db);
+                    }
+                    else if (databaseOrGroup is GroupSymbol g)
+                    {
+                        // in any database in group is open, then return an open table corresponding to that database
+                        foreach (var m in g.Members)
+                        {
+                            if (m is DatabaseSymbol gdb && gdb.IsOpen)
+                            {
+                                return GetOpenTable(nameOrPattern, gdb);
+                            }
+                        }
+                    }
+                }
+
+                // nothing matched and could not invent an OpenTable
+                return null;
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(matches);
+            }
+        }
+
+        /// <summary>
+        /// Gets all matching tables
+        /// </summary>
+        private void GetMatchingDatabaseTables(string nameOrPattern, DatabaseSymbol database, List<Symbol> matches)
+        {
+            foreach (var table in database.Tables)
+            {
+                if (KustoFacts.Matches(nameOrPattern, table.Name))
+                {
+                    matches.Add(table);
+                }
+            }
         }
 
         /// <summary>
