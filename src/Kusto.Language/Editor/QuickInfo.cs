@@ -55,7 +55,7 @@ namespace Kusto.Language.Editor
                 var kindText = GetKindText(item.Kind);
                 if (kindText != null)
                 {
-                    sb.Append($"({kindText}) ");
+                    sb.Append('(').Append(kindText).Append(") ");
                 }
 
                 sb.Append(item.Text);
