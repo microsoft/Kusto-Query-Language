@@ -2507,7 +2507,7 @@ namespace Kusto.Language.Binding
         private TypeSymbol GetMaterializedViewFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
-            var table = db.GetMaterializedView(name);
+            TableSymbol table = db.GetMaterializedView(name);
 
             if (table == null)
             {

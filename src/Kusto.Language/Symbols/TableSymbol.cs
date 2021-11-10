@@ -11,7 +11,7 @@ namespace Kusto.Language.Symbols
     /// A symbol representing a table
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Symbol: {Kind} {DebugDisplay}")]
-    public sealed class TableSymbol : TypeSymbol
+    public class TableSymbol : TypeSymbol
     {
         /// <summary>
         /// The columns of the table.
@@ -24,7 +24,7 @@ namespace Kusto.Language.Symbols
         public string Description { get; }
 
         [Flags]
-        private enum TableState : ushort
+        protected enum TableState : ushort
         {
             None =              0b0000_0000,
             Serialized =        0b0000_0001,
@@ -39,7 +39,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         private readonly TableState state;
 
-        private TableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
+        protected TableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
             : base(name)
         {
             this.state = state;
@@ -367,5 +367,35 @@ namespace Kusto.Language.Symbols
         {
             return Combine(kind, (IEnumerable<TableSymbol>)tables);
         }
+    }
+
+    public enum MaterializedViewKind
+    {
+        /// <summary>
+        /// View symbol has not been analyzed yet
+        /// </summary>
+        Unknown, 
+        /// <summary>
+        /// View is a downsampling type
+        /// </summary>
+        Downsampling, 
+        /// <summary>
+        /// View was analyzed and is not downsampling
+        /// </summary>
+        Other
+    }
+
+    public class MaterializedViewSymbol : TableSymbol
+    {
+        public string MaterializedViewQuery { get; private set; }
+
+        public MaterializedViewKind MaterializedViewKind { get; set; }
+
+        public MaterializedViewSymbol(string name, IEnumerable<ColumnSymbol> columns, string mvQuery, string description = null)
+            : base(name, TableState.MaterializedView, columns, description)
+        {
+            MaterializedViewQuery = mvQuery;
+        }
+
     }
 }

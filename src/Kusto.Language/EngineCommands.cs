@@ -1803,6 +1803,11 @@ namespace Kusto.Language
                 "MaterializedViewName=<name> on table <table> <function_body>",
                 UnknownResult);
 
+        public static readonly CommandSymbol RenameMaterializedView =
+            new CommandSymbol(nameof(RenameMaterializedView),
+                "rename materialized-view MaterializedViewName=<materializedview> to NewMaterializedViewName=<name>",
+                ShowMaterializedViewResult);
+
         public static readonly CommandSymbol ShowMaterializedView =
            new CommandSymbol(nameof(ShowMaterializedView),
                "show materialized-view MaterializedViewName=<materializedview>",
@@ -3183,6 +3188,7 @@ namespace Kusto.Language
                 ShowMaterializedViewSchemaAsJson, 
                 ShowMaterializedViewCslSchema,
                 ShowMaterializedViewPolicyPartitioning,
+                RenameMaterializedView,
                 #endregion 
 
                 #region System Information Commands

@@ -22,7 +22,7 @@ namespace Kusto.Language.Symbols
         // caches
         private IReadOnlyList<TableSymbol> tables;
         private IReadOnlyList<TableSymbol> externalTables;
-        private IReadOnlyList<TableSymbol> materializedViews;
+        private IReadOnlyList<MaterializedViewSymbol> materializedViews;
         private IReadOnlyList<FunctionSymbol> functions;
         private HashSet<Symbol> symbolSet;
 
@@ -88,13 +88,13 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The materialized views accessible from the database.
         /// </summary>
-        public IReadOnlyList<TableSymbol> MaterializedViews
+        public IReadOnlyList<MaterializedViewSymbol> MaterializedViews
         {
             get
             {
                 if (this.materializedViews == null)
                 {
-                    this.materializedViews = this.Members.OfType<TableSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
+                    this.materializedViews = this.Members.OfType<MaterializedViewSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
                 }
 
                 return this.materializedViews;
@@ -152,7 +152,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Gets the materialized view with the specified name or returns null.
         /// </summary>
-        public TableSymbol GetMaterializedView(string name)
+        public MaterializedViewSymbol GetMaterializedView(string name)
         {
             return this.MaterializedViews.FirstOrDefault(t => t.Name == name);
         }
