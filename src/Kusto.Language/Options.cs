@@ -104,6 +104,9 @@ namespace Kusto.Language
         public static readonly OptionSymbol QueryLanguage =
             new OptionSymbol("query_language", "Controls how the query text is to be interpreted.", ScalarTypes.String, new[] { "'csl'", "'kql'", "'sql'" });
 
+        public static readonly OptionSymbol QueryLogQueryParameters =
+            new OptionSymbol("query_log_query_parameters", "Enables logging of the query parameters, so that they can be viewed later in the `.show queries` journal.", ScalarTypes.Bool);
+
         public static readonly OptionSymbol QueryNow =
             new OptionSymbol("query_now", "Overrides the datetime value returned by the now(0s) function.", ScalarTypes.DateTime);
         
@@ -201,6 +204,7 @@ namespace Kusto.Language
             QueryFanoutThreadsPercent,
             QueryForceRowLevelSecurity,
             QueryLanguage,
+            QueryLogQueryParameters,
             QueryNow,
             QueryResultsApplyGetSchema,
             QueryResultsCacheMaxAge,
