@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
+    <KustoProps Condition="Exists('..\..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
   <PropertyGroup>
     <PlatformTarget>AnyCPU</PlatformTarget>
