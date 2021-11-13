@@ -12353,6 +12353,79 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ScanPartitionByClause */
     
+    #region class ScanStepOutput
+    public sealed partial class ScanStepOutput : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ScanStepOutput;
+        
+        public SyntaxToken OutputKeyword { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public SyntaxToken OutputKind { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ScanStepOutput"/>.
+        /// </summary>
+        internal ScanStepOutput(SyntaxToken outputKeyword, SyntaxToken equalToken, SyntaxToken outputKind, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OutputKeyword = Attach(outputKeyword);
+            this.EqualToken = Attach(equalToken);
+            this.OutputKind = Attach(outputKind);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OutputKeyword;
+                case 1: return EqualToken;
+                case 2: return OutputKind;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OutputKeyword);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(OutputKind);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Keyword;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitScanStepOutput(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitScanStepOutput(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new ScanStepOutput((SyntaxToken)OutputKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)OutputKind?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class ScanStepOutput */
+    
     #region class ScanStep
     public sealed partial class ScanStep : SyntaxNode
     {
@@ -12364,7 +12437,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OptionalKeyword { get; }
         
-        public SyntaxToken OutputKeyword { get; }
+        public ScanStepOutput ScanStepOutput { get; }
         
         public SyntaxToken ColonToken { get; }
         
@@ -12377,12 +12450,12 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="ScanStep"/>.
         /// </summary>
-        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, SyntaxToken outputKeyword, SyntaxToken colonToken, Expression condition, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ScanStep(SyntaxToken stepKeyword, NameDeclaration name, SyntaxToken optionalKeyword, ScanStepOutput scanStepOutput, SyntaxToken colonToken, Expression condition, ScanComputationClause computationClause, SyntaxToken semicolonToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.StepKeyword = Attach(stepKeyword);
             this.Name = Attach(name);
             this.OptionalKeyword = Attach(optionalKeyword, optional: true);
-            this.OutputKeyword = Attach(outputKeyword, optional: true);
+            this.ScanStepOutput = Attach(scanStepOutput, optional: true);
             this.ColonToken = Attach(colonToken);
             this.Condition = Attach(condition);
             this.ComputationClause = Attach(computationClause, optional: true);
@@ -12399,7 +12472,7 @@ namespace Kusto.Language.Syntax
                 case 0: return StepKeyword;
                 case 1: return Name;
                 case 2: return OptionalKeyword;
-                case 3: return OutputKeyword;
+                case 3: return ScanStepOutput;
                 case 4: return ColonToken;
                 case 5: return Condition;
                 case 6: return ComputationClause;
@@ -12415,7 +12488,7 @@ namespace Kusto.Language.Syntax
                 case 0: return nameof(StepKeyword);
                 case 1: return nameof(Name);
                 case 2: return nameof(OptionalKeyword);
-                case 3: return nameof(OutputKeyword);
+                case 3: return nameof(ScanStepOutput);
                 case 4: return nameof(ColonToken);
                 case 5: return nameof(Condition);
                 case 6: return nameof(ComputationClause);
@@ -12444,7 +12517,7 @@ namespace Kusto.Language.Syntax
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
                 case 2: return CompletionHint.Keyword;
-                case 3: return CompletionHint.Keyword;
+                case 3: return CompletionHint.Syntax;
                 case 4: return CompletionHint.Syntax;
                 case 5: return CompletionHint.Scalar;
                 case 6: return CompletionHint.Syntax;
@@ -12464,7 +12537,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ScanStep((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)OptionalKeyword?.Clone(includeDiagnostics), (SyntaxToken)OutputKeyword?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (ScanComputationClause)ComputationClause?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new ScanStep((SyntaxToken)StepKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)OptionalKeyword?.Clone(includeDiagnostics), (ScanStepOutput)ScanStepOutput?.Clone(includeDiagnostics), (SyntaxToken)ColonToken?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (ScanComputationClause)ComputationClause?.Clone(includeDiagnostics), (SyntaxToken)SemicolonToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ScanStep */
@@ -13234,6 +13307,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitScanDeclareClause(ScanDeclareClause node);
         public abstract void VisitScanOrderByClause(ScanOrderByClause node);
         public abstract void VisitScanPartitionByClause(ScanPartitionByClause node);
+        public abstract void VisitScanStepOutput(ScanStepOutput node);
         public abstract void VisitScanStep(ScanStep node);
         public abstract void VisitScanComputationClause(ScanComputationClause node);
         public abstract void VisitScanAssignment(ScanAssignment node);
@@ -13872,6 +13946,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitScanStepOutput(ScanStepOutput node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitScanStep(ScanStep node)
         {
             this.DefaultVisit(node);
@@ -14070,6 +14148,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitScanDeclareClause(ScanDeclareClause node);
         public abstract TResult VisitScanOrderByClause(ScanOrderByClause node);
         public abstract TResult VisitScanPartitionByClause(ScanPartitionByClause node);
+        public abstract TResult VisitScanStepOutput(ScanStepOutput node);
         public abstract TResult VisitScanStep(ScanStep node);
         public abstract TResult VisitScanComputationClause(ScanComputationClause node);
         public abstract TResult VisitScanAssignment(ScanAssignment node);
@@ -14705,6 +14784,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitScanPartitionByClause(ScanPartitionByClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitScanStepOutput(ScanStepOutput node)
         {
             return this.DefaultVisit(node);
         }

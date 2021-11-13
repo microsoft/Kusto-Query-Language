@@ -220,6 +220,11 @@ namespace Kusto.Language
             "all", "hotcache"
         };
 
+        public static readonly IReadOnlyList<string> ScanStepOutputValues = new string[]
+        {
+            "all", "last", "none"
+        };
+
         public static readonly IReadOnlyList<string> ToScalarKinds = new string[]
         {
             "nooptimization"

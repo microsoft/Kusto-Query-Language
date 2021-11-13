@@ -158,8 +158,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.OrKeyword, "or", opKind: OperatorKind.Or),
                 new SyntaxData(SyntaxKind.OrderKeyword, "order"),
                 new SyntaxData(SyntaxKind.OthersKeyword, "others", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind.OutputLastKeyword, "output_last", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind.OutputNoneKeyword, "output_none", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.OutputKeyword, "output", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.PackKeyword, "pack", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
@@ -518,6 +517,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ScanPartitionByClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ScanDeclareClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ScanStep, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ScanStepOutput, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ScanComputationClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ScanAssignment, "", SyntaxCategory.Node),
 

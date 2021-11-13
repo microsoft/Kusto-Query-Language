@@ -4127,6 +4127,19 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        private ScanStepOutput ParseScanStepOutput()
+        {
+            var output = ParseToken(SyntaxKind.OutputKeyword);
+            if (output != null)
+            {
+                var equality = ParseRequiredToken(SyntaxKind.EqualToken);               
+                var outputKind = ParseRequiredToken(KustoFacts.ScanStepOutputValues);
+                return new ScanStepOutput(output, equality, outputKind);
+            }
+
+            return null;
+        }
+
         private ScanStep ParseScanStep()
         {
             var keyword = ParseToken(SyntaxKind.StepKeyword);
@@ -4134,7 +4147,7 @@ namespace Kusto.Language.Parsing
             {
                 var name = ParseNameDeclaration() ?? CreateMissingNameDeclaration();
                 var optional = ParseToken(SyntaxKind.OptionalKeyword);
-                var output = ParseToken(SyntaxKind.OutputLastKeyword)?? ParseToken(SyntaxKind.OutputNoneKeyword);
+                var output = ParseScanStepOutput();
                 var colon = ParseRequiredToken(SyntaxKind.ColonToken);
                 var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
                 var computation = ParseScanComputationClause();

@@ -3098,6 +3098,11 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitScanStepOutput(ScanStepOutput node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitScanComputationClause(ScanComputationClause node)
             {
                 return null;

@@ -126,8 +126,7 @@
         OrKeyword,
         OrderKeyword,
         OthersKeyword,
-        OutputLastKeyword,
-        OutputNoneKeyword,
+        OutputKeyword,
 
         PackKeyword,
         ParseKeyword,
@@ -488,6 +487,7 @@
         ScanPartitionByClause,
         ScanDeclareClause,
         ScanStep,
+        ScanStepOutput,
         ScanComputationClause,
         ScanAssignment,
 

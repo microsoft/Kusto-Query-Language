@@ -2084,14 +2084,21 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.FatArrowToken),
                     CommaList(ScanAssignment, MissingScanAssignmentNode, oneOrMore: true),
-                    (token, list) => new ScanComputationClause(token, list));
+                    (token, list) => new ScanComputationClause(token, list));            
+
+            var ScanStepOutput =
+                Rule(
+                    Token(SyntaxKind.OutputKeyword),
+                    RequiredToken(SyntaxKind.EqualToken),
+                    RequiredToken(KustoFacts.ScanStepOutputValues),
+                    (output, equality, outputKind) => new ScanStepOutput(output, equality, outputKind));
 
             var ScanStep =
                 Rule(
                     Token(SyntaxKind.StepKeyword),                    
                     Required(RenameName, MissingNameDeclaration), // name                    
                     Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported                    
-                    Optional(First(HiddenToken(SyntaxKind.OutputLastKeyword), HiddenToken(SyntaxKind.OutputNoneKeyword))),
+                    Optional(ScanStepOutput.Hide()),
                     RequiredToken(SyntaxKind.ColonToken),
                     Required(UnnamedExpression, MissingExpression),
                     Optional(ScanComputationClause),

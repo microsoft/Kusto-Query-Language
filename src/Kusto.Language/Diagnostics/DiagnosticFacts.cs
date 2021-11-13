@@ -123,6 +123,11 @@ namespace Kusto.Language
             return GetMissingElement("first or last");
         }
 
+        public static Diagnostic GetMissingAllLastOrNone()
+        {
+            return GetMissingElement("all, last or none");
+        }
+
         public static Diagnostic GetMissingJsonValue()
         {
             return GetMissingElement("json value");
@@ -156,7 +161,7 @@ namespace Kusto.Language
         public static Diagnostic GetMissingClause(string clauseName)
         {
             return GetMissingElement($"{clauseName} clause");
-        }
+        }        
 
         public static Diagnostic GetMissingSchemaDeclaration()
         {

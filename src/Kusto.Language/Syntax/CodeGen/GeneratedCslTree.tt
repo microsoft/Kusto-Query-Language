@@ -2487,6 +2487,21 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "ScanStepOutput",
+        Doc = "",
+        Base = "SyntaxNode",
+        Sealed = true,
+        Kind = "ScanStepOutput",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "OutputKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "EqualToken", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "OutputKind", Type = "SyntaxToken", Completion="Keyword" }
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "ScanStep",
         Doc = "",
         Base = "SyntaxNode",
@@ -2497,7 +2512,7 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
             new GeneratedProperty { Name = "StepKeyword", Type = "SyntaxToken", Completion="Keyword" },
             new GeneratedProperty { Name = "Name", Type = "NameDeclaration", Completion="Syntax" },
             new GeneratedProperty { Name = "OptionalKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
-            new GeneratedProperty { Name = "OutputKeyword", Type = "SyntaxToken", Optional=true, Completion="Keyword" },
+            new GeneratedProperty { Name = "ScanStepOutput", Type = "ScanStepOutput", Optional=true, Completion="Syntax" },
             new GeneratedProperty { Name = "ColonToken", Type = "SyntaxToken", Completion="Syntax" },
             new GeneratedProperty { Name = "Condition", Type="Expression", Completion="Scalar" },
             new GeneratedProperty { Name = "ComputationClause", Type="ScanComputationClause", Optional=true, Completion="Syntax" },
