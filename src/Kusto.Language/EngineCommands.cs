@@ -16,6 +16,8 @@ namespace Kusto.Language
         private static readonly string ShowDatabaseDetailsResults =
             "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, AuthorizedPrincipals: string, RetentionPolicy: string, MergePolicy: string, ReservedSlot1: string, CachingPolicy: string, ShardingPolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string, TotalSize: real, DatabaseId: guid, InTransitionTo: string)";
 
+        private static readonly string DatabasesNameList = "'(' { DatabaseName=<database>, ',' }+ ')'";
+
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol(nameof(ShowDatabase),
                 "show database",
@@ -2105,33 +2107,48 @@ namespace Kusto.Language
         #endregion
 
         #region Advanced Commands
-
-        public static readonly CommandSymbol ShowClusterExtents =
-            new CommandSymbol(nameof(ShowClusterExtents), 
-                "show cluster extents [hot]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
+        private static readonly string ShowExtentsResult = "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)";
+        private static readonly string ShowExtentsMetadataResult = "(ExtentId: guid, DatabaseName: string, TableName: string, ExtentMetadata: string)";
 
         private static readonly string TagWhereClause = "where { tags (has | contains | '!has' | '!contains')! Tag=<string>, and }+";
+        private static readonly string WithFilteringPolicyClause = "with '(' extentsShowFilteringRuntimePolicy '=' policy=<value> ')' ";
+        private static readonly string ShowExtentsSuffix = $"[{TagWhereClause}] [{WithFilteringPolicyClause}]";
 
+        #region Cluster extents
+        public static readonly CommandSymbol ShowClusterExtents =
+            new CommandSymbol(nameof(ShowClusterExtents),
+                $"show cluster extents [{ExtentIdList}] [hot] {ShowExtentsSuffix}",
+                ShowExtentsResult);
+
+        public static readonly CommandSymbol ShowClusterExtentsMetadata =
+            new CommandSymbol(nameof(ShowClusterExtentsMetadata),
+                $"show cluster extents [{ExtentIdList}] [hot] metadata {ShowExtentsSuffix}",
+                ShowExtentsMetadataResult);
+        #endregion
+
+        #region Database extents
         public static readonly CommandSymbol ShowDatabaseExtents =
             new CommandSymbol(nameof(ShowDatabaseExtents),
-                $"show database DatabaseName=<database> extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
+                $"show (database [DatabaseName=<database>] | databases {DatabasesNameList}) extents [{ExtentIdList}] [hot] {ShowExtentsSuffix}",
+                ShowExtentsResult);
 
         public static readonly CommandSymbol ShowDatabaseExtentsMetadata =
             new CommandSymbol(nameof(ShowDatabaseExtentsMetadata),
-                "show database DatabaseName=<database> extents metadata",
-                UnknownResult);
+                $"show (database [DatabaseName=<database>] | databases {DatabasesNameList}) extents [{ExtentIdList}] [hot] metadata {ShowExtentsSuffix}",
+                ShowExtentsMetadataResult);
+        #endregion
 
+        #region Table extents
         public static readonly CommandSymbol ShowTableExtents =
             new CommandSymbol(nameof(ShowTableExtents),
-                $"show table TableName=<table> extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
+                $"show (table TableName=<table> | tables {TableNameList}) extents [{ExtentIdList}] [hot] {ShowExtentsSuffix}",
+                ShowExtentsResult);
 
-        public static readonly CommandSymbol ShowTablesExtents =
-            new CommandSymbol(nameof(ShowTablesExtents),
-                $"show tables {TableNameList} extents [{ExtentIdList}] [hot] [{TagWhereClause}]",
-                "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)");
+        public static readonly CommandSymbol ShowTableExtentsMetadata =
+            new CommandSymbol(nameof(ShowTableExtentsMetadata),
+                $"show (table TableName=<table> | tables {TableNameList}) extents [{ExtentIdList}] [hot] metadata {ShowExtentsSuffix}",
+                ShowExtentsMetadataResult);
+        #endregion
 
         private static readonly string MergeExtentsResult =
             "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
@@ -3223,10 +3240,11 @@ namespace Kusto.Language
 
                 #region Advanced Commands
                 ShowClusterExtents,
+                ShowClusterExtentsMetadata,
                 ShowDatabaseExtents,
                 ShowDatabaseExtentsMetadata,
                 ShowTableExtents,
-                ShowTablesExtents,
+                ShowTableExtentsMetadata,
                 MergeExtentsDryrun,
                 MergeExtents,
                 MoveExtentsFrom,
