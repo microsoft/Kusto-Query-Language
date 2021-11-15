@@ -2247,6 +2247,15 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoDistancePointToPolygon =
+            new FunctionSymbol("geo_distance_point_to_polygon", ScalarTypes.Real,
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPointInCircle =
             new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
                 new Parameter("p_longitude", ParameterTypeKind.Number),
@@ -2874,6 +2883,7 @@ namespace Kusto.Language
 #region geospatial functions
             GeoDistance2Points,
             GeoDistancePointToLine,
+            GeoDistancePointToPolygon,
             GeoPointInCircle,
             GeoPointInPolygon,
             GeoPolygonToS2Cells,
