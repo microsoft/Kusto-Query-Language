@@ -220,7 +220,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ExtractJson =
+        public static readonly FunctionSymbol ExtractJson_Depricated =
             new FunctionSymbol("extractjson",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
@@ -231,6 +231,19 @@ namespace Kusto.Language
                     new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol ExtractJson =
+           new FunctionSymbol("extract_json",
+               new Signature(ScalarTypes.Dynamic,
+                   new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
+                   new Parameter("jsonText", ScalarTypes.String)),
+               new Signature(ReturnTypeKind.ParameterNLiteral,
+                   new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
+                   new Parameter("jsonText", ScalarTypes.String),
+                   new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
+           .WithResultNameKind(ResultNameKind.None)
+           .ConstantFoldable()
+           .Hide(); // TODO: unhide on Dec 14th 2021 (alexans)
 
         public static readonly FunctionSymbol Replace =
             new FunctionSymbol("replace", ScalarTypes.String,
@@ -791,7 +804,7 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
-        // To be deprecated as current implementation isn't ISO 8601 compliant.
+        // To be depricated as current implementation isn't ISO 8601 compliant.
         // A new function, week_of_year, that is ISO 8601 compliant has been added.
         public static readonly FunctionSymbol WeekOfYear =
             new FunctionSymbol("weekofyear", ScalarTypes.Int,
@@ -2595,6 +2608,7 @@ namespace Kusto.Language
             Extract,
             ExtractAll_Depricated,
             ExtractAll,
+            ExtractJson_Depricated,
             ExtractJson,
             Replace,
             ReplaceRegex,
