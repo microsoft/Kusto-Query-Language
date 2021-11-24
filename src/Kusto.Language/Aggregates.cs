@@ -151,7 +151,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("avgif");
 
-        public static readonly FunctionSymbol MakeList_Depricated =
+        public static readonly FunctionSymbol MakeList_Deprecated =
             new FunctionSymbol("makelist", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
@@ -181,7 +181,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
-        public static readonly FunctionSymbol MakeSet_Depricated =
+        public static readonly FunctionSymbol MakeSet_Deprecated =
             new FunctionSymbol("makeset", ScalarTypes.Dynamic,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
@@ -570,7 +570,7 @@ namespace Kusto.Language
         private static ColumnSymbol GetResultColumn(Expression expr) =>
             Kusto.Language.Binding.Binder.GetResultColumn(expr);
 
-        public static readonly FunctionSymbol ArgMin_Depricated =
+        public static readonly FunctionSymbol ArgMin_Deprecated =
             new FunctionSymbol("argmin",
                 new Signature(
                     GetArgMinMaxDepResult,
@@ -581,7 +581,7 @@ namespace Kusto.Language
             .Obsolete("arg_min")
             .Hide();
 
-        public static readonly FunctionSymbol ArgMax_Depricated =
+        public static readonly FunctionSymbol ArgMax_Deprecated =
             new FunctionSymbol("argmax",
                 new Signature(
                     GetArgMinMaxDepResult,
@@ -686,11 +686,11 @@ namespace Kusto.Language
             MaxIf,
             Avg,
             AvgIf,
-            MakeList_Depricated,
+            MakeList_Deprecated,
             MakeList,
             MakeListIf,
             MakeListWithNulls,
-            MakeSet_Depricated,
+            MakeSet_Deprecated,
             MakeSet,
             MakeSetIf,
             MakeDictionary,
@@ -716,8 +716,8 @@ namespace Kusto.Language
             TakeAnyIf,
             ArgMin,
             ArgMax,
-            ArgMin_Depricated,
-            ArgMax_Depricated,
+            ArgMin_Deprecated,
+            ArgMax_Deprecated,
             BinaryAllOr,
             BinaryAllAnd,
             BinaryAllXor,

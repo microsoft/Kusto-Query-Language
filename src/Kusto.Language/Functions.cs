@@ -194,7 +194,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ExtractAll_Depricated =
+        public static readonly FunctionSymbol ExtractAll_Deprecated =
              new FunctionSymbol("extractall",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
@@ -220,7 +220,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ExtractJson_Depricated =
+        public static readonly FunctionSymbol ExtractJson_Deprecated =
             new FunctionSymbol("extractjson",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
@@ -356,7 +356,7 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
-        public static readonly FunctionSymbol ToObject_Depricated =
+        public static readonly FunctionSymbol ToObject_Deprecated =
             new FunctionSymbol("toobject", ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
@@ -550,7 +550,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ParseJson_Depricated =
+        public static readonly FunctionSymbol ParseJson_Deprecated =
             new FunctionSymbol("parsejson", ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
@@ -570,7 +570,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ParseUrl_Depricated =
+        public static readonly FunctionSymbol ParseUrl_Deprecated =
             new FunctionSymbol("parseurl", ScalarTypes.Dynamic,
                 new Parameter("url", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -584,7 +584,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ParseUrlQuery_Depricated =
+        public static readonly FunctionSymbol ParseUrlQuery_Deprecated =
             new FunctionSymbol("parseurlquery", ScalarTypes.Dynamic,
                 new Parameter("query", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -804,7 +804,7 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
-        // To be depricated as current implementation isn't ISO 8601 compliant.
+        // To be deprecated as current implementation isn't ISO 8601 compliant.
         // A new function, week_of_year, that is ISO 8601 compliant has been added.
         public static readonly FunctionSymbol WeekOfYear =
             new FunctionSymbol("weekofyear", ScalarTypes.Int,
@@ -1121,7 +1121,7 @@ namespace Kusto.Language
                 new Parameter("expression", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.None);
 
-        public static readonly FunctionSymbol NotNull_Depricated =
+        public static readonly FunctionSymbol NotNull_Deprecated =
             new FunctionSymbol("notnull", ScalarTypes.Bool,
                 new Parameter("expression", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
@@ -1138,7 +1138,7 @@ namespace Kusto.Language
                 new Parameter("expression", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None);
 
-        public static readonly FunctionSymbol NotEmpty_Depricated =
+        public static readonly FunctionSymbol NotEmpty_Deprecated =
             new FunctionSymbol("notempty", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
@@ -1171,7 +1171,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
-        public static readonly FunctionSymbol ColumnIfExists_Depricated =
+        public static readonly FunctionSymbol ColumnIfExists_Deprecated =
             new FunctionSymbol("columnifexists", ReturnTypeKind.Parameter1,
                 new Parameter("column_name", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("defaultValue", ParameterTypeKind.Scalar))
@@ -1260,7 +1260,7 @@ namespace Kusto.Language
             .WithResultNamePrefix("repeat")
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol Arraylength_Depricated =
+        public static readonly FunctionSymbol Arraylength_Deprecated =
             new FunctionSymbol("arraylength", ScalarTypes.Long,
                 new Parameter("array", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
@@ -2606,9 +2606,9 @@ namespace Kusto.Language
             Split,
             ParseCommandLine,
             Extract,
-            ExtractAll_Depricated,
+            ExtractAll_Deprecated,
             ExtractAll,
-            ExtractJson_Depricated,
+            ExtractJson_Deprecated,
             ExtractJson,
             Replace,
             ReplaceRegex,
@@ -2627,7 +2627,7 @@ namespace Kusto.Language
             ToString,
             ToHex,
             ToDynamic_,
-            ToObject_Depricated,
+            ToObject_Deprecated,
             ToLong,
             ToInt,
             ToReal,
@@ -2663,12 +2663,12 @@ namespace Kusto.Language
 
 #region parsing functions
             ParseCsv,
-            ParseJson_Depricated,
+            ParseJson_Deprecated,
             ParseJson,
             ParseXml,
-            ParseUrl_Depricated,
+            ParseUrl_Deprecated,
             ParseUrl,
-            ParseUrlQuery_Depricated,
+            ParseUrlQuery_Deprecated,
             ParseUrlQuery,
             ParseIPV4,
             ParseIPV4Mask,
@@ -2742,16 +2742,16 @@ namespace Kusto.Language
 
 #region bool functions  (test state, return bool)
             Not,
-            NotNull_Depricated,
+            NotNull_Deprecated,
             IsNotNull,
             IsNull,
-            NotEmpty_Depricated,
+            NotEmpty_Deprecated,
             IsColumnExists,
             IsAscii,
             IsUtf8,
             IsNotEmpty,
             IsEmpty,
-            ColumnIfExists_Depricated,
+            ColumnIfExists_Deprecated,
             ColumnIfExists,
             Around,
 #endregion
@@ -2769,7 +2769,7 @@ namespace Kusto.Language
 #region dynamic array/object functions
             TreePath,
             Repeat,
-            Arraylength_Depricated,
+            Arraylength_Deprecated,
             ArrayLength,
             Range,
             ArrayConcat,

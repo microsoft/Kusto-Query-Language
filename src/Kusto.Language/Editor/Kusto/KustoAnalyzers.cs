@@ -248,7 +248,7 @@ namespace Kusto.Language.Editor
                 "KS507",
                 DiagnosticCategory.Correctness,
                 DiagnosticSeverity.Warning,
-                description: "Avoid using obsolete/depricated functions."),
+                description: "Avoid using obsolete/deprecated functions."),
             (code, dx, diagnostics) =>
             {
                 foreach (var node in code.Syntax.GetDescendants<FunctionCallExpression>(
