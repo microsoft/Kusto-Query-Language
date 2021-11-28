@@ -216,6 +216,8 @@ namespace Kusto.Language
             new QueryOperatorParameter("ysplit", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartYSplit),
             new QueryOperatorParameter("ymin", QueryOperatorParameterValueKind.ForcedRealLiteral),
             new QueryOperatorParameter("ymax", QueryOperatorParameterValueKind.ForcedRealLiteral),
+            new QueryOperatorParameter("xmin", QueryOperatorParameterValueKind.ScalarLiteral),
+            new QueryOperatorParameter("xmax", QueryOperatorParameterValueKind.ScalarLiteral),
         };
 
         public static readonly IReadOnlyList<QueryOperatorParameter> ReduceParameters = new[]

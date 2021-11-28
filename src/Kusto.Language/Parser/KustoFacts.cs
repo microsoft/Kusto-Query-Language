@@ -120,7 +120,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> ChartProperties = new string[]
         {
-            "title", "xcolumn", "series", "ycolumns", "anomalycolumns", "kind", "xtitle", "ytitle", "xaxis", "yaxis", "legend", "ysplit", "accumulate", "ymin", "ymax"
+            "title", "xcolumn", "series", "ycolumns", "anomalycolumns", "kind", "xtitle", "ytitle", "xaxis", "yaxis", "legend", "ysplit", "accumulate", "ymin", "ymax", "xmax", "xmin"
         };
 
         public static readonly IReadOnlyList<string> ChartKinds = new string[]
