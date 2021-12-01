@@ -43,7 +43,7 @@ namespace Kusto.Language
                 "show database datastats",
                 "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, " +
                     "CurrentUseIsUnrestrictedViewer: bool, DatabaseId: guid, " +
-                    "OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, " + 
+                    "OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, " +
                     "HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)");
 
         public static readonly CommandSymbol ShowClusterDatabases =
@@ -337,7 +337,7 @@ namespace Kusto.Language
         #region Columns
 
         public static readonly CommandSymbol RenameColumn =
-            new CommandSymbol(nameof(RenameColumn), 
+            new CommandSymbol(nameof(RenameColumn),
                 "rename column ColumnName=<database_table_column> to NewColumnName=<name>",
                 "(EntityName: string, DataType: string, Policy: string)");
 
@@ -352,7 +352,7 @@ namespace Kusto.Language
                 "(EntityName: string, DataType: string, Policy: string)");
 
         public static readonly CommandSymbol DropColumn =
-            new CommandSymbol(nameof(DropColumn), 
+            new CommandSymbol(nameof(DropColumn),
                 "drop column ColumnName=<table_column>",
                 "(TableName: string, Schema: string, DatabaseName: string, Folder: string, DocString: string)");
 
@@ -362,7 +362,7 @@ namespace Kusto.Language
                 "(TableName: string, Schema: string, DatabaseName: string, Folder: string, DocString: string)");
 
         public static readonly CommandSymbol AlterTableColumnDocStrings =
-            new CommandSymbol(nameof(AlterTableColumnDocStrings), 
+            new CommandSymbol(nameof(AlterTableColumnDocStrings),
                 "alter table TableName=<table> column-docstrings '(' { ColumnName=<column> ':'! DocString=<string>, ',' }+ ')'",
                 "(TableName: string, Schema: string, DatabaseName: string, Folder: string, DocString: string)");
 
@@ -378,7 +378,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowFunctions =
             new CommandSymbol(nameof(ShowFunctions),
-                "show functions", 
+                "show functions",
                 FunctionResult);
 
         public static readonly CommandSymbol ShowFunction =
@@ -415,12 +415,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterFunctionDocString =
             new CommandSymbol(nameof(AlterFunctionDocString),
-                "alter function <function> docstring Documentation=<string>", 
+                "alter function <function> docstring Documentation=<string>",
                 FunctionResult);
 
         public static readonly CommandSymbol AlterFunctionFolder =
             new CommandSymbol(nameof(AlterFunctionFolder),
-                "alter function FunctionName=<function> folder Folder=<string>", 
+                "alter function FunctionName=<function> folder Folder=<string>",
                 FunctionResult);
         #endregion
 
@@ -439,7 +439,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowExternalTables =
             new CommandSymbol(nameof(ShowExternalTables),
-                "show external tables", 
+                "show external tables",
                 ExternalTableResult);
 
         public static readonly CommandSymbol ShowExternalTable =
@@ -454,12 +454,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowExternalTableSchema =
             new CommandSymbol(nameof(ShowExternalTableSchema),
-                "show external table ExternalTableName=<externaltable> schema as (json | csl)", 
+                "show external table ExternalTableName=<externaltable> schema as (json | csl)",
                 ExternalTableSchemaResult);
 
         public static readonly CommandSymbol ShowExternalTableArtifacts =
             new CommandSymbol(nameof(ShowExternalTableArtifacts),
-                "show external table ExternalTableName=<externaltable> artifacts [limit LimitCount=<long>]", 
+                "show external table ExternalTableName=<externaltable> artifacts [limit LimitCount=<long>]",
                 ExternalTableArtifactsResult);
 
         public static readonly CommandSymbol DropExternalTable =
@@ -467,7 +467,7 @@ namespace Kusto.Language
                 "drop external table ExternalTableName=<externaltable>",
                 ExternalTableResult);
 
-        private static readonly string CreateOrAlterExternalTableGrammar =
+        private static readonly string CreateOrAlterStorageExternalTableGrammar =
             @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
               kind '='! TableKind=(storage | #blob | #adl)
               [partition by!
@@ -488,19 +488,41 @@ namespace Kusto.Language
               '(' { StorageConnectionString=<string>, ',' }+ ')'
               [with '('! { PropertyName=<name> '='! Value=<value>, ',' }+ ')']";
 
-        public static readonly CommandSymbol CreateExternalTable =
-            new CommandSymbol(nameof(CreateExternalTable), 
-                "create " + CreateOrAlterExternalTableGrammar,
+        private static readonly string CreateOrAlterSqlExternalTableGrammar =
+            @"external table ExternalTableName=<name> '(' { ColumnName=<name> ':'! ColumnType=<type>, ',' }+ ')'
+              kind '='! TableKind=(sql)
+              table '=' <name>
+              '(' <string> ')'
+              [with '('! { PropertyName=<name> '='! Value=<value>, ',' }+ ')']";
+
+        public static readonly CommandSymbol CreateStorageExternalTable =
+            new CommandSymbol(nameof(CreateStorageExternalTable),
+                "create " + CreateOrAlterStorageExternalTableGrammar,
                 ExternalTableResult);
 
-        public static readonly CommandSymbol AlterExternalTable =
-            new CommandSymbol(nameof(AlterExternalTable),
-                "alter " + CreateOrAlterExternalTableGrammar,
+        public static readonly CommandSymbol AlterStorageExternalTable =
+            new CommandSymbol(nameof(AlterStorageExternalTable),
+                "alter " + CreateOrAlterStorageExternalTableGrammar,
                 ExternalTableFullResult);
 
-        public static readonly CommandSymbol CreateOrAlterExternalTable =
-            new CommandSymbol(nameof(CreateOrAlterExternalTable), 
-                "create-or-alter " + CreateOrAlterExternalTableGrammar,
+        public static readonly CommandSymbol CreateOrAlterStorageExternalTable =
+            new CommandSymbol(nameof(CreateOrAlterStorageExternalTable),
+                "create-or-alter " + CreateOrAlterStorageExternalTableGrammar,
+                ExternalTableFullResult);
+
+        public static readonly CommandSymbol CreateSqlExternalTable =
+            new CommandSymbol(nameof(CreateSqlExternalTable),
+                "create " + CreateOrAlterSqlExternalTableGrammar,
+                ExternalTableResult);
+
+        public static readonly CommandSymbol AlterSqlExternalTable =
+            new CommandSymbol(nameof(AlterSqlExternalTable),
+                "alter " + CreateOrAlterSqlExternalTableGrammar,
+                ExternalTableFullResult);
+
+        public static readonly CommandSymbol CreateOrAlterSqlExternalTable =
+            new CommandSymbol(nameof(CreateOrAlterSqlExternalTable),
+                "create-or-alter " + CreateOrAlterSqlExternalTableGrammar,
                 ExternalTableFullResult);
 
         public static readonly CommandSymbol CreateExternalTableMapping =
@@ -633,7 +655,7 @@ namespace Kusto.Language
                 "show cluster policy caching",
                 PolicyResult);
 
-        private static readonly string HotPolicy = 
+        private static readonly string HotPolicy =
             "(hot '='! Timespan=<timespan> | hotdata '='! HotData=<timespan> hotindex '='! HotIndex=<timespan>)";
 
         public static readonly CommandSymbol AlterDatabasePolicyCaching =
@@ -714,7 +736,7 @@ namespace Kusto.Language
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyIngestionTime =
-            new CommandSymbol(nameof(DeleteTablePolicyIngestionTime), 
+            new CommandSymbol(nameof(DeleteTablePolicyIngestionTime),
                 "delete table TableName=<table> policy ingestiontime",
                 PolicyResult);
         #endregion
@@ -874,12 +896,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterTablePolicyUpdate =
             new CommandSymbol(nameof(AlterTablePolicyUpdate),
-                "alter table TableName=<database_table> policy update UpdatePolicy=<string>", 
+                "alter table TableName=<database_table> policy update UpdatePolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeTablePolicyUpdate =
-            new CommandSymbol(nameof(AlterMergeTablePolicyUpdate), 
-                "alter-merge table TableName=<database_table> policy update UpdatePolicy=<string>", 
+            new CommandSymbol(nameof(AlterMergeTablePolicyUpdate),
+                "alter-merge table TableName=<database_table> policy update UpdatePolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteTablePolicyUpdate =
@@ -938,7 +960,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowTablePolicyEncoding =
             new CommandSymbol(nameof(ShowTablePolicyEncoding),
-                "show table TableName=<database_table> policy encoding", 
+                "show table TableName=<database_table> policy encoding",
                 PolicyResult);
 
         public static readonly CommandSymbol ShowColumnPolicyEncoding =
@@ -973,11 +995,11 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterMergeDatabasePolicyEncoding =
             new CommandSymbol(nameof(AlterMergeDatabasePolicyEncoding),
-                "alter-merge database DatabaseName=<database> policy encoding EncodingPolicy=<string>", 
+                "alter-merge database DatabaseName=<database> policy encoding EncodingPolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeTablePolicyEncoding =
-            new CommandSymbol(nameof(AlterMergeTablePolicyEncoding), 
+            new CommandSymbol(nameof(AlterMergeTablePolicyEncoding),
                 "alter-merge table TableName=<database_table> policy encoding EncodingPolicy=<string>",
                 PolicyResult);
 
@@ -987,7 +1009,7 @@ namespace Kusto.Language
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteDatabasePolicyEncoding =
-            new CommandSymbol(nameof(DeleteDatabasePolicyEncoding), 
+            new CommandSymbol(nameof(DeleteDatabasePolicyEncoding),
                 "delete database DatabaseName=<database> policy encoding",
                 PolicyResult);
 
@@ -1039,7 +1061,7 @@ namespace Kusto.Language
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeTablePolicyMerge =
-            new CommandSymbol(nameof(AlterMergeTablePolicyMerge), 
+            new CommandSymbol(nameof(AlterMergeTablePolicyMerge),
                 "alter-merge table TableName=<database_table> policy merge MergePolicy=<string>",
                 PolicyResult);
 
@@ -1125,7 +1147,7 @@ namespace Kusto.Language
 
         #region RowStore
         public static readonly CommandSymbol ShowClusterPolicyRowStore =
-            new CommandSymbol(nameof(ShowClusterPolicyRowStore), 
+            new CommandSymbol(nameof(ShowClusterPolicyRowStore),
                 "show cluster policy rowstore",
                 PolicyResult);
 
@@ -1356,24 +1378,24 @@ namespace Kusto.Language
                 PolicyResult);
 
         public static readonly CommandSymbol AlterMergeClusterPolicyCallout =
-            new CommandSymbol(nameof(AlterMergeClusterPolicyCallout), 
+            new CommandSymbol(nameof(AlterMergeClusterPolicyCallout),
                 "alter-merge cluster policy callout Policy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol DeleteClusterPolicyCallout =
             new CommandSymbol(nameof(DeleteClusterPolicyCallout),
-                "delete cluster policy callout", 
+                "delete cluster policy callout",
                 PolicyResult);
         #endregion
 
         #region Capacity
         public static readonly CommandSymbol ShowClusterPolicyCapacity =
             new CommandSymbol(nameof(ShowClusterPolicyCapacity),
-                "show cluster policy capacity", 
+                "show cluster policy capacity",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterClusterPolicyCapacity =
-            new CommandSymbol(nameof(AlterClusterPolicyCapacity), 
+            new CommandSymbol(nameof(AlterClusterPolicyCapacity),
                 "alter cluster policy capacity Policy=<string>",
                 PolicyResult);
 
@@ -1408,7 +1430,7 @@ namespace Kusto.Language
         #region Multi Database Admins
         public static readonly CommandSymbol ShowClusterPolicyMultiDatabaseAdmins =
             new CommandSymbol(nameof(ShowClusterPolicyMultiDatabaseAdmins),
-                "show cluster policy multidatabaseadmins", 
+                "show cluster policy multidatabaseadmins",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterClusterPolicyMultiDatabaseAdmins =
@@ -1569,7 +1591,7 @@ namespace Kusto.Language
                 ShowPrincipalsResult);
 
         public static readonly CommandSymbol ShowFunctionPrincipals =
-            new CommandSymbol(nameof(ShowFunctionPrincipals), 
+            new CommandSymbol(nameof(ShowFunctionPrincipals),
                 "show function FunctionName=<function> principals",
                 ShowPrincipalsResult);
 
@@ -1686,22 +1708,22 @@ namespace Kusto.Language
             "(ExtentId: guid, OriginalSize: long, ExtentSize: long, ColumnSize: long, IndexSize: long, RowCount: long)";
 
         public static readonly CommandSymbol SetTable =
-            new CommandSymbol(nameof(SetTable), 
-                $"set [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
+            new CommandSymbol(nameof(SetTable),
+                $"set [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>",
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol AppendTable =
-            new CommandSymbol(nameof(AppendTable), 
-                $"append [async] TableName=<table> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
+            new CommandSymbol(nameof(AppendTable),
+                $"append [async] TableName=<table> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>",
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrAppendTable =
-            new CommandSymbol(nameof(SetOrAppendTable), 
-                $"set-or-append [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>", 
+            new CommandSymbol(nameof(SetOrAppendTable),
+                $"set-or-append [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>",
                 DataIngestionSetAppendResult);
 
         public static readonly CommandSymbol SetOrReplaceTable =
-            new CommandSymbol(nameof(SetOrReplaceTable), 
+            new CommandSymbol(nameof(SetOrReplaceTable),
                 $"set-or-replace [async] TableName=<name> [{DataIngestionPropertyList}] '<|' QueryOrCommand=<input_query>",
                 DataIngestionSetAppendResult);
         #endregion
@@ -1720,14 +1742,14 @@ namespace Kusto.Language
                 UnknownResult);
 
         public static readonly CommandSymbol ExportToExternalTable =
-            new CommandSymbol(nameof(ExportToExternalTable), 
+            new CommandSymbol(nameof(ExportToExternalTable),
                 $"export [async] to table ExternalTableName=<externaltable> [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
         private static readonly string OverClause = "over '('! { TableName=<name>, ',' }+ ')'";
 
         public static readonly CommandSymbol CreateOrAlterContinuousExport =
-            new CommandSymbol(nameof(CreateOrAlterContinuousExport), 
+            new CommandSymbol(nameof(CreateOrAlterContinuousExport),
                 $"create-or-alter continuous-export ContinuousExportName=<name> [{OverClause}] to table ExternalTableName=<externaltable> [{PropertyList()}] '<|' Query=<input_query>",
                 UnknownResult);
 
@@ -1738,12 +1760,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowContinuousExport =
             new CommandSymbol(nameof(ShowContinuousExport),
-                "show continuous-export ContinuousExportName=<name>", 
+                "show continuous-export ContinuousExportName=<name>",
                 ShowContinuousExportResult);
 
         public static readonly CommandSymbol ShowContinuousExports =
-            new CommandSymbol(nameof(ShowContinuousExports), 
-                "show continuous-exports", 
+            new CommandSymbol(nameof(ShowContinuousExports),
+                "show continuous-exports",
                 ShowContinuousExportResult);
 
         public static readonly CommandSymbol ShowClusterPendingContinuousExports =
@@ -1773,12 +1795,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol EnableContinuousExport =
             new CommandSymbol(nameof(EnableContinuousExport),
-                "enable continuous-export ContinuousExportName=<name>", 
+                "enable continuous-export ContinuousExportName=<name>",
                 ShowContinuousExportResult);
 
         public static readonly CommandSymbol DisableContinuousExport =
             new CommandSymbol(nameof(DisableContinuousExport),
-                "disable continuous-export ContinousExportName=<name>", 
+                "disable continuous-export ContinousExportName=<name>",
                 ShowContinuousExportResult);
 
         #endregion
@@ -1819,7 +1841,7 @@ namespace Kusto.Language
            new CommandSymbol(nameof(ShowMaterializedViews),
                "show materialized-views",
                ShowMaterializedViewResult);
-        
+
         public static readonly CommandSymbol ShowMaterializedViewsDetails =
             new CommandSymbol(nameof(ShowMaterializedViewsDetails),
                 "show materialized-views ['(' { MaterializedViewName=<materializedview>, ',' }+ ')'] details",
@@ -1921,7 +1943,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol(nameof(ShowCluster),
                 "show cluster",
-                "(NodeId: string, Address: string, Name: string, StartTime: string, IsAdmin: bool, " + 
+                "(NodeId: string, Address: string, Name: string, StartTime: string, IsAdmin: bool, " +
                     "MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
 
         public static readonly CommandSymbol ShowDiagnostics =
@@ -2010,22 +2032,22 @@ namespace Kusto.Language
 
         private static readonly string JournalResult =
             "(Event: string, EventTimestamp: datetime, Database: string, EntityName: string, UpdatedEntityName: string, EntityVersion: string, EntityContainerName: string, " +
-            "OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, " + 
+            "OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, " +
             "User: string, OriginalEntityVersion: string)";
 
         public static readonly CommandSymbol ShowJournal =
             new CommandSymbol(nameof(ShowJournal),
-                "show journal", 
+                "show journal",
                 JournalResult);
 
         public static readonly CommandSymbol ShowDatabaseJournal =
-            new CommandSymbol(nameof(ShowDatabaseJournal), 
-                "show database DatabaseName=<database> journal", 
+            new CommandSymbol(nameof(ShowDatabaseJournal),
+                "show database DatabaseName=<database> journal",
                 JournalResult);
 
         public static readonly CommandSymbol ShowClusterJournal =
             new CommandSymbol(nameof(ShowClusterJournal),
-                "show cluster journal", 
+                "show cluster journal",
                 JournalResult);
 
         private static readonly string QueryResults =
@@ -2087,9 +2109,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCommands =
             new CommandSymbol(nameof(ShowCommands),
                 "show commands",
-                "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " + 
-                "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " + 
-                "User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, " + 
+                "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " +
+                "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " +
+                "User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, " +
                 "ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
@@ -2155,20 +2177,20 @@ namespace Kusto.Language
 
         private static readonly string GuidList = "'(' {GUID=<guid>, ','}+ ')'";
         public static readonly CommandSymbol MergeExtents =
-            new CommandSymbol(nameof(MergeExtents), 
-                $"merge [async] TableName=<table> {GuidList} [with '(' rebuild '=' true ')']", 
+            new CommandSymbol(nameof(MergeExtents),
+                $"merge [async] TableName=<table> {GuidList} [with '(' rebuild '=' true ')']",
                 MergeExtentsResult);
 
         public static readonly CommandSymbol MergeExtentsDryrun =
-            new CommandSymbol(nameof(MergeExtentsDryrun), 
-                $"merge dryrun TableName=<table> {GuidList}", 
+            new CommandSymbol(nameof(MergeExtentsDryrun),
+                $"merge dryrun TableName=<table> {GuidList}",
                 MergeExtentsResult);
 
         private static readonly string MoveExtentsResult =
             "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
 
         public static readonly CommandSymbol MoveExtentsFrom =
-            new CommandSymbol(nameof(MoveExtentsFrom), 
+            new CommandSymbol(nameof(MoveExtentsFrom),
                 $"move [async] extents (all | {GuidList}) from table SourceTableName=<table> to table DestinationTableName=<table>",
                 MoveExtentsResult);
 
@@ -2190,7 +2212,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol DropExtent =
             new CommandSymbol(nameof(DropExtent),
-                "drop extent ExtentId=<guid> [from TableName=<table>]", 
+                "drop extent ExtentId=<guid> [from TableName=<table>]",
                 DropExtentResult);
 
         private static readonly string DropProperties = "[older Older=<long> (days | hours)] from (all tables! | TableName=<table>) [trim by! (extentsize | datasize) TrimSize=<long> (MB | GB | bytes)] [limit LimitCount=<long>]";
@@ -2203,7 +2225,7 @@ namespace Kusto.Language
                      | '<|' Query=<input_query>
                      | older Older=<long> (days | hours) from (all tables! | TableName=<table>) [trim by! (extentsize | datasize)! TrimSize=<long> (MB | GB | bytes)] [limit LimitCount=<long>]
                      | from (all tables! | TableName=<table>) [trim by! (extentsize | datasize) TrimSize=<long> (MB | GB | bytes)] [limit LimitCount=<long>]
-                     )", 
+                     )",
                 DropExtentResult);
 
         public static readonly CommandSymbol DropExtentsPartitionMetadata =
@@ -2217,8 +2239,8 @@ namespace Kusto.Language
         //        UnknownResult);
 
         public static readonly CommandSymbol DropPretendExtentsByProperties =
-            new CommandSymbol(nameof(DropPretendExtentsByProperties), 
-                $"drop-pretend extents {DropProperties}", 
+            new CommandSymbol(nameof(DropPretendExtentsByProperties),
+                $"drop-pretend extents {DropProperties}",
                 DropExtentResult);
 
         public static readonly CommandSymbol ShowVersion =
@@ -2232,14 +2254,14 @@ namespace Kusto.Language
                "(Status: string)");
 
         public static readonly CommandSymbol ClearTableCacheStreamingIngestionSchema =
-           new CommandSymbol(nameof(ClearTableCacheStreamingIngestionSchema), 
+           new CommandSymbol(nameof(ClearTableCacheStreamingIngestionSchema),
                "clear table TableName=<table> cache streamingingestion schema",
                "(NodeId: string, Status: string)");
 
         #endregion
 
         #region StoredQueryResults
-        
+
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol(nameof(StoredQueryResultSet),
                 $"set [async] stored_query_result StoredQueryResultName=<name> [{DataIngestionPropertyList}] '<|' Query=<input_query>",
@@ -2270,14 +2292,14 @@ namespace Kusto.Language
 
         #endregion
 
-        public static readonly CommandSymbol CreateRequestSupport = 
-            new CommandSymbol(nameof(CreateRequestSupport), 
-                $"create request_support [{PropertyList()}]", 
+        public static readonly CommandSymbol CreateRequestSupport =
+            new CommandSymbol(nameof(CreateRequestSupport),
+                $"create request_support [{PropertyList()}]",
                 UnknownResult);
 
-        public static readonly CommandSymbol ShowRequestSupport = 
-            new CommandSymbol(nameof(ShowRequestSupport), 
-                "show request_support key=<string>", 
+        public static readonly CommandSymbol ShowRequestSupport =
+            new CommandSymbol(nameof(ShowRequestSupport),
+                "show request_support key=<string>",
                 UnknownResult);
 
         public static readonly CommandSymbol ShowClusterAdminState =
@@ -2883,9 +2905,12 @@ namespace Kusto.Language
                 ShowExternalTableSchema,
                 ShowExternalTableArtifacts,
                 DropExternalTable,
-                CreateExternalTable,
-                AlterExternalTable,
-                CreateOrAlterExternalTable,
+                CreateStorageExternalTable,
+                CreateSqlExternalTable,
+                AlterStorageExternalTable,
+                AlterSqlExternalTable,
+                CreateOrAlterStorageExternalTable,
+                CreateOrAlterSqlExternalTable,
                 CreateExternalTableMapping,
                 AlterExternalTableMapping,
                 ShowExternalTableMapping,
@@ -3042,8 +3067,8 @@ namespace Kusto.Language
                 DeleteClusterPolicyRowStore,
 
                 // Auto Delete
-                ShowTablePolicyAutoDelete, 
-                AlterTablePolicyAutoDelete, 
+                ShowTablePolicyAutoDelete,
+                AlterTablePolicyAutoDelete,
                 DeleteTablePolicyAutoDelete,
 
                 // Sandbox
@@ -3180,29 +3205,29 @@ namespace Kusto.Language
                 #endregion
 
                 #region Materialized Views 
-                AlterMaterializedViewDocString, 
-                AlterMaterializedViewFolder, 
-                AlterMaterializedViewAutoUpdateSchema, 
+                AlterMaterializedViewDocString,
+                AlterMaterializedViewFolder,
+                AlterMaterializedViewAutoUpdateSchema,
                 AlterMaterializedViewLookback,
                 AlterMaterializedViewPolicyPartitioning,
                 AlterMergeMaterializedViewPolicyPartitioning,
                 CreateMaterializedView,
                 CreateOrAlterMaterializedView,
                 ShowMaterializedView,
-                ShowMaterializedViews, 
-                ShowMaterializedViewDetails, 
+                ShowMaterializedViews,
+                ShowMaterializedViewDetails,
                 ShowMaterializedViewsDetails,
                 ShowMaterializedViewExtents,
-                ShowMaterializedViewPolicyRetention, 
+                ShowMaterializedViewPolicyRetention,
                 ShowMaterializedViewPolicyMerge,
-                AlterMaterializedView, 
+                AlterMaterializedView,
                 ClearMaterializedViewData,
                 SetMaterializedViewCursor,
                 DeleteMaterializedViewPolicyPartitioning,
-                DropMaterializedView, 
-                EnableDisableMaterializedView, 
+                DropMaterializedView,
+                EnableDisableMaterializedView,
                 ShowMaterializedViewPrincipals,
-                ShowMaterializedViewSchemaAsJson, 
+                ShowMaterializedViewSchemaAsJson,
                 ShowMaterializedViewCslSchema,
                 ShowMaterializedViewPolicyPartitioning,
                 RenameMaterializedView,

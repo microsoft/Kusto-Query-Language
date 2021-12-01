@@ -7873,6 +7873,84 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class SampleDistinctOperator */
     
+    #region class EntityGroup
+    public sealed partial class EntityGroup : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.EntityGroupKeyword;
+        
+        public SyntaxToken EntityGroupKeyword { get; }
+        
+        public SyntaxToken OpenBracket { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Entities { get; }
+        
+        public SyntaxToken CloseBracket { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="EntityGroup"/>.
+        /// </summary>
+        internal EntityGroup(SyntaxToken entityGroupKeyword, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> entities, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.EntityGroupKeyword = Attach(entityGroupKeyword);
+            this.OpenBracket = Attach(openBracket);
+            this.Entities = Attach(entities);
+            this.CloseBracket = Attach(closeBracket);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return EntityGroupKeyword;
+                case 1: return OpenBracket;
+                case 2: return Entities;
+                case 3: return CloseBracket;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(EntityGroupKeyword);
+                case 1: return nameof(OpenBracket);
+                case 2: return nameof(Entities);
+                case 3: return nameof(CloseBracket);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitEntityGroup(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitEntityGroup(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new EntityGroup((SyntaxToken)EntityGroupKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Entities?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class EntityGroup */
+    
     #region class ReduceByOperator
     public sealed partial class ReduceByOperator : QueryOperator
     {
@@ -13251,6 +13329,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitProjectReorderOperator(ProjectReorderOperator node);
         public abstract void VisitSampleOperator(SampleOperator node);
         public abstract void VisitSampleDistinctOperator(SampleDistinctOperator node);
+        public abstract void VisitEntityGroup(EntityGroup node);
         public abstract void VisitReduceByOperator(ReduceByOperator node);
         public abstract void VisitReduceByWithClause(ReduceByWithClause node);
         public abstract void VisitSummarizeOperator(SummarizeOperator node);
@@ -13722,6 +13801,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitEntityGroup(EntityGroup node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitReduceByOperator(ReduceByOperator node)
         {
             this.DefaultVisit(node);
@@ -14092,6 +14175,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitProjectReorderOperator(ProjectReorderOperator node);
         public abstract TResult VisitSampleOperator(SampleOperator node);
         public abstract TResult VisitSampleDistinctOperator(SampleDistinctOperator node);
+        public abstract TResult VisitEntityGroup(EntityGroup node);
         public abstract TResult VisitReduceByOperator(ReduceByOperator node);
         public abstract TResult VisitReduceByWithClause(ReduceByWithClause node);
         public abstract TResult VisitSummarizeOperator(SummarizeOperator node);
@@ -14560,6 +14644,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitSampleDistinctOperator(SampleDistinctOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitEntityGroup(EntityGroup node)
         {
             return this.DefaultVisit(node);
         }

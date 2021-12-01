@@ -1604,6 +1604,22 @@ GeneratedCslNodeClass[] CslTreeClasses = new GeneratedCslNodeClass[]
 
     new GeneratedCslNodeClass
     {
+        Name = "EntityGroup",
+        Doc = "",
+        Base = "Expression",
+        Sealed = true,
+        Kind = "EntityGroupKeyword",
+        Properties = new GeneratedProperty[]
+        {
+            new GeneratedProperty { Name = "EntityGroupKeyword", Type = "SyntaxToken", Completion="Keyword" },
+            new GeneratedProperty { Name = "OpenBracket", Type = "SyntaxToken", Completion="Syntax" },
+            new GeneratedProperty { Name = "Entities", Type = "SyntaxList<SeparatedElement<Expression>>"},
+            new GeneratedProperty { Name = "CloseBracket", Type = "SyntaxToken", Completion="Syntax" },
+        }
+    },
+
+    new GeneratedCslNodeClass
+    {
         Name = "ReduceByOperator",
         Doc = "",
         Base = "QueryOperator",

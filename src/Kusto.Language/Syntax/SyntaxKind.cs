@@ -40,6 +40,7 @@
 
         EndsWithKeyword,
         EndsWithCsKeyword,
+        EntityGroupKeyword,
         EvaluateKeyword,
         ExecuteAndCacheKeyword,
         ExtendKeyword,

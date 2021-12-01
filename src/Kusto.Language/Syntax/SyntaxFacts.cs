@@ -72,6 +72,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.EndsWithKeyword, "endswith", opKind: OperatorKind.EndsWith),
                 new SyntaxData(SyntaxKind.EndsWithCsKeyword, "endswith_cs", opKind: OperatorKind.EndsWithCs),
+                new SyntaxData(SyntaxKind.EntityGroupKeyword, "entity_group"),
                 new SyntaxData(SyntaxKind.EvaluateKeyword, "evaluate", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ExecuteAndCacheKeyword, "__executeAndCache"),
                 new SyntaxData(SyntaxKind.ExtendKeyword, "extend"),

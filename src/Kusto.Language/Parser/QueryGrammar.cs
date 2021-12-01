@@ -2538,6 +2538,13 @@ namespace Kusto.Language.Parsing
                     (view, parameters, body) => new FunctionDeclaration(view, parameters, body))
                 .WithTag("<function-declaration>");
 
+            var EntityGroup = Rule(
+                Token(SyntaxKind.EntityGroupKeyword),
+                RequiredToken(SyntaxKind.OpenBracketToken),
+                CommaList(DotCompositeFunctionCall, MissingExpressionNode, oneOrMore: true),
+                RequiredToken(SyntaxKind.CloseBracketToken),
+                (keyword, open, entitiesList, close) => new EntityGroup(keyword, open, entitiesList, close));
+
             LetStatementCore =
                 First(
                     // looks like let with function declaration?
@@ -2567,6 +2574,19 @@ namespace Kusto.Language.Parsing
                             Required(SimpleNameDeclaration, MissingNameDeclaration),
                             Token(SyntaxKind.EqualToken),
                             MaterializeExpression,
+                            (keyword, name, equal, expr) =>
+                                (Statement)new LetStatement(keyword, name, equal, expr))),
+                    If(
+                        And(
+                            Token(SyntaxKind.LetKeyword, CompletionKind.QueryPrefix),
+                            ScanSimpleName,
+                            Token(SyntaxKind.EqualToken),
+                            Token(SyntaxKind.EntityGroupKeyword)),
+                        Rule(
+                            Token(SyntaxKind.LetKeyword),
+                            Required(SimpleNameDeclaration, MissingNameDeclaration),
+                            Token(SyntaxKind.EqualToken),
+                            EntityGroup,
                             (keyword, name, equal, expr) =>
                                 (Statement)new LetStatement(keyword, name, equal, expr))),
                     // otherwise regular let statement

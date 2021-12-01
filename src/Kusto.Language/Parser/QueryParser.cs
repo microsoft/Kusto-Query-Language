@@ -4872,6 +4872,20 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        private EntityGroup ParseEntityGroup()
+        {
+            var keyword = ParseToken(SyntaxKind.EntityGroupKeyword);
+            if (keyword != null)
+            {
+                var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
+                var expressions = ParseCommaList(FnParseRestrictExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
+                var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
+                return new EntityGroup(keyword, open, expressions, close);
+            }
+
+            return null;
+        }
+
         private LetStatement ParseLetStatement()
         {
             var keyword = ParseToken(SyntaxKind.LetKeyword);
@@ -4883,6 +4897,10 @@ namespace Kusto.Language.Parsing
                 if (PeekToken().Kind == SyntaxKind.MaterializeKeyword)
                 {
                     return new LetStatement(keyword, name, equal, ParseMaterializeExpression());
+                }
+                else if (PeekToken().Kind == SyntaxKind.EntityGroupKeyword)
+                {
+                    return new LetStatement(keyword, name, equal, ParseEntityGroup());
                 }
                 else if (ScanFunctionDeclarationStart())
                 {

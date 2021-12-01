@@ -813,6 +813,11 @@ namespace Kusto.Language.Binding
                 return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Expression));
             }
 
+            public override SemanticInfo VisitEntityGroup(EntityGroup node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitOrderedExpression(OrderedExpression node)
             {
                 return new SemanticInfo(_binder.GetReferencedSymbol(node.Expression), _binder.GetResultTypeOrError(node.Expression));
@@ -3414,7 +3419,7 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
+            #endregion
         }
     }
 }
