@@ -2287,6 +2287,30 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoLineIntersectsLine =
+            new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
+                new Parameter("line1", ScalarTypes.Dynamic),
+                new Parameter("line2", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineIntersectsPolygon =
+            new FunctionSymbol("geo_intersects_line_with_polygon", ScalarTypes.Bool,
+                new Parameter("line", ScalarTypes.Dynamic),
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoPolygonIntersectsPolygon =
+            new FunctionSymbol("geo_intersects_2polygons", ScalarTypes.Bool,
+                new Parameter("polygon1", ScalarTypes.Dynamic),
+                new Parameter("polygon2", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
             new FunctionSymbol("geo_polygon_to_s2cells", ScalarTypes.Dynamic,
                 new Parameter("polygon", ScalarTypes.Dynamic),
@@ -2900,6 +2924,9 @@ namespace Kusto.Language
             GeoDistancePointToPolygon,
             GeoPointInCircle,
             GeoPointInPolygon,
+            GeoLineIntersectsLine,
+            GeoLineIntersectsPolygon,
+            GeoPolygonIntersectsPolygon,
             GeoPolygonToS2Cells,
             GeoPolygonDensify,
             GeoPolygonValidate,
