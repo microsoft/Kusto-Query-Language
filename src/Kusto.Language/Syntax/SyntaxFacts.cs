@@ -46,7 +46,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.None, "", SyntaxCategory.None ),
 
                 new SyntaxData(SyntaxKind.AccessKeyword, "access", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind.AliasKeyword, "alias" /*, canBeIdentifier: true*/),
+                new SyntaxData(SyntaxKind.AliasKeyword, "alias", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.AndKeyword, "and", opKind: OperatorKind.And),
                 new SyntaxData(SyntaxKind.AsKeyword, "as"),
                 new SyntaxData(SyntaxKind.AscKeyword, "asc"),
