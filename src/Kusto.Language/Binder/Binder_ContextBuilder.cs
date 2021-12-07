@@ -152,48 +152,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            public override void VisitList(SyntaxList list)
-            {
-                base.VisitList(list);
-
-                // add declarations to local scope that occur before the position
-                if (list.ElementType == typeof(SeparatedElement<Statement>))
-                {
-                    for (int i = 0, n = list.Count; i < n; i++)
-                    {
-                        var se = (SeparatedElement<Statement>)list[i];
-
-                        // don't include declarations not fully defined before position
-                        if (_position < se.End || 
-                            IsInTriviaAfter(se.Element, _position)
-                            && (IsIncomplete(se.Element) || CanHoldMore(se.Element)))
-                            break;
-
-                        if (se.Element is LetStatement ls)
-                        {
-                            _binder.AddLetDeclarationToScope(_binder._localScope, ls);
-                        }
-                        else if (se.Element is QueryParametersStatement qps)
-                        {
-                            _binder.AddDeclarationsToLocalScope(qps.Parameters);
-                        }
-                        else if (se.Element is PatternStatement ps)
-                        {
-                            _binder._localScope.AddSymbol(_binder.GetReferencedSymbol(ps.Name));
-                        }
-                    }
-                }
-            }
-
-            /// <summary>
-            /// The node has a missing element as its last child.
-            /// </summary>
-            private static bool IsIncomplete(SyntaxNode node)
-            {
-                var last = node.GetLastToken(includeZeroWidthTokens: true);
-                return last?.IsMissing ?? false;
-            }
-
             /// <summary>
             /// The node ends in a list or optional element
             /// </summary>
@@ -248,6 +206,67 @@ namespace Kusto.Language.Binding
                     _binder.AddDeclarationsToLocalScope(node.Parameters.Parameters);
                 }
             }
+
+            public override void VisitFunctionBody(FunctionBody node)
+            {
+                base.VisitFunctionBody(node);
+
+                if (node.CloseBrace.IsMissing || _position < node.CloseBrace.TextStart)
+                {
+                    AddStatementDeclarationsToScope(node.Statements);
+                }
+            }
+
+            public override void VisitQueryBlock(QueryBlock node)
+            {
+                base.VisitQueryBlock(node);
+
+                AddStatementDeclarationsToScope(node.Statements);
+            }
+
+            public override void VisitCommandBlock(CommandBlock node)
+            {
+                base.VisitCommandBlock(node);
+
+                AddStatementDeclarationsToScope(node.Statements);
+            }
+
+            private void AddStatementDeclarationsToScope(SyntaxList<SeparatedElement<Statement>> statementList)
+            {
+                for (int i = 0, n = statementList.Count; i < n; i++)
+                {
+                    var se = statementList[i];
+
+                    // don't include declarations not fully defined before position
+                    if (_position < se.End ||
+                        IsInTriviaAfter(se.Element, _position)
+                        && (IsIncomplete(se.Element) || CanHoldMore(se.Element)))
+                        break;
+
+                    if (se.Element is LetStatement ls)
+                    {
+                        _binder.AddLetDeclarationToScope(_binder._localScope, ls);
+                    }
+                    else if (se.Element is QueryParametersStatement qps)
+                    {
+                        _binder.AddDeclarationsToLocalScope(qps.Parameters);
+                    }
+                    else if (se.Element is PatternStatement ps)
+                    {
+                        _binder._localScope.AddSymbol(_binder.GetReferencedSymbol(ps.Name));
+                    }
+                }
+            }
+
+            /// <summary>
+            /// The node has a missing element as its last child.
+            /// </summary>
+            private static bool IsIncomplete(SyntaxNode node)
+            {
+                var last = node.GetLastToken(includeZeroWidthTokens: true);
+                return last?.IsMissing ?? false;
+            }
+
 
             public override void VisitPatternDeclaration(PatternDeclaration node)
             {

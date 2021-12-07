@@ -164,6 +164,11 @@ namespace Kusto.Language
             "broadcast", "centralized", "shuffle"
         };
 
+        public static readonly IReadOnlyList<string> LookupKinds = new string[]
+        {
+            "inner", "leftouter"
+        };
+
         public static readonly IReadOnlyList<string> SummarizeHintStrategies = new string[]
         {
             "shuffle"

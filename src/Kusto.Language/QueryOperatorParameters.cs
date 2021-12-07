@@ -142,7 +142,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<QueryOperatorParameter> LookupParameters = new QueryOperatorParameter[]
         {
-            Kind.WithValues(KustoFacts.JoinKinds)
+            Kind.WithValues(KustoFacts.LookupKinds)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> MakeSeriesParameters = new QueryOperatorParameter[]
