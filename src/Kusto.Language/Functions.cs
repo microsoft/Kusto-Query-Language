@@ -2325,6 +2325,20 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoPolygonArea =
+            new FunctionSymbol("geo_polygon_area", ScalarTypes.Real,
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoPolygonCentroid =
+            new FunctionSymbol("geo_polygon_centroid", ScalarTypes.Dynamic,
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoLineDensify =
             new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
                 new Parameter("lineString", ScalarTypes.Dynamic),
@@ -2929,6 +2943,8 @@ namespace Kusto.Language
             GeoPolygonIntersectsPolygon,
             GeoPolygonToS2Cells,
             GeoPolygonDensify,
+            GeoPolygonArea,
+            GeoPolygonCentroid,
             GeoPolygonValidate,
             GeoLineDensify,
             GeoLineValidate,
