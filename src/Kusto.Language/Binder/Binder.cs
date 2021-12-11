@@ -2103,18 +2103,21 @@ namespace Kusto.Language.Binding
         {
             var outerScope = _localScope.Copy();
 
-            if (signature.FunctionBodyFacts == FunctionBodyFacts.None)
+            // if the function is not yet analyzed or is known to have a variable return type
+            // then compute the function body facts and return type for this location by calling GetCallSiteExpansion.
+            if (signature.FunctionBodyFacts == null || signature.HasVariableReturnType)
             {
-                // body has non-variable (fixed) return type and does not contain cluster/database/table calls.
-                return new SignatureResult(
-                    signature.NonVariableComputedReturnType,
-                    GetDeferredCallSiteExpansion(signature, arguments, argumentTypes, outerScope));
-            }
-            else
-            {
+                // use expansion at this call site to determine correct return type
                 var expansion = this.GetCallSiteExpansion(signature, arguments, argumentTypes, outerScope);
                 var returnType = expansion?.Body?.Expression?.ResultType ?? ErrorSymbol.Instance;
                 return new SignatureResult(returnType, () => expansion?.Root);
+            }
+            else
+            {
+                // body has non-variable (fixed) return type.
+                return new SignatureResult(
+                    signature.NonVariableComputedReturnType,
+                    GetDeferredCallSiteExpansion(signature, arguments, argumentTypes, outerScope));
             }
         }
 
