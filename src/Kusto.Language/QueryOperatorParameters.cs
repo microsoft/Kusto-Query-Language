@@ -148,6 +148,7 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> MakeSeriesParameters = new QueryOperatorParameter[]
         {
             HintDotShuffleKey,
+            Kind.WithValues(KustoFacts.MakeSeriesKinds)
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> MvApplyParameters = new QueryOperatorParameter[]

@@ -2158,6 +2158,11 @@ namespace Kusto.Language
             new CommandSymbol(nameof(ShowDatabaseExtentsMetadata),
                 $"show (database [DatabaseName=<database>] | databases {DatabasesNameList}) extents [{ExtentIdList}] [hot] metadata {ShowExtentsSuffix}",
                 ShowExtentsMetadataResult);
+
+        public static readonly CommandSymbol ShowDatabaseExtentTagsStatistics =
+            new CommandSymbol(nameof(ShowDatabaseExtentTagsStatistics),
+                $"show database extent tags statistics [with '(' minCreationTime '=' minCreationTime =< value > ')]'",
+                "(TableName: string, TotalExtentsCount: long, TaggedExtentsCount: long, TotalTagsCount: long, TotalTagsLength: long, DropByTagsCount: long, DropByTagsLength: long, IngestByTagsCount: long, IngestByTagsLength: long)");
         #endregion
 
         #region Table extents
@@ -3268,6 +3273,7 @@ namespace Kusto.Language
                 ShowClusterExtentsMetadata,
                 ShowDatabaseExtents,
                 ShowDatabaseExtentsMetadata,
+                ShowDatabaseExtentTagsStatistics,
                 ShowTableExtents,
                 ShowTableExtentsMetadata,
                 MergeExtentsDryrun,

@@ -194,6 +194,11 @@ namespace Kusto.Language
             "default", "case_insensitive", "case_sensitive"
         };
 
+        public static readonly IReadOnlyList<string> MakeSeriesKinds = new string[]
+        {
+            "nonempty"
+        };
+
         public static readonly IReadOnlyList<string> MvExpandKinds = new string[]
         {
             "bag", "array"
