@@ -2266,8 +2266,7 @@ namespace Kusto.Language
                 new Parameter("latitude", ParameterTypeKind.Number),
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInCircle =
             new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
