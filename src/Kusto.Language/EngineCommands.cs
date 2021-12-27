@@ -2161,7 +2161,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowDatabaseExtentTagsStatistics =
             new CommandSymbol(nameof(ShowDatabaseExtentTagsStatistics),
-                $"show database extent tags statistics [with '(' minCreationTime '=' minCreationTime =< value > ')]'",
+                $"show database extent tags statistics [with '(' minCreationTime '=' minCreationTime=<value> ')']",
                 "(TableName: string, TotalExtentsCount: long, TaggedExtentsCount: long, TotalTagsCount: long, TotalTagsLength: long, DropByTagsCount: long, DropByTagsLength: long, IngestByTagsCount: long, IngestByTagsLength: long)");
         #endregion
 
