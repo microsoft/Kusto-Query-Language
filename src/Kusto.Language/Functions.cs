@@ -2310,6 +2310,13 @@ namespace Kusto.Language
             .ConstantFoldable()
             .Hide();
 
+        public static readonly FunctionSymbol GeoPolygonsUnion =
+            new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
+                new Parameter("polygons", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
             new FunctionSymbol("geo_polygon_to_s2cells", ScalarTypes.Dynamic,
                 new Parameter("polygon", ScalarTypes.Dynamic),
@@ -2940,6 +2947,7 @@ namespace Kusto.Language
             GeoLineIntersectsLine,
             GeoLineIntersectsPolygon,
             GeoPolygonIntersectsPolygon,
+            GeoPolygonsUnion,
             GeoPolygonToS2Cells,
             GeoPolygonDensify,
             GeoPolygonArea,
