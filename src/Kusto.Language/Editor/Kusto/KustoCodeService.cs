@@ -494,7 +494,7 @@ namespace Kusto.Language.Editor
                             clusters.Add(cluster);
                         }
                     }
-                    else if (fs.Signatures[0].HasClusterCall)
+                    else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasClusterCall)
                     {
                         // look for cluster('xxx') calls in function expansions
                         var expansion = fc.GetExpansion();
@@ -574,7 +574,7 @@ namespace Kusto.Language.Editor
                             refs.Add(dbref);
                         }
                     }
-                    else if (fs.Signatures[0].HasDatabaseCall)
+                    else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasDatabaseCall)
                     {
                         var expansion = fc.GetExpansion();
                         if (expansion != null)

@@ -2345,6 +2345,13 @@ namespace Kusto.Language
             .ConstantFoldable()
             .Hide();
 
+        public static readonly FunctionSymbol GeoPolygonPerimeter =
+            new FunctionSymbol("geo_polygon_perimeter", ScalarTypes.Real,
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoLineDensify =
             new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
                 new Parameter("lineString", ScalarTypes.Dynamic),
@@ -2953,6 +2960,7 @@ namespace Kusto.Language
             GeoPolygonArea,
             GeoPolygonCentroid,
             GeoPolygonValidate,
+            GeoPolygonPerimeter,
             GeoLineDensify,
             GeoLineValidate,
             GeoPointToGeohash,

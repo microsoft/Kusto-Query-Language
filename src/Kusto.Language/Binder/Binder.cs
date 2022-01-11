@@ -235,7 +235,7 @@ namespace Kusto.Language.Binding
                 var builder = new ContextBuilder(this, position >= 0 ? position : contextNode.TextStart);
                 contextNode.Accept(builder);
             }
-        }       
+        }
 
         /// <summary>
         /// Gets the computed return type for functions specified with a body or declaration.
@@ -261,7 +261,7 @@ namespace Kusto.Language.Binding
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
-                    semanticInfoSetter: null, 
+                    semanticInfoSetter: null,
                     cancellationToken: default(CancellationToken));
 
                 return binder.GetComputedSignatureResult(signature, null, argumentTypes).Type;
@@ -317,7 +317,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-#region Semantic Info accessors
+        #region Semantic Info accessors
         private void SetSemanticInfo(SyntaxNode node, SemanticInfo info)
         {
             if (node != null)
@@ -337,9 +337,9 @@ namespace Kusto.Language.Binding
 
         private bool GetIsConstant(Expression expression) =>
             expression?.IsConstant ?? false;
-#endregion
+        #endregion
 
-#region Symbol access/caching
+        #region Symbol access/caching
         private Dictionary<string, ClusterSymbol> _openClusters;
 
         private ClusterSymbol GetOpenCluster(string name)
@@ -595,9 +595,9 @@ namespace Kusto.Language.Binding
 
             return commonColumnsTable;
         }
-#endregion
+        #endregion
 
-#region Symbols in scope
+        #region Symbols in scope
         /// <summary>
         /// Gets all the symbols that are in scope at the text position.
         /// </summary>
@@ -877,7 +877,7 @@ namespace Kusto.Language.Binding
         {
             if (_pathScope != null)
             {
-                if (_pathScope is GroupSymbol g 
+                if (_pathScope is GroupSymbol g
                     && g.Members.Count > 0
                     && IsPassThrough(g))
                 {
@@ -1065,9 +1065,9 @@ namespace Kusto.Language.Binding
                 s_symbolListPool.ReturnToPool(locals);
             }
         }
-#endregion
+        #endregion
 
-#region Common definitions
+        #region Common definitions
         private static ObjectPool<List<Symbol>> s_symbolListPool =
             new ObjectPool<List<Symbol>>(() => new List<Symbol>(), list => list.Clear());
 
@@ -1123,9 +1123,9 @@ namespace Kusto.Language.Binding
         private static readonly SemanticInfo UnknownInfo = new SemanticInfo(ScalarTypes.Unknown, isConstant: true);
         private static readonly SemanticInfo ErrorInfo = new SemanticInfo(ErrorSymbol.Instance);
         private static readonly SemanticInfo VoidInfo = new SemanticInfo(VoidSymbol.Instance);
-#endregion
+        #endregion
 
-#region Name binding
+        #region Name binding
         private static bool IsFunctionCallName(SyntaxNode name)
         {
             return name.Parent is FunctionCallExpression fn && fn.Name == name;
@@ -1278,7 +1278,7 @@ namespace Kusto.Language.Binding
             {
                 var hset = s_symbolHashSetPool.AllocateFromPool();
                 var newList = s_symbolListPool.AllocateFromPool();
-                
+
                 foreach (var item in list)
                 {
                     if (!hset.Contains(item))
@@ -1592,7 +1592,7 @@ namespace Kusto.Language.Binding
         private static bool IsInTabularContext(SyntaxElement element)
         {
             // if function call name, look further up to determine context
-            if (element.Parent is FunctionCallExpression fc 
+            if (element.Parent is FunctionCallExpression fc
                 && fc.Name == element)
             {
                 element = element.Parent;
@@ -1613,9 +1613,9 @@ namespace Kusto.Language.Binding
                 {
                     return true;
                 }
-                
+
                 // if database().x then x is expected to be tabular
-                if (element.Parent is PathExpression pt 
+                if (element.Parent is PathExpression pt
                     && pt.Selector == element)
                 {
                     if (pt.Expression.ResultType is DatabaseSymbol)
@@ -1779,7 +1779,7 @@ namespace Kusto.Language.Binding
 
         private bool AllAreConstant(IReadOnlyList<Expression> expressions)
         {
-            for(int i = 0; i < expressions.Count; i++)
+            for (int i = 0; i < expressions.Count; i++)
             {
                 if (!GetIsConstant(expressions[i]))
                     return false;
@@ -1906,9 +1906,9 @@ namespace Kusto.Language.Binding
                     return OperatorKind.None;
             }
         }
-#endregion
+        #endregion
 
-#region Signature binding
+        #region Signature binding
         private void GetArgumentsAndTypes(
             FunctionCallExpression functionCall,
             List<Expression> arguments,
@@ -2035,7 +2035,7 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Cluster:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && iArg < arguments.Count 
+                    if (iArg >= 0 && iArg < arguments.Count
                         && TryGetLiteralStringValue(arguments[iArg], out var clusterName))
                     {
                         return GetClusterFunctionResult(clusterName, arguments[iArg], diagnostics);
@@ -2047,7 +2047,7 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Database:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && iArg < arguments.Count 
+                    if (iArg >= 0 && iArg < arguments.Count
                         && TryGetLiteralStringValue(arguments[iArg], out var databaseName))
                     {
                         return GetDatabaseFunctionResult(databaseName, arguments[iArg], diagnostics);
@@ -2059,7 +2059,7 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Table:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && iArg < arguments.Count 
+                    if (iArg >= 0 && iArg < arguments.Count
                         && TryGetLiteralStringValue(arguments[iArg], out var tableName))
                     {
                         return GetTableFunctionResult(tableName, arguments[iArg], diagnostics);
@@ -2071,7 +2071,7 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0ExternalTable:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && iArg < arguments.Count 
+                    if (iArg >= 0 && iArg < arguments.Count
                         && TryGetLiteralStringValue(arguments[iArg], out var externalTableName))
                     {
                         return GetExternalTableFunctionResult(externalTableName, arguments[iArg], diagnostics);
@@ -2082,7 +2082,7 @@ namespace Kusto.Language.Binding
                     }
                 case ReturnTypeKind.Parameter0MaterializedView:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    if (iArg >= 0 && iArg < arguments.Count 
+                    if (iArg >= 0 && iArg < arguments.Count
                         && TryGetLiteralStringValue(arguments[iArg], out var materializedViewName))
                     {
                         return GetMaterializedViewFunctionResult(materializedViewName, arguments[iArg], diagnostics);
@@ -2103,11 +2103,14 @@ namespace Kusto.Language.Binding
         {
             var outerScope = _localScope.Copy();
 
+            TryGetFunctionBodyFacts(signature, out var funFacts);
+
             // if the function is not yet analyzed or is known to have a variable return type
             // then compute the function body facts and return type for this location by calling GetCallSiteExpansion.
-            if (signature.FunctionBodyFacts == null || signature.HasVariableReturnType)
+            if (funFacts == null || funFacts.HasVariableReturnType)
             {
                 // use expansion at this call site to determine correct return type
+                // if signature facts was not yet known, it will be computed by calling GetCallSiteExpansion
                 var expansion = this.GetCallSiteExpansion(signature, arguments, argumentTypes, outerScope);
                 var returnType = expansion?.Body?.Expression?.ResultType ?? ErrorSymbol.Instance;
                 return new SignatureResult(returnType, () => expansion?.Root);
@@ -2116,7 +2119,7 @@ namespace Kusto.Language.Binding
             {
                 // body has non-variable (fixed) return type.
                 return new SignatureResult(
-                    signature.NonVariableComputedReturnType,
+                    funFacts.NonVariableComputedReturnType,
                     GetDeferredCallSiteExpansion(signature, arguments, argumentTypes, outerScope));
             }
         }
@@ -2597,7 +2600,7 @@ namespace Kusto.Language.Binding
                         || (parameter.TypeKind == ParameterTypeKind.CommonSummable && IsSummable(argType))
                         || (parameter.TypeKind == ParameterTypeKind.CommonOrderable && IsOrderable(argType)))
                     {
-                        if (commonType == null )
+                        if (commonType == null)
                         {
                             if (argType == ScalarTypes.Unknown)
                             {
@@ -2909,7 +2912,7 @@ namespace Kusto.Language.Binding
                 for (int i = 0; i < argCount; i++)
                 {
                     if (GetParameterMatchKind(
-                        signature, 
+                        signature,
                         argumentParameters, argumentTypes,
                         argumentParameters[i], arguments[i], argumentTypes[i]) != ParameterMatchKind.None)
                     {
@@ -2950,11 +2953,11 @@ namespace Kusto.Language.Binding
         /// Determines the kind of match that the argument has with its corresponding signature parameter.
         /// </summary>
         public static ParameterMatchKind GetParameterMatchKind(
-            Signature signature, 
-            IReadOnlyList<Parameter> argumentParameters, 
-            IReadOnlyList<TypeSymbol> argumentTypes, 
-            Parameter parameter, 
-            Expression argument, 
+            Signature signature,
+            IReadOnlyList<Parameter> argumentParameters,
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            Parameter parameter,
+            Expression argument,
             TypeSymbol argumentType,
             bool allowLooseParameterMatching)
         {
@@ -2973,7 +2976,7 @@ namespace Kusto.Language.Binding
             {
                 return (parameter.ArgumentKind == ArgumentKind.StarOnly
                     || parameter.ArgumentKind == ArgumentKind.StarAllowed)
-                        ? ParameterMatchKind.Exact 
+                        ? ParameterMatchKind.Exact
                         : ParameterMatchKind.None;
             }
             else if (parameter.ArgumentKind == ArgumentKind.StarOnly)
@@ -3121,9 +3124,9 @@ namespace Kusto.Language.Binding
 
             return ParameterMatchKind.None;
         }
-#endregion
+        #endregion
 
-#region FunctionCall and Pattern binding
+        #region FunctionCall and Pattern binding
         private SemanticInfo BindFunctionCallOrPattern(FunctionCallExpression functionCall)
         {
             // the result type of the name should be bound to the function/pattern
@@ -3395,7 +3398,8 @@ namespace Kusto.Language.Binding
 
                             if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {
-                                SetSignatureBindingInfo(signature, expansion.Body);
+                                // compute function body facts as side effect
+                                GetOrComputeFunctionBodyFacts(signature, expansion.Body);
                             }
                             else
                             {
@@ -3430,13 +3434,16 @@ namespace Kusto.Language.Binding
             // Adds expansion to global or local cache.
             void AddExpansionToCache(CallSiteInfo callsite, Expansion expansion)
             {
+                TryGetFunctionBodyFacts(callsite.Signature, out var funFacts);
+
                 // if there is a call to unqualified table(t) then it may require resolving using dynamic scope, so don't cache anywhere
-                if ((callsite.Signature.FunctionBodyFacts & FunctionBodyFacts.Table) != 0)
+                if (funFacts != null && funFacts.HasUnqualifiedTableCall)
                     return;
 
-                // only add database functions that are variable in nature to global cache
+                // only add database functions that are not variable in nature to global cache
+                // might need to rethink this if memory consumption is shown to be an issue
                 var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature)
-                    && callsite.Signature.FunctionBodyFacts != FunctionBodyFacts.None;
+                    && (funFacts != null && !funFacts.HasVariableReturnType);
 
                 if (shouldCacheGlobally)
                 {
@@ -3459,20 +3466,6 @@ namespace Kusto.Language.Binding
                 && signature.Declaration == null   // they don't have syntax trees (yet)
                 && signature.Body != null          // they do have a body as text
                 && _globals.IsDatabaseSymbol(signature.Symbol);       // and they are known by the global state
-        }
-
-        internal void SetSignatureBindingInfo(Signature signature, FunctionBody body)
-        {
-            if (signature.FunctionBodyFacts == null)
-            {
-                signature.FunctionBodyFacts = ComputeFunctionBodyFacts(signature, body);
-            }
-
-            if (!signature.HasVariableReturnType)
-            {
-                var returnType = body.Expression?.ResultType ?? ErrorSymbol.Instance;
-                signature.NonVariableComputedReturnType = returnType;
-            }
         }
 
         private CallSiteInfo GetCallSiteInfo(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
@@ -3505,8 +3498,8 @@ namespace Kusto.Language.Binding
                     {
                         var arg = arguments[argIndex];
 
-                        var argType = argumentTypes != null && argIndex < argumentTypes.Count 
-                            ? argumentTypes[argIndex] 
+                        var argType = argumentTypes != null && argIndex < argumentTypes.Count
+                            ? argumentTypes[argIndex]
                             : arg.ResultType;
 
                         var isLiteral = Binding.Binder.TryGetLiteralValue(arg, out var literalValue);
@@ -3514,8 +3507,8 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        var type = argIndex >= 0 && argumentTypes != null && argIndex < argumentTypes.Count 
-                            ? argumentTypes[argIndex] 
+                        var type = argIndex >= 0 && argumentTypes != null && argIndex < argumentTypes.Count
+                            ? argumentTypes[argIndex]
                             : GetRepresentativeType(p);
 
                         var isConstant = p.IsOptional && p.DefaultValue != null;
@@ -3579,18 +3572,101 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private FunctionBodyFacts ComputeFunctionBodyFacts(Signature signature, FunctionBody body)
+        internal FunctionBodyFacts GetOrComputeFunctionBodyFacts(Signature signature, FunctionBody body)
         {
-            var result = FunctionBodyFacts.None;
+            if (!TryGetFunctionBodyFacts(signature, out var facts))
+            {
+                var bodyFacts = ComputeFunctionBodyFlags(signature, body);
+
+                var nonVariableReturnType = (bodyFacts & FunctionBodyFlags.VariableReturn) == 0
+                    ? body.Expression?.ResultType ?? ErrorSymbol.Instance
+                    : null;
+
+                facts = new FunctionBodyFacts(bodyFacts, nonVariableReturnType);
+                SetFunctionBodyFacts(signature, facts);
+            }
+
+            return facts;
+        }
+
+        internal bool TryGetFunctionBodyFacts(Signature signature, out FunctionBodyFacts facts)
+        {
+            if (_globalBindingCache.DatabaseFunctionBodyFacts.TryGetValue(signature, out facts))
+                return true;
+
+            if (signature.Symbol is FunctionSymbol fs)
+            {
+                facts = fs.NonDatabaseFunctionBodyFacts;
+                return facts != null;
+            }
+
+            facts = null;
+            return false;
+        }
+
+        internal void SetFunctionBodyFacts(Signature signature, FunctionBodyFacts facts)
+        {
+            if (IsDatabaseSymbolSignature(signature))
+            {
+                _globalBindingCache.DatabaseFunctionBodyFacts[signature] = facts;
+            }
+            else if (signature.Symbol is FunctionSymbol fs)
+            {
+                fs.NonDatabaseFunctionBodyFacts = facts;
+            }
+        }
+
+        /// <summary>
+        /// Entry point for <see cref="FunctionBodyFacts"/> to access the cache.
+        /// </summary>
+        public static bool TryGetDatabaseFunctionBodyFacts(FunctionSymbol symbol, GlobalState globals, out FunctionBodyFacts facts)
+        {
+            if (globals.Cache != null)
+            {
+                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
+                lock (bindingCache)
+                {
+                    return bindingCache.DatabaseFunctionBodyFacts.TryGetValue(symbol.Signatures[0], out facts);
+                }
+            }
+
+            facts = null;
+            return false;
+        }
+
+        private static IEnumerable<TElement> GetMainBodyOnlyDescendants<TElement>(FunctionBody body, Func<TElement, bool> predicate)
+            where TElement: SyntaxElement
+        {
+            List<TElement> list = null;
+
+            SyntaxElement.WalkElements(body,
+                fnAfter: element =>
+                {
+                    if (element is TElement te && predicate(te))
+                    {
+                        if (list == null)
+                            list = new List<TElement>();
+                        list.Add(te);
+                    }
+                },
+
+                // do not consider nested function declaration elements
+                fnDescend: 
+                    element => element == body
+                            || (!(element is FunctionDeclaration) && !(element is FunctionBody))
+                );
+
+            return list ?? EmptyReadOnlyList<TElement>.Instance;
+        }
+
+        private FunctionBodyFlags ComputeFunctionBodyFlags(Signature signature, FunctionBody body)
+        {
+            var result = FunctionBodyFlags.None;
             var isTabular = body.Expression?.ResultType is TableSymbol;
 
             // look for explicit calls to table(), database() or cluster() functions
-            foreach (var fc in body.GetDescendants<FunctionCallExpression>(
-                _fc => _fc.ReferencedSymbol == Functions.Table 
-                    || _fc.ReferencedSymbol == Functions.ExternalTable
-                    || _fc.ReferencedSymbol == Functions.MaterializedView
-                    || _fc.ReferencedSymbol == Functions.Database 
-                    || _fc.ReferencedSymbol == Functions.Cluster))
+            foreach (var fc in GetMainBodyOnlyDescendants<FunctionCallExpression>(body, 
+                _fc => IsSymbolLookupFunction(_fc.ReferencedSymbol)))
             {
                 if (fc.ReferencedSymbol == Functions.Table)
                 {
@@ -3598,28 +3674,30 @@ namespace Kusto.Language.Binding
                     // since table(t) can see variables in dynamic scope
                     if (fc.Parent is PathExpression p && p.Selector == fc)
                     {
-                        result |= FunctionBodyFacts.QualifiedTable;
+                        result |= FunctionBodyFlags.QualifiedTable;
                     }
                     else
                     {
-                        result |= FunctionBodyFacts.Table;
+                        // unqualified table calls (even with literal arguments) can be dependent on the call site since
+                        // the names can reference local tabular variables in outer scopes
+                        result |= FunctionBodyFlags.UnqualifiedTable | FunctionBodyFlags.VariableReturn;
                     }
                 }
                 else if(fc.ReferencedSymbol == Functions.ExternalTable)
                 {
-                    result |= FunctionBodyFacts.ExternalTable;
+                    result |= FunctionBodyFlags.ExternalTable;
                 }
                 else if (fc.ReferencedSymbol == Functions.MaterializedView)
                 {
-                    result |= FunctionBodyFacts.MaterializedView;
+                    result |= FunctionBodyFlags.MaterializedView;
                 }
                 else if (fc.ReferencedSymbol == Functions.Database)
                 {
-                    result |= FunctionBodyFacts.Database;
+                    result |= FunctionBodyFlags.Database;
                 }
                 else if (fc.ReferencedSymbol == Functions.Cluster)
                 {
-                    result |= FunctionBodyFacts.Cluster;
+                    result |= FunctionBodyFlags.Cluster;
                 }
 
                 // if the argument is not a literal, then the function likely has a variable return schema
@@ -3627,66 +3705,86 @@ namespace Kusto.Language.Binding
                 var isLiteral = fc.ArgumentList.Expressions.Count > 0 && fc.ArgumentList.Expressions[0].Element.IsLiteral;
                 if (!isLiteral && isTabular)
                 {
-                    result |= FunctionBodyFacts.VariableReturn;
+                    result |= FunctionBodyFlags.VariableReturn;
                 }
             }
 
+            // the function returns a table and at least one parameter is a tabular
             if (isTabular && signature.Parameters.Any(p => p.IsTabular))
             {
-                result |= FunctionBodyFacts.VariableReturn;
+                result |= FunctionBodyFlags.VariableReturn;
             }
 
-            // look for any function calls that themselves that have relevant content
-            foreach (var fce in body.GetDescendants<Expression>(fc => fc.ReferencedSymbol is FunctionSymbol))
+            // also consider any facts from other calls to user functions
+            foreach (var fce in GetMainBodyOnlyDescendants<Expression>(body, ex => 
+                ex.ReferencedSymbol is FunctionSymbol fs 
+                && !IsSymbolLookupFunction(fs)
+                && (ex is FunctionCallExpression 
+                    || (ex is NameReference && !(ex.Parent is FunctionCallExpression)))))
             {
-                var facts = GetFunctionBodyFacts(fce);
-                result |= facts;
+                var flags = GetFunctionBodyFlags(fce);
+
+                // if the calling function has no parameters and the called function does not contain unqualified calls to table() function, then don't considered it having a variable return
+                if (signature.Parameters.Count == 0 && (flags & FunctionBodyFlags.UnqualifiedTable) == 0)
+                {
+                    flags &= ~FunctionBodyFlags.VariableReturn;
+                }
+
+                result |= flags;
             }
 
             return result;
         }
 
-        private FunctionBodyFacts GetFunctionBodyFacts(Expression expr)
+        private static bool IsSymbolLookupFunction(Symbol symbol) =>
+            symbol == Functions.Table
+            || symbol == Functions.ExternalTable
+            || symbol == Functions.MaterializedView
+            || symbol == Functions.Database
+            || symbol == Functions.Cluster;
+
+
+        /// <summary>
+        /// Gets the <see cref="FunctionBodyFlags"/> for the function invocation
+        /// </summary>
+        private FunctionBodyFlags GetFunctionBodyFlags(Expression expr)
         {
             if (expr.ReferencedSymbol is FunctionSymbol fs)
             {
                 var signature = fs.Signatures[0];
 
-                if (signature.FunctionBodyFacts == null)
+                if (!TryGetFunctionBodyFacts(signature, out var funFacts)
+                    && signature.ReturnKind == ReturnTypeKind.Computed)
                 {
-                    if (signature.ReturnKind == ReturnTypeKind.Computed)
+                    if (expr is FunctionCallExpression functionCall)
                     {
-                        if (expr is FunctionCallExpression functionCall)
-                        {
-                            var arguments = s_expressionListPool.AllocateFromPool();
-                            var argumentTypes = s_typeListPool.AllocateFromPool();
+                        var arguments = s_expressionListPool.AllocateFromPool();
+                        var argumentTypes = s_typeListPool.AllocateFromPool();
 
-                            try
-                            {
-                                GetArgumentsAndTypes(functionCall, arguments, argumentTypes);
-                                GetComputedSignatureResult(signature, arguments, argumentTypes);
-                            }
-                            finally
-                            {
-                                s_expressionListPool.ReturnToPool(arguments);
-                                s_typeListPool.ReturnToPool(argumentTypes);
-                            }
-                        }
-                        else
+                        try
                         {
-                            GetComputedSignatureResult(signature, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                            GetArgumentsAndTypes(functionCall, arguments, argumentTypes);
+                            GetComputedSignatureResult(signature, arguments, argumentTypes);
+                        }
+                        finally
+                        {
+                            s_expressionListPool.ReturnToPool(arguments);
+                            s_typeListPool.ReturnToPool(argumentTypes);
                         }
                     }
-                    else
+                    else if (expr is NameReference)
                     {
-                        signature.FunctionBodyFacts = FunctionBodyFacts.None;
+                        GetComputedSignatureResult(signature, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
                     }
+
+                    // try again
+                    TryGetFunctionBodyFacts(signature, out funFacts);
                 }
 
-                return signature.FunctionBodyFacts ?? FunctionBodyFacts.None;
+                return funFacts?.Flags ?? FunctionBodyFlags.None;
             }
 
-            return FunctionBodyFacts.None;
+            return FunctionBodyFlags.None;
         }
 #endregion
 
