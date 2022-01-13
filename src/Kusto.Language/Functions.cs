@@ -1456,6 +1456,16 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol BagPack =
+            new FunctionSymbol("bag_pack",
+                new Signature(
+                    ScalarTypes.Dynamic,
+                    new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
+                    new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
+                .WithLayout(ParameterLayouts.BlockRepeating))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
         public static readonly FunctionSymbol PackAll =
             new FunctionSymbol("pack_all", ScalarTypes.Dynamic,
                 new Parameter("ignore_null_empty", ParameterTypeKind.Scalar, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1))
@@ -2840,6 +2850,7 @@ namespace Kusto.Language
             Zip,
             Pack,
             PackDictionary,
+            BagPack,
             PackAll,
             PackArray,
             SetHasElement,
