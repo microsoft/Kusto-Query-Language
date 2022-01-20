@@ -334,6 +334,28 @@ namespace Kusto.Language
             SyntaxKind.ScanOperator
         };
 
+        /// <summary>
+        /// True if the query operator is on the right side of a pipe expression
+        /// or is in a context that allows operators that would normally only appear
+        /// on the right side of a pipe expression.
+        /// </summary>
+        public static bool HasPipedInput(QueryOperator queryOp)
+        {
+            return (queryOp.Parent is PipeExpression pe && pe.Operator == queryOp)
+                || IsChildOfPipeStartingExpression(queryOp);
+        }
+
+        private static bool IsChildOfPipeStartingExpression(Expression expr)
+        {
+            return (expr.Parent is ForkExpression fce && fce.Expression == expr)
+                || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
+                || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
+                || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
+                || (expr.Parent is FacetWithOperatorClause fwoc && fwoc.Operator == expr)
+                || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))
+                || (expr.Parent is MaterializedViewCombineClause mvc && mvc.Parent is MaterializedViewCombineExpression mve && mve.AggregationsClause == mvc);
+        }
+
         public static readonly IReadOnlyList<string> ScanOperatorKinds = new string[]
         {
             "partial",

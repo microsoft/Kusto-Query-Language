@@ -1095,29 +1095,9 @@ namespace Kusto.Language.Binding
 #endregion
 
 #region query operators
-            /// <summary>
-            /// True if the query operator is on the right hand side of a pipe expression.
-            /// </summary>
-            private static bool IsSecondaryPipeOperator(QueryOperator queryOp)
-            {
-                return (queryOp.Parent is PipeExpression pe && pe.Operator == queryOp)
-                    || IsChildOfPipeStartingExpression(queryOp);
-            }
-
-            private static bool IsChildOfPipeStartingExpression(Expression expr)
-            {
-                return (expr.Parent is ForkExpression fce && fce.Expression == expr)
-                    || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
-                    || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
-                    || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
-                    || (expr.Parent is FacetWithOperatorClause fwoc && fwoc.Operator == expr)
-                    || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))
-                    || (expr.Parent is MaterializedViewCombineClause mvc && mvc.Parent is MaterializedViewCombineExpression mve && mve.AggregationsClause == mvc);
-            }
-
             private void CheckFirstInPipe(QueryOperator queryOp, List<Diagnostic> diagnostics)
             {
-                if (IsSecondaryPipeOperator(queryOp))
+                if (KustoFacts.HasPipedInput(queryOp))
                 {
                     diagnostics.Add(DiagnosticFacts.GetQueryOperatorMustBeFirst().WithLocation(queryOp.GetChild(0) ?? queryOp));
                 }
@@ -1125,7 +1105,7 @@ namespace Kusto.Language.Binding
 
             private void CheckNotFirstInPipe(QueryOperator queryOp, List<Diagnostic> diagnostics)
             {
-                if (!IsSecondaryPipeOperator(queryOp))
+                if (!KustoFacts.HasPipedInput(queryOp))
                 {
                     diagnostics.Add(DiagnosticFacts.GetQueryOperatorCannotBeFirst().WithLocation(queryOp.GetChild(0) ?? queryOp));
                 }
@@ -2800,6 +2780,8 @@ namespace Kusto.Language.Binding
                 var builder = s_projectionBuilderPool.AllocateFromPool();
                 try
                 {
+                    CheckFirstInPipe(node, diagnostics);
+
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
                         var expr = node.Expressions[i].Element;
@@ -3028,7 +3010,17 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitGetSchemaOperator(GetSchemaOperator node)
             {
-                return s_GetSchemaInfo;
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    return s_GetSchemaInfo;
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
 
             private static readonly TableSymbol s_GetSchemaSchema = new TableSymbol(

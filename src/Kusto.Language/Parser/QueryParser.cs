@@ -2833,7 +2833,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.ExtendKeyword);
             if (keyword != null)
             {
-                var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanCommonListEnd);
+                var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
                 return new ExtendOperator(keyword, expressions);
             }
 
