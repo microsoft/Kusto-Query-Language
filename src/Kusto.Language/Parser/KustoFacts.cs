@@ -363,7 +363,7 @@ namespace Kusto.Language
         };
 
         /// <summary>
-        /// True if the text can an identifier in all places that declare or reference names.
+        /// True if the text can be used as an identifier in all places that declare or reference names.
         /// </summary>
         public static bool CanBeIdentifier(string text) =>
             !IsKeyword(text) && TokenParser.ScanIdentifier(text) == text.Length;

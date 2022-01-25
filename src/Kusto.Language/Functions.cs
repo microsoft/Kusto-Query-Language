@@ -971,7 +971,7 @@ namespace Kusto.Language
             .ConstantFoldable()
             .Hide();
 
-        public static readonly FunctionSymbol HashXXH64 =
+        public static readonly FunctionSymbol InternalHashXXH64 =
             new FunctionSymbol("__hash_xxh64", ScalarTypes.Long,
                 new Parameter("source", ParameterTypeKind.NotDynamic),
                 new Parameter("mod", ParameterTypeKind.Integer),
@@ -985,6 +985,14 @@ namespace Kusto.Language
                 new Parameter("mod", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol HashXXH64 =
+            new FunctionSymbol("hash_xxhash64", ScalarTypes.Long,
+                new Parameter("source", ParameterTypeKind.NotDynamic),
+                new Parameter("mod", ParameterTypeKind.Integer, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // slneimer to unhide after 7/Feb/2022
 
         public static readonly FunctionSymbol HashSha256 =
             new FunctionSymbol("hash_sha256", ScalarTypes.String,
@@ -2298,27 +2306,24 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol GeoLineIntersectsLine =
             new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
-                new Parameter("line1", ScalarTypes.Dynamic),
-                new Parameter("line2", ScalarTypes.Dynamic))
+                new Parameter("lineString1", ScalarTypes.Dynamic),
+                new Parameter("lineString2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineIntersectsPolygon =
             new FunctionSymbol("geo_intersects_line_with_polygon", ScalarTypes.Bool,
-                new Parameter("line", ScalarTypes.Dynamic),
+                new Parameter("lineString", ScalarTypes.Dynamic),
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonIntersectsPolygon =
             new FunctionSymbol("geo_intersects_2polygons", ScalarTypes.Bool,
                 new Parameter("polygon1", ScalarTypes.Dynamic),
                 new Parameter("polygon2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonsUnion =
             new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
@@ -2345,19 +2350,31 @@ namespace Kusto.Language
             new FunctionSymbol("geo_polygon_area", ScalarTypes.Real,
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonCentroid =
             new FunctionSymbol("geo_polygon_centroid", ScalarTypes.Dynamic,
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonPerimeter =
             new FunctionSymbol("geo_polygon_perimeter", ScalarTypes.Real,
                 new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineLength =
+            new FunctionSymbol("geo_line_length", ScalarTypes.Real,
+                new Parameter("lineString", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineCentroid =
+            new FunctionSymbol("geo_line_centroid", ScalarTypes.Dynamic,
+                new Parameter("lineString", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Hide();
@@ -2782,6 +2799,7 @@ namespace Kusto.Language
             HashMd5,
             HashSha1,
             HashXXH64,
+            InternalHashXXH64,
             HashCombine,
             HashMany,
             HashManyCrc32,
@@ -2972,6 +2990,8 @@ namespace Kusto.Language
             GeoPolygonCentroid,
             GeoPolygonValidate,
             GeoPolygonPerimeter,
+            GeoLineLength,
+            GeoLineCentroid,
             GeoLineDensify,
             GeoLineValidate,
             GeoPointToGeohash,
