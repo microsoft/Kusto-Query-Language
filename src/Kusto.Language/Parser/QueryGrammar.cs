@@ -469,6 +469,9 @@ namespace Kusto.Language.Parsing
                         ParamTypeExtended.Hide(),
                         And(Token(SyntaxKind.IdentifierToken).Hide(), Token(SyntaxKind.CloseParenToken))));
 
+            var ScanTypeOfTabular =
+                And(Token(SyntaxKind.TypeOfKeyword).Hide(), Token(SyntaxKind.OpenParenToken));
+
             var TypeofLiteral =
                 First(
                     If(ScanTypeOfScalar,
@@ -483,14 +486,15 @@ namespace Kusto.Language.Parsing
                                     openParen,
                                     new SyntaxList<SeparatedElement<Expression>>(new SeparatedElement<Expression>(type)),
                                     closeParen))),
-                    Rule(
-                        Token(SyntaxKind.TypeOfKeyword).Hide(),
-                        RequiredToken(SyntaxKind.OpenParenToken),
-                        CommaList(TypeofElement, MissingTypeNode, oneOrMore: true),
-                        RequiredToken(SyntaxKind.CloseParenToken),
-                        (keyword, openParen, list, closeParen) =>
-                            (Expression)new TypeOfLiteralExpression(keyword, openParen, list, closeParen)
-                        ))
+                    If(ScanTypeOfTabular,
+                        Rule(
+                            Token(SyntaxKind.TypeOfKeyword).Hide(),
+                            RequiredToken(SyntaxKind.OpenParenToken),
+                            CommaList(TypeofElement, MissingTypeNode, oneOrMore: true),
+                            RequiredToken(SyntaxKind.CloseParenToken),
+                            (keyword, openParen, list, closeParen) =>
+                                (Expression)new TypeOfLiteralExpression(keyword, openParen, list, closeParen)
+                            )))
                 .WithTag("<typeof-literal>");
 
             StringOrCompoundStringLiteralCore =
@@ -954,14 +958,29 @@ namespace Kusto.Language.Parsing
             var AtTokenSelector =
                 Rule(Token(SyntaxKind.AtToken), token => (Expression)new AtExpression(token));
 
-            // note: bare means non-bracketed
-            var BarePathElementSelector =
+            var SpecialKeywordNamesAfterDot =
+                Rule(Token(KustoFacts.SpecialKeywordsAfterDot),
+                    tk => (Expression)new NameReference(new TokenName(tk))).Hide();
+
+            // this is unquoted name at start of dotted path (or stand alone)
+            var RootBarePathElementSelector =
                 First(
                     AtTokenSelector,
                     IdentifierNameReference,
                     KeywordNameReference,
                     ClientParameterReference
                     );
+
+            // this is unquoted name after dot in dotted path
+            var BarePathElementSelector =
+                First(
+                    AtTokenSelector,
+                    IdentifierNameReference,
+                    KeywordNameReference,
+                    SpecialKeywordNamesAfterDot,
+                    ClientParameterReference
+                    );
+
 
             // wild cards can use any keyword (but will need an asterisk somewhere)
             var ScanWildcard =
@@ -1034,11 +1053,18 @@ namespace Kusto.Language.Parsing
                     If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
                     BracketedExpression);
 
+            // this is the name at the start of a dotted path
+            var RootPathElementSelector =
+                First(
+                    RootBarePathElementSelector,
+                    BracketedPathElementSelector);
+
+            // this is a name after a dot in a dotted path
             var PathElementSelector =
                 First(
                     BarePathElementSelector,
                     BracketedPathElementSelector);
-
+ 
             var BracketedEntityNamePathElementSelector =
                 First(
                     If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
@@ -1046,7 +1072,7 @@ namespace Kusto.Language.Parsing
 
             var EntityPathExpression =
                 ApplyZeroOrMore(
-                    PathElementSelector,
+                    RootPathElementSelector,
                     _left =>
                         First(
                             Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
@@ -1431,7 +1457,7 @@ namespace Kusto.Language.Parsing
                 First(
                     WildcardedEntityReference,
                     BracketedEntityNamePathElementSelector,
-                    BarePathElementSelector);
+                    RootBarePathElementSelector);
 
             var FindInClause =
                 Rule(
@@ -2228,7 +2254,7 @@ namespace Kusto.Language.Parsing
                     ParenthesizedExpression,
                     WildcardedEntityReference,
                     BracketedEntityNamePathElementSelector,
-                    BarePathElementSelector);
+                    RootBarePathElementSelector);
 
             var UnionOperator =
                 Rule(
@@ -2739,7 +2765,7 @@ namespace Kusto.Language.Parsing
 
             var PrimaryPathSelector =
                 ApplyOptional(
-                    PathElementSelector,
+                    RootPathElementSelector,
                     _left =>
                         Rule(
                             _left,

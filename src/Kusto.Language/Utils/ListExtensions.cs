@@ -26,6 +26,20 @@ namespace Kusto.Language.Utils
             return list.ToList().AsReadOnly();
         }
 
+#if BRIDGE
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> list)
+        {
+            var hs = new HashSet<T>();
+
+            foreach (var item in list)
+            {
+                hs.Add(item);
+            }
+
+            return hs;
+        }
+#endif
+
         /// <summary>
         /// Searches for an item in the ordered array that matches the comparison.
         /// The comparer function returns 0 if it matches the item, -1 if the item comes before and 1 if the item comes after.

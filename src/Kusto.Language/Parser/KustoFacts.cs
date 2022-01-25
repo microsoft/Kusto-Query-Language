@@ -260,6 +260,13 @@ namespace Kusto.Language
             "30min", "1h", "1d"
         };
 
+        public static readonly IReadOnlyList<SyntaxKind> SpecialKeywordsAfterDot = new SyntaxKind[]
+        {
+            SyntaxKind.KindKeyword,
+            SyntaxKind.WithSourceKeyword,
+            SyntaxKind.With_SourceKeyword
+        };
+
         public static readonly IReadOnlyList<SyntaxKind> ForkOperatorKinds = new SyntaxKind[]
         {
             SyntaxKind.CountOperator,

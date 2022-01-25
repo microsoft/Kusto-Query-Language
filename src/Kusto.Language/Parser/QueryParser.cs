@@ -1181,6 +1181,12 @@ namespace Kusto.Language.Parsing
                          && PeekToken(offset + 3).Kind == SyntaxKind.CloseParenToken));
         }
 
+        private bool ScanTypeOfLiteral(int offset = 0)
+        {
+            return ScanTypeOfScalar(offset)
+                || (PeekToken(offset).Kind == SyntaxKind.TypeOfKeyword && PeekToken(offset + 1).Kind == SyntaxKind.OpenParenToken);
+        }
+
         private Expression ParseTypeOfLiteral()
         {
             if (PeekToken().Kind == SyntaxKind.TypeOfKeyword)
@@ -1193,10 +1199,10 @@ namespace Kusto.Language.Parsing
                     var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                     return new TypeOfLiteralExpression(keyword, open, new SyntaxList<SeparatedElement<Expression>>(new SeparatedElement<Expression>(type)), close);
                 }
-                else
+                else if (PeekToken(1).Kind == SyntaxKind.OpenParenToken)
                 {
                     var keyword = ParseToken();
-                    var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                    var open = ParseToken();
                     var list = ParseCommaList(FnParseTypeOfElement, CreateMissingTypeExpression, FnScanCommonListEnd);
                     var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                     return new TypeOfLiteralExpression(keyword, open, list, close);
@@ -1427,7 +1433,6 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.GuidLiteralToken:
                 case SyntaxKind.StringLiteralToken:
                 case SyntaxKind.DynamicKeyword:
-                case SyntaxKind.TypeOfKeyword:
                     return ParseLiteral();
                 case SyntaxKind.DataTableKeyword:
                     return ParseDataTableExpression();
@@ -1443,6 +1448,8 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.ToScalarKeyword:
                     return ParseToScalarExpression();
                 default:
+                    if (ScanTypeOfLiteral()) // typeof can be an identifier so need to scan further than just the typeof keyword
+                        return ParseTypeOfLiteral();
                     if (ScanFunctionCallStart())
                         return ParseDotCompositeFunctionCall();
                     return ParsePrimaryPathSelector();
@@ -1609,7 +1616,7 @@ namespace Kusto.Language.Parsing
             }
             else
             {
-                return ParseBarePathElementSelector();
+                return ParseRootBarePathElementSelector();
             }
         }
 
@@ -1621,9 +1628,29 @@ namespace Kusto.Language.Parsing
             }
             else
             {
+                if (_specialKeywordsAfterDot.Contains(PeekToken().Kind))
+                {
+                    return new NameReference(new TokenName(ParseToken()));
+                }
+
                 return ParseNameReference();
             }
         }
+
+        private Expression ParseRootBarePathElementSelector()
+        {
+            if (PeekToken().Kind == SyntaxKind.AtToken)
+            {
+                return new AtExpression(ParseToken());
+            }
+            else
+            {
+                return ParseNameReference();
+            }
+        }
+
+        private static readonly HashSet<SyntaxKind> _specialKeywordsAfterDot =
+            KustoFacts.SpecialKeywordsAfterDot.ToHashSet();
 
         private Expression ParseRootBracketedPathElementSelector()
         {
@@ -1778,8 +1805,12 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static readonly IReadOnlyList<string> s_multiTokenFunctionNames =
-            Functions.All.Select(f => f.Name).Concat(Aggregates.All.Select(f => f.Name)).Where(name => IsMultiTokenName(name)).ToArray();
+        private static readonly IReadOnlyList<string> s_functionsWithKeywordNames =
+            Functions.All.Select(f => f.Name).Concat(
+            Aggregates.All.Select(f => f.Name))
+            .Where(n => (KustoFacts.IsKeyword(n) && !KustoFacts.IsKeywordThatCanBeIdentifier(n)) 
+                     || IsMultiTokenName(n))
+            .ToList();
 
         private bool ScanFunctionCallStart(int offset = 0)
         {
@@ -1787,9 +1818,9 @@ namespace Kusto.Language.Parsing
             if (len > 0 && PeekToken(offset + len).Kind == SyntaxKind.OpenParenToken)
                 return true;
 
-            for (int i = 0; i < s_multiTokenFunctionNames.Count; i++)
+            for (int i = 0; i < s_functionsWithKeywordNames.Count; i++)
             {
-                len = ScanToken(s_multiTokenFunctionNames[i]);
+                len = ScanToken(s_functionsWithKeywordNames[i]);
                 if (len > 0 && PeekToken(offset + len).Kind == SyntaxKind.OpenParenToken)
                     return true;
             }
@@ -1805,9 +1836,11 @@ namespace Kusto.Language.Parsing
                 return ParseNameReference();
             }
 
-            for (int i = 0; i < s_multiTokenFunctionNames.Count; i++)
+            // special case for known functions with names that are keywords that
+            // cannot normally be used as identifiers
+            for (int i = 0; i < s_functionsWithKeywordNames.Count; i++)
             {
-                var token = ParseToken(s_multiTokenFunctionNames[i]);
+                var token = ParseToken(s_functionsWithKeywordNames[i]);
                 if (token != null)
                 {
                     return new NameReference(new TokenName(token));
