@@ -1650,7 +1650,7 @@ namespace Kusto.Language.Parsing
         }
 
         private static readonly HashSet<SyntaxKind> _specialKeywordsAfterDot =
-            KustoFacts.SpecialKeywordsAfterDot.ToHashSet();
+            KustoFacts.SpecialKeywordsAfterDot.ToHashSetEx();
 
         private Expression ParseRootBracketedPathElementSelector()
         {

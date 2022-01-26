@@ -26,8 +26,11 @@ namespace Kusto.Language.Utils
             return list.ToList().AsReadOnly();
         }
 
-#if BRIDGE
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> list)
+        /// <summary>
+        /// Converts a sequence to a <see cref="HashSet{T}"/>
+        /// This function is provided because it does not exist for some runtimes (Bridge.Net included)
+        /// </summary>
+        public static HashSet<T> ToHashSetEx<T>(this IEnumerable<T> list)
         {
             var hs = new HashSet<T>();
 
@@ -38,7 +41,6 @@ namespace Kusto.Language.Utils
 
             return hs;
         }
-#endif
 
         /// <summary>
         /// Searches for an item in the ordered array that matches the comparison.
