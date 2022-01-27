@@ -910,7 +910,12 @@ namespace Kusto.Language
                 PolicyResult);
         #endregion
 
-        #region Batch
+        #region IngestionBatching
+        public static readonly CommandSymbol ShowClusterPolicyIngestionBatching =
+            new CommandSymbol(nameof(ShowClusterPolicyIngestionBatching),
+                "show cluster policy ingestionbatching",
+                PolicyResult);
+
         public static readonly CommandSymbol ShowDatabasePolicyIngestionBatching =
             new CommandSymbol(nameof(ShowDatabasePolicyIngestionBatching),
                 "show database DatabaseName=(<database> | '*') policy ingestionbatching",
@@ -924,6 +929,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTableStarPolicyIngestionBatching =
             new CommandSymbol(nameof(ShowTableStarPolicyIngestionBatching),
                 "show table '*' policy ingestionbatching",
+                PolicyResult);
+
+        public static readonly CommandSymbol AlterClusterPolicyIngestionBatching =
+            new CommandSymbol(nameof(AlterClusterPolicyIngestionBatching),
+                "alter cluster policy ingestionbatching IngestionBatchingPolicy=<string>",
                 PolicyResult);
 
         public static readonly CommandSymbol AlterDatabasePolicyIngestionBatching =
@@ -3008,9 +3018,11 @@ namespace Kusto.Language
                 DeleteTablePolicyUpdate,
 
                 // IngestionBatching
+                ShowClusterPolicyIngestionBatching,
                 ShowDatabasePolicyIngestionBatching,
                 ShowTablePolicyIngestionBatching,
                 ShowTableStarPolicyIngestionBatching,
+                AlterClusterPolicyIngestionBatching,
                 AlterDatabasePolicyIngestionBatching,
                 AlterTablePolicyIngestionBatching,
                 AlterTablesPolicyIngestionBatching,
