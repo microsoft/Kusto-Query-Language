@@ -1691,10 +1691,9 @@ namespace Kusto.Language.Parsing
 
             var MakeSeriesInRangeClause =
                 Rule(
-                    RequiredToken(SyntaxKind.InKeyword, 
-                        new CompletionItem(CompletionKind.Keyword, "in range (start, stop, step)", "in range (", ")", "in")),
-                    RequiredToken(SyntaxKind.RangeKeyword, 
-                        new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
+                    RequiredToken(SyntaxKind.InKeyword).Hide(), // this syntax is deprecated so hide the first keyword
+                    RequiredToken(SyntaxKind.RangeKeyword).Hide(), 
+                        //new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     CommaList(NamedExpression, MissingExpressionNode),
                     RequiredToken(SyntaxKind.CloseParenToken),

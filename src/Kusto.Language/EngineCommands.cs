@@ -2541,7 +2541,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowFreshness =
             new CommandSymbol(nameof(ShowFreshness),
-                "show freshness tableName=<table> [column columnName=<column>] [threshold threshold=<long>]",
+                "show #freshness tableName=<table> [column columnName=<column>] [threshold threshold=<long>]",
                 UnknownResult);
 
         public static readonly CommandSymbol ShowFunctionSchemaAsJson =
