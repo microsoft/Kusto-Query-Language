@@ -2141,7 +2141,7 @@ namespace Kusto.Language.Binding
                     }
                 }
 
-                return expansion.Root;
+                return expansion?.Root;
             };
         }
 
