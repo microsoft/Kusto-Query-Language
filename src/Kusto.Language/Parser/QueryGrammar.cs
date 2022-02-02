@@ -165,13 +165,17 @@ namespace Kusto.Language.Parsing
             var ScanIdentifierName =
                 Token(SyntaxKind.IdentifierToken);
 
+            var ScanAnyKeyword =
+                Match(t => t.Kind.IsKeyword())
+                .WithTag("<any-keyword>");
+
             var ScanKeywordAsIdentifier =
                 Match(t => t.Kind.GetCategory() == SyntaxCategory.Keyword && t.Kind.CanBeIdentifier())
-                .WithTag("<keyword>");
+                .WithTag("<keywordAsIdentifier>");
 
             var KeywordAsIdentifier =
                 Match(t => t.Kind.GetCategory() == SyntaxCategory.Keyword && t.Kind.CanBeIdentifier(), t => SyntaxToken.From(t))
-                .WithTag("<keyword>");
+                .WithTag("<keywordAsIdentifier>");
 
             this.IdentifierName =
                 Rule(First(Token(SyntaxKind.IdentifierToken), KeywordAsIdentifier),
@@ -237,11 +241,18 @@ namespace Kusto.Language.Parsing
                     (openBracket, name, closeBracket) =>
                         (Expression)new NameReference(new BracketedName(openBracket, name, closeBracket)));
 
-            var KeywordNameDeclaration =
+            var KeywordAsIdentifierNameDeclaration =
                 AsIdentifierNameDeclaration(KeywordAsIdentifier)
-                .WithTag("<keyword>");
+                .WithTag("<keywordAsIdentifier>");
 
-            var KeywordNameReference =
+            var keywordToken =
+                Match(t => t.Kind.IsKeyword(), lt => SyntaxToken.From(lt));
+
+            var AnyKeywordNameDeclaration =
+                AsIdentifierNameDeclaration(keywordToken)
+                .WithTag("<any-keyword>");
+
+            var KeywordAsIdentifierNameReference =
                 AsIdentifierNameReference(KeywordAsIdentifier)
                 .WithTag("<keyword>");
 
@@ -255,7 +266,7 @@ namespace Kusto.Language.Parsing
                 First(
                     IdentifierNameDeclaration,
                     BracketedNameDeclaration,
-                    KeywordNameDeclaration)
+                    KeywordAsIdentifierNameDeclaration)
                 .WithTag("<name>");
 
             this.SimpleNameDeclarationExpression =
@@ -265,7 +276,7 @@ namespace Kusto.Language.Parsing
                 First(
                     IdentifierNameReference,
                     BracketedNameReference,
-                    KeywordNameReference,
+                    KeywordAsIdentifierNameReference,
                     ClientParameterReference)
                 .WithTag("<name>");
             #endregion
@@ -870,7 +881,7 @@ namespace Kusto.Language.Parsing
 
             var ScanRenameName = Or(
                 ScanIdentifierName,
-                ScanKeywordAsIdentifier,
+                ScanAnyKeyword,
                 ScanBracketedName);
 
             var ScanRenameList =
@@ -878,8 +889,15 @@ namespace Kusto.Language.Parsing
                     ZeroOrMore(And(ScanRenameName, Optional(Token(SyntaxKind.CommaToken)))),
                     Optional(Token(SyntaxKind.CloseParenToken)));
 
+            var RenameNameDeclaration =
+                First(
+                    IdentifierNameDeclaration,
+                    AnyKeywordNameDeclaration,
+                    BracketedNameDeclaration)
+                .WithTag("<name>");
+
             var RenameName =
-                First(SimpleNameDeclaration, KeywordNameDeclaration)
+                First(SimpleNameDeclaration, KeywordAsIdentifierNameDeclaration)
                 .WithTag("<name>");
 
             var RenameList =
@@ -967,7 +985,7 @@ namespace Kusto.Language.Parsing
                 First(
                     AtTokenSelector,
                     IdentifierNameReference,
-                    KeywordNameReference,
+                    KeywordAsIdentifierNameReference,
                     ClientParameterReference
                     );
 
@@ -976,7 +994,7 @@ namespace Kusto.Language.Parsing
                 First(
                     AtTokenSelector,
                     IdentifierNameReference,
-                    KeywordNameReference,
+                    KeywordAsIdentifierNameReference,
                     SpecialKeywordNamesAfterDot,
                     ClientParameterReference
                     );
@@ -1471,7 +1489,7 @@ namespace Kusto.Language.Parsing
             var ColumnNameReference =
                 First(
                     IdentifierNameReference,
-                    KeywordNameReference,
+                    KeywordAsIdentifierNameReference,
                     BracketedNameReference,
                     ClientParameterReference)
                 .WithTag("<column>");
@@ -2151,7 +2169,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DeclareKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: true, endKinds: new[] { SyntaxKind.WithKeyword } ),
+                    CommaList(FunctionParameter, MissingFunctionParameterNode, endKinds: new[] { SyntaxKind.WithKeyword } ),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (declare, open, declarations, close) => new ScanDeclareClause(declare, open, declarations, close));
 

@@ -308,6 +308,12 @@ namespace Kusto.Language.Parsing
                 || (token.Kind.IsKeyword() && token.Kind.CanBeIdentifier());
         }
 
+        private bool ScanAnyKeyword(int offset = 0)
+        {
+            var token = PeekToken(offset);
+            return token.Kind.IsKeyword();
+        }
+
         private SyntaxToken ParseIdentiferOrKeywordAsIdentifier()
         {
             var kind = PeekToken().Kind;
@@ -644,6 +650,17 @@ namespace Kusto.Language.Parsing
             var tok = PeekToken();
             if (tok.Kind == SyntaxKind.IdentifierToken
                 || (tok.Kind.IsKeyword() && tok.Kind.CanBeIdentifier()))
+            {
+                return new TokenName(ParseToken());
+            }
+
+            return null;
+        }
+
+        private Name ParseAnyKeywordName()
+        {
+            var tok = PeekToken();
+            if (tok.Kind.IsKeyword())
             {
                 return new TokenName(ParseToken());
             }
@@ -1701,7 +1718,28 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private int ScanNameList(int offset = 0)
+        private int ScanRenameName(int offset = 0)
+        {
+            var tok = PeekToken(offset);
+            switch (tok.Kind)
+            {
+                case SyntaxKind.IdentifierToken:
+                    return 1;
+                case SyntaxKind.OpenBracketToken:
+                    return ScanBracketedName(offset);
+                case SyntaxKind.OpenBraceToken:
+                    if (ScanIdentifierOrKeywordAsIdentifier(offset + 1)
+                        && PeekToken(offset + 2).Kind == SyntaxKind.CloseBraceToken)
+                    {
+                        return 3;
+                    }
+                    return -1;
+                default:
+                    return ScanAnyKeyword(offset) ? 1 : -1;
+            }
+        }
+
+        private int ScanRenameList(int offset = 0)
         {
             if (PeekToken(offset).Kind == SyntaxKind.OpenParenToken)
             {
@@ -1710,7 +1748,7 @@ namespace Kusto.Language.Parsing
 
                 while (!ScanCommonListEnd(offset))
                 {
-                    var len = ScanName(offset);
+                    var len = ScanRenameName(offset);
                     if (len > 0)
                     {
                         offset += len;
@@ -1741,26 +1779,46 @@ namespace Kusto.Language.Parsing
             return -1;
         }
 
-        private static Func<QueryParser, NameDeclaration> FnParseNameDeclaration =
-            qp => qp.ParseNameDeclaration();
+        private Name ParseRenameName()
+        {
+            switch (PeekToken().Kind)
+            {
+                case SyntaxKind.OpenBracketToken:
+                    return ParseBracketedName();
+                case SyntaxKind.OpenBraceToken:
+                    return ParseClientParameterName();
+                default:
+                    return ParseIdentifierName() 
+                        ?? ParseAnyKeywordName();
+            }
+        }
+
+        private NameDeclaration ParseRenameNameDeclaration()
+        {
+            var name = ParseRenameName();
+            return name != null ? new NameDeclaration(name) : null;
+        }
+
+        private static Func<QueryParser, NameDeclaration> FnParseRenameNameDeclaration =
+            qp => qp.ParseRenameNameDeclaration();
 
         private Expression ParseNamedExpression()
         {
-            if (ScanName() is int nameLen
+            if (ScanRenameName() is int nameLen
                 && nameLen > 0
                 && PeekToken(nameLen).Kind == SyntaxKind.EqualToken)
             {
-                var name = ParseNameDeclaration();
+                var name = ParseRenameNameDeclaration();
                 var equal = ParseToken(SyntaxKind.EqualToken);
                 var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
                 return new SimpleNamedExpression(name, equal, expr);
             }
-            else if (ScanNameList() is int nameListLen
+            else if (ScanRenameList() is int nameListLen
                 && nameListLen > 0
                 && PeekToken(nameListLen).Kind == SyntaxKind.EqualToken)
             {
                 var open = ParseToken();
-                var list = ParseCommaList(FnParseNameDeclaration, CreateMissingNameDeclaration, FnScanCommonListEnd, oneOrMore: true);
+                var list = ParseCommaList(FnParseRenameNameDeclaration, CreateMissingNameDeclaration, FnScanCommonListEnd, oneOrMore: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                 var equal = ParseRequiredToken(SyntaxKind.EqualToken);
                 var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
@@ -4232,7 +4290,7 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
-                var declarations = ParseCommaList(FnParseFunctionParameter, CreateMissingFunctionParameter, FnScanCommonListEnd, oneOrMore: true);
+                var declarations = ParseCommaList(FnParseFunctionParameter, CreateMissingFunctionParameter, FnScanCommonListEnd);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                 return new ScanDeclareClause(keyword, open, declarations, close);
             }
