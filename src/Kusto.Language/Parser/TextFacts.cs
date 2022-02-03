@@ -170,6 +170,11 @@ namespace Kusto.Language.Parsing
             return (ch >= '0' && ch <= '9');
         }
 
+        public static bool IsLetterOrDigit(char ch)
+        {
+            return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9');
+        }
+
         public static bool IsHexDigit(char ch)
         {
             return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');

@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Kusto.Language.Syntax
 {
+    using Kusto.Language.Parsing;
     using Utils;
 
     /// <summary>
@@ -450,7 +451,7 @@ namespace Kusto.Language.Syntax
                     {
                         return i;
                     }
-                    else if (!char.IsLetter(ch))
+                    else if (!TextFacts.IsLetter(ch))
                     {
                         return 0;
                     }

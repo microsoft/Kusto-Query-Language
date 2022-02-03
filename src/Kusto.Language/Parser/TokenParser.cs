@@ -82,7 +82,7 @@ namespace Kusto.Language.Parsing
             var ch = Peek(text, pos);
             char ch2;
 
-            if (!char.IsLetterOrDigit(ch))
+            if (!TextFacts.IsLetterOrDigit(ch))
             {
                 var info = GetPunctuationTokenInfo(text, pos);
                 if (info != null)
@@ -451,12 +451,12 @@ namespace Kusto.Language.Parsing
 
         private static bool IsIdentifierStartChar(char ch)
         {
-            return char.IsLetter(ch) || ch == '_' || ch == '$';
+            return TextFacts.IsLetter(ch) || ch == '_' || ch == '$';
         }
 
         private static bool IsIdentifierChar(char ch)
         {
-            return char.IsLetterOrDigit(ch) || ch == '_';
+            return TextFacts.IsLetterOrDigit(ch) || ch == '_';
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ namespace Kusto.Language.Parsing
                 {
                     // must have at least one one letter or _ after digits
                     ch = Peek(text, pos + len);
-                    if (char.IsLetter(ch) || ch == '_')
+                    if (TextFacts.IsLetter(ch) || ch == '_')
                     {
                         pos += len;
 

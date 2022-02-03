@@ -6,6 +6,7 @@ namespace Kusto.Language
     using Syntax;
     using Symbols;
     using Utils;
+    using Kusto.Language.Parsing;
 
     /// <summary>
     /// A class full of helper API's used when building custom return types for functions.
@@ -167,9 +168,9 @@ namespace Kusto.Language
         /// </summary>
         public static string MakeValidNameFragment(string text)
         {
-            if (!text.All(c => char.IsLetterOrDigit(c)))
+            if (!text.All(c => TextFacts.IsLetterOrDigit(c)))
             {
-                return new string(text.Select(c => char.IsLetterOrDigit(c) ? c : '_').ToArray());
+                return new string(text.Select(c => TextFacts.IsLetterOrDigit(c) ? c : '_').ToArray());
             }
             else
             {

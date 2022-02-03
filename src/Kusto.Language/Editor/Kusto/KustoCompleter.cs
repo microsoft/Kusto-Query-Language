@@ -294,7 +294,7 @@ namespace Kusto.Language.Editor
                     return OrderingRank.Function;
 
                 case CompletionKind.ScalarInfix:
-                    if (char.IsLetterOrDigit(item.DisplayText[0]))
+                    if (TextFacts.IsLetterOrDigit(item.DisplayText[0]))
                     {
                         return OrderingRank.StringOperator;
                     }
@@ -1857,9 +1857,9 @@ namespace Kusto.Language.Editor
             // was this an auto appended '='?
             // make appended additional space depend on whether it is currently separated by a space.
             if (item.EditText.EndsWith("=")
-                && char.IsLetterOrDigit(item.EditText[0])
+                && TextFacts.IsLetterOrDigit(item.EditText[0])
                 && item.EditText.Length > 1
-                && !char.IsWhiteSpace(item.EditText[item.EditText.Length - 2]))
+                && !TextFacts.IsWhitespace(item.EditText[item.EditText.Length - 2]))
                 return false;
 
             switch (item.Kind)
@@ -2097,7 +2097,7 @@ namespace Kusto.Language.Editor
         {
             foreach (var ch in text)
             {
-                if (char.IsLetter(ch))
+                if (TextFacts.IsLetter(ch))
                     return true;
             }
 

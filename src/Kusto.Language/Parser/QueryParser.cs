@@ -2555,8 +2555,8 @@ namespace Kusto.Language.Parsing
 
         private static bool IsMultiTokenName(string name)
         {
-            return !KustoFacts.IsKeyword(name) // known keywords will still be one token
-                && name.Any(c => !(char.IsLetterOrDigit(c) || c == '_'));
+            // if its not a keyword or a legal identifier, then assume it is a multi-token name like foo-bar
+            return !KustoFacts.IsKeyword(name) && !KustoFacts.CanBeIdentifier(name);
         }
 
         /// <summary>

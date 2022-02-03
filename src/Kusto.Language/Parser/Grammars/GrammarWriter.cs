@@ -217,7 +217,7 @@ namespace Kusto.Language.Parsing
                 for (int i = 0; i < text.Length; i++)
                 {
                     var ch = text[i];
-                    if (!(char.IsLetterOrDigit(ch) || ch == '_' || ch == '-'))
+                    if (!(TextFacts.IsLetterOrDigit(ch) || ch == '_' || ch == '-'))
                         return false;
                 }
 
