@@ -452,6 +452,28 @@ namespace Kusto.Language.Editor
             }
         }
 
+        public static readonly KustoAnalyzer CalledFunctionHasErrors = KustoAnalyzer.Create(
+            nameof(CalledFunctionHasErrors),
+            new Diagnostic(
+                "KS512",
+                category: DiagnosticCategory.General,
+                severity: DiagnosticSeverity.Warning,
+                description: "A called function has errors in its definition"),
+            (code, dx, diagnostics, ct) =>
+            {
+                SyntaxNode.WalkNodes(code.Syntax, node =>
+                {
+                    if (node is NameReference nr && !(nr.Parent is FunctionCallExpression) && nr.CalledFunctionHasErrors)
+                    {
+                        diagnostics.Add(dx.WithMessage($"The function '{nr.SimpleName}' has errors in its definition.").WithLocation(nr));
+                    }
+                    else if (node is FunctionCallExpression fc && fc.CalledFunctionHasErrors)
+                    {
+                        diagnostics.Add(dx.WithMessage($"The function '{fc.Name.SimpleName}' has errors in its definition.").WithLocation(fc.Name));
+                    }
+                });
+            });
+
         public static IReadOnlyList<KustoAnalyzer> All =
              new KustoAnalyzer[]
              {
@@ -466,7 +488,8 @@ namespace Kusto.Language.Editor
                  StdevTimespanConversion,
                  AvoidUsingLegacyPartition,
                  ColumnHasSameNameAsVariable,
-                 PreferUsingMaterializedViewIntrinsic
+                 PreferUsingMaterializedViewIntrinsic,
+                 CalledFunctionHasErrors
              }
              .ToReadOnly();
     }

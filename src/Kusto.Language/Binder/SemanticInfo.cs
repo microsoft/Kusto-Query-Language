@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kusto.Language.Syntax
+namespace Kusto.Language.Binding
 {
+    using Syntax;
     using Symbols;
     using Utils;
 
@@ -34,26 +35,31 @@ namespace Kusto.Language.Syntax
         public bool IsConstant { get; }
 
         /// <summary>
-        /// A function that computes the expanded body of the referenced user function at the call site.
-        /// </summary>
-        public Func<SyntaxNode> Expander { get; }
-
-        /// <summary>
         /// Diagnostics discovered during binding.
         /// </summary>
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
-        public SemanticInfo(Symbol referenced, TypeSymbol result, IEnumerable<Diagnostic> diagnostics = null, bool isConstant = false, Func<SyntaxNode> expander = null)
+        /// <summary>
+        /// The expansion of the function called
+        /// </summary>
+        public FunctionCallInfo CalledFunctionInfo { get; }
+
+        public SemanticInfo(
+            Symbol referenced, 
+            TypeSymbol result, 
+            IEnumerable<Diagnostic> diagnostics = null, 
+            bool isConstant = false, 
+            FunctionCallInfo calledFunctionInfo = null)
         {
             this.ReferencedSymbol = referenced;
             this.ResultType = result;
             this.Diagnostics = diagnostics != null ? diagnostics.ToReadOnly() : Diagnostic.NoDiagnostics;
             this.IsConstant = isConstant;
-            this.Expander = expander;
+            this.CalledFunctionInfo = calledFunctionInfo;
         }
 
-        public SemanticInfo(TypeSymbol result, IEnumerable<Diagnostic> diagnostics = null, bool isConstant = false, Func<SyntaxNode> expander = null)
-            : this(null, result, diagnostics, isConstant, expander)
+        public SemanticInfo(TypeSymbol result, IEnumerable<Diagnostic> diagnostics = null, bool isConstant = false, FunctionCallInfo calledFunctionInfo = null)
+            : this(null, result, diagnostics, isConstant, calledFunctionInfo)
         {
         }
 
@@ -74,27 +80,27 @@ namespace Kusto.Language.Syntax
 
         public SemanticInfo WithReferencedSymbol(Symbol symbol)
         {
-            return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.Expander);
+            return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
         }
 
         public SemanticInfo WithResultType(TypeSymbol type)
         {
-            return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.Expander);
+            return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
         }
 
         public SemanticInfo WithDiagnostics(IEnumerable<Diagnostic> diagnostics)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.Expander);
+            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.CalledFunctionInfo);
         }
 
         public SemanticInfo WithIsConstant(bool isConstant)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.Expander);
+            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.CalledFunctionInfo);
         }
 
-        public SemanticInfo WithExpander(Func<SyntaxNode> expander)
+        public SemanticInfo WithCalledFunctionInfo(FunctionCallInfo calledFunctionInfo)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, expander);
+            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, calledFunctionInfo);
         }
 
         /// <summary>

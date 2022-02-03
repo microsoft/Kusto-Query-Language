@@ -441,7 +441,7 @@ namespace Kusto.Language.Binding
 
         class AsContextBuilder : DefaultSyntaxVisitor
         {
-            private int _position;
+            private readonly int _position;
             private readonly Binder _binder;
 
             protected override void DefaultVisit(SyntaxNode node)

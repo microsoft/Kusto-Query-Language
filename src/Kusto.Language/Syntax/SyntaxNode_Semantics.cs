@@ -13,23 +13,50 @@ namespace Kusto.Language.Syntax
     public abstract partial class SyntaxNode
     {
         /// <summary>
-        /// The <see cref="ReferencedSymbol"/> referenced by this node.
+        /// The <see cref="Symbol"/> referenced by this node.
         /// </summary>
         public Symbol ReferencedSymbol => GetSemanticInfo()?.ReferencedSymbol;
 
         /// <summary>
-        /// The expansion of the referenced user function, or null.
+        /// Gets the body of the referenced function evaluted in the context of the call site (or null).
         /// </summary>
+        [Obsolete("Use GetCalledFunctionBody() instead", error: true)]
         public SyntaxNode GetExpansion()
         {
-            return GetSemanticInfo()?.Expander?.Invoke();
+            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Body;
         }
 
         /// <summary>
-        /// Semantic diagnostics located at this node.
+        /// Gets the body of the called function evaluated at this location (or null).
         /// </summary>
-        public IReadOnlyList<Diagnostic> SemanticDiagnostics => this.GetSemanticInfo()?.Diagnostics ?? Diagnostic.NoDiagnostics;
+        public SyntaxNode GetCalledFunctionBody()
+        {
+            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Body;
+        }
 
+        /// <summary>
+        /// Gets the diagnostics associated with the called function.
+        /// </summary>
+        public IReadOnlyList<Diagnostic> GetCalledFunctionDiagnostics()
+        {
+            return GetSemanticInfo()?.CalledFunctionInfo?.Diagnostics ?? Diagnostic.NoDiagnostics;
+        }
+
+        /// <summary>
+        /// True if the called function at this location has errors in its definition.
+        /// </summary>
+        public bool CalledFunctionHasErrors =>
+            GetSemanticInfo()?.CalledFunctionInfo?.HasErrors ?? false;
+
+        /// <summary>
+        /// Semantic diagnostics associated with this location.
+        /// </summary>
+        public IReadOnlyList<Diagnostic> SemanticDiagnostics =>
+            this.GetSemanticInfo()?.Diagnostics ?? Diagnostic.NoDiagnostics;
+
+        /// <summary>
+        /// Gets the <see cref="SemanticInfo"/> stored in this node's extended data.
+        /// </summary>
         internal SemanticInfo GetSemanticInfo()
         {
             var data = GetExtendedData(create: false);
@@ -39,14 +66,15 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// True if this node has already been bound.
         /// </summary>
-        internal bool IsBound => this.GetSemanticInfo() != null;
+        internal bool IsBound =>
+            this.GetSemanticInfo() != null;
     }
 
     [Flags]
     public enum DiagnosticsInclude
     {
-        Syntactic =    0b0001,
-        Semantic =  0b0010,
+        Syntactic = 0b0001,
+        Semantic  = 0b0010,
         Expansion = 0b0100
     }
 
@@ -93,10 +121,10 @@ namespace Kusto.Language.Syntax
                 }, 
                 fnAfter: element =>
                 {
-                    if (includeExpansion && element is Expression expr && expr.GetExpansion() is SyntaxNode expansion)
+                    if (includeExpansion && element is Expression expr && expr.GetCalledFunctionBody() is SyntaxNode calledBody)
                     {
                         var originalCount = diagnostics.Count;
-                        GatherDiagnostics(expansion, diagnostics, include, cancellationToken);
+                        GatherDiagnostics(calledBody, diagnostics, include, cancellationToken);
 
                         if (diagnostics.Count > originalCount)
                         {

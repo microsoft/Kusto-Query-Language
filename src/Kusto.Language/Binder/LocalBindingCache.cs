@@ -13,7 +13,7 @@ namespace Kusto.Language.Binding
         internal readonly HashSet<Signature> SignaturesComputingExpansion
             = new HashSet<Signature>();
 
-        internal Dictionary<CallSiteInfo, Expansion> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, Expansion>(CallSiteInfo.Comparer.Instance);
+        internal Dictionary<CallSiteInfo, FunctionCallExpansion> CallSiteToExpansionMap =
+            new Dictionary<CallSiteInfo, FunctionCallExpansion>(CallSiteInfo.Comparer.Instance);
     }
 }

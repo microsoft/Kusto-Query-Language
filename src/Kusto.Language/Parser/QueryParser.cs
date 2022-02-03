@@ -199,10 +199,10 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Returns the next <see cref="SyntaxToken"/> if it matches one of the kinds or a missing version of that token kind.
         /// </summary>
-        private SyntaxToken ParseRequiredToken(IReadOnlyList<SyntaxKind> kinds)
-        {
-            return ParseToken(kinds) ?? CreateMissingToken(kinds);
-        }
+        //private SyntaxToken ParseRequiredToken(IReadOnlyList<SyntaxKind> kinds)
+        //{
+        //    return ParseToken(kinds) ?? CreateMissingToken(kinds);
+        //}
 
         private static SyntaxToken CreateMissingToken(IReadOnlyList<SyntaxKind> kinds)
         {
@@ -588,7 +588,7 @@ namespace Kusto.Language.Parsing
             return new SyntaxList<TElement>(list);
         }
 
-        private static Func<QueryParser, bool> FnScanCommonListEnd =
+        private static readonly Func<QueryParser, bool> FnScanCommonListEnd =
             qp => qp.ScanCommonListEnd();
 
         private bool ScanCommonListEnd(int offset = 0)
@@ -930,7 +930,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static Func<QueryParser, Expression> FnParseLiteral =
+        private static readonly Func<QueryParser, Expression> FnParseLiteral =
             qp => qp.ParseLiteral();
 
         private int ScanSignedNumericLiteral(int offset = 0)
@@ -1122,7 +1122,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static Func<QueryParser, Expression> FnParseJsonValue =
+        private static readonly Func<QueryParser, Expression> FnParseJsonValue =
             qp => qp.ParseJsonValue();
 
         private Expression ParseJsonArray()
@@ -1138,7 +1138,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static Func<QueryParser, JsonPair> FnParseJsonPair =
+        private static readonly Func<QueryParser, JsonPair> FnParseJsonPair =
             qp => qp.ParseJsonPair();
 
         private Expression ParseJsonObject()
@@ -1244,7 +1244,7 @@ namespace Kusto.Language.Parsing
             ParseStarExpression()
             ?? ParseNameAndTypeDeclaration();
 
-        private static Func<QueryParser, Expression> FnParseTypeOfElement =
+        private static readonly Func<QueryParser, Expression> FnParseTypeOfElement =
             qp => qp.ParseTypeOfElement();
 
 #endregion
@@ -1410,10 +1410,10 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static Func<QueryParser, NameAndTypeDeclaration> FnParseNameAndTypeDeclaration =
+        private static readonly Func<QueryParser, NameAndTypeDeclaration> FnParseNameAndTypeDeclaration =
             qp => qp.ParseNameAndTypeDeclaration();
 
-        private static Func<QueryParser, Expression> FnParseNameAndTypeDeclarationExpression =
+        private static readonly Func<QueryParser, Expression> FnParseNameAndTypeDeclarationExpression =
             qp => (Expression)qp.ParseNameAndTypeDeclaration();
 
         /// <summary>
@@ -1473,7 +1473,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static IReadOnlyDictionary<string, QueryOperatorParameter> s_dataTableParameters =
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_dataTableParameters =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.DataTableParameters);
 
         private DataTableExpression ParseDataTableExpression()
@@ -1504,9 +1504,6 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-
-        private static readonly IReadOnlyList<SyntaxKind> s_externalDataKeywords =
-            new[] { SyntaxKind.ExternalDataKeyword, SyntaxKind.External_DataKeyword };
 
         private ExternalDataExpression ParseExternalDataExpression()
         {
@@ -1799,7 +1796,7 @@ namespace Kusto.Language.Parsing
             return name != null ? new NameDeclaration(name) : null;
         }
 
-        private static Func<QueryParser, NameDeclaration> FnParseRenameNameDeclaration =
+        private static readonly Func<QueryParser, NameDeclaration> FnParseRenameNameDeclaration =
             qp => qp.ParseRenameNameDeclaration();
 
         private Expression ParseNamedExpression()
@@ -1830,7 +1827,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static Func<QueryParser, Expression> FnParseNamedExpression =
+        private static readonly Func<QueryParser, Expression> FnParseNamedExpression =
             qp => qp.ParseNamedExpression();
 
         private Expression ParseArgument()
@@ -1847,7 +1844,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static Func<QueryParser, Expression> FnParseArgument =
+        private static readonly Func<QueryParser, Expression> FnParseArgument =
             qp => qp.ParseArgument();
 
         private ExpressionList ParseArgumentList()
@@ -2178,13 +2175,11 @@ namespace Kusto.Language.Parsing
         {
             var expr = ParseAdditiveExpression();
 
-            if (expr != null)
+            if (expr != null 
+                && GetRelationalExpressionKind(PeekToken().Kind) is SyntaxKind opKind
+                && opKind != SyntaxKind.None)
             {
-                while (GetRelationalExpressionKind(PeekToken().Kind) is SyntaxKind opKind
-                    && opKind != SyntaxKind.None)
-                {
-                    expr = new BinaryExpression(opKind, expr, ParseToken(), ParseAdditiveExpression() ?? CreateMissingExpression());
-                }
+                expr = new BinaryExpression(opKind, expr, ParseToken(), ParseAdditiveExpression() ?? CreateMissingExpression());
             }
 
             return expr;
@@ -2219,48 +2214,42 @@ namespace Kusto.Language.Parsing
 
             if (expr != null)
             {
-                while (true)
+                switch (PeekToken().Kind)
                 {
-                    switch (PeekToken().Kind)
-                    {
-                        case SyntaxKind.EqualEqualToken:
-                            expr = new BinaryExpression(SyntaxKind.EqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingExpression());
-                            continue;
-                        case SyntaxKind.BangEqualToken:
-                            expr = new BinaryExpression(SyntaxKind.NotEqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingTokenLiteral());
-                            continue;
-                        case SyntaxKind.LessThanGreaterThanToken:
-                            expr = new BinaryExpression(SyntaxKind.NotEqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingTokenLiteral());
-                            continue;
-                        case SyntaxKind.InKeyword:
-                            if (PeekToken(1).Kind == SyntaxKind.RangeKeyword)
-                                return expr;
+                    case SyntaxKind.EqualEqualToken:
+                        expr = new BinaryExpression(SyntaxKind.EqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingExpression());
+                        break;
+                    case SyntaxKind.BangEqualToken:
+                        expr = new BinaryExpression(SyntaxKind.NotEqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingTokenLiteral());
+                        break;
+                    case SyntaxKind.LessThanGreaterThanToken:
+                        expr = new BinaryExpression(SyntaxKind.NotEqualExpression, expr, ParseToken(), ParseRelationalExpresion() ?? CreateMissingTokenLiteral());
+                        break;
+                    case SyntaxKind.InKeyword:
+                        if (PeekToken(1).Kind != SyntaxKind.RangeKeyword)
                             expr = new InExpression(SyntaxKind.InExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.InCsKeyword:
-                            expr = new InExpression(SyntaxKind.InCsExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.NotInKeyword:
-                            expr = new InExpression(SyntaxKind.NotInExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.NotInCsKeyword:
-                            expr = new InExpression(SyntaxKind.NotInCsExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.HasAnyKeyword:
-                            expr = new HasAnyExpression(SyntaxKind.HasAnyExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.HasAllKeyword:
-                            expr = new HasAllExpression(SyntaxKind.HasAllExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
-                            continue;
-                        case SyntaxKind.BetweenKeyword:
-                            expr = new BetweenExpression(SyntaxKind.BetweenExpression, expr, ParseToken(), ParseRequiredExpressionCouple());
-                            continue;
-                        case SyntaxKind.NotBetweenKeyword:
-                            expr = new BetweenExpression(SyntaxKind.NotBetweenExpression, expr, ParseToken(), ParseRequiredExpressionCouple());
-                            continue;
-                        default:
-                            return expr;
-                    }
+                        break;
+                    case SyntaxKind.InCsKeyword:
+                        expr = new InExpression(SyntaxKind.InCsExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
+                        break;
+                    case SyntaxKind.NotInKeyword:
+                        expr = new InExpression(SyntaxKind.NotInExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
+                        break;
+                    case SyntaxKind.NotInCsKeyword:
+                        expr = new InExpression(SyntaxKind.NotInCsExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
+                        break;
+                    case SyntaxKind.HasAnyKeyword:
+                        expr = new HasAnyExpression(SyntaxKind.HasAnyExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
+                        break;
+                    case SyntaxKind.HasAllKeyword:
+                        expr = new HasAllExpression(SyntaxKind.HasAllExpression, expr, ParseToken(), ParseRequiredInOperatorExpressionList());
+                        break;
+                    case SyntaxKind.BetweenKeyword:
+                        expr = new BetweenExpression(SyntaxKind.BetweenExpression, expr, ParseToken(), ParseRequiredExpressionCouple());
+                        break;
+                    case SyntaxKind.NotBetweenKeyword:
+                        expr = new BetweenExpression(SyntaxKind.NotBetweenExpression, expr, ParseToken(), ParseRequiredExpressionCouple());
+                        break;
                 }
             }
 
@@ -2383,7 +2372,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static Func<QueryParser, Expression> FnParseUnnamedExpression =
+        private static readonly Func<QueryParser, Expression> FnParseUnnamedExpression =
             qp => qp.ParseUnnamedExpression();
 
 #endregion
@@ -2537,10 +2526,10 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private static Func<QueryParser, NamedParameter> FnParseQueryOperatorParameter =
+        private static readonly Func<QueryParser, NamedParameter> FnParseQueryOperatorParameter =
             qp => qp.ParseQueryOperatorParameter();
 
-        private static IReadOnlyDictionary<string, QueryOperatorParameter> s_nameToDefaultQueryOperatorParameterMap =
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_nameToDefaultQueryOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.AllParameters);
 
         private static IReadOnlyDictionary<string, QueryOperatorParameter> CreateQueryOperatorParameterMap(IReadOnlyList<QueryOperatorParameter> parameters)
@@ -2573,7 +2562,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// The set of known query operator parameter names
         /// </summary>
-        private static HashSet<string> s_knownQueryOperaterParameterNames =
+        private static readonly HashSet<string> s_knownQueryOperaterParameterNames =
             new HashSet<string>(
                 s_nameToDefaultQueryOperatorParameterMap.Keys
                 .Concat(KustoFacts.KnownQueryOperatorParameterNames));
@@ -2581,7 +2570,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// The list of known query parameters names that are likely to be parsed as multiple lexical tokens
         /// </summary>
-        private static IReadOnlyList<string> s_multiTokenQueryOperatorParameterNames =
+        private static readonly IReadOnlyList<string> s_multiTokenQueryOperatorParameterNames =
             s_knownQueryOperaterParameterNames.Where(IsMultiTokenName).ToList();
 
         private bool IsSpecificQueryOperatorParameterName(string name)
@@ -2729,7 +2718,7 @@ namespace Kusto.Language.Parsing
                 : ParseNameReference();
         }
 
-        private static Func<QueryParser, NameReference> FnParseNameReferenceListName =
+        private static readonly Func<QueryParser, NameReference> FnParseNameReferenceListName =
             qp => qp.ParseNameReferenceListName();
 
         private NameReferenceList ParseNameReferenceList(Func<QueryParser, bool> fnEndList)
@@ -3442,7 +3431,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, MakeSeriesExpression> FnParseMakeSeriesExpression =
             qp => qp.ParseMakeSeriesExpression();
 
-        private static Func<MakeSeriesExpression> CreateMissingMakeSeriesExpression = () =>
+        private static readonly Func<MakeSeriesExpression> CreateMissingMakeSeriesExpression = () =>
             new MakeSeriesExpression(CreateMissingExpression(), null);
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_makeSeriesOperatorParameterMap =

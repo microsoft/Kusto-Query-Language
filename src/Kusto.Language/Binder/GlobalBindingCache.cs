@@ -20,8 +20,8 @@ namespace Kusto.Language.Binding
         internal readonly Dictionary<IReadOnlyList<TableSymbol>, TableSymbol> CommonColumnsMap =
             new Dictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
 
-        internal Dictionary<CallSiteInfo, Expansion> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, Expansion>(CallSiteInfo.Comparer.Instance);
+        internal Dictionary<CallSiteInfo, FunctionCallExpansion> CallSiteToExpansionMap =
+            new Dictionary<CallSiteInfo, FunctionCallExpansion>(CallSiteInfo.Comparer.Instance);
 
         internal readonly Dictionary<Signature, FunctionBodyFacts> DatabaseFunctionBodyFacts =
             new Dictionary<Signature, FunctionBodyFacts>();

@@ -529,13 +529,19 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TypeSymbol NonVariableComputedReturnType { get; }
 
+        /// <summary>
+        /// True if the function body had syntax or semantic errors.
+        /// </summary>
+        public bool HasErrors { get; }
 
         internal FunctionBodyFacts(
             FunctionBodyFlags flags,
-            TypeSymbol nonVariableReturnType)
+            TypeSymbol nonVariableReturnType,
+            bool hasErrors)
         {
             Flags = flags;
             this.NonVariableComputedReturnType = nonVariableReturnType;
+            this.HasErrors = hasErrors;
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Kusto.Language.Syntax
         public static Expression Create(TypeSymbol type)
         {
             var ex = new LiteralExpression(SyntaxKind.TokenLiteralExpression, SyntaxToken.Missing(SyntaxKind.IdentifierToken));
-            Binding.Binder.DefaultSetSemanticInfo(ex, new SemanticInfo(type));
+            Binding.Binder.DefaultSetSemanticInfo(ex, new Binding.SemanticInfo(type));
             return ex;
         }
 
@@ -21,7 +21,7 @@ namespace Kusto.Language.Syntax
                 new NameDeclaration(new TokenName(SyntaxToken.Identifier("", name))),
                 SyntaxToken.Punctuation("", SyntaxKind.EqualToken),
                 Create(type));
-            Binding.Binder.DefaultSetSemanticInfo(named, new SemanticInfo(type));
+            Binding.Binder.DefaultSetSemanticInfo(named, new Binding.SemanticInfo(type));
             return named;
         }
     }

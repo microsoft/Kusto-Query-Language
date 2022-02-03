@@ -1247,7 +1247,7 @@ namespace Kusto.Language.Parsing
                 Required(Additive, MissingExpression);
 
             var Relational =
-                ApplyZeroOrMore(Additive, _left =>
+                ApplyOptional(Additive, _left =>
                     First(
                         Rule(_left, Token(SyntaxKind.LessThanToken, CompletionKind.ScalarInfix), RequiredAdditive,
                             (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.LessThanExpression, left, op, right)),

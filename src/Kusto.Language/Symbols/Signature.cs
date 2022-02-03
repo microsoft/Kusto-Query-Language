@@ -20,7 +20,7 @@ namespace Kusto.Language.Symbols
     public delegate TypeSymbol CustomReturnTypeShort(TableSymbol table, IReadOnlyList<Expression> arguments);
 
     /// <summary>
-    /// The parameters and return type of a function-like symbol.
+    /// The parameter constraints and return type rules of a function or operator symbol.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Display}")]
     public class Signature
@@ -85,7 +85,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public bool HasAggregateParameters { get; }
 
-        private TypeSymbol _returnType;
+        private readonly TypeSymbol _returnType;
         private string _body;
         private Tabularity _tabularity;
 

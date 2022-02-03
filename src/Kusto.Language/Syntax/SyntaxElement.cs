@@ -171,7 +171,7 @@ namespace Kusto.Language.Syntax
         {
             //public SyntaxNode Parent;
             public IReadOnlyList<Diagnostic> SyntaxDiagnostics;
-            public SemanticInfo SemanticInfo;
+            public Binding.SemanticInfo SemanticInfo;
         }
 
         internal ExtendedData GetExtendedData(bool create)

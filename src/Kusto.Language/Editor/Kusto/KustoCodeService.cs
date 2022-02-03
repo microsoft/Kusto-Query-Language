@@ -497,10 +497,10 @@ namespace Kusto.Language.Editor
                     else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasClusterCall)
                     {
                         // look for cluster('xxx') calls in function expansions
-                        var expansion = fc.GetExpansion();
-                        if (expansion != null)
+                        var calledBody = fc.GetCalledFunctionBody();
+                        if (calledBody != null)
                         {
-                            GetClusterReferences(expansion, location ?? fc.Name, clusters, cancellationToken);
+                            GetClusterReferences(calledBody, location ?? fc.Name, clusters, cancellationToken);
                         }
                     }
                 }
@@ -576,8 +576,8 @@ namespace Kusto.Language.Editor
                     }
                     else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasDatabaseCall)
                     {
-                        var expansion = fc.GetExpansion();
-                        if (expansion != null)
+                        var calledBody = fc.GetCalledFunctionBody();
+                        if (calledBody != null)
                         {
                             var db = defaultDatabase;
                             var cluster = defaultCluster;
@@ -585,7 +585,7 @@ namespace Kusto.Language.Editor
                             db = this.globals.GetDatabase(fs) ?? defaultDatabase;
                             cluster = this.globals.GetCluster(db) ?? defaultCluster;
 
-                            GetDatabaseReferences(expansion, location ?? fc.Name, cluster, db, refs, cancellationToken);
+                            GetDatabaseReferences(calledBody, location ?? fc.Name, cluster, db, refs, cancellationToken);
                         }
                     }
                 }
@@ -599,14 +599,12 @@ namespace Kusto.Language.Editor
             {
                 location = location ?? fc.ArgumentList.Expressions[0].Element;
 
-                string cluster;
-
                 // get cluster name from explicit cluster reference (if possible)
                 if (!(fc.Parent is PathExpression p 
                     && p.Selector == fc 
                     && p.Expression is FunctionCallExpression fcCluster 
                     && fcCluster.ReferencedSymbol == Functions.Cluster
-                    && TryGetConstantStringArgumentValue(fcCluster, 0, out cluster)))
+                    && TryGetConstantStringArgumentValue(fcCluster, 0, out var cluster)))
                 {
                     // otherwise use the default cluster
                     cluster = defaultCluster.Name;
