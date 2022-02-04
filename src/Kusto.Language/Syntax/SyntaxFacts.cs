@@ -371,6 +371,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DateTimeLiteralToken, "", SyntaxCategory.Literal),
                 new SyntaxData(SyntaxKind.TimespanLiteralToken, "", SyntaxCategory.Literal),
                 new SyntaxData(SyntaxKind.GuidLiteralToken, "", SyntaxCategory.Literal),
+                new SyntaxData(SyntaxKind.RawGuidLiteralToken, "", SyntaxCategory.Literal),
 
                 // other tokens
                 new SyntaxData(SyntaxKind.IdentifierToken, "", SyntaxCategory.Identifier),

@@ -912,6 +912,8 @@ namespace Kusto.Language.Parsing
                     return new LiteralExpression(SyntaxKind.IntLiteralExpression, ParseToken());
                 case SyntaxKind.GuidLiteralToken:
                     return new LiteralExpression(SyntaxKind.GuidLiteralExpression, ParseToken());
+                case SyntaxKind.RawGuidLiteralToken:
+                    return new LiteralExpression(SyntaxKind.GuidLiteralExpression, ParseToken(), new[] { DiagnosticFacts.GetRawGuidLiteralNotAllowed() });
                 case SyntaxKind.DateTimeLiteralToken:
                     return new LiteralExpression(SyntaxKind.DateTimeLiteralExpression, ParseToken());
                 case SyntaxKind.TimespanLiteralToken:
@@ -1081,6 +1083,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.DateTimeLiteralToken:
                 case SyntaxKind.TimespanLiteralToken:
                 case SyntaxKind.GuidLiteralToken:
+                case SyntaxKind.RawGuidLiteralToken:
                 case SyntaxKind.DecimalLiteralToken:
                 case SyntaxKind.StringLiteralToken:
                 case SyntaxKind.DynamicKeyword:
@@ -1448,6 +1451,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.TimespanLiteralToken:
                 case SyntaxKind.DateTimeLiteralToken:
                 case SyntaxKind.GuidLiteralToken:
+                case SyntaxKind.RawGuidLiteralToken:
                 case SyntaxKind.StringLiteralToken:
                 case SyntaxKind.DynamicKeyword:
                     return ParseLiteral();
@@ -1525,8 +1529,40 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_externalDataWithClauseParameterMap =
-            CreateQueryOperatorParameterMap(QueryOperatorParameters.ExternalDataWithClauseProperties);
+        private Expression ParseExternalDataPropertyValue()
+        {
+            switch (PeekToken().Kind)
+            {
+                case SyntaxKind.StringLiteralToken:
+                case SyntaxKind.LongLiteralToken:
+                case SyntaxKind.RealLiteralToken:
+                case SyntaxKind.BooleanLiteralToken:
+                case SyntaxKind.DateTimeLiteralToken:
+                case SyntaxKind.TypeOfLiteralExpression:
+                    return ParseLiteral();
+                case SyntaxKind.RawGuidLiteralToken:
+                case SyntaxKind.GuidLiteralToken:
+                    return new LiteralExpression(SyntaxKind.GuidLiteralExpression, ParseToken());
+                default:
+                    return ParseRenameNameDeclaration();
+            }
+        }
+
+        private NamedParameter ParseExternalDataProperty()
+        {
+            var name = ParseRenameNameDeclaration();
+            if (name != null)
+            {
+                var equal = ParseRequiredToken(SyntaxKind.EqualToken);
+                var value = ParseExternalDataPropertyValue() ?? CreateMissingValue();
+                return new NamedParameter(name, equal, value);
+            }
+
+            return null;
+        }
+
+        private static readonly Func<QueryParser, NamedParameter> FnParseExternalDataProperty =
+            qp => qp.ParseExternalDataProperty();
 
         private ExternalDataWithClause ParseExternalDataWithClause()
         {
@@ -1534,9 +1570,9 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
-                var parameters = ParseQueryOperatorParameterCommaList(s_externalDataWithClauseParameterMap, FnScanCommonListEnd);
+                var properties = ParseCommaList(FnParseExternalDataProperty, CreateMissingNamedParameter, FnScanCommonListEnd);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new ExternalDataWithClause(keyword, open, parameters, close);
+                return new ExternalDataWithClause(keyword, open, properties, close);
             }
 
             return null;
@@ -2324,6 +2360,7 @@ namespace Kusto.Language.Parsing
                         case SyntaxKind.DateTimeLiteralToken:
                         case SyntaxKind.TimespanLiteralToken:
                         case SyntaxKind.GuidLiteralToken:
+                        case SyntaxKind.RawGuidLiteralToken:
                         case SyntaxKind.IntLiteralToken:
                             return ParsePrimaryExpression();
                     }

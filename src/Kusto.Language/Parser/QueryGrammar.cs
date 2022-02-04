@@ -449,6 +449,12 @@ namespace Kusto.Language.Parsing
                 .WithTag("<guid-literal>")
                 .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "guid()", "guid(", ")", "guid"));
 
+            var RawGuidLiteral =
+                Rule(
+                    Token(SyntaxKind.RawGuidLiteralToken),
+                    token => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, token))
+                .WithTag("<raw-guid-literal>");
+
             var DateTimeLiteral =
                 Rule(Token(SyntaxKind.DateTimeLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.DateTimeLiteralExpression, token))
@@ -649,6 +655,8 @@ namespace Kusto.Language.Parsing
                     DecimalLiteral,
                     IntLiteral,
                     GuidLiteral,
+                    Rule(Token(SyntaxKind.RawGuidLiteralToken), 
+                        tk => (Expression)new LiteralExpression(SyntaxKind.RawGuidLiteralToken, tk, new [] {DiagnosticFacts.GetRawGuidLiteralNotAllowed()})),
                     DateTimeLiteral,
                     TimespanLiteral,
                     SignedNumericLiteral,
@@ -1364,11 +1372,29 @@ namespace Kusto.Language.Parsing
                     Required(SchemaMultipartType, MissingSchema),
                     (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
+            var ExternalDataWithClausePropertyValue =
+                First(
+                    StringLiteral,
+                    LongLiteral,
+                    RealLiteral,
+                    BooleanLiteral,
+                    DateTimeLiteral,
+                    TypeofLiteral,
+                    RawGuidLiteral,
+                    Rule(RenameName, n => (Expression)n));
+
+            var ExternalDataWithClauseProperty =
+                Rule(
+                    RenameName,
+                    Token(SyntaxKind.EqualToken),
+                    Required(ExternalDataWithClausePropertyValue, MissingValue),
+                    (name, equals, value) => new NamedParameter(name, equals, value));
+
             var ExternalDataWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    QueryParameterCommaList(QueryOperatorParameters.ExternalDataWithClauseProperties),
+                    CommaList(ExternalDataWithClauseProperty, MissingNamedParameterNode),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, openParen, list, closeParen) =>
                         new ExternalDataWithClause(keyword, openParen, list, closeParen));

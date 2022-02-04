@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Kusto.Language.Syntax;
@@ -149,10 +148,15 @@ namespace Kusto.Language.Parsing
                 if (literalMatch.Key.Length > 0 && !IsIdentifierChar(Peek(text, pos + literalMatch.Key.Length)))
                     return new LexicalToken(literalMatch.Value, trivia, literalMatch.Key);
 
-                var len = ScanIdentifier(text, pos);
+                // it might be a uuid literal
+                var rawGuidLen = ScanRawGuidLiteral(text, pos);
+                if (rawGuidLen > 0)
+                    return new LexicalToken(SyntaxKind.RawGuidLiteralToken, trivia, GetSubstring(text, pos, rawGuidLen));
+
+                var idLen = ScanIdentifier(text, pos);
 
                 // is this a hidden string?
-                if (len == 1 && (ch == 'h' || ch == 'H'))
+                if (idLen == 1 && (ch == 'h' || ch == 'H'))
                 {
                     ch2 = Peek(text, pos + 1);
                     if (ch2 == '\'' || ch2 == '"' || ch2 == '@' || ch2 == '`')
@@ -163,10 +167,13 @@ namespace Kusto.Language.Parsing
                     }
                 }
 
-                return new LexicalToken(SyntaxKind.IdentifierToken, trivia, GetSubstring(text, pos, len));
+                return new LexicalToken(SyntaxKind.IdentifierToken, trivia, GetSubstring(text, pos, idLen));
             }
             else if (char.IsDigit(ch))
             {
+                var rawGuidLen = ScanRawGuidLiteral(text, pos);
+                if (rawGuidLen > 0)
+                    return new LexicalToken(SyntaxKind.RawGuidLiteralToken, trivia, GetSubstring(text, pos, rawGuidLen));
                 var realLen = ScanRealLiteral(text, pos);
                 if (realLen >= 0)
                     return new LexicalToken(SyntaxKind.RealLiteralToken, trivia, GetSubstring(text, pos, realLen));
@@ -799,7 +806,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanTwoHexDigits(string text, int start)
         {
-            if (start < text.Length + 2
+            if (start < text.Length - 1
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1]))
             {
@@ -813,7 +820,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanFourHexDigits(string text, int start)
         {
-            if (start < text.Length + 4
+            if (start < text.Length - 3
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1])
                 && TextFacts.IsHexDigit(text[start + 2])
@@ -829,7 +836,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanEightHexDigits(string text, int start)
         {
-            if (start < text.Length + 8
+            if (start < text.Length - 7
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1])
                 && TextFacts.IsHexDigit(text[start + 2])
@@ -840,6 +847,30 @@ namespace Kusto.Language.Parsing
                 && TextFacts.IsHexDigit(text[start + 7]))
             {
                 return 8;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        private static int ScanTwelveHexDigits(string text, int start)
+        {
+            if (start < text.Length - 11
+                && TextFacts.IsHexDigit(text[start])
+                && TextFacts.IsHexDigit(text[start + 1])
+                && TextFacts.IsHexDigit(text[start + 2])
+                && TextFacts.IsHexDigit(text[start + 3])
+                && TextFacts.IsHexDigit(text[start + 4])
+                && TextFacts.IsHexDigit(text[start + 5])
+                && TextFacts.IsHexDigit(text[start + 6])
+                && TextFacts.IsHexDigit(text[start + 7])
+                && TextFacts.IsHexDigit(text[start + 8])
+                && TextFacts.IsHexDigit(text[start + 9])
+                && TextFacts.IsHexDigit(text[start + 10])
+                && TextFacts.IsHexDigit(text[start + 11]))
+            {
+                return 12;
             }
             else
             {
@@ -929,6 +960,27 @@ namespace Kusto.Language.Parsing
             }
 
             return pos > start ? pos - start : -1;
+        }
+
+        private int ScanRawGuidLiteral(string text, int start)
+        {
+            if (start < text.Length + 35
+                && ScanEightHexDigits(text, start) == 8
+                && text[start + 8] == '-'
+                && ScanFourHexDigits(text, start + 9) == 4
+                && text[start + 13] == '-'
+                && ScanFourHexDigits(text, start + 14) == 4
+                && text[start + 18] == '-'
+                && ScanFourHexDigits(text, start + 19) == 4
+                && text[start + 23] == '-'
+                && ScanTwelveHexDigits(text, start + 24) == 12)
+            {
+                return 36;
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         /// <summary>

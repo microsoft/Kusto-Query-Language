@@ -644,20 +644,9 @@ namespace Kusto.Language.Parsing
                 Rule(Token(SyntaxKind.StringLiteralToken), token => (Name)new TokenName(token));
 
             var RawGuidLiteral =
-                Convert(
-                    And(
-                        Match(t => IsHex(t.Text)),
-                        ZeroOrMore(
-                            And(
-                                Match(t => t.Kind == SyntaxKind.MinusToken && t.Trivia.Length == 0),
-                                Match(t => IsHex(t.Text) && t.Trivia.Length == 0)))),
-                    (IReadOnlyList<LexicalToken> list) =>
-                    {
-                        var text = string.Concat(list.Select(e => e.Text));
-                        return (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression,
-                            SyntaxToken.Literal(list[0].Trivia, text, SyntaxKind.GuidLiteralToken));
-                    }).WithTag("<guid>");
-
+                  Rule(
+                      Token(SyntaxKind.RawGuidLiteralToken),
+                      (token) => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, token));
             var GuidLiteral =
                   Rule(
                       Token(SyntaxKind.GuidLiteralToken),
@@ -785,7 +774,7 @@ namespace Kusto.Language.Parsing
 
             var KustoValueInfo =
                 new ParserInfo(
-                    First(GuidLiteral.Cast<SyntaxElement>(), queryParser.Literal.Cast<SyntaxElement>()),
+                    First(GuidLiteral.Cast<SyntaxElement>(), RawGuidLiteral.Cast<SyntaxElement>(), queryParser.Literal.Cast<SyntaxElement>()),
                     new CustomElementDescriptor(hint: Editor.CompletionHint.Literal),
                     () => (SyntaxElement)Q.MissingValue());
 

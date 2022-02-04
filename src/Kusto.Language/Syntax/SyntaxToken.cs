@@ -417,6 +417,7 @@ namespace Kusto.Language.Syntax
                     case SyntaxKind.DateTimeLiteralToken:
                         return GetDateTimeValue(this.Text);
                     case SyntaxKind.GuidLiteralToken:
+                    case SyntaxKind.RawGuidLiteralToken:
                         return GetGuidValue(this.Text);
                     case SyntaxKind.StringLiteralToken:
                         return KustoFacts.GetStringLiteralValue(this.Text);

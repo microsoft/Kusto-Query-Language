@@ -739,6 +739,11 @@ namespace Kusto.Language
             return new Diagnostic("KS213", "Client parameters are not supported or enabled.");
         }
 
+        public static Diagnostic GetRawGuidLiteralNotAllowed()
+        {
+            return new Diagnostic("KS214", "Raw guid literals are not allowed in this context, use guid(...) instead.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -338,6 +338,7 @@
         DateTimeLiteralToken,
         TimespanLiteralToken,
         GuidLiteralToken,
+        RawGuidLiteralToken,       // this is a raw guid only legal in specific syntax
         StringLiteralToken,
 
         // other tokens

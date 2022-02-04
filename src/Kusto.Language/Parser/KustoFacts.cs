@@ -980,5 +980,80 @@ namespace Kusto.Language
                 textStart = firstCharPosition + 1;
             }
         }
+
+        /// <summary>
+        /// Attempts to determine the tabularity of an expression (scalar, tabular, none, unknown) given syntax.
+        /// </summary>
+        public static Tabularity GetSyntaxTabularity(Syntax.Expression expression, GlobalState globals = null)
+        {
+            globals = globals ?? GlobalState.Default;
+
+            switch (expression)
+            {
+                case QueryOperator _:  // querys operator are always tabular
+                case PipeExpression _: // pipes are always queries
+                case Command _:        // commands always have tabular output
+                case DataTableExpression _:
+                case ToTableExpression _:
+                    return Tabularity.Tabular;
+                case BinaryExpression _:
+                case PrefixUnaryExpression _:
+                case InExpression _:
+                case HasAnyExpression _:
+                case HasAllExpression _:
+                case BetweenExpression _:
+                case ElementExpression _:
+                case BracketedExpression _:
+                case LiteralExpression _:
+                case CompoundStringLiteralExpression _:
+                case DynamicExpression _:
+                case ToScalarExpression _:
+                    return Tabularity.Scalar;
+                case FunctionCallExpression fc:
+                    var fn = globals.GetFunction(fc.Name.SimpleName);
+                    if (fn != null)
+                        return fn.Tabularity;
+                    var dbFn = globals.Database?.GetFunction(fc.Name.SimpleName);
+                    if (dbFn != null)
+                        return dbFn.Tabularity;
+                    return Tabularity.Unknown;
+                case Expression _:
+                default:
+                    return Tabularity.Unknown;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to determine the tabularity of a statement (scalar, tabular, none, unknown) given syntax.
+        /// </summary>
+        public static Tabularity GetSyntaxTabularity(Syntax.Statement statement, GlobalState globals = null)
+        {
+            if (statement != null
+                && statement is ExpressionStatement es)
+            {
+                return KustoFacts.GetSyntaxTabularity(es.Expression, globals);
+            }
+            else
+            {
+                return Tabularity.None;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to determine the tabularity of a block of statements (scalar, tabular, none, unknown) given syntax.
+        /// </summary>
+        public static Tabularity GetSyntaxTabularity(Syntax.SyntaxList<SeparatedElement<Statement>> statements, GlobalState globals = null)
+        {
+            if (statements != null
+                && statements.Count > 0
+                && statements[statements.Count - 1].Element is ExpressionStatement es)
+            {
+                return KustoFacts.GetSyntaxTabularity(es.Expression, globals);
+            }
+            else
+            {
+                return Tabularity.None;
+            }
+        }
     }
 }

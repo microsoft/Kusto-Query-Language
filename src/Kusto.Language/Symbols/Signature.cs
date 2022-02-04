@@ -712,48 +712,7 @@ namespace Kusto.Language.Symbols
                 statements = code.Syntax.GetFirstDescendantOrSelf<SyntaxList<SeparatedElement<Statement>>>();
             }
 
-            if (statements != null 
-                && statements.Count > 0
-                && statements[statements.Count - 1].Element is ExpressionStatement es)
-            {
-                switch (es.Expression)
-                {
-                    case QueryOperator _:  // querys operator are always tabular
-                    case PipeExpression _: // pipes are always queries
-                    case Command _:        // commands always have tabular output
-                    case DataTableExpression _:
-                    case ToTableExpression _:
-                        return Tabularity.Tabular;
-                    case BinaryExpression _:
-                    case PrefixUnaryExpression _:
-                    case InExpression _:
-                    case HasAnyExpression _:
-                    case HasAllExpression _:
-                    case BetweenExpression _:
-                    case ElementExpression _:
-                    case BracketedExpression _:
-                    case LiteralExpression _:
-                    case CompoundStringLiteralExpression _:
-                    case DynamicExpression _:
-                    case ToScalarExpression _:
-                        return Tabularity.Scalar;
-                    case FunctionCallExpression fc:
-                        var fn = globals.GetFunction(fc.Name.SimpleName);
-                        if (fn != null)
-                            return fn.Tabularity;
-                        var dbFn = globals.Database?.GetFunction(fc.Name.SimpleName);
-                        if (dbFn != null)
-                            return dbFn.Tabularity;
-                        return Tabularity.Unknown;
-                    case Expression _:
-                    default:
-                        return Tabularity.Unknown;
-                }
-            }
-            else
-            {
-                return Tabularity.None;
-            }
+            return KustoFacts.GetSyntaxTabularity(statements, globals);
         }
     }
 }
