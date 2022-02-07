@@ -806,7 +806,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanTwoHexDigits(string text, int start)
         {
-            if (start < text.Length - 1
+            if (start + 1 < text.Length
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1]))
             {
@@ -820,7 +820,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanFourHexDigits(string text, int start)
         {
-            if (start < text.Length - 3
+            if (start + 3 < text.Length
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1])
                 && TextFacts.IsHexDigit(text[start + 2])
@@ -836,7 +836,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanEightHexDigits(string text, int start)
         {
-            if (start < text.Length - 7
+            if (start + 7 < text.Length
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1])
                 && TextFacts.IsHexDigit(text[start + 2])
@@ -856,7 +856,7 @@ namespace Kusto.Language.Parsing
 
         private static int ScanTwelveHexDigits(string text, int start)
         {
-            if (start < text.Length - 11
+            if (start + 11 < text.Length
                 && TextFacts.IsHexDigit(text[start])
                 && TextFacts.IsHexDigit(text[start + 1])
                 && TextFacts.IsHexDigit(text[start + 2])
@@ -964,7 +964,7 @@ namespace Kusto.Language.Parsing
 
         private int ScanRawGuidLiteral(string text, int start)
         {
-            if (start < text.Length + 35
+            if (start + 35 < text.Length
                 && ScanEightHexDigits(text, start) == 8
                 && text[start + 8] == '-'
                 && ScanFourHexDigits(text, start + 9) == 4
