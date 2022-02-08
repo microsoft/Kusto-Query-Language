@@ -991,8 +991,7 @@ namespace Kusto.Language
                 new Parameter("source", ParameterTypeKind.NotDynamic),
                 new Parameter("mod", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide(); // slneimer to unhide after 7/Feb/2022
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol HashSha256 =
             new FunctionSymbol("hash_sha256", ScalarTypes.String,
