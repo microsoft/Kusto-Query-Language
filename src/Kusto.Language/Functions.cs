@@ -2328,8 +2328,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
                 new Parameter("polygons", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLinesUnion =
             new FunctionSymbol("geo_union_lines_array", ScalarTypes.Dynamic,
@@ -2368,22 +2367,19 @@ namespace Kusto.Language
             new FunctionSymbol("geo_polygon_perimeter", ScalarTypes.Real,
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineLength =
             new FunctionSymbol("geo_line_length", ScalarTypes.Real,
                 new Parameter("lineString", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineCentroid =
             new FunctionSymbol("geo_line_centroid", ScalarTypes.Dynamic,
                 new Parameter("lineString", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineDensify =
             new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,

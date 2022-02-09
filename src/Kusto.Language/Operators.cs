@@ -5,9 +5,11 @@ using System.Linq;
 namespace Kusto.Language
 {
     using Symbols;
-    using Utils;
 
-    internal static class Operators
+    /// <summary>
+    /// Built-in scalar math-like operators
+    /// </summary>
+    public static class Operators
     {
         private static readonly TypeSymbol[] DateAndTimespan = new[] 
         {

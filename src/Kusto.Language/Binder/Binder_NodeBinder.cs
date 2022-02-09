@@ -698,12 +698,12 @@ namespace Kusto.Language.Binding
 
                     if (indexerType != ScalarTypes.String)
                     {
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(node.Expression));
                     }
                     else if (!node.Expression.IsLiteral)
                     {
                         // computed name lookup?? Is this valid here?
-                        return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetExpressionMustBeLiteral().WithLocation(node.Expression));
                     }
                     else
                     {
@@ -731,7 +731,7 @@ namespace Kusto.Language.Binding
                     if (!IsInteger(indexerType) && !IsStringOrDynamic(indexerType))
                     {
                         // must be a integer array index or a string member name index (dynamic okay?)
-                        return new SemanticInfo(null, ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
+                        return new SemanticInfo(ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
                     }
                     else
                     {
@@ -762,7 +762,7 @@ namespace Kusto.Language.Binding
                 else
                 {
                     // element access only works for dynamic values
-                    return new SemanticInfo(null, ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(selector));
+                    return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetTheElementAccessOperatorIsNotAllowedInThisContext().WithLocation(selector));
                 }
             }
 
@@ -810,7 +810,7 @@ namespace Kusto.Language.Binding
 #region other nodes
             public override SemanticInfo VisitParenthesizedExpression(ParenthesizedExpression node)
             {
-                return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitEntityGroup(EntityGroup node)
@@ -825,17 +825,17 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitSimpleNamedExpression(SimpleNamedExpression node)
             {
-                return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitCompoundNamedExpression(CompoundNamedExpression node)
             {
-                return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitPipeExpression(PipeExpression node)
             {
-                return new SemanticInfo(null, _binder.GetResultTypeOrError(node.Operator));
+                return new SemanticInfo(_binder.GetResultTypeOrError(node.Operator));
             }
 
             public override SemanticInfo VisitAtExpression(AtExpression node)
@@ -3308,7 +3308,7 @@ namespace Kusto.Language.Binding
 
                     if (diagnostics.Count > 0)
                     {
-                        return new SemanticInfo(null, null, diagnostics);
+                        return new SemanticInfo(diagnostics);
                     }
 
                     return null;
@@ -3355,7 +3355,7 @@ namespace Kusto.Language.Binding
 
                     if (diagnostics.Count > 0)
                     {
-                        return new SemanticInfo(null, null, diagnostics);
+                        return new SemanticInfo(diagnostics);
                     }
                 }
                 finally

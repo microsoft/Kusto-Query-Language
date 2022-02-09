@@ -16,12 +16,54 @@ namespace Kusto.Language.Binding
     /// </summary>
     internal class SemanticInfo
     {
+        private readonly object _referencedSymbolOrSignature;
+
         /// <summary>
         /// The symbol referenced by the <see cref="SyntaxNode"/>,
         /// a column, function, operator, etc.
         /// May be null.
         /// </summary>
-        public Symbol ReferencedSymbol { get; }
+        public Symbol ReferencedSymbol
+        {
+            get
+            {
+                if (_referencedSymbolOrSignature is Signature sig)
+                {
+                    return sig.Symbol;
+                }
+                else
+                {
+                    return _referencedSymbolOrSignature as Symbol;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The matching signature of the function or operator symbol referenced by the <see cref="SyntaxNode"/>.
+        /// May be null.
+        /// </summary>
+        public Signature ReferencedSignature
+        {
+            get
+            {
+                if (_referencedSymbolOrSignature is Signature sig)
+                {
+                    return sig;
+                }
+                else if (_referencedSymbolOrSignature is FunctionSymbol fn && fn.Signatures.Count == 1)
+                {
+                    return fn.Signatures[0];
+                }
+                else if (_referencedSymbolOrSignature is VariableSymbol vs && vs.Type is FunctionSymbol vfn && vfn.Signatures.Count == 1)
+                {
+                    return vfn.Signatures[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// The result type of the expression.
@@ -44,43 +86,73 @@ namespace Kusto.Language.Binding
         /// </summary>
         public FunctionCallInfo CalledFunctionInfo { get; }
 
-        public SemanticInfo(
-            Symbol referenced, 
-            TypeSymbol result, 
-            IEnumerable<Diagnostic> diagnostics = null, 
-            bool isConstant = false, 
-            FunctionCallInfo calledFunctionInfo = null)
+        private SemanticInfo(
+            object referenced,
+            TypeSymbol result,
+            IEnumerable<Diagnostic> diagnostics,
+            bool isConstant,
+            FunctionCallInfo calledFunctionInfo)
         {
-            this.ReferencedSymbol = referenced;
+            _referencedSymbolOrSignature = referenced;
             this.ResultType = result;
             this.Diagnostics = diagnostics != null ? diagnostics.ToReadOnly() : Diagnostic.NoDiagnostics;
             this.IsConstant = isConstant;
             this.CalledFunctionInfo = calledFunctionInfo;
         }
 
-        public SemanticInfo(TypeSymbol result, IEnumerable<Diagnostic> diagnostics = null, bool isConstant = false, FunctionCallInfo calledFunctionInfo = null)
-            : this(null, result, diagnostics, isConstant, calledFunctionInfo)
+        public SemanticInfo(
+            Symbol referencedSymbol,
+            TypeSymbol result,
+            IEnumerable<Diagnostic> diagnostics = null,
+            bool isConstant = false,
+            FunctionCallInfo calledFunctionInfo = null)
+            : this((object)referencedSymbol, result, diagnostics, isConstant, calledFunctionInfo)
         {
         }
 
-        public SemanticInfo(Symbol referenced, TypeSymbol result, Diagnostic diagnostic)
-            : this(referenced, result, diagnostic != null ? new List<Diagnostic> { diagnostic }.AsReadOnly() : Diagnostic.NoDiagnostics)
+        public SemanticInfo(
+            Signature referencedSignature,
+            TypeSymbol result,
+            IEnumerable<Diagnostic> diagnostics = null,
+            bool isConstant = false,
+            FunctionCallInfo calledFunctionInfo = null)
+            : this((object)referencedSignature, result, diagnostics, isConstant, calledFunctionInfo)
+        {
+        }
+
+        public SemanticInfo(TypeSymbol result, IEnumerable<Diagnostic> diagnostics = null, bool isConstant = false, FunctionCallInfo calledFunctionInfo = null)
+            : this((Symbol)null, result, diagnostics, isConstant, calledFunctionInfo)
+        {
+        }
+
+        public SemanticInfo(Symbol referencedSymbol, TypeSymbol result, Diagnostic diagnostic)
+            : this(referencedSymbol, result, diagnostic != null ? new List<Diagnostic> { diagnostic }.AsReadOnly() : Diagnostic.NoDiagnostics)
+        {
+        }
+
+        public SemanticInfo(Signature referencedSignature, TypeSymbol result, Diagnostic diagnostic)
+            : this(referencedSignature, result, diagnostic != null ? new List<Diagnostic> { diagnostic }.AsReadOnly() : Diagnostic.NoDiagnostics)
         {
         }
 
         public SemanticInfo(TypeSymbol result, Diagnostic diagnostic)
-            : this(null, result, diagnostic)
+            : this((Symbol)null, result, diagnostic)
         {
         }
 
         public SemanticInfo(IEnumerable<Diagnostic> diagnostics)
-            : this(null, null, diagnostics)
+            : this((Symbol)null, null, diagnostics)
         {
         }
 
         public SemanticInfo WithReferencedSymbol(Symbol symbol)
         {
             return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+        }
+
+        public SemanticInfo WithReferencedSignature(Signature signature)
+        {
+            return new SemanticInfo(signature, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
         }
 
         public SemanticInfo WithResultType(TypeSymbol type)

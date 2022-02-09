@@ -90,7 +90,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, location, diagnostics);
                     var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes);
-                    return new SemanticInfo(matchingSignatures[0].Symbol, funResult.Type, diagnostics, isConstant: AllAreConstant(arguments));
+                    return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: AllAreConstant(arguments));
                 }
                 else
                 {

@@ -18,6 +18,11 @@ namespace Kusto.Language.Syntax
         public Symbol ReferencedSymbol => GetSemanticInfo()?.ReferencedSymbol;
 
         /// <summary>
+        /// The matching <see cref="Signature"/> for the referenced function or operator.
+        /// </summary>
+        public Signature ReferencedSignature => GetSemanticInfo()?.ReferencedSignature;
+
+        /// <summary>
         /// Gets the body of the referenced function evaluted in the context of the call site (or null).
         /// </summary>
         [Obsolete("Use GetCalledFunctionBody() instead", error: true)]

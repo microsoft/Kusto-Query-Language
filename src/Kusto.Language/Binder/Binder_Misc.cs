@@ -694,7 +694,7 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Tuple:
                     return new SemanticInfo((TypeSymbol)referencedSymbol, diagnostics);
                 default:
-                    return new SemanticInfo(null, ErrorSymbol.Instance, diagnostics);
+                    return new SemanticInfo(ErrorSymbol.Instance, diagnostics);
             }
         }
 

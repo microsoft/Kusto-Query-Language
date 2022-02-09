@@ -72,7 +72,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
                     var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, diagnostics);
-                    return new SemanticInfo(fn, funResult.Type, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
+                    return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
                 }
                 else
                 {
