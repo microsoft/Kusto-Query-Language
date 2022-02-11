@@ -2187,6 +2187,26 @@ namespace Kusto.Language
                 ShowExtentsMetadataResult);
         #endregion
 
+        #region class Shard groups
+        private static readonly string ShardGroupsShowResult = "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)";
+        private static readonly string ShardGroupsStatisticsShowResult = "(TableId: guid, long ShardGroupCount: long, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long)";
+
+        public static readonly CommandSymbol TableShardGroupsShow =
+            new CommandSymbol(nameof(TableShardGroupsShow),
+                "show table TableName=<table> #shard-groups",
+                ShardGroupsShowResult);
+
+        public static readonly CommandSymbol TableShardGroupsStatisticsShow =
+            new CommandSymbol(nameof(TableShardGroupsStatisticsShow),
+                $"show (table TableName=<table> | tables {TableNameList}) #shard-groups #statistics",
+                ShardGroupsStatisticsShowResult);
+
+        public static readonly CommandSymbol DatabaseShardGroupsStatisticsShow =
+            new CommandSymbol(nameof(DatabaseShardGroupsStatisticsShow),
+                "show database [DatabaseName=<database>] #shard-groups #statistics",
+                ShardGroupsStatisticsShowResult);
+        #endregion
+
         private static readonly string MergeExtentsResult =
             "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
 
@@ -3288,6 +3308,9 @@ namespace Kusto.Language
                 ShowDatabaseExtentTagsStatistics,
                 ShowTableExtents,
                 ShowTableExtentsMetadata,
+                TableShardGroupsShow,
+                TableShardGroupsStatisticsShow,
+                DatabaseShardGroupsStatisticsShow,
                 MergeExtentsDryrun,
                 MergeExtents,
                 MoveExtentsFrom,
