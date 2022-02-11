@@ -27,7 +27,7 @@ Dynamic array of arrays with arr1, arr2, ... , arrN.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

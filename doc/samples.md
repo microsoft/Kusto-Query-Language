@@ -1,23 +1,22 @@
 ---
-title: Samples for queries in Azure Data Explorer and Azure Monitor
-description: This article describes common queries and examples that use the Kusto Query Language for Azure Data Explorer and Azure Monitor.
+title: Samples for Kusto Queries - Azure Data Explorer
+description: This article describes common queries and examples that use the Kusto Query Language.
 services: data-explorer
 author: orspod
 ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 10/08/2020
-ms.localizationpriority: high 
+ms.date: 09/02/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
 
-# Samples for queries for Azure Data Explorer and Azure Monitor
+# Samples for Kusto Queries
 
 ::: zone pivot="azuredataexplorer"
 
-This article identifies common query needs in Azure Data Explorer and how you can use the Kusto Query Language to meet them.
+This article identifies common queries and how you can use the Kusto Query Language to meet them.
 
 ## Display a column chart
 
@@ -57,7 +56,6 @@ Example:
 
 ```kusto
 let Events = MyLogTable | where ... ;
-
 Events
 | where Name == "Start"
 | project Name, City, SessionId, StartTime=timestamp
@@ -423,7 +421,7 @@ The next two examples demonstrate how to change from using a device model to a f
 
 You can achieve mapping by using a dynamic dictionary and dynamic accessors. For example:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 // Dataset definition
 let Source = datatable(DeviceModel:string, Count:long)

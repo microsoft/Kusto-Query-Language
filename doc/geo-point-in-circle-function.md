@@ -38,7 +38,7 @@ Indicates whether the geospatial coordinates are inside a circle. If the coordin
 
 The following query finds all the places in the area defined by the following circle: Radius of 18 km, center at [-122.317404, 47.609119] coordinates.
 
-:::image type="content" source="images/geo-point-in-circle-function/circle-seattle.png" alt-text="Places near Seattle":::
+:::image type="content" source="images/geo-point-in-circle-function/circle-seattle.png" alt-text="Places near Seattle.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -62,7 +62,7 @@ datatable(longitude:real, latitude:real, place:string)
 
 Storm events in Orlando. The events are filtered by 100 km within Orlando coordinates, and aggregated by event type and hash.
 
-:::image type="content" source="images/geo-point-in-circle-function/orlando-storm-events.png" alt-text="Storm events in Orlando":::
+:::image type="content" source="images/geo-point-in-circle-function/orlando-storm-events.png" alt-text="Storm events in Orlando.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -76,7 +76,7 @@ StormEvents
 
 The following example shows NY Taxi pickups within 10 meters of a particular location. Relevant pickups are aggregated by hash.
 
-:::image type="content" source="images/geo-point-in-circle-function/circle-junction.png" alt-text="NY Taxi nearby Pickups":::
+:::image type="content" source="images/geo-point-in-circle-function/circle-junction.png" alt-text="NY Taxi nearby Pickups.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

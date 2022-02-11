@@ -27,7 +27,7 @@ Returns a dynamic array of the set of all distinct values that are in any of arr
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

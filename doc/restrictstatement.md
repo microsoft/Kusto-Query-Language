@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/21/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -15,19 +15,11 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-The restrict statement limits the set of table/view entities which are
-visible to query statements that follow it. For example, in a database that
-includes two tables (`A`, `B`), the application can prevent the rest
-of the query from accessing `B` and only "see" a limited form of
-table `A` by using a view.
+The restrict statement limits the set of table/view entities which are visible to query statements that follow it. For example, in a database that includes two tables (`A`, `B`), the application can prevent the rest of the query from accessing `B` and only "see" a limited form of table `A` by using a view.
 
-The restrict statement's main scenario is for
-middle-tier applications that accept queries from users and want to
-apply a row-level security mechanism over those queries. 
-The middle-tier application can prefix the user's query with a **logical model**, 
-a set of let statements defining views that restrict the user's access
-to data (for example, `T | where UserId == "..."`). As the last statement
-being added, it restricts the user's access to the logical model only.
+The restrict statement's main scenario is for middle-tier applications that accept queries from users and want to
+apply a row-level security mechanism over those queries.
+The middle-tier application can prefix the user's query with a **logical model**, a set of let statements defining views that restrict the user's access to data, for example ( `T | where UserId == "..."`). As the last statement being added, it restricts the user's access to the logical model only.
 
 > [!NOTE]
 > The restrict statement can be used to restrict access to entities in another database or cluster (wildcards are not supported in cluster names).
@@ -41,8 +33,8 @@ Where *EntitySpecifier* is one of:
 * A table reference (similar to one used by a union statement).
 * A pattern defined by a pattern declaration.
 
-All tables, tabular views, or patterns that are not specified by the restrict
-statement become "invisible" to the rest of the query. 
+All tables, tabular views, or patterns that are not specified by the restrict statement become "invisible" to the rest of the query. 
+Let, set, and tabular statements are strung together/separated by a semicolon, otherwise they will not be considered part of the same query.
 
 ## Arguments
 

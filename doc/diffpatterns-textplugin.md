@@ -7,15 +7,11 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/24/2022
 ---
 # diffpatterns_text plugin
 
-Compares two data sets of string values and finds text patterns that characterize differences between the two data sets.
-
-```kusto
-T | evaluate diffpatterns_text(TextColumn, BooleanCondition)
-```
+Compares two data sets of string values and finds text patterns that characterize differences between the two data sets. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 The `diffpatterns_text` returns a set of text patterns that capture different portions of the data in the two sets (i.e. a pattern capturing a large percentage of the rows when the condition is `true` and low percentage of the rows when the condition is `false`). The patterns are built from consecutive tokens (separated by white space), with a token from the text column or a `*` representing a wildcard. Each pattern is represented by a row in the results.
 
@@ -68,7 +64,7 @@ The result of diffpatterns_text returns the following columns:
 
 The following example uses data from the StormEvents table in the help cluster. To access this data, sign in to [https://dataexplorer.azure.com/clusters/help/databases/Samples](https://dataexplorer.azure.com/clusters/help/databases/Samples). In the left menu, browse to **help** > **Samples** > **Tables** > **Storm_Events**.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents     
 | where EventNarrative != "" and monthofyear(StartTime) > 1 and monthofyear(StartTime) < 9

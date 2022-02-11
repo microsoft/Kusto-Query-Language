@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 05/27/2020
+ms.date: 01/13/2022
 ---
 # parse_ipv6()
 
@@ -40,19 +40,17 @@ If conversion isn't successful, the result will be `null`.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
-datatable(ip_string:string, netmask:long)
+datatable(ipv4:string)
 [
- '192.168.255.255',     32,  // 32-bit netmask is used
- '192.168.255.255/24',  30,  // 24-bit netmask is used, as IPv4 address doesn't use upper 8 bits
- '255.255.255.255',     24,  // 24-bit netmask is used
+ '192.168.255.255',
+ '192.168.255.255/24',
+ '255.255.255.255'
 ]
-| extend ip_long = parse_ipv4_mask(ip_string, netmask)
+| extend ipv6 = parse_ipv6(ip_string)
 ```
 
-|ip_string|netmask|ip_long|
-|---|---|---|
-|192.168.255.255|32|3232301055|
-|192.168.255.255/24|30|3232300800|
-|255.255.255.255|24|4294967040|
-
-
+| ipv4               | ipv6                                    |
+|--------------------|-----------------------------------------|
+| 192.168.255.255    | 0000:0000:0000:0000:0000:ffff:c0a8:ffff |
+| 192.168.255.255/24 | 0000:0000:0000:0000:0000:ffff:c0a8:ff00 |
+| 255.255.255.255    | 0000:0000:0000:0000:0000:ffff:ffff:ffff |

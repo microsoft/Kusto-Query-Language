@@ -17,7 +17,7 @@ Calculates the [stdev](stdev-aggfunction.md) of *Expr* across the group for whic
 
 ## Syntax
 
-summarize `stdevif(`*Expr*`, `*Predicate*`)`
+ `stdevif` `(`*Expr*`, `*Predicate*`)`
 
 ## Arguments
 

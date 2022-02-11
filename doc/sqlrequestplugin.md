@@ -16,33 +16,33 @@ zone_pivot_groups: kql-flavors
 ::: zone pivot="azuredataexplorer"
 
 The `sql_request` plugin sends a SQL query to a SQL Server network endpoint and returns the first rowset in the results.
-The query may return more then one rowset, but only the first rowset is made available for the rest of the Kusto query.
+The query may return more than one rowset, but only the first rowset is made available for the rest of the Kusto query.
+The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
-  `evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)`
+  `evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)` [`:` *OutputSchema*]
 
 ## Arguments
 
 * *ConnectionString*: A `string` literal indicating the connection string that
   points at the SQL Server network endpoint. See [valid methods of authentication](#authentication) and how to specify the [network endpoint](#specify-the-network-endpoint).
-
 * *SqlQuery*: A `string` literal indicating the query that is to be executed against the SQL endpoint. Must return one or more rowsets, but only the first one is made available for the rest of the Kusto query.
-
 * *SqlParameters*: A constant value of type `dynamic` that holds key-value pairs
   to pass as parameters along with the query. Optional.
-  
 * *Options*: A constant value of type `dynamic` that holds more advanced settings
   as key-value pairs. Currently, only `token` can be set, to pass a caller-provided
   Azure AD access token that is forwarded to the SQL endpoint for authentication. Optional.
+* *OutputSchema*: An optional expected schema (column names and their types) of the sql_request output. 
+    * **Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`
+    * There is a performance benefit of providing explicit schema at the query. If the schema is known at query planning, then different optimizations can utilize the schema without first needing to run the actual query to explore the schema. If the run-time schema is not matched to the schema specified by *OutputSchema*, the query will yield an error indicating the mismatch.
 
 ## Examples
 
-The following example sends a SQL query to an Azure SQL DB database. It retrieves all records from `[dbo].[Table]`, and then processes the results on the Kusto side. Authentication reuses the calling user's Azure AD token. 
+The following example sends a SQL query to an Azure SQL DB database. It retrieves all records from `[dbo].[Table]`, and then processes the results on the Kusto side. Authentication reuses the calling user's Azure AD token.
 
 > [!NOTE]
-> This example should not be taken as a recommendation to filter or project
-data in this manner. SQL queries should be constructed to return the smallest data set possible, Since the Kusto optimizer doesn't currently attempt to optimize queries between Kusto and SQL.
+> This example should not be taken as a recommendation to filter or project data in this manner. SQL queries should be constructed to return the smallest data set possible, since the Kusto optimizer doesn't attempt to optimize queries between Kusto and SQL.
 
 ```kusto
 evaluate sql_request(
@@ -85,12 +85,27 @@ evaluate sql_request(
 | project Name
 ```
 
+The following example sends a SQL query to an Azure SQL DB database
+retrieving all records from `[dbo].[Table]`, while selecting only specific columns.
+It uses explicit schema definitions that allow various optimizations to be evaluated before the 
+actual query against SQL is run.
+
+```kusto
+evaluate sql_request(
+  'Server=tcp:contoso.database.windows.net,1433;'
+    'Authentication="Active Directory Integrated";'
+    'Initial Catalog=Fabrikam;',
+  'select Id, Name') : (Id:long, Name:string)
+| where Id > 0
+| project Name
+```
+
 ## Authentication
 
 The sql_request plugin supports three methods of authentication to the
 SQL Server endpoint:
 
-### Azure AD-integrated authentication 
+### Azure AD-integrated authentication
 
 `Authentication="Active Directory Integrated"`
 

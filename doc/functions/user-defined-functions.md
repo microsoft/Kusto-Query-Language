@@ -7,8 +7,7 @@ ms.author: orspodek
 ms.reviewer: rkarlin
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/12/2020
-ms.localizationpriority: high
+ms.date: 11/17/2021
 ---
 # User-defined functions
 
@@ -16,10 +15,10 @@ ms.localizationpriority: high
 
 A user-defined function belongs to one of two categories:
 
-* Scalar functions 
+* Scalar functions
 * Tabular functions, also known as views
 
-The function's input arguments and output determine whether it is scalar or tabular, which then establishes how it might be used. 
+The function's input arguments and output determine whether it is scalar or tabular, which then establishes how it might be used.
 
 ## Scalar function
 
@@ -41,7 +40,9 @@ Valid user-defined function names must follow the same [identifier naming rules]
 The name must also be unique in its scope of definition.
 
 > [!NOTE]
-> If a stored function and a table both have the same name, the stored function overrides when querying the table/function name.
+> If a stored function and a table both have the same name, then any reference to that name
+> resolves to the stored function, not the table name. Use the [table function](../tablefunction.md)
+> to reference the table instead.
 
 ## Input arguments
 
@@ -54,10 +55,11 @@ Valid user-defined functions follow these rules:
 
 Syntactically, the input arguments list is a comma-separated list of argument definitions, wrapped in parenthesis. Each argument definition is specified as
 
-```
+```kusto
 ArgName:ArgType [= ArgDefaultValue]
 ```
- For tabular arguments, *ArgType* has the same syntax as the table definition (parenthesis and a list of column name/type pairs), with the additional support of a solitary `(*)` indicating "any tabular schema".
+
+For tabular arguments, *ArgType* has the same syntax as the table definition (parenthesis and a list of column name/type pairs), with the additional support of a solitary `(*)` indicating "any tabular schema".
 
 For example:
 
@@ -148,15 +150,16 @@ The function **body** includes:
 
 > [!NOTE]
 > Other kinds of [query statements](../statements.md) that are supported at the query "top level" aren't supported inside a function body.
+> Any two statements must be separated by a semicolon.
 
-### Examples of user-defined functions 
+### Examples of user-defined functions
 
 **User-defined function that uses a let statement**
 
-The following example binds the name `Test` to a user-defined function (lambda) that makes use of three let statements. The output is `70`:
+The following example shows a user-defined function (lambda) that accepts a parameter named *id*. The function is bound to the name *Test* and makes use of three **let** statements, in which the *Test3* definition uses the *id* parameter. When run, the output from the query is 70:
 
 ```kusto
-let Test1 = (id: int) {
+let Test = (id: int) {
   let Test2 = 10;
   let Test3 = 10 + Test2 + id;
   let Test4 = (arg: int) {
@@ -165,7 +168,7 @@ let Test1 = (id: int) {
   };
   Test4(10)
 };
-range x from 1 to Test1(10) step 1
+range x from 1 to Test(10) step 1
 | count
 ```
 
@@ -192,7 +195,7 @@ Examples:
 let a=(){123};
 // Invoke the function in two equivalent ways:
 range x from 1 to 10 step 1
-| extend y = x * a, z = x * a() 
+| extend y = x * a, z = x * a()
 ```
 
 ```kusto
@@ -222,7 +225,7 @@ A user-defined function that takes one or more table arguments (and any number o
 
 ```kusto
 let MyFilter = (T:(x:long), v:long) {
-  T | where x >= v 
+  T | where x >= v
 };
 MyFilter((range x from 1 to 10 step 1), 9)
 ```
@@ -330,6 +333,6 @@ Table2 | where Column != 123 | project d = f(Column)
 
 For completeness, here are some commonly-requested features for user-defined functions that are currently not supported:
 
-1.	Function overloading: There is currently no way to overload a function (i.e., create multiple functions with the same name and different input schema).
+1. Function overloading: There is currently no way to overload a function (i.e., create multiple functions with the same name and different input schema).
 
-2.	Default values: The default value for a scalar parameter to a function must be a scalar literal (constant). Furthermore, stored functions cannot have a default value of type `dynamic`.
+1. Default values: The default value for a scalar parameter to a function must be a scalar literal (constant). Furthermore, stored functions cannot have a default value of type `dynamic`.

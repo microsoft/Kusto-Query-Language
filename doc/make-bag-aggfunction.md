@@ -17,7 +17,7 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *`Expr
 
 ## Syntax
 
-`summarize` `make_bag(`*`Expr`* [`,` *MaxSize*]`)`
+ `make_bag` `(`*Expr* [`,` *MaxSize*]`)`
 
 ## Arguments
 

@@ -19,7 +19,7 @@ See also - [max()](max-aggfunction.md) function, which returns the maximum value
 
 ## Syntax
 
-`summarize` `maxif(`*Expr*`,`*Predicate*`)`
+`maxif` `(`*Expr*`,`*Predicate*`)`
 
 ## Arguments
 

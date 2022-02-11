@@ -15,16 +15,16 @@ Removes leading match of the specified regular expression.
 
 ## Syntax
 
-`trim_start(`*regex*`,` *text*`)`
+`trim_start(`*regex*`,` *source*`)`
 
 ## Arguments
 
-* *regex*: String or [regular expression](re2.md) to be trimmed from the beginning of *text*.  
-* *text*: A string.
+* *regex*: String or [regular expression](re2.md) to be trimmed from the beginning of *source*.  
+* *source*: A string.
 
 ## Returns
 
-*text* after trimming match of *regex* found in the beginning of *text*.
+*source* after trimming match of *regex* found in the beginning of *source*.
 
 ## Example
 

@@ -11,13 +11,13 @@ ms.date: 09/26/2019
 ---
 # avg() (aggregation function)
 
-Calculates the average of *Expr* across the group. 
+Calculates the average (arithmetic mean) of *Expr* across the group. 
 
 * Can only be used in context of aggregation inside [summarize](summarizeoperator.md)
 
 ## Syntax
 
-summarize `avg(`*Expr*`)`
+`avg` `(`*Expr*`)`
 
 ## Arguments
 

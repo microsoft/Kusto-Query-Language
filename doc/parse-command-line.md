@@ -28,7 +28,7 @@ A dynamic array of the command-line arguments.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print parse_command_line("echo \"hello world!\"", "windows")
 ```

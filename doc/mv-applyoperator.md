@@ -179,29 +179,30 @@ _data
 ### Applying mv-apply to a property bag
 
 In the following example, `mv-apply` is used in combination with an
-inner `mv-expand` to remove empty values from a property bag:
+inner `mv-expand` to remove values that don't start with "555" from a property bag:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
-datatable(col1:string, col2: string ) 
-[ 
- 'aa', '',
- 'cc', 'dd'
+datatable(SourceNumber:string,TargetNumber:string,CharsCount:long)
+[
+    '555-555-1234','555-555-1212',46,
+    '555-555-1212','',int(null)
 ]
-| as T
 | extend values = pack_all()
-| mv-apply values on 
+| mv-apply removeProperties = values on 
 (
-    mv-expand kind = array  values
-    | where isnotempty(values[1])
-    | summarize EmptyValuesRemoved = make_bag(pack(tostring(values[0]), values[1]))
+    mv-expand kind = array values
+    | where values[1] !startswith "555"
+    | summarize propsToRemove = make_set(values[0])
 )
+| extend values = bag_remove_keys(values, propsToRemove)
+| project-away propsToRemove
 ```
 
-|col1|col2|EmptyValuesRemoved|
-|---|---|---|
-|aa||{<br>  "col1": "aa"<br>}|
-|cc|dd|{<br>  "col1": "cc",<br>  "col2": "dd"<br>}|
+|SourceNumber|TargetNumber|CharsCount|values
+|---|---|---|---|
+|555-555-1234|555-555-1212|46|{<br> "SourceNumber": "555-555-1234",<br>   "TargetNumber": "555-555-1212"<br> }|
+|555-555-1212|&nbsp;|&nbsp;|{<br> "SourceNumber": "555-555-1212"<br> }|
 
 
 ## See also

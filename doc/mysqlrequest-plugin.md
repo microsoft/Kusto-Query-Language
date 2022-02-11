@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/24/2020
+ms.date: 01/24/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -15,8 +15,10 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-The `mysql_request` plugin sends a SQL query to a MySQL Server network endpoint and returns the first rowset in the results. The query may return more then one rowset, but only the first rowset is made available for the rest of the Kusto query.
+The `mysql_request` plugin sends a SQL query to a MySQL Server network endpoint and returns the first rowset in the results. The query may return more then one rowset, but only the first rowset is made available for the rest of the Kusto query. 
 
+The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
+ 
 > [!IMPORTANT]
 > The `mysql_request` plugin is in preview mode, and is disabled by default.
 > To enable the plugin, run the [`.enable plugin mysql_request` command](../management/enable-plugin.md). To see which plugins are enabled, use [`.show plugin` management commands](../management/show-plugins.md).
@@ -100,12 +102,12 @@ The following example sends a SQL query to an Azure MySQL DB database. It retrie
 > This example shouldn't be taken as a recommendation to filter or project data in this manner. SQL queries should be constructed to return the smallest data set possible, since the Kusto optimizer doesn't currently attempt to optimize queries between Kusto and SQL.
 
 ```kusto
-evaluate sql_request(
+evaluate mysql_request(
     'Server=contoso.mysql.database.azure.com; Port = 3306;'
     'Database=Fabrikam;'
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;', 
-  'select * from [dbo].[Table]')
+    'select * from [dbo].[Table]')
 | where Id > 0
 | project Name
 ```
@@ -115,12 +117,12 @@ evaluate sql_request(
 The following example is identical to the previous one, but SQL authentication is done by username and password. For confidentiality, we use obfuscated strings.
 
 ```kusto
-evaluate sql_request(
-   'Server=contoso.mysql.database.azure.com; Port = 3306;'
+evaluate mysql_request(
+    'Server=contoso.mysql.database.azure.com; Port = 3306;'
     'Database=Fabrikam;'
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;', 
-  'select * from [dbo].[Table]')
+    'select * from [dbo].[Table]')
 | where Id > 0
 | project Name
 ```
@@ -134,12 +136,12 @@ It specifies a SQL parameter (`@param0`) to be used in the SQL query.
 
 ```kusto
 evaluate mysql_request(
-  'Server=contoso.mysql.database.azure.com; Port = 3306;'
+    'Server=contoso.mysql.database.azure.com; Port = 3306;'
     'Database=Fabrikam;'
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;', 
-  'select *, @param0 as dt from [dbo].[Table]',
-  dynamic({'param0': datetime(2020-01-01 16:47:26.7423305)}))
+    'select *, @param0 as dt from [dbo].[Table]',
+    dynamic({'param0': datetime(2020-01-01 16:47:26.7423305)}))
 | where Id > 0
 | project Name
 ```

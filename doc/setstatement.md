@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/21/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -16,10 +16,7 @@ zone_pivot_groups: kql-flavors
 ::: zone pivot="azuredataexplorer"
 
 The `set` statement is used to set a query option for the duration of the query.
-Query options control how a query executes and returns results. They can be
-Boolean flags (off by default), or have an integer value. A query may contain
-zero, one, or more set statements. Set statements affect only the tabular expression
-statements that trail them in the program order.
+Query options control how a query executes and returns results. They can be Boolean flags (off by default), or have an integer value. A query may contain zero, one, or more set statements. Set statements affect only the tabular expression statements that trail them in the program order. Any two statements must be separated by a semicolon.
 
 * Query options can also be enabled programmatically by setting them in the
   `ClientRequestProperties` object. See [here](../api/netfx/request-properties.md).

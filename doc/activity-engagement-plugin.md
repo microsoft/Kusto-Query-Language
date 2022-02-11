@@ -51,7 +51,7 @@ Output table schema is:
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
@@ -67,13 +67,13 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-wau.png" border="false" alt-text="Activity engagement dau wau":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-wau.png" border="false" alt-text="Activity engagement dau wau.":::
 
 ### DAU/MAU calculation
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
@@ -89,13 +89,13 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau.png" border="false" alt-text="Activity engagement dau mau":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau.png" border="false" alt-text="Activity engagement dau mau.":::
 
 ### DAU/MAU calculation with additional dimensions
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data with additional dimension (`mod3`).
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-01);
@@ -112,4 +112,4 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau-mod3.png" border="false" alt-text="Activity engagement dau mau mod 3":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau-mod3.png" border="false" alt-text="Activity engagement dau mau mod 3.":::

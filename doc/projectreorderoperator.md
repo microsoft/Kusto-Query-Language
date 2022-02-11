@@ -19,13 +19,16 @@ T | project-reorder Col2, Col1, Col* asc
 
 ## Syntax
 
-*T* `| project-reorder` *ColumnNameOrPattern* [`asc`|`desc`] [`,` ...]
+*T* `| project-reorder` *ColumnNameOrPattern* [`asc` | `desc` | `granny-asc` | `granny-desc`] [`,` ...]
 
 ## Arguments
 
 * *T*: The input table.
 * *ColumnNameOrPattern:* The name of the column or column wildcard pattern added to the output.
-* For wildcard patterns: specifying `asc` or `desc` orders columns using their names in ascending or descending order. If `asc` or `desc` aren't specified, the order is determined by the matching columns as they appear in the source table.
+* For wildcard patterns: Specifying `asc` or `desc` orders columns using their names in ascending or descending manner.
+  Additionally, `granny-asc` and `granny-desc` keywords indicate ascending or descending order that takes numeric values into account
+  (for example, `a100` comes before `a20` when `granny-asc` is specified.)
+  If no explicit ordering is specified, the order is determined by the matching columns as they appear in the source table.
 
 > [!NOTE]
 > * In ambiguous *ColumnNameOrPattern* matching, the column appears in the first position matching the pattern.

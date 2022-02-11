@@ -13,8 +13,7 @@ zone_pivot_groups: kql-flavors
 ---
 # table() (scope function)
 
-The table() function references a table by providing its name as an expression
-of type `string`.
+The table() function references a table by providing its name as an expression of type `string`.
 
 ```kusto
 table('StormEvent')
@@ -76,8 +75,7 @@ table('StormEvent') | count
 
 ### Use table() inside let statements
 
-The same query as above can be rewritten to use inline function (let statement) that 
-receives a parameter `tableName` - which is passed into the table() function.
+The same query as above can be rewritten to use inline function (let statement) that receives a parameter `tableName` - which is passed into the table() function.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

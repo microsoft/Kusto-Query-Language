@@ -15,20 +15,20 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-The Python plugin runs a user-defined-function (UDF) using a Python script. The Python script gets tabular data as its input, and is expected to produce a tabular output.
+The Python plugin runs a user-defined function (UDF) using a Python script. The Python script gets tabular data as its input, and produces tabular output.
 The plugin's runtime is hosted in [sandboxes](../concepts/sandboxes.md), running on the cluster's nodes.
 
 ## Syntax
 
-*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `python(`*output_schema*`,` *script* [`,` *script_parameters*][`,` *external_artifacts*]`)`
+*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `python(`*output_schema*`,` *script* [`,` *script_parameters*][`,` *external_artifacts*][`,` *spill_to_disk*]`)`
 
 ## Arguments
 
 * *output_schema*: A `type` literal that defines the output schema of the tabular data, returned by the Python code.
     * The format is: `typeof(`*ColumnName*`:` *ColumnType*[, ...]`)`. For example, `typeof(col1:string, col2:long)`.
     * To extend the input schema, use the following syntax: `typeof(*, col1:string, col2:long)`
-* *script*: A `string` literal that is the valid Python script to execute.
-* *script_parameters*: An optional `dynamic` literal. It's a property bag of name/value pairs to be passed to the
+* *script*: A `string` literal that is a valid Python script to execute. To generate multi-line strings see [Usage tips](#usage-tips).
+* *script_arguments*: An optional `dynamic` literal. It's a property bag of name/value pairs to be passed to the
    Python script as the reserved `kargs` dictionary. For more information, see [Reserved Python variables](#reserved-python-variables).
 * *hint.distribution*: An optional hint for the plugin's execution to be distributed across multiple cluster nodes.
   * The default value is `single`.
@@ -37,13 +37,14 @@ The plugin's runtime is hosted in [sandboxes](../concepts/sandboxes.md), running
 * *external_artifacts*: An optional `dynamic` literal that is a property bag of name and URL pairs, for artifacts that are accessible from cloud storage. They can be made available for the script to use at runtime.
   * URLs referenced in this property bag are required to be:
     * Included in the cluster's [callout policy](../management/calloutpolicy.md).
-    * In a publicly available location, or provide the necessary credentials, as explained in [storage connection strings](../api/connection-strings/storage.md).
+    * In a publicly available location, or provide the necessary credentials, as explained in [storage connection strings](../api/connection-strings/storage-connection-strings.md).
   * The artifacts are made available for the script to consume from a local temporary directory, `.\Temp`. The names provided in the property bag are used as the local file names. See [Examples](#examples).
   * For more information, see [Install packages for the Python plugin](#install-packages-for-the-python-plugin). 
+* *spill_to_disk*: An optional `boolean` literal specifying an alternative method for serializing the input table to the Python sandbox. For serializing big tables set it to `true` to speed up the serialization and significantly reduce the sandbox memory consumption. Default is `false` as this parameter is experimental.
 
 ## Reserved Python variables
 
-The following variables are reserved for interaction between Kusto query language and the Python code.
+The following variables are reserved for interaction between Kusto Query Language and the Python code.
 
 * `df`: The input tabular data (the values of `T` above), as a `pandas` DataFrame.
 * `kargs`: The value of the *script_parameters* argument, as a Python dictionary.
@@ -77,44 +78,44 @@ The following variables are reserved for interaction between Kusto query languag
 
 ## Examples
 
-```kusto
+~~~kusto
 range x from 1 to 360 step 1
 | evaluate python(
 //
 typeof(*, fx:double),               //  Output schema: append a new fx column to original table 
-//
-'result = df\n'                     //  The Python decorated script
-'n = df.shape[0]\n'
-'g = kargs["gain"]\n'
-'f = kargs["cycles"]\n'
-'result["fx"] = g * np.sin(df["x"]/n*2*np.pi*f)\n'
-//
+```
+result = df
+n = df.shape[0]
+g = kargs["gain"]
+f = kargs["cycles"]
+result["fx"] = g * np.sin(df["x"]/n*2*np.pi*f)
+```
 , pack('gain', 100, 'cycles', 4)    //  dictionary of parameters
 )
 | render linechart 
-```
+~~~
 
-:::image type="content" source="images/plugin/sine-demo.png" alt-text="sine demo" border="false":::
+:::image type="content" source="images/plugin/sine-demo.png" alt-text="sine demo." border="false":::
 
-```kusto
+~~~kusto
 print "This is an example for using 'external_artifacts'"
 | evaluate python(
-    typeof(File:string, Size:string),
-    "import os\n"
-    "result = pd.DataFrame(columns=['File','Size'])\n"
-    "sizes = []\n"
-    "path = '.\\\\Temp'\n"
-    "files = os.listdir(path)\n"
-    "result['File']=files\n"
-    "for file in files:\n"
-    "    sizes.append(os.path.getsize(path + '\\\\' + file))\n"
-    "result['Size'] = sizes\n"
-    "\n",
+    typeof(File:string, Size:string), ```if 1:
+    import os
+    result = pd.DataFrame(columns=['File','Size'])
+    sizes = []
+    path = '.\\\\Temp'
+    files = os.listdir(path)
+    result['File']=files
+    for file in files:
+        sizes.append(os.path.getsize(path + '\\\\' + file))
+    result['Size'] = sizes
+    ```,
     external_artifacts = 
         dynamic({"this_is_my_first_file":"https://kustoscriptsamples.blob.core.windows.net/samples/R/sample_script.r",
                  "this_is_a_script":"https://kustoscriptsamples.blob.core.windows.net/samples/python/sample_script.py"})
 )
-```
+~~~
 
 | File                  | Size |
 |-----------------------|------|
@@ -130,25 +131,15 @@ print "This is an example for using 'external_artifacts'"
     * You can also use the [partition operator](partitionoperator.md) for partitioning the input data set.
 * Use Kusto's query language whenever possible, to implement the logic of your Python script.
 
-    ### Example
-
-    ```kusto    
-    .show operations
-    | where StartedOn > ago(7d) // Filtering out irrelevant records before invoking the plugin
-    | project d_seconds = Duration / 1s // Projecting only a subset of the necessary columns
-    | evaluate hint.distribution = per_node python( // Using per_node distribution, as the script's logic allows it
-        typeof(*, _2d:double),
-        'result = df\n'
-        'result["_2d"] = 2 * df["d_seconds"]\n' // Negative example: this logic should have been written using Kusto's query language
-      )
-    | summarize avg = avg(_2d)
-    ```
-
 ## Usage tips
 
 * To generate multi-line strings containing the Python script in `Kusto.Explorer`, copy your Python script from your favorite
   Python editor (*Jupyter*, *Visual Studio Code*, *PyCharm*, and so on). 
   Now do one of:
+    * Enclose the full script between lines containing three consecutive backticks, for example:  
+      ` ``` `  
+      ` python code`  
+      ` ``` `
     * Press **F2** to open the *Edit in Python* window. Paste the script into this window. Select **OK**. The script will be
       decorated with quotes and new lines, so it's valid in Kusto, and automatically pasted into the query tab.
     * Paste the Python code directly into the query tab. Select those lines, and press **Ctrl+K**, **Ctrl+S** hot keys, to decorate them as
@@ -206,38 +197,40 @@ download the package and its dependencies.
     pip wheel [-w download-dir] package-name.
     ```
 
-1. Create a zip file, that contains the required package and its dependencies.
+1. Create a zip file that contains the required package and its dependencies.
 
-    * For private packages: zip the folder of the package and the folders of its dependencies.
+    * For private packages, zip the folder of the package and the folders of its dependencies.
     * For public packages, zip the files that were downloaded in the previous step.
     
     > [!NOTE]
+    > * Make sure to download the package that is compatible to the Python engine of the sandbox runtime (currently 3.6.5)
     > * Make sure to zip the `.whl` files themselves, and not their parent folder.
     > * You can skip `.whl` files for packages that already exist with the same version in the base sandbox image.
 
 1. Upload the zipped file to a blob in the artifacts location (from step 1).
 
 1. Call the `python` plugin.
-    * Specify the `external_artifacts` parameter with a property bag of name and reference to the zip file (the blob's URL).
+    * Specify the `external_artifacts` parameter with a property bag of name and reference to the zip file (the blob's URL, including a SAS token).
     * In your inline python code, import `Zipackage` from `sandbox_utils` and call its `install()` method with the name of the zip file.
 
 ### Example
 
 Install the [Faker](https://pypi.org/project/Faker/) package that generates fake data.
 
-```kusto
+~~~kusto
 range ID from 1 to 3 step 1 
 | extend Name=''
-| evaluate python(typeof(*),
-    'from sandbox_utils import Zipackage\n'
-    'Zipackage.install("Faker.zip")\n'
-    'from faker import Faker\n'
-    'fake = Faker()\n'
-    'result = df\n'
-    'for i in range(df.shape[0]):\n'
-    '    result.loc[i, "Name"] = fake.name()\n',
-    external_artifacts=pack('faker.zip', 'https://artifacts.blob.core.windows.net/kusto/Faker.zip?...'))
-```
+| evaluate python(typeof(*), ```if 1:
+    from sandbox_utils import Zipackage
+    Zipackage.install("Faker.zip")
+    from faker import Faker
+    fake = Faker()
+    result = df
+    for i in range(df.shape[0]):
+        result.loc[i, "Name"] = fake.name()
+    ```,
+    external_artifacts=pack('faker.zip', 'https://artifacts.blob.core.windows.net/kusto/Faker.zip?*** REPLACE WITH YOUR SAS TOKEN ***'))
+~~~
 
 | ID | Name         |
 |----|--------------|

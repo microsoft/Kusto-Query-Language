@@ -11,7 +11,7 @@ ms.date: 02/13/2020
 ---
 # next()
 
-Returns the value of a column in a row that it at some offset following the
+Returns the value of a column in a row that is at some offset following the
 current row in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
 ## Syntax

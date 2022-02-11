@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/30/2020
+ms.date: 11/07/2021
 ---
 # percentile(), percentiles() (aggregation function)
 
@@ -18,30 +18,32 @@ The accuracy depends on the density of population in the region of the percentil
 * `percentilesw()` is like `percentilew()`, but calculates a number of weighted percentile values, which is faster than calculating each percentile individually.
 * `percentilew()` and `percentilesw()` let you calculate weighted percentiles. Weighted percentiles calculate the given percentiles in a "weighted" way, by treating each value as if it was repeated `weight` times, in the input.
 
+To add a percentage calculation to your results, see the [percentages example](tutorial.md#percentages). 
+
 ## Syntax
 
-summarize `percentile(`*Expr*`,` *Percentile*`)`
+ `percentile` `(`*Expr*`,` *Percentile*`)`
 
-summarize `percentiles(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
+ `percentiles` `(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
 
-summarize `percentiles_array(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
+ `percentiles_array` `(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
 
-summarize `percentiles_array(`*Expr*`,` *Dynamic array*`)`
+`percentiles_array` `(`*Expr*`,` *Dynamic array*`)`
 
-summarize `percentilew(`*Expr*`,` *WeightExpr*`,` *Percentile*`)`
+`percentilew` `(`*Expr*`,` *WeightExpr*`,` *Percentile*`)`
 
-summarize `percentilesw(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
+ `percentilesw` `(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
 
-summarize `percentilesw_array(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
+ `percentilesw_array` `(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
 
-summarize `percentilesw_array(`*Expr*`,` *WeightExpr*`,` *Dynamic array*`)`
+ `percentilesw_array` `(`*Expr*`,` *WeightExpr*`,` *Dynamic array*`)`
 
 ## Arguments
 
-* `*Expr*`: Expression that will be used for aggregation calculation.
-* `*WeightExpr*`: Expression that will be used as the weight of values for aggregation calculation.
-* `*Percentile*`: A double constant that specifies the percentile.
-* `*Dynamic array*`: list of percentiles in a dynamic array of integer or floating point numbers.
+* *Expr*: Expression that will be used for aggregation calculation.
+* *WeightExpr*: Expression that will be used as the weight of values for aggregation calculation.
+* *Percentile*: A double constant that specifies the percentile.
+* *Dynamic array*: list of percentiles in a dynamic array of integer or floating point numbers.
 
 ## Returns
 
@@ -87,7 +89,7 @@ A customer has a set of latency values in milliseconds:
 To reduce bandwidth and storage, do pre-aggregation to the
 following buckets: `{ 10, 20, 30, 40, 50, 100 }`. Count the number of events in each bucket to produce the following  table:
 
-:::image type="content" source="images/percentiles-aggfunction/percentilesw-table.png" alt-text="Percentilesw table":::
+:::image type="content" source="images/percentiles-aggfunction/percentilesw-table.png" alt-text="Percentilesw table.":::
 
 The table displays:
  * Eight events in the 10-ms bucket (corresponding to subset `{ 1, 1, 2, 2, 2, 5, 7, 7 }`)
@@ -111,13 +113,13 @@ datatable (ReqCount:long, LatencyBucket:long)
 
 The result for the above query is:
 
-:::image type="content" source="images/percentiles-aggfunction/percentilesw-result.png" alt-text="Percentilesw result" border="false":::
+:::image type="content" source="images/percentiles-aggfunction/percentilesw-result.png" alt-text="Percentilesw result." border="false":::
 
 
 The above query corresponds to the function
 `percentiles(LatencyBucket, 50, 75, 99.9)`, if the data was expanded to the following form:
 
-:::image type="content" source="images/percentiles-aggfunction/percentilesw-rawtable.png" alt-text="Percentilesw raw table":::
+:::image type="content" source="images/percentiles-aggfunction/percentilesw-rawtable.png" alt-text="Percentilesw raw table.":::
 
 ## Getting multiple percentiles in an array
 
@@ -128,7 +130,7 @@ CallDetailRecords
 | summarize percentiles_array(Duration, 5, 25, 50, 75, 95), avg(Duration)
 ```
 
-:::image type="content" source="images/percentiles-aggfunction/percentiles-array-result.png" alt-text="Percentiles array result":::
+:::image type="content" source="images/percentiles-aggfunction/percentiles-array-result.png" alt-text="Percentiles array result.":::
 
 Similarly, weighted percentiles can be returned as a dynamic array using `percentilesw_array`.
 

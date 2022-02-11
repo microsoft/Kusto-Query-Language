@@ -57,7 +57,7 @@ union (_sample), (_sample)
 
 To sample a certain percentage of your data (rather than a specified number of rows), you can use
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents | where rand() < 0.1
 ```
@@ -65,7 +65,7 @@ StormEvents | where rand() < 0.1
 To sample keys rather than rows (for example - sample 10 Ids and get all rows for these Ids) you can use [`sample-distinct`](./sampledistinctoperator.md) in combination with the `in` operator.
 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let sampleEpisodes = StormEvents | sample-distinct 10 of EpisodeId;
 StormEvents

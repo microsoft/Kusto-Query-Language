@@ -29,7 +29,7 @@ The distinct count of each value in *Expr*
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | summarize hllRes = hll(DamageProperty) by bin(StartTime,10m)

@@ -17,12 +17,12 @@ Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accu
 
 ## Syntax
 
-`summarize hll(`*`Expr`* `[,` *`Accuracy`*`])`
+`hll` `(`*Expr* [`,` *Accuracy*]`)`
 
 ## Arguments
 
-* *`Expr`*: Expression that will be used for aggregation calculation. 
-* *`Accuracy`*, if specified, controls the balance between speed and accuracy.
+* *Expr*: Expression that will be used for aggregation calculation. 
+* *Accuracy*, if specified, controls the balance between speed and accuracy.
 
   |Accuracy Value |Accuracy  |Speed  |Error  |
   |---------|---------|---------|---------|
@@ -44,7 +44,7 @@ The Intermediate results of distinct count of *`Expr`* across the group.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | summarize hll(DamageProperty) by bin(StartTime,10m)

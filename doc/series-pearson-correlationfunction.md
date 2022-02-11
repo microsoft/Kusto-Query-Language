@@ -29,7 +29,7 @@ The calculated Pearson correlation coefficient between the two inputs. Any non-n
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range s1 from 1 to 5 step 1 | extend s2 = 2*s1 // Perfect correlation
 | summarize s1 = make_list(s1), s2 = make_list(s2)

@@ -11,6 +11,7 @@ ms.date: 05/06/2019
 ---
 # Time Series Analysis 
 
-The Kusto query language offers support in series as a native data type.
-Operator make-series transforms data into a series data type, and a family of functions is provided for advanced processing of this data type. 
+The Kusto query language offers support for series as a native data type.
+The [make-series](make-seriesoperator.md) operator transforms data into a series data type. 
+A family of functions is provided for advanced processing of this data type.
 The functions include data cleaning, machine learning modeling and outlier detection.

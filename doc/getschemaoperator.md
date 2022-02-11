@@ -23,7 +23,7 @@ T | summarize MyCount=count() by Country | getschema
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | top 10 by Timestamp

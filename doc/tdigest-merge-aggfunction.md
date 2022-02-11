@@ -17,9 +17,14 @@ For more information about the underlying algorithm (T-Digest) and the estimated
 
 ## Syntax
 
-summarize `tdigest_merge(`*Expr*`)`.
+`tdigest_merge` `(`*Expr*`)`
 
-summarize `merge_tdigests(`*Expr*`)` - An alias.
+`merge_tdigests` `(`*Expr*`)` 
+
+
+> [!NOTE]
+> `merge-tdigests` is an alias of `tdigest_merge`. 
+
 
 ## Arguments
 
@@ -36,7 +41,7 @@ The merged tdigest values of *Expr* across the group.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | summarize PreAggDamageProperty=tdigest(DamageProperty) by State

@@ -15,7 +15,7 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-The `cosmosdb_sql_request` plugin sends a SQL query to a Cosmos DB SQL network endpoint and returns the results of the query. This plugin is primarily designed for querying small datasets, for example, enriching data with reference data stored in [Azure Cosmos DB](/azure/cosmos-db/).
+The `cosmosdb_sql_request` plugin sends a SQL query to a Cosmos DB SQL network endpoint and returns the results of the query. This plugin is primarily designed for querying small datasets, for example, enriching data with reference data stored in [Azure Cosmos DB](/azure/cosmos-db/). The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
@@ -25,7 +25,7 @@ The `cosmosdb_sql_request` plugin sends a SQL query to a Cosmos DB SQL network e
 
 |Argument name | Description | Required/optional | 
 |---|---|---|
-| *ConnectionString* | A `string` literal indicating the connection string that points to the Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com:443/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'`| Required |
+| *ConnectionString* | A `string` literal indicating the connection string that points to the Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'`| Required |
 | *SqlQuery*| A `string` literal indicating the query to execute. | Required |
 | *SqlParameters* | A constant value of type `dynamic` that holds key-value pairs to pass as parameters along with the query. Parameter names must begin with `@`. | Optional |
 | *Options* | A constant value of type `dynamic` that holds more advanced settings as key-value pairs. | Optional |
@@ -69,7 +69,7 @@ The following example uses the *cosmosdb_sql_request* plugin to send a SQL query
 
 ```kusto
 evaluate cosmosdb_sql_request(
-  'AccountEndpoint=https://cosmosdbacc.documents.azure.com:443/;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;',
+  'AccountEndpoint=https://cosmosdbacc.documents.azure.com/;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;',
   'SELECT * from c')
 ```
 
@@ -79,7 +79,7 @@ The following example uses SQL query parameters and queries the data from an alt
 
 ```kusto
 evaluate cosmosdb_sql_request(
-    'AccountEndpoint=https://cosmosdbacc.documents.azure.com:443/;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;',
+    'AccountEndpoint=https://cosmosdbacc.documents.azure.com/;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;',
     "SELECT c.id, c.lastName, @param0 as Column0 FROM c WHERE c.dob >= '1970-01-01T00:00:00Z'",
     dynamic({'@param0': datetime(2019-04-16 16:47:26.7423305)}),
     dynamic({'preferredLocations': ['East US']}))

@@ -17,7 +17,7 @@ Accumulates values using the binary `AND` operation per summarization group (or 
 
 ## Syntax
 
-summarize `binary_all_and(`*Expr*`)`
+`binary_all_and` `(`*Expr*`)`
 
 ## Arguments
 

@@ -38,7 +38,7 @@ Returns the result of the evaluated expression.
 
 The following example shows how to use `invoke` operator to call lambda expression:
 
-<!-- csl: https://help.kusto.windows.net:443/KustoMonitoringPersistentDatabase -->
+<!-- csl: https://help.kusto.windows.net/KustoMonitoringPersistentDatabase -->
 ```kusto
 // clipped_average(): calculates percentiles limits, and then makes another 
 //                    pass over the data to calculate average with values inside the percentiles

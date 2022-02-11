@@ -31,7 +31,7 @@ The result for merging the columns `*Expr1*`, `*Expr2*`, ... `*ExprN*` to one `t
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 10 step 1 
 | extend y = x + 10

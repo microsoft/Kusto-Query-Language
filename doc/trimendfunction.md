@@ -15,16 +15,16 @@ Removes trailing match of the specified regular expression.
 
 ## Syntax
 
-`trim_end(`*regex*`,` *text*`)`
+`trim_end(`*regex*`,` *source*`)`
 
 ## Arguments
 
-* *regex*: String or [regular expression](re2.md) to be trimmed from the end of *text*.  
-* *text*: A string.
+* *regex*: String or [regular expression](re2.md) to be trimmed from the end of *source*.  
+* *source*: A string.
 
 ## Returns
 
-*text* after trimming matches of *regex* found in the end of *text*.
+*source* after trimming matches of *regex* found in the end of *source*.
 
 ## Example
 

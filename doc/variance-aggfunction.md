@@ -15,13 +15,13 @@ Calculates the variance of *Expr* across the group, considering the group as a [
 
 * Used formula:
 
-:::image type="content" source="images/variance-aggfunction/variance-sample.png" alt-text="Variance sample":::
+:::image type="content" source="images/variance-aggfunction/variance-sample.png" alt-text="Variance sample.":::
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
 ## Syntax
 
-summarize `variance(`*Expr*`)`
+ `variance` `(`*Expr*`)`
 
 ## Arguments
 

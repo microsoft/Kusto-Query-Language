@@ -8,7 +8,6 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/21/2020
-ms.localizationpriority: high
 ---
 # count() (aggregation function)
 
@@ -20,7 +19,7 @@ Returns a count of the records per summarization group (or in total, if summariz
 
 ## Syntax
 
-summarize `count()`
+`count` `(` `)`
 
 ## Returns
 

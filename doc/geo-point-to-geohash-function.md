@@ -61,13 +61,15 @@ The geohash string value of a given geographic location with requested accuracy 
 | 17       | 4.55 μ    | 4.55 μ    |
 | 18       | 1.14 μ    | 0.57 μ    |
 
-See also [geo_point_to_s2cell()](geo-point-to-s2cell-function.md).
+See also [geo_point_to_s2cell()](geo-point-to-s2cell-function.md), [geo_point_to_h3cell()](geo-point-to-h3cell-function.md).
+
+For comparison with other available grid systems, see [geospatial clustering with Kusto Query Language](geospatial-grid-systems.md).
 
 ## Examples
 
 US storm events aggregated by geohash.
 
-:::image type="content" source="images/geo-point-to-geohash-function/geohash.png" alt-text="US geohash":::
+:::image type="content" source="images/geo-point-to-geohash-function/geohash.png" alt-text="US geohash.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

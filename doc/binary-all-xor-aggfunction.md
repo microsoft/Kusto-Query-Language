@@ -17,7 +17,7 @@ Accumulates values using the binary `XOR` operation per summarization group (or 
 
 ## Syntax
 
-summarize `binary_all_xor(`*Expr*`)`
+`binary_all_xor` `(`*Expr*`)`
 
 ## Arguments
 

@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/30/2020
+ms.date: 02/03/2022
 ms.localizationpriority: high 
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
@@ -43,26 +43,29 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
     > [!NOTE]
     > For 'equality by value', the column names *must* be qualified with the applicable owner table denoted by `$left` and `$right` notations.
 
-* *JoinParameters*: Zero or more space-separated parameters in the form of
-  *Name* `=` *Value* that control the behavior of the row-match operation and execution plan. The following parameters are supported:
+* *JoinParameters*: Zero or more space-separated parameters in the form of *Name* `=` *Value* that control the behavior of the row-match operation and execution plan. The following parameters are supported:
 
     ::: zone pivot="azuredataexplorer"
 
-    |Parameters name           |Values                                        |Description                                  |
-    |---------------|----------------------------------------------|---------------------------------------------|
-    |`kind`         |Join flavors|See [Join Flavors](#join-flavors)|
-    |`hint.remote`  |`auto`, `left`, `local`, `right`              |See [Cross-Cluster Join](joincrosscluster.md)|
-    |`hint.strategy`|Execution hints                               |See [Join hints](#join-hints)                |
+    |Parameters name |Values |Description  |
+    |---|---|---|
+    |`kind`|Join flavors|See [Join Flavors](#join-flavors)|
+    |`hint.remote`  |`auto`, `left`, `local`, `right` |See [Cross-Cluster Join](joincrosscluster.md)|
+    |`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
+    |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
+    |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
 
     ::: zone-end
 
     ::: zone pivot="azuremonitor"
 
-    |Name           |Values                                        |Description                                  |
-    |---------------|----------------------------------------------|---------------------------------------------|
+    |Name |Values |Description |
+    |---|---|---|
     |`kind`         |Join flavors|See [Join Flavors](#join-flavors)|
-    |`hint.remote`  |`auto`, `left`, `local`, `right`              |                                             |
-    |`hint.strategy`|Execution hints                               |See [Join hints](#join-hints)                |
+    |`hint.remote`  |`auto`, `left`, `local`, `right`   | |
+    |`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
+    |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
+    |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
 
     ::: zone-end
 
@@ -78,24 +81,29 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 |`kind=leftanti`, `kind=leftsemi`| The result table contains columns from the left side only.|
 | `kind=rightanti`, `kind=rightsemi` | The result table contains columns from the right side only.|
 |  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter` |  A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes. |
-   
+|  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter` |  A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes. |
+
 **Output records depend on the join flavor:**
 
    > [!NOTE]
+   >
    > If there are several rows with the same values for those fields, you'll get rows for all the combinations.
    > A match is a row selected from one table that has the same value for all the `on` fields as a row in the other table.
 
 | Join flavor | Output records |
 |---|---|
-|`kind=leftanti`, `kind=leftantisemi`| Returns all the records from the left side that don't have matches from the right|
+| `kind=leftanti`, `kind=leftantisemi`| Returns all the records from the left side that don't have matches from the right|
 | `kind=rightanti`, `kind=rightantisemi`| Returns all the records from the right side that don't have matches from the left.|
 | `kind` unspecified, `kind=innerunique`| Only one row from the left side is matched for each value of the `on` key. The output contains a row for each match of this row with rows from the right.|
 | `kind=leftsemi`| Returns all the records from the left side that have matches from the right. |
 | `kind=rightsemi`| Returns all the records from the right side that have matches from the left. |
-|`kind=inner`| Contains a row in the output for every combination of matching rows from left and right. |
-| `kind=leftouter` (or `kind=rightouter` or `kind=fullouter`)| Contains a row for every row on the left and right, even if it has no match. The unmatched output cells contain nulls. |
+| `kind=inner`| Contains a row in the output for every combination of matching rows from left and right. |
+| `kind=fullouter`| Returns all the records for all the rows on the left and right. Unmatched cells contain nulls. |
+| `kind=leftouter`| Returns all the records from the left side and only matching records from the right side. |
+| `kind=rightouter`| Returns all the records from the right side and only matching records from the left side. |
 
 > [!TIP]
+>
 > For best performance, if one table is always smaller than the other, use it as the left (piped) side of the join.
 
 ## Example
@@ -146,7 +154,7 @@ The exact flavor of the join operator is specified with the *kind* keyword. The 
 
 The default join flavor is an inner join with left side deduplication. Default join implementation is useful in typical log/trace analysis scenarios where you want to correlate two events, each matching some filtering criterion, under the same correlation ID. You want to get back all appearances of the phenomenon, and ignore multiple appearances of the contributing trace records.
 
-``` 
+```kusto
 X | join Y on Key
  
 X | join kind=innerunique Y on Key
@@ -352,11 +360,11 @@ X | join kind=leftouter Y on Key
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
-|b|3|b|10|
+|a|1|||
 |b|2|b|10|
+|b|3|b|10|
 |c|4|c|20|
 |c|4|c|30|
-|a|1|||
 
 ### Right outer-join flavor
 
@@ -382,8 +390,8 @@ X | join kind=rightouter Y on Key
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
-|b|3|b|10|
 |b|2|b|10|
+|b|3|b|10|
 |c|4|c|20|
 |c|4|c|30|
 |||d|40|
@@ -412,12 +420,12 @@ X | join kind=fullouter Y on Key
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
-|b|3|b|10|
+|a|1|||
 |b|2|b|10|
+|b|3|b|10|
 |c|4|c|20|
 |c|4|c|30|
 |||d|40|
-|a|1|||
 
 ### Left anti-join flavor
 
@@ -501,8 +509,8 @@ X | join kind=leftsemi Y on Key
 
 |Key|Value1|
 |---|---|
-|b|3|
 |b|2|
+|b|3|
 |c|4|
 
 ### Right semi-join flavor

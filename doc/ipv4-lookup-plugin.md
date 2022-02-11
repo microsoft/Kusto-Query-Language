@@ -7,11 +7,11 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 11/22/2020
+ms.date: 01/24/2022
 ---
 # ipv4_lookup plugin
 
-The `ipv4_lookup` plugin looks up an IPv4 value in a lookup table and returns rows with matched values.
+The `ipv4_lookup` plugin looks up an IPv4 value in a lookup table and returns rows with matched values. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ```kusto
 T | evaluate ipv4_lookup(LookupTable, SourceIPv4Key, IPv4LookupKey)

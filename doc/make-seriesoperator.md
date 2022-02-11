@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/16/2020
+ms.date: 12/30/2021
 ms.localizationpriority: high
 ---
 # make-series operator
@@ -20,7 +20,7 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
 
 ## Syntax
 
-*T* `| make-series` [*MakeSeriesParamters*]
+*T* `| make-series` [*MakeSeriesParameters*]
       [*Column* `=`] *Aggregation* [`default` `=` *DefaultValue*] [`,` ...]
     `on` *AxisColumn* [`from` *start*] [`to` *end*] `step` *step* 
     [`by`
@@ -31,31 +31,23 @@ T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from da
 * *Column:* Optional name for a result column. Defaults to a name derived from the expression.
 * *DefaultValue:* Default value that will be used instead of absent values. If there is no row with specific values of *AxisColumn* and *GroupExpression*, then in the results the corresponding element of the array will be assigned a *DefaultValue*. If *DefaultValue* is omitted, then 0 is assumed. 
 * *Aggregation:* A call to an [aggregation function](make-seriesoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](make-seriesoperator.md#list-of-aggregation-functions). Only aggregation functions that return numeric results can be used with the `make-series` operator.
-* *AxisColumn:* A column on which the series will be ordered. It could be considered as timeline, but besides `datetime` any numeric types are accepted.
+* AxisColumn: A column on which the series will be ordered, usually of type `datetime` or `timespan`, but all numeric types are also accepted.
 * *start*: (optional) The low bound value of the *AxisColumn* for each of the series to be built. *start*, *end*, and *step* are used to build an array of *AxisColumn* values within a given range and using specified *step*. All *Aggregation* values are ordered respectively to this array. This *AxisColumn* array is also the last output column in the output that has the same name as *AxisColumn*. If a *start* value is not specified, the start is the first bin (step) which has data in each series.
 * *end*: (optional) The high bound (non-inclusive) value of the *AxisColumn*. The last index of the time series is smaller than this value (and will be *start* plus integer multiple of *step* that is smaller than *end*). If *end* value is not provided, it will be the upper bound of the last bin (step) which has data per each series.
-* *step*: The difference between two consecutive elements of the *AxisColumn* array (that is, the bin size).
+* *step*: The difference between two consecutive elements of the *AxisColumn* array (that is, the bin size). For a list of possible time intervals, see [timespan](./scalar-data-types/timespan.md). 
 * *GroupExpression:* An expression over the columns that provides a set of distinct values. Typically it's a column name that already provides a restricted set of values. 
-* *MakeSeriesParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value* 
+* *MakeSeriesParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value*
 	that control the behavior. The following parameters are supported: 
   
-  |Name           |Values                                        |Description                                                                                        |
-  |---------------|-------------------------------------|------------------------------------------------------------------------------|
-  |`kind`          |`nonempty`								 |Produces default result when the input of make-series operator is empty|                                
+  |Name  |Description  |
+  |---|---|
+  |`kind` |Produces default result when the input of make-series operator is empty. Value: `nonempty`|  
+  |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |
+  |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. See [shuffle query](shufflequery.md) |
 
-## Returns
-
-The input rows are arranged into groups having the same values of the `by` expressions and the `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` expression. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns, *AxisColumn* column and also at least one column for each computed aggregate. (Aggregation that multiple columns or non-numeric results are not supported.)
-
-This intermediate result has as many rows as there are distinct combinations of `by` and `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` values.
-
-Finally the rows from the intermediate result arranged into groups having the same values of the `by` expressions and all aggregated values are arranged into arrays (values of `dynamic` type). For each aggregation, there is one column containing its array with the same name. The last column in the output of the range function with all *AxisColumn* values. Its value is repeated for all rows. 
-
-Due to the fill missing bins by default value, the resulting pivot table has the same number of bins (that is, aggregated values) for all series  
-
-**Note**
-
-Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names.
+> [!NOTE]
+>
+> The arrays generated by make-series are limited to 1048576 values (2^20). Trying to generate a larger array with make-series would result in either an error or a truncated array.
 
 **Alternate Syntax**
 
@@ -66,20 +58,28 @@ Although you can provide arbitrary expressions for both the aggregation and grou
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
 The generated series from the alternate syntax differs from the main syntax in two aspects:
+
 * The *stop* value is inclusive.
 * Binning the index axis is generated with bin() and not bin_at(), which means that *start* may not be included in the generated series.
 
 It is recommended to use the main syntax of make-series and not the alternate syntax.
 
-**Distribution and Shuffle**
+## Returns
 
-`make-series` supports `summarize` [shufflekey hints](shufflequery.md) using the syntax hint.shufflekey.
+The input rows are arranged into groups having the same values of the `by` expressions and the `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` expression. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns, *AxisColumn* column and also at least one column for each computed aggregate. (Aggregations over multiple columns or non-numeric results are not supported.)
+
+This intermediate result has as many rows as there are distinct combinations of `by` and `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` values.
+
+Finally the rows from the intermediate result arranged into groups having the same values of the `by` expressions and all aggregated values are arranged into arrays (values of `dynamic` type). For each aggregation, there is one column containing its array with the same name. The last column is an array containing the values of *AxisColumn* binned according to the specified *step*.
+
+> [!NOTE]
+>
+> Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names.
 
 ## List of aggregation functions
 
 |Function|Description|
 |--------|-----------|
-|[any()](any-aggfunction.md)|Returns a random non-empty value for the group|
 |[avg()](avg-aggfunction.md)|Returns an average value across the group|
 |[avgif()](avgif-aggfunction.md)|Returns an average with the predicate of the group|
 |[count()](count-aggfunction.md)|Returns a count of the group|
@@ -91,6 +91,7 @@ It is recommended to use the main syntax of make-series and not the alternate sy
 |[min()](min-aggfunction.md)|Returns the minimum value across the group|
 |[minif()](minif-aggfunction.md)|Returns the minimum value with the predicate of the group|
 |[percentile()](percentiles-aggfunction.md)|Returns the percentile value across the group|
+|[take_any()](take-any-aggfunction.md)|Returns a random non-empty value for the group|
 |[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
 |[sum()](sum-aggfunction.md)|Returns the sum of the elements within the group|
 |[sumif()](sumif-aggfunction.md)|Returns the sum of the elements with the predicate of the group|
@@ -125,7 +126,7 @@ For a complete list of series analysis functions see: [Series processing functio
 
 * Note: Interpolation functions by default assume `null` as a missing value. Therefore specify `default=`*double*(`null`) in `make-series` if you intend to use interpolation functions for the series. 
 
-## Example
+## Examples
   
  A table that shows arrays of the numbers and average prices of each fruit from each supplier ordered by the timestamp with specified range. There's a row in the output for each distinct combination of fruit and supplier. The output columns show the fruit, supplier, and arrays of: count, average, and the whole timeline (from 2016-01-01 until 2016-01-10). All arrays are sorted by the respective timestamp and all gaps are filled with default values (0 in this example). All other input columns are ignored.
   
@@ -136,7 +137,7 @@ on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplie
 
 :::image type="content" source="images/make-seriesoperator/makeseries.png" alt-text="Three tables. The first lists raw data, the second has only distinct supplier-fruit-date combinations, and the third contains the make-series results.":::  
 
-<!-- csl: https://help.kusto.windows.net:443/Samples --> 
+<!-- csl: https://help.kusto.windows.net/Samples --> 
 ```kusto
 let data=datatable(timestamp:datetime, metric: real)
 [
@@ -200,7 +201,6 @@ data
 |Count|
 |---|
 |0|
-
 
 Using `kind=nonempty` in `make-series` will produce a non-empty result of the default values:
 

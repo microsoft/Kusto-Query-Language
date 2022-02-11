@@ -7,16 +7,14 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/24/2022
 ---
 # diff patterns plugin
 
-Compares two data sets of the same structure and finds patterns of discrete attributes (dimensions) that characterize differences between the two data sets.
- `Diffpatterns` was developed to help analyze failures (for example, by comparing failures to non-failures in a given time frame), but can potentially find differences between any two data sets of the same structure. 
+Compares two data sets of the same structure and finds patterns of discrete attributes (dimensions) that characterize differences between the two data sets. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
-```kusto
-T | evaluate diffpatterns(splitColumn)
-```
+`Diffpatterns` was developed to help analyze failures (for example, by comparing failures to non-failures in a given time frame), but can potentially find differences between any two data sets of the same structure. 
+
 > [!NOTE]
 > `diffpatterns` aims to find significant patterns (that capture portions of the data difference between the sets) and isn't meant for row-by-row differences.
 
@@ -103,7 +101,7 @@ For each pattern, columns that are not set in the pattern (that is, without rest
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents 
 | where monthofyear(StartTime) == 5

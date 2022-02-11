@@ -17,7 +17,7 @@ Returns the minimum value across the group.
 
 ## Syntax
 
-`summarize` `min(`*Expr*`)`
+`min` `(`*Expr*`)`
 
 ## Arguments
 

@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/20/2019
+ms.date: 08/09/2021
 ---
 # series_iir()
 
@@ -26,9 +26,9 @@ The function takes as input the column containing the dynamic array and two stat
 
 ## Arguments
 
-* *x*: Dynamic array cell that is an array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
-* *b*: A constant expression containing the numerator coefficients of the filter (stored as a dynamic array of numeric values).
-* *a*: A constant expression, like *b*. Containing the denominator coefficients of the filter.
+* *x*: Dynamic array of numeric values, typically the resulting output of [make-series](make-seriesoperator.md) or [make_list](makelist-aggfunction.md) operators.
+* *b*: Dynamic array of numeric values, containing the numerator coefficients of the filter.
+* *a*: Dynamic array of numeric values, containing the denominator coefficients of the filter.
 
 > [!IMPORTANT]
 > The first element of `a` (that is, `a[0]`) mustn't be zero, to avoid division by 0. See the [formula below](#the-filters-recursive-formula).
@@ -48,7 +48,7 @@ Y<sub>i</sub> = a<sub>0</sub><sup>-1</sup>(b<sub>0</sub>X<sub>i</sub>
 Calculate a cumulative sum. 
 Use the iir filter with coefficients *a*=[1,-1] and *b*=[1]:  
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let x = range(1.0, 10, 1);
 print x=x, y = series_iir(x, dynamic([1]), dynamic([1,-1]))
@@ -64,7 +64,7 @@ print x=x, y = series_iir(x, dynamic([1]), dynamic([1,-1]))
 
 Here's how to wrap it in a function:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let vector_sum=(x:dynamic)
 {

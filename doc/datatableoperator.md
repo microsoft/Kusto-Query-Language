@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/23/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -50,10 +50,19 @@ This operator returns a data table of the given schema and data.
 ## Example
 
 ```kusto
-datatable (Date:datetime, Event:string)
-    [datetime(1910-06-11), "Born",
-     datetime(1930-01-01), "Enters Ecole Navale",
-     datetime(1953-01-01), "Published first book",
-     datetime(1997-06-25), "Died"]
+datatable(Date:datetime, Event:string, MoreData:dynamic) [
+    datetime(1910-06-11), "Born", dynamic({"key1":"value1", "key2":"value2"}),
+    datetime(1930-01-01), "Enters Ecole Navale", dynamic({"key1":"value3", "key2":"value4"}),
+    datetime(1953-01-01), "Published first book", dynamic({"key1":"value5", "key2":"value6"}),
+    datetime(1997-06-25), "Died", dynamic({"key1":"value7", "key2":"value8"}),
+]
 | where strlen(Event) > 4
+| extend key2 = MoreData.key2
 ```
+
+Result:
+
+|Date|Event|MoreData|key2|
+|---|---|---|---|
+|1930-01-01 00:00:00.0000000|Enters Ecole Navale|{<br>  "key1": "value3",<br>  "key2": "value4"<br>}|value4|
+|1953-01-01 00:00:00.0000000|Published first book|{<br>  "key1": "value5",<br>  "key2": "value6"<br>}|value6|

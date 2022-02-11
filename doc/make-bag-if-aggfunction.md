@@ -18,7 +18,7 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr
 
 ## Syntax
 
-`summarize` `make_bag_if(`*Expr*, *Predicate* [`,` *MaxSize*]`)`
+`make_bag_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
 
 ## Arguments
 

@@ -19,7 +19,7 @@ The language syntax is that of a data flow, where "data" means "tabular data" (d
 
 For example:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents 
 | where State == 'FLORIDA' and StartTime > datetime(2000-01-01)

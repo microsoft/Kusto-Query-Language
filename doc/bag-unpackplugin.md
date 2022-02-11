@@ -7,15 +7,11 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 06/15/2020
+ms.date: 01/23/2022
 ---
 # bag_unpack plugin
 
-The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating each property bag top-level slot as a column.
-
-```kusto
-T | evaluate bag_unpack(col1)
-```
+The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating each property bag top-level slot as a column. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
@@ -61,7 +57,6 @@ The `bag_unpack` plugin returns a table with as many records as its tabular inpu
 
 ### Expand a bag
 
-
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 datatable(d:dynamic)
@@ -73,12 +68,13 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d)
 ```
 
-|Name  |Age|
-|------|---|
-|John  |20 |
-|Dave  |40 |
-|Jasmine|30 |
+**Output**
 
+|Age|Name   |
+|---|-------|
+|20 |John   |
+|40 |Dave   |
+|30 |Jasmine|
 
 ### Expand a bag with OutputColumnPrefix
 
@@ -95,11 +91,13 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d, 'Property_')
 ```
 
-|Property_Name|Property_Age|
-|---|---|
-|John|20|
-|Dave|40|
-|Jasmine|30|
+**Output**
+
+|Property_Age|Property_Name|
+|------------|-------------|
+|20          |John         |
+|40          |Dave         |
+|30          |Jasmine      |
 
 ### Expand a bag with columnsConflict
 
@@ -116,11 +114,13 @@ datatable(Name:string, d:dynamic)
 | evaluate bag_unpack(d, columnsConflict='replace_source') // Use new name
 ```
 
-|Name|Age|
-|---|---|
-|John|20|
-|Dave|40|
-|Jasmine|30|
+**Output**
+
+|Age|Name   |
+|---|-------|
+|20 |John   |
+|40 |Dave   |
+|30 |Jasmine|
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -133,11 +133,13 @@ datatable(Name:string, d:dynamic)
 | evaluate bag_unpack(d, columnsConflict='keep_source') // Keep old name
 ```
 
-|Name|Age|
-|---|---|
-|Old_name|20|
-|Old_name|40|
-|Old_name|30|
+**Output**
+
+|Age|Name     |
+|---|---------|
+|20 |Old_name |
+|40 |Old_name |
+|30 |Old_name |
 
 ### Expand a bag with ignoredProperties
 
@@ -154,6 +156,8 @@ datatable(d:dynamic)
 // Ignore 'Age' and 'Address' properties
 | evaluate bag_unpack(d, ignoredProperties=dynamic(['Address', 'Age']))
 ```
+
+**Output**
 
 |Name|
 |---|

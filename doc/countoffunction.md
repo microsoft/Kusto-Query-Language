@@ -20,12 +20,12 @@ countof("The cat sat on the mat", @"\b.at\b", "regex") == 3
 
 ## Syntax
 
-`countof(`*text*`,` *search* [`,` *kind*]`)`
+`countof(`*source*`,` *search* [`,` *kind*]`)`
 
 ## Arguments
 
-* *text*: A string.
-* *search*: The plain string or [regular expression](./re2.md) to match inside *text*.
+* *source*: A string.
+* *search*: The plain string or [regular expression](./re2.md) to match inside *source*.
 * *kind*: `"normal"|"regex"` Default `normal`. 
 
 ## Returns

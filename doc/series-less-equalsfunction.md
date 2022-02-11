@@ -27,7 +27,7 @@ Dynamic array of booleans containing the calculated element-wise less or equal l
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print s1 = dynamic([1,2,4]), s2 = dynamic([4,2,1])
 | extend s1_less_equals_s2 = series_less_equals(s1, s2)

@@ -48,6 +48,9 @@ database, which are query fragments made available for reuse.
 * [Stored functions](./stored-functions.md) are named entities that
   allow reuse of Kusto queries or query parts.
 
+* [Views](./views.md) are virtual tables based on functions
+  (stored or defined in an ad-hoc fashion).
+
 * [External tables](./externaltables.md) are entities that reference data stored outside Kusto database.
   External tables are used for exporting data from Kusto to external storage as well as for querying
   external data without ingesting it into Kusto.

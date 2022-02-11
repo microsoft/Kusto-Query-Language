@@ -17,7 +17,7 @@ Accumulates values using the binary `OR` operation per summarization group (or i
 
 ## Syntax
 
-summarize `binary_all_or(`*Expr*`)`
+`binary_all_or` `(`*Expr*`)`
 
 ## Arguments
 

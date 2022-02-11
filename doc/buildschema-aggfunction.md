@@ -17,7 +17,7 @@ Returns the minimal schema that admits all values of *DynamicExpr*.
 
 ## Syntax
 
-summarize `buildschema(`*DynamicExpr*`)`
+`buildschema` `(`*DynamicExpr*`)`
 
 ## Arguments
 

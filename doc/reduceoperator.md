@@ -57,7 +57,7 @@ For example, the result of `reduce by city` might include:
 
 Another example with customized tokenization:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 1000 step 1
 | project MyText = strcat("MachineLearningX", tostring(toint(rand(10))))

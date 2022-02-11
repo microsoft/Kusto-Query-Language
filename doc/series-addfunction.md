@@ -27,7 +27,7 @@ Dynamic array of calculated element-wise add operation between the two inputs. A
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

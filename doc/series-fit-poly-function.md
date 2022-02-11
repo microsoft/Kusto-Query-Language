@@ -47,7 +47,7 @@ The `series_fit_poly()` function returns the following columns:
 
 A fifth order polynomial with noise on x & y axes:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 200 step 1
 | project x = rand()*5 - 2.3
@@ -60,15 +60,15 @@ range x from 1 to 200 step 1
 | render linechart 
 ```
 
-:::image type="content" source="images/series-fit-poly-function/fifth-order-noise-1.png" alt-text="Graph showing fifth order polynomial fit to a series with noise":::
+:::image type="content" source="images/series-fit-poly-function/fifth-order-noise-1.png" alt-text="Graph showing fifth order polynomial fit to a series with noise.":::
 
-:::image type="content" source="images/series-fit-poly-function/fifth-order-noise-table-1.png" alt-text="Coefficients of fifth order polynomial fit to  a series with noise" border="false":::
+:::image type="content" source="images/series-fit-poly-function/fifth-order-noise-table-1.png" alt-text="Coefficients of fifth order polynomial fit to  a series with noise." border="false":::
 
 ### Example 2
 
 Verify that `series_fit_poly` with degree=1 matches `series_fit_line`:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 demo_series1
 | extend series_fit_line(y)
@@ -78,15 +78,15 @@ demo_series1
 | render linechart with(xcolumn=x, ycolumns=y, y_line, y_poly)
 ```
 
-:::image type="content" source="images/series-fit-poly-function/fit-poly-line.png" alt-text="Graph showing linear regression":::
+:::image type="content" source="images/series-fit-poly-function/fit-poly-line.png" alt-text="Graph showing linear regression.":::
 
-:::image type="content" source="images/series-fit-poly-function/fit-poly-line-table.png" alt-text="Coefficients of linear regression" border="false":::
+:::image type="content" source="images/series-fit-poly-function/fit-poly-line-table.png" alt-text="Coefficients of linear regression." border="false":::
     
 ### Example 3
 
 Irregular (unevenly spaced) time series:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 //
 //  x-axis must be normalized to the range [0-1] if either degree is relatively big (>= 5) or original x range is big.
@@ -101,4 +101,4 @@ irregular_ts
 | project-rename fnum=series_fit_poly_num_poly_fit
 | render timechart with(ycolumns=num, fnum)
 ```
-:::image type="content" source="images/series-fit-poly-function/irregular-time-series-1.png" alt-text="Graph showing eighth order polynomial fit to an irregular time series":::
+:::image type="content" source="images/series-fit-poly-function/irregular-time-series-1.png" alt-text="Graph showing eighth order polynomial fit to an irregular time series.":::

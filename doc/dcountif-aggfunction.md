@@ -19,7 +19,7 @@ Read about the [estimation accuracy](dcount-aggfunction.md#estimation-accuracy).
 
 ## Syntax
 
-summarize `dcountif(`*Expr*, *Predicate*, [`,` *Accuracy*]`)`
+`dcountif` `(`*Expr*, *Predicate*, [`,` *Accuracy*]`)`
 
 ## Arguments
 

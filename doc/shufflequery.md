@@ -7,144 +7,201 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 10/07/2021
 ---
-# Shuffle query
+# shuffle query
 
-Shuffle query is a semantic-preserving transformation for a set of operators that support shuffle strategy. Depending on the actual data, this query can yield considerably better performance.
+The `shuffle` query is a semantic-preserving transformation used with a set of operators that support the `shuffle` strategy. Depending on the data involved, querying with the `shuffle` strategy can yield better performance. It is better to use the shuffle query strategy when the `shuffle` key (a `join` key, `summarize` key, `make-series` key or `partition` key) has a high cardinality and the regular operator query hits query limits.
 
-Operators that support shuffling in Kusto are [join](joinoperator.md), [summarize](summarizeoperator.md), and [make-series](make-seriesoperator.md).
+You can use the following operators with the shuffle command:
+* [join](joinoperator.md)
+* [summarize](summarizeoperator.md)
+* [make-series](make-seriesoperator.md) 
+* [partition](partitionoperator.md)
 
-Set shuffle query strategy using the query parameter `hint.strategy = shuffle` or `hint.shufflekey = <key>`.
+To use the `shuffle` query strategy, add the expression `hint.strategy = shuffle` or `hint.shufflekey = <key>`. When you use `hint.strategy=shuffle`, the operator data will be shuffled by all the keys. Use this expression when the compound key is unique but each key is not unique enough, so you will shuffle the data using all the keys of the shuffled operator.
+
+When partitioning data with the shuffle strategy, the data load is shared on all cluster nodes. Each node  processes one partition of the data. The default number of partitions is equal to the number of cluster nodes. 
+
+The partition number can be overridden by using the syntax `hint.num_partitions = total_partitions`, which will control the number of partitions. This is useful when the cluster has a small number of cluster nodes and the default partitions number will be small, and the query fails or takes a long execution time.
+
+> [!Note]
+> Using many partitions may consume more cluster resources and degrade performance. Choose the partition number carefully by starting with the `hint.strategy = shuffle` and start increasing the partitions gradually.
+
+In some cases, the `hint.strategy = shuffle` will be ignored, and the query will not run in `shuffle` strategy. This can happen when:
+
+* The `join` operator has another `shuffle`-compatible operator (`join`, `summarize`, `make-series` or `partition`) on the left side or the right side.
+* The `summarize` operator appears after another `shuffle`-compatible operator (`join`, `summarize`, `make-series` or `partition`) in the query.
 
 ## Syntax
 
-```kusto
-T | where Event=="Start" | project ActivityId, Started=Timestamp
-| join hint.strategy = shuffle (T | where Event=="End" | project ActivityId, Ended=Timestamp)
-  on ActivityId
-| extend Duration=Ended - Started
-| summarize avg(Duration)
-```
+### With `hint.strategy` = `shuffle`
 
-```kusto
-T
-| summarize hint.strategy = shuffle count(), avg(price) by supplier
-```
+*T* `|` *DataExpression* `|` `join`  `hint.strategy` = `shuffle` `(` *DataExpression* `)`
 
-```kusto
-T
-| make-series hint.shufflekey = Fruit PriceAvg=avg(Price) default=0  on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplier, Fruit
-```
+*T* `|` `summarize` `hint.strategy` = `shuffle` *DataExpression* 
 
-This strategy will share the load on all cluster nodes, where each node will process one partition of the data.
-It is useful to use the shuffle query strategy when the key (`join` key, `summarize` key, or `make-series` key) has a high cardinality and the regular query strategy hits query limits.
+*T* `|` *Query* `|` partition `hint.strategy` = `shuffle`  `(` *SubQuery* `)`
 
-**Difference between hint.strategy=shuffle and hint.shufflekey = key**
+### With `hint.shufflekey` = *key*
 
-`hint.strategy=shuffle` means that the shuffled operator will be shuffled by all the keys.
-For example, in this query:
+*T* `|` *DataExpression* `|` `join`  `hint.shufflekey` = *key* `(` *DataExpression* `)`
 
-```kusto
-T | where Event=="Start" | project ActivityId, Started=Timestamp
-| join hint.strategy = shuffle (T | where Event=="End" | project ActivityId, Ended=Timestamp)
-  on ActivityId, ProcessId
-| extend Duration=Ended - Started
-| summarize avg(Duration)
-```
+*T* `|` `summarize` `hint.shufflekey` = *key* *DataExpression* 
 
-The hash function that shuffles the data will use both keys ActivityId and ProcessId.
+*T* `|` `make-series` `hint.shufflekey` = *key* *DataExpression* 
 
-The query above is equivalent to:
+*T* `|` *Query* `|` partition  `hint.shufflekey` = *key* `(` *SubQuery* `)`
 
-```kusto
-T | where Event=="Start" | project ActivityId, Started=Timestamp
-| join hint.shufflekey = ActivityId hint.shufflekey = ProcessId (T | where Event=="End" | project ActivityId, Ended=Timestamp)
-  on ActivityId, ProcessId
-| extend Duration=Ended - Started
-| summarize avg(Duration)
-```
+## Arguments
 
-If the compound key is too unique, but each key is not unique enough, use this `hint` to shuffle the data by all the keys of the shuffled operator.
-When the shuffled operator has other shuffle-able operators, like `summarize` or `join`, the query becomes more complex and then hint.strategy=shuffle won't be applied.
-
-for example:
-
-```kusto
-T
-| where Event=="Start"
-| project ActivityId, Started=Timestamp, numeric_column
-| summarize count(), numeric_column = any(numeric_column) by ActivityId
-| join
-    hint.strategy = shuffle (T
-    | where Event=="End"
-    | project ActivityId, Ended=Timestamp, numeric_column
-)
-on ActivityId, numeric_column
-| extend Duration=Ended - Started
-| summarize avg(Duration)
-```
-
-If you apply the `hint.strategy=shuffle` (instead of ignoring the strategy during query-planning) and shuffle the data by the compound key [`ActivityId`, `numeric_column`], the result won't be correct.
-The `summarize` operator is on the left side of the `join` operator. This operator will group by a subset of the `join` keys, which in our case is `ActivityId`. Thus, the `summarize` will group by the key `ActivityId`, while the data is partitioned by the compound key [`ActivityId`, `numeric_column`].
-Shuffling by the compound key [`ActivityId`, `numeric_column`] doesn't necessarily mean that shuffling for the key `ActivityId` is valid, and the results may be incorrect.
-
-This example assumes that the hash function used for a compound key is `binary_xor(hash(key1, 100) , hash(key2, 100))`:
-
-```kusto
-
-datatable(ActivityId:string, NumericColumn:long)
-[
-"activity1", 2,
-"activity1" ,1,
-]
-| extend hash_by_key = binary_xor(hash(ActivityId, 100) , hash(NumericColumn, 100))
-```
-
-|ActivityId|NumericColumn|hash_by_key|
-|---|---|---|
-|activity1|2|56|
-|activity1|1|65|
-
-The compound key for both records was mapped to different partitions (56 and 65), but these two records have the same value of `ActivityId`. The `summarize` operator on the left side of the `join` expects similar values of the column `ActivityId` to be in the same partition. This query will produce incorrect results.
-
-You can solve this issue by using `hint.shufflekey` to specify the shuffle key on the join to `hint.shufflekey = ActivityId`. This key is common for all shuffle-able operators.
-The shuffling is safe in this case, because both `join` and `summarize` shuffle by the same key. Thus, all similar values will be in the same partition and the results are correct:
-
-```kusto
-T
-| where Event=="Start"
-| project ActivityId, Started=Timestamp, numeric_column
-| summarize count(), numeric_column = any(numeric_column) by ActivityId
-| join
-    hint.shufflekey = ActivityId (T
-    | where Event=="End"
-    | project ActivityId, Ended=Timestamp, numeric_column
-)
-on ActivityId, numeric_column
-| extend Duration=Ended - Started
-| summarize avg(Duration)
-```
-
-|ActivityId|NumericColumn|hash_by_key|
-|---|---|---|
-|activity1|2|56|
-|activity1|1|65|
-
-In shuffle query, the default partitions number is the cluster nodes number. This number can be overridden by using the syntax `hint.num_partitions = total_partitions`, which will control the number of partitions.
-
-This hint is useful when the cluster has a small number of cluster nodes where the default partitions number will be small too and the query still fails or takes long execution time.
-
-> [!Note]
-> Having many partitions may consume more cluster resources and degrade performance. Instead, choose the partition number carefully by starting with the hint.strategy = shuffle and start increasing the partitions gradually.
+* *T*: The tabular source whose data is to be processed by the operator.
+* *DataExpression*: An implicit or explicit tabular transformation expression.
+* *Query*: A transformation expression run on the records of *T*.
+* *key*: Use a `join` key, `summarize` key, `make-series` key or `partition` key
+* *SubQuery*: A transformation expression.
 
 ## Examples
 
-The following example shows how shuffle `summarize` improves performance considerably.
+## Use summarize with shuffle
 
-The source table has 150M records and the cardinality of the group by key is 10M, which is spread over 10 cluster nodes.
+The `shuffle` strategy query with `summarize` operator will share the load on all cluster nodes, where each node will process one partition of the data.
 
-Running the regular `summarize` strategy, the query ends after 1:08 and the memory usage peak is ~3 GB:
+```kusto
+StormEvents
+| summarize hint.strategy = shuffle count(), avg(InjuriesIndirect) by State
+| count 
+```
+
+**Output** 
+
+|Count|
+|---|
+|67|
+
+## Use join with shuffle
+
+```kusto
+StormEvents
+| where State contains "West"
+| where EventType contains "Flood"
+| join hint.strategy=shuffle 
+( StormEvents
+    | where EventType contains "Hail"
+    | project EpisodeId, State, DamageProperty
+)   on State
+| count
+```
+
+**Output** 
+
+|Count|
+|---|
+|103|
+
+## Use make-series with shuffle
+
+```kusto
+StormEvents
+| where State contains "North"
+| make-series hint.shufflekey = State sum(DamageProperty) default = 0 on StartTime in range(datetime(2007-01-01 00:00:00.0000000), datetime(2007-01-31 23:59:00.0000000), 15d) by State
+```
+
+**Output** 
+
+|State|sum_DamageProperty|StartTime|
+|---|---|---|---|
+|NORTH DAKOTA|[60000,0,0]|["2006-12-31T00:00:00.0000000Z","2007-01-15T00:00:00.0000000Z","2007-01-30T00:00:00.0000000Z"]|
+|NORTH CAROLINA|[20000,0,1000]|["2006-12-31T00:00:00.0000000Z","2007-01-15T00:00:00.0000000Z","2007-01-30T00:00:00.0000000Z"]|
+|ATLANTIC NORTH|[0,0,0]|["2006-12-31T00:00:00.0000000Z","2007-01-15T00:00:00.0000000Z","2007-01-30T00:00:00.0000000Z"]|
+
+### Use partition with shuffle
+
+```kusto
+StormEvents
+| partition hint.strategy=shuffle by EpisodeId
+(
+    top 3 by DamageProperty
+    | project EpisodeId, State, DamageProperty
+)
+| count
+```
+
+**Output** 
+
+|Count|
+|---|
+|22345|
+
+### Compare hint.strategy=shuffle and hint.shufflekey=key
+
+When you use `hint.strategy=shuffle`, the shuffled operator will be shuffled by all the keys. In the following example, the query shuffles the data using both `EpisodeId` and `EventId` as keys:
+
+```kusto
+StormEvents
+| where StartTime > datetime(2007-01-01 00:00:00.0000000)
+| join kind = inner hint.strategy=shuffle (StormEvents | where DamageCrops > 62000000) on EpisodeId, EventId
+| count
+```
+
+**Output** 
+
+|Count|
+|---|
+|14|
+
+The following query uses `hint.shufflekey = key`. The query above is equivalent to this query.
+
+```kusto
+StormEvents
+| where StartTime > datetime(2007-01-01 00:00:00.0000000)
+| join kind = inner hint.shufflekey = EpisodeId hint.shufflekey = EventId (StormEvents | where DamageCrops > 62000000) on EpisodeId, EventId
+```
+
+**Output** 
+
+|Count|
+|---|
+|14|
+
+### Shuffle the data with multiple keys
+
+In some cases, the `hint.strategy=shuffle` will be ignored, and the query will not run in shuffle strategy. For example, in the following example, the join has summarize on its left side, so using `hint.strategy=shuffle` will not apply shuffle strategy to the query:
+
+```kusto
+StormEvents
+| where StartTime > datetime(2007-01-01 00:00:00.0000000)
+| summarize count() by EpisodeId, EventId
+| join kind = inner hint.strategy=shuffle (StormEvents | where DamageCrops > 62000000) on EpisodeId, EventId
+
+```
+
+**Output** 
+
+|Count|
+|---|
+|14|
+
+To overcome this issue and run in shuffle strategy, choose the key which is common for the `summarize` and `join` operations. In this case, this key is `ActivityId`. Use the hint `hint.shufflekey` to specify the shuffle key on the `join` to `hint.shufflekey = ActivityId`:
+
+```kusto
+StormEvents
+| where StartTime > datetime(2007-01-01 00:00:00.0000000)
+| summarize count() by EpisodeId, EventId
+| join kind = inner hint.shufflekey=EpisodeId (StormEvents | where DamageCrops > 62000000) on EpisodeId, EventId
+```
+
+**Output** 
+
+|Count|
+|---|
+|14|
+
+### Use summarize with shuffle to improve performance
+
+In this example, using the `summarize` operator with `shuffle` strategy improves performance. The source table has 150M records and the cardinality of the group by key is 10M, which is spread over 10 cluster nodes. 
+
+Using `summarize` operator without `shuffle` strategy, the query ends after 1:08 and the memory usage peak is ~3 GB:
 
 ```kusto
 orders
@@ -153,11 +210,13 @@ orders
 | count
 ```
 
+**Output** 
+
 |Count|
 |---|
 |1086|
 
-While using shuffle `summarize` strategy, the query ends after ~7 seconds and the memory usage peak is 0.43 GB:
+While using `shuffle` strategy with `summarize`, the query ends after ~7 seconds and the memory usage peak is 0.43 GB:
 
 ```kusto
 orders
@@ -166,11 +225,13 @@ orders
 | count
 ```
 
+**Output** 
+
 |Count|
 |---|
 |1086|
 
-The following example shows the improvement on a cluster that has two cluster nodes, the table has 60M records, and the cardinality of the group by key is 2M.
+The following example demonstrates performance on a cluster that has two cluster nodes, with a table that has 60M records, where the cardinality of the group by key is 2M.
 
 Running the query without `hint.num_partitions` will use only two partitions (as cluster nodes number) and the following query will take ~1:10 mins:
 
@@ -180,7 +241,7 @@ lineitem
 | consume
 ```
 
-setting partitions number to 10, the query will end after 23 seconds: 
+If setting the partitions number to 10, the query will end after 23 seconds: 
 
 ```kusto
 lineitem	
@@ -188,12 +249,13 @@ lineitem
 | consume
 ```
 
-The following example shows how shuffle `join` improves performance considerably.
+## Use join with shuffle to improve performance
+
+The following example shows how using `shuffle` strategy with the `join` operator improves performance.
 
 The examples were sampled on a cluster with 10 nodes where the data is spread over all these nodes.
 
-The left table has 15M records where the cardinality of the `join` key is ~14M. The right side of the `join` is with 150M records and the cardinality of the `join` key is 10M.
-Running the regular strategy of the `join`, the query ends after ~28 seconds and the memory usage peak is 1.43 GB:
+The query's left-side source table has 15M records where the cardinality of the `join` key is ~14M. The query's right-side source has 150M records and the cardinality of the `join` key is 10M. The query ends after ~28 seconds and the memory usage peak is 1.43 GB:
 
 ```kusto
 customer
@@ -203,7 +265,7 @@ on $left.c_custkey == $right.o_custkey
 | summarize sum(c_acctbal) by c_nationkey
 ```
 
-While using shuffle `join` strategy, the query ends after ~4 seconds and the memory usage peak is 0.3 GB:
+When using `shuffle` strategy with a `join` operator, the query ends after ~4 seconds and the memory usage peak is 0.3 GB:
 
 ```kusto
 customer
@@ -213,13 +275,13 @@ on $left.c_custkey == $right.o_custkey
 | summarize sum(c_acctbal) by c_nationkey
 ```
 
-Trying the same queries on a larger dataset where left side of the `join` is 150M and the cardinality of the key is 148M. The right side of the `join` is 1.5B, and the cardinality of the key is ~100M.
+In another example, we try the same queries on a larger dataset with the following conditions:
+* Left-side source of the `join` is 150M and the cardinality of the key is 148M. 
+* Right-side source of the `join` is 1.5B, and the cardinality of the key is ~100M.
 
-The query with the default `join` strategy hits Kusto limits and times-out after 4 mins.
-While using shuffle `join` strategy, the query ends after ~34 seconds and the memory usage peak is 1.23 GB.
+The query with just the `join` operator hits Azure Data Explorer limits and times-out after 4 mins. However, when using `shuffle` strategy with the `join` operator, the query ends after ~34 seconds and the memory usage peak is 1.23 GB.
 
-
-The following example shows the improvement on a cluster that has two cluster nodes, the table has 60M records, and the cardinality of the `join` key is 2M.
+The following example shows the improvement on a cluster that has two cluster nodes, with a table of 60M records, where the cardinality of the `join` key is 2M.
 Running the query without `hint.num_partitions` will use only two partitions (as cluster nodes number) and the following query will take ~1:10 mins:
 
 ```kusto
@@ -231,7 +293,7 @@ on $left.l_partkey == $right.p_partkey
 | consume
 ```
 
-setting partitions number to 10, the query will end after 23 seconds: 
+When setting the partitions number to 10, the query will end after 23 seconds: 
 
 ```kusto
 lineitem

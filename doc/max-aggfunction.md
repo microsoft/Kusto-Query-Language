@@ -17,7 +17,7 @@ Returns the maximum value across the group.
 
 ## Syntax
 
-`summarize` `max(`*Expr*`)`
+`max` `(`*Expr*`)`
 
 ## Arguments
 

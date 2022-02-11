@@ -48,7 +48,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 * Polygon doesn't necessarily contain its vertices. Point containment in polygon is defined so that if the Earth is subdivided into polygons, every point is contained by exactly one polygon.
 
 > [!TIP]
-> * Using literal polygons may result in better performance.
+> * Using literal Polygon or a MultiPolygon may result in better performance.
 > * If you want to know if any of the polygons contains a point, try the following steps: Fold the collection of polygons into one multipolygon. Then query this multipolygon. This may improve performance. See the example below. 
 
 ## Examples
@@ -97,7 +97,7 @@ coordinates
 
 Storm events in California. The events are filtered by a California state polygon and aggregated by event type and hash.
 
-:::image type="content" source="images/geo-point-in-polygon-function/california-storm-events.png" alt-text="Storm events in California":::
+:::image type="content" source="images/geo-point-in-polygon-function/california-storm-events.png" alt-text="Storm events in California.":::
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

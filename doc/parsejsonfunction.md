@@ -8,11 +8,10 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/25/2021
-ms.localizationpriority: high
 ---
 # todynamic(), parse_json()
 
-Interprets a `string` as a JSON value and returns the value as `dynamic`. 
+Interprets a `string` as a JSON value and returns the value as `dynamic`. If possible, the value is converted into relevant [data types](scalar-data-types/index.md).  For strict parsing with no data type conversion, use [extract()](extractfunction.md) or [extractjson()](extractjsonfunction.md) functions.
 
 > [!NOTE]
 > The `todynamic()` and `parse_json()` functions are interpreted equivalently.

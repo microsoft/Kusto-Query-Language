@@ -91,4 +91,4 @@ A user is considered active if it fulfills both of the following criteria:
 In the illustration below, the only appearances that are active by this criteria are the following instances: User A on 7/20 and User B on 7/4 (see plugin results above). 
 The appearances of User B are included for the lookback window on 7/4, but not for the Start-End time range of 6/29-30. 
 
-:::image type="content" source="images/queries/active-users-count.png" alt-text="Active user count example":::
+:::image type="content" source="images/queries/active-users-count.png" alt-text="Active user count example.":::

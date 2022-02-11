@@ -34,7 +34,7 @@ estimate_data_size(Col1, Col2, Col3)
 
 ## Examples
 
-Calculating total data size using `estimated_data_size()`:
+Calculating total data size using `estimate_data_size()`:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

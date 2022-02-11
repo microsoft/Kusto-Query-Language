@@ -15,11 +15,11 @@ Rotates values inside a `dynamic` array to the left.
 
 ## Syntax
 
-`array_rotate_left(`*arr*, *rotate_count*`)`
+`array_rotate_left(`*array*, *rotate_count*`)`
 
 ## Arguments
 
-* *arr*: Input array to split, must be dynamic array.
+* *array*: Input array to rotate, must be dynamic array.
 * *rotate_count*: Integer specifying the number of positions that array elements will be rotated to the left. If the value is negative, the elements will be rotated to the right.
 
 ## Returns
@@ -36,7 +36,7 @@ Dynamic array containing the same amount of the elements as in original array, w
 
 * Rotating to the left by two positions:
 
-    <!-- csl: https://help.kusto.windows.net:443/Samples -->
+    <!-- csl: https://help.kusto.windows.net/Samples -->
     ```kusto
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, 2)
@@ -48,7 +48,7 @@ Dynamic array containing the same amount of the elements as in original array, w
 
 * Rotating to the right by two positions by using negative rotate_count value:
 
-    <!-- csl: https://help.kusto.windows.net:443/Samples -->
+    <!-- csl: https://help.kusto.windows.net/Samples -->
     ```kusto
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, -2)

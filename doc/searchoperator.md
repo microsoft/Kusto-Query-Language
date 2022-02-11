@@ -1,6 +1,6 @@
 ---
 title: search operator - Azure Data Explorer | Microsoft Docs
-description: This article describes search operator in Azure Data Explorer.
+description: This article describes search operators in Azure Data Explorer.
 services: data-explorer
 author: orspod
 ms.author: orspodek
@@ -22,10 +22,9 @@ The `search` operator provides a multi-table/multi-column search experience.
 ::: zone pivot="azuremonitor"
 
 > [!NOTE]
-> `search` operator is substentially less efficient than table-specific and column-specific text filtering. Whenever the tables or columns are known, it is recommended to use the [union operator](unionoperator.md) and [where operator](whereoperator.md). Search will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
+> `search` operator is substantially less efficient than table-specific and column-specific text filtering. Whenever the tables or columns are known, it is recommended to use the [union operator](unionoperator.md) and [where operator](whereoperator.md). Search will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
 
 ::: zone-end
-
 
 ## Syntax
 
@@ -53,7 +52,7 @@ The `search` operator provides a multi-table/multi-column search experience.
 
   **String matching extensions**: String literals that appear as terms in the *SearchPredicate* indicate a term
     match between all columns and the literal using `has`, `hasprefix`, `hassuffix`, and the inverted (`!`)
-    or case-sensitive (`sc`) versions of these operators. The decision whether to apply `has`, `hasprefix`,
+    or case-sensitive (`cs`) versions of these operators. The decision whether to apply `has`, `hasprefix`,
     or `hassuffix` depends on whether the literal starts or ends (or both) by an asterisk (`*`). Asterisks
     inside the literal are not allowed.
 

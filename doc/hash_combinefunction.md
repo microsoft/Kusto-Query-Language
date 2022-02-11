@@ -29,7 +29,7 @@ The combined hash value of the given scalars.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print value1 = "Hello", value2 = "World"
 | extend h1 = hash(value1), h2=hash(value2)

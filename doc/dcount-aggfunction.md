@@ -8,7 +8,6 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
-ms.localizationpriority: high
 ---
 # dcount() (aggregation function)
 
@@ -19,7 +18,7 @@ Returns an estimate for the number of distinct values that are taken by a scalar
 
 ## Syntax
 
-... `|` `summarize` `dcount` `(`*`Expr`*[, *`Accuracy`*]`)` ...
+`dcount` `(`*Expr*[`,` *Accuracy*]`)`
 
 ## Arguments
 
@@ -37,7 +36,7 @@ Returns an estimate of the number of distinct values of *`Expr`* in the group.
 PageViewLog | summarize countries=dcount(country) by continent
 ```
 
-:::image type="content" source="images/dcount-aggfunction/dcount.png" alt-text="D count":::
+:::image type="content" source="images/dcount-aggfunction/dcount.png" alt-text="D count.":::
 
 Get an exact count of distinct values of `V` grouped by `G`.
 
@@ -50,7 +49,7 @@ It may result in memory errors or large execution times.
 `dcount()`provides a fast and reliable alternative:
 
 ```kusto
-T | summarize dcount(B) by G | count
+T | summarize dcount(V) by G | count
 ```
 
 ## Estimation accuracy
@@ -78,4 +77,4 @@ The error bound is probabilistic, not a theoretical bound. The value is the stan
 The following image shows the probability distribution function of the relative
 estimation error, in percentages, for all supported accuracy settings:
 
-:::image type="content" border="false" source="images/dcount-aggfunction/hll-error-distribution.png" alt-text="hll error distribution":::
+:::image type="content" border="false" source="images/dcount-aggfunction/hll-error-distribution.png" alt-text="hll error distribution.":::

@@ -27,9 +27,7 @@ Returns the length, in characters, of the input string.
 
 **Notes**
 
-Each Unicode character in the string is equal to `1`, including surrogates.
-(e.g: Chinese characters will be counted once despite the fact that it requires more than one value in UTF-8 encoding).
-
+This function counts Unicode [code points](https://en.wikipedia.org/wiki/Code_point).
 
 ## Examples
 
@@ -48,3 +46,12 @@ print length = strlen("⒦⒰⒮⒯⒪")
 |length|
 |---|
 |5|
+
+```kusto
+print strlen('Çedilla') // the first character is a grapheme cluster
+                        // that requires 2 code points to represent
+```
+
+|length|
+|---|
+|8|

@@ -62,7 +62,7 @@ The following syntax results in columns named `Name1`, `Name2`, and so on, conta
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
 | project series_stats(x)

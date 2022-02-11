@@ -7,15 +7,11 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/24/2022
 ---
 # sequence_detect plugin
 
-Detects sequence occurrences based on provided predicates.
-
-```kusto
-T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
-```
+Detects sequence occurrences based on provided predicates. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
@@ -32,13 +28,19 @@ T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 
 
 ## Returns
 
-Returns a single table where each row in the table represents a single sequence occurence:
+Returns a single table where each row in the table represents a single sequence occurrence:
 
 * *Dim1*, *Dim2*, ...: dimension columns that were used to correlate sequences.
 * *Expr1*_*TimelineColumn*, *Expr2*_*TimelineColumn*, ...: Columns with time values, representing the timeline of each sequence step.
 * *Duration*: the overall sequence time window
 
 ## Examples
+
+The following query looks at the table T to search for relevant data from a specified time period.
+
+```kusto
+T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
+```
 
 ### Exploring Storm Events 
 

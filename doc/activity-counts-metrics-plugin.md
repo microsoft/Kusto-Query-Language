@@ -54,7 +54,7 @@ Output table schema is:
 
 The next query calculates daily activity counts for the provided input table
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let start=datetime(2017-08-01);
 let end=datetime(2017-08-04);

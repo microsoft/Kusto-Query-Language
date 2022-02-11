@@ -19,11 +19,11 @@ For more information, see the [underlying algorithm (*H*yper*L*og*L*og) and esti
 
 ## Syntax
 
-`summarize` `hll_merge(`*Expr*`)`
+`hll_merge` `(`*Expr*`)`
 
 ## Arguments
 
-* `*Expr*`: Expression that will be used for the aggregation calculation.
+* *Expr*: Expression that will be used for the aggregation calculation.
 
 ## Returns
 

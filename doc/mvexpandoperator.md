@@ -8,7 +8,6 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/24/2019
-ms.localizationpriority: high
 ---
 # mv-expand operator
 
@@ -79,7 +78,7 @@ Two modes of property bag expansions are supported:
 
 A simple expansion of a single column:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
  ```kusto
 datatable (a:int, b:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"})]
 | mv-expand b 
@@ -94,7 +93,7 @@ datatable (a:int, b:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"})]
 
 Expanding two columns will first 'zip' the applicable columns and then expand them:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), dynamic([5, 4, 3])]
 | mv-expand b, c
@@ -133,7 +132,7 @@ datatable (a:int, b:dynamic, c:dynamic)
 
 To force the output of an mv-expand to a certain type (default is dynamic), use `to typeof`:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 datatable (a:string, b:dynamic, c:dynamic)["Constant", dynamic([1,2,3,4]), dynamic([6,7,8,9])]
 | mv-expand b, c to typeof(int)
@@ -152,7 +151,7 @@ Notice column `b` is returned as `dynamic` while `c` is returned as `int`.
 
 Expansion of an array with `with_itemindex`:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 4 step 1
 | summarize x = make_list(x)

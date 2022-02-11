@@ -19,7 +19,7 @@ See also - [min()](min-aggfunction.md) function, which returns the minimum value
 
 ## Syntax
 
-`summarize` `minif(`*Expr*`,`*Predicate*`)`
+ `minif` `(`*Expr*`,`*Predicate*`)`
 
 ## Arguments
 

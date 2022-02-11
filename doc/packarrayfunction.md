@@ -17,9 +17,12 @@ Packs all input values into a dynamic array.
 
 `pack_array(`*Expr1*`[`,` *Expr2*]`)`
 
+`pack_array(*)`
+
 ## Arguments
 
 * *Expr1...N*: Input expressions to be packed into a dynamic array.
+* *The wildcard `*`*: providing the wildcard `*` will pack all input columns into a dynamic array.
 
 ## Returns
 
@@ -27,7 +30,7 @@ Dynamic array which includes the values of Expr1, Expr2, ... , ExprN.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
@@ -41,7 +44,7 @@ range x from 1 to 3 step 1
 |[2,4,8]|
 |[3,6,12]|
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 3 step 1
 | extend y = tostring(x * 2)

@@ -41,7 +41,7 @@ The following table describes differences between `"tukey"` and `"ctukey"`:
 
 A time series with some noise creates outliers. If you would like to replace those outliers (noise) with the average value, use series_outliers() to detect the outliers, and then replace them.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 100 step 1 
 | extend y=iff(x==20 or x==80, 10*rand()+10+(50-x)/2, 10*rand()+10) // generate a sample series with outliers at x=20 and x=80
@@ -52,4 +52,4 @@ range x from 1 to 100 step 1
 | render linechart
 ``` 
 
-:::image type="content" source="images/series-outliersfunction/series-outliers.png" alt-text="Series outliers" border="false":::
+:::image type="content" source="images/series-outliersfunction/series-outliers.png" alt-text="Series outliers." border="false":::

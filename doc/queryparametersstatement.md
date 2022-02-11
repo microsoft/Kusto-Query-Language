@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/21/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -22,10 +22,7 @@ Query parameters have two main uses:
 * As a protection mechanism against injection attacks.
 * As a way to parameterize queries.
 
-In particular, client applications that combine user-provided input in queries
-that they then send to Kusto should use the mechanism to protect against the
-Kusto equivalent of [SQL Injection](https://en.wikipedia.org/wiki/SQL_injection)
-attacks.
+In particular, client applications that combine user-provided input in queries that they then send to Kusto should use the mechanism to protect against the Kusto equivalent of [SQL Injection](https://en.wikipedia.org/wiki/SQL_injection) attacks.
 
 ## Declaring query parameters
 
@@ -44,8 +41,10 @@ To reference query parameters, the query text, or functions it uses, must first 
   a literal of the appropriate scalar type.
 
 > [!NOTE]
-> Like [user defined functions](functions/user-defined-functions.md),
-> query parameters of type `dynamic` cannot have default values.
+>
+> * Like [user defined functions](functions/user-defined-functions.md), query parameters of type `dynamic` cannot have default values.
+> * Let, set, and tabular statements are strung together/separated by a semicolon, otherwise they will not be considered part of the same query.
+
 
 ## Examples
 

@@ -17,7 +17,7 @@ Returns a `dynamic` (JSON) array of all the values of *Expr* in the group, for w
 
 ## Syntax
 
-`summarize` `make_list_if(`*Expr*, *Predicate* [`,` *MaxSize*]`)`
+`make_list_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
 
 ## Arguments
 

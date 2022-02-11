@@ -13,8 +13,6 @@ ms.date: 02/19/2019
 
 Finds the most significant periods that exist in a time series.  
 
-Often, a metric measuring an application’s traffic, is characterized by two significant periods: a weekly and a daily. 
-The function `series_periods_detect()` detects these two dominant periods in a time series.  
 The function takes as input:
 * A column containing a dynamic array of time series. Typically, the column is the resulting output of [make-series](make-seriesoperator.md) operator.
 * Two `real` numbers defining the minimal and maximal period size, the number of bins to search for. For example, for a 1h bin, the size of a daily period would be 24. 
@@ -46,18 +44,18 @@ The function outputs two columns:
 
 The following query embeds a snapshot of a month of an application’s traffic, aggregated twice a day. The bin size is 12 hours.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77,61,50,54,47,133,72,152,94,148,105,162,101,160,87,63,53,55,54,151,103,189,108,183,113,175,113,178,90,71,62,62,65,165,109,181,115,182,121,178,114,170])
 | project x=range(1, array_length(y), 1), y  
 | render linechart 
 ```
 
-:::image type="content" source="images/series-periods/series-periods.png" alt-text="Series periods":::
+:::image type="content" source="images/series-periods/series-periods.png" alt-text="Series periods.":::
 
 Running `series_periods_detect()` on this series, results in the weekly period, 14 points long.
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77,61,50,54,47,133,72,152,94,148,105,162,101,160,87,63,53,55,54,151,103,189,108,183,113,175,113,178,90,71,62,62,65,165,109,181,115,182,121,178,114,170])
 | project x=range(1, array_length(y), 1), y  

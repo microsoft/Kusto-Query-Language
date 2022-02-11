@@ -44,7 +44,7 @@ Valid identifier names follow these rules:
 * They may contain letters, digits, underscores (`_`), spaces, dots (`.`), and dashes (`-`).
   * Identifiers consisting only of letters, digits, and underscores
     do not require quoting when the identifier is being referenced.
-  * Identifiers containing at last one of (spaces, dots, or dashes) do
+  * Identifiers containing at least one of (spaces, dots, or dashes) do
     require quoting (see below).
 * They are case-sensitive.
 

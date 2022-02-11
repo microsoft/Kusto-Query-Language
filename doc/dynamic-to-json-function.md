@@ -7,12 +7,11 @@ ms.author: orspodek
 ms.reviewer: elgevork
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 08/05/2020
+ms.date: 07/05/2021
 ---
 # dynamic_to_json()
 
-Converts `dynamic` input to a string representation.
-If the input is a property bag, the output string prints its content sorted by the keys, recursively. Otherwise, the output is similar to the `tostring` function output.
+Converts a scalar value of type `dynamic` to a canonical `string` representation.
 
 ## Syntax
 
@@ -24,7 +23,20 @@ If the input is a property bag, the output string prints its content sorted by t
 
 ## Returns
 
-Returns a string representation of the `dynamic` input. If the input is a property bag, the output string prints its content sorted by the keys, recursively.
+Returns a canonical representation of the input as a value of type `string`,
+according to the following rules:
+
+* If the input is a scalar value of type other than `dynamic`,
+   the output is the application of `tostring()` to that value.
+
+* If the input in an array of values, the output is composed of the
+   characters `[`, `,`, and `]` interspersed with the canonical representation
+   described here of each array element.
+
+* If the input is a property bag, the output is composed of the characters
+   `{`, `,`, and `}` interspersed with the colon (`:`)-delimited name/value pairs
+   of the properties. The pairs are sorted by the names, and the values
+   are in the canonical representation described here of each array element.
 
 ## Examples
 

@@ -37,8 +37,8 @@ cluster("<cluster name>").database("<database name>").<table name>
 
 *cluster name* is case-insensitive and can be of one of the following forms:
    * Well-formed URL, such as `http://contoso.kusto.windows.net:1234/`. Only HTTP and HTTPS schemes are supported.
-   * Fully qualified domain name (FQDN), such as `contoso.kusto.windows.net`. This string is equivalent to `https://`**`contoso.kusto.windows.net`**`:443/`.
-   * Short name (host name [and region] without the domain part), such as `contoso` or `contoso.westus`. These strings are interpreted as `https://`**`contoso`**`.kusto.windows.net:443/` and `https://`**`contoso.westus`**`.kusto.windows.net:443/`.
+   * Fully qualified domain name (FQDN), such as `contoso.kusto.windows.net`. This string is equivalent to `https://`**`contoso.kusto.windows.net`**`/`.
+   * Short name (host name [and region] without the domain part), such as `contoso` or `contoso.westus`. These strings are interpreted as `https://`**`contoso`**`.kusto.windows.net/` and `https://`**`contoso.westus`**`.kusto.windows.net/`.
 
 > [!NOTE]
 > Cross-database access is subject to the usual permission checks.

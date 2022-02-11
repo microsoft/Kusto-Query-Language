@@ -17,7 +17,7 @@ Returns a `dynamic` (JSON) array of all the values of *Expr* in the group, inclu
 
 ## Syntax
 
-`summarize` `make_list_with_nulls(` *Expr* `)`
+`make_list_with_nulls` `(` *Expr* `)`
 
 ## Arguments
 

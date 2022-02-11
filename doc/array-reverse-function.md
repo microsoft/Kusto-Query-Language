@@ -27,7 +27,7 @@ An array that contains exactly the same elements as the input array, but in reve
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print arr=dynamic(["this", "is", "an", "example"]) 
 | project Result=array_reverse(arr)

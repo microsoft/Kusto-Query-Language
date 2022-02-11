@@ -20,7 +20,7 @@ For more information, see the [underlying algorithm (T-Digest) and the estimated
 
 ## Syntax
 
-`summarize` `tdigest`(*`Expr`* [`,` *`WeightExpr`*])
+ `tdigest` `(`*Expr* [`,` *WeightExpr*]`)`
 
 ## Arguments
 
@@ -41,7 +41,7 @@ The Intermediate results of weighted percentiles of `*Expr*` across the group.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | summarize tdigest(DamageProperty) by State

@@ -23,7 +23,7 @@ materialized_view('ViewName')
 
 ## Syntax
 
-`materialized_view(`*ViewName*`,` [*max_age*]`)`
+`materialized_view` `(`*ViewName*`,` [*max_age*] `)`
 
 ## Arguments
 

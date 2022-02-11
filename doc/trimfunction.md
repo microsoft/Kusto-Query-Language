@@ -16,16 +16,16 @@ Removes all leading and trailing matches of the specified regular expression.
 
 ## Syntax
 
-`trim(`*regex*`,` *text*`)`
+`trim(`*regex*`,` *source*`)`
 
 ## Arguments
 
-* *regex*: String or [regular expression](re2.md) to be trimmed from the beginning and/or the end of *text*.  
-* *text*: A string.
+* *regex*: String or [regular expression](re2.md) to be trimmed from the beginning and/or the end of *source*.  
+* *source*: A string.
 
 ## Returns
 
-*text* after trimming matches of *regex* found in the beginning and/or the end of *text*.
+*source* after trimming matches of *regex* found in the beginning and/or the end of *source*.
 
 ## Example
 

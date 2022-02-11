@@ -18,11 +18,7 @@ Schema definitions are expected to be in the format produced by the [`getschema`
 The `schema merge` operation joins columns in input schemas and tries to reduce
 data types to common ones. If data types can't be reduced, an error is displayed on the problematic column.
 
-```kusto
-let Schema1=Table1 | getschema;
-let Schema2=Table2 | getschema;
-union Schema1, Schema2 | evaluate schema_merge()
-```
+The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 

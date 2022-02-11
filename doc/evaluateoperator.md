@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 10/30/2019
+ms.date: 01/09/2022
 ---
 # evaluate operator plugins
 
@@ -46,6 +46,31 @@ The following parameters are supported:
   |`hint.distribution` |`single`, `per_node`, `per_shard`| [Distribution hints](#distribution-hints) |
   |`hint.pass_filters` |`true`, `false`| Allow `evaluate` operator to passthrough any matching filters before the plugin. Filter is considered as 'matched' if it refers to a column existing before the `evaluate` operator. Default: `false` |
   |`hint.pass_filters_column` |*column_name*| Allow plugin operator to passthrough filters referring to *column_name* before the plugin. Parameter can be used multiple times with different column names. |
+
+## Plugins
+
+The following plugins are supported:
+
+- [autocluster plugin](autoclusterplugin.md)
+- [azure-digital-twins-query-request plugin](azure-digital-twins-query-request-plugin.md)
+- [bag-unpack plugin](bag-unpackplugin.md)
+- [basket plugin](basketplugin.md)
+- [cosmosdb-sql-request plugin](cosmosdb-plugin.md)
+- [dcount-intersect plugin](dcount-intersect-plugin.md)
+- [diffpatterns plugin](diffpatternsplugin.md)
+- [diffpatterns-text plugin](diffpatterns-textplugin.md)
+- [infer-storage-schema plugin](inferstorageschemaplugin.md)
+- [ipv4-lookup plugin](ipv4-lookup-plugin.md)
+- [mysql-request-plugin](mysqlrequest-plugin.md)
+- [narrow plugin](narrowplugin.md)
+- [pivot plugin](pivotplugin.md)
+- [preview plugin](previewplugin.md)
+- [R plugin](rplugin.md)
+- [rolling-percentile plugin](rolling-percentile-plugin.md)
+- [rows-near plugin](rows-near-plugin.md)
+- [schema-merge plugin](schemamergeplugin.md)
+- [sql-request plugin](mysqlrequest-plugin.md)
+- [sequence-detect plugin](sequence-detect-plugin.md)
 
 ## Distribution hints
 

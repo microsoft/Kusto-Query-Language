@@ -17,7 +17,7 @@ Calculates the sum of *Expr* across the group.
 
 ## Syntax
 
-summarize `sum(`*Expr*`)`
+`sum` `(`*Expr*`)`
 
 ## Arguments
 

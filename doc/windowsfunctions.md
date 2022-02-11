@@ -34,7 +34,6 @@ Many tabular operators serialize output whenever the input is already serialized
 * [sort operator](./sortoperator.md)
 * [top operator](./topoperator.md)
 * [top-hitters operator](./tophittersoperator.md)
-* [top-nested operator](./topnestedoperator.md)
 
 ## Operators that preserve the serialized row set property
 

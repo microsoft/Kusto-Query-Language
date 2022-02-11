@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/20/2020
+ms.date: 12/30/2021
 ms.localizationpriority: high 
 ---
 # summarize operator
@@ -30,7 +30,7 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 
 ## Syntax
 
-*T* `| summarize`
+*T* `| summarize` [*SummarizeParameters*]
       [[*Column* `=`] *Aggregation* [`,` ...]]
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
@@ -42,6 +42,14 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 * *GroupExpression:* A scalar expression that can reference the input data.
   The output will have as many records as there are distinct values of all the
   group expressions.
+* *SummarizeParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value*
+	that control the behavior. The following parameters are supported:
+  
+  |Name  |Description  |
+  |---|---|
+  |`hint.num_partitions` |Specifies the number of partitions used to share the query load on cluster nodes. See [shuffle query](shufflequery.md)  |
+  |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |
+  |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. See [shuffle query](shufflequery.md)  |
 
 > [!NOTE]
 > When the input table is empty, the output depends on whether *GroupExpression*
@@ -68,8 +76,6 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 
 |Function|Description|
 |--------|-----------|
-|[any()](any-aggfunction.md)|Returns a random non-empty value for the group|
-|[anyif()](anyif-aggfunction.md)|Returns a random non-empty value for the group (with predicate)|
 |[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when the argument is maximized|
 |[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when the argument is minimized|
 |[avg()](avg-aggfunction.md)|Returns an average value across the group|
@@ -101,6 +107,8 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 |[stdevif()](stdevif-aggfunction.md)|Returns the standard deviation across the group (with predicate)|
 |[sum()](sum-aggfunction.md)|Returns the sum of the elements within the group|
 |[sumif()](sumif-aggfunction.md)|Returns the sum of the elements within the group (with predicate)|
+|[take_any()](take-any-aggfunction.md)|Returns a random non-empty value for the group|
+|[take_anyif()](take-anyif-aggfunction.md)|Returns a random non-empty value for the group (with predicate)|
 |[variance()](variance-aggfunction.md)|Returns the variance across the group|
 |[varianceif()](varianceif-aggfunction.md)|Returns the variance across the group (with predicate)|
 
@@ -118,9 +126,9 @@ Operator       |Default value
 
 ## Examples
 
-:::image type="content" source="images/summarizeoperator/summarize-price-by-supplier.png" alt-text="Summarize price by fruit and supplier":::
+:::image type="content" source="images/summarizeoperator/summarize-price-by-supplier.png" alt-text="Summarize price by fruit and supplier.":::
 
-## Example: Unique combination
+### Unique combination
 
 Determine what unique combinations of
 `ActivityType` and `CompletionStatus` there are in a table. There are no aggregation functions, just group-by keys. The output will just show the columns for those results:
@@ -136,7 +144,7 @@ Activities | summarize by ActivityType, completionStatus
 |`dancing`|`abandoned`
 |`singing`|`completed`
 
-## Example: Minimum and maximum timestamp
+### Minimum and maximum timestamp
 
 Finds the minimum and maximum timestamp of all records in the Activities table. There is no group-by clause, so there is just one row in the output:
 
@@ -148,7 +156,7 @@ Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
 |---|---
 |`1975-06-09 09:21:45` | `2015-12-24 23:45:00`
 
-## Example: Distinct count
+### Distinct count
 
 Create a row for each continent, showing a count of the cities in which activities occur. Because there are few values for "continent", no grouping function is needed in the 'by' clause:
 
@@ -162,8 +170,7 @@ Activities | summarize cities=dcount(city) by continent
 |`3267`|`Europe`|
 |`2673`|`North America`|
 
-
-## Example: Histogram
+### Histogram
 
 The following example calculates a histogram for each activity
 type. Because `Duration` has many values, use `bin` to group its values into 10-minute intervals:
@@ -182,7 +189,7 @@ Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
 |`2876`|`singing`|`0:20:00.000`
 |...
 
-**Example for the aggregates default values**
+### Aggregates default values
 
 When the input of `summarize` operator has at least one empty group-by key, it's result is empty, too.
 

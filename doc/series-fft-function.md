@@ -32,7 +32,7 @@ The function returns the complex inverse fft in two series. The first series for
 
 * Generate a complex series, where the real and imaginary components are pure sine waves in different frequencies. Use FFT to transform it to the frequency domain:
 
-    <!-- csl: https://help.kusto.windows.net:443/Samples -->
+    <!-- csl: https://help.kusto.windows.net/Samples -->
     ```kusto
     let sinewave=(x:double, period:double, gain:double=1.0, phase:double=0.0)
     {
@@ -48,11 +48,11 @@ The function returns the complex inverse fft in two series. The first series for
     
     This query returns *fft_y_real* and *fft_y_imag*:  
     
-    :::image type="content" source="images/series-fft-function/series-fft.png" alt-text="Series fft" border="false":::
+    :::image type="content" source="images/series-fft-function/series-fft.png" alt-text="Series fft." border="false":::
     
 * Transform a series to the frequency domain, and then apply the inverse transform to get back the original series:
 
-    <!-- csl: https://help.kusto.windows.net:443/Samples -->
+    <!-- csl: https://help.kusto.windows.net/Samples -->
     ```kusto
     let sinewave=(x:double, period:double, gain:double=1.0, phase:double=0.0)
     {
@@ -70,5 +70,5 @@ The function returns the complex inverse fft in two series. The first series for
     
     This query returns *y_real2* and *y_imag2, which are the same as *y_real* and *y_imag*:  
     
-    :::image type="content" source="images/series-fft-function/series-ifft.png" alt-text="Series ifft" border="false":::
+    :::image type="content" source="images/series-fft-function/series-ifft.png" alt-text="Series ifft." border="false":::
     

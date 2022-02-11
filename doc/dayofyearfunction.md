@@ -19,7 +19,7 @@ dayofyear(datetime(2015-12-14))
 
 ## Syntax
 
-`dayofweek(`*a_date*`)`
+`dayofyear(`*a_date*`)`
 
 ## Arguments
 

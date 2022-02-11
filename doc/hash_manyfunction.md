@@ -7,7 +7,7 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 03/06/2020
+ms.date: 01/24/2022
 ---
 # hash_many()
 
@@ -23,7 +23,12 @@ Returns a combined hash value of multiple values.
 
 ## Returns
 
-The combined hash value of the given scalars.
+The [hash()](hashfunction.md) function is applied to each of the specified scalars. The resulting hashes are combined into a single hash and returned.
+
+> [!WARNING]
+> The function uses the *xxhash64* algorithm to calculate the hash for each scalar, but this may change. We therefore only recommend using this function within a single query where all invocations of the function will use the same algorithm.
+>
+> If you need to persist a combined hash, we recommend using [hash_sha256()](sha256hashfunction.md), [hash_sha1()](sha1-hash-function.md), or [hash_md5()](md5hashfunction.md) and combining the hashes into a single hash with a [bitwise operator](binoperators.md). Note that these functions are more complex to calculate than `hash()`.
 
 ## Examples
 

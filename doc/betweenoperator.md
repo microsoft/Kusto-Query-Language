@@ -1,6 +1,6 @@
 ---
-title: between operator - Azure Data Explorer
-description: This article describes between operator in Azure Data Explorer.
+title: The between operator - Azure Data Explorer
+description: This article describes the between operator in Azure Data Explorer.
 services: data-explorer
 author: orspod
 ms.author: orspodek
@@ -8,16 +8,10 @@ ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/23/2018
-ms.localizationpriority: high
 ---
 # between operator
 
-Matches the input that is inside the inclusive range.
-
-```kusto
-Table1 | where Num1 between (1 .. 10)
-Table1 | where Time between (datetime(2017-01-01) .. datetime(2017-01-01))
-```
+Filters a record set for data matching the values in an inclusive range.
 
 `between` can operate on any numeric, datetime, or timespan expression.
  
@@ -42,9 +36,9 @@ Rows in *T* for which the predicate of (*expr* >= *leftRange* and *expr* <= *rig
 
 ## Examples  
 
-**Filtering numeric values using 'between' operator**  
+### Filter numeric values   
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 range x from 1 to 100 step 1
 | where x between (50 .. 55)
@@ -59,9 +53,9 @@ range x from 1 to 100 step 1
 |54|
 |55|
 
-**Filtering datetime using 'between' operator**  
+### Filter datetime 
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. datetime(2007-07-30))
@@ -72,7 +66,7 @@ StormEvents
 |---|
 |476|
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. 3d)

@@ -12,7 +12,13 @@ ms.date: 02/13/2020
 # Broadcast join
 
 Today, regular joins are executed on a single cluster node.
-Broadcast join is an execution strategy of join, which will distribute it over cluster nodes. This strategy is useful when left side of the join is small (up to 100 K records). In this case, broadcast join will be more performant than regular join.
+Broadcast join is an execution strategy of join that distributes the join over cluster nodes. This strategy is useful when left side of the join is small (up to few tens of MBs). In this case, a broadcast join will be more performant than a regular join.
+Run the following query to get the estimated size of the left side in bytes:
+
+```kusto
+lookupSubQuery
+| summarize sum(estimate_data_size(*))
+``` 
 
 If left side of the join is a small dataset, then you may run join in broadcast mode using the following syntax (hint.strategy = broadcast):
 

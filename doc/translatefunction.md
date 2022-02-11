@@ -16,17 +16,17 @@ The function searches for characters in the 'searchList' and replaces them with 
 
 ## Syntax
 
-`translate(`*searchList*`,` *replacementList*`,` *text*`)`
+`translate(`*searchList*`,` *replacementList*`,` *source*`)`
 
 ## Arguments
 
 * *searchList*: The list of characters that should be replaced
 * *replacementList*: The list of characters that should replace the characters in 'searchList'
-* *text*: A string to search
+* *source*: A string to search
 
 ## Returns
 
-*text* after replacing all ocurrences of characters in 'replacementList' with the corresponding characters in 'searchList'
+*source* after replacing all ocurrences of characters in 'replacementList' with the corresponding characters in 'searchList'
 
 ## Examples
 

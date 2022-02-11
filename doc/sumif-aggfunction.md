@@ -19,7 +19,7 @@ You can also use the [sum()](sum-aggfunction.md) function, which sums rows witho
 
 ## Syntax
 
-summarize `sumif(`*Expr*`,`*Predicate*`)`
+`sumif` `(`*Expr*`,`*Predicate*`)`
 
 ## Arguments
 

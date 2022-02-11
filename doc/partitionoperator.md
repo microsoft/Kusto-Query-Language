@@ -7,81 +7,170 @@ ms.author: orspodek
 ms.reviewer: alexans
 ms.service: data-explorer
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 10/06/2021
 ---
-# partition operator
+# partition operator 
 
-The partition operator partitions its input table into multiple sub-tables
-according to the values of the specified column, executes a sub-query over each
-sub-table, and produces a single output table that is the union of the results
-of all sub-queries. 
+The partition operator partitions the records of its input table into multiple subtables according to values in a key column, runs a subquery on each subtable, and produces a single output table that is the union of the results of all subqueries.
 
-```kusto
-T | partition by Col1 ( top 10 by MaxValue )
+The partition operator supports several strategies of subquery operation: 
 
-T | partition by Col1 { U | where Col2=toscalar(Col1) }
-```
+* [Native](#native-strategy) - use with an implicit data source with thousands of key partition values.
+* [Shuffle](#shuffle-strategy) - use with an implicit source with millions of key partition values.
+* [Legacy](#legacy-strategy) - use with an implicit or explicit source for 64 or less key partition values.
+
+## Native strategy
+
+This subquery is a tabular transformation that doesn't specify a tabular source. The source is implicit and is assigned according to the subtable partitions. It should be applied when the number of distinct values of the partition key is not large, roughly in the thousand. Use `hint.strategy=native` for this strategy. There is no restriction on the number of partitions.
+
+## Shuffle strategy
+
+This subquery is a tabular transformation that doesn't specify a tabular source. The source is implicit and will be assigned according to the subtable partitions. The strategy applies when the number of distinct values of the partition key is large, in the millions. Use `hint.strategy=shuffle` for this strategy. There is no restriction on the number of partitions. For more information about shuffle strategy and performance, see [shuffle](shufflequery.md).
+
+## Native and shuffle strategy operators
+
+The difference between `hint.strategy=native` and `hint.strategy=shuffle` is mainly to allow the caller to indicate the cardinality and execution strategy of the sub-query, and can affect the execution time. There is no other semantic difference
+between the two.
+
+For `native` and `shuffle` strategy, the source of the sub-query is implicit, and cannot be referenced by the sub-query. This strategy supports a limited set of operators: `project`, `sort`, `summarize`, `take`, `top`, `order`, `mv-expand`, `mv-apply`, `make-series`, `limit`, `extend`, `distinct`, `count`, `project-away`, `project-keep`, `project-rename`, `project-reorder`, `parse`, `parse-where`, `reduce`, `sample`, `sample-distinct`, `scan`, `search`, `serialize`, `top-nested`, `top-hitters` and `where`.
+
+Operators like `join`, `union`, `external_data`, `plugins`, or any other operator that involves table source that is not the subtable partitions, are not allowed.
+
+## Legacy strategy
+
+Legacy subqueries can use the following sources:
+
+* Implicit - The source is a tabular transformation that doesn't specify a tabular source. The source is implicit and will be assigned according to the subtable partitions. This applies when there are 64 or less key values. 
+
+* Explicit - The subquery must include a tabular source explicitly. Only the key column of the input table is available in the subquery, and referenced by using its name in the `toscalar()` function.
+
+For both implicit and explicit sources, the subquery type is used for legacy purposes only, and indicated by the use of `hint.strategy=legacy`, or by not including any strategy indication. 
+
+Any additional reference to the source is taken to mean the entire input table, for example, by using the [as operator](asoperator.md) and calling up the value again.
+
+> [!NOTE]
+> It is recommended to use the native or shuffle strategies rather than the legacy strategy, since the legacy strategy is limited to 64 partitions and is less efficient.
+> The legacy partition operator is currently limited by the number of partitions.
+> The operator will yield an error if the partition column (*Column*) has more than 64 distinct values.
+
+## All strategies
+
+For native, shuffle and legacy subqueries, the result must be a single tabular result. Multiple tabular results and the use of the `fork` operator are not supported. A subquery cannot include additional statements, for example, it can't have a `let` statement.
 
 ## Syntax
 
-*T* `|` `partition` [*PartitionParameters*] `by` *Column* `(` *ContextualSubquery* `)`
+*T* `|` `partition` [`hint.strategy=` *strategy*] [*PartitionParameters*] `by` *Column* `(` *TransformationSubQuery* `)`
 
-*T* `|` `partition` [*PartitionParameters*] `by` *Column* `{` *Subquery* `}`
+*T* `|` `partition` [*PartitionParameters*] `by` *Column* `{` *ContextFreeSubQuery* `}`
 
 ## Arguments
 
 * *T*: The tabular source whose data is to be processed by the operator.
+* *strategy*: The partition strategy, `native`, `shuffle` or `legacy`. `native` strategy is used with an implicit source with thousands of key partition values. `shuffle` strategy is used with an implicit source with millions of key partition values. `legacy` strategy is used with an explicit or implicit source with 64 or less key partition values. 
+* *Column*: The name of a column in *T* whose values determine how the input table   is to be partitioned. See **Notes** below.
+* *TransformationSubQuery*: A tabular transformation expression, whose source is implicitly the subtables produced by partitioning the records of *T*, each subtable being homogenous on the value of *Column*.
+* *ContextFreeSubQuery*: A tabular expression that includes its own tabular source, such as a table reference. The expression can reference a single column from *T*, being the key column *Column* using the syntax `toscalar(`*Column*`)`.
+* *PartitionParameters*: Zero or more (space-separated) parameters in the form of: <br>
+  *HintName* `=` *Value* that control the behavior of the operator. The following hints are supported:
 
-* *Column*: The name of a column in *T* whose values determine how the input table
-  is to be partitioned. See **Notes** below.
-
-* *ContextualSubquery*: A tabular expression, which source is the source of the `partition` operator, scoped for a single *key* value.
-
-* *Subquery*: A tabular expression without source. The *key* value can be obtained via `toscalar()` call.
-
-* *PartitionParameters*: Zero or more (space-separated) parameters in the form of:
-  *Name* `=` *Value* that control the behavior
-  of the operator. The following parameters are supported:
-
-  |Name               |Values         |Description|
-  |-------------------|---------------|-----------|
-  |`hint.materialized`|`true`,`false` |If set to `true` will materialize the source of the `partition` operator (default: `false`)|
-  |`hint.concurrency`|*Number*|Hints the system how many partitions to run in parallel. *Default*: 16.|
-  |`hint.spread`|*Number*|Hints the system how to distribute the partitions among cluster nodes (for example: if there are N partitions and the spread hint is set to P then the N partitions will be processed by P different cluster nodes equally in parallel/sequentially depending on the concurrency hint). *Default*: 1.|
+  |HintName               |Values         |Description|Native/Shuffle/Legacy strategy|
+  |-------------------|---------------|-----------|----------|
+  |`hint.strategy`|`legacy`, `shuffle`, `native`|Defines the execution strategy of the partition operator.|Native, Shuffle, Legacy|
+  |`hint.shufflekey`|the partition key|Runs the partition operator in shuffle strategy where the shuffle key is the specified partition key.|Shuffle|
+  |`hint.materialized`|`true`,`false` |If set to `true`, will materialize the source of the `partition` operator. The default value is `false`. |Legacy|
+  |`hint.concurrency`|*Number*|Hints the system how many partitions to run in parallel. The default value is 16.|Legacy|
+  |`hint.spread`|*Number*|Hints the system how to distribute the partitions among cluster nodes. For example, if there are N partitions and the spread hint is set to P, then the N partitions will be processed by P different cluster nodes equally in parallel/sequentially depending on the concurrency hint. The default value is 1.|Legacy|
 
 ## Returns
 
-The operator returns a union of the results of applying the subquery to each
-partition of the input data.
+The operator returns a union of the results of the individual subqueries.
 
-**Notes**
+## Examples
 
-* The partition operator is currently limited by the number of partitions.
-  Up to 64 distinct partitions may be created.
-  The operator will yield an error if the partition column (*Column*) has more
-  than 64 distinct values.
+### Native strategy example
 
-* The subquery references the input partition implicitly (there's no "name" for
-  the partition in the subquery). To reference the input partition multiple times
-  within the subquery, use the [as operator](asoperator.md), as in
-  **Example: partition-reference** below.
+Use `hint.strategy=native` for this strategy. See the following example:
 
-**Example: top-nested case**
-
-At some cases - it is more performant and easier to write query using `partition` operator rather using [`top-nested` operator](topnestedoperator.md)
-The next example runs a sub-query calculating `summarize` and `top` for-each of States starting with `W`: (WYOMING, WASHINGTON, WEST VIRGINIA, WISCONSIN)
-
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | where State startswith 'W'
-| partition by State 
+| partition hint.strategy=native by InjuriesDirect (summarize Events=count(), Injuries=sum(InjuriesDirect) by State);
+```
+
+**Output** 
+
+|State|Events|Injuries|
+|---|---|---|
+|WISCONSIN|4|4|
+|WYOMING|5|5|
+|WEST VIRGINIA|1|1|
+|WASHINGTON|2|2|
+|WEST VIRGINIA|756|0|
+|WYOMING|390|0|
+|WASHINGTON|256|0|
+|WISCONSIN|1845|0|
+|WYOMING|1|4|
+|WASHINGTON|1|5|
+|WISCONSIN|1|2|
+|WASHINGTON|1|2|
+|WASHINGTON|1|10|
+
+### Shuffle strategy example
+
+Use `hint.strategy=shuffle` for this strategy. See the following example:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+StormEvents
+| partition hint.strategy=shuffle by EpisodeId
+(
+    top 3 by DamageProperty
+    | project EpisodeId, State, DamageProperty
+)
+| count
+```
+
+**Output** 
+
+|Count|
+|---|
+|22345|
+
+### Legacy strategy with explicit source
+
+This strategy is for legacy purposes only, and indicated by the use of `hint.strategy=legacy` or by not including a strategy indication at all. See the following example:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+range x from 1 to 2 step 1
+| partition hint.strategy=legacy by x { StormEvents | where x == InjuriesIndirect}
+| count 
+```
+
+**Output** 
+
+|Count|
+|---|
+|113|
+
+### Partition operator
+
+In some cases, it is more performant and easier to write a query using the `partition` operator than using the [`top-nested` operator](topnestedoperator.md). The following example runs a subquery calculating `summarize` and `top` for each of States starting with `W`: (WYOMING, WASHINGTON, WEST VIRGINIA, WISCONSIN)
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+StormEvents
+| where State startswith 'W'
+| partition hint.strategy=native by State 
 (
     summarize Events=count(), Injuries=sum(InjuriesDirect) by EventType, State
     | top 3 by Events 
 ) 
-
 ```
+
+**Output** 
+
 |EventType|State|Events|Injuries|
 |---|---|---|---|
 |Hail|WYOMING|108|0|
@@ -97,59 +186,9 @@ StormEvents
 |Winter Storm|WISCONSIN|310|0|
 |Hail|WISCONSIN|303|1|
 
-**Example: query non-overlapping data partitions**
+### Partition reference
 
-Sometimes it is useful (performance-wise) to run a complex subquery over non-overlapping
-data partitions in a map/reduce style. The example below shows how to create a
-manual distribution of aggregation over 10 partitions.
-
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```kusto
-StormEvents
-| extend p = hash(EventId, 10)
-| partition by p
-(
-    summarize Count=count() by Source 
-)
-| summarize Count=sum(Count) by Source
-| top 5 by Count
-```
-
-|Source|Count|
-|---|---|
-|Trained Spotter|12770|
-|Law Enforcement|8570|
-|Public|6157|
-|Emergency Manager|4900|
-|COOP Observer|3039|
-
-**Example: query-time partitioning**
-
-The following example shows how query can be partitioned into N=10 partitions,
-where each partition calculates its own Count, and all later summarized into TotalCount.
-
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```kusto
-let N = 10;                 // Number of query-partitions
-range p from 0 to N-1 step 1  // 
-| partition by p            // Run the sub-query partitioned 
-{
-    StormEvents 
-    | where hash(EventId, N) == toscalar(p) // Use toscalar() to fetch partition key value
-    | summarize Count = count()
-}
-| summarize TotalCount=sum(Count) 
-```
-
-|TotalCount|
-|---|
-|59066|
-
-
-**Example: partition-reference**
-
-The following example shows how one can use the [as operator](asoperator.md) to
-give a "name" to each data partition and then reuse that name within the subquery:
+The following example shows how to use the [as operator](asoperator.md) to give a "name" to each data partition and then reuse that name within the subquery. This approach is only relevant to the legacy strategy.
 
 ```kusto
 T
@@ -159,33 +198,3 @@ T
     | extend MetricPct = Metric * 100.0 / toscalar(Partition | summarize sum(Metric))
 )
 ```
-
-**Example: complex subquery hidden by a function call**
-
-The same technique can be applied with much more complex subqueries. To simplify
-the syntax, one can wrap the subquery in a function call:
-
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
-```kusto
-let partition_function = (T:(Source:string)) 
-{
-    T
-    | summarize Count=count() by Source
-};
-StormEvents
-| extend p = hash(EventId, 10)
-| partition by p
-(
-    invoke partition_function()
-)
-| summarize Count=sum(Count) by Source
-| top 5 by Count
-```
-
-|Source|Count|
-|---|---|
-|Trained Spotter|12770|
-|Law Enforcement|8570|
-|Public|6157|
-|Emergency Manager|4900|
-|COOP Observer|3039|

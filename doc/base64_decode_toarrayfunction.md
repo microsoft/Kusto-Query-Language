@@ -30,7 +30,7 @@ Returns an array of long values decoded from a base64 string.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print Quine=base64_decode_toarray("S3VzdG8=")  
 // 'K', 'u', 's', 't', 'o'
@@ -42,7 +42,7 @@ print Quine=base64_decode_toarray("S3VzdG8=")
 
 If you try to decode a base64 string that was generated from an invalid UTF-8 encoding, "null" will be returned:
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print Empty=base64_decode_toarray("U3RyaW5n0KHR0tGA0L7Rh9C60LA=")
 ```

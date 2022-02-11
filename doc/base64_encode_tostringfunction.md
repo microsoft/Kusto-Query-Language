@@ -31,7 +31,7 @@ Returns the string encoded as base64 string.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net:443/Samples -->
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 print Quine=base64_encode_tostring("Kusto")
 ```

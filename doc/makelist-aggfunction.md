@@ -18,7 +18,7 @@ Returns a `dynamic` (JSON) array of all the values of *Expr* in the group.
 
 ## Syntax
 
-`summarize` `make_list(`*Expr* [`,` *MaxSize*]`)`
+`make_list` `(`*Expr* [`,` *MaxSize*]`)`
 
 ## Arguments
 
@@ -85,7 +85,7 @@ shapes
 | summarize mylist = make_list(name) by isEvenSideCount = sideCount % 2 == 0
 ```
 
-|mylist|isEvenSideCount|
+|isEvenSideCount| mylist|
 |---|---|
 |false|["triangle","pentagon","heptagon","nonagon"]|
 |true|["square","rectangle","hexagon","octogon","decagon"]|

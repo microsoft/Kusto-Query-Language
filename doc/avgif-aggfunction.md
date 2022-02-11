@@ -17,7 +17,7 @@ Calculates the [average](avg-aggfunction.md) of *Expr* across the group for whic
 
 ## Syntax
 
-summarize `avgif(`*Expr*`, `*Predicate*`)`
+`avgif` `(`*Expr*`,` *Predicate*`)`
 
 ## Arguments
 

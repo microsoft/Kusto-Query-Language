@@ -17,7 +17,7 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 
 ## Syntax
 
-`summarize` `make_set_if(`*Expr*, *Predicate* [`,` *MaxSize*]`)`
+`make_set_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
 
 ## Arguments
 

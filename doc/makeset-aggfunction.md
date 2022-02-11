@@ -17,7 +17,7 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 
 ## Syntax
 
-`summarize` `make_set(`*Expr* [`,` *MaxSize*]`)`
+ `make_set` `(`*Expr* [`,` *MaxSize*]`)`
 
 ## Arguments
 
@@ -42,7 +42,7 @@ PageViewLog
 | summarize countries=make_set(country) by continent
 ```
 
-:::image type="content" source="images/makeset-aggfunction/makeset.png" alt-text="Table showing Kusto Query summarize countries by continent in Azure Data Explorer":::
+:::image type="content" source="images/makeset-aggfunction/makeset.png" alt-text="Table showing Kusto Query summarize countries by continent in Azure Data Explorer.":::
 
 ## See also
 

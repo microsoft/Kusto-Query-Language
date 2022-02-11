@@ -27,12 +27,15 @@ min_of(10, 1, -3, 17) == -3
 
 - All arguments must be of the same type.
 - Maximum of 64 arguments is supported.
+- Non-null values take precedence to null values.
 
 ## Returns
 
 The minimum value of all argument expressions.
 
-## Example
+## Examples
+
+Find the maximum value in an array: 
 
 <!-- csl: https://help.kusto.windows.net/Samples  -->
 ```kusto
@@ -42,3 +45,24 @@ print result=min_of(10, 1, -3, 17)
 |result|
 |---|
 |-3|
+
+Find the minimum value in a data-table. Non-null values take precedence over null values:
+
+<!-- csl: https://help.kusto.windows.net/Samples  -->
+```kusto
+datatable (A:int, B:int)
+[5, 2,
+10, 1,
+int(null), 3,
+1, int(null),
+int(null), int(null)]
+| project min_of(A, B)
+```
+
+|result|
+|---|
+|2|
+|1|
+|3| 
+|1| 
+|(null) |
