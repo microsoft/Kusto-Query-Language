@@ -252,6 +252,50 @@ namespace Kusto.Language.Editor
             }
         }
 
+        public override CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken)
+        {
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            {
+                var actions = new List<CodeAction>();
+
+                foreach (var actor in KustoActors.All)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    try
+                    {
+                        actor.GetActions(code, position, null, actions, cancellationToken);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                return new CodeActionInfo(actions);
+            }
+
+            return base.GetCodeActions(position, cancellationToken);
+        }
+
+        public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken)
+        {
+            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            {
+                if (KustoActors.TryGetActor(codeAction.Actor, out var actor))
+                {
+                    return actor.ApplyAction(code, position, null, codeAction, cancellationToken);
+                }
+                else
+                {
+                    return new CodeActionResult(this.Text, position, $"Unknown actor: {codeAction.Actor}");
+                }
+            }
+            else
+            {
+                return new CodeActionResult(this.Text, position, "No semantic information available for this query");
+            }
+        }
+
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange = true, bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))

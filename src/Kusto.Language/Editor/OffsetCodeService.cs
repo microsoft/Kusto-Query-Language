@@ -158,6 +158,17 @@ namespace Kusto.Language.Editor
             return _service.GetAnalyzers();
         }
 
+        public override CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken = default)
+        {
+            return _service.GetCodeActions(position - _offset, cancellationToken);
+        }
+
+        public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken = default)
+        {
+            var result = ApplyCodeAction(position - _offset, codeAction, cancellationToken);
+            return new CodeActionResult(result.NewText, result.NewPosition + _offset);
+        }
+
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
         {
             var result = _service.GetFormattedText(options, cursorPosition - _offset, cancellationToken);

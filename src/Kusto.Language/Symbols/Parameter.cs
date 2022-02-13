@@ -216,11 +216,17 @@ namespace Kusto.Language.Symbols
         {
         }
 
+        /// <summary>
+        /// Convert a <see cref="ParameterSymbol"/> into a <see cref="Parameter"/> instance.
+        /// </summary>
         public static Parameter From(ParameterSymbol parameter, bool isOptional = false, Expression defaultValue = null)
         {
             return new Parameter(parameter.Name, parameter.Type, minOccurring: isOptional ? 0 : 1, defaultValue: defaultValue, description: parameter.Description);
         }
 
+        /// <summary>
+        /// Convert a parsed <see cref="FunctionParameter"/> syntax into a <see cref="Parameter"/>.
+        /// </summary>
         public static Parameter From(FunctionParameter declaration)
         {
             var name = declaration.NameAndType.Name.SimpleName;
@@ -229,6 +235,9 @@ namespace Kusto.Language.Symbols
             return new Parameter(name, type, defaultValue: defvalue);
         }
 
+        /// <summary>
+        /// Convert parsed <see cref="FunctionParameters"/> syntax into a list of <see cref="Parameter"/>
+        /// </summary>
         public static IReadOnlyList<Parameter> From(FunctionParameters declaration)
         {
             var list = new List<Parameter>();
@@ -241,12 +250,74 @@ namespace Kusto.Language.Symbols
             return list;
         }
 
+        /// <summary>
+        /// Parse the parameter list of a function declaration
+        /// </summary>
         public static IReadOnlyList<Parameter> ParseList(string parameters)
         {
             var fp = Parsing.QueryParser.ParseFunctionParameters(parameters);
             return (fp != null)
                 ? From(fp)
                 : EmptyReadOnlyList<Parameter>.Instance;
+        }
+
+        /// <summary>
+        /// Gets the text of the parameter as it would appear in a function declaration.
+        /// </summary>
+        public static string GetDeclaration(Parameter parameter)
+        {
+            var name = KustoFacts.BracketNameIfNecessary(parameter.Name);
+
+            if (parameter.TypeKind == ParameterTypeKind.Declared && parameter.DeclaredTypes.Count == 1)
+            {
+                var type = parameter.DeclaredTypes[0];
+                if (type is TableSymbol table)
+                {
+                    return $"{name}: {GetTableSchemaDeclaration(table)}";
+                }
+                else if (parameter.DefaultValue != null)
+                {
+                    return $"{name}: {parameter.DeclaredTypes[0].Name} = {parameter.DefaultValue.ToString(IncludeTrivia.Interior)}";
+                }
+                else
+                {
+                    return $"{KustoFacts.BracketNameIfNecessary(parameter.Name)}: {parameter.DeclaredTypes[0].Name}";
+                }
+            }
+
+            // not sure what to do here if this is called for other kinds of parameters
+            return $"{name}: dynamic";
+        }
+
+        /// <summary>
+        /// Gets the text of a parameter list of a function declaration for the specified parameters.
+        /// </summary>
+        public static string GetParameterListDeclaration(IReadOnlyList<Parameter> parameters)
+        {
+            return "(" + string.Join(", ", parameters.Select(p => GetDeclaration(p))) + ")";
+        }
+
+        /// <summary>
+        /// Gets the text of a table schema as it would appear as a type of a parameter in a function declaration.
+        /// </summary>
+        private static string GetTableSchemaDeclaration(TableSymbol table)
+        {
+            if (table.Columns.Count == 0)
+            {
+                return "(*)";
+            }
+            else
+            {
+                return "(" + string.Join(", ", table.Columns.Select(c => GetColumnDeclaration(c)) + ")");
+            }
+        }
+
+        /// <summary>
+        /// Gets the text of a column as it would appear in the table type of a parameter of a function declaration.
+        /// </summary>
+        private static string GetColumnDeclaration(ColumnSymbol column)
+        {
+            return $"{KustoFacts.BracketNameIfNecessary(column.Name)}: {column.Type.Name}";
         }
 
         /// <summary>

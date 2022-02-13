@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
+    using System.Runtime.CompilerServices;
     using Utils;
 
     /// <summary>
@@ -59,6 +60,16 @@ namespace Kusto.Language.Editor
         /// Gets the list of information about the analyzers available via this <see cref="CodeService"/>.
         /// </summary>
         public abstract IReadOnlyList<AnalyzerInfo> GetAnalyzers();
+
+        /// <summary>
+        /// Gets the set of code actions available at the specified position.
+        /// </summary>
+        public abstract CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Applies the code action at ths specified position.
+        /// </summary>
+        public abstract CodeActionResult ApplyCodeAction(int position, CodeAction codeFix, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

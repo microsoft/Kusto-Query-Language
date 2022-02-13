@@ -56,6 +56,19 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<AnalyzerInfo>.Instance;
         }
 
+        public override CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken = default)
+        {
+            return NoCodeActions;
+        }
+
+        private readonly CodeActionInfo NoCodeActions = new CodeActionInfo(EmptyReadOnlyList<CodeAction>.Instance);
+
+        public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken = default)
+        {
+            // nothing happens
+            return new CodeActionResult(_text, position);
+        }
+
         public override ClassificationInfo GetClassifications(int start, int length, bool clipToRange, bool waitForAnalysis, CancellationToken cancellationToken)
         {
             // by default classify entire text as plain-text.

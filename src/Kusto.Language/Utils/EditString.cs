@@ -89,6 +89,22 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
+        /// Appends the text to the end of the <see cref="EditString"/>
+        /// </summary>
+        public EditString Append(string text)
+        {
+            return ReplaceAt(this.CurrentText.Length, 0, text);
+        }
+
+        /// <summary>
+        /// Prepends the text at the start of the <see cref="EditString"/>
+        /// </summary>
+        public EditString Prepend(string text)
+        {
+            return ReplaceAt(0, 0, text);
+        }
+
+        /// <summary>
         /// Removes the specified range of characters.
         /// </summary>
         public EditString Remove(int start, int length)
