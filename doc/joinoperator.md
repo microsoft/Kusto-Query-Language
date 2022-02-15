@@ -81,7 +81,6 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 |`kind=leftanti`, `kind=leftsemi`| The result table contains columns from the left side only.|
 | `kind=rightanti`, `kind=rightsemi` | The result table contains columns from the right side only.|
 |  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter` |  A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes. |
-|  `kind=innerunique`, `kind=inner`, `kind=leftouter`, `kind=rightouter`, `kind=fullouter` |  A column for every column in each of the two tables, including the matching keys. The columns of the right side will be automatically renamed if there are name clashes. |
 
 **Output records depend on the join flavor:**
 
@@ -97,8 +96,8 @@ Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
 | `kind` unspecified, `kind=innerunique`| Only one row from the left side is matched for each value of the `on` key. The output contains a row for each match of this row with rows from the right.|
 | `kind=leftsemi`| Returns all the records from the left side that have matches from the right. |
 | `kind=rightsemi`| Returns all the records from the right side that have matches from the left. |
-| `kind=inner`| Contains a row in the output for every combination of matching rows from left and right. |
-| `kind=fullouter`| Returns all the records for all the rows on the left and right. Unmatched cells contain nulls. |
+| `kind=inner`| Returns all matching records from left and right sides. |
+| `kind=fullouter`| Returns all the records for all the records from the left and right sides. Unmatched cells contain nulls. |
 | `kind=leftouter`| Returns all the records from the left side and only matching records from the right side. |
 | `kind=rightouter`| Returns all the records from the right side and only matching records from the left side. |
 

@@ -485,7 +485,7 @@ items:
     href: extractfunction.md
   - name: extract_all()
     href: extractallfunction.md
-  - name: extractjson()
+  - name: extract_json(), extractjson()
     href: extractjsonfunction.md
   - name: floor()
     href: floorfunction.md
@@ -533,6 +533,8 @@ items:
     href: sha1-hash-function.md
   - name: hash_sha256()
     href: sha256hashfunction.md
+  - name: hash_xxhash64()
+    href: hash-xxhash64-function.md
   - name: hll_merge()
     href: hllmergefunction.md
   - name: hourofday()
@@ -605,7 +607,7 @@ items:
     href: notfunction.md
   - name: now()
     href: nowfunction.md
-  - name: pack()
+  - name: bag_pack(), pack()
     href: packfunction.md
   - name: pack_all()
     href: packallfunction.md

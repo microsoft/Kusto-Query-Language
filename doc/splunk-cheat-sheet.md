@@ -5,7 +5,7 @@ ms.service: data-explorer
 ms.topic: conceptual
 author: bwren
 ms.author: bwren
-ms.date: 08/21/2018
+ms.date: 02/08/2022
 
 ---
 
@@ -70,7 +70,6 @@ In Splunk, you can omit the `search` keyword and specify an unquoted string. In 
 | Splunk | `search` | `search Session.Id="c8894ffd-e684-43c9-9125-42adc25cd3fc" earliest=-24h` |
 | Kusto | `find` | `find Session.Id=="c8894ffd-e684-43c9-9125-42adc25cd3fc" and ingestion_time()> ago(24h)` |
 
-
 ### Filter
 
 Kusto log queries start from a tabular result set in which `filter` is applied. In Splunk, filtering is the default operation on the current index. You also can use the `where` operator in Splunk, but we don't recommend it.
@@ -127,13 +126,12 @@ Splunk doesn't appear to have an operator that's similar to `project-away`. You 
 
 ### Aggregation
 
-See the [list of aggregations functions](summarizeoperator.md#list-of-aggregation-functions) that are available.
+See the [list of summarize aggregations functions](summarizeoperator.md#list-of-aggregation-functions) that are available.
 
-| Product | Operator | Example |
-|:---|:---|:---|
-| Splunk | `stats` |  `search (Rule=120502.*)`<br />&#124; `stats count by OSEnv, Audience` |
-| Kusto | `summarize` | `Office_Hub_OHubBGTaskError`<br />&#124; `summarize count() by App_Platform, Release_Audience` |
-
+| Splunk operator | Splunk example | Kusto operator | Kusto example |
+|:---|:---|:---|:---|
+| `stats` |  `search (Rule=120502.*)`<br />&#124; `stats count by OSEnv, Audience` |  `summarize` | `Office_Hub_OHubBGTaskError`<br />&#124; `summarize count() by App_Platform, Release_Audience`
+| `evenstats`  | `...` <br />&#124; `stats count_i by time, category` <br />&#124; `eventstats sum(count_i) AS count_total by _time_`  | `join` | ` T2` <br />&#124; `join kind=inner (T1) on _time` <br />&#124; `project _time, category, count_i, count_total`
 
 ### Join
 
