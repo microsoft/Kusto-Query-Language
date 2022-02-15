@@ -2501,7 +2501,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterFollowerClusterConfiguration =
             new CommandSymbol(nameof(AlterFollowerClusterConfiguration),
-                "alter follower cluster configuration from leaderClusterMetadataPath=<string> (follow-authorized-principals '=' followAuthorizedPrincipals=<bool> | default-principals-modification-kind '=' modificationKind=(none | union | replace) | default-caching-policies-modification-kind '=' modificationKind=(none | union | replace) | database-name-prefix '=' databaseNamePrefix=<name>)",
+                "alter follower cluster configuration from leaderClusterMetadataPath=<string> (follow-authorized-principals '=' followAuthorizedPrincipals=<bool> | default-principals-modification-kind '=' modificationKind=(none | union | replace) | default-caching-policies-modification-kind '=' modificationKind=(none | union | replace))",
                 UnknownResult);
 
         public static readonly CommandSymbol AddFollowerDatabaseAuthorizedPrincipals =
@@ -2531,7 +2531,7 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol AlterFollowerDatabaseConfiguration =
             new CommandSymbol(nameof(AlterFollowerDatabaseConfiguration),
-                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] (principals-modification-kind '=' modificationKind=(none | union | replace) | caching-policies-modification-kind '=' modificationKind=(none | union | replace) | prefetch-extents '=' prefetchExtents=<bool> | metadata serializedDatabaseMetadataOverride=<string> | database-name-override '=' databaseNameOverride=<name>)",
+                "alter follower database dbName=<database> [from leaderClusterMetadataPath=<string>] (principals-modification-kind '=' modificationKind=(none | union | replace) | caching-policies-modification-kind '=' modificationKind=(none | union | replace) | prefetch-extents '=' prefetchExtents=<bool> | metadata serializedDatabaseMetadataOverride=<string>)",
                 UnknownResult);
 
         //public static readonly CommandSymbol AddFollowerDatabase =
