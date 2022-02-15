@@ -69,7 +69,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Applies the code action at ths specified position.
         /// </summary>
-        public abstract CodeActionResult ApplyCodeAction(int position, CodeAction codeFix, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

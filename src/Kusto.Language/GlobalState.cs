@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Kusto.Language
 {
+    using Kusto.Language.Editor;
     using Symbols;
     using Utils;
 

@@ -8,13 +8,8 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// The base class for any <see cref="KustoCode"/> analyzer.
     /// </summary>
-    public abstract class KustoAnalyzer
+    public abstract class KustoAnalyzer : CodeAnalyzer
     {
-        /// <summary>
-        /// The name of the analyzer
-        /// </summary>
-        public string Name => this.GetType().Name;
-
         /// <summary>
         /// Override this method to suppy the example set of diagnostics that the analyzer produces.
         /// </summary>
@@ -28,7 +23,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The diagnostics produced by this analyzer.
         /// </summary>
-        public IReadOnlyList<Diagnostic> Diagnostics
+        public override IReadOnlyList<Diagnostic> Diagnostics
         {
             get
             { 

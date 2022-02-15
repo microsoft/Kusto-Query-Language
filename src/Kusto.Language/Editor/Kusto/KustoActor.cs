@@ -8,13 +8,8 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// 
     /// </summary>
-    public abstract class KustoActor
+    public abstract class KustoActor : CodeActor
     {
-        /// <summary>
-        /// The name of the actor.
-        /// </summary>
-        public string Name => this.GetType().Name;
-
         /// <summary>
         /// Gets the set of actions that this actor offers for the code at the given position.
         /// </summary>

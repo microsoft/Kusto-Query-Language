@@ -165,8 +165,15 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken = default)
         {
-            var result = ApplyCodeAction(position - _offset, codeAction, cancellationToken);
-            return new CodeActionResult(result.NewText, result.NewPosition + _offset);
+            var result = _service.ApplyCodeAction(position - _offset, codeAction, cancellationToken);
+            if (_offset > 0)
+            {
+                return new CodeActionResult(result.NewText, result.NewPosition + _offset);
+            }
+            else
+            {
+                return result;
+            }
         }
 
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)

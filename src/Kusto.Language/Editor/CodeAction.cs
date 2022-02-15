@@ -9,23 +9,17 @@ namespace Kusto.Language.Editor
     public class CodeAction
     {
         public string Actor { get; }
-        public string Verb { get; }
+        public string Name { get; }
         public string Description { get; }
         public string Data { get; }
 
-        internal CodeAction(string actor, string verb, string description, string data)
+        internal CodeAction(string actor, string name, string description, string data)
         {
             this.Actor = actor;
-            this.Verb = verb;
+            this.Name = name;
             this.Description = description;
             this.Data = data;
         }
-    }
-
-    public static class CodeActionVerbs
-    {
-        public static string Refactor = nameof(Refactor);
-        public static string Fix = nameof(Fix);
     }
 
     public class CodeActionInfo

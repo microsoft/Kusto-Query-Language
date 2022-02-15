@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
+    using Kusto.Language.Parsing;
     using Kusto.Language.Symbols;
     using Kusto.Language.Syntax;
     using System.Linq;
@@ -13,8 +14,8 @@ namespace Kusto.Language.Editor
 
     internal class InlineDatabaseFunctionActor : KustoActor
     {
-        private static readonly CodeAction InlineDatabaseFunction = new CodeAction(
-            nameof(InlineDatabaseFunctionActor), "Refactor", "Copy database function into this query", "");
+        private static readonly CodeAction InlineAction = new CodeAction(
+            nameof(InlineDatabaseFunctionActor), "Inline Function", "Copy database function into this query", "");
 
         public override void GetActions(KustoCode code, int position, IReadOnlyList<Diagnostic> additionalDiagnostics, List<CodeAction> actions, CancellationToken cancellationToken)
         {
@@ -28,7 +29,7 @@ namespace Kusto.Language.Editor
                     && code.Globals.IsDatabaseFunction(fs)
                     && IsGoodReference(nr, fs))
                 {
-                    actions.Add(InlineDatabaseFunction);
+                    actions.Add(InlineAction);
                 }
             }
         }
@@ -94,7 +95,22 @@ namespace Kusto.Language.Editor
             var statement = GetTopLevelStatement(code, position);
             if (statement != null)
             {
-                insertPosition = statement.TriviaStart;
+                var trivia = statement.GetFirstToken()?.Trivia ?? "";
+
+                if (statement.TriviaStart == 0)
+                {
+                    // statement is the first statement of the query block
+                    // assume any leading trivia with line breaks is comments and that comments are for entire query
+                    var lastLbEnd = TextFacts.GetLastLineBreakEnd(trivia);
+                    insertPosition = (lastLbEnd >= 0 ? lastLbEnd : 0) + statement.TriviaStart;
+                }
+                else
+                {
+                    // statement is not first, so place new statement after on the next new line
+                    var firstLbEnd = TextFacts.GetFirstLineBreakEnd(trivia);
+                    insertPosition = (firstLbEnd >= 0 ? firstLbEnd : 0) + statement.TriviaStart;
+                }
+
                 return true;
             }
             else

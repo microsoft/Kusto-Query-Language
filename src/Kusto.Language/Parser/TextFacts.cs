@@ -123,6 +123,65 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Gets the index of the end of the next line break or -1
+        /// </summary>
+        public static int GetNextLineBreakEnd(string text, int start)
+        {
+            var result = GetNextLineBreakStart(text, start);
+            return result >= 0 ? result + GetLineBreakLength(text, result) : -1;
+        }
+
+        /// <summary>
+        /// Gets the index of the start of the first line break or -1
+        /// </summary>
+        public static int GetFirstLineBreakStart(string text)
+        {
+            return GetNextLineBreakStart(text, 0);
+        }
+
+        /// <summary>
+        /// Gets the index of the end of hte first line break or -1
+        /// </summary>
+        public static int GetFirstLineBreakEnd(string text)
+        {
+            return GetNextLineBreakEnd(text, 0);
+        }
+
+        /// <summary>
+        /// Gets the index of the start of the last line break or -1
+        /// </summary>
+        public static int GetLastLineBreakStart(string text, int start = 0)
+        {
+            var result = -1;
+
+            while (start >= 0)
+            {
+                var lastLbEnd = start + GetLineBreakLength(text, start);
+                var nextLbStart = GetNextLineBreakStart(text, lastLbEnd);
+                if (nextLbStart >= 0)
+                {
+                    result = start = nextLbStart;
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the index of the start of the last line break or -1
+        /// </summary>
+        public static int GetLastLineBreakEnd(string text, int start = 0)
+        {
+            var result = GetLastLineBreakStart(text, start);
+            return result >= 0 ? result + GetLineBreakLength(text, result) : -1;
+        }
+
+        /// <summary>
         /// Returns true if the line is empty or whitespace.
         /// </summary>
         public static bool IsBlankLine(string text, int lineStart)

@@ -271,6 +271,12 @@ namespace Kusto.Language.Editor
                     }
                 }
 
+                if (actions.Count > 1)
+                {
+                    // present them in ascending alphabetical order
+                    actions.Sort((a, b) => string.Compare(a.Name, b.Name, ignoreCase: true));
+                }
+
                 return new CodeActionInfo(actions);
             }
 
