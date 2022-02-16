@@ -358,10 +358,12 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[geo_line_centroid()](geo-line-centroid-function.md)|Calculates the centroid of line or a multiline on Earth.|
 |[geo_line_densify()](geo-line-densify-function.md)|Converts planar line edges to geodesics by adding intermediate points.|
 |[geo_line_length()](geo-line-length-function.md)|Calculates the total length of line or a multiline on Earth.|
+|[geo_line_simplify()](geo-line-simplify-function.md)|Simplifies line or a multiline by replacing nearly straight chains of short edges with a single long edge on Earth.|
 |[geo_polygon_area()](geo-polygon-area-function.md)|Calculates the area of polygon or a multipolygon on Earth.|
 |[geo_polygon_centroid()](geo-polygon-centroid-function.md)|Calculates the centroid of polygon or a multipolygon on Earth.|
 |[geo_polygon_densify()](geo-polygon-densify-function.md)|Converts polygon or multipolygon planar edges to geodesics by adding intermediate points.|
 |[geo_polygon_perimeter()](geo-polygon-perimeter-function.md)|Calculates the length of the boundary of polygon or a multipolygon on Earth.|
+[[geo_union_lines_array()](geo-union-lines-array-function.md)|Calculates the union of lines or multilines on Earth.|
 |[geo_union_polygons_array()](geo-union-polygons-array-function.md)|Calculates the union of polygons or multipolygons on Earth.|
 
 ## Hash functions

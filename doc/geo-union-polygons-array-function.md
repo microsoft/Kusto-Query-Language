@@ -19,7 +19,7 @@ Calculates the union of polygons or multipolygons on Earth.
 
 ## Arguments
 
-* *polygons*: An array of Polygons or multipolygons in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+* *polygons*: An array of polygons or multipolygons in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 
 ## Returns
 
@@ -90,9 +90,9 @@ datatable(polygons:dynamic)
     dynamic({"type":"Polygon","coordinates":[[[-73.94622,40.79249]]]})
 ]
 | summarize polygons_arr = make_list(polygons)
-| project polygons_union = isnull(geo_union_polygons_array(polygons_arr))
+| project invalid_union = isnull(geo_union_polygons_array(polygons_arr))
 ```
 
-|polygons_union|
+|invalid_union|
 |---|
 |True|

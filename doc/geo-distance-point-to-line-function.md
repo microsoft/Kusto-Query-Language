@@ -105,7 +105,7 @@ let allRoads=toscalar(
     ManhattanRoads
     | project road_coordinates=features.geometry.coordinates
     | summarize make_list(road_coordinates)
-    | project multipolygon = pack("type","MultiLineString", "coordinates", list_road_coordinates));
+    | project multiline = pack("type","MultiLineString", "coordinates", list_road_coordinates));
 nyc_taxi
 | project pickup_longitude, pickup_latitude
 | where pickup_longitude != 0 and pickup_latitude != 0

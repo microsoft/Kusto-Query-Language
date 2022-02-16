@@ -915,7 +915,9 @@ items:
   - name: geo_line_densify()
     href: geo-line-densify-function.md
   - name: geo_line_length()
-    href: geo-line-length-function.md  
+    href: geo-line-length-function.md
+  - name: geo_line_simplify()
+    href: geo-line-simplify-function.md  
   - name: geo_polygon_area()
     href: geo-polygon-area-function.md
   - name: geo_polygon_centroid()
@@ -924,6 +926,8 @@ items:
     href: geo-polygon-densify-function.md
   - name: geo_polygon_perimeter()
     href: geo-polygon-perimeter-function.md
+  - name: geo_union_lines_array()
+    href: geo-union-lines-array-function.md
   - name: geo_union_polygons_array()
     href: geo-union-polygons-array-function.md
 - name: Time series analysis
