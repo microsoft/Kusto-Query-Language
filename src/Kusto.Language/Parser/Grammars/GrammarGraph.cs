@@ -171,31 +171,135 @@ namespace Kusto.Language.Parsing
         private class Node
         {
             // all the grammar terms from alternate sources that branched to here
-            private readonly HashSet<Grammar> _terms;
+            // can either be a single grammar or a hashset or null
+            private object _branchesFrom;
 
             // all the branches for common terms 
-            private readonly Dictionary<Grammar, Node> _branches;
+            // can either be a single KeyValuePair, Dictionary or null
+            private object _branchesTo;
 
             public Node(Grammar term)
             {
-                _terms = new HashSet<Grammar>();
-                _branches = new Dictionary<Grammar, Node>(GrammarEquivalenceComparer.Instance);
                 if (term != null)
                 {
-                    _terms.Add(term);
+                    AddBranchesFrom(term);
+                }
+            }
+
+            private void AddBranchesFrom(Grammar term)
+            {
+                if (_branchesFrom == null)
+                {
+                    _branchesFrom = term;
+                }
+                else if (_branchesFrom is Grammar g)
+                {
+                    if (term != g)
+                    {
+                        // items is unique by instance here
+                        var hs = new HashSet<Grammar>();
+                        hs.Add(g);
+                        hs.Add(term);
+                        _branchesFrom = hs;
+                    }
+                }
+                else if (_branchesFrom is HashSet<Grammar> hset)
+                {
+                    hset.Add(term);
+                }
+            }
+
+            private IEnumerable<Grammar> GetBranchesFrom()
+            {
+                if (_branchesFrom is Grammar g)
+                {
+                    return new[] { g };
+                }
+                else if (_branchesFrom is HashSet<Grammar> hs)
+                {
+                    return hs;
+                }
+                else
+                {
+                    return EmptyReadOnlyList<Grammar>.Instance;
+                }
+            }
+
+            private void AddBranchesTo(Grammar term, Node nextNode)
+            {
+                if (_branchesTo == null)
+                {
+                    _branchesTo = new KeyValuePair<Grammar, Node>(term, nextNode);
+                }
+                else if (_branchesTo is KeyValuePair<Grammar, Node> kvp)
+                {
+                    // keys don't have to be unique instances here, but similar
+                    if (!GrammarEquivalenceComparer.Instance.Equals(kvp.Key, term))
+                    {
+                        var d = new Dictionary<Grammar, Node>(GrammarEquivalenceComparer.Instance);
+                        d.Add(kvp.Key, kvp.Value);
+                        d.Add(term, nextNode);
+                        _branchesTo = d;
+                    }
+                }
+                else if (_branchesTo is Dictionary<Grammar, Node> bd)
+                {
+                    bd.Add(term, nextNode);
+                }
+            }
+
+            private bool TryGetBranchTo(Grammar term, out Node node)
+            {
+                if (_branchesTo is KeyValuePair<Grammar, Node> kvp)
+                {
+                    if (GrammarEquivalenceComparer.Instance.Equals(kvp.Key, term))
+                    {
+                        node = kvp.Value;
+                        return true;
+                    }
+                    else
+                    {
+                        node = null;
+                        return false;
+                    }
+                }
+                else if (_branchesTo is Dictionary<Grammar, Node> d)
+                {
+                    return d.TryGetValue(term, out node);
+                }
+                else
+                {
+                    node = null;
+                    return false;
+                }
+            }
+
+            private IEnumerable<Node> GetBranchesTo()
+            {
+                if (_branchesTo is KeyValuePair<Grammar, Node> kvp)
+                {
+                    return new[] { kvp.Value };
+                }
+                else if (_branchesTo is Dictionary<Grammar, Node> d)
+                {
+                    return d.Values;
+                }
+                else
+                {
+                    return Utils.EmptyReadOnlyList<Node>.Instance;
                 }
             }
 
             public Node AddTerm(Grammar term)
             {
-                if (!_branches.TryGetValue(term, out var nextNode))
+                if (!TryGetBranchTo(term, out var nextNode))
                 {
                     nextNode = new Node(term);
-                    _branches.Add(term, nextNode);
+                    AddBranchesTo(term, nextNode);
                 }
                 else
                 {
-                    nextNode._terms.Add(term);
+                    nextNode.AddBranchesFrom(term);
                 }
 
                 return nextNode;
@@ -203,20 +307,20 @@ namespace Kusto.Language.Parsing
 
             public Node GetNext(Grammar term)
             {
-                _branches.TryGetValue(term, out var nextNode);
+                TryGetBranchTo(term, out var nextNode);
                 return nextNode;
             }
 
             public void GetUniqueTerms(HashSet<Grammar> terms)
             {
-                if (_terms.Count == 1)
+                if (_branchesFrom is Grammar g)
                 {
-                    // get the unique term here
-                    terms.UnionWith(_terms);
+                    // we only get here from one grammar
+                    terms.Add(g);
                 }
                 else
                 {
-                    foreach (var node in _branches.Values)
+                    foreach (var node in GetBranchesTo())
                     {
                         node.GetUniqueTerms(terms);
                     }
@@ -227,20 +331,20 @@ namespace Kusto.Language.Parsing
             {
                 if (n >= 0)
                 {
-                    foreach (var node in _branches.Values)
+                    foreach (var node in GetBranchesTo())
                     {
                         node.GetNthTerms(n - 1, terms);
                     }
                 }
                 else
                 {
-                    terms.AddRange(_terms);
+                    terms.AddRange(GetBranchesFrom());
                 }
             }
 
             public void GetAlternativeTerms(Dictionary<Grammar, IReadOnlyList<Grammar>> map)
             {
-                var list = _branches.Values.SelectMany(n => n._terms).ToList();
+                var list = GetBranchesTo().SelectMany(n => n.GetBranchesFrom()).ToList();
 
                 foreach (var term in list)
                 {
@@ -254,7 +358,7 @@ namespace Kusto.Language.Parsing
                     }
                 }
 
-                foreach (var node in _branches.Values)
+                foreach (var node in GetBranchesTo())
                 {
                     node.GetAlternativeTerms(map);
                 }

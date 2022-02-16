@@ -2340,8 +2340,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_union_lines_array", ScalarTypes.Dynamic,
                 new Parameter("lineStrings", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
             new FunctionSymbol("geo_polygon_to_s2cells", ScalarTypes.Dynamic,
@@ -2399,8 +2398,7 @@ namespace Kusto.Language
                 new Parameter("lineString", ScalarTypes.Dynamic),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineValidate =
             new FunctionSymbol("__geo_line_validate", ScalarTypes.String,
