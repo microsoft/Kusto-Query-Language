@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Kusto.Language.Syntax;
 
 namespace Kusto.Language.Parsing
 {
-    using Utils;
-    using static CharScanners;
-    using static Parsers<char>;
-
     // The grammar grammar:
     //
     // alternation:
@@ -41,8 +34,24 @@ namespace Kusto.Language.Parsing
     /// <summary>
     /// A parser that parsers a grammar for grammars.
     /// </summary>
-    public static class GrammarParser
+    public class GrammarParser
     {
+        /// <summary>
+        /// The text being parsed
+        /// </summary>
+        private readonly string _text;
+
+        /// <summary>
+        /// The current character position the parser is at.
+        /// </summary>
+        private int _position;
+
+        private GrammarParser(string text, int position = 0)
+        {
+            _text = text;
+            _position = position;
+        }
+
         /// <summary>
         /// Try to parse the grammar grammar.
         /// Returns true if parse succeeds.
@@ -53,16 +62,24 @@ namespace Kusto.Language.Parsing
         /// <returns>True if the parse succeeds.</returns>
         public static bool TryParse(string text, out Grammar grammar, out int length)
         {
-            var parser = GetParser();
-            var result = parser.Parse(text);
-            grammar = result.Value;
-            length = result.Length;
-            return result.Succeeded;
+            try
+            {
+                var parser = new GrammarParser(text);
+                grammar = parser.ParseAlternationLevel();
+                length = parser._position;
+                return grammar != null;
+            }
+            catch (Exception)
+            {
+                grammar = null;
+                length = 0;
+                return false;
+            }
         }
 
         /// <summary>
         /// Try to parse the grammar grammar.
-        /// Returns true if parse succeeds.
+        /// Returns true if the parse succeeds.
         /// </summary>
         /// <param name="text">The grammar grammar.</param>
         /// <param name="grammar">The resulting grammar tree.</param>
@@ -74,222 +91,602 @@ namespace Kusto.Language.Parsing
         /// Parses the grammar grammar and returns the resulting <see cref="Grammar"/>.
         /// </summary>
         /// <param name="text">The grammar grammar.</param>
-        /// <returns></returns>
+        /// <returns>The parsed grammar or null</returns>
         public static Grammar Parse(string text)
         {
-            TryParse(text, out var grammar);
-            return grammar;
+            var parser = new GrammarParser(text);
+            return parser.ParseAlternationLevel();
         }
 
         /// <summary>
-        /// Creates a parser that parses the grammar grammar.
+        /// Parse an alternation or a sequence level element
         /// </summary>
-        private static Parser<char, Grammar> GetParser()
+        private Grammar ParseAlternationLevel()
         {
-            if (_grammarParser == null)
+            var element = ParseSequenceLevel();
+
+            List<Grammar> elements = null;
+            while (ParseToken("|") != null)
             {
-                _grammarParser = CreateParser();
-            }
-
-            return _grammarParser;
-        }
-
-        private static Parser<char, Grammar> _grammarParser;
-
-        /// <summary>
-        /// Creates a parser that parses the grammar grammar and builds custom results.
-        /// </summary>
-        private static Parser<char, Grammar> CreateParser()
-        {
-            // build the parser that parsers the simple grammar grammar
-            Parser<char, Grammar> elementCore = null;
-            var element = Forward(() => elementCore);
-
-            var WhitespaceCount =
-                Count(ZeroOrMore(Whitespace));
-
-            Parser<char, string> TokenText(string text) =>
-                Convert(Chars(text), text);
-
-            var IdentifierScan =
-                And(Or(Letter, Char('_')), ZeroOrMore(Or(Letter, Digit, Char('_'), Char('-'))));
-
-            var IdentifierText =
-                Text(IdentifierScan);
-
-            var IdentifierTextAndOffset =
-                TextAndOffset(IdentifierScan);
-
-            var StringLiteralScan =
-                And(Char('\''), ZeroOrMore(Not(Char('\''))), Char('\''));
-
-            var StringLiteralText =
-                Text(StringLiteralScan);
-
-            var StringLiteralTextAndOffset =
-                TextAndOffset(StringLiteralScan);
-
-            Parser<char, string> Token(string text) =>
-                Rule(WhitespaceCount, TokenText(text), (ws, tx) => tx);
-
-            var Identifier =
-                Rule(WhitespaceCount, IdentifierText, (ws, tx) => tx);
-
-            var IdentifierAndOffset =
-                Rule(WhitespaceCount, IdentifierTextAndOffset, (ws, tx) => tx);
-
-            var StringLiteral =
-                Rule(WhitespaceCount, StringLiteralText, (ws, tx) => tx);
-
-            var StringLiteralAndOffset =
-                Rule(WhitespaceCount, StringLiteralTextAndOffset, (ws, tx) => tx);
-
-            var term =
-                First(
-                    Rule(Identifier, text => (Grammar)new TokenGrammar(text)),
-                    Rule(StringLiteral, text => (Grammar)new TokenGrammar(KustoFacts.GetStringLiteralValue(text))))
-                    .WithTag("<term>");
-
-            var rule =
-                Rule(
-                    Token("<"), Text(OneOrMore(Not(Token(">")))), Token(">"),
-                    (open, name, close) => (Grammar)new RuleGrammar(name))
-                .WithTag("<rule>");
-
-            var sequence = Produce(
-                OneOrMore(element),
-                (IReadOnlyList<Grammar> list) =>
-                    list.Count == 1 ? list[0] : new SequenceGrammar(list.ToList()))
-                .WithTag("<sequence>");
-
-            var alternation =
-                List(
-                    elementParser: sequence,
-                    separatorParser: Token("|"),
-                    missingElement: null,
-                    missingSeparator: null,
-                    endOfList: null,
-                    oneOrMore: true,
-                    allowTrailingSeparator: false,
-                    producer: list =>
-                    {
-                        if (list.Count == 1)
-                        {
-                            return list[0].Element;
-                        }
-                        else
-                        {
-                            return new AlternationGrammar(list.Select(eas => eas.Element).OfType<Grammar>().ToArray());
-                        }
-                    }).WithTag("<alternation>");
-
-            var separator = Rule(
-                Token(","), 
-                term, 
-                Optional(Token("~")),
-                (comma, word, plus) => new SeparatorInfo(word, plus != null));
-
-            var repeatition = Rule(
-                    Token("{"),
-                    alternation,
-                    Optional(separator),
-                    Token("}"),
-                    Optional(First(Token("+"), Token("*"))),
-                (open, elem, sep, close, kind) =>
+                if (elements == null)
                 {
-                    var zeroOrMore = kind == null || kind == "*";
+                    elements = new List<Grammar>();
+                    elements.Add(element);
+                }
 
-                    if (zeroOrMore)
-                    {
-                        return (Grammar)new ZeroOrMoreGrammar(elem, sep?.Separator, sep?.AllowTrailing ?? false);
-                    }
-                    else
-                    {
-                        return (Grammar)new OneOrMoreGrammar(elem, sep?.Separator, sep?.AllowTrailing ?? false);
-                    }
-                }).WithTag("<repetition>");
+                element = ParseSequenceLevel() ?? throw CreateExpectedGrammarException();
+                elements.Add(element);
+            }
 
-            var grouped = Rule(
-                Token("("), alternation, Token(")"),
-                (open, grammar, close) => grammar)
-                .WithTag("<grouping>");
-
-            var optional = Rule(
-                Token("["), alternation, Token("]"),
-                (open, optioned, close) => (Grammar)new OptionalGrammar(optioned))
-                .WithTag("<optional>");
-
-            var primaryElement =
-                First(
-                    term,           // id or 'id'
-                    rule,           // <rule>
-                    grouped)        // ( ... )
-                    .WithTag("<element>");
-
-            // allow for some postfix abbreviations here
-            var postfixPrimary =
-                First(
-                    optional,       // [a]
-                    repeatition,    // {a}
-
-                    ApplyOptional(
-                        primaryElement,
-                        _left =>
-                            First(
-                                Rule(_left, Token("!"),
-                                    (left, bang) => (Grammar)new RequiredGrammar(left))
-                                    .WithTag("<required>"),
-
-                                // alternative to [] 
-                                Rule(_left, Token("?"),
-                                    (left, question) => (Grammar)new OptionalGrammar(left))
-                                    .WithTag("<optional>"),
-
-                                // alternative to { }*
-                                Rule(_left, Token("*"),
-                                    (left, star) => (Grammar)new ZeroOrMoreGrammar(left))
-                                    .WithTag("<zero-or-more>"),
-
-                                // alternative to { }+
-                                Rule(_left, Token("+"),
-                                    (left, plus) => (Grammar)new OneOrMoreGrammar(left))
-                                    .WithTag("<one-or-more>")
-                                    )));
-
-            var hiddenPrimary =
-                First(
-                    Rule(Token("#"), postfixPrimary, 
-                        (hat, hidden) => (Grammar)new HiddenGrammar(hidden)).WithTag("<hidden>"),
-                    postfixPrimary);
-
-            // allow for tag=elem
-            var taggedPrimary =
-                First(
-                    If(And(Identifier, Token("=")),
-                        Rule(Identifier, Token("="), hiddenPrimary,
-                            (id, eq, elem) => (Grammar)new TaggedGrammar(id, elem))),
-
-                    If(And(StringLiteral, Token("=")),
-                        Rule(StringLiteral, Token("="), hiddenPrimary,
-                            (str, eq, elem) => (Grammar)new TaggedGrammar(KustoFacts.GetStringLiteralValue(str), elem))),
-
-                    hiddenPrimary
-                    );
-
-            elementCore = taggedPrimary;
-
-            return alternation;
-        }
-
-        private class SeparatorInfo
-        {
-            public Grammar Separator { get; }
-            public bool AllowTrailing { get; }
-            public SeparatorInfo(Grammar separator, bool AllowTrailing)
+            if (elements != null)
             {
-                this.Separator = separator;
-                this.AllowTrailing = AllowTrailing;
+                return new AlternationGrammar(elements.AsReadOnly());
+            }
+            else
+            {
+                return element;
             }
         }
+
+        /// <summary>
+        /// Parse a sequence or a tagged level element
+        /// </summary>
+        private Grammar ParseSequenceLevel()
+        {
+            List<Grammar> elements = null;
+
+            var firstElement = ParseTaggedLevel();
+            if (firstElement != null)
+            {
+                while (true)
+                {
+                    var nextElement = ParseTaggedLevel();
+                    if (nextElement == null)
+                        break;
+
+                    if (elements == null)
+                    {
+                        elements = new List<Grammar>();
+                        elements.Add(firstElement);
+                    }
+
+                    elements.Add(nextElement);
+                }
+            }
+
+            if (elements != null)
+            {
+                return new SequenceGrammar(elements.AsReadOnly());
+            }
+            else
+            {
+                return firstElement;
+            }
+        }
+
+        /// <summary>
+        /// Parse a tagged element or a hidden level element
+        /// </summary>
+        private Grammar ParseTaggedLevel()
+        {
+            SkipTrivia();
+
+            if (ScanIdentifierEquals() > 0)
+            {
+                var name = ParseIdentifier();
+                ExpectToken("=");
+                var tagged = ParseHiddenLevel() ?? throw CreateExpectedGrammarException();
+                return new TaggedGrammar(name, tagged);
+            }
+            else if (ScanStringLiteralEquals() > 0)
+            {
+                var value = ParseStringLiteral();
+                ExpectToken("=");
+                var tagged = ParseHiddenLevel() ?? throw CreateExpectedGrammarException();
+                return new TaggedGrammar(value, tagged);
+            }
+            else
+            {
+                return ParseHiddenLevel();
+            }
+        }
+
+        /// <summary>
+        /// Parse a hidden element or a bracketed level element
+        /// </summary>
+        private Grammar ParseHiddenLevel()
+        {
+            if (ParseToken("#") != null)
+            {
+                var element = ParseBracketedLevel() ?? throw CreateExpectedGrammarException();
+                return new HiddenGrammar(element);
+            }
+            else
+            {
+                return ParseBracketedLevel();
+            }
+        }
+
+        /// <summary>
+        /// Parse a optional, zero-or-more, one-or-more or postfix level element
+        /// </summary>
+        private Grammar ParseBracketedLevel()
+        {
+            return ParseOptional()
+                ?? ParseRepetition()
+                ?? ParsePostfixLevel();
+        }
+
+        /// <summary>
+        /// Parse an optional grammar element
+        /// </summary>
+        private Grammar ParseOptional()
+        {
+            if (ParseToken("[") != null)
+            {
+                var element = ParseAlternationLevel() ?? throw CreateExpectedGrammarException();
+                ExpectToken("]");
+                return new OptionalGrammar(element);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a zero-or-more or one-or-more grammar element
+        /// </summary>
+        private Grammar ParseRepetition()
+        {
+            if (ParseToken("{") != null)
+            {
+                var element = ParseAlternationLevel() ?? throw CreateExpectedGrammarException();
+
+                Grammar separator = null;
+                bool allowTrailing = false;
+
+                if (ParseToken(",") != null)
+                {
+                    separator = ParseTerm() ?? throw CreateExpectedTermException();
+                    allowTrailing = ParseToken("~") != null;
+                }
+
+                ExpectToken("}");
+
+                var postfix = ParseToken("*") ?? ParseToken("+");
+
+                var zeroOrMore = postfix == null || postfix == "*";
+                if (zeroOrMore)
+                {
+                    return (Grammar)new ZeroOrMoreGrammar(element, separator, allowTrailing);
+                }
+                else
+                {
+                    return (Grammar)new OneOrMoreGrammar(element, separator, allowTrailing);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a postfix required, optional, zero-or-more, one-or-more or a primary level element
+        /// </summary>
+        private Grammar ParsePostfixLevel()
+        {
+            var element = ParsePrimaryLevel();
+
+            if (ParseToken("!") != null)
+            {
+                return new RequiredGrammar(element);
+            }
+            else if (ParseToken("?") != null)
+            {
+                return new OptionalGrammar(element);
+            }
+            else if (ParseToken("*") != null)
+            {
+                return new ZeroOrMoreGrammar(element);
+            }
+            else if (ParseToken("+") != null)
+            {
+                return new OneOrMoreGrammar(element);
+            }
+            else
+            {
+                return element;
+            }
+        }
+
+        /// <summary>
+        /// Parse a term, rule or grouped element
+        /// </summary>
+        private Grammar ParsePrimaryLevel()
+        {
+            return ParseTerm()
+                ?? ParseRule()
+                ?? ParseGrouped();
+        }
+
+        /// <summary>
+        /// Parse an identifier or string literal token grammar element
+        /// </summary>
+        private Grammar ParseTerm()
+        {
+            if (ParseIdentifier() is string id)
+            {
+                return new TokenGrammar(id);
+            }
+            else if (ParseStringLiteral() is string value)
+            {
+                return new TokenGrammar(value);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Parse a rule element
+        /// </summary>
+        private Grammar ParseRule()
+        {
+            var name = ParseRuleName();
+            if (name != null)
+            {
+                return new RuleGrammar(name);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Parse an parenthesized grammar element
+        /// </summary>
+        private Grammar ParseGrouped()
+        {
+            if (ParseToken("(") != null)
+            {
+                var element = ParseAlternationLevel();
+                ExpectToken(")");
+                return element;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a token
+        /// </summary>
+        private string ParseToken(string token)
+        {
+            SkipTrivia();
+
+            if (Matches(_text, _position, token))
+            {
+                _position += token.Length;
+                return token;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse an expected token or throw an exception
+        /// </summary>
+        private void ExpectToken(string token)
+        {
+            if (ParseToken(token) == null)
+            {
+                throw CreateExpectedTokenException(token);
+            }
+        }
+
+        /// <summary>
+        /// Parse an identifier
+        /// </summary>
+        private string ParseIdentifier()
+        {
+            SkipTrivia();
+
+            var start = _position;
+            var idLen = ScanIdentifier();
+            if (idLen > 0)
+            {
+                _position += idLen;
+                return _text.Substring(start, idLen);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a string literal
+        /// </summary>
+        private string ParseStringLiteral()
+        {
+            SkipTrivia();
+
+            var start = _position;
+            var literalLen = ScanStringLiteral();
+            if (literalLen > 0)
+            {
+                _position += literalLen;
+                var literal = _text.Substring(start, literalLen);
+                return KustoFacts.GetStringLiteralValue(literal);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a rule name
+        /// </summary>
+        private string ParseRuleName()
+        {
+            SkipTrivia();
+
+            var start = _position;
+            var ruleLen = ScanRuleName();
+            if (ruleLen > 0)
+            {
+                _position += ruleLen;
+                return _text.Substring(start + 1, ruleLen - 2);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Advances current position past any trivia
+        /// </summary>
+        private void SkipTrivia()
+        {
+            _position += ScanTrivia();
+        }
+
+        /// <summary>
+        /// Scans an identifier followed by an equals.
+        /// </summary>
+        private int ScanIdentifierEquals(int offset = 0)
+        {
+            var idLen = ScanIdentifier(offset + ScanTrivia(offset));
+
+            if (idLen > 0)
+            {
+                var equalLen = ScanToken("=", offset + idLen + ScanTrivia(offset));
+                if (equalLen > 0)
+                {
+                    return idLen + equalLen;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Scans a string literal followed by an equals.
+        /// </summary>
+        private int ScanStringLiteralEquals(int offset = 0)
+        {
+            var idLen = ScanStringLiteral(offset + ScanTrivia(offset));
+
+            if (idLen > 0)
+            {
+                var tokenLen = ScanToken("=", offset + idLen + ScanTrivia(offset));
+                if (tokenLen > 0)
+                {
+                    return idLen + tokenLen;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Scans an identifier.
+        /// </summary>
+        private int ScanIdentifier(int offset = 0)
+        {
+            var len = 0;
+
+            if (IsIdentifierFirstCharacter(Peek(offset)))
+            {
+                len++;
+
+                while (IsIdentifierBodyCharacter(Peek(offset + len)))
+                {
+                    len++;
+                }
+            }
+
+            return len;
+        }
+
+        /// <summary>
+        /// Returns true if the character is legal for the first character in an identifier.
+        /// </summary>
+        private static bool IsIdentifierFirstCharacter(char ch)
+        {
+            return char.IsLetter(ch) || ch == '_';
+        }
+
+        /// <summary>
+        /// Returns true if the character is legal for a character after the first in an identifier.
+        /// </summary>
+        private static bool IsIdentifierBodyCharacter(char ch)
+        {
+            return char.IsLetterOrDigit(ch) || ch == '_' || ch == '-';
+        }
+
+        /// <summary>
+        /// Scans a string literal, returning the number of characters of the quoted string or zero.
+        /// </summary>
+        private int ScanStringLiteral(int offset = 0)
+        {
+            var len = 0;
+
+            if (Peek(offset) == '\'')
+            {
+                len++;
+
+                char ch;
+                while ((ch = Peek(offset + len)) != '\'' && ch != '\0')
+                {
+                    len++;
+                }
+
+                if (Peek(offset + len) == '\'')
+                {
+                    len++;
+                }
+                else
+                {
+                    throw CreateStringLiteralMissingEndQuoteException();
+                }
+            }
+
+            return len;
+        }
+
+        /// <summary>
+        /// Scans a rule name, returning the number of characters in the bracketed name or zero.
+        /// </summary>
+        private int ScanRuleName(int offset = 0)
+        {
+            var len = 0;
+
+            if (Peek(offset) == '<')
+            {
+                len++;
+
+                char ch;
+                while ((ch = Peek(offset + len)) != '>' && ch != '\0')
+                {
+                    len++;
+                }
+
+                if (Peek(offset + len) == '>')
+                {
+                    len++;
+                }
+                else
+                {
+                    throw CreateRuleNameMissingEndBracketException();
+                }
+
+                if (len < 3)
+                {
+                    throw CreateRuleNameRequiresAtLeastOneCharacter();
+                }
+            }
+
+            return len;
+        }
+
+        /// <summary>
+        /// Scans the specified token, returning the number of characters in the token or zero.
+        /// </summary>
+        private int ScanToken(string token, int offset = 0)
+        {
+            if (Matches(_text, _position + offset, token))
+            {
+                return token.Length;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Return the number of trivia characters that existing a sequence starting at the current position + offset
+        /// </summary>
+        private int ScanTrivia(int offset = 0)
+        {
+            var len = ScanSpaces(offset);
+
+            if (char.IsWhiteSpace(Peek(offset + len)))
+            {
+                return len + ScanWhitespace(offset + len);
+            }
+
+            return len;
+        }
+
+        /// <summary>
+        /// Returns the number of space characters that exist in a sequence starting at the current position + offset
+        /// </summary>
+        private int ScanSpaces(int offset = 0)
+        {
+            var start = offset;
+
+            while (Peek(offset) == ' ')
+            {
+                offset++;
+            }
+
+            return offset - start;
+        }
+
+        /// <summary>
+        /// Returns the number of whitespace characters exist in a sequence starting at the current position + offset
+        /// </summary>
+        private int ScanWhitespace(int offset = 0)
+        {
+            var start = offset;
+
+            while (char.IsWhiteSpace(Peek(offset)))
+            {
+                offset++;
+            }
+
+            return offset - start;
+        }
+
+        /// <summary>
+        /// Returns the character at the parsing position + the offset
+        /// </summary>
+        private char Peek(int offset = 0)
+        {
+            if (_position + offset < _text.Length)
+            {
+                return _text[_position + offset];
+            }
+            else
+            {
+                return '\0';
+            }
+        }
+
+        /// <summary>
+        /// True if the match text matches the characters starting at the position inside the specified text.
+        /// </summary>
+        private static bool Matches(string text, int start, string match)
+        {
+            return start + match.Length <= text.Length
+                && match[0] == text[start]
+                && (match.Length == 1 || string.Compare(text, start, match, 0, match.Length, StringComparison.Ordinal) == 0);
+        }
+
+        private Exception CreateExpectedGrammarException() =>
+            new InvalidOperationException($"Expected grammar element at position {_position}");
+
+        private Exception CreateExpectedTokenException(string token) =>
+            new InvalidOperationException($"Expected token '{token}' at position {_position}");
+
+        private Exception CreateExpectedTermException() =>
+            new InvalidOperationException($"Expected identifier or string literal at position {_position}");
+
+        private Exception CreateRuleNameMissingEndBracketException() =>
+            new InvalidOperationException($"Rule name missing end bracket '>' at position {_position}");
+
+        private Exception CreateRuleNameRequiresAtLeastOneCharacter() =>
+            new InvalidOperationException($"Rule name requires at least one character at position {_position}");
+
+        private Exception CreateStringLiteralMissingEndQuoteException() =>
+            new InvalidOperationException($"String literal missing end quote at position {_position}");
     }
 }

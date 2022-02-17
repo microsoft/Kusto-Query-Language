@@ -12,7 +12,7 @@ namespace Kusto.Language.Parsing
     internal class GrammarGraph
     {
         private readonly Node _root;
-#if DEBUG
+#if DEBUG_MAP
         private readonly Dictionary<Grammar, Node> _grammarToNodeMap;
 #endif
 
@@ -20,7 +20,7 @@ namespace Kusto.Language.Parsing
         {
             _root = new Node(null);
 
-#if DEBUG
+#if DEBUG_MAP
             _grammarToNodeMap = new Dictionary<Grammar, Node>();
 #endif
         }
@@ -81,7 +81,7 @@ namespace Kusto.Language.Parsing
                 case RuleGrammar _:
                     var nn = root.AddTerm(grammar);
                     nextNodes?.Add(nn);
-#if DEBUG
+#if DEBUG_MAP
                     if (_grammarToNodeMap.ContainsKey(grammar))
                     {
                         // not sure yet to do anything about this

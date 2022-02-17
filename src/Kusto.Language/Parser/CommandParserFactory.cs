@@ -105,19 +105,31 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public Parser<LexicalToken, Command> CreateCommandParser(IReadOnlyList<CommandSymbol> commandSymbols)
         {
-            var commandAndGrammars = commandSymbols.Select(s => new CommandAndGrammar(s, ParseCommandGrammar(s.Name, s.Grammar)))
-                .Where(x => x.Grammar != null)
-                .ToList();
-
-            var adjustedResult = Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
-
-            var commandParsers = adjustedResult.items.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar, adjustedResult.analysis))
-                .ToArray();
+            var commandAndGrammars = ParseCommandGrammars(commandSymbols);
+            var adjustedResult = AdjustCommandGrammars(commandAndGrammars);
+            var commandParsers = CreateCommandGrammarParsers(adjustedResult.items, adjustedResult.analysis);
 
             // use Best combinator with function to pick which output is better when there are ambiguities
             var bestCommandParsers = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
             return bestCommandParsers;
             //return First(commandParsers);
+        }
+
+        private List<CommandAndGrammar> ParseCommandGrammars(IReadOnlyList<CommandSymbol> commandSymbols)
+        {
+            return commandSymbols.Select(s => new CommandAndGrammar(s, ParseCommandGrammar(s.Name, s.Grammar)))
+                .Where(x => x.Grammar != null)
+                .ToList();
+        }
+
+        private (IReadOnlyList<CommandAndGrammar> items, GrammarAnalysis analysis) AdjustCommandGrammars(IReadOnlyList<CommandAndGrammar> commandAndGrammars)
+        {
+            return Adjust(commandAndGrammars, cag => cag.Grammar, (cag, g) => new CommandAndGrammar(cag.Symbol, g));
+        }
+
+        private Parser<LexicalToken, Command>[] CreateCommandGrammarParsers(IReadOnlyList<CommandAndGrammar> commandAndGrammars, GrammarAnalysis analysis)
+        {
+            return commandAndGrammars.Select(cag => CreateCommandParser(cag.Symbol.Name, cag.Grammar, analysis)).ToArray();
         }
 
         private static bool IsBetterSyntax(SyntaxElement command1, SyntaxElement command2)

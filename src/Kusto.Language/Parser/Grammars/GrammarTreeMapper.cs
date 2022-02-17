@@ -3,7 +3,7 @@
 namespace Kusto.Language.Parsing
 {
     /// <summary>
-    /// A rewriter that apples the function or visitor to each node or rewritten node in the tree, bottom up.
+    /// A rewriter that applies the function or visitor to each node or rewritten node in the tree, bottom up.
     /// </summary>
     public sealed class GrammarTreeMapper : GrammarRewriter
     {
