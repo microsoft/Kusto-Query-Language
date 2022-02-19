@@ -46,8 +46,7 @@ datatable(SourceNumber:string,TargetNumber:string,CharsCount:long)
 '555-555-1313','',42, 
 '','555-555-3456',74 
 ]
-| extend Packed=pack_all()
-| extend PackedIgnoreNullEmpty=pack_all(true)
+| extend Packed=pack_all(), PackedIgnoreNullEmpty=pack_all(true)
 ```
 
 Returns:
