@@ -70,7 +70,7 @@ Alternatively, one might want to choose entity names that are guaranteed to neve
 "collide" with a Kusto keyword. The following guarantees are made:
 
 1. The Kusto query language will not define a keyword that starts with a capital letter (`A` to `Z`).
-2. The Kusto query language will not define a keyword that starts with a single underscore (`_`).us
+2. The Kusto query language will not define a keyword that starts with a single underscore (`_`).
 3. The Kusto query language will not define a keyword that ends with a single underscore (`_`).
 
 The Kusto query language reserves all identifiers that start or end with a

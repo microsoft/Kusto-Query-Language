@@ -23,7 +23,7 @@ in the table's collection of columns.
 * Column names follow the rules for [entity names](./entity-names.md).
 * Maximum limit of columns per table is 10,000.
 
-In queries, columns are generally references by name only. They can only appear
+In queries, columns are generally referenced by name only. They can only appear
 in expressions, and the query operator under which the expression appears
 determines the table or tabular data stream, so the column's name need not be
 further scoped. For example, in the following query we have an unnamed tabular
