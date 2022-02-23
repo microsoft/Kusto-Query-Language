@@ -23,11 +23,83 @@
     <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Parser\CodeGen\AriaBridgeCommandGrammar.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AriaBridgeCommandGrammar.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\AriaBridgeCommands.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AriaBridgeCommands.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\ClusterManagerCommandGrammar.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClusterManagerCommandGrammar.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\ClusterManagerCommands.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClusterManagerCommands.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\DataManagerCommandGrammar.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataManagerCommandGrammar.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\DataManagerCommands.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataManagerCommands.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\EngineCommandGrammar.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EngineCommandGrammar.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Parser\CodeGen\EngineCommands.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EngineCommands.tt</DependentUpon>
+    </Compile>
     <Compile Update="Syntax\CodeGen\GeneratedCslTree.cs">
       <DependentUpon>GeneratedCslTree.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Update="Parser\CodeGen\AriaBridgeCommandGrammar.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AriaBridgeCommandGrammar.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\AriaBridgeCommands.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AriaBridgeCommands.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\ClusterManagerCommandGrammar.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ClusterManagerCommandGrammar.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\ClusterManagerCommands.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ClusterManagerCommands.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\DataManagerCommandGrammar.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataManagerCommandGrammar.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\DataManagerCommands.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataManagerCommands.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\EngineCommandGrammar.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EngineCommandGrammar.cs</LastGenOutput>
+    </None>
+    <None Update="Parser\CodeGen\EngineCommands.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EngineCommands.cs</LastGenOutput>
+    </None>
     <None Update="Syntax\CodeGen\GeneratedCslTree.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GeneratedCslTree.cs</LastGenOutput>

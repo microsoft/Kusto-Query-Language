@@ -6,6 +6,7 @@ using Kusto.Language.Editor;
 
 namespace Kusto.Language.Syntax
 {
+    using Kusto.Language.Parsing;
     using Utils;
 
     /// <summary>
@@ -19,7 +20,13 @@ namespace Kusto.Language.Syntax
         public CustomNode(IReadOnlyList<CustomElementDescriptor> shape, IReadOnlyList<SyntaxElement> elements, IReadOnlyList<Diagnostic> diagnostics)
             : base(diagnostics)
         {
-            this.shape = shape ?? EmptyReadOnlyList<CustomElementDescriptor>.Instance;
+            if (shape == null)
+                throw new ArgumentNullException(nameof(shape));
+
+            if (elements == null)
+                throw new ArgumentNullException(nameof(elements));
+
+            this.shape = shape;
 
             if (elements != null)
             {
@@ -45,6 +52,11 @@ namespace Kusto.Language.Syntax
 
         public CustomNode(IReadOnlyList<CustomElementDescriptor> shape, params SyntaxElement[] elements)
             : this(shape, elements, null)
+        {
+        }
+
+        public CustomNode(params SyntaxElement[] elements)
+            : this(SyntaxParsers.GetDefaultShape(elements.Length), elements, null)
         {
         }
 

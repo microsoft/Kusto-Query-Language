@@ -54,9 +54,9 @@ namespace Kusto.Language
         public IReadOnlyList<OperatorSymbol> Operators { get; }
 
         /// <summary>
-        /// Supported commands
+        /// The kind of server that determines what set of control commands are available.
         /// </summary>
-        public IReadOnlyList<CommandSymbol> Commands { get; }
+        public string ServerKind { get; }
 
         /// <summary>
         /// Ambient parameters
@@ -141,7 +141,7 @@ namespace Kusto.Language
             IReadOnlyList<FunctionSymbol> aggregates,
             IReadOnlyList<FunctionSymbol> plugins,
             IReadOnlyList<OperatorSymbol> operators,
-            IReadOnlyList<CommandSymbol> commands,
+            string serverKind,
             IReadOnlyList<ParameterSymbol> parameters,
             IReadOnlyList<OptionSymbol> options,
             IReadOnlyList<PropertyAndValue> properties,
@@ -165,7 +165,7 @@ namespace Kusto.Language
             this.Aggregates = aggregates ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
             this.PlugIns = plugins ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
             this.Operators = operators ?? EmptyReadOnlyList<OperatorSymbol>.Instance;
-            this.Commands = commands ?? EmptyReadOnlyList<CommandSymbol>.Instance;
+            this.ServerKind = serverKind ?? ServerKinds.Engine;
             this.Parameters = parameters ?? EmptyReadOnlyList<ParameterSymbol>.Instance;
             this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
             this.Properties = properties ?? EmptyReadOnlyList<PropertyAndValue>.Instance;
@@ -197,7 +197,7 @@ namespace Kusto.Language
                 this.Aggregates,
                 this.PlugIns,
                 this.Operators,
-                this.Commands,
+                this.ServerKind,
                 this.Parameters,
                 this.Options,
                 this.Properties,
@@ -227,7 +227,7 @@ namespace Kusto.Language
             Optional<IReadOnlyList<FunctionSymbol>> aggregates = default(Optional<IReadOnlyList<FunctionSymbol>>),
             Optional<IReadOnlyList<FunctionSymbol>> plugins = default(Optional<IReadOnlyList<FunctionSymbol>>),
             Optional<IReadOnlyList<OperatorSymbol>> operators = default(Optional<IReadOnlyList<OperatorSymbol>>),
-            Optional<IReadOnlyList<CommandSymbol>> commands = default(Optional<IReadOnlyList<CommandSymbol>>),
+            Optional<string> serverKind = default(Optional<string>),
             Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>),
             Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>),
             Optional<IReadOnlyList<PropertyAndValue>> properties = default(Optional<IReadOnlyList<PropertyAndValue>>),
@@ -241,7 +241,7 @@ namespace Kusto.Language
             var useAggregates = aggregates.HasValue ? aggregates.Value : this.Aggregates;
             var usePlugins = plugins.HasValue ? plugins.Value : this.PlugIns;
             var useOperators = operators.HasValue ? operators.Value : this.Operators;
-            var useCommands = commands.HasValue ? commands.Value : this.Commands;
+            var useServerKind = serverKind.HasValue ? serverKind.Value : this.ServerKind;
             var useParameters = parameters.HasValue ? parameters.Value : this.Parameters;
             var useOptions = options.HasValue ? options.Value : this.Options;
             var useProperties = properties.HasValue ? properties.Value : this.Properties;
@@ -255,7 +255,7 @@ namespace Kusto.Language
                 || useAggregates != this.Aggregates
                 || usePlugins != this.PlugIns
                 || useOperators != this.Operators
-                || useCommands != this.Commands
+                || useServerKind != this.ServerKind
                 || useParameters != this.Parameters
                 || useOptions != this.Options
                 || useProperties != this.Properties
@@ -270,7 +270,7 @@ namespace Kusto.Language
                     useAggregates,
                     usePlugins,
                     useOperators,
-                    useCommands,
+                    useServerKind,
                     useParameters,
                     useOptions,
                     useProperties,
@@ -282,7 +282,7 @@ namespace Kusto.Language
                     useAggregates == this.Aggregates ? this.aggregatesMap : null,
                     usePlugins == this.PlugIns ? this.pluginMap : null,
                     useOperators == this.Operators ? this.operatorMap : null,
-                    useCommands == this.Commands ? this.commandMap : null,
+                    useServerKind == this.ServerKind ? this.commandMap : null,
                     useOptions == this.Options ? this.optionMap : null,
                     useProperties == this.Properties ? this.propertyMap : null);
             }
@@ -701,27 +701,11 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the specified commands.
+        /// Constructs a new <see cref="GlobalState"/> with the specified server kind <see cref="ServerKinds"/>.
         /// </summary>
-        public GlobalState WithCommands(IReadOnlyList<CommandSymbol> commands)
+        public GlobalState WithServerKind(string serverKind)
         {
-            return With(commands: Optional(commands));
-        }
-
-        /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional commands.
-        /// </summary>
-        public GlobalState AddCommands(IReadOnlyList<CommandSymbol> additionalCommands)
-        {
-            return With(commands: this.Commands.Concat(additionalCommands).ToList());
-        }
-
-        /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional commands.
-        /// </summary>
-        public GlobalState AddCommands(params CommandSymbol[] additionalCommands)
-        {
-            return AddCommands((IReadOnlyList<CommandSymbol>) additionalCommands);
+            return With(serverKind: serverKind);
         }
 
         /// <summary>
@@ -731,16 +715,36 @@ namespace Kusto.Language
         {
             if (this.commandMap == null)
             {
-                var map = new Dictionary<string, CommandSymbol>(this.Commands.Count);
-                foreach (var c in this.Commands)
+                var commands = GetCommands(this.ServerKind);
+
+                var map = new Dictionary<string, CommandSymbol>(commands.Count);
+                foreach (var c in commands)
                 {
                     map[c.Name] = c;
                 }
+
                 Interlocked.CompareExchange(ref this.commandMap, map, null);
             }
 
             this.commandMap.TryGetValue(name, out var command);
             return command;
+        }
+
+        private static IReadOnlyList<CommandSymbol> GetCommands(string serverKind)
+        {
+            switch (serverKind)
+            {
+                case ServerKinds.Engine:
+                    return EngineCommands.All;
+                case ServerKinds.DataManager:
+                    return DataManagerCommands.All;
+                case ServerKinds.ClusterManager:
+                    return ClusterManagerCommands.All;
+                case ServerKinds.AriaBridge:
+                    return AriaBridgeCommands.All;
+                default:
+                    return EmptyReadOnlyList<CommandSymbol>.Instance;
+            }
         }
 
         /// <summary>
@@ -909,7 +913,7 @@ namespace Kusto.Language
                             Language.Aggregates.All,
                             Language.PlugIns.All,
                             Language.Operators.All,
-                            Language.EngineCommands.All,
+                            ServerKinds.Engine,
                             EmptyReadOnlyList<ParameterSymbol>.Instance,
                             Language.Options.All,
                             EmptyReadOnlyList<PropertyAndValue>.Instance,

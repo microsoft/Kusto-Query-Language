@@ -1,0 +1,3 @@
+﻿<#@ include file=".\CommandGenerator.t4" #>
+<#@ include file=".\..\..\..\Kusto.Language.Generators\AriaBridgeCommandInfos.cs" #>
+<#= new CommandGenerator().GenerateParser("AriaBridgeCommandGrammar", typeof(AriaBridgeCommandInfos)) #>

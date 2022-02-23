@@ -10,11 +10,6 @@ namespace Kusto.Language.Symbols
 
     public class CommandSymbol : Symbol
     {
-        /// <summary>
-        /// The command grammar
-        /// </summary>
-        public string Grammar { get; }
-
         private string resultSchema;
         private TableSymbol resultType;
 
@@ -60,17 +55,9 @@ namespace Kusto.Language.Symbols
 
         public override SymbolKind Kind => SymbolKind.Command;
 
-        public CommandSymbol(string name, string grammar, TableSymbol resultType)
+        public CommandSymbol(string name, string resultSchema)
             : base(name)
         {
-            this.Grammar = grammar;
-            this.resultType = resultType;
-        }
-
-        public CommandSymbol(string name, string grammar, string resultSchema)
-            : base(name)
-        {
-            this.Grammar = grammar;
             this.resultSchema = resultSchema;
         }
     }

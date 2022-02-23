@@ -1,0 +1,3 @@
+﻿<#@ include file=".\CommandGenerator.t4" #>
+<#@ include file="..\..\..\Kusto.Language.Generators\DataManagerCommandInfos.cs" #>
+<#= new CommandGenerator().GenerateSymbols("DataManagerCommands", typeof(DataManagerCommandInfos)) #>

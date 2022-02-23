@@ -48,12 +48,22 @@ namespace Kusto.Language.Parsing
             return SyntaxToken.Missing("", kind, new[] { diagnostic ?? DiagnosticFacts.GetTokenExpected(new[] { text }) });
         }
 
+        public static SyntaxElement CreateMissingEToken(string text)
+        {
+            return CreateMissingToken(text);
+        }
+
         /// <summary>
         /// Creates a missing <see cref="SyntaxToken"/> for a token that was expected to have one of the specified texts.
         /// </summary>
         public static SyntaxToken CreateMissingToken(IReadOnlyList<string> texts)
         {
             return SyntaxToken.Missing("", SyntaxKind.IdentifierToken, new[] { DiagnosticFacts.GetTokenExpected(texts) });
+        }
+
+        public static SyntaxElement CreateMissingEToken(IReadOnlyList<string> texts)
+        {
+            return CreateMissingToken(texts);
         }
 
         /// <summary>
@@ -229,6 +239,14 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> EToken(string text, CompletionKind? ckind = null)
+        {
+            return Token(text, ckind).Cast<SyntaxElement>();
+        }
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
+        /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionItem item)
         {
             var rule = MatchText(text).WithTag(GetDefaultTag(text));
@@ -260,6 +278,12 @@ namespace Kusto.Language.Parsing
 
             return rule;
         }
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a single <see cref="SyntaxToken"/>.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> EToken(params string[] texts) =>
+            Token(texts).Cast<SyntaxElement>();
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
@@ -320,6 +344,12 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> RequiredEToken(string text, CompletionKind? ckind = null) =>
+            Required(EToken(text, ckind), () => (SyntaxElement)CreateMissingToken(text));
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
+        /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(string text, CompletionItem item) =>
             Required(Token(text, item), () => CreateMissingToken(text));
 
@@ -328,6 +358,12 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> RequiredToken(IReadOnlyList<string> texts, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal) =>
             Required(Token(texts, ckind, priority), () => CreateMissingToken(texts));
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> RequiredEToken(params string[] texts) =>
+            Required(EToken(texts), () => (SyntaxElement)CreateMissingToken(texts));
 
         /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for a token with the specified <see cref="SyntaxKind"/>.
@@ -357,7 +393,14 @@ namespace Kusto.Language.Parsing
         /// </summary>
         private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
         {
-            return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Syntax, priority, ctext);
+            if (SyntaxFacts.TryGetKind(text, out var kind))
+            {
+                return GetDefaultCompletionItem(kind, ckind, priority, ctext);
+            }
+            else
+            {
+                return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Syntax, priority, ctext);
+            }
         }
 
         /// <summary>
@@ -415,12 +458,51 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// A parser that parses a <see cref="SyntaxList"/> of elements.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<TElement>> List<TElement>(
+            Parser<LexicalToken, TElement> elementParser,
+            Func<TElement> missingElement,
+            bool oneOrMore = false)
+            where TElement : SyntaxElement
+        {
+            return Parsers<LexicalToken>.List(
+                elementParser,
+                missingElement,
+                oneOrMore,
+                elements =>
+                    new SyntaxList<TElement>(elements.ToArray()));
+        }
+
+        /// <summary>
         /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement{TElement}"/>'s
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
             Parser<LexicalToken, TElement> primaryElementParser,
             SyntaxKind separatorKind,
             TElement missingElement,
+            Parser<LexicalToken> endOfList = null,
+            bool oneOrMore = false,
+            bool allowTrailingSeparator = false)
+            where TElement : SyntaxElement
+        {
+            return SeparatedList(
+                primaryElementParser,
+                separatorKind,
+                primaryElementParser.WithTag("..."),
+                missingElement,
+                endOfList,
+                oneOrMore,
+                allowTrailingSeparator);
+        }
+
+        /// <summary>
+        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement{TElement}"/>'s
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
+            Parser<LexicalToken, TElement> primaryElementParser,
+            SyntaxKind separatorKind,
+            Func<TElement> missingElement,
             Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
@@ -463,6 +545,32 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
+            Parser<LexicalToken, TElement> primaryElementParser,
+            SyntaxKind separatorKind,
+            Parser<LexicalToken, TElement> secondaryElementParser,
+            Func<TElement> missingElement,
+            Parser<LexicalToken> endOfList = null,
+            bool oneOrMore = false,
+            bool allowTrailingSeparator = false)
+            where TElement : SyntaxElement
+        {
+            return OList(
+                primaryElementParser,
+                Token(separatorKind),
+                secondaryElementParser,
+                missingElement,
+                () => CreateMissingToken(separatorKind),
+                missingElement,
+                endOfList,
+                oneOrMore,
+                allowTrailingSeparator,
+                MakeSeparatedList<TElement>);
+        }
+
+        /// <summary>
         /// Determines if a typical comma separated list has ended
         /// </summary>
         public static Parser<LexicalToken> EndOfCommaList = Match(t =>
@@ -495,8 +603,37 @@ namespace Kusto.Language.Parsing
             return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
         }
 
-        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(Parser<LexicalToken, TElement> elementParser, TElement missingElement) where TElement : SyntaxNode =>
-            Produce(
+        /// <summary>
+        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> CommaList<TElement>(
+            Parser<LexicalToken, TElement> elementParser,
+            Func<TElement> missingElement = null,
+            bool oneOrMore = false,
+            bool allowTrailingComma = false,
+            IEnumerable<SyntaxKind> endKinds = null)
+            where TElement : SyntaxElement
+        {
+            Parser<LexicalToken> endOfList = EndOfCommaList;
+
+            if (endKinds != null)
+            {
+                var hash = new HashSet<SyntaxKind>(endKinds);
+                endOfList = First(EndOfCommaList, Match(t => hash.Contains(t.Kind)));
+            }
+
+            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
+        }
+
+        /// <summary>
+        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(
+            Parser<LexicalToken, TElement> elementParser,
+            TElement missingElement)
+            where TElement : SyntaxElement
+        {
+            return Produce(
                 Sequence(
                     Required(elementParser.Cast<SyntaxElement>(), () => (SyntaxElement)missingElement.Clone()),
                     ZeroOrMore(
@@ -504,6 +641,25 @@ namespace Kusto.Language.Parsing
                             Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),
                             Rule(elementParser, l => (SyntaxElement)l)))),
                 elements => MakeSeparatedList<TElement>(elements));
+        }
+
+        /// <summary>
+        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(
+            Parser<LexicalToken, TElement> elementParser,
+            Func<TElement> missingElement = null) 
+            where TElement : SyntaxElement
+        {
+            return Produce(
+                Sequence(
+                    Required(elementParser.Cast<SyntaxElement>(), () => (SyntaxElement)missingElement()),
+                    ZeroOrMore(
+                        Sequence(
+                            Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),
+                            Rule(elementParser, l => (SyntaxElement)l)))),
+                elements => MakeSeparatedList<TElement>(elements));
+        }
 
         /// <summary>
         /// Constructs a SyntaxList&lt;SeparatedElement&lt;TElement&gt;&gt; from a list of items and separators.
@@ -533,6 +689,177 @@ namespace Kusto.Language.Parsing
             }
 
             return new SyntaxList<SeparatedElement<TElement>>(separatedElements);
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            IReadOnlyList<Parser<LexicalToken>> parsers,
+            IReadOnlyList<CustomElementDescriptor> shape = null)
+        {
+            if (shape == null)
+            {
+                shape = GetDefaultShape(parsers.Count);
+            }
+
+            return Produce(
+                Sequence(parsers),
+                (IReadOnlyList<object> items) =>
+                    (SyntaxElement)new CustomNode(shape, items.Cast<SyntaxElement>().ToArray()));
+        }
+
+        public static IReadOnlyList<CustomElementDescriptor> GetDefaultShape(int count)
+        {
+            var elements = new CustomElementDescriptor[count];
+            for (int i = 0; i < count; i++)
+            {
+                elements[i] = DefaultDescriptor;
+            }
+
+            return elements;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser,
+            CustomElementDescriptor shape = null) =>
+            Custom(new[] { parser }, shape != null ? new[] { shape } : null);
+
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            Parser<LexicalToken> parser5,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4, parser5 }, shape);
+
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            Parser<LexicalToken> parser5,
+            Parser<LexicalToken> parser6,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4, parser5, parser6 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            Parser<LexicalToken> parser5,
+            Parser<LexicalToken> parser6,
+            Parser<LexicalToken> parser7,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4, parser5, parser6, parser7 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            Parser<LexicalToken> parser5,
+            Parser<LexicalToken> parser6,
+            Parser<LexicalToken> parser7,
+            Parser<LexicalToken> parser8,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomNode"/> parser.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Custom(
+            Parser<LexicalToken> parser1,
+            Parser<LexicalToken> parser2,
+            Parser<LexicalToken> parser3,
+            Parser<LexicalToken> parser4,
+            Parser<LexicalToken> parser5,
+            Parser<LexicalToken> parser6,
+            Parser<LexicalToken> parser7,
+            Parser<LexicalToken> parser8,
+            Parser<LexicalToken> parser9,
+            IReadOnlyList<CustomElementDescriptor> shape = null) =>
+            Custom(new[] { parser1, parser2, parser3, parser4, parser5, parser6, parser7, parser8, parser9 }, shape);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomElementDescriptor"/>
+        /// </summary>
+        public static CustomElementDescriptor CD(string name, CompletionHint hint = CompletionHint.Syntax, bool isOptional = false) =>
+            new CustomElementDescriptor(name, hint, isOptional);
+
+        /// <summary>
+        /// Constructs a <see cref="CustomElementDescriptor"/>
+        /// </summary>
+        public static CustomElementDescriptor CD(CompletionHint hint = CompletionHint.Syntax, bool isOptional = false) =>
+            hint == CompletionHint.Syntax && !isOptional
+                ? DefaultDescriptor
+                : new CustomElementDescriptor(hint, isOptional);
+
+        /// <summary>
+        /// The default <see cref="CustomElementDescriptor"/>
+        /// </summary>
+        private static readonly CustomElementDescriptor DefaultDescriptor = 
+            new CustomElementDescriptor(null, CompletionHint.Syntax, false);
+
+        /// <summary>
+        /// Constructs a custom command parser.
+        /// </summary>
+        public static Parser<LexicalToken, Command> Command(string commandName, Parser<LexicalToken, SyntaxElement> contentParser)
+        {
+            return Rule(
+                Token(SyntaxKind.DotToken),
+                contentParser,
+                (dot, custom) => (Command)new CustomCommand(commandName, dot, custom))
+                .WithTag($"<{commandName}>");
         }
 
         /// <summary>

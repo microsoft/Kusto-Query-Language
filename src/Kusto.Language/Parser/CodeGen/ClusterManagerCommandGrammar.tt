@@ -1,0 +1,3 @@
+﻿<#@ include file=".\CommandGenerator.t4" #>
+<#@ include file="..\..\..\Kusto.Language.Generators\ClusterManagerCommandInfos.cs" #>
+<#= new CommandGenerator().GenerateParser("ClusterManagerCommandGrammar", typeof(ClusterManagerCommandInfos)) #>

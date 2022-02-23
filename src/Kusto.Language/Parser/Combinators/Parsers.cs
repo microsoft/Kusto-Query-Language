@@ -1397,6 +1397,13 @@ namespace Kusto.Language.Parsing
             new SequenceParser<TInput>(parsers);
 
         /// <summary>
+        /// A parser that parsers a sequence of values into the output.
+        /// If any parser in the sequence fails, then this parser fails.
+        /// </summary>
+        public static Parser<TInput> Sequence(IReadOnlyList<Parser<TInput>> parsers) =>
+            new SequenceParser<TInput>(parsers);
+
+        /// <summary>
         /// A parser that converts all the successfully scanned input characters into a single output string.
         /// </summary>
         public static Parser<char, string> Text(Parser<char> pattern) =>

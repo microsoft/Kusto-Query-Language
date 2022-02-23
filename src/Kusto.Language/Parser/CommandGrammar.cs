@@ -3,13 +3,12 @@ using System.Linq;
 using System.Collections.Generic;
 using Kusto.Language.Symbols;
 using Kusto.Language.Syntax;
-using Kusto.Language.Editor;
 
 namespace Kusto.Language.Parsing
 {
     using static Parsers<LexicalToken>;
     using static SyntaxParsers;
-    using Q=QueryGrammar;
+    using Q = QueryGrammar;
     using Utils;
     using System.Text;
 
@@ -18,12 +17,16 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public class CommandGrammar
     {
+        internal GlobalState Globals { get; }
+
+        /// <summary>
+        /// The entry point grammar for commands
+        /// </summary>
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }
 
-        private CommandGrammar(
-            Parser<LexicalToken, CommandBlock> commandBlockParser)
+        public CommandGrammar(GlobalState globals)
         {
-            this.CommandBlock = commandBlockParser;
+            this.CommandBlock = CreateCommandBlockParser(globals);
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace Kusto.Language.Parsing
         public static CommandGrammar From(GlobalState globals)
         {
             // if this is same set of commands as the default set, then just return the default grammar
-            if (globals.Commands == GlobalState.Default.Commands)
+            if (globals.ServerKind == GlobalState.Default.ServerKind)
             {
                 return GetDefaultCommandGrammar();
             }
@@ -51,16 +54,17 @@ namespace Kusto.Language.Parsing
             if (grammar == null)
             {
                 var recent = s_recentGrammar;
-                if (recent != null && recent.Commands == globals.Commands)
+
+                if (recent != null && recent.ServerKind == globals.ServerKind)
                 {
                     grammar = recent.Grammar;
                 }
                 else
                 {
-                    grammar = Create(globals);
+                    grammar = CreateCommandGrammar(globals);
 
                     // remember this grammar for next time
-                    var newRecent = new RecentGrammar(globals.Commands, grammar);
+                    var newRecent = new RecentGrammar(globals.ServerKind, grammar);
                     Interlocked.CompareExchange(ref s_recentGrammar, newRecent, recent);
                 }
             }
@@ -78,12 +82,12 @@ namespace Kusto.Language.Parsing
 
         private class RecentGrammar
         {
-            public IReadOnlyList<CommandSymbol> Commands { get; }
+            public string ServerKind { get; }
             public CommandGrammar Grammar { get; }
 
-            public RecentGrammar(IReadOnlyList<CommandSymbol> commands, CommandGrammar grammar)
+            public RecentGrammar(string serverKind, CommandGrammar grammar)
             {
-                this.Commands = commands;
+                this.ServerKind = serverKind;
                 this.Grammar = grammar;
             }
         }
@@ -94,42 +98,39 @@ namespace Kusto.Language.Parsing
         {
             if (s_defaultCommandGrammar == null)
             {
-                var grammar = Create(GlobalState.Default);
+                var grammar = CreateCommandGrammar(GlobalState.Default);
                 Interlocked.CompareExchange(ref s_defaultCommandGrammar, grammar, null);
             }
 
             return s_defaultCommandGrammar;
         }
 
-        private static Parser<LexicalToken, SyntaxToken> UnknownCommandToken =
-            If(Not(First(
-                Token(SyntaxKind.BarToken),
-                Token(SyntaxKind.LessThanBarToken),
-                Token(SyntaxKind.EndOfTextToken))),
-                AnyToken);
-
-        public static Parser<LexicalToken, Command> UnknownCommand =
-            Rule(
-                Token(SyntaxKind.DotToken),
-                OneOrMore(UnknownCommandToken,
-                    (tokens) => new SyntaxList<SyntaxToken>(tokens)),
-                (dot, parts) => (Command)new UnknownCommand(dot, parts))
-                .WithTag("<unknown-command>");
-
-        public static Parser<LexicalToken, Command> BadCommand =
-            Rule(
-                Token(SyntaxKind.DotToken),
-                dot => (Command)new BadCommand(dot, new Diagnostic[] { DiagnosticFacts.GetMissingCommand() }))
-                .WithTag("<bad-command>");
-
+        /// <summary>
+        /// Creates the correct kind of command grammar given the global state.
+        /// </summary>
+        public static CommandGrammar CreateCommandGrammar(GlobalState globals)
+        {
+            switch (globals.ServerKind)
+            {
+                case ServerKinds.Engine:
+                    return new EngineCommandGrammar(globals);
+                case ServerKinds.DataManager:
+                    return new DataManagerCommandGrammar(globals);
+                case ServerKinds.ClusterManager:
+                    return new ClusterManagerCommandGrammar(globals);
+                case ServerKinds.AriaBridge:
+                    return new AriaBridgeCommandGrammar(globals);
+                default:
+                    // no defined commands
+                    return new CommandGrammar(globals);
+            }
+        }
 
         /// <summary>
         /// Creates a new <see cref="CommandGrammar"/> given the <see cref="GlobalState"/>
         /// </summary>
-        private static CommandGrammar Create(GlobalState globals)
+        private Parser<LexicalToken, CommandBlock> CreateCommandBlockParser(GlobalState globals)
         {
-            var q = Q.From(globals);
-
             Parser<LexicalToken, Command> commandCore = null;
 
             var command = Forward(() => commandCore)
@@ -137,12 +138,13 @@ namespace Kusto.Language.Parsing
 
             // include parsers for all command symbols
             var queryParser = QueryGrammar.From(globals);
-            var parserFactory = new CommandParserFactory(queryParser, command);
-            var bestCommandParsers = parserFactory.CreateCommandParser(globals.Commands);
+            var rules = new PredefinedRuleParsers(queryParser, command);
+            var commandParsers = this.CreateCommandParsers(rules).ToArray();
+            var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
 
             commandCore =
                 First(
-                    bestCommandParsers, // pick whichever command will successfully consume most input
+                    bestCommand, // pick whichever command will successfully consume most input
                     UnknownCommand, // fall back for commands that are not defined
                     BadCommand) // otherwise its just bad
                 .WithTag("<command>");
@@ -154,7 +156,7 @@ namespace Kusto.Language.Parsing
                         Rule(
                             _left,
                             Token(SyntaxKind.BarToken),
-                            Required(q.FollowingPipeElementExpression, Q.MissingQueryOperator),
+                            Required(queryParser.FollowingPipeElementExpression, Q.MissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right))
                             .WithTag("<command-output-pipe>"));
 
@@ -174,7 +176,7 @@ namespace Kusto.Language.Parsing
                     SeparatedList(
                         commandStatement, // first one is a command statement
                         SyntaxKind.SemicolonToken,
-                        q.Statement,      // all others elements are query statements
+                        queryParser.Statement,      // all others elements are query statements
                         MissingCommandStatementNode,
                         endOfList: EndOfText,
                         oneOrMore: true,
@@ -184,10 +186,71 @@ namespace Kusto.Language.Parsing
                     (cmd, skipped, end) =>
                         new CommandBlock(cmd, skipped, end));
 
-            return new CommandGrammar(commandBlock);
+            return commandBlock;
         }
 
-        private static Statement MissingCommandStatementNode =
+        private static bool IsBetterSyntax(SyntaxElement command1, SyntaxElement command2)
+        {
+            // neither command has diagnostics, neither is better
+            if (!command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                return false;
+
+            // command1 has diagnostics, command1 is not better than command2
+            if (command1.ContainsSyntaxDiagnostics && !command2.ContainsSyntaxDiagnostics)
+                return false;
+
+            // command2 has diagnostics, command1 is better
+            if (!command1.ContainsSyntaxDiagnostics && command2.ContainsSyntaxDiagnostics)
+                return true;
+
+            var dx1 = command1.GetContainedSyntaxDiagnostics();
+            var dx2 = command2.GetContainedSyntaxDiagnostics();
+
+            // command1 first diagnostic occurs lexically after command2 first diagnostics, command1 is better
+            if (dx1[0].Start > dx2[0].Start)
+                return true;
+
+            // command1 first diagnostic occurs lexically before command2 first diagnostic, command1 is not better
+            if (dx1[0].Start < dx2[0].Start)
+                return false;
+
+            // don't compare number of diagnostics, since we want to favor what happens early rather than later
+
+            // otherwise neither is better
+            return false;
+        }
+
+        /// <summary>
+        /// Derived command parser's override this method to create the set of individual command parsers.
+        /// </summary>
+        internal virtual Parser<LexicalToken, Command>[] CreateCommandParsers(PredefinedRuleParsers rules)
+        {
+            // no commands
+            return new Parser<LexicalToken, Command>[0];
+        }
+
+        internal static readonly Parser<LexicalToken, SyntaxToken> UnknownCommandToken =
+            If(Not(First(
+                Token(SyntaxKind.BarToken),
+                Token(SyntaxKind.LessThanBarToken),
+                Token(SyntaxKind.EndOfTextToken))),
+                AnyToken);
+
+        internal static readonly Parser<LexicalToken, Command> UnknownCommand =
+            Rule(
+                Token(SyntaxKind.DotToken),
+                OneOrMore(UnknownCommandToken,
+                    (tokens) => new SyntaxList<SyntaxToken>(tokens)),
+                (dot, parts) => (Command)new UnknownCommand(dot, parts))
+                .WithTag("<unknown-command>");
+
+        internal static readonly Parser<LexicalToken, Command> BadCommand =
+            Rule(
+                Token(SyntaxKind.DotToken),
+                dot => (Command)new BadCommand(dot, new Diagnostic[] { DiagnosticFacts.GetMissingCommand() }))
+                .WithTag("<bad-command>");
+
+        internal static readonly Statement MissingCommandStatementNode =
             new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));
     }
 }
