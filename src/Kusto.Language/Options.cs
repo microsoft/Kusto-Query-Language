@@ -14,7 +14,7 @@ namespace Kusto.Language
     public class Options
     {
         public static readonly OptionSymbol DebugPython =
-    new OptionSymbol("query_python_debug", "If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
+            new OptionSymbol("query_python_debug", "If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
 
         public static readonly OptionSymbol DeferPartialQueryFailures =
             new OptionSymbol("deferpartialqueryfailures", "If true, disables reporting partial query failures as part of the result set.", ScalarTypes.Bool);
@@ -41,6 +41,7 @@ namespace Kusto.Language
 
         public static readonly OptionSymbol NoRequestTimeout =
             new OptionSymbol("norequesttimeout", "Enables setting the request timeout to its maximum value.", ScalarTypes.Bool);
+
         public static readonly OptionSymbol NoTruncation =
             new OptionSymbol("notruncation", "Enables suppressing truncation of the query results returned to the caller.", ScalarTypes.Bool);
 
@@ -92,6 +93,7 @@ namespace Kusto.Language
 
         public static readonly OptionSymbol QueryFanoutNodesPercent =
             new OptionSymbol("query_fanout_nodes_percent", "The percentage of nodes to fan out execution to.", ScalarTypes.Int);
+
         public static readonly OptionSymbol QueryFanoutThreadsPercent =
             new OptionSymbol("query_fanout_threads_percent", "The percentage of threads to fan out execution to.", ScalarTypes.Int);
 
@@ -115,6 +117,9 @@ namespace Kusto.Language
 
         public static readonly OptionSymbol QueryResultsCachePerShardEnabled =
             new OptionSymbol("query_results_cache_per_shard", "If set, enables per-shard query cache.", ScalarTypes.Bool);
+
+        public static readonly OptionSymbol QueryWeakConsistencySessionId =
+            new OptionSymbol("query_weakconsistency_session_id", "Sets the query weak consistency session id. Takes effect when 'queryconsistency' mode is set to 'weakconsistency_by_session_id'.", ScalarTypes.String);
 
         public static readonly OptionSymbol RequestAppName =
             new OptionSymbol("request_app_name", "Request application name to be used in the reporting (e.g. show queries).", ScalarTypes.String);
@@ -197,6 +202,7 @@ namespace Kusto.Language
     QueryResultsApplyGetSchema,
     QueryResultsCacheMaxAge,
     QueryResultsCachePerShardEnabled,
+    QueryWeakConsistencySessionId,
     RequestAppName,
     RequestBlockRowLevelSecurity,
     RequestCalloutDisabled,

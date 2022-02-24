@@ -63,10 +63,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EngineCommands.tt</DependentUpon>
     </Compile>
-    <Compile Update="Syntax\CodeGen\GeneratedCslTree.cs">
-      <DependentUpon>GeneratedCslTree.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
+    <Compile Update="Syntax\CodeGen\GeneratedSyntaxNodes.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeneratedSyntaxNodes.tt</DependentUpon>
     </Compile>
     <None Update="Parser\CodeGen\AriaBridgeCommandGrammar.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -100,9 +100,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>EngineCommands.cs</LastGenOutput>
     </None>
-    <None Update="Syntax\CodeGen\GeneratedCslTree.tt">
+    <None Update="Syntax\CodeGen\GeneratedSyntaxNodes.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>GeneratedCslTree.cs</LastGenOutput>
+      <LastGenOutput>GeneratedSyntaxNodes.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

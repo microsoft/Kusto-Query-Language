@@ -14,7 +14,8 @@ namespace Kusto.Language
     {
         public static readonly FunctionSymbol ActiveUseCounts =
             new FunctionSymbol("active_users_count",
-                (table, args, signature) => {
+                (table, args, signature) =>
+                {
                     var cols = new List<ColumnSymbol>();
                     AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline
                     AddReferencedColumns(cols, args, signature, "Dimension"); // dimensions
@@ -96,7 +97,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ActivityMetrics =
             new FunctionSymbol("activity_metrics",
                 new Signature(
-                    (table, args, signature) => {
+                    (table, args, signature) =>
+                    {
                         var cols = new List<ColumnSymbol>();
                         AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
                         AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
@@ -114,7 +116,8 @@ namespace Kusto.Language
                     new Parameter("Step", ParameterTypeKind.Summable, ArgumentKind.Constant),
                     new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
-                    (table, args, signature) => {
+                    (table, args, signature) =>
+                    {
                         var cols = new List<ColumnSymbol>();
                         AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
                         cols.Add(new ColumnSymbol("dcount_values", ScalarTypes.Long));
@@ -234,25 +237,6 @@ namespace Kusto.Language
                  new Parameter("MaxDimensions", ParameterTypeKind.Integer, defaultValueIndicator: "~", minOccurring: 0),
                  new Parameter("CustomWildcard", ParameterTypeKind.Scalar, minOccurring: 0, maxOccurring: MaxRepeat));
 
-        public static readonly FunctionSymbol CosmosdbSqlRequest =
-             new FunctionSymbol("cosmosdb_sql_request",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
-                 Tabularity.Tabular,
-                 new Parameter("endpoint", ScalarTypes.String),
-                 new Parameter("authorization_string", ScalarTypes.String),
-                 new Parameter("database_name", ScalarTypes.String),
-                 new Parameter("collection_name", ScalarTypes.String),
-                 new Parameter("sql_query", ScalarTypes.String)
-                 );
-
-        public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
-                     new FunctionSymbol("azure_digital_twins_query_request",
-                         (table, args) => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
-                         Tabularity.Tabular,
-                         new Parameter("endpoint", ScalarTypes.String),
-                         new Parameter("sql_query", ScalarTypes.String)
-                         );
-        
         public static readonly FunctionSymbol DCountIntersect =
              new FunctionSymbol("dcount_intersect",
                  (table, args) => new TableSymbol(table.Columns.Concat(args.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long)))).WithInheritableProperties(table),
@@ -344,7 +328,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol FunnelSequenceCompletion =
             new FunctionSymbol("funnel_sequence_completion",
-                (table, args, signature) => {
+                (table, args, signature) =>
+                {
                     var cols = new List<ColumnSymbol>();
                     AddReferencedColumn(cols, args, signature, "TimelineColumn");
 
@@ -532,7 +517,7 @@ namespace Kusto.Language
                 Tabularity.Tabular,
                 new Parameter("Condition", ScalarTypes.Bool, ArgumentKind.Expression),
                 new Parameter("NumRows", ParameterTypeKind.Integer, ArgumentKind.Constant),
-                new Parameter("NumRowsAfter", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring:0));
+                new Parameter("NumRowsAfter", ParameterTypeKind.Integer, ArgumentKind.Constant, minOccurring: 0));
 
         public static readonly FunctionSymbol SessionCount =
              new FunctionSymbol("session_count",
@@ -597,13 +582,13 @@ namespace Kusto.Language
                      int i = list.Count;
 
                      // any following bool args are also expr args
-                     for (;  i < args.Count && args[i].ResultType == ScalarTypes.Bool; i++)
+                     for (; i < args.Count && args[i].ResultType == ScalarTypes.Bool; i++)
                      {
                          list.Add(SD_Expr);
                      }
 
                      // all remaining args are dimensions
-                     for (;  i < args.Count; i++)
+                     for (; i < args.Count; i++)
                      {
                          list.Add(SD_Dimension);
                      }
@@ -633,15 +618,37 @@ namespace Kusto.Language
              new FunctionSymbol("sql_request",
                  (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
                  Tabularity.Tabular,
-                 new Parameter("ConnectionString", ScalarTypes.String),
-                 new Parameter("SqlQuery", ScalarTypes.String));
+                 new Parameter("connection_string", ScalarTypes.String),
+                 new Parameter("sql_query", ScalarTypes.String),
+                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
+                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol MySqlRequest =
              new FunctionSymbol("mysql_request",
                  (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
                  Tabularity.Tabular,
-                 new Parameter("ConnectionString", ScalarTypes.String),
-                 new Parameter("SqlQuery", ScalarTypes.String));
+                 new Parameter("connection_string", ScalarTypes.String),
+                 new Parameter("sql_query", ScalarTypes.String),
+                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
+                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0));
+
+        public static readonly FunctionSymbol CosmosdbSqlRequest =
+             new FunctionSymbol("cosmosdb_sql_request",
+                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
+                 Tabularity.Tabular,
+                 new Parameter("connection_string", ScalarTypes.String),
+                 new Parameter("sql_query", ScalarTypes.String),
+                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
+                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0)
+                 );
+
+        public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
+                     new FunctionSymbol("azure_digital_twins_query_request",
+                         (table, args) => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
+                         Tabularity.Tabular,
+                         new Parameter("endpoint", ScalarTypes.String),
+                         new Parameter("sql_query", ScalarTypes.String)
+                         );
 
         public static IReadOnlyList<FunctionSymbol> All { get; } = new FunctionSymbol[]
         {

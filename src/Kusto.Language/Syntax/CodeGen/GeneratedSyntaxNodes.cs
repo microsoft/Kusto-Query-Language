@@ -1,4 +1,6 @@
-﻿
+﻿// 
+// 
+// 
 
 // ----------------------------------------------------------------------------
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -14919,9 +14921,4 @@ namespace Kusto.Language.Syntax
     #endregion /* SyntaxVisitor<TResult> */
     #endregion /* Visitors */
 }
-
-// NOTE: The following comment line is mandatory for T4 to work correctly. Don't remove it
-// 
-// NOTE: The following comment line is mandatory for T4 to work correctly. Don't remove it (CslTreeGenerator.cs)
-// 
 
