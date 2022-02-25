@@ -489,6 +489,16 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD("ShardingPolicy", CompletionHint.Literal)}));
 
+            var AlterMergeDatabasePolicyShardsGrouping = Command("AlterMergeDatabasePolicyShardsGrouping", 
+                Custom(
+                    EToken("alter-merge", CompletionKind.CommandPrefix),
+                    EToken("database"),
+                    rules.DatabaseNameReference,
+                    EToken("policy"),
+                    EToken("shards_grouping").Hide(),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD("ShardsGroupingPolicy", CompletionHint.Literal)}));
+
             var AlterMergeDatabasePolicyStreamingIngestion = Command("AlterMergeDatabasePolicyStreamingIngestion", 
                 Custom(
                     EToken("alter-merge", CompletionKind.CommandPrefix),
@@ -1128,6 +1138,16 @@ namespace Kusto.Language.Parsing
                     EToken("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD("ShardingPolicy", CompletionHint.Literal)}));
+
+            var AlterDatabasePolicyShardsGrouping = Command("AlterDatabasePolicyShardsGrouping", 
+                Custom(
+                    EToken("alter", CompletionKind.CommandPrefix),
+                    EToken("database"),
+                    rules.DatabaseNameReference,
+                    EToken("policy"),
+                    EToken("shards_grouping").Hide(),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD("ShardsGroupingPolicy", CompletionHint.Literal)}));
 
             var AlterDatabasePolicyStreamingIngestion = Command("AlterDatabasePolicyStreamingIngestion", 
                 Custom(
@@ -4744,6 +4764,15 @@ namespace Kusto.Language.Parsing
                     EToken("sharding"),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD()}));
 
+            var DeleteDatabasePolicyShardsGrouping = Command("DeleteDatabasePolicyShardsGrouping", 
+                Custom(
+                    EToken("delete", CompletionKind.CommandPrefix),
+                    EToken("database"),
+                    rules.DatabaseNameReference,
+                    EToken("policy"),
+                    EToken("shards_grouping").Hide(),
+                    new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD()}));
+
             var DeleteDatabasePolicyStreamingIngestion = Command("DeleteDatabasePolicyStreamingIngestion", 
                 Custom(
                     EToken("delete", CompletionKind.CommandPrefix),
@@ -8258,6 +8287,17 @@ namespace Kusto.Language.Parsing
                     EToken("sharding"),
                     new [] {CD(), CD(), CD("DatabaseName"), CD(), CD()}));
 
+            var ShowDatabasePolicyShardsGrouping = Command("ShowDatabasePolicyShardsGrouping", 
+                Custom(
+                    EToken("show", CompletionKind.CommandPrefix),
+                    EToken("database"),
+                    First(
+                        EToken("*"),
+                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    EToken("policy"),
+                    EToken("shards_grouping").Hide(),
+                    new [] {CD(), CD(), CD("DatabaseName"), CD(), CD()}));
+
             var ShowDatabasePolicySoftRetentionViolations = Command("ShowDatabasePolicySoftRetentionViolations", 
                 Custom(
                     EToken("show", CompletionKind.CommandPrefix),
@@ -10118,6 +10158,7 @@ namespace Kusto.Language.Parsing
                 AlterMergeDatabasePolicyMerge,
                 AlterMergeDatabasePolicyRetention,
                 AlterMergeDatabasePolicySharding,
+                AlterMergeDatabasePolicyShardsGrouping,
                 AlterMergeDatabasePolicyStreamingIngestion,
                 AlterMergeMaterializedViewPolicyPartitioning,
                 AlterMergeMaterializedViewPolicyRetention,
@@ -10162,6 +10203,7 @@ namespace Kusto.Language.Parsing
                 AlterDatabasePolicyMerge,
                 AlterDatabasePolicyRetention,
                 AlterDatabasePolicySharding,
+                AlterDatabasePolicyShardsGrouping,
                 AlterDatabasePolicyStreamingIngestion,
                 AlterDatabasePrettyName,
                 AlterDatabaseStorageKeys,
@@ -10289,6 +10331,7 @@ namespace Kusto.Language.Parsing
                 DeleteDatabasePolicyMerge,
                 DeleteDatabasePolicyRetention,
                 DeleteDatabasePolicySharding,
+                DeleteDatabasePolicyShardsGrouping,
                 DeleteDatabasePolicyStreamingIngestion,
                 DropFollowerDatabasePolicyCaching,
                 DropFollowerTablesPolicyCaching,
@@ -10459,6 +10502,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabasePolicyMerge,
                 ShowDatabasePolicyRetention,
                 ShowDatabasePolicySharding,
+                ShowDatabasePolicyShardsGrouping,
                 ShowDatabasePolicySoftRetentionViolations,
                 ShowDatabasePolicyStreamingIngestion,
                 ShowDatabasePrincipals,

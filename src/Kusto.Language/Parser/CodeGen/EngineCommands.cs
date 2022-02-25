@@ -757,6 +757,18 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterPolicySharding =
             new CommandSymbol("ShowClusterPolicySharding", _schema20);
 
+        public static readonly CommandSymbol ShowDatabasePolicyShardsGrouping =
+            new CommandSymbol("ShowDatabasePolicyShardsGrouping", _schema20);
+
+        public static readonly CommandSymbol AlterDatabasePolicyShardsGrouping =
+            new CommandSymbol("AlterDatabasePolicyShardsGrouping", _schema20);
+
+        public static readonly CommandSymbol AlterMergeDatabasePolicyShardsGrouping =
+            new CommandSymbol("AlterMergeDatabasePolicyShardsGrouping", _schema20);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyShardsGrouping =
+            new CommandSymbol("DeleteDatabasePolicyShardsGrouping", _schema20);
+
         public static readonly CommandSymbol ShowDatabasePolicyStreamingIngestion =
             new CommandSymbol("ShowDatabasePolicyStreamingIngestion", _schema20);
 
@@ -1816,6 +1828,10 @@ namespace Kusto.Language
             AlterMergeClusterPolicySharding,
             DeleteClusterPolicySharding,
             ShowClusterPolicySharding,
+            ShowDatabasePolicyShardsGrouping,
+            AlterDatabasePolicyShardsGrouping,
+            AlterMergeDatabasePolicyShardsGrouping,
+            DeleteDatabasePolicyShardsGrouping,
             ShowDatabasePolicyStreamingIngestion,
             ShowTablePolicyStreamingIngestion,
             ShowClusterPolicyStreamingIngestion,
