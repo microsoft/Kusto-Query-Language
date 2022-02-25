@@ -25,19 +25,38 @@ Returns a `dynamic` object contains the Query parameters.
 
 An object of type [dynamic](./scalar-data-types/dynamic.md) that includes the query parameters.
 
-## Example
+## Examples
 
 ```kusto
 parse_urlquery("k1=v1&k2=v2&k3=v3")
 ```
 
-will result:
+result:
 
 ```kusto
  {
  	"Query Parameters":"{"k1":"v1", "k2":"v2", "k3":"v3"}",
  }
 ```
+
+The following example uses a function to extract specific query parameters:
+
+```kusto
+let getQueryParamValue = (querystring: string, param: string)
+{
+    let params = parse_urlquery(querystring);
+    tostring(params["Query Parameters"].[param])
+};
+print UrlQuery = 'view=vs-2019&preserve-view=true'
+| extend view = getQueryParamValue(UrlQuery, 'view')
+| extend preserve = getQueryParamValue(UrlQuery, 'preserve-view')
+```
+
+result:
+
+| UrlQuery | view | preserve |
+|--|--|--|
+|view=vs-2019&preserve-view=true|vs-2019|true|
 
 **Notes**
 
