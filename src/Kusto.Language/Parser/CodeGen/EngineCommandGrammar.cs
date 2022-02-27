@@ -5378,13 +5378,33 @@ namespace Kusto.Language.Parsing
                     EToken("extents"),
                     EToken("partition"),
                     RequiredEToken("metadata"),
+                    RequiredEToken("from"),
+                    RequiredEToken("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(
-                        Custom(
-                            EToken("<|"),
-                            Required(rules.CommandInput, rules.MissingExpression),
-                            new [] {CD(), CD(CompletionHint.Tabular)}),
+                        First(
+                            Custom(
+                                Custom(
+                                    EToken("<|"),
+                                    Required(rules.CommandInput, rules.MissingExpression),
+                                    new [] {CD(), CD(CompletionHint.Tabular)}),
+                                CD("csl")),
+                            Custom(
+                                EToken("between"),
+                                RequiredEToken("("),
+                                Required(rules.Value, rules.MissingValue),
+                                RequiredEToken(".."),
+                                Required(rules.Value, rules.MissingValue),
+                                RequiredEToken(")"),
+                                Required(
+                                    Custom(
+                                        EToken("<|"),
+                                        Required(rules.CommandInput, rules.MissingExpression),
+                                        new [] {CD(), CD(CompletionHint.Tabular)}),
+                                    () => (SyntaxElement)new CustomNode(new [] {CD(), CD(CompletionHint.Tabular)}, CreateMissingEToken("<|"), rules.MissingExpression())),
+                                new [] {CD(), CD(), CD("d1", CompletionHint.Literal), CD(), CD("d2", CompletionHint.Literal), CD(), CD("csl")})),
                         () => (SyntaxElement)new CustomNode(new [] {CD(), CD(CompletionHint.Tabular)}, CreateMissingEToken("<|"), rules.MissingExpression())),
-                    new [] {CD(), CD(), CD(), CD(), CD("csl")}));
+                    new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD()}));
 
             var DropExtents = Command("DropExtents", 
                 Custom(
