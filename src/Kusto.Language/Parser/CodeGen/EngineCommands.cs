@@ -1297,6 +1297,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol("StoredQueryResultSet", _schema18);
 
+        public static readonly CommandSymbol StoredQueryResultSetOrReplace =
+            new CommandSymbol("StoredQueryResultSetOrReplace", _schema18);
+
         public static readonly CommandSymbol StoredQueryResultsShow =
             new CommandSymbol("StoredQueryResultsShow", _schema35);
 
@@ -1994,6 +1997,7 @@ namespace Kusto.Language
             ClearTableData,
             ClearTableCacheStreamingIngestionSchema,
             StoredQueryResultSet,
+            StoredQueryResultSetOrReplace,
             StoredQueryResultsShow,
             StoredQueryResultShowSchema,
             StoredQueryResultDrop,

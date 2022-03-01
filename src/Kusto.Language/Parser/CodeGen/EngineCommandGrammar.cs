@@ -6548,6 +6548,61 @@ namespace Kusto.Language.Parsing
                     Required(rules.CommandInput, rules.MissingExpression),
                     new [] {CD(), CD(), CD(), CD("QueryOrCommand", CompletionHint.Tabular)}));
 
+            var StoredQueryResultSetOrReplace = Command("StoredQueryResultSetOrReplace", 
+                Custom(
+                    EToken("set-or-replace", CompletionKind.CommandPrefix),
+                    First(
+                        Custom(
+                            EToken("async"),
+                            EToken("stored_query_result")),
+                        EToken("stored_query_result")),
+                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                    Required(
+                        First(
+                            EToken("<|"),
+                            Custom(
+                                EToken("with"),
+                                RequiredEToken("("),
+                                Required(
+                                    OList(
+                                        primaryElementParser: Custom(
+                                            First(
+                                                EToken("creationTime"),
+                                                EToken("distributed"),
+                                                EToken("docstring"),
+                                                EToken("extend_schema"),
+                                                EToken("folder"),
+                                                EToken("format"),
+                                                EToken("ignoreFirstRecord"),
+                                                EToken("ingestIfNotExists"),
+                                                EToken("ingestionMappingReference"),
+                                                EToken("ingestionMapping"),
+                                                EToken("persistDetails"),
+                                                EToken("policy_ingestionTime"),
+                                                EToken("recreate_schema"),
+                                                EToken("tags"),
+                                                EToken("validationPolicy"),
+                                                EToken("zipPattern"),
+                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredEToken("="),
+                                            Required(rules.Value, rules.MissingValue),
+                                            new [] {CD("PropertyName"), CD(), CD("PropertyValue", CompletionHint.Literal)}),
+                                        separatorParser: EToken(","),
+                                        secondaryElementParser: null,
+                                        missingPrimaryElement: null,
+                                        missingSeparator: null,
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(new [] {CD("PropertyName"), CD(), CD("PropertyValue", CompletionHint.Literal)}, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        endOfList: null,
+                                        oneOrMore: true,
+                                        allowTrailingSeparator: false,
+                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(new [] {CD("PropertyName"), CD(), CD("PropertyValue", CompletionHint.Literal)}, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
+                                RequiredEToken(")"),
+                                RequiredEToken("<|"))),
+                        () => CreateMissingEToken("<|")),
+                    Required(rules.CommandInput, rules.MissingExpression),
+                    new [] {CD(), CD(), CD("StoredQueryResultName", CompletionHint.None), CD(), CD("Query", CompletionHint.Tabular)}));
+
             var SetOrReplaceTable = Command("SetOrReplaceTable", 
                 Custom(
                     EToken("set-or-replace", CompletionKind.CommandPrefix),
@@ -6555,10 +6610,10 @@ namespace Kusto.Language.Parsing
                         First(
                             Custom(
                                 EToken("async"),
-                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                                Required(If(Not(EToken("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
                                 new [] {CD(), CD("TableName", CompletionHint.None)}),
                             Custom(
-                                If(Not(EToken("async")), rules.NameDeclarationOrStringLiteral),
+                                If(Not(And(EToken("async", "stored_query_result"))), rules.NameDeclarationOrStringLiteral),
                                 CD("TableName", CompletionHint.None))),
                         () => (SyntaxElement)new CustomNode(new [] {CD(), CD("TableName", CompletionHint.None)}, CreateMissingEToken("async"), rules.MissingNameDeclaration())),
                     Required(
@@ -10435,6 +10490,7 @@ namespace Kusto.Language.Parsing
                 RenameTable,
                 ReplaceExtents,
                 SetOrAppendTable,
+                StoredQueryResultSetOrReplace,
                 SetOrReplaceTable,
                 SetAccess,
                 SetClusterRole,
