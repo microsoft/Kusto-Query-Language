@@ -68,7 +68,7 @@ union withsource=TableName *, database("OtherDb*").*Table, cluster("OtherCluster
 
 > [!NOTE]
 > * The name of the default database is also a potential match, so database("&#42;")specifies all tables of all databases including the default.
-> * For more ionformation on how schema changes affect cross-cluster queries, see [Cross-cluster queries and schema changes](../concepts/crossclusterandschemachanges.md)
+> * For more ionformation on how schema changes affect cross-cluster queries, see [Cross-cluster queries and schema changes](../concepts/cross-cluster-and-schema-changes.md)
 
 ## Access restriction
 
@@ -120,7 +120,7 @@ Tabular functions or views can be referenced across clusters. The following limi
 
 * Remote function must return tabular schema. Scalar functions can only be accessed in the same cluster.
 * Remote function can accept only scalar parameters. Functions that get one or more table arguments can only be accessed in the same cluster.
-* For performance reasons, the schema of remote entities is cached by the calling cluster after the initial call. Therefore, changes made to the remote entity may result in a mismatch with the cached schema information, potentially leading to query failures. For more information, see [Cross-cluster queries and schema changes](../concepts/crossclusterandschemachanges.md).
+* For performance reasons, the schema of remote entities is cached by the calling cluster after the initial call. Therefore, changes made to the remote entity may result in a mismatch with the cached schema information, potentially leading to query failures. For more information, see [Cross-cluster queries and schema changes](../concepts/cross-cluster-and-schema-changes.md).
 
 The following cross-cluster call is valid.
 

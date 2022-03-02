@@ -102,7 +102,6 @@ range x from 0.0 to 2*pi() step 0.01 | extend y=sin(x) | render linechart
 |`kind`        |Further elaboration of the visualization kind. See below.                         |
 |`series`      |Comma-delimited list of columns whose combined per-record values define the series that record belongs to.|
 |`title`       |The title of the visualization (of type `string`).                                |
-|`yaxis`       |How to scale the y-axis (`linear` or `log`).                                      |
 
 ::: zone-end
 

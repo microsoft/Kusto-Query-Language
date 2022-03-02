@@ -12,7 +12,7 @@ items:
 - name: Cross-cluster queries
   items:
   - name: Cross-cluster queries and schema changes
-    href: ../concepts/crossclusterandschemachanges.md
+    href: ../concepts/cross-cluster-and-schema-changes.md
   - name: Cross-database and cross-cluster queries
     href: cross-cluster-or-database-queries.md
 - name: Entities
