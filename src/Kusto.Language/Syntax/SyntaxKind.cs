@@ -128,6 +128,7 @@
         LineChartKeyword,
         LookupKeyword,
 
+        MacroExpandKeyword,
         MakeSeriesKeyword,
         MatchesRegexKeyword,
         MaterializeKeyword,
@@ -521,6 +522,8 @@
 
         ForkOperator,
         ForkExpression,
+
+        MacroExpandOperator,
 
         MakeSeriesOperator,
         MakeSeriesExpression,

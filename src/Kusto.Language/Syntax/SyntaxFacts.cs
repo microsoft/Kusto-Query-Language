@@ -160,6 +160,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.LineChartKeyword, "linechart"),
                 new SyntaxData(SyntaxKind.LookupKeyword, "lookup", canBeIdentifier: true),
 
+                new SyntaxData(SyntaxKind.MacroExpandKeyword, "macro-expand"),
                 new SyntaxData(SyntaxKind.MakeSeriesKeyword, "make-series"),
                 new SyntaxData(SyntaxKind.MatchesRegexKeyword, "matches regex", opKind: OperatorKind.MatchRegex),
                 new SyntaxData(SyntaxKind.MaterializeKeyword, "materialize"),
@@ -552,6 +553,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.JoinOnClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.JoinWhereClause, "", SyntaxCategory.Node),
 
+                new SyntaxData(SyntaxKind.MacroExpandOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesOnClause, "", SyntaxCategory.Node),

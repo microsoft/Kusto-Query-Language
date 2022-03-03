@@ -225,6 +225,37 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitMacroExpandOperator(MacroExpandOperator node)
+            {
+                node.Parameters.Accept(this);
+
+                node.EntityGroup.Accept(this);
+
+                TypeSymbol entityGroupValue = null;
+                if (node.EntityGroup is EntityGroup eg)
+                {
+                    var egValue = eg.Entities.First().Element;
+                    entityGroupValue = _binder.GetResultType(egValue);
+                }
+                else if (node.EntityGroup is NameReference name)
+                {
+                    entityGroupValue = _binder.GetResultType(name);
+                }
+
+                if (entityGroupValue != null)
+                {
+                    // define the X (in a query like macro-expand eg as X) as one of entity group items.
+                    // the assumption is that all have the same schema so we pick the 1st one and work with it.
+                    // we define it here in the local scope and then we call Accept on the StatementList
+                    // which may use this symbol.
+                    _binder._localScope.AddSymbol(new VariableSymbol(node.EntityGroupReferenceName.SimpleName, entityGroupValue));
+                }
+
+                node.StatementList.Accept(this);
+
+                BindNode(node);
+            }
+
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)
             {
                 node.Parameters.Accept(this);

@@ -430,6 +430,9 @@ namespace Kusto.Language.Parsing
         private static readonly Func<Expression> CreateMissingExpression = () =>
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
 
+        private static readonly Func<Name> CreateMissingIdentifierName = () =>
+            new TokenName(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
+
         private static readonly Func<SchemaTypeExpression> CreateMissingSchema = () =>
             new SchemaTypeExpression(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
@@ -4640,11 +4643,41 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#endregion
+#region MacroExpand
+        private Expression ParseEntityGroupReference()
+        {
+            switch(PeekToken().Kind)
+            {
+                case SyntaxKind.EntityGroupKeyword:
+                    return ParseEntityGroup();
+                default:
+                    return ParseUnnamedExpression();
+            }
+        }
 
-#region Query Expressions
+        private MacroExpandOperator ParseMacroExpand()
+        {
+            var keyword = ParseToken(SyntaxKind.MacroExpandKeyword);
+            if (keyword != null)
+            {
+                var parameters = ParseQueryOperatorParameterList(s_unionOperatorParameterMap);
+                var entityGroupExpression = ParseEntityGroupReference() ?? CreateMissingExpression();
+                var asKeyword = ParseRequiredToken(SyntaxKind.AsKeyword);
+                var entityGroupReferenceName = ParseIdentifierName() ?? CreateMissingIdentifierName();
+                var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var queryBlocksStatementList = ParseQueryBlockStatementList();
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new MacroExpandOperator(keyword, parameters, entityGroupExpression, asKeyword, entityGroupReferenceName, open, queryBlocksStatementList, close);
+            }
+
+            return null;
+        }
+        #endregion
+        #endregion
+
+        #region Query Expressions
 
         private QueryOperator ParseQueryOperator()
         {
@@ -4739,6 +4772,8 @@ namespace Kusto.Language.Parsing
                     return ParseTopNestedOperator();
                 case SyntaxKind.UnionKeyword:
                     return ParseUnionOperator();
+                case SyntaxKind.MacroExpandKeyword:
+                    return ParseMacroExpand();
                 default:
                     return null;
             }

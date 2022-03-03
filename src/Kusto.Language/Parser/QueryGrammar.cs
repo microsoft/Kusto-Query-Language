@@ -53,6 +53,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, QueryOperator> QueryOperator { get; private set; }
         public Parser<LexicalToken, Expression> PipeExpression { get; private set; }
         public Parser<LexicalToken, Expression> PipeSubExpression { get; private set; }
+        public Parser<LexicalToken, SyntaxList<SeparatedElement<Statement>>> MacroExpandSubQuery { get; private set; }
         public Parser<LexicalToken, QueryOperator> FollowingPipeElementExpression { get; private set; }
         public Parser<LexicalToken, Expression> Expression { get; private set; }
         public Parser<LexicalToken, Expression> NamedExpression { get; private set; }
@@ -143,6 +144,10 @@ namespace Kusto.Language.Parsing
             this.PipeSubExpression =
                 Forward(() => PipeSubExpressionCore)
                 .WithTag("<pipe-sub-expression>");
+
+            this.MacroExpandSubQuery =
+                Forward(() => StatementList)
+                .WithTag("<macro-expand-subquery>");
 
             var ContextualSubExpression =
                 Forward(() => ContextualSubExpressionCore)
@@ -2397,12 +2402,34 @@ namespace Kusto.Language.Parsing
                     (keyword, exprs) => (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
 
+            var EntityGroup = Rule(
+                Token(SyntaxKind.EntityGroupKeyword),
+                RequiredToken(SyntaxKind.OpenBracketToken),
+                CommaList(DotCompositeFunctionCall, MissingExpressionNode, oneOrMore: true),
+                RequiredToken(SyntaxKind.CloseBracketToken),
+                (keyword, open, entitiesList, close) => (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
+
+            var MacroExpandOperator =
+                Rule(
+                    Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
+                    QueryParameterList(QueryOperatorParameters.TakeParameters, AllowedNameKind.Known),
+                    First(UnnamedExpression, EntityGroup),
+                    RequiredToken(SyntaxKind.AsKeyword),
+                    First(IdentifierName),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    MacroExpandSubQuery,
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (macroExpandKeyword, parameters, entitygroup, asKeyword, identifierName, openParen, statementList, closeParen) =>
+                        (QueryOperator)new MacroExpandOperator(macroExpandKeyword, parameters, entitygroup, asKeyword, identifierName, openParen, statementList, closeParen))
+                .WithTag("<macro-expand>");
+
             var PrePipeQueryOperator =
                 First(
                     EvaluateOperator,
                     FindOperator,
                     SearchOperator,
                     UnionOperator,
+                    MacroExpandOperator,
                     RangeOperator,
                     PrintOperator);
 
@@ -2606,13 +2633,6 @@ namespace Kusto.Language.Parsing
                     FunctionBody,
                     (view, parameters, body) => new FunctionDeclaration(view, parameters, body))
                 .WithTag("<function-declaration>");
-
-            var EntityGroup = Rule(
-                Token(SyntaxKind.EntityGroupKeyword),
-                RequiredToken(SyntaxKind.OpenBracketToken),
-                CommaList(DotCompositeFunctionCall, MissingExpressionNode, oneOrMore: true),
-                RequiredToken(SyntaxKind.CloseBracketToken),
-                (keyword, open, entitiesList, close) => new EntityGroup(keyword, open, entitiesList, close));
 
             LetStatementCore =
                 First(

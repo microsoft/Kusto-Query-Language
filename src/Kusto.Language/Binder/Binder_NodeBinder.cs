@@ -815,7 +815,9 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitEntityGroup(EntityGroup node)
             {
-                return null;
+                var anyEntityAsExpression = node.Entities.First().Element;
+                TypeSymbol typeSymbol = _binder.GetResultTypeOrError(anyEntityAsExpression);
+                return new SemanticInfo(typeSymbol);
             }
 
             public override SemanticInfo VisitOrderedExpression(OrderedExpression node)
@@ -3104,9 +3106,36 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
 
-#region clauses 
+            public override SemanticInfo VisitMacroExpandOperator(MacroExpandOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                TableSymbol tableSymbol = null;
+                try
+                {
+                    for (int i = 0, n = node.StatementList.Count; i < n; i++)
+                    {
+                        // we must find exactly one like this.
+                        if (node.StatementList[i].Element is ExpressionStatement exprStatement)
+                        {
+                            _binder.CheckIsTabular(exprStatement.Expression, diagnostics);
+                            tableSymbol = _binder.GetResultType(exprStatement.Expression) as TableSymbol;
+                            
+                            // skipping the loop, we found the required expression.
+                            break;
+                        }
+                    }
+
+                    return new SemanticInfo(tableSymbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+            #endregion
+
+            #region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
             // typically handled by the parent node's visit method.
 
