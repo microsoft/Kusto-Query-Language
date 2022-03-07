@@ -1525,6 +1525,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol JaccardIndex =
+            new FunctionSymbol("jaccard_index", ScalarTypes.Dynamic,
+                new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 2))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         #endregion
 
         #region digest / series functions
@@ -2892,6 +2899,7 @@ namespace Kusto.Language
             BagMerge,
             DynamicToJson,
             BagRemoveKeys,
+            JaccardIndex,
 #endregion
 
 #region digest / series functions
