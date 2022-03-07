@@ -1,11 +1,7 @@
 ---
 title: mysql_request plugin - Azure Data Explorer
 description: This article describes mysql_request plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/24/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

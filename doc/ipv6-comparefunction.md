@@ -1,11 +1,7 @@
 ---
 title: ipv6_compare() - Azure Data Explorer
 description: This article describes ipv6_compare() function in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 05/27/2020
 ---

@@ -1,11 +1,7 @@
 ---
 title: geo_union_polygons_array() - Azure Data Explorer
 description: This article describes geo_union_polygons_array() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/08/2022
 ---

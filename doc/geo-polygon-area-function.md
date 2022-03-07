@@ -1,11 +1,7 @@
 ---
 title: geo_polygon_area() - Azure Data Explorer
 description: This article describes geo_polygon_area() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/20/2022
 ---

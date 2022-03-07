@@ -1,11 +1,7 @@
 ---
-title: exp10() - Azure Data Explorer | Microsoft Docs
+title: exp10() - Azure Data Explorer
 description: This article describes exp10() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/25/2019
 ---

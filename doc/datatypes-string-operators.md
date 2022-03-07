@@ -1,11 +1,7 @@
 ---
 title: String operators - Azure Data Explorer
 description: This article describes String operators in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/05/2021
 ---

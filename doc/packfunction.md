@@ -1,11 +1,7 @@
 ---
-title: bag_pack(), pack() - Azure Data Explorer | Microsoft Docs
+title: bag_pack(), pack() - Azure Data Explorer
 description: This article describes bag_pack() and pack() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2022
 ---

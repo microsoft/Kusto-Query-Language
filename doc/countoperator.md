@@ -1,11 +1,7 @@
 ---
 title: count operator - Azure Data Explorer
 description: This article describes count operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/16/2020
 ---

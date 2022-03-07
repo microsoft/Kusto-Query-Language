@@ -1,11 +1,7 @@
 ---
-title: Null Values - Azure Data Explorer | Microsoft Docs
+title: Null Values - Azure Data Explorer
 description: This article describes Null Values in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/04/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

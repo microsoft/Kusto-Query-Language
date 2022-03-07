@@ -1,11 +1,7 @@
 ---
-title: pack_all() - Azure Data Explorer | Microsoft Docs
+title: pack_all() - Azure Data Explorer
 description: This article describes pack_all() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/24/2021
 ---

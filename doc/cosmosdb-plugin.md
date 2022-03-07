@@ -1,11 +1,7 @@
 ---
 title: cosmosdb_sql_request plugin - Azure Data Explorer
 description: This article describes the cosmosdb_sql_request plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: miwalia
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/11/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

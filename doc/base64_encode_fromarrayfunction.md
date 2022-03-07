@@ -1,11 +1,7 @@
 ---
 title: base64_encode_fromarray() - Azure Data Explorer
 description: This article describes base64_encode_fromarray() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/11/2020
 ---

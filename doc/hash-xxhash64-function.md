@@ -1,11 +1,7 @@
 ---
 title: hash_xxhash64() - Azure Data Explorer
 description: This article describes hash_xxhash64() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: slneimer
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/07/2022
 ---

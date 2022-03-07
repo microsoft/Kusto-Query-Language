@@ -1,11 +1,7 @@
 ---
 title: series_periods_detect() - Azure Data Explorer
 description: This article describes series_periods_detect() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2019
 ---

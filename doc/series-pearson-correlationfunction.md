@@ -1,11 +1,7 @@
 ---
 title: series_pearson_correlation() - Azure Data Explorer
 description: This article describes series_pearson_correlation() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/31/2019
 ---

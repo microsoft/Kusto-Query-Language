@@ -1,11 +1,7 @@
 ---
 title: geo_geohash_to_polygon() - Azure Data Explorer
 description: This article describes geo_geohash_to_polygon() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/03/2021
 ---

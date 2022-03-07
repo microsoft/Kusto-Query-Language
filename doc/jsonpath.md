@@ -1,11 +1,7 @@
 ---
-title: JSONPath syntax - Azure Data Explorer | Microsoft Docs
+title: JSONPath syntax - Azure Data Explorer
 description: This article describes JSONPath expressions in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: igborodi
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/20/2021
 ---

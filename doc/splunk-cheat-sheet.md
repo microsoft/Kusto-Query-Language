@@ -1,12 +1,8 @@
 ---
 title: Splunk to Kusto map for Azure Data Explorer and Azure Monitor
 description: Concept mapping for users who are familiar with Splunk to learn the Kusto Query Language to write log queries.
-ms.service: data-explorer
 ms.topic: conceptual
-author: bwren
-ms.author: bwren
 ms.date: 02/08/2022
-
 ---
 
 # Splunk to Kusto Query Language map

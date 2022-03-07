@@ -1,11 +1,7 @@
 ---
 title: hash_md5() - Azure Data Explorer
 description: This article describes hash_md5() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/29/2020
 ---

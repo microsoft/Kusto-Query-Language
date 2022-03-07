@@ -1,11 +1,7 @@
 ---
 title: geo_point_to_geohash() - Azure Data Explorer
 description: This article describes geo_point_to_geohash() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/04/2020
 ---

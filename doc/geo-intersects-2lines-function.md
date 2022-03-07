@@ -1,11 +1,7 @@
 ---
 title: geo_intersects_2lines() - Azure Data Explorer
 description: This article describes geo_intersects_2lines() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/20/2022
 ---

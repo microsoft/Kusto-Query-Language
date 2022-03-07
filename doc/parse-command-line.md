@@ -1,11 +1,7 @@
 ---
 title: parse_command_line() - Azure Data Explorer
 description: This article describes parse_command_line() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: slneimer
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/28/2020
 ---

@@ -1,11 +1,7 @@
 ---
 title: parse_ipv6() - Azure Data Explorer
 description: This article describes parse_ipv6() function in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/13/2022
 ---

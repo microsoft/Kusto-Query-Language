@@ -1,11 +1,7 @@
 ---
 title: ipv4_is_match() - Azure Data Explorer
 description: This article describes ipv4_is_match() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/24/2020
 ---

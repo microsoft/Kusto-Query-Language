@@ -1,11 +1,7 @@
 ---
 title: gzip_compress_to_base64_string - Azure Data Explorer 
 description: This article describes the gzip_compress_to_base64_string() command in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: elgevork
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 11/01/2020
 ---

@@ -1,11 +1,7 @@
 ---
 title: series_less() - Azure Data Explorer
 description: This article describes series_less() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/01/2020
 ---

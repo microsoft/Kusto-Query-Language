@@ -1,11 +1,7 @@
 ---
-title: make_set() (aggregation function) - Azure Data Explorer | Microsoft Docs
+title: make_set() (aggregation function) - Azure Data Explorer
 description: This article describes make_set() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/23/2020
 ---

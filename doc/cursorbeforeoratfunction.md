@@ -1,11 +1,7 @@
 ---
-title: cursor_before_or_at() - Azure Data Explorer | Microsoft Docs
+title: cursor_before_or_at() - Azure Data Explorer
 description: This article describes cursor_before_or_at() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

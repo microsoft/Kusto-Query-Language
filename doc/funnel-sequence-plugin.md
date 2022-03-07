@@ -1,11 +1,7 @@
 ---
 title: funnel_sequence plugin - Azure Data Explorer
 description: This article describes funnel_sequence plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/24/2022
 ---

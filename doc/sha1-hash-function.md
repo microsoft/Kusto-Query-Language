@@ -1,11 +1,7 @@
 ---
 title: hash_sha1() - Azure Data Explorer
 description: This article describes hash_sha1() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: atefsawaed
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 07/28/2021
 ---

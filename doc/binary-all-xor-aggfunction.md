@@ -1,11 +1,7 @@
 ---
 title: binary_all_xor() (aggregation function) - Azure Data Explorer
 description: This article describes binary_all_xor() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/06/2020
 ---

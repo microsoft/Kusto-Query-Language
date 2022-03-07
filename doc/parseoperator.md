@@ -1,11 +1,7 @@
 ---
 title: parse operator - Azure Data Explorer
 description: This article describes parse operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/10/2021
 ---

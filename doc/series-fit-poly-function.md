@@ -1,10 +1,7 @@
 ---
 title: series_fit_poly() - Azure Data Explorer
 description: This article describes the series_fit_poly() in Azure Data Explorer.
-author: orspod
-ms.author: orspodek
 ms.reviewer: adieldar
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/21/2020
 ---

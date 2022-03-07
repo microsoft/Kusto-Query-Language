@@ -1,11 +1,7 @@
 ---
 title: percentile_array_tdigest() - Azure Data Explorer
 description: This article describes percentile_array_tdigest() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/10/2019
 ---

@@ -1,11 +1,7 @@
 ---
 title: series_pow() - Azure Data Explorer
 description: This article describes series_pow() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 08/15/2021
 ---

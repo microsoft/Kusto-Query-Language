@@ -1,11 +1,7 @@
 ---
 title: Views - Azure Data Explorer
 description: This article describes views in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: zivc
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/05/2021
 ---

@@ -1,11 +1,7 @@
 ---
 title: "The has_any_index operator - Azure Data Explorer"
 description: "This article describes the has_any_index in Azure Data Explorer."
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: atefsawaed
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/22/2021
 ---

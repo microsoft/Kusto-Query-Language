@@ -1,11 +1,7 @@
 ---
 title: bin_at() - Azure Data Explorer
 description: This article describes bin_at() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/23/2018
 ---

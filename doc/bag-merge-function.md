@@ -1,11 +1,7 @@
 ---
 title: bag_merge() - Azure Data Explorer 
 description: This article describes bag_merge() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: elgevork
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/18/2020
 ---

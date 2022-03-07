@@ -1,11 +1,7 @@
 ---
-title: Tabular expression statements - Azure Data Explorer | Microsoft Docs
+title: Tabular expression statements - Azure Data Explorer
 description: This article describes Tabular expression statements in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/21/2021
 ---

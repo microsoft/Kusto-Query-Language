@@ -1,11 +1,7 @@
 ---
 title: The case-sensitive startswith string operator - Azure Data Explorer
 description: This article describes the case-sensitive startswith string operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/19/2021
 ---

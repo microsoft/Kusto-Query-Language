@@ -1,11 +1,7 @@
 ---
 title: geo_point_to_h3cell() - Azure Data Explorer
 description: This article describes geo_point_to_h3cell() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/04/2020
 ---

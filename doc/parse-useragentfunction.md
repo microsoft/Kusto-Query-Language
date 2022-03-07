@@ -1,11 +1,7 @@
 ---
-title: parse_user_agent() - Azure Data Explorer | Microsoft Docs
+title: parse_user_agent() - Azure Data Explorer
 description: This article describes parse_user_agent() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2020
 ---

@@ -1,11 +1,7 @@
 ---
-title: toguid() - Azure Data Explorer | Microsoft Docs
+title: toguid() - Azure Data Explorer
 description: This article describes toguid() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/30/2021
 ---

@@ -1,11 +1,7 @@
 ---
 title: The string data type - Azure Data Explorer
 description: This article describes The string data type in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
-ms.reviewer: rkarlin
-ms.service: data-explorer
+ms.reviewer: orspodek
 ms.topic: reference
 ms.date: 04/07/2021
 ---

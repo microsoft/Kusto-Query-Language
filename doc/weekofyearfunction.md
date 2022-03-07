@@ -1,11 +1,7 @@
 ---
-title: week_of_year() - Azure Data Explorer | Microsoft Docs
+title: week_of_year() - Azure Data Explorer
 description: This article describes week_of_year() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/18/2020
 ---

@@ -1,11 +1,7 @@
 ---
 title: azure_digital_twins_query_request plugin - Azure Data Explorer
 description: This article describes the Azure Digital Twins query request plugin in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/23/2022
 ---

@@ -1,11 +1,7 @@
 ---
 title: hll() (aggregation function) - Azure Data Explorer
 description: This article describes hll() (aggregation function) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 01/15/2020
 ---

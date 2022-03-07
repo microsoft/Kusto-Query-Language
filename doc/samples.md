@@ -1,11 +1,7 @@
 ---
 title: Samples for Kusto Queries - Azure Data Explorer
 description: This article describes common queries and examples that use the Kusto Query Language.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/02/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

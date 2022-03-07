@@ -1,11 +1,7 @@
 ---
 title: format_ipv4_mask() - Azure Data Explorer
 description: This article describes format_ipv4_mask() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 08/09/2020
 ---

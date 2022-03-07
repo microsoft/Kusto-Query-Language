@@ -1,11 +1,7 @@
 ---
 title: Window functions - Azure Data Explorer
 description: This article describes Window functions in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/20/2019
 ---

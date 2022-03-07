@@ -1,11 +1,7 @@
 ---
 title: geo_h3cell_to_central_point() - Azure Data Explorer
 description: This article describes geo_h3cell_to_central_point() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: mbrichko
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 06/03/2021
 ---

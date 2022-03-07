@@ -1,11 +1,7 @@
 ---
-title: order operator  - Azure Data Explorer | Microsoft Docs
+title: order operator  - Azure Data Explorer
 description: This article describes order operator  in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
 ---

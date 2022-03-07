@@ -1,11 +1,7 @@
 ---
 title: 'Tutorial: Kusto queries'
 description: This tutorial describes how to use queries in the Kusto Query Language to meet common query needs.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 11/01/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

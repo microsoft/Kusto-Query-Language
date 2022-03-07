@@ -1,11 +1,7 @@
 ---
 title: array_sort_desc() - Azure Data Explorer
 description: This article describes array_sort_desc() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: slneimer
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 09/22/2020
 ---

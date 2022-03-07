@@ -1,11 +1,7 @@
 ---
 title: join operator - Azure Data Explorer
 description: This article describes join operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/03/2022
 ms.localizationpriority: high 

@@ -1,11 +1,7 @@
 ---
 title: series_less_equals() - Azure Data Explorer
 description: This article describes series_less_equals() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/01/2020
 ---

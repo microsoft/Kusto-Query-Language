@@ -1,11 +1,7 @@
 ---
 title: dynamic_to_json() - Azure Data Explorer 
 description: This article describes dynamic_to_json() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: elgevork
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 07/05/2021
 ---

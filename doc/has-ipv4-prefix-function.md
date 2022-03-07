@@ -1,11 +1,7 @@
 ---
 title: has_ipv4_prefix() - Azure Data Explorer
 description: This article describes has_ipv4_prefix() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/21/2021
 ---

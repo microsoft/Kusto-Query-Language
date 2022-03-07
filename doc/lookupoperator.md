@@ -1,11 +1,7 @@
 ---
-title: lookup operator - Azure Data Explorer | Microsoft Docs
+title: lookup operator - Azure Data Explorer
 description: This article describes lookup operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 03/12/2020
 ---

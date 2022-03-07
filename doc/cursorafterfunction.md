@@ -1,11 +1,7 @@
 ---
-title: cursor_after() - Azure Data Explorer | Microsoft Docs
+title: cursor_after() - Azure Data Explorer
 description: This article describes cursor_after() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/19/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json

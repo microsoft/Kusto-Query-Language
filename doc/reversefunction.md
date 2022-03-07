@@ -1,11 +1,7 @@
 ---
 title: reverse() - Azure Data Explorer
 description: This article describes reverse() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 02/13/2020
 ---

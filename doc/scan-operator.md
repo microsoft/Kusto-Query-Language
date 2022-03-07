@@ -1,11 +1,7 @@
 ---
 title: scan operator (preview) - Azure Data Explorer
 description: This article describes the scan operator in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 12/28/2021
 ---

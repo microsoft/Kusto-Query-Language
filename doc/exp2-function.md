@@ -1,11 +1,7 @@
 ---
-title: exp2() - Azure Data Explorer | Microsoft Docs
+title: exp2() - Azure Data Explorer
 description: This article describes exp2() in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 10/23/2018
 ---

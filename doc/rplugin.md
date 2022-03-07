@@ -1,11 +1,7 @@
 ---
 title: R plugin (Preview) - Azure Data Explorer
 description: This article describes R plugin (Preview) in Azure Data Explorer.
-services: data-explorer
-author: orspod
-ms.author: orspodek
 ms.reviewer: alexans
-ms.service: data-explorer
 ms.topic: reference
 ms.date: 04/01/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
