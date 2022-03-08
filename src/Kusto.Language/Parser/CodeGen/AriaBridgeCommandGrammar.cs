@@ -12,7 +12,11 @@
 // 
 // 
 // 
-// WARNING: This file is auto generated during build. Do not modify manually.
+// WARNING: Do not modify this file
+//          This file is auto generated from the template file 'AriaBridgeCommandGrammar.tt'
+//          Instead modify the corresponding input info file in the Kusto.Language.Generator project.
+//          After making changes, use the right-click menu on the .tt file and select 'run custom tool'.
+
 using System;
 using System.Linq;
 using System.Collections.Generic;

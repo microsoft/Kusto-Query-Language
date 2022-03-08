@@ -2407,6 +2407,22 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoPolygonSimplify =
+            new FunctionSymbol("geo_polygon_simplify", ScalarTypes.Dynamic,
+                new Parameter("polygon", ScalarTypes.Dynamic),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoSimplifyPolygonsArray =
+            new FunctionSymbol("geo_simplify_polygons_array", ScalarTypes.Dynamic,
+                new Parameter("polygons", ScalarTypes.Dynamic),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoLineValidate =
             new FunctionSymbol("__geo_line_validate", ScalarTypes.String,
                 new Parameter("lineString", ScalarTypes.Dynamic))
@@ -2441,6 +2457,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeohashNeighbors =
+            new FunctionSymbol("geo_geohash_neighbors", ScalarTypes.Dynamic,
+                new Parameter("geohash", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPointToS2Cell =
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
                 new Parameter("longitude", ParameterTypeKind.Number),
@@ -2454,6 +2477,13 @@ namespace Kusto.Language
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoS2CellNeighbors =
+            new FunctionSymbol("geo_s2cell_neighbors", ScalarTypes.Dynamic,
+                new Parameter("s2cell", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
 
         public static readonly FunctionSymbol GeoS2CellToPolygon =
             new FunctionSymbol("geo_s2cell_to_polygon", ScalarTypes.Dynamic,
@@ -2480,6 +2510,13 @@ namespace Kusto.Language
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoH3CellNeighbors =
+            new FunctionSymbol("geo_h3cell_neighbors", ScalarTypes.Dynamic,
+                new Parameter("h3cell", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
 
         public static readonly FunctionSymbol GeoH3CellChildren =
             new FunctionSymbol("geo_h3cell_children", ScalarTypes.Dynamic,
@@ -3007,6 +3044,7 @@ namespace Kusto.Language
             GeoLineIntersectsPolygon,
             GeoPolygonIntersectsPolygon,
             GeoPolygonsUnion,
+            GeoSimplifyPolygonsArray,
             GeoLinesUnion,
             GeoPolygonToS2Cells,
             GeoPolygonDensify,
@@ -3014,6 +3052,7 @@ namespace Kusto.Language
             GeoPolygonCentroid,
             GeoPolygonValidate,
             GeoPolygonPerimeter,
+            GeoPolygonSimplify,
             GeoLineLength,
             GeoLineCentroid,
             GeoLineDensify,
@@ -3022,12 +3061,15 @@ namespace Kusto.Language
             GeoPointToGeohash,
             GeohashToCentralPoint,
             GeohashToPolygon,
+            GeohashNeighbors,
             GeoPointToS2Cell,
             GeoS2CellToCentralPoint,
             GeoS2CellToPolygon,
+            GeoS2CellNeighbors,
             GeoPointToH3Cell,
             GeoH3CellToCentralPoint,
             GeoH3CellToPolygon,
+            GeoH3CellNeighbors,
             GeoH3CellChildren,
             GeoH3CellParent,
             GeoH3CellRings,

@@ -56,8 +56,22 @@ namespace Kusto.Language.Syntax
         }
 
         public CustomNode(params SyntaxElement[] elements)
-            : this(SyntaxParsers.GetDefaultShape(elements.Length), elements, null)
+            : this(GetDefaultShape(elements.Length), elements, null)
         {
+        }
+
+        /// <summary>
+        /// Gets the default shape for a <see cref="CustomNode"/> with the specified number of elements.
+        /// </summary>
+        public static IReadOnlyList<CustomElementDescriptor> GetDefaultShape(int count)
+        {
+            var elements = new CustomElementDescriptor[count];
+            for (int i = 0; i < count; i++)
+            {
+                elements[i] = CustomElementDescriptor.Default;
+            }
+
+            return elements;
         }
 
         public override SyntaxKind Kind => SyntaxKind.CustomNode;
@@ -160,6 +174,30 @@ namespace Kusto.Language.Syntax
         {
         }
 
+        public static CustomElementDescriptor From(string name, CompletionHint hint = CompletionHint.Syntax, bool isOptional = false)
+        {
+            if (string.IsNullOrEmpty(name)
+                && hint == CompletionHint.Syntax
+                && !isOptional)
+            {
+                return Default;
+            }
+            else
+            {
+                return new CustomElementDescriptor(name, hint, isOptional);
+            }
+        }
+
+        public static CustomElementDescriptor From(CompletionHint hint, bool isOptional = false)
+        {
+            return From(null, hint, isOptional);
+        }
+
+        public static CustomElementDescriptor From(bool isOptional)
+        {
+            return From(null, CompletionHint.Syntax, isOptional);
+        }
+
         public CustomElementDescriptor WithName(string name)
         {
             if (this.Name == name)
@@ -181,7 +219,18 @@ namespace Kusto.Language.Syntax
             return new CustomElementDescriptor(this.Name, this.CompletionHint, this.IsOptional);
         }
 
+        public bool IsDefault
+        {
+            get
+            {
+                return (this == Default)
+                    || (string.IsNullOrEmpty(this.Name)
+                        && this.CompletionHint == CompletionHint.Syntax
+                        && this.IsOptional == false);
+            }
+        }
+
         public static CustomElementDescriptor Default =
-            new CustomElementDescriptor("", CompletionHint.None, false);
+            new CustomElementDescriptor("", CompletionHint.Syntax, false);
     }
 }
