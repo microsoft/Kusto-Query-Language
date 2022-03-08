@@ -210,7 +210,7 @@ namespace Kusto.Language.Binding
                 case SyntaxKind.NotEndsWithExpression:
                     return OperatorKind.NotEndsWith;
                 case SyntaxKind.NotEndsWithCsExpression:
-                    return OperatorKind.NotEndsWith;
+                    return OperatorKind.NotEndsWithCs;
                 case SyntaxKind.MatchesRegexExpression:
                     return OperatorKind.MatchRegex;
                 case SyntaxKind.InExpression:
