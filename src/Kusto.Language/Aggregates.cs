@@ -406,11 +406,7 @@ namespace Kusto.Language
                new Signature(
                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
                    Tabularity.Scalar,
-                   new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 1, maxOccurring: MaxRepeat)),
-                 new Signature(
-                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
-                    Tabularity.Scalar,
-                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.StarOnly)));
+                   new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.StarAllowed, minOccurring: 1, maxOccurring: MaxRepeat)));
 
         public static readonly FunctionSymbol AnyIf =
             new FunctionSymbol("anyif",
@@ -436,6 +432,7 @@ namespace Kusto.Language
             var prefix = unnamedExpressionPrefix ?? string.Empty;
 
             var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
+            var anyStar = args.Any(a => a is StarExpression);
 
             for (int i = 0; i < args.Count; i++)
             {
@@ -444,11 +441,31 @@ namespace Kusto.Language
                 if (arg is StarExpression)
                 {
                     foreach (var c in table.Columns)
-                    {
-                        if (!doNotRepeat.Contains(c))
+                    {                       
+                        if (CanAddAnyResultColumn(c, doNotRepeat, anyStar))
                         {
+                            doNotRepeat.Add(c);
                             columns.Add(c);
                         }
+                    }
+                }
+                else if (arg is SimpleNamedExpression snx
+                    && GetResultColumn(snx.Expression) is ColumnSymbol vc)
+                {
+                    if (CanAddAnyResultColumn(vc, doNotRepeat, anyStar))
+                    {
+                        doNotRepeat.Add(vc);
+                        columns.Add(new ColumnSymbol(snx.Name.SimpleName, vc.Type));
+                    }
+                }
+                else if (GetResultColumn(arg) is ColumnSymbol c)
+                {
+                    // this is explicitly referenced column (not assigned)
+                    if (CanAddAnyResultColumn(c, doNotRepeat, anyStar))
+                    {
+                        doNotRepeat.Add(c);
+                        // change identity of explicitly referenced columns so won't match same columns already in projection list
+                        columns.Add(new ColumnSymbol(c.Name, c.Type));
                     }
                 }
                 else
@@ -465,6 +482,14 @@ namespace Kusto.Language
             }
 
             return new TupleSymbol(columns);
+        }
+
+        private static bool CanAddAnyResultColumn(ColumnSymbol column, HashSet<ColumnSymbol> doNotRepeat, bool anyStar)
+        {
+            if (!anyStar)
+                return true;
+
+            return !doNotRepeat.Contains(column);
         }
 
         public static readonly FunctionSymbol ArgMin =
