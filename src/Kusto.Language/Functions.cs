@@ -2666,16 +2666,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol NewGuid = new FunctionSymbol("new_guid", ScalarTypes.Guid)
             .WithResultNameKind(ResultNameKind.None);
-
-        public static readonly FunctionSymbol InternalFunnelCompletion =
-            new FunctionSymbol("__funnel_completion", ScalarTypes.String,
-                new Parameter("events", ScalarTypes.Dynamic),
-                new Parameter("times", ScalarTypes.Dynamic),
-                new Parameter("sequence", ScalarTypes.Dynamic),
-                new Parameter("periods", ScalarTypes.Dynamic))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
-
+       
         public static readonly FunctionSymbol HasIpv4 =
             new FunctionSymbol("has_ipv4", ScalarTypes.Bool,
                 new Parameter("source", ParameterTypeKind.StringOrDynamic),
@@ -3107,7 +3098,6 @@ namespace Kusto.Language
             CursorBeforeOrAt,
             CursorCurrent,
             CursorCurrent2,
-            InternalFunnelCompletion,
             HasIpv4,
             HasIpv4Prefix,
             HasAnyIpv4,

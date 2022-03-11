@@ -214,7 +214,15 @@ namespace Kusto.Language.Editor
 
         public override TextRange GetElement(int position, CancellationToken cancellationToken)
         {
-            return _service.GetElement(position);
+            var range = _service.GetElement(position - _offset);
+            if (_offset > 0)
+            {
+                return new TextRange(range.Start + _offset, range.Length);
+            }
+            else
+            {
+                return range;
+            }
         }
 
         public override RelatedInfo GetRelatedElements(int position, FindRelatedOptions options, CancellationToken cancellationToken)

@@ -190,42 +190,24 @@ namespace Kusto.Language.Editor
             return true;
         }
 
-        private static bool IsInsideComment(string trivia, int position)
+        /// <summary>
+        /// True if the trivia offset is within a comment
+        /// </summary>
+        public static bool IsInsideComment(string trivia, int triviaOffset)
         {
-            for (int p = 0; p < trivia.Length; p++)
+            if (TriviaFacts.TryGetCommentSpan(trivia, triviaOffset, out var start, out var length))
             {
-                if (position == p)
-                    break;
+                // the carat is before the comment, so allow completions
+                if (triviaOffset == start)
+                    return false;
 
-                var ch = trivia[p];
-
-                // start of comment?  any non-whitespace in trivia is start of a comment
-                if (!TextFacts.IsWhitespace(ch))
+                if (triviaOffset == start + length && TextFacts.HasLineBreaks(trivia))
                 {
-                    var start = p;
-                    var end = p;
-                    bool hasLineBreak = false;
-
-                    for (; end < trivia.Length; end++)
-                    {
-                        var lbLen = TextFacts.GetLineBreakLength(trivia, end);
-                        if (lbLen > 0)
-                        {
-                            end += lbLen;
-                            hasLineBreak = true;
-                            break;
-                        }
-                    }
-
-                    p = end - 1;
-
-                    // is position inside this comment?
-                    if ((hasLineBreak && position >= start && position < end) ||
-                        (!hasLineBreak && position >= start))
-                    {
-                        return true;
-                    }
+                    // after the line break so allow completions
+                    return false;
                 }
+
+                return true;
             }
 
             return false;

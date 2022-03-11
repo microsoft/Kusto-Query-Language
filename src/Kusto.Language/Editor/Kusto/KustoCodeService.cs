@@ -473,6 +473,31 @@ namespace Kusto.Language.Editor
                 try
                 {
                     var token = code.Syntax.GetTokenAt(position);
+                    var prevToken = token.GetPreviousToken();
+
+                    if (position == token.TriviaStart 
+                        && (token.TriviaWidth > 0 || token.Kind == SyntaxKind.EndOfTextToken)
+                        && prevToken != null) // on the end of the previous token
+                    {
+                        token = prevToken;
+                    }
+
+                    if ((position > token.TriviaStart || (position == token.TriviaStart && prevToken == null))                       
+                        && (position < token.TextStart || token.Kind == SyntaxKind.EndOfTextToken))
+                    {
+                        if (TriviaFacts.TryGetCommentSpan(token.Trivia, position - token.TriviaStart, out var commentStart, out var commentLength)
+                            && position < commentStart + commentLength)
+                        {
+                            return new TextRange(commentStart + token.TriviaStart, commentLength);
+                        }
+                        else
+                        {
+                            // inside whitespace (not comment) with no affinity to either token
+                            // there is no element.
+                            return new TextRange(position, 0);
+                        }
+                    }
+
                     return new TextRange(token.TextStart, token.Text.Length);
                 }
                 catch (Exception)
@@ -480,6 +505,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
+            // could not determine syntax or exception was thrown.. no information
             return new TextRange(0,0);
         }
 
