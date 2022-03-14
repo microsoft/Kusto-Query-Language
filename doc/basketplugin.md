@@ -3,11 +3,11 @@ title: basket plugin - Azure Data Explorer
 description: This article describes basket plugin in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/23/2022
+ms.date: 03/13/2022
 ---
 # basket plugin
 
-The `basket` plugin finds frequent patterns of attributes in the data. It returns the patterns that pass a frequency threshold for the query. The `basket` plugin is guaranteed to find every frequent pattern in the data, but isn't guaranteed to have polynomial runtime. The runtime of the query relates in linear fashion to the number of rows, but can be exponential to the number of columns (dimensions). The `basket` plugin is based on the Apriori algorithm originally developed for basket analysis data mining. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
+The `basket` plugin finds frequent patterns of attributes in the data and returns the patterns that pass a frequency threshold in that data. A pattern represents a subset of the rows that have the same value across one or more columns. The `basket` plugin is based on the [Apriori algorithm](https://en.wikipedia.org/wiki/Association_rule_learning#Apriori_algorithm) originally developed for basket analysis data mining. 
 
 ## Syntax
 
@@ -48,9 +48,12 @@ Available arguments:
 
 ## Returns
 
-The `basket` plugin returns all frequent patterns that pass a ratio threshold. The default threshold is 0.05. 
+The `basket` plugin returns frequent patterns that pass a ratio threshold. The default threshold is 0.05. 
 
-Each pattern is represented by a row in the results. The first column is the segment ID. The next two columns are the *count* and *percentage of rows*, from the original query. The remaining columns relate to the original query, with either a specific value from the column or a wildcard value, which is by default null, meaning a variable value.
+Each pattern is represented by a row in the results. The first column is the segment ID. The next two columns are the *count* and *percentage of rows*, from the original query that match the pattern. The remaining columns relate to the original query, with either a specific value from the column or a wildcard value, which is by default null, meaning a variable value.
+
+**Notes**
+The algorithm uses sampling to determine the initial frequent values. Consequently, the results could slightly differ between multiple runs for patterns whose frequency is close to the threshold.
 
 ## Example
 
