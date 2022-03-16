@@ -1,0 +1,30 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+    
+    - name: Navigate to Workspace
+      run: cd $GITHUB_WORKSPACE
+
+    - name: Restore Packages
+      run: nuget restore src\Kusto.Language.sln
+
+    - name: Build Solution
+      run: |
+        msbuild.exe src\Kusto.Language.sln /p:configuration="Release"
