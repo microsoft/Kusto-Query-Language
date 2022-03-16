@@ -13,14 +13,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    
-    - name: Restore dependencies
-      run: dotnet restore src\Kusto.Language.sln
-    
-    - name: Build
-      run: dotnet build src\Kusto.Language.sln --no-restore --configuration Release
+    - name: Navigate to Workspace
+      run: cd $GITHUB_WORKSPACE
+
+    - name: Restore Packages
+      run: nuget restore src\Kusto.Language.sln
+
+    - name: Build Solution
+      run: |
+        msbuild.exe src\Kusto.Language.sln /p:configuration="Release"
