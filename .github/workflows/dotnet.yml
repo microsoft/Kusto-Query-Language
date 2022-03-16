@@ -23,4 +23,4 @@ jobs:
       run: dotnet restore src\Kusto.Language.sln
     
     - name: Build
-      run: dotnet build src\Kusto.Language.sln --no-restore ---configuration Release
+      run: dotnet build src\Kusto.Language.sln --no-restore --configuration Release
