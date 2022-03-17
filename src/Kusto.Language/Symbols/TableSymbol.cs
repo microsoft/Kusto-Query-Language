@@ -128,18 +128,46 @@ namespace Kusto.Language.Symbols
         public bool IsMaterializedView => (this.state & TableState.MaterializedView) != 0;
 
         /// <summary>
-        /// Returns a version of this <see cref="TableSymbol"/> with the specified name.
+        /// Construct a new <see cref="TableSymbol"/> if one of the optional arguments is different that the current values.
         /// </summary>
-        public TableSymbol WithName(string name)
+        protected TableSymbol With(
+            string name = null,
+            TableState? state = null,
+            IEnumerable<ColumnSymbol> columns = null,
+            string description = null)
         {
-            if (this.Name != (name ?? ""))
+            var useName = name ?? this.Name;
+            var useState = state.HasValue ? state.Value : this.state;
+            var useColumns = columns ?? this.Columns;
+            var useDescription = description ?? this.Description;
+
+            if (useName != this.Name
+                || useState != this.state
+                || useColumns != this.Columns
+                || useDescription != this.Description)
             {
-                return new TableSymbol(name, this.state, this.Columns, this.Description);
+                return Create(useName, useState, useColumns, useDescription);
             }
             else
             {
                 return this;
             }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="TableSymbol"/> given the specified values.
+        /// </summary>
+        protected virtual TableSymbol Create(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
+        {
+            return new TableSymbol(name, state, columns, description);
+        }
+
+        /// <summary>
+        /// Returns a version of this <see cref="TableSymbol"/> with the specified name.
+        /// </summary>
+        public TableSymbol WithName(string name)
+        {
+            return With(name: name);
         }
 
         /// <summary>
@@ -147,14 +175,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithDescripton(string description)
         {
-            if (this.Description != (description ?? ""))
-            {
-                return new TableSymbol(this.Name, this.state, this.Columns, this.Description);
-            }
-            else
-            {
-                return this;
-            }
+            return With(description: description ?? "");
         }
 
         /// <summary>
@@ -162,14 +183,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithColumns(IEnumerable<ColumnSymbol> columns)
         {
-            if (this.Columns != columns)
-            {
-                return new TableSymbol(this.Name, this.state, columns, this.Description);
-            }
-            else
-            {
-                return this;
-            }
+            return With(columns: columns);
         }
 
         /// <summary>
@@ -188,7 +202,7 @@ namespace Kusto.Language.Symbols
             if (columns == null)
                 throw new ArgumentNullException(nameof(columns));
 
-            return new TableSymbol(this.Name, this.state, this.Columns.Concat(columns), this.Description);
+            return With(columns: this.Columns.Concat(columns));
         }
 
         /// <summary>
@@ -204,14 +218,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         private TableSymbol WithState(TableState newState)
         {
-            if (this.state != newState)
-            {
-                return new TableSymbol(this.Name, newState, this.Columns, this.Description);
-            }
-            else
-            {
-                return this;
-            }
+            return With(state: newState);
         }
 
         /// <summary>
@@ -387,15 +394,64 @@ namespace Kusto.Language.Symbols
 
     public class MaterializedViewSymbol : TableSymbol
     {
+        /// <summary>
+        /// The query that that is the source of the materialized view.
+        /// </summary>
         public string MaterializedViewQuery { get; private set; }
 
-        public MaterializedViewKind MaterializedViewKind { get; set; }
+        // TODO: find better solution for storing this data for analyzer
+        internal MaterializedViewKind MaterializedViewKind { get; set; }
 
-        public MaterializedViewSymbol(string name, IEnumerable<ColumnSymbol> columns, string mvQuery, string description = null)
-            : base(name, TableState.MaterializedView, columns, description)
+        private MaterializedViewSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description, string mvQuery)
+            : base(name, state, columns, description)
         {
             MaterializedViewQuery = mvQuery;
         }
 
+        public MaterializedViewSymbol(string name, IEnumerable<ColumnSymbol> columns, string mvQuery, string description = null)
+            : this(name, TableState.MaterializedView, columns, description, mvQuery)
+        {
+        }
+
+        public MaterializedViewSymbol(string name, string columns, string mvQuery, string description = null)
+            : this(name, TableSymbol.From(columns).Columns, mvQuery, description)
+        {
+        }
+
+        protected override TableSymbol Create(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
+        {
+            return new MaterializedViewSymbol(name, state, columns, description, this.MaterializedViewQuery);
+        }
+    }
+
+    /// <summary>
+    /// A table declared external to Kusto
+    /// </summary>
+    public class ExternalTableSymbol : TableSymbol
+    {
+        private ExternalTableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
+            : base(name, state, columns, description)
+        {
+        }
+
+        public ExternalTableSymbol(string name, IEnumerable<ColumnSymbol> columns, string description = null)
+            : this(name, TableState.External, columns, description)
+        {
+        }
+
+        public ExternalTableSymbol(string name, params ColumnSymbol[] columns)
+            : this(name, (IEnumerable<ColumnSymbol>)columns)
+        {
+        }
+
+        public ExternalTableSymbol(string name, string columns, string description = null)
+            : this(name, TableSymbol.From(columns).Columns, description)
+        {
+        }
+
+        protected override TableSymbol Create(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
+        {
+            return new ExternalTableSymbol(name, state, columns, description);
+        }
     }
 }

@@ -91,6 +91,19 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitDynamicExpression(DynamicExpression node)
+            {
+                _binder._dynamicDepth++;
+                try
+                {
+                    base.VisitDynamicExpression(node);
+                }
+                finally
+                {
+                    _binder._dynamicDepth--;
+                }
+            }
+
             public override void VisitPipeExpression(PipeExpression node)
             {
                 node.Expression.Accept(this); 

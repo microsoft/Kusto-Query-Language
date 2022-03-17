@@ -313,126 +313,127 @@ namespace Kusto.Language.Parsing
             var shape271 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("references", CompletionHint.Literal)};
             var shape272 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD("Role"), CD()};
             var shape273 = new [] {CD(), CD(), CD(), CD(), CD("Scope"), CD()};
-            var shape274 = new [] {CD(), CD(), CD("Tag", CompletionHint.Literal)};
-            var shape275 = new [] {CD(), CD(), CD(), CD(), CD("policy", CompletionHint.Literal), CD()};
-            var shape276 = new [] {CD(), CD(), CD(), CD(isOptional: true), CD(), CD(isOptional: true)};
-            var shape277 = new [] {CD(), CD(), CD(), CD(isOptional: true), CD(isOptional: true)};
-            var shape278 = new [] {CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true)};
-            var shape279 = new [] {CD("Principal", CompletionHint.Literal), CD()};
-            var shape280 = new [] {CD(), CD(), CD(), CD("num", CompletionHint.Literal), CD()};
-            var shape281 = new [] {CD(), CD(), CD("ColumnName"), CD(), CD()};
-            var shape282 = new [] {CD(), CD(), CD("ContinuousExportName", CompletionHint.None), CD()};
-            var shape283 = new [] {CD(), CD("Version", CompletionHint.Literal)};
-            var shape284 = new [] {CD("DatabaseName", CompletionHint.Database), CD(isOptional: true)};
-            var shape285 = new [] {CD(), CD(), CD(), CD(CompletionHint.Database), CD(), CD(), CD(), CD()};
-            var shape286 = new [] {CD(), CD(), CD(), CD(CompletionHint.Database), CD(), CD(), CD(isOptional: true)};
-            var shape287 = new [] {CD(), CD(CompletionHint.Database, isOptional: true)};
-            var shape288 = new [] {CD(), CD(), CD(), CD(), CD("minCreationTime", CompletionHint.Literal), CD()};
-            var shape289 = new [] {CD(), CD(), CD(), CD(), CD(), CD(isOptional: true)};
-            var shape290 = new [] {CD("databaseName", CompletionHint.Database), CD()};
-            var shape291 = new [] {CD(), CD("databaseVersion", CompletionHint.Literal)};
-            var shape292 = new [] {CD(), CD(), CD(), CD(isOptional: true)};
-            var shape293 = new [] {CD("kind"), CD()};
-            var shape294 = new [] {CD("name", CompletionHint.Literal), CD(isOptional: true)};
-            var shape295 = new [] {CD("DatabaseName", CompletionHint.Database), CD()};
-            var shape296 = new [] {CD(), CD("Version", CompletionHint.Literal), CD()};
-            var shape297 = new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD(isOptional: true)};
-            var shape298 = new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true)};
-            var shape299 = new [] {CD(), CD(), CD("DatabaseName"), CD(), CD()};
-            var shape300 = new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD()};
-            var shape301 = new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD(isOptional: true)};
-            var shape302 = new [] {CD(), CD("obj", CompletionHint.Literal)};
-            var shape303 = new [] {CD(), CD("excludedFunctions", CompletionHint.Literal)};
-            var shape304 = new [] {CD(), CD(), CD("entity", CompletionHint.None), CD(), CD(), CD(), CD(isOptional: true), CD(isOptional: true)};
-            var shape305 = new [] {CD(), CD(), CD("extentId", CompletionHint.Literal), CD(), CD("columnName", CompletionHint.None), CD(), CD()};
-            var shape306 = new [] {CD(), CD(CompletionHint.Literal)};
-            var shape307 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(isOptional: true)};
-            var shape308 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD()};
-            var shape309 = new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.ExternalTable), CD()};
-            var shape310 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD(isOptional: true)};
-            var shape311 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD()};
-            var shape312 = new [] {CD(), CD(), CD("id", CompletionHint.None)};
-            var shape313 = new [] {CD(), CD("threshold", CompletionHint.Literal)};
-            var shape314 = new [] {CD(), CD("columnName", CompletionHint.Column), CD(isOptional: true)};
-            var shape315 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(isOptional: true)};
-            var shape316 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD()};
-            var shape317 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(), CD(), CD(isOptional: true)};
-            var shape318 = new [] {CD(), CD(), CD("functionName", CompletionHint.Function), CD(), CD(), CD()};
-            var shape319 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function)};
-            var shape320 = new [] {CD(), CD(), CD(), CD(), CD("OperationId", CompletionHint.Literal), CD()};
-            var shape321 = new [] {CD(), CD(CompletionHint.MaterializedView), CD(), CD()};
-            var shape322 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)};
-            var shape323 = new [] {CD(), CD(), CD("OperationId", CompletionHint.Literal), CD()};
-            var shape324 = new [] {CD(), CD(), CD("queryText")};
-            var shape325 = new [] {CD(), CD(), CD(), CD("Query", CompletionHint.Tabular)};
-            var shape326 = new [] {CD(), CD(), CD(), CD("queryText")};
-            var shape327 = new [] {CD(), CD(), CD("key", CompletionHint.Literal)};
-            var shape328 = new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Literal), CD(isOptional: true)};
-            var shape329 = new [] {CD(), CD(), CD("rowStoreName", CompletionHint.None)};
-            var shape330 = new [] {CD(), CD(), CD("StoredQueryResultName", CompletionHint.None), CD()};
-            var shape331 = new [] {CD(), CD(), CD(), CD(), CD(), CD("outdatewindow", CompletionHint.Literal)};
-            var shape332 = new [] {CD(), CD(CompletionHint.Table), CD(), CD()};
-            var shape333 = new [] {CD(), CD(CompletionHint.Table), CD()};
-            var shape334 = new [] {CD(), CD(), CD(CompletionHint.Table), CD()};
-            var shape335 = new [] {CD(), CD("partitionBy", CompletionHint.Literal)};
-            var shape336 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
-            var shape337 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD()};
-            var shape338 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)};
-            var shape339 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
-            var shape340 = new [] {CD(), CD(), CD("WorkloadGroup", CompletionHint.None)};
-            var shape341 = new [] {CD(), CD("TableName", CompletionHint.None), CD()};
-            var shape342 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD(), CD("Version", CompletionHint.Literal), CD(isOptional: true)};
+            var shape274 = new [] {CD("Resource"), CD(isOptional: true)};
+            var shape275 = new [] {CD(), CD(), CD("Tag", CompletionHint.Literal)};
+            var shape276 = new [] {CD(), CD(), CD(), CD(), CD("policy", CompletionHint.Literal), CD()};
+            var shape277 = new [] {CD(), CD(), CD(), CD(isOptional: true), CD(), CD(isOptional: true)};
+            var shape278 = new [] {CD(), CD(), CD(), CD(isOptional: true), CD(isOptional: true)};
+            var shape279 = new [] {CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true)};
+            var shape280 = new [] {CD("Principal", CompletionHint.Literal), CD()};
+            var shape281 = new [] {CD(), CD(), CD(), CD("num", CompletionHint.Literal), CD()};
+            var shape282 = new [] {CD(), CD(), CD("ColumnName"), CD(), CD()};
+            var shape283 = new [] {CD(), CD(), CD("ContinuousExportName", CompletionHint.None), CD()};
+            var shape284 = new [] {CD(), CD("Version", CompletionHint.Literal)};
+            var shape285 = new [] {CD("DatabaseName", CompletionHint.Database), CD(isOptional: true)};
+            var shape286 = new [] {CD(), CD(), CD(), CD(CompletionHint.Database), CD(), CD(), CD(), CD()};
+            var shape287 = new [] {CD(), CD(), CD(), CD(CompletionHint.Database), CD(), CD(), CD(isOptional: true)};
+            var shape288 = new [] {CD(), CD(CompletionHint.Database, isOptional: true)};
+            var shape289 = new [] {CD(), CD(), CD(), CD(), CD("minCreationTime", CompletionHint.Literal), CD()};
+            var shape290 = new [] {CD(), CD(), CD(), CD(), CD(), CD(isOptional: true)};
+            var shape291 = new [] {CD("databaseName", CompletionHint.Database), CD()};
+            var shape292 = new [] {CD(), CD("databaseVersion", CompletionHint.Literal)};
+            var shape293 = new [] {CD(), CD(), CD(), CD(isOptional: true)};
+            var shape294 = new [] {CD("kind"), CD()};
+            var shape295 = new [] {CD("name", CompletionHint.Literal), CD(isOptional: true)};
+            var shape296 = new [] {CD("DatabaseName", CompletionHint.Database), CD()};
+            var shape297 = new [] {CD(), CD("Version", CompletionHint.Literal), CD()};
+            var shape298 = new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD(isOptional: true)};
+            var shape299 = new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true)};
+            var shape300 = new [] {CD(), CD(), CD("DatabaseName"), CD(), CD()};
+            var shape301 = new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD()};
+            var shape302 = new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD(isOptional: true)};
+            var shape303 = new [] {CD(), CD("obj", CompletionHint.Literal)};
+            var shape304 = new [] {CD(), CD("excludedFunctions", CompletionHint.Literal)};
+            var shape305 = new [] {CD(), CD(), CD("entity", CompletionHint.None), CD(), CD(), CD(), CD(isOptional: true), CD(isOptional: true)};
+            var shape306 = new [] {CD(), CD(), CD("extentId", CompletionHint.Literal), CD(), CD("columnName", CompletionHint.None), CD(), CD()};
+            var shape307 = new [] {CD(), CD(CompletionHint.Literal)};
+            var shape308 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(isOptional: true)};
+            var shape309 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD()};
+            var shape310 = new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.ExternalTable), CD()};
+            var shape311 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD(isOptional: true)};
+            var shape312 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD()};
+            var shape313 = new [] {CD(), CD(), CD("id", CompletionHint.None)};
+            var shape314 = new [] {CD(), CD("threshold", CompletionHint.Literal)};
+            var shape315 = new [] {CD(), CD("columnName", CompletionHint.Column), CD(isOptional: true)};
+            var shape316 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(isOptional: true)};
+            var shape317 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD()};
+            var shape318 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(), CD(), CD(isOptional: true)};
+            var shape319 = new [] {CD(), CD(), CD("functionName", CompletionHint.Function), CD(), CD(), CD()};
+            var shape320 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function)};
+            var shape321 = new [] {CD(), CD(), CD(), CD(), CD("OperationId", CompletionHint.Literal), CD()};
+            var shape322 = new [] {CD(), CD(CompletionHint.MaterializedView), CD(), CD()};
+            var shape323 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)};
+            var shape324 = new [] {CD(), CD(), CD("OperationId", CompletionHint.Literal), CD()};
+            var shape325 = new [] {CD(), CD(), CD("queryText")};
+            var shape326 = new [] {CD(), CD(), CD(), CD("Query", CompletionHint.Tabular)};
+            var shape327 = new [] {CD(), CD(), CD(), CD("queryText")};
+            var shape328 = new [] {CD(), CD(), CD("key", CompletionHint.Literal)};
+            var shape329 = new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Literal), CD(isOptional: true)};
+            var shape330 = new [] {CD(), CD(), CD("rowStoreName", CompletionHint.None)};
+            var shape331 = new [] {CD(), CD(), CD("StoredQueryResultName", CompletionHint.None), CD()};
+            var shape332 = new [] {CD(), CD(), CD(), CD(), CD(), CD("outdatewindow", CompletionHint.Literal)};
+            var shape333 = new [] {CD(), CD(CompletionHint.Table), CD(), CD()};
+            var shape334 = new [] {CD(), CD(CompletionHint.Table), CD()};
+            var shape335 = new [] {CD(), CD(), CD(CompletionHint.Table), CD()};
+            var shape336 = new [] {CD(), CD("partitionBy", CompletionHint.Literal)};
+            var shape337 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
+            var shape338 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD()};
+            var shape339 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)};
+            var shape340 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
+            var shape341 = new [] {CD(), CD(), CD("WorkloadGroup", CompletionHint.None)};
+            var shape342 = new [] {CD(), CD("TableName", CompletionHint.None), CD()};
+            var shape343 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD(), CD("Version", CompletionHint.Literal), CD(isOptional: true)};
 
             var AddClusterBlockedPrincipals = Command("AddClusterBlockedPrincipals", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("blockedprincipals"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("blockedprincipals"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         First(
                             Custom(
-                                EToken("application"),
+                                Token("application"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 Optional(
                                     Custom(
-                                        EToken("user"),
+                                        Token("user"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                                         shape1)),
                                 shape2),
                             Custom(
-                                EToken("user"),
+                                Token("user"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape1))),
                     Optional(
                         First(
                             Custom(
-                                EToken("period"),
+                                Token("period"),
                                 Required(rules.Value, rules.MissingValue),
                                 Optional(
                                     Custom(
-                                        EToken("reason"),
+                                        Token("reason"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                                         shape3)),
                                 shape4),
                             Custom(
-                                EToken("reason"),
+                                Token("reason"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape3))),
                     shape5));
 
             var AddClusterRole = Command("AddClusterRole", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    RequiredEToken("admins", "databasecreators", "users", "viewers"),
-                    RequiredEToken("("),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("admins", "databasecreators", "users", "viewers"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -442,11 +443,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -459,17 +460,17 @@ namespace Kusto.Language.Parsing
 
             var AddDatabaseRole = Command("AddDatabaseRole", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
-                    RequiredEToken("("),
+                    RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -479,11 +480,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -496,18 +497,18 @@ namespace Kusto.Language.Parsing
 
             var AddExternalTableAdmins = Command("AddExternalTableAdmins", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins"),
-                    RequiredEToken("("),
+                    RequiredToken("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -517,11 +518,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -534,27 +535,27 @@ namespace Kusto.Language.Parsing
 
             var AddFollowerDatabaseAuthorizedPrincipals = Command("AddFollowerDatabaseAuthorizedPrincipals", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    RequiredEToken("database"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    RequiredToken("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Custom(
-                                EToken("from"),
+                                Token("from"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                RequiredEToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"),
+                                RequiredToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"),
                                 shape13),
                             Custom(
-                                EToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"))),
-                        () => (SyntaxElement)new CustomNode(shape13, CreateMissingEToken("from"), rules.MissingStringLiteral(), CreateMissingEToken("Expected admins,monitors,unrestrictedviewers,users,viewers"))),
-                    RequiredEToken("("),
+                                Token("admins", "monitors", "unrestrictedviewers", "users", "viewers"))),
+                        () => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("from"), rules.MissingStringLiteral(), CreateMissingToken("Expected admins,monitors,unrestrictedviewers,users,viewers"))),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -564,7 +565,7 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
                             rules.StringLiteral,
@@ -573,17 +574,17 @@ namespace Kusto.Language.Parsing
 
             var AddFunctionRole = Command("AddFunctionRole", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins"),
-                    RequiredEToken("("),
+                    RequiredToken("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -593,11 +594,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -610,17 +611,17 @@ namespace Kusto.Language.Parsing
 
             var AddMaterializedViewAdmins = Command("AddMaterializedViewAdmins", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins"),
-                    RequiredEToken("("),
+                    RequiredToken("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -630,7 +631,7 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
                             rules.StringLiteral,
@@ -639,17 +640,17 @@ namespace Kusto.Language.Parsing
 
             var AddTableRole = Command("AddTableRole", 
                 Custom(
-                    EToken("add", CompletionKind.CommandPrefix),
-                    RequiredEToken("table"),
+                    Token("add", CompletionKind.CommandPrefix),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "ingestors"),
-                    RequiredEToken("("),
+                    RequiredToken("admins", "ingestors"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -659,11 +660,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -676,902 +677,902 @@ namespace Kusto.Language.Parsing
 
             var AlterMergeClusterPolicyCallout = Command("AlterMergeClusterPolicyCallout", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("callout"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("callout"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterMergeClusterPolicyCapacity = Command("AlterMergeClusterPolicyCapacity", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("capacity"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("capacity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterMergeClusterPolicyDiagnostics = Command("AlterMergeClusterPolicyDiagnostics", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("diagnostics"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape22));
 
             var AlterMergeClusterPolicyMultiDatabaseAdmins = Command("AlterMergeClusterPolicyMultiDatabaseAdmins", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("multidatabaseadmins"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("multidatabaseadmins"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterMergeClusterPolicyQueryWeakConsistency = Command("AlterMergeClusterPolicyQueryWeakConsistency", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("query_weak_consistency"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("query_weak_consistency"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterMergeClusterPolicyRequestClassification = Command("AlterMergeClusterPolicyRequestClassification", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("request_classification"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("request_classification"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterMergeClusterPolicySharding = Command("AlterMergeClusterPolicySharding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape23));
 
             var AlterMergeClusterPolicyStreamingIngestion = Command("AlterMergeClusterPolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("streamingingestion"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("streamingingestion"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape23));
 
             var AlterMergeClusterPolicyRowStore = Command("AlterMergeClusterPolicyRowStore", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    RequiredEToken("policy"),
-                    RequiredEToken("rowstore"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("policy"),
+                    RequiredToken("rowstore"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape24));
 
             var AlterMergeColumnPolicyEncoding = Command("AlterMergeColumnPolicyEncoding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("column"),
                     Required(rules.TableColumnNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("encoding"),
+                    RequiredToken("policy"),
+                    RequiredToken("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape26));
 
             var AlterMergeDatabasePolicyDiagnostics = Command("AlterMergeDatabasePolicyDiagnostics", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("policy"),
+                    Token("diagnostics"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape27));
 
             var AlterMergeDatabasePolicyEncoding = Command("AlterMergeDatabasePolicyEncoding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape28));
 
             var AlterMergeDatabasePolicyMerge = Command("AlterMergeDatabasePolicyMerge", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape29));
 
             var AlterMergeDatabasePolicyRetention = Command("AlterMergeDatabasePolicyRetention", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     Required(
                         First(
                             Custom(
-                                EToken("recoverability"),
-                                RequiredEToken("="),
-                                RequiredEToken("disabled", "enabled"),
+                                Token("recoverability"),
+                                RequiredToken("="),
+                                RequiredToken("disabled", "enabled"),
                                 shape30),
                             Custom(
-                                EToken("softdelete"),
-                                RequiredEToken("="),
+                                Token("softdelete"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 Optional(
                                     Custom(
-                                        EToken("recoverability"),
-                                        RequiredEToken("="),
-                                        RequiredEToken("disabled", "enabled"),
+                                        Token("recoverability"),
+                                        RequiredToken("="),
+                                        RequiredToken("disabled", "enabled"),
                                         shape30)),
                                 shape31),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingEToken("recoverability"), CreateMissingEToken("="), CreateMissingEToken("Expected disabled,enabled"))),
+                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("Expected disabled,enabled"))),
                     shape32));
 
             var AlterMergeDatabasePolicySharding = Command("AlterMergeDatabasePolicySharding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape33));
 
             var AlterMergeDatabasePolicyShardsGrouping = Command("AlterMergeDatabasePolicyShardsGrouping", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("shards_grouping").Hide(),
+                    Token("policy"),
+                    Token("shards_grouping").Hide(),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape34));
 
             var AlterMergeDatabasePolicyStreamingIngestion = Command("AlterMergeDatabasePolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("streamingingestion"),
+                    RequiredToken("policy"),
+                    RequiredToken("streamingingestion"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape35));
 
             var AlterMergeMaterializedViewPolicyPartitioning = Command("AlterMergeMaterializedViewPolicyPartitioning", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("policy"),
+                    Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape36));
 
             var AlterMergeMaterializedViewPolicyRetention = Command("AlterMergeMaterializedViewPolicyRetention", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("retention"),
+                    RequiredToken("policy"),
+                    RequiredToken("retention"),
                     Required(
                         First(
                             Custom(
-                                EToken("recoverability"),
-                                RequiredEToken("="),
-                                RequiredEToken("disabled", "enabled"),
+                                Token("recoverability"),
+                                RequiredToken("="),
+                                RequiredToken("disabled", "enabled"),
                                 shape30),
                             Custom(
-                                EToken("softdelete"),
-                                RequiredEToken("="),
+                                Token("softdelete"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 Optional(
                                     Custom(
-                                        EToken("recoverability"),
-                                        RequiredEToken("="),
-                                        RequiredEToken("disabled", "enabled"),
+                                        Token("recoverability"),
+                                        RequiredToken("="),
+                                        RequiredToken("disabled", "enabled"),
                                         shape30)),
                                 shape31),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingEToken("recoverability"), CreateMissingEToken("="), CreateMissingEToken("Expected disabled,enabled"))),
+                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("Expected disabled,enabled"))),
                     shape37));
 
             var AlterMergeTablePolicyEncoding = Command("AlterMergeTablePolicyEncoding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape38));
 
             var AlterMergeTablePolicyMerge = Command("AlterMergeTablePolicyMerge", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape39));
 
             var AlterMergeTablePolicyRetention = Command("AlterMergeTablePolicyRetention", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     Required(
                         First(
                             Custom(
-                                EToken("recoverability"),
-                                RequiredEToken("="),
-                                RequiredEToken("disabled", "enabled"),
+                                Token("recoverability"),
+                                RequiredToken("="),
+                                RequiredToken("disabled", "enabled"),
                                 shape30),
                             Custom(
-                                EToken("softdelete"),
-                                RequiredEToken("="),
+                                Token("softdelete"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 Optional(
                                     Custom(
-                                        EToken("recoverability"),
-                                        RequiredEToken("="),
-                                        RequiredEToken("disabled", "enabled"),
+                                        Token("recoverability"),
+                                        RequiredToken("="),
+                                        RequiredToken("disabled", "enabled"),
                                         shape30)),
                                 shape31),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingEToken("recoverability"), CreateMissingEToken("="), CreateMissingEToken("Expected disabled,enabled"))),
+                        () => (SyntaxElement)new CustomNode(shape30, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("Expected disabled,enabled"))),
                     shape40));
 
             var AlterMergeTablePolicyRowOrder = Command("AlterMergeTablePolicyRowOrder", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("roworder"),
-                    RequiredEToken("("),
+                    Token("policy"),
+                    Token("roworder"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.ColumnNameReference,
-                                RequiredEToken("asc", "desc"),
+                                RequiredToken("asc", "desc"),
                                 shape41),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingEToken("Expected asc,desc")),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingToken("Expected asc,desc")),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingEToken("Expected asc,desc"))))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingToken("Expected asc,desc"))))),
+                    RequiredToken(")"),
                     shape42));
 
             var AlterMergeTablePolicySharding = Command("AlterMergeTablePolicySharding", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape43));
 
             var AlterMergeTablePolicyStreamingIngestion = Command("AlterMergeTablePolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("streamingingestion"),
+                    Token("policy"),
+                    Token("streamingingestion"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape44));
 
             var AlterMergeTablePolicyUpdate = Command("AlterMergeTablePolicyUpdate", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    RequiredEToken("policy"),
-                    RequiredEToken("update"),
+                    RequiredToken("policy"),
+                    RequiredToken("update"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape45));
 
             var AlterMergeTable = Command("AlterMergeTable", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("("),
+                    Token("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("docstring"),
-                                            EToken("folder"),
-                                            If(Not(And(EToken("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("docstring"),
+                                            Token("folder"),
+                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"))),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"))),
                     shape49));
 
             var AlterMergeTableColumnDocStrings = Command("AlterMergeTableColumnDocStrings", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("column-docstrings"),
-                    RequiredEToken("("),
+                    Token("column-docstrings"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.ColumnNameReference,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape50),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingEToken(":"), rules.MissingStringLiteral()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingToken(":"), rules.MissingStringLiteral()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingEToken(":"), rules.MissingStringLiteral())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingToken(":"), rules.MissingStringLiteral())))),
+                    RequiredToken(")"),
                     shape51));
 
             var AlterMergeTablePolicyPartitioning = Command("AlterMergeTablePolicyPartitioning", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("partitioning"),
+                    RequiredToken("policy"),
+                    RequiredToken("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape52));
 
             var AlterMergeWorkloadGroup = Command("AlterMergeWorkloadGroup", 
                 Custom(
-                    EToken("alter-merge", CompletionKind.CommandPrefix),
-                    RequiredEToken("workload_group"),
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    RequiredToken("workload_group"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape53));
 
             var AlterCache = Command("AlterCache", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cache"),
-                    RequiredEToken("on"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cache"),
+                    RequiredToken("on"),
                     Required(
                         First(
-                            EToken("*"),
+                            Token("*"),
                             Custom(
                                 rules.BracketedStringLiteral,
                                 shape0)),
-                        () => CreateMissingEToken("*")),
+                        () => CreateMissingToken("*")),
                     Required(rules.BracketedStringLiteral, rules.MissingStringLiteral),
                     shape54));
 
             var AlterClusterPolicyCaching = Command("AlterClusterPolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue()))));
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue()))));
 
             var AlterClusterPolicyCallout = Command("AlterClusterPolicyCallout", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("callout"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("callout"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterClusterPolicyCapacity = Command("AlterClusterPolicyCapacity", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("capacity"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("capacity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterClusterPolicyDiagnostics = Command("AlterClusterPolicyDiagnostics", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("diagnostics"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape22));
 
             var AlterClusterPolicyIngestionBatching = Command("AlterClusterPolicyIngestionBatching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape57));
 
             var AlterClusterPolicyManagedIdentity = Command("AlterClusterPolicyManagedIdentity", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("managed_identity"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("managed_identity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape58));
 
             var AlterClusterPolicyMultiDatabaseAdmins = Command("AlterClusterPolicyMultiDatabaseAdmins", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("multidatabaseadmins"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("multidatabaseadmins"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterClusterPolicyQueryWeakConsistency = Command("AlterClusterPolicyQueryWeakConsistency", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("query_weak_consistency"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("query_weak_consistency"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape21));
 
             var AlterClusterPolicyRequestClassification = Command("AlterClusterPolicyRequestClassification", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("request_classification"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("request_classification"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    RequiredEToken("<|"),
+                    RequiredToken("<|"),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape60));
 
             var AlterClusterPolicyRowStore = Command("AlterClusterPolicyRowStore", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("rowstore"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("rowstore"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape24));
 
             var AlterClusterPolicySandbox = Command("AlterClusterPolicySandbox", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sandbox"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sandbox"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape61));
 
             var AlterClusterPolicySharding = Command("AlterClusterPolicySharding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape23));
 
             var AlterClusterPolicyStreamingIngestion = Command("AlterClusterPolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    RequiredEToken("streamingingestion"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    RequiredToken("streamingingestion"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape62));
 
             var AlterClusterStorageKeys = Command("AlterClusterStorageKeys", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
+                    Token("alter", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("cluster")),
+                            Token("async"),
+                            Token("cluster")),
                         Custom(
-                            EToken("async"),
-                            RequiredEToken("cluster")),
-                        EToken("cluster")),
-                    RequiredEToken("storage"),
-                    RequiredEToken("keys"),
+                            Token("async"),
+                            RequiredToken("cluster")),
+                        Token("cluster")),
+                    RequiredToken("storage"),
+                    RequiredToken("keys"),
                     Required(
                         First(
-                            EToken("decryption-certificate-thumbprint"),
+                            Token("decryption-certificate-thumbprint"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("decryption-certificate-thumbprint"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("decryption-certificate-thumbprint"),
                                 shape64)),
-                        () => CreateMissingEToken("decryption-certificate-thumbprint")),
+                        () => CreateMissingToken("decryption-certificate-thumbprint")),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape65));
 
             var AlterColumnPolicyCaching = Command("AlterColumnPolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("column"),
                     rules.DatabaseTableColumnNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     shape66));
 
             var AlterColumnPolicyEncodingType = Command("AlterColumnPolicyEncodingType", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("column"),
                     rules.DatabaseTableColumnNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
-                    EToken("type"),
-                    RequiredEToken("="),
+                    Token("policy"),
+                    Token("encoding"),
+                    Token("type"),
+                    RequiredToken("="),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape67));
 
             var AlterColumnPolicyEncoding = Command("AlterColumnPolicyEncoding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("column"),
                     rules.DatabaseTableColumnNameReference,
-                    EToken("policy"),
-                    RequiredEToken("encoding"),
+                    Token("policy"),
+                    RequiredToken("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape26));
 
             var AlterColumnType = Command("AlterColumnType", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("column"),
                     Required(rules.DatabaseTableColumnNameReference, rules.MissingNameReference),
-                    RequiredEToken("type"),
-                    RequiredEToken("="),
+                    RequiredToken("type"),
+                    RequiredToken("="),
                     Required(rules.Type, rules.MissingType),
                     shape68));
 
             var AlterDatabaseIngestionMapping = Command("AlterDatabaseIngestionMapping", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    Token("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape69));
 
             var AlterDatabasePersistMetadata = Command("AlterDatabasePersistMetadata", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("persist"),
-                    RequiredEToken("metadata"),
+                    Token("persist"),
+                    RequiredToken("metadata"),
                     Required(
                         First(
                             Custom(
                                 rules.StringLiteral,
-                                EToken(";"),
+                                Token(";"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape70),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingEToken(";"), rules.MissingStringLiteral())),
+                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingToken(";"), rules.MissingStringLiteral())),
                     shape71));
 
             var AlterDatabasePolicyCaching = Command("AlterDatabasePolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     shape32));
 
             var AlterDatabasePolicyDiagnostics = Command("AlterDatabasePolicyDiagnostics", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("policy"),
+                    Token("diagnostics"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape27));
 
             var AlterDatabasePolicyEncoding = Command("AlterDatabasePolicyEncoding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape28));
 
             var AlterDatabasePolicyExtentTagsRetention = Command("AlterDatabasePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape72));
 
             var AlterDatabasePolicyIngestionBatching = Command("AlterDatabasePolicyIngestionBatching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape73));
 
             var AlterDatabasePolicyManagedIdentity = Command("AlterDatabasePolicyManagedIdentity", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("managed_identity"),
+                    Token("policy"),
+                    Token("managed_identity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape74));
 
             var AlterDatabasePolicyMerge = Command("AlterDatabasePolicyMerge", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape29));
 
             var AlterDatabasePolicyRetention = Command("AlterDatabasePolicyRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape75));
 
             var AlterDatabasePolicySharding = Command("AlterDatabasePolicySharding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape33));
 
             var AlterDatabasePolicyShardsGrouping = Command("AlterDatabasePolicyShardsGrouping", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("shards_grouping").Hide(),
+                    Token("policy"),
+                    Token("shards_grouping").Hide(),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape34));
 
             var AlterDatabasePolicyStreamingIngestion = Command("AlterDatabasePolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    RequiredEToken("streamingingestion"),
+                    Token("policy"),
+                    RequiredToken("streamingingestion"),
                     Required(
                         First(
                             Custom(
-                                EToken("disable", "enable")),
+                                Token("disable", "enable")),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => CreateMissingEToken("Expected disable,enable")),
+                        () => CreateMissingToken("Expected disable,enable")),
                     shape32));
 
             var AlterDatabasePrettyName = Command("AlterDatabasePrettyName", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("prettyname"),
+                    Token("prettyname"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape76));
 
             var AlterDatabaseStorageKeys = Command("AlterDatabaseStorageKeys", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
+                    Token("alter", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("database")),
+                            Token("async"),
+                            Token("database")),
                         Custom(
-                            EToken("async"),
-                            RequiredEToken("database")),
-                        EToken("database")),
+                            Token("async"),
+                            RequiredToken("database")),
+                        Token("database")),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("storage"),
-                    RequiredEToken("keys"),
+                    RequiredToken("storage"),
+                    RequiredToken("keys"),
                     Required(
                         First(
-                            EToken("decryption-certificate-thumbprint"),
+                            Token("decryption-certificate-thumbprint"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("decryption-certificate-thumbprint"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("decryption-certificate-thumbprint"),
                                 shape64)),
-                        () => CreateMissingEToken("decryption-certificate-thumbprint")),
+                        () => CreateMissingToken("decryption-certificate-thumbprint")),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape77));
 
             var AlterExtentContainersAdd = Command("AlterExtentContainersAdd", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("extentcontainers"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("extentcontainers"),
                     rules.DatabaseNameReference,
-                    EToken("add"),
+                    Token("add"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         Custom(
@@ -1582,10 +1583,10 @@ namespace Kusto.Language.Parsing
 
             var AlterExtentContainersDrop = Command("AlterExtentContainersDrop", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("extentcontainers"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("extentcontainers"),
                     rules.DatabaseNameReference,
-                    EToken("drop"),
+                    Token("drop"),
                     Optional(
                         Custom(
                             rules.AnyGuidLiteralOrString,
@@ -1594,55 +1595,55 @@ namespace Kusto.Language.Parsing
 
             var AlterExtentContainersRecycle = Command("AlterExtentContainersRecycle", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("extentcontainers"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("extentcontainers"),
                     rules.DatabaseNameReference,
-                    EToken("recycle"),
+                    Token("recycle"),
                     Required(
                         First(
                             Custom(
-                                EToken("older"),
+                                Token("older"),
                                 Required(
                                     First(
                                         rules.Value,
                                         rules.Value),
                                     rules.MissingValue),
-                                RequiredEToken("hours"),
+                                RequiredToken("hours"),
                                 shape81),
                             Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape81, CreateMissingEToken("older"), rules.MissingValue(), CreateMissingEToken("hours"))),
+                        () => (SyntaxElement)new CustomNode(shape81, CreateMissingToken("older"), rules.MissingValue(), CreateMissingToken("hours"))),
                     shape82));
 
             var AlterExtentContainersSet = Command("AlterExtentContainersSet", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("extentcontainers"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("extentcontainers"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("set"),
-                    RequiredEToken("state"),
+                    RequiredToken("set"),
+                    RequiredToken("state"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
-                    RequiredEToken("to"),
-                    RequiredEToken("readonly", "readwrite"),
+                    RequiredToken("to"),
+                    RequiredToken("readonly", "readwrite"),
                     shape83));
 
             var AlterExtentTagsFromQuery = Command("AlterExtentTagsFromQuery", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
+                    Token("alter", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("extent")),
-                        EToken("extent")),
-                    RequiredEToken("tags"),
-                    RequiredEToken("("),
+                            Token("async"),
+                            Token("extent")),
+                        Token("extent")),
+                    RequiredToken("tags"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -1652,70 +1653,70 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Required(
                         Custom(
-                            EToken("<|"),
+                            Token("<|"),
                             Required(rules.CommandInput, rules.MissingExpression),
                             shape84),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                     shape85));
 
             var AlterSqlExternalTable = Command("AlterSqlExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("alter", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        EToken("table"),
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        Token("table"),
                         rules.NameDeclarationOrStringLiteral,
-                        EToken("("),
+                        Token("("),
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        EToken(")"),
-                        EToken("kind"),
-                        RequiredEToken("="),
-                        RequiredEToken("sql"),
-                        RequiredEToken("table"),
-                        RequiredEToken("="),
+                        Token(")"),
+                        Token("kind"),
+                        RequiredToken("="),
+                        RequiredToken("sql"),
+                        RequiredToken("table"),
+                        RequiredToken("="),
                         Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape88));
@@ -1723,110 +1724,110 @@ namespace Kusto.Language.Parsing
             var AlterStorageExternalTable = Command("AlterStorageExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("alter", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        EToken("table"),
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        Token("table"),
                         rules.NameDeclarationOrStringLiteral,
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.NameDeclarationOrStringLiteral,
-                                    RequiredEToken(":"),
+                                    RequiredToken(":"),
                                     Required(rules.Type, rules.MissingType),
                                     shape47),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                        RequiredEToken(")"),
-                        RequiredEToken("kind"),
-                        RequiredEToken("="),
+                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                        RequiredToken(")"),
+                        RequiredToken("kind"),
+                        RequiredToken("="),
                         Required(
                             First(
-                                EToken("adl").Hide(),
-                                EToken("blob").Hide(),
-                                EToken("storage")),
-                            () => CreateMissingEToken("adl")),
+                                Token("adl").Hide(),
+                                Token("blob").Hide(),
+                                Token("storage")),
+                            () => CreateMissingToken("adl")),
                         Required(
                             First(
-                                EToken("dataformat"),
+                                Token("dataformat"),
                                 Custom(
-                                    EToken("partition"),
-                                    RequiredEToken("by"),
-                                    RequiredEToken("("),
+                                    Token("partition"),
+                                    RequiredToken("by"),
+                                    RequiredToken("("),
                                     Required(
                                         OList(
                                             primaryElementParser: Custom(
                                                 rules.NameDeclarationOrStringLiteral,
-                                                RequiredEToken(":"),
+                                                RequiredToken(":"),
                                                 Required(
                                                     First(
                                                         Custom(
-                                                            EToken("datetime"),
+                                                            Token("datetime"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(
                                                                         First(
                                                                             Custom(
-                                                                                EToken("bin"),
-                                                                                RequiredEToken("("),
+                                                                                Token("bin"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(","),
+                                                                                RequiredToken(","),
                                                                                 Required(rules.Value, rules.MissingValue),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape89),
                                                                             Custom(
-                                                                                EToken("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredEToken("("),
+                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape90)),
-                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                             shape91),
                                                         Custom(
-                                                            EToken("long"),
-                                                            RequiredEToken("="),
-                                                            RequiredEToken("hash"),
-                                                            RequiredEToken("("),
+                                                            Token("long"),
+                                                            RequiredToken("="),
+                                                            RequiredToken("hash"),
+                                                            RequiredToken("("),
                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredEToken(","),
+                                                            RequiredToken(","),
                                                             Required(rules.Value, rules.MissingValue),
-                                                            RequiredEToken(")"),
+                                                            RequiredToken(")"),
                                                             shape92),
                                                         Custom(
-                                                            EToken("string"),
+                                                            Token("string"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                                                     shape93)),
                                                             shape91)),
-                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                 shape94),
-                                            separatorParser: EToken(","),
+                                            separatorParser: Token(","),
                                             secondaryElementParser: null,
                                             missingPrimaryElement: null,
                                             missingSeparator: null,
-                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                             endOfList: null,
                                             oneOrMore: true,
                                             allowTrailingSeparator: false,
                                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")")))))))),
-                                    RequiredEToken(")"),
+                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")")))))))),
+                                    RequiredToken(")"),
                                     Optional(
                                         Custom(
-                                            EToken("pathformat"),
-                                            RequiredEToken("="),
-                                            RequiredEToken("("),
+                                            Token("pathformat"),
+                                            RequiredToken("="),
+                                            RequiredToken("("),
                                             Required(
                                                 First(
                                                     Custom(
@@ -1836,15 +1837,15 @@ namespace Kusto.Language.Parsing
                                                                 Custom(
                                                                     First(
                                                                         Custom(
-                                                                            EToken("datetime_pattern"),
-                                                                            RequiredEToken("("),
+                                                                            Token("datetime_pattern"),
+                                                                            RequiredToken("("),
                                                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredEToken(","),
+                                                                            RequiredToken(","),
                                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredEToken(")"),
+                                                                            RequiredToken(")"),
                                                                             shape95),
                                                                         Custom(
-                                                                            If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                             shape46)),
                                                                     Optional(
                                                                         Custom(
@@ -1854,29 +1855,29 @@ namespace Kusto.Language.Parsing
                                                                 missingElement: null,
                                                                 oneOrMore: true,
                                                                 producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral()))),
+                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral()))),
                                                         shape96),
                                                     List(
                                                         Custom(
                                                             First(
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     rules.StringLiteral,
-                                                                    EToken(","),
+                                                                    Token(","),
                                                                     rules.NameDeclarationOrStringLiteral,
-                                                                    EToken(")"),
+                                                                    Token(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredEToken(","),
+                                                                    RequiredToken(","),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredEToken(")"),
+                                                                    RequiredToken(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                     shape46)),
                                                             Optional(
                                                                 Custom(
@@ -1886,21 +1887,21 @@ namespace Kusto.Language.Parsing
                                                         missingElement: null,
                                                         oneOrMore: true,
                                                         producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral())))),
-                                            RequiredEToken(")"),
+                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral())))),
+                                            RequiredToken(")"),
                                             shape97)),
-                                    RequiredEToken("dataformat"),
+                                    RequiredToken("dataformat"),
                                     shape98)),
-                            () => CreateMissingEToken("dataformat")),
-                        RequiredEToken("="),
-                        RequiredEToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
-                        RequiredEToken("("),
+                            () => CreateMissingToken("dataformat")),
+                        RequiredToken("="),
+                        RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -1910,171 +1911,171 @@ namespace Kusto.Language.Parsing
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                             () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape99));
 
             var AlterExternalTableDocString = Command("AlterExternalTableDocString", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("docstring"),
+                    Token("docstring"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape100));
 
             var AlterExternalTableFolder = Command("AlterExternalTableFolder", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("folder"),
+                    Token("folder"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape101));
 
             var AlterExternalTableMapping = Command("AlterExternalTableMapping", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
-                    RequiredEToken("mapping"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape102));
 
             var AlterFollowerClusterConfiguration = Command("AlterFollowerClusterConfiguration", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    EToken("cluster"),
-                    RequiredEToken("configuration"),
-                    RequiredEToken("from"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    Token("cluster"),
+                    RequiredToken("configuration"),
+                    RequiredToken("from"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(
                         First(
                             Custom(
-                                EToken("database-name-prefix"),
-                                RequiredEToken("="),
+                                Token("database-name-prefix"),
+                                RequiredToken("="),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                 shape103),
                             Custom(
-                                EToken("default-caching-policies-modification-kind"),
-                                RequiredEToken("="),
-                                RequiredEToken("none", "replace", "union"),
+                                Token("default-caching-policies-modification-kind"),
+                                RequiredToken("="),
+                                RequiredToken("none", "replace", "union"),
                                 shape104),
                             Custom(
-                                EToken("default-principals-modification-kind"),
-                                RequiredEToken("="),
-                                RequiredEToken("none", "replace", "union"),
+                                Token("default-principals-modification-kind"),
+                                RequiredToken("="),
+                                RequiredToken("none", "replace", "union"),
                                 shape104),
                             Custom(
-                                EToken("follow-authorized-principals"),
-                                RequiredEToken("="),
+                                Token("follow-authorized-principals"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape105)),
-                        () => (SyntaxElement)new CustomNode(shape103, CreateMissingEToken("database-name-prefix"), CreateMissingEToken("="), rules.MissingNameDeclaration())),
+                        () => (SyntaxElement)new CustomNode(shape103, CreateMissingToken("database-name-prefix"), CreateMissingToken("="), rules.MissingNameDeclaration())),
                     shape106));
 
             var AlterFollowerDatabaseAuthorizedPrincipals = Command("AlterFollowerDatabaseAuthorizedPrincipals", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    Token("database"),
                     rules.DatabaseNameReference,
                     First(
                         Custom(
-                            EToken("from"),
+                            Token("from"),
                             rules.StringLiteral,
-                            EToken("policy"),
+                            Token("policy"),
                             shape107),
-                        EToken("policy")),
-                    RequiredEToken("caching"),
+                        Token("policy")),
+                    RequiredToken("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape108),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape109)),
-                        () => (SyntaxElement)new CustomNode(shape108, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape108, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     Optional(
                         First(
                             Custom(
-                                EToken(","),
+                                Token(","),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("hot_window"),
-                                            RequiredEToken("="),
+                                            Token("hot_window"),
+                                            RequiredToken("="),
                                             Required(
                                                 Custom(
                                                     rules.Value,
-                                                    RequiredEToken(".."),
+                                                    RequiredToken(".."),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape110),
-                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                             shape111),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())))))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())))))),
                             OList(
                                 primaryElementParser: Custom(
-                                    EToken("hot_window"),
-                                    RequiredEToken("="),
+                                    Token("hot_window"),
+                                    RequiredToken("="),
                                     Required(
                                         Custom(
                                             rules.Value,
-                                            RequiredEToken(".."),
+                                            RequiredToken(".."),
                                             Required(rules.Value, rules.MissingValue),
                                             shape110),
-                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                     shape111),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
@@ -2083,114 +2084,114 @@ namespace Kusto.Language.Parsing
 
             var AlterFollowerDatabaseConfiguration = Command("AlterFollowerDatabaseConfiguration", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    EToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    Token("database"),
                     rules.DatabaseNameReference,
                     First(
                         Custom(
-                            EToken("caching-policies-modification-kind"),
-                            EToken("="),
-                            EToken("none", "replace", "union"),
+                            Token("caching-policies-modification-kind"),
+                            Token("="),
+                            Token("none", "replace", "union"),
                             shape104),
                         Custom(
-                            EToken("caching-policies-modification-kind"),
-                            RequiredEToken("="),
-                            RequiredEToken("none", "replace", "union"),
+                            Token("caching-policies-modification-kind"),
+                            RequiredToken("="),
+                            RequiredToken("none", "replace", "union"),
                             shape104),
                         Custom(
-                            EToken("database-name-override"),
-                            RequiredEToken("="),
+                            Token("database-name-override"),
+                            RequiredToken("="),
                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                             shape114),
                         Custom(
-                            EToken("from"),
+                            Token("from"),
                             rules.StringLiteral,
                             First(
                                 Custom(
-                                    EToken("caching-policies-modification-kind"),
-                                    EToken("="),
-                                    EToken("none", "replace", "union"),
+                                    Token("caching-policies-modification-kind"),
+                                    Token("="),
+                                    Token("none", "replace", "union"),
                                     shape104),
                                 Custom(
-                                    EToken("caching-policies-modification-kind"),
-                                    RequiredEToken("="),
-                                    RequiredEToken("none", "replace", "union"),
+                                    Token("caching-policies-modification-kind"),
+                                    RequiredToken("="),
+                                    RequiredToken("none", "replace", "union"),
                                     shape104),
                                 Custom(
-                                    EToken("database-name-override"),
-                                    RequiredEToken("="),
+                                    Token("database-name-override"),
+                                    RequiredToken("="),
                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                     shape114),
                                 Custom(
-                                    EToken("metadata"),
+                                    Token("metadata"),
                                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                                     shape115),
                                 Custom(
-                                    EToken("prefetch-extents"),
-                                    RequiredEToken("="),
+                                    Token("prefetch-extents"),
+                                    RequiredToken("="),
                                     Required(rules.Value, rules.MissingValue),
                                     shape116),
                                 Custom(
-                                    EToken("principals-modification-kind"),
-                                    RequiredEToken("="),
-                                    RequiredEToken("none", "replace", "union"),
+                                    Token("principals-modification-kind"),
+                                    RequiredToken("="),
+                                    RequiredToken("none", "replace", "union"),
                                     shape104)),
                             shape107),
                         Custom(
-                            EToken("metadata"),
+                            Token("metadata"),
                             Required(rules.StringLiteral, rules.MissingStringLiteral),
                             shape115),
                         Custom(
-                            EToken("prefetch-extents"),
-                            RequiredEToken("="),
+                            Token("prefetch-extents"),
+                            RequiredToken("="),
                             Required(rules.Value, rules.MissingValue),
                             shape116),
                         Custom(
-                            EToken("principals-modification-kind"),
-                            RequiredEToken("="),
-                            RequiredEToken("none", "replace", "union"),
+                            Token("principals-modification-kind"),
+                            RequiredToken("="),
+                            RequiredToken("none", "replace", "union"),
                             shape104)),
                     shape117));
 
             var AlterFollowerDatabaseChildEntities = Command("AlterFollowerDatabaseChildEntities", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("alter", CompletionKind.CommandPrefix),
-                        EToken("follower"),
-                        EToken("database"),
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("follower"),
+                        Token("database"),
                         rules.DatabaseNameReference,
                         First(
                             Custom(
-                                EToken("external"),
-                                EToken("tables")),
+                                Token("external"),
+                                Token("tables")),
                             Custom(
-                                EToken("external"),
-                                RequiredEToken("tables")),
+                                Token("external"),
+                                RequiredToken("tables")),
                             Custom(
-                                EToken("from"),
+                                Token("from"),
                                 rules.StringLiteral,
                                 First(
                                     Custom(
-                                        EToken("external"),
-                                        EToken("tables")),
+                                        Token("external"),
+                                        Token("tables")),
                                     Custom(
-                                        EToken("external"),
-                                        RequiredEToken("tables")),
-                                    EToken("materialized-views"),
-                                    EToken("tables")),
+                                        Token("external"),
+                                        RequiredToken("tables")),
+                                    Token("materialized-views"),
+                                    Token("tables")),
                                 shape107),
-                            EToken("materialized-views"),
-                            EToken("tables")),
-                        RequiredEToken("exclude", "include"),
-                        RequiredEToken("add", "drop"),
-                        RequiredEToken("("),
+                            Token("materialized-views"),
+                            Token("tables")),
+                        RequiredToken("exclude", "include"),
+                        RequiredToken("add", "drop"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.WildcardedNameDeclaration,
                                     shape46),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -2200,32 +2201,32 @@ namespace Kusto.Language.Parsing
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                             () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                        RequiredEToken(")")}
+                        RequiredToken(")")}
                     ,
                     shape118));
 
             var AlterFollowerTablesPolicyCaching = Command("AlterFollowerTablesPolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    RequiredEToken("database"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    RequiredToken("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Custom(
-                                EToken("from"),
+                                Token("from"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 Required(
                                     First(
                                         Custom(
-                                            EToken("materialized-views"),
-                                            RequiredEToken("("),
+                                            Token("materialized-views"),
+                                            RequiredToken("("),
                                             Required(
                                                 OList(
                                                     primaryElementParser: Custom(
                                                         rules.NameDeclarationOrStringLiteral,
                                                         shape46),
-                                                    separatorParser: EToken(","),
+                                                    separatorParser: Token(","),
                                                     secondaryElementParser: null,
                                                     missingPrimaryElement: null,
                                                     missingSeparator: null,
@@ -2235,21 +2236,21 @@ namespace Kusto.Language.Parsing
                                                     allowTrailingSeparator: false,
                                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                            RequiredEToken(")"),
+                                            RequiredToken(")"),
                                             shape87),
                                         Custom(
-                                            EToken("materialized-view"),
+                                            Token("materialized-view"),
                                             Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                                             shape119),
                                         Custom(
-                                            EToken("tables"),
-                                            RequiredEToken("("),
+                                            Token("tables"),
+                                            RequiredToken("("),
                                             Required(
                                                 OList(
                                                     primaryElementParser: Custom(
                                                         rules.NameDeclarationOrStringLiteral,
                                                         shape46),
-                                                    separatorParser: EToken(","),
+                                                    separatorParser: Token(","),
                                                     secondaryElementParser: null,
                                                     missingPrimaryElement: null,
                                                     missingSeparator: null,
@@ -2259,23 +2260,23 @@ namespace Kusto.Language.Parsing
                                                     allowTrailingSeparator: false,
                                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                            RequiredEToken(")"),
+                                            RequiredToken(")"),
                                             shape87),
                                         Custom(
-                                            EToken("table"),
+                                            Token("table"),
                                             Required(rules.TableNameReference, rules.MissingNameReference),
                                             shape120)),
-                                    () => (SyntaxElement)new CustomNode(shape87, CreateMissingEToken("materialized-views"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingEToken(")"))),
+                                    () => (SyntaxElement)new CustomNode(shape87, CreateMissingToken("materialized-views"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingToken(")"))),
                                 shape107),
                             Custom(
-                                EToken("materialized-views"),
-                                RequiredEToken("("),
+                                Token("materialized-views"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -2285,21 +2286,21 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape87),
                             Custom(
-                                EToken("materialized-view"),
+                                Token("materialized-view"),
                                 Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                                 shape119),
                             Custom(
-                                EToken("tables"),
-                                RequiredEToken("("),
+                                Token("tables"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -2309,75 +2310,75 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape87),
                             Custom(
-                                EToken("table"),
+                                Token("table"),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 shape120)),
-                        () => (SyntaxElement)new CustomNode(shape107, CreateMissingEToken("from"), rules.MissingStringLiteral(), (SyntaxElement)new CustomNode(shape87, CreateMissingEToken("materialized-views"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingEToken(")")))),
-                    RequiredEToken("policy"),
-                    RequiredEToken("caching"),
+                        () => (SyntaxElement)new CustomNode(shape107, CreateMissingToken("from"), rules.MissingStringLiteral(), (SyntaxElement)new CustomNode(shape87, CreateMissingToken("materialized-views"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingToken(")")))),
+                    RequiredToken("policy"),
+                    RequiredToken("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape108),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape109)),
-                        () => (SyntaxElement)new CustomNode(shape108, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape108, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     Optional(
                         First(
                             Custom(
-                                EToken(","),
+                                Token(","),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("hot_window"),
-                                            RequiredEToken("="),
+                                            Token("hot_window"),
+                                            RequiredToken("="),
                                             Required(
                                                 Custom(
                                                     rules.Value,
-                                                    RequiredEToken(".."),
+                                                    RequiredToken(".."),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape110),
-                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                             shape111),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())))))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())))))),
                             OList(
                                 primaryElementParser: Custom(
-                                    EToken("hot_window"),
-                                    RequiredEToken("="),
+                                    Token("hot_window"),
+                                    RequiredToken("="),
                                     Required(
                                         Custom(
                                             rules.Value,
-                                            RequiredEToken(".."),
+                                            RequiredToken(".."),
                                             Required(rules.Value, rules.MissingValue),
                                             shape110),
-                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                     shape111),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
@@ -2386,240 +2387,240 @@ namespace Kusto.Language.Parsing
 
             var AlterFunctionDocString = Command("AlterFunctionDocString", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("function"),
-                    If(Not(EToken("with")), rules.DatabaseFunctionNameReference),
-                    EToken("docstring"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("function"),
+                    If(Not(Token("with")), rules.DatabaseFunctionNameReference),
+                    Token("docstring"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape122));
 
             var AlterFunctionFolder = Command("AlterFunctionFolder", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("function"),
-                    If(Not(EToken("with")), rules.DatabaseFunctionNameReference),
-                    EToken("folder"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("function"),
+                    If(Not(Token("with")), rules.DatabaseFunctionNameReference),
+                    Token("folder"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape123));
 
             var AlterFunction = Command("AlterFunction", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
                                 shape124),
                             Custom(
-                                If(Not(EToken("with")), rules.DatabaseFunctionNameReference),
+                                If(Not(Token("with")), rules.DatabaseFunctionNameReference),
                                 shape15)),
-                        () => (SyntaxElement)new CustomNode(shape124, CreateMissingEToken("with"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()))), CreateMissingEToken(")"), rules.MissingNameReference())),
+                        () => (SyntaxElement)new CustomNode(shape124, CreateMissingToken("with"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()))), CreateMissingToken(")"), rules.MissingNameReference())),
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration)));
 
             var AlterMaterializedViewAutoUpdateSchema = Command("AlterMaterializedViewAutoUpdateSchema", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("autoUpdateSchema"),
-                    RequiredEToken("false", "true"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("autoUpdateSchema"),
+                    RequiredToken("false", "true"),
                     shape125));
 
             var AlterMaterializedViewDocString = Command("AlterMaterializedViewDocString", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("docstring"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("docstring"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape126));
 
             var AlterMaterializedViewFolder = Command("AlterMaterializedViewFolder", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("folder"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("folder"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape127));
 
             var AlterMaterializedViewLookback = Command("AlterMaterializedViewLookback", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("lookback"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("lookback"),
                     Required(rules.Value, rules.MissingValue),
                     shape128));
 
             var AlterMaterializedView = Command("AlterMaterializedView", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     First(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             OList(
                                 primaryElementParser: Custom(
                                     First(
-                                        EToken("dimensionTables"),
-                                        EToken("lookback"),
-                                        If(Not(And(EToken("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
-                                    RequiredEToken("="),
+                                        Token("dimensionTables"),
+                                        Token("lookback"),
+                                        If(Not(And(Token("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
+                                    RequiredToken("="),
                                     rules.Value,
                                     shape48),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("dimensionTables"), CreateMissingEToken("="), rules.MissingValue()),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("dimensionTables"), CreateMissingToken("="), rules.MissingValue()),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
+                            Token(")"),
                             rules.MaterializedViewNameReference,
                             shape129),
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("dimensionTables"),
-                                            EToken("lookback"),
-                                            If(Not(And(EToken("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("dimensionTables"),
+                                            Token("lookback"),
+                                            If(Not(And(Token("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("dimensionTables"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("dimensionTables"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("dimensionTables"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("dimensionTables"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                             shape129),
                         Custom(
-                            If(Not(EToken("with")), rules.MaterializedViewNameReference),
+                            If(Not(Token("with")), rules.MaterializedViewNameReference),
                             shape17)),
-                    RequiredEToken("on"),
-                    RequiredEToken("table"),
+                    RequiredToken("on"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(rules.FunctionBody, rules.MissingFunctionBody),
                     shape130));
 
             var AlterMaterializedViewPolicyCaching = Command("AlterMaterializedViewPolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     shape37));
 
             var AlterMaterializedViewPolicyPartitioning = Command("AlterMaterializedViewPolicyPartitioning", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("policy"),
+                    Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape36));
 
             var AlterMaterializedViewPolicyRetention = Command("AlterMaterializedViewPolicyRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    If(Not(EToken("with")), rules.MaterializedViewNameReference),
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    If(Not(Token("with")), rules.MaterializedViewNameReference),
+                    Token("policy"),
+                    Token("retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape131));
 
             var AlterMaterializedViewPolicyRowLevelSecurity = Command("AlterMaterializedViewPolicyRowLevelSecurity", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
-                    Required(If(Not(EToken("with")), rules.MaterializedViewNameReference), rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("row_level_security"),
-                    RequiredEToken("disable", "enable"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    Required(If(Not(Token("with")), rules.MaterializedViewNameReference), rules.MissingNameReference),
+                    RequiredToken("policy"),
+                    RequiredToken("row_level_security"),
+                    RequiredToken("disable", "enable"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape132));
 
             var AlterPoliciesOfRetention = Command("AlterPoliciesOfRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("policies"),
-                    RequiredEToken("of"),
-                    RequiredEToken("retention"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("policies"),
+                    RequiredToken("of"),
+                    RequiredToken("retention"),
                     Required(
                         First(
                             Custom(
-                                EToken("internal"),
+                                Token("internal"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape133),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape133, CreateMissingEToken("internal"), rules.MissingStringLiteral()))));
+                        () => (SyntaxElement)new CustomNode(shape133, CreateMissingToken("internal"), rules.MissingStringLiteral()))));
 
             var AlterTablesPolicyCaching = Command("AlterTablesPolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2628,69 +2629,69 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     Optional(
                         First(
                             Custom(
-                                EToken(","),
+                                Token(","),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("hot_window"),
-                                            RequiredEToken("="),
+                                            Token("hot_window"),
+                                            RequiredToken("="),
                                             Required(
                                                 Custom(
                                                     rules.Value,
-                                                    RequiredEToken(".."),
+                                                    RequiredToken(".."),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape110),
-                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                                () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                             shape111),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())))))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())))))),
                             OList(
                                 primaryElementParser: Custom(
-                                    EToken("hot_window"),
-                                    RequiredEToken("="),
+                                    Token("hot_window"),
+                                    RequiredToken("="),
                                     Required(
                                         Custom(
                                             rules.Value,
-                                            RequiredEToken(".."),
+                                            RequiredToken(".."),
                                             Required(rules.Value, rules.MissingValue),
                                             shape110),
-                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                        () => (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                     shape111),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingEToken("hot_window"), CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingEToken(".."), rules.MissingValue())),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape111, CreateMissingToken("hot_window"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape110, rules.MissingValue(), CreateMissingToken(".."), rules.MissingValue())),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
@@ -2699,14 +2700,14 @@ namespace Kusto.Language.Parsing
 
             var AlterTablesPolicyIngestionBatching = Command("AlterTablesPolicyIngestionBatching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2715,22 +2716,22 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape135));
 
             var AlterTablesPolicyIngestionTime = Command("AlterTablesPolicyIngestionTime", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2739,22 +2740,22 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("ingestiontime"),
-                    RequiredEToken("true"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("ingestiontime"),
+                    RequiredToken("true"),
                     shape136));
 
             var AlterTablesPolicyMerge = Command("AlterTablesPolicyMerge", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2763,22 +2764,22 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape137));
 
             var AlterTablesPolicyRestrictedViewAccess = Command("AlterTablesPolicyRestrictedViewAccess", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2787,22 +2788,22 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("restricted_view_access"),
-                    RequiredEToken("false", "true"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("restricted_view_access"),
+                    RequiredToken("false", "true"),
                     shape136));
 
             var AlterTablesPolicyRetention = Command("AlterTablesPolicyRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("("),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.TableNameReference,
                             shape19),
-                        separatorParser: EToken(","),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
@@ -2811,24 +2812,24 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token(")"),
+                    Token("policy"),
+                    Token("retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape138));
 
             var AlterTablesPolicyRowOrder = Command("AlterTablesPolicyRowOrder", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("alter", CompletionKind.CommandPrefix),
-                        EToken("tables"),
-                        RequiredEToken("("),
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("tables"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -2838,501 +2839,501 @@ namespace Kusto.Language.Parsing
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                             () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                        RequiredEToken(")"),
-                        RequiredEToken("policy"),
-                        RequiredEToken("roworder"),
-                        RequiredEToken("("),
+                        RequiredToken(")"),
+                        RequiredToken("policy"),
+                        RequiredToken("roworder"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.NameDeclarationOrStringLiteral,
-                                    RequiredEToken("asc", "desc"),
+                                    RequiredToken("asc", "desc"),
                                     shape139),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape139, rules.MissingNameDeclaration(), CreateMissingEToken("Expected asc,desc")),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape139, rules.MissingNameDeclaration(), CreateMissingToken("Expected asc,desc")),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape139, rules.MissingNameDeclaration(), CreateMissingEToken("Expected asc,desc"))))),
-                        RequiredEToken(")")}
+                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape139, rules.MissingNameDeclaration(), CreateMissingToken("Expected asc,desc"))))),
+                        RequiredToken(")")}
                     ,
                     shape140));
 
             var AlterTableColumnStatisticsMethod = Command("AlterTableColumnStatisticsMethod", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("column"),
-                    RequiredEToken("statistics"),
-                    RequiredEToken("method"),
-                    RequiredEToken("="),
+                    Token("column"),
+                    RequiredToken("statistics"),
+                    RequiredToken("method"),
+                    RequiredToken("="),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape141));
 
             var AlterTablePolicyAutoDelete = Command("AlterTablePolicyAutoDelete", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("auto_delete"),
+                    Token("policy"),
+                    Token("auto_delete"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape142));
 
             var AlterTablePolicyCaching = Command("AlterTablePolicyCaching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     Required(
                         First(
                             Custom(
-                                EToken("hotdata"),
-                                RequiredEToken("="),
+                                Token("hotdata"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("hotindex"),
-                                RequiredEToken("="),
+                                RequiredToken("hotindex"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape55),
                             Custom(
-                                EToken("hot"),
-                                RequiredEToken("="),
+                                Token("hot"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape56)),
-                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingEToken("hotdata"), CreateMissingEToken("="), rules.MissingValue(), CreateMissingEToken("hotindex"), CreateMissingEToken("="), rules.MissingValue())),
+                        () => (SyntaxElement)new CustomNode(shape55, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue())),
                     shape40));
 
             var AlterTablePolicyEncoding = Command("AlterTablePolicyEncoding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape38));
 
             var AlterTablePolicyExtentTagsRetention = Command("AlterTablePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape143));
 
             var AlterTablePolicyIngestionBatching = Command("AlterTablePolicyIngestionBatching", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape144));
 
             var AlterTablePolicyMerge = Command("AlterTablePolicyMerge", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape39));
 
             var AlterTablePolicyRestrictedViewAccess = Command("AlterTablePolicyRestrictedViewAccess", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("restricted_view_access"),
-                    RequiredEToken("false", "true"),
+                    Token("policy"),
+                    Token("restricted_view_access"),
+                    RequiredToken("false", "true"),
                     shape40));
 
             var AlterTablePolicyRetention = Command("AlterTablePolicyRetention", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape145));
 
             var AlterTablePolicyRowOrder = Command("AlterTablePolicyRowOrder", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("roworder"),
-                    RequiredEToken("("),
+                    Token("policy"),
+                    Token("roworder"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.ColumnNameReference,
-                                RequiredEToken("asc", "desc"),
+                                RequiredToken("asc", "desc"),
                                 shape41),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingEToken("Expected asc,desc")),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingToken("Expected asc,desc")),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingEToken("Expected asc,desc"))))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameReference(), CreateMissingToken("Expected asc,desc"))))),
+                    RequiredToken(")"),
                     shape42));
 
             var AlterTablePolicySharding = Command("AlterTablePolicySharding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape43));
 
             var AlterTablePolicyStreamingIngestion = Command("AlterTablePolicyStreamingIngestion", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("streamingingestion"),
+                    Token("policy"),
+                    Token("streamingingestion"),
                     Required(
                         First(
                             Custom(
-                                EToken("disable", "enable")),
+                                Token("disable", "enable")),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => CreateMissingEToken("Expected disable,enable")),
+                        () => CreateMissingToken("Expected disable,enable")),
                     shape40));
 
             var AlterTablePolicyUpdate = Command("AlterTablePolicyUpdate", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    RequiredEToken("update"),
+                    Token("policy"),
+                    RequiredToken("update"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape45));
 
             var AlterTableRowStoreReferencesDisableBlockedKeys = Command("AlterTableRowStoreReferencesDisableBlockedKeys", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("rowstore_references"),
-                    EToken("disable"),
-                    EToken("blocked"),
-                    RequiredEToken("keys"),
+                    Token("rowstore_references"),
+                    Token("disable"),
+                    Token("blocked"),
+                    RequiredToken("keys"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape146));
 
             var AlterTableRowStoreReferencesDisableKey = Command("AlterTableRowStoreReferencesDisableKey", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("rowstore_references"),
-                    EToken("disable"),
-                    EToken("key"),
+                    Token("rowstore_references"),
+                    Token("disable"),
+                    Token("key"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape147));
 
             var AlterTableRowStoreReferencesDisableRowStore = Command("AlterTableRowStoreReferencesDisableRowStore", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("rowstore_references"),
-                    EToken("disable"),
-                    RequiredEToken("rowstore"),
+                    Token("rowstore_references"),
+                    Token("disable"),
+                    RequiredToken("rowstore"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape148));
 
             var AlterTableRowStoreReferencesDropBlockedKeys = Command("AlterTableRowStoreReferencesDropBlockedKeys", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("rowstore_references"),
-                    EToken("drop"),
-                    EToken("blocked"),
-                    RequiredEToken("keys"),
+                    Token("rowstore_references"),
+                    Token("drop"),
+                    Token("blocked"),
+                    RequiredToken("keys"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape146));
 
             var AlterTableRowStoreReferencesDropKey = Command("AlterTableRowStoreReferencesDropKey", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("rowstore_references"),
-                    EToken("drop"),
-                    EToken("key"),
+                    Token("rowstore_references"),
+                    Token("drop"),
+                    Token("key"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape147));
 
             var AlterTableRowStoreReferencesDropRowStore = Command("AlterTableRowStoreReferencesDropRowStore", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    RequiredEToken("rowstore_references"),
-                    RequiredEToken("drop"),
-                    RequiredEToken("rowstore"),
+                    RequiredToken("rowstore_references"),
+                    RequiredToken("drop"),
+                    RequiredToken("rowstore"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape148));
 
             var AlterTable = Command("AlterTable", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("("),
+                    Token("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("docstring"),
-                                            EToken("folder"),
-                                            If(Not(And(EToken("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("docstring"),
+                                            Token("folder"),
+                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"))),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"))),
                     shape49));
 
             var AlterTableColumnDocStrings = Command("AlterTableColumnDocStrings", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("column-docstrings"),
-                    RequiredEToken("("),
+                    Token("column-docstrings"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.ColumnNameReference,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape50),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingEToken(":"), rules.MissingStringLiteral()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingToken(":"), rules.MissingStringLiteral()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingEToken(":"), rules.MissingStringLiteral())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape50, rules.MissingNameReference(), CreateMissingToken(":"), rules.MissingStringLiteral())))),
+                    RequiredToken(")"),
                     shape51));
 
             var AlterTableColumnsPolicyEncoding = Command("AlterTableColumnsPolicyEncoding", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("columns"),
-                    RequiredEToken("policy"),
-                    RequiredEToken("encoding"),
+                    Token("columns"),
+                    RequiredToken("policy"),
+                    RequiredToken("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape149));
 
             var AlterTableColumnStatistics = Command("AlterTableColumnStatistics", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("column"),
-                    RequiredEToken("statistics"),
+                    Token("column"),
+                    RequiredToken("statistics"),
                     CommaList(
                         Custom(
                             rules.NameDeclarationOrStringLiteral,
@@ -3342,189 +3343,189 @@ namespace Kusto.Language.Parsing
 
             var AlterTableDocString = Command("AlterTableDocString", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("docstring"),
+                    Token("docstring"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape152));
 
             var AlterTableFolder = Command("AlterTableFolder", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("folder"),
+                    Token("folder"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape153));
 
             var AlterTableIngestionMapping = Command("AlterTableIngestionMapping", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    Token("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape154));
 
             var AlterTablePolicyIngestionTime = Command("AlterTablePolicyIngestionTime", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("policy"),
-                    EToken("ingestiontime"),
-                    RequiredEToken("true"),
+                    Token("policy"),
+                    Token("ingestiontime"),
+                    RequiredToken("true"),
                     shape40));
 
             var AlterTablePolicyPartitioning = Command("AlterTablePolicyPartitioning", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("policy"),
+                    Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape52));
 
             var AlterTablePolicyRowLevelSecurity = Command("AlterTablePolicyRowLevelSecurity", 
                 Custom(
-                    EToken("alter", CompletionKind.CommandPrefix),
-                    RequiredEToken("table"),
+                    Token("alter", CompletionKind.CommandPrefix),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("row_level_security"),
-                    RequiredEToken("disable", "enable"),
+                    RequiredToken("policy"),
+                    RequiredToken("row_level_security"),
+                    RequiredToken("disable", "enable"),
                     Required(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 CommaList(
                                     Custom(
-                                        If(Not(EToken(")")), rules.NameDeclarationOrStringLiteral),
-                                        RequiredEToken("="),
+                                        If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape86)),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape155),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape155, CreateMissingEToken("with"), CreateMissingEToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingEToken(")"), rules.MissingStringLiteral())),
+                        () => (SyntaxElement)new CustomNode(shape155, CreateMissingToken("with"), CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")"), rules.MissingStringLiteral())),
                     shape156));
 
             var AppendTable = Command("AppendTable", 
                 Custom(
-                    EToken("append", CompletionKind.CommandPrefix),
+                    Token("append", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
+                                Token("async"),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 shape157),
                             Custom(
-                                If(Not(EToken("async")), rules.TableNameReference),
+                                If(Not(Token("async")), rules.TableNameReference),
                                 shape19)),
-                        () => (SyntaxElement)new CustomNode(shape157, CreateMissingEToken("async"), rules.MissingNameReference())),
+                        () => (SyntaxElement)new CustomNode(shape157, CreateMissingToken("async"), rules.MissingNameReference())),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape158));
 
             var AttachDatabaseMetadata = Command("AttachDatabaseMetadata", 
                 Custom(
-                    EToken("attach", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("metadata"),
+                    Token("attach", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("metadata"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("from"),
+                    RequiredToken("from"),
                     Required(
                         First(
                             Custom(
                                 rules.StringLiteral,
-                                EToken(";"),
+                                Token(";"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape70),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingEToken(";"), rules.MissingStringLiteral())),
+                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingToken(";"), rules.MissingStringLiteral())),
                     shape159));
 
             var AttachDatabase = Command("AttachDatabase", 
                 Custom(
-                    EToken("attach", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    Required(If(Not(EToken("metadata")), rules.DatabaseNameReference), rules.MissingNameReference),
-                    RequiredEToken("from"),
+                    Token("attach", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Required(If(Not(Token("metadata")), rules.DatabaseNameReference), rules.MissingNameReference),
+                    RequiredToken("from"),
                     Required(
                         First(
                             Custom(
                                 rules.StringLiteral,
-                                EToken(";"),
+                                Token(";"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape70),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingEToken(";"), rules.MissingStringLiteral())),
+                        () => (SyntaxElement)new CustomNode(shape70, rules.MissingStringLiteral(), CreateMissingToken(";"), rules.MissingStringLiteral())),
                     shape160));
 
             var AttachExtentsIntoTableByContainer = Command("AttachExtentsIntoTableByContainer", 
                 Custom(
-                    EToken("attach", CompletionKind.CommandPrefix),
-                    EToken("extents"),
-                    EToken("into"),
-                    EToken("table"),
+                    Token("attach", CompletionKind.CommandPrefix),
+                    Token("extents"),
+                    Token("into"),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("by"),
-                    EToken("container"),
+                    Token("by"),
+                    Token("container"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(
                         List(
@@ -3539,284 +3540,284 @@ namespace Kusto.Language.Parsing
 
             var AttachExtentsIntoTableByMetadata = Command("AttachExtentsIntoTableByMetadata", 
                 Custom(
-                    EToken("attach", CompletionKind.CommandPrefix),
+                    Token("attach", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                RequiredEToken("extents")),
-                            EToken("extents")),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("extents"))),
+                                Token("async"),
+                                RequiredToken("extents")),
+                            Token("extents")),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("extents"))),
                     List(
                         elementParser: Custom(
-                            EToken("into"),
-                            RequiredEToken("table"),
+                            Token("into"),
+                            RequiredToken("table"),
                             Required(rules.TableNameReference, rules.MissingNameReference),
                             shape162),
-                        missingElement: () => (SyntaxElement)new CustomNode(shape162, CreateMissingEToken("into"), CreateMissingEToken("table"), rules.MissingNameReference()),
+                        missingElement: () => (SyntaxElement)new CustomNode(shape162, CreateMissingToken("into"), CreateMissingToken("table"), rules.MissingNameReference()),
                         oneOrMore: false,
                         producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                    RequiredEToken("by"),
-                    RequiredEToken("metadata"),
+                    RequiredToken("by"),
+                    RequiredToken("metadata"),
                     Required(
                         Custom(
-                            EToken("<|"),
+                            Token("<|"),
                             Required(rules.CommandInput, rules.MissingExpression),
                             shape84),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                     shape163));
 
             var CancelOperation = Command("CancelOperation", 
                 Custom(
-                    EToken("cancel", CompletionKind.CommandPrefix),
-                    EToken("operation"),
+                    Token("cancel", CompletionKind.CommandPrefix),
+                    Token("operation"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape164));
 
             var CancelQuery = Command("CancelQuery", 
                 Custom(
-                    EToken("cancel", CompletionKind.CommandPrefix),
-                    RequiredEToken("query"),
+                    Token("cancel", CompletionKind.CommandPrefix),
+                    RequiredToken("query"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape165));
 
             var CleanDatabaseExtentContainers = Command("CleanDatabaseExtentContainers", 
                 Custom(
-                    EToken("clean", CompletionKind.CommandPrefix),
-                    RequiredEToken("databases"),
+                    Token("clean", CompletionKind.CommandPrefix),
+                    RequiredToken("databases"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 CommaList(
                                     Custom(
-                                        If(Not(EToken(")")), rules.DatabaseNameReference),
+                                        If(Not(Token(")")), rules.DatabaseNameReference),
                                         shape8)),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape166),
                             Custom(
-                                EToken("async"),
+                                Token("async"),
                                 Optional(
                                     Custom(
-                                        EToken("("),
+                                        Token("("),
                                         CommaList(
                                             Custom(
-                                                If(Not(EToken(")")), rules.DatabaseNameReference),
+                                                If(Not(Token(")")), rules.DatabaseNameReference),
                                                 shape8)),
-                                        RequiredEToken(")"),
+                                        RequiredToken(")"),
                                         shape166)),
                                 shape167))),
-                    RequiredEToken("extentcontainers"),
+                    RequiredToken("extentcontainers"),
                     shape168));
 
             var ClearRemoteClusterDatabaseSchema = Command("ClearRemoteClusterDatabaseSchema", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("clear", CompletionKind.CommandPrefix),
-                        EToken("cache"),
-                        RequiredEToken("remote-schema"),
-                        RequiredEToken("cluster"),
-                        RequiredEToken("("),
+                        Token("clear", CompletionKind.CommandPrefix),
+                        Token("cache"),
+                        RequiredToken("remote-schema"),
+                        RequiredToken("cluster"),
+                        RequiredToken("("),
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                        RequiredEToken(")"),
-                        RequiredEToken("."),
-                        RequiredEToken("database"),
-                        RequiredEToken("("),
+                        RequiredToken(")"),
+                        RequiredToken("."),
+                        RequiredToken("database"),
+                        RequiredToken("("),
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                        RequiredEToken(")")}
+                        RequiredToken(")")}
                     ,
                     shape169));
 
             var ClearDatabaseCacheQueryResults = Command("ClearDatabaseCacheQueryResults", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("cache"),
-                    EToken("query_results")));
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("cache"),
+                    Token("query_results")));
 
             var ClearDatabaseCacheQueryWeakConsistency = Command("ClearDatabaseCacheQueryWeakConsistency", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("cache"),
-                    EToken("query_weak_consistency")));
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("cache"),
+                    Token("query_weak_consistency")));
 
             var ClearDatabaseCacheStreamingIngestionSchema = Command("ClearDatabaseCacheStreamingIngestionSchema", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    RequiredEToken("cache"),
-                    RequiredEToken("streamingingestion"),
-                    RequiredEToken("schema")));
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    RequiredToken("cache"),
+                    RequiredToken("streamingingestion"),
+                    RequiredToken("schema")));
 
             var ClearMaterializedViewData = Command("ClearMaterializedViewData", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("data"),
+                    Token("data"),
                     shape170));
 
             var ClearMaterializedViewStatistics = Command("ClearMaterializedViewStatistics", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("statistics"),
+                    RequiredToken("statistics"),
                     shape171));
 
             var ClearTableCacheStreamingIngestionSchema = Command("ClearTableCacheStreamingIngestionSchema", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("cache"),
-                    RequiredEToken("streamingingestion"),
-                    RequiredEToken("schema"),
+                    Token("cache"),
+                    RequiredToken("streamingingestion"),
+                    RequiredToken("schema"),
                     shape40));
 
             var ClearTableData = Command("ClearTableData", 
                 Custom(
-                    EToken("clear", CompletionKind.CommandPrefix),
+                    Token("clear", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                RequiredEToken("table")),
-                            EToken("table")),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("table"))),
+                                Token("async"),
+                                RequiredToken("table")),
+                            Token("table")),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("table"))),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("data"),
+                    RequiredToken("data"),
                     shape172));
 
             var CreateMergeTables = Command("CreateMergeTables", 
                 Custom(
-                    EToken("create-merge", CompletionKind.CommandPrefix),
-                    EToken("tables"),
+                    Token("create-merge", CompletionKind.CommandPrefix),
+                    Token("tables"),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken("("),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken(":"),
+                                            RequiredToken(":"),
                                             Required(rules.Type, rules.MissingType),
                                             shape47),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                                RequiredToken(")"),
                                 shape173),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")")),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")")),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")"))))),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")"))))),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape174));
 
             var CreateMergeTable = Command("CreateMergeTable", 
                 Custom(
-                    EToken("create-merge", CompletionKind.CommandPrefix),
-                    RequiredEToken("table"),
+                    Token("create-merge", CompletionKind.CommandPrefix),
+                    RequiredToken("table"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("("),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                    RequiredToken(")"),
                     shape175));
 
             var CreateOrAlterContinuousExport = Command("CreateOrAlterContinuousExport", 
                 Custom(
-                    EToken("create-or-alter", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("create-or-alter", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
                             Custom(
-                                EToken("over"),
-                                RequiredEToken("("),
+                                Token("over"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -3826,98 +3827,98 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                RequiredEToken(")"),
-                                RequiredEToken("to"),
+                                RequiredToken(")"),
+                                RequiredToken("to"),
                                 shape64),
-                            EToken("to")),
-                        () => (SyntaxElement)new CustomNode(shape64, CreateMissingEToken("over"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingEToken(")"), CreateMissingEToken("to"))),
-                    RequiredEToken("table"),
+                            Token("to")),
+                        () => (SyntaxElement)new CustomNode(shape64, CreateMissingToken("over"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingToken(")"), CreateMissingToken("to"))),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"),
                                 shape64)),
-                        () => CreateMissingEToken("<|")),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape176));
 
             var CreateOrAlterSqlExternalTable = Command("CreateOrAlterSqlExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("create-or-alter", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        EToken("table"),
+                        Token("create-or-alter", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        Token("table"),
                         rules.NameDeclarationOrStringLiteral,
-                        EToken("("),
+                        Token("("),
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        EToken(")"),
-                        EToken("kind"),
-                        RequiredEToken("="),
-                        RequiredEToken("sql"),
-                        RequiredEToken("table"),
-                        RequiredEToken("="),
+                        Token(")"),
+                        Token("kind"),
+                        RequiredToken("="),
+                        RequiredToken("sql"),
+                        RequiredToken("table"),
+                        RequiredToken("="),
                         Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape88));
@@ -3925,110 +3926,110 @@ namespace Kusto.Language.Parsing
             var CreateOrAlterStorageExternalTable = Command("CreateOrAlterStorageExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("create-or-alter", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        RequiredEToken("table"),
+                        Token("create-or-alter", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        RequiredToken("table"),
                         Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.NameDeclarationOrStringLiteral,
-                                    RequiredEToken(":"),
+                                    RequiredToken(":"),
                                     Required(rules.Type, rules.MissingType),
                                     shape47),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                        RequiredEToken(")"),
-                        RequiredEToken("kind"),
-                        RequiredEToken("="),
+                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                        RequiredToken(")"),
+                        RequiredToken("kind"),
+                        RequiredToken("="),
                         Required(
                             First(
-                                EToken("adl").Hide(),
-                                EToken("blob").Hide(),
-                                EToken("storage")),
-                            () => CreateMissingEToken("adl")),
+                                Token("adl").Hide(),
+                                Token("blob").Hide(),
+                                Token("storage")),
+                            () => CreateMissingToken("adl")),
                         Required(
                             First(
-                                EToken("dataformat"),
+                                Token("dataformat"),
                                 Custom(
-                                    EToken("partition"),
-                                    RequiredEToken("by"),
-                                    RequiredEToken("("),
+                                    Token("partition"),
+                                    RequiredToken("by"),
+                                    RequiredToken("("),
                                     Required(
                                         OList(
                                             primaryElementParser: Custom(
                                                 rules.NameDeclarationOrStringLiteral,
-                                                RequiredEToken(":"),
+                                                RequiredToken(":"),
                                                 Required(
                                                     First(
                                                         Custom(
-                                                            EToken("datetime"),
+                                                            Token("datetime"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(
                                                                         First(
                                                                             Custom(
-                                                                                EToken("bin"),
-                                                                                RequiredEToken("("),
+                                                                                Token("bin"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(","),
+                                                                                RequiredToken(","),
                                                                                 Required(rules.Value, rules.MissingValue),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape89),
                                                                             Custom(
-                                                                                EToken("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredEToken("("),
+                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape90)),
-                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                             shape91),
                                                         Custom(
-                                                            EToken("long"),
-                                                            RequiredEToken("="),
-                                                            RequiredEToken("hash"),
-                                                            RequiredEToken("("),
+                                                            Token("long"),
+                                                            RequiredToken("="),
+                                                            RequiredToken("hash"),
+                                                            RequiredToken("("),
                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredEToken(","),
+                                                            RequiredToken(","),
                                                             Required(rules.Value, rules.MissingValue),
-                                                            RequiredEToken(")"),
+                                                            RequiredToken(")"),
                                                             shape92),
                                                         Custom(
-                                                            EToken("string"),
+                                                            Token("string"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                                                     shape93)),
                                                             shape91)),
-                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                 shape94),
-                                            separatorParser: EToken(","),
+                                            separatorParser: Token(","),
                                             secondaryElementParser: null,
                                             missingPrimaryElement: null,
                                             missingSeparator: null,
-                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                             endOfList: null,
                                             oneOrMore: true,
                                             allowTrailingSeparator: false,
                                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")")))))))),
-                                    RequiredEToken(")"),
+                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")")))))))),
+                                    RequiredToken(")"),
                                     Optional(
                                         Custom(
-                                            EToken("pathformat"),
-                                            RequiredEToken("="),
-                                            RequiredEToken("("),
+                                            Token("pathformat"),
+                                            RequiredToken("="),
+                                            RequiredToken("("),
                                             Required(
                                                 First(
                                                     Custom(
@@ -4038,15 +4039,15 @@ namespace Kusto.Language.Parsing
                                                                 Custom(
                                                                     First(
                                                                         Custom(
-                                                                            EToken("datetime_pattern"),
-                                                                            RequiredEToken("("),
+                                                                            Token("datetime_pattern"),
+                                                                            RequiredToken("("),
                                                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredEToken(","),
+                                                                            RequiredToken(","),
                                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredEToken(")"),
+                                                                            RequiredToken(")"),
                                                                             shape95),
                                                                         Custom(
-                                                                            If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                             shape46)),
                                                                     Optional(
                                                                         Custom(
@@ -4056,29 +4057,29 @@ namespace Kusto.Language.Parsing
                                                                 missingElement: null,
                                                                 oneOrMore: true,
                                                                 producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral()))),
+                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral()))),
                                                         shape96),
                                                     List(
                                                         Custom(
                                                             First(
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     rules.StringLiteral,
-                                                                    EToken(","),
+                                                                    Token(","),
                                                                     rules.NameDeclarationOrStringLiteral,
-                                                                    EToken(")"),
+                                                                    Token(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredEToken(","),
+                                                                    RequiredToken(","),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredEToken(")"),
+                                                                    RequiredToken(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                     shape46)),
                                                             Optional(
                                                                 Custom(
@@ -4088,21 +4089,21 @@ namespace Kusto.Language.Parsing
                                                         missingElement: null,
                                                         oneOrMore: true,
                                                         producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral())))),
-                                            RequiredEToken(")"),
+                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral())))),
+                                            RequiredToken(")"),
                                             shape97)),
-                                    RequiredEToken("dataformat"),
+                                    RequiredToken("dataformat"),
                                     shape98)),
-                            () => CreateMissingEToken("dataformat")),
-                        RequiredEToken("="),
-                        RequiredEToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
-                        RequiredEToken("("),
+                            () => CreateMissingToken("dataformat")),
+                        RequiredToken("="),
+                        RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -4112,150 +4113,150 @@ namespace Kusto.Language.Parsing
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                             () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape99));
 
             var CreateOrAlterFunction = Command("CreateOrAlterFunction", 
                 Custom(
-                    EToken("create-or-alter", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("create-or-alter", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                 shape177),
                             Custom(
-                                If(Not(EToken("with")), rules.NameDeclarationOrStringLiteral),
+                                If(Not(Token("with")), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape177, CreateMissingEToken("with"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()))), CreateMissingEToken(")"), rules.MissingNameDeclaration())),
+                        () => (SyntaxElement)new CustomNode(shape177, CreateMissingToken("with"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()))), CreateMissingToken(")"), rules.MissingNameDeclaration())),
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration)));
 
             var CreateOrAlterMaterializedView = Command("CreateOrAlterMaterializedView", 
                 Custom(
-                    EToken("create-or-alter", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("create-or-alter", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("autoUpdateSchema"),
-                                                EToken("backfill"),
-                                                EToken("dimensionTables"),
-                                                EToken("docString"),
-                                                EToken("effectiveDateTime"),
-                                                EToken("folder"),
-                                                EToken("lookback"),
-                                                EToken("updateExtentsCreationTime"),
-                                                If(Not(And(EToken("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("autoUpdateSchema"),
+                                                Token("backfill"),
+                                                Token("dimensionTables"),
+                                                Token("docString"),
+                                                Token("effectiveDateTime"),
+                                                Token("folder"),
+                                                Token("lookback"),
+                                                Token("updateExtentsCreationTime"),
+                                                If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                                 shape129),
                             Custom(
-                                If(Not(EToken("with")), rules.MaterializedViewNameReference),
+                                If(Not(Token("with")), rules.MaterializedViewNameReference),
                                 shape17)),
-                        () => (SyntaxElement)new CustomNode(shape129, CreateMissingEToken("with"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue()))), CreateMissingEToken(")"), rules.MissingNameReference())),
-                    RequiredEToken("on"),
-                    RequiredEToken("table"),
+                        () => (SyntaxElement)new CustomNode(shape129, CreateMissingToken("with"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue()))), CreateMissingToken(")"), rules.MissingNameReference())),
+                    RequiredToken("on"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(rules.FunctionBody, rules.MissingFunctionBody),
                     shape130));
 
             var CreateOrAleterWorkloadGroup = Command("CreateOrAleterWorkloadGroup", 
                 Custom(
-                    EToken("create-or-alter", CompletionKind.CommandPrefix),
-                    RequiredEToken("workload_group"),
+                    Token("create-or-alter", CompletionKind.CommandPrefix),
+                    RequiredToken("workload_group"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape53));
 
             var CreateBasicAuthUser = Command("CreateBasicAuthUser", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("basicauth"),
-                    RequiredEToken("user"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("basicauth"),
+                    RequiredToken("user"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         Custom(
-                            EToken("password"),
+                            Token("password"),
                             Required(rules.StringLiteral, rules.MissingStringLiteral),
                             shape178)),
                     shape179));
 
             var CreateDatabasePersist = Command("CreateDatabasePersist", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("persist"),
-                    RequiredEToken("("),
+                    Token("persist"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -4265,27 +4266,27 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
-                    Optional(EToken("ifnotexists")),
+                    RequiredToken(")"),
+                    Optional(Token("ifnotexists")),
                     shape180));
 
             var CreateDatabaseVolatile = Command("CreateDatabaseVolatile", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("volatile"),
-                    Optional(EToken("ifnotexists")),
+                    Token("volatile"),
+                    Optional(Token("ifnotexists")),
                     shape181));
 
             var CreateDatabaseIngestionMapping = Command("CreateDatabaseIngestionMapping", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    RequiredToken("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape182));
@@ -4293,58 +4294,58 @@ namespace Kusto.Language.Parsing
             var CreateSqlExternalTable = Command("CreateSqlExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("create", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        EToken("table"),
+                        Token("create", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        Token("table"),
                         rules.NameDeclarationOrStringLiteral,
-                        EToken("("),
+                        Token("("),
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        EToken(")"),
-                        EToken("kind"),
-                        RequiredEToken("="),
-                        RequiredEToken("sql"),
-                        RequiredEToken("table"),
-                        RequiredEToken("="),
+                        Token(")"),
+                        Token("kind"),
+                        RequiredToken("="),
+                        RequiredToken("sql"),
+                        RequiredToken("table"),
+                        RequiredToken("="),
                         Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape88));
@@ -4352,110 +4353,110 @@ namespace Kusto.Language.Parsing
             var CreateStorageExternalTable = Command("CreateStorageExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("create", CompletionKind.CommandPrefix),
-                        EToken("external"),
-                        EToken("table"),
+                        Token("create", CompletionKind.CommandPrefix),
+                        Token("external"),
+                        Token("table"),
                         rules.NameDeclarationOrStringLiteral,
-                        RequiredEToken("("),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.NameDeclarationOrStringLiteral,
-                                    RequiredEToken(":"),
+                                    RequiredToken(":"),
                                     Required(rules.Type, rules.MissingType),
                                     shape47),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
-                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                 endOfList: null,
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                        RequiredEToken(")"),
-                        RequiredEToken("kind"),
-                        RequiredEToken("="),
+                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                        RequiredToken(")"),
+                        RequiredToken("kind"),
+                        RequiredToken("="),
                         Required(
                             First(
-                                EToken("adl").Hide(),
-                                EToken("blob").Hide(),
-                                EToken("storage")),
-                            () => CreateMissingEToken("adl")),
+                                Token("adl").Hide(),
+                                Token("blob").Hide(),
+                                Token("storage")),
+                            () => CreateMissingToken("adl")),
                         Required(
                             First(
-                                EToken("dataformat"),
+                                Token("dataformat"),
                                 Custom(
-                                    EToken("partition"),
-                                    RequiredEToken("by"),
-                                    RequiredEToken("("),
+                                    Token("partition"),
+                                    RequiredToken("by"),
+                                    RequiredToken("("),
                                     Required(
                                         OList(
                                             primaryElementParser: Custom(
                                                 rules.NameDeclarationOrStringLiteral,
-                                                RequiredEToken(":"),
+                                                RequiredToken(":"),
                                                 Required(
                                                     First(
                                                         Custom(
-                                                            EToken("datetime"),
+                                                            Token("datetime"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(
                                                                         First(
                                                                             Custom(
-                                                                                EToken("bin"),
-                                                                                RequiredEToken("("),
+                                                                                Token("bin"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(","),
+                                                                                RequiredToken(","),
                                                                                 Required(rules.Value, rules.MissingValue),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape89),
                                                                             Custom(
-                                                                                EToken("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredEToken("("),
+                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
+                                                                                RequiredToken("("),
                                                                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredEToken(")"),
+                                                                                RequiredToken(")"),
                                                                                 shape90)),
-                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                                        () => (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                             shape91),
                                                         Custom(
-                                                            EToken("long"),
-                                                            RequiredEToken("="),
-                                                            RequiredEToken("hash"),
-                                                            RequiredEToken("("),
+                                                            Token("long"),
+                                                            RequiredToken("="),
+                                                            RequiredToken("hash"),
+                                                            RequiredToken("("),
                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredEToken(","),
+                                                            RequiredToken(","),
                                                             Required(rules.Value, rules.MissingValue),
-                                                            RequiredEToken(")"),
+                                                            RequiredToken(")"),
                                                             shape92),
                                                         Custom(
-                                                            EToken("string"),
+                                                            Token("string"),
                                                             Optional(
                                                                 Custom(
-                                                                    EToken("="),
+                                                                    Token("="),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                                                     shape93)),
                                                             shape91)),
-                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                                    () => (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                                 shape94),
-                                            separatorParser: EToken(","),
+                                            separatorParser: Token(","),
                                             secondaryElementParser: null,
                                             missingPrimaryElement: null,
                                             missingSeparator: null,
-                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")"))))),
+                                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")"))))),
                                             endOfList: null,
                                             oneOrMore: true,
                                             allowTrailingSeparator: false,
                                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingEToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingEToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingEToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingEToken("bin"), CreateMissingEToken("("), rules.MissingNameDeclaration(), CreateMissingEToken(","), rules.MissingValue(), CreateMissingEToken(")")))))))),
-                                    RequiredEToken(")"),
+                                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape94, rules.MissingNameDeclaration(), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape91, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape89, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(), CreateMissingToken(","), rules.MissingValue(), CreateMissingToken(")")))))))),
+                                    RequiredToken(")"),
                                     Optional(
                                         Custom(
-                                            EToken("pathformat"),
-                                            RequiredEToken("="),
-                                            RequiredEToken("("),
+                                            Token("pathformat"),
+                                            RequiredToken("="),
+                                            RequiredToken("("),
                                             Required(
                                                 First(
                                                     Custom(
@@ -4465,15 +4466,15 @@ namespace Kusto.Language.Parsing
                                                                 Custom(
                                                                     First(
                                                                         Custom(
-                                                                            EToken("datetime_pattern"),
-                                                                            RequiredEToken("("),
+                                                                            Token("datetime_pattern"),
+                                                                            RequiredToken("("),
                                                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredEToken(","),
+                                                                            RequiredToken(","),
                                                                             Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredEToken(")"),
+                                                                            RequiredToken(")"),
                                                                             shape95),
                                                                         Custom(
-                                                                            If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                             shape46)),
                                                                     Optional(
                                                                         Custom(
@@ -4483,29 +4484,29 @@ namespace Kusto.Language.Parsing
                                                                 missingElement: null,
                                                                 oneOrMore: true,
                                                                 producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral()))),
+                                                            () => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral()))),
                                                         shape96),
                                                     List(
                                                         Custom(
                                                             First(
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     rules.StringLiteral,
-                                                                    EToken(","),
+                                                                    Token(","),
                                                                     rules.NameDeclarationOrStringLiteral,
-                                                                    EToken(")"),
+                                                                    Token(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    EToken("datetime_pattern"),
-                                                                    RequiredEToken("("),
+                                                                    Token("datetime_pattern"),
+                                                                    RequiredToken("("),
                                                                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredEToken(","),
+                                                                    RequiredToken(","),
                                                                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredEToken(")"),
+                                                                    RequiredToken(")"),
                                                                     shape95),
                                                                 Custom(
-                                                                    If(Not(EToken("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
                                                                     shape46)),
                                                             Optional(
                                                                 Custom(
@@ -4515,21 +4516,21 @@ namespace Kusto.Language.Parsing
                                                         missingElement: null,
                                                         oneOrMore: true,
                                                         producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingEToken("datetime_pattern"), CreateMissingEToken("("), rules.MissingStringLiteral(), CreateMissingEToken(","), rules.MissingNameDeclaration(), CreateMissingEToken(")")), rules.MissingStringLiteral())))),
-                                            RequiredEToken(")"),
+                                                () => (SyntaxElement)new CustomNode(shape96, rules.MissingStringLiteral(), new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape11, (SyntaxElement)new CustomNode(shape95, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(), CreateMissingToken(","), rules.MissingNameDeclaration(), CreateMissingToken(")")), rules.MissingStringLiteral())))),
+                                            RequiredToken(")"),
                                             shape97)),
-                                    RequiredEToken("dataformat"),
+                                    RequiredToken("dataformat"),
                                     shape98)),
-                            () => CreateMissingEToken("dataformat")),
-                        RequiredEToken("="),
-                        RequiredEToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
-                        RequiredEToken("("),
+                            () => CreateMissingToken("dataformat")),
+                        RequiredToken("="),
+                        RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
+                        RequiredToken("("),
                         Required(
                             OList(
                                 primaryElementParser: Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -4539,621 +4540,621 @@ namespace Kusto.Language.Parsing
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                             () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                        RequiredEToken(")"),
+                        RequiredToken(")"),
                         Optional(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape86),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))}
                     ,
                     shape99));
 
             var CreateExternalTableMapping = Command("CreateExternalTableMapping", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
-                    RequiredEToken("mapping"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape102));
 
             var CreateFunction = Command("CreateFunction", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Optional(
                         First(
                             Custom(
-                                EToken("ifnotexists"),
+                                Token("ifnotexists"),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
+                                        Token("with"),
+                                        RequiredToken("("),
                                         CommaList(
                                             Custom(
-                                                If(Not(EToken(")")), rules.NameDeclarationOrStringLiteral),
-                                                RequiredEToken("="),
+                                                If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
+                                                RequiredToken("="),
                                                 Required(rules.Value, rules.MissingValue),
                                                 shape86)),
-                                        RequiredEToken(")"),
+                                        RequiredToken(")"),
                                         shape87)),
                                 shape167),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 CommaList(
                                     Custom(
-                                        If(Not(EToken(")")), rules.NameDeclarationOrStringLiteral),
-                                        RequiredEToken("="),
+                                        If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape86)),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape87))),
-                    Required(If(Not(And(EToken("ifnotexists", "with"))), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
+                    Required(If(Not(And(Token("ifnotexists", "with"))), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration),
                     shape183));
 
             var CreateRequestSupport = Command("CreateRequestSupport", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("request_support"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("request_support"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var CreateRowStore = Command("CreateRowStore", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("rowstore"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("rowstore"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var CreateTables = Command("CreateTables", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("tables"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("tables"),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken("("),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken(":"),
+                                            RequiredToken(":"),
                                             Required(rules.Type, rules.MissingType),
                                             shape47),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                                RequiredToken(")"),
                                 shape173),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")")),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")")),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")"))))),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")"))))),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape174));
 
             var CreateTable = Command("CreateTable", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("("),
+                    Token("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken(":"),
+                                RequiredToken(":"),
                                 Required(rules.Type, rules.MissingType),
                                 shape47),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                    RequiredEToken(")"),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("docstring"),
-                                            EToken("folder"),
-                                            If(Not(And(EToken("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("docstring"),
+                                            Token("folder"),
+                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"))),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"))),
                     shape185));
 
             var CreateTableBasedOnAnother = Command("CreateTableBasedOnAnother", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("based-on"),
+                    Token("based-on"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("docstring"),
-                                            EToken("folder"),
-                                            If(Not(And(EToken("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("docstring"),
+                                            Token("folder"),
+                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("docstring"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"))),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"))),
                     shape186));
 
             var CreateTableIngestionMapping = Command("CreateTableIngestionMapping", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("table"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    RequiredToken("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape187));
 
             var CreateTempStorage = Command("CreateTempStorage", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
-                    EToken("tempstorage")));
+                    Token("create", CompletionKind.CommandPrefix),
+                    Token("tempstorage")));
 
             var CreateMaterializedView = Command("CreateMaterializedView", 
                 Custom(
-                    EToken("create", CompletionKind.CommandPrefix),
+                    Token("create", CompletionKind.CommandPrefix),
                     Optional(
                         First(
                             Custom(
-                                EToken("async"),
-                                Optional(EToken("ifnotexists")),
+                                Token("async"),
+                                Optional(Token("ifnotexists")),
                                 shape167),
-                            EToken("ifnotexists"))),
-                    RequiredEToken("materialized-view"),
+                            Token("ifnotexists"))),
+                    RequiredToken("materialized-view"),
                     Required(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("autoUpdateSchema"),
-                                                EToken("backfill"),
-                                                EToken("dimensionTables"),
-                                                EToken("docString"),
-                                                EToken("effectiveDateTime"),
-                                                EToken("folder"),
-                                                EToken("lookback"),
-                                                EToken("updateExtentsCreationTime"),
-                                                If(Not(And(EToken("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("autoUpdateSchema"),
+                                                Token("backfill"),
+                                                Token("dimensionTables"),
+                                                Token("docString"),
+                                                Token("effectiveDateTime"),
+                                                Token("folder"),
+                                                Token("lookback"),
+                                                Token("updateExtentsCreationTime"),
+                                                If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                 shape188),
                             Custom(
-                                If(Not(EToken("with")), rules.NameDeclarationOrStringLiteral),
+                                If(Not(Token("with")), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape188, CreateMissingEToken("with"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("autoUpdateSchema"), CreateMissingEToken("="), rules.MissingValue()))), CreateMissingEToken(")"), rules.MissingNameDeclaration())),
-                    RequiredEToken("on"),
-                    RequiredEToken("table"),
+                        () => (SyntaxElement)new CustomNode(shape188, CreateMissingToken("with"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue()))), CreateMissingToken(")"), rules.MissingNameDeclaration())),
+                    RequiredToken("on"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(rules.FunctionBody, rules.MissingFunctionBody),
                     shape189));
 
             var DefineTables = Command("DefineTables", 
                 Custom(
-                    EToken("define", CompletionKind.CommandPrefix),
-                    RequiredEToken("tables"),
+                    Token("define", CompletionKind.CommandPrefix),
+                    RequiredToken("tables"),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken("("),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken(":"),
+                                            RequiredToken(":"),
                                             Required(rules.Type, rules.MissingType),
                                             shape47),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType())))),
+                                RequiredToken(")"),
                                 shape173),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")")),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")")),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingEToken(":"), rules.MissingType()))), CreateMissingEToken(")"))))),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape173, rules.MissingNameDeclaration(), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape47, rules.MissingNameDeclaration(), CreateMissingToken(":"), rules.MissingType()))), CreateMissingToken(")"))))),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape174));
 
             var DeleteClusterPolicyCaching = Command("DeleteClusterPolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("caching")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("caching")));
 
             var DeleteClusterPolicyCallout = Command("DeleteClusterPolicyCallout", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("callout")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("callout")));
 
             var DeleteClusterPolicyManagedIdentity = Command("DeleteClusterPolicyManagedIdentity", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("managed_identity")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("managed_identity")));
 
             var DeleteClusterPolicyRequestClassification = Command("DeleteClusterPolicyRequestClassification", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("request_classification")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("request_classification")));
 
             var DeleteClusterPolicyRowStore = Command("DeleteClusterPolicyRowStore", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("rowstore")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("rowstore")));
 
             var DeleteClusterPolicySandbox = Command("DeleteClusterPolicySandbox", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sandbox")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sandbox")));
 
             var DeleteClusterPolicySharding = Command("DeleteClusterPolicySharding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sharding")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sharding")));
 
             var DeleteClusterPolicyStreamingIngestion = Command("DeleteClusterPolicyStreamingIngestion", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    RequiredEToken("policy"),
-                    RequiredEToken("streamingingestion")));
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("policy"),
+                    RequiredToken("streamingingestion")));
 
             var DeleteColumnPolicyCaching = Command("DeleteColumnPolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("column"),
                     rules.DatabaseTableColumnNameReference,
-                    RequiredEToken("policy"),
-                    RequiredEToken("caching"),
+                    RequiredToken("policy"),
+                    RequiredToken("caching"),
                     shape190));
 
             var DeleteColumnPolicyEncoding = Command("DeleteColumnPolicyEncoding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("column"),
                     Required(rules.TableColumnNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("encoding"),
+                    RequiredToken("policy"),
+                    RequiredToken("encoding"),
                     shape190));
 
             var DeleteDatabasePolicyCaching = Command("DeleteDatabasePolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     shape191));
 
             var DeleteDatabasePolicyDiagnostics = Command("DeleteDatabasePolicyDiagnostics", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("policy"),
+                    Token("diagnostics"),
                     shape191));
 
             var DeleteDatabasePolicyEncoding = Command("DeleteDatabasePolicyEncoding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     shape191));
 
             var DeleteDatabasePolicyExtentTagsRetention = Command("DeleteDatabasePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
                     shape191));
 
             var DeleteDatabasePolicyIngestionBatching = Command("DeleteDatabasePolicyIngestionBatching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     shape191));
 
             var DeleteDatabasePolicyManagedIdentity = Command("DeleteDatabasePolicyManagedIdentity", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("managed_identity"),
+                    Token("policy"),
+                    Token("managed_identity"),
                     shape191));
 
             var DeleteDatabasePolicyMerge = Command("DeleteDatabasePolicyMerge", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     shape191));
 
             var DeleteDatabasePolicyRetention = Command("DeleteDatabasePolicyRetention", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     shape191));
 
             var DeleteDatabasePolicySharding = Command("DeleteDatabasePolicySharding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     shape191));
 
             var DeleteDatabasePolicyShardsGrouping = Command("DeleteDatabasePolicyShardsGrouping", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    EToken("shards_grouping").Hide(),
+                    Token("policy"),
+                    Token("shards_grouping").Hide(),
                     shape191));
 
             var DeleteDatabasePolicyStreamingIngestion = Command("DeleteDatabasePolicyStreamingIngestion", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("streamingingestion"),
+                    RequiredToken("policy"),
+                    RequiredToken("streamingingestion"),
                     shape191));
 
             var DropFollowerDatabasePolicyCaching = Command("DropFollowerDatabasePolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    EToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("policy"),
-                    RequiredEToken("caching"),
+                    Token("policy"),
+                    RequiredToken("caching"),
                     shape192));
 
             var DropFollowerTablesPolicyCaching = Command("DropFollowerTablesPolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    RequiredEToken("database"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    RequiredToken("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Custom(
-                                EToken("materialized-views"),
-                                RequiredEToken("("),
+                                Token("materialized-views"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -5163,21 +5164,21 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape87),
                             Custom(
-                                EToken("materialized-view"),
+                                Token("materialized-view"),
                                 Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                                 shape119),
                             Custom(
-                                EToken("tables"),
-                                RequiredEToken("("),
+                                Token("tables"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -5187,57 +5188,57 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape87),
                             Custom(
-                                EToken("table"),
+                                Token("table"),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 shape120)),
-                        () => (SyntaxElement)new CustomNode(shape87, CreateMissingEToken("materialized-views"), CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingEToken(")"))),
-                    RequiredEToken("policy"),
-                    RequiredEToken("caching"),
+                        () => (SyntaxElement)new CustomNode(shape87, CreateMissingToken("materialized-views"), CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration())), CreateMissingToken(")"))),
+                    RequiredToken("policy"),
+                    RequiredToken("caching"),
                     shape193));
 
             var DeleteMaterializedViewPolicyCaching = Command("DeleteMaterializedViewPolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     shape125));
 
             var DeleteMaterializedViewPolicyPartitioning = Command("DeleteMaterializedViewPolicyPartitioning", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("policy"),
+                    Token("partitioning"),
                     shape125));
 
             var DeleteMaterializedViewPolicyRowLevelSecurity = Command("DeleteMaterializedViewPolicyRowLevelSecurity", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("row_level_security"),
+                    RequiredToken("policy"),
+                    RequiredToken("row_level_security"),
                     shape125));
 
             var DeletePoliciesOfRetention = Command("DeletePoliciesOfRetention", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("policies"),
-                    RequiredEToken("of"),
-                    RequiredEToken("retention"),
-                    RequiredEToken("("),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("policies"),
+                    RequiredToken("of"),
+                    RequiredToken("retention"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -5247,220 +5248,220 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     shape194));
 
             var DeleteTablePolicyAutoDelete = Command("DeleteTablePolicyAutoDelete", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("auto_delete"),
+                    Token("policy"),
+                    Token("auto_delete"),
                     shape195));
 
             var DeleteTablePolicyCaching = Command("DeleteTablePolicyCaching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     shape195));
 
             var DeleteTablePolicyEncoding = Command("DeleteTablePolicyEncoding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("policy"),
+                    Token("encoding"),
                     shape195));
 
             var DeleteTablePolicyExtentTagsRetention = Command("DeleteTablePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
                     shape195));
 
             var DeleteTablePolicyIngestionBatching = Command("DeleteTablePolicyIngestionBatching", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     shape195));
 
             var DeleteTablePolicyMerge = Command("DeleteTablePolicyMerge", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     shape195));
 
             var DeleteTablePolicyRestrictedViewAccess = Command("DeleteTablePolicyRestrictedViewAccess", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("restricted_view_access"),
+                    Token("policy"),
+                    Token("restricted_view_access"),
                     shape195));
 
             var DeleteTablePolicyRetention = Command("DeleteTablePolicyRetention", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     shape195));
 
             var DeleteTablePolicyRowOrder = Command("DeleteTablePolicyRowOrder", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("roworder"),
+                    Token("policy"),
+                    Token("roworder"),
                     shape195));
 
             var DeleteTablePolicySharding = Command("DeleteTablePolicySharding", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("policy"),
+                    Token("sharding"),
                     shape195));
 
             var DeleteTablePolicyStreamingIngestion = Command("DeleteTablePolicyStreamingIngestion", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    EToken("policy"),
-                    EToken("streamingingestion"),
+                    Token("policy"),
+                    Token("streamingingestion"),
                     shape195));
 
             var DeleteTablePolicyUpdate = Command("DeleteTablePolicyUpdate", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    RequiredEToken("policy"),
-                    RequiredEToken("update"),
+                    RequiredToken("policy"),
+                    RequiredToken("update"),
                     shape195));
 
             var DeleteTablePolicyIngestionTime = Command("DeleteTablePolicyIngestionTime", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("policy"),
-                    EToken("ingestiontime"),
+                    Token("policy"),
+                    Token("ingestiontime"),
                     shape195));
 
             var DeleteTablePolicyPartitioning = Command("DeleteTablePolicyPartitioning", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("policy"),
+                    Token("partitioning"),
                     shape195));
 
             var DeleteTablePolicyRowLevelSecurity = Command("DeleteTablePolicyRowLevelSecurity", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("delete", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("policy"),
-                    RequiredEToken("row_level_security"),
+                    Token("policy"),
+                    RequiredToken("row_level_security"),
                     shape195));
 
             var DeleteTableRecords = Command("DeleteTableRecords", 
                 Custom(
-                    EToken("delete", CompletionKind.CommandPrefix),
+                    Token("delete", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                RequiredEToken("table")),
-                            EToken("table")),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("table"))),
+                                Token("async"),
+                                RequiredToken("table")),
+                            Token("table")),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("table"))),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("records"),
+                    RequiredToken("records"),
                     Required(
                         First(
                             Custom(
                                 Custom(
-                                    EToken("<|"),
+                                    Token("<|"),
                                     Required(rules.CommandInput, rules.MissingExpression),
                                     shape84)),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 Required(
                                     Custom(
-                                        EToken("<|"),
+                                        Token("<|"),
                                         Required(rules.CommandInput, rules.MissingExpression),
                                         shape84),
-                                    () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                                    () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                                 shape196)),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                     shape195));
 
             var DetachDatabase = Command("DetachDatabase", 
                 Custom(
-                    EToken("detach", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("detach", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     shape197));
 
             var DisableContinuousExport = Command("DisableContinuousExport", 
                 Custom(
-                    EToken("disable", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("disable", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape198));
 
             var DisableDatabaseMaintenanceMode = Command("DisableDatabaseMaintenanceMode", 
                 Custom(
-                    EToken("disable", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("disable", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("maintenance_mode"),
+                    RequiredToken("maintenance_mode"),
                     shape199));
 
             var DisablePlugin = Command("DisablePlugin", 
                 Custom(
-                    EToken("disable", CompletionKind.CommandPrefix),
-                    RequiredEToken("plugin"),
+                    Token("disable", CompletionKind.CommandPrefix),
+                    RequiredToken("plugin"),
                     Required(
                         First(
                             rules.StringLiteral,
@@ -5470,42 +5471,42 @@ namespace Kusto.Language.Parsing
 
             var DropPretendExtentsByProperties = Command("DropPretendExtentsByProperties", 
                 Custom(
-                    EToken("drop-pretend", CompletionKind.CommandPrefix),
-                    RequiredEToken("extents"),
+                    Token("drop-pretend", CompletionKind.CommandPrefix),
+                    RequiredToken("extents"),
                     Required(
                         First(
-                            EToken("from"),
+                            Token("from"),
                             Custom(
-                                EToken("older"),
+                                Token("older"),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("days", "hours"),
-                                RequiredEToken("from"),
+                                RequiredToken("days", "hours"),
+                                RequiredToken("from"),
                                 shape201)),
-                        () => CreateMissingEToken("from")),
+                        () => CreateMissingToken("from")),
                     Required(
                         First(
                             Custom(
-                                EToken("all"),
-                                RequiredEToken("tables")),
+                                Token("all"),
+                                RequiredToken("tables")),
                             Custom(
-                                If(Not(EToken("all")), rules.TableNameReference),
+                                If(Not(Token("all")), rules.TableNameReference),
                                 shape19)),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("all"), CreateMissingEToken("tables"))),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"))),
                     Optional(
                         First(
                             Custom(
-                                EToken("limit"),
+                                Token("limit"),
                                 Required(rules.Value, rules.MissingValue),
                                 shape202),
                             Custom(
-                                EToken("trim"),
-                                RequiredEToken("by"),
-                                RequiredEToken("datasize", "extentsize"),
+                                Token("trim"),
+                                RequiredToken("by"),
+                                RequiredToken("datasize", "extentsize"),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("bytes", "GB", "MB"),
+                                RequiredToken("bytes", "GB", "MB"),
                                 Optional(
                                     Custom(
-                                        EToken("limit"),
+                                        Token("limit"),
                                         Required(rules.Value, rules.MissingValue),
                                         shape202)),
                                 shape203))),
@@ -5513,47 +5514,47 @@ namespace Kusto.Language.Parsing
 
             var DropBasicAuthUser = Command("DropBasicAuthUser", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("basicauth"),
-                    RequiredEToken("user"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("basicauth"),
+                    RequiredToken("user"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape205));
 
             var DropClusterBlockedPrincipals = Command("DropClusterBlockedPrincipals", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("blockedprincipals"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("blockedprincipals"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         First(
                             Custom(
-                                EToken("application"),
+                                Token("application"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 Optional(
                                     Custom(
-                                        EToken("user"),
+                                        Token("user"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                                         shape1)),
                                 shape2),
                             Custom(
-                                EToken("user"),
+                                Token("user"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 shape1))),
                     shape206));
 
             var DropClusterRole = Command("DropClusterRole", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    RequiredEToken("admins", "databasecreators", "users", "viewers"),
-                    RequiredEToken("("),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("admins", "databasecreators", "users", "viewers"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -5563,11 +5564,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -5580,50 +5581,50 @@ namespace Kusto.Language.Parsing
 
             var DropColumn = Command("DropColumn", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("column"),
                     Required(rules.TableColumnNameReference, rules.MissingNameReference),
                     shape207));
 
             var DropContinuousExport = Command("DropContinuousExport", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape208));
 
             var DropDatabaseIngestionMapping = Command("DropDatabaseIngestionMapping", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    Token("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape209));
 
             var DropDatabasePrettyName = Command("DropDatabasePrettyName", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("database"),
                     rules.DatabaseNameReference,
-                    EToken("prettyname"),
+                    Token("prettyname"),
                     shape199));
 
             var DropDatabaseRole = Command("DropDatabaseRole", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
-                    RequiredEToken("("),
+                    RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -5633,11 +5634,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -5650,119 +5651,119 @@ namespace Kusto.Language.Parsing
 
             var DropEmptyExtentContainers = Command("DropEmptyExtentContainers", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
+                    Token("drop", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("empty")),
+                            Token("async"),
+                            Token("empty")),
                         Custom(
-                            EToken("async"),
-                            RequiredEToken("empty")),
-                        EToken("empty")),
-                    RequiredEToken("extentcontainers"),
+                            Token("async"),
+                            RequiredToken("empty")),
+                        Token("empty")),
+                    RequiredToken("extentcontainers"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("until"),
-                    RequiredEToken("="),
+                    RequiredToken("until"),
+                    RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
                     Optional(
                         First(
                             Custom(
-                                EToken("whatif"),
+                                Token("whatif"),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
+                                        Token("with"),
+                                        RequiredToken("("),
                                         Required(
                                             OList(
                                                 primaryElementParser: Custom(
                                                     rules.NameDeclarationOrStringLiteral,
-                                                    RequiredEToken("="),
+                                                    RequiredToken("="),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape63),
-                                                separatorParser: EToken(","),
+                                                separatorParser: Token(","),
                                                 secondaryElementParser: null,
                                                 missingPrimaryElement: null,
                                                 missingSeparator: null,
-                                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                                 endOfList: null,
                                                 oneOrMore: true,
                                                 allowTrailingSeparator: false,
                                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                        RequiredEToken(")"),
+                                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                        RequiredToken(")"),
                                         shape87)),
                                 shape167),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87))),
                     shape210));
 
             var DropExtentsPartitionMetadata = Command("DropExtentsPartitionMetadata", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("extents"),
-                    EToken("partition"),
-                    RequiredEToken("metadata"),
-                    RequiredEToken("from"),
-                    RequiredEToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("extents"),
+                    Token("partition"),
+                    RequiredToken("metadata"),
+                    RequiredToken("from"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Custom(
                                 Custom(
-                                    EToken("<|"),
+                                    Token("<|"),
                                     Required(rules.CommandInput, rules.MissingExpression),
                                     shape84)),
                             Custom(
-                                EToken("between"),
-                                RequiredEToken("("),
+                                Token("between"),
+                                RequiredToken("("),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(".."),
+                                RequiredToken(".."),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Required(
                                     Custom(
-                                        EToken("<|"),
+                                        Token("<|"),
                                         Required(rules.CommandInput, rules.MissingExpression),
                                         shape84),
-                                    () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                                    () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                                 shape211)),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
                     shape212));
 
             var DropExtents = Command("DropExtents", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("extents"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("extents"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -5772,120 +5773,120 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     Custom(
-                                        EToken("from"),
+                                        Token("from"),
                                         Required(rules.TableNameReference, rules.MissingNameReference),
                                         shape157)),
                                 shape213),
                             Custom(
-                                EToken("<|"),
+                                Token("<|"),
                                 Required(rules.CommandInput, rules.MissingExpression),
                                 shape214),
                             Custom(
-                                EToken("from"),
+                                Token("from"),
                                 Required(
                                     First(
                                         Custom(
-                                            EToken("all"),
-                                            RequiredEToken("tables")),
+                                            Token("all"),
+                                            RequiredToken("tables")),
                                         Custom(
-                                            If(Not(EToken("all")), rules.TableNameReference),
+                                            If(Not(Token("all")), rules.TableNameReference),
                                             shape19)),
-                                    () => (SyntaxElement)new CustomNode(CreateMissingEToken("all"), CreateMissingEToken("tables"))),
+                                    () => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"))),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("limit"),
+                                            Token("limit"),
                                             Required(rules.Value, rules.MissingValue),
                                             shape202),
                                         Custom(
-                                            EToken("trim"),
-                                            RequiredEToken("by"),
-                                            RequiredEToken("datasize", "extentsize"),
+                                            Token("trim"),
+                                            RequiredToken("by"),
+                                            RequiredToken("datasize", "extentsize"),
                                             Required(rules.Value, rules.MissingValue),
-                                            RequiredEToken("bytes", "GB", "MB"),
+                                            RequiredToken("bytes", "GB", "MB"),
                                             Optional(
                                                 Custom(
-                                                    EToken("limit"),
+                                                    Token("limit"),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape202)),
                                             shape203))),
                                 shape184),
                             Custom(
-                                EToken("older"),
+                                Token("older"),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken("days", "hours"),
-                                RequiredEToken("from"),
+                                RequiredToken("days", "hours"),
+                                RequiredToken("from"),
                                 Required(
                                     First(
                                         Custom(
-                                            EToken("all"),
-                                            RequiredEToken("tables")),
+                                            Token("all"),
+                                            RequiredToken("tables")),
                                         Custom(
-                                            If(Not(EToken("all")), rules.TableNameReference),
+                                            If(Not(Token("all")), rules.TableNameReference),
                                             shape19)),
-                                    () => (SyntaxElement)new CustomNode(CreateMissingEToken("all"), CreateMissingEToken("tables"))),
+                                    () => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"))),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("limit"),
+                                            Token("limit"),
                                             Required(rules.Value, rules.MissingValue),
                                             shape202),
                                         Custom(
-                                            EToken("trim"),
-                                            RequiredEToken("by"),
-                                            RequiredEToken("datasize", "extentsize"),
+                                            Token("trim"),
+                                            RequiredToken("by"),
+                                            RequiredToken("datasize", "extentsize"),
                                             Required(rules.Value, rules.MissingValue),
-                                            RequiredEToken("bytes", "GB", "MB"),
+                                            RequiredToken("bytes", "GB", "MB"),
                                             Optional(
                                                 Custom(
-                                                    EToken("limit"),
+                                                    Token("limit"),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape202)),
                                             shape203))),
                                 shape215),
                             Custom(
-                                EToken("whatif"),
-                                RequiredEToken("<|"),
+                                Token("whatif"),
+                                RequiredToken("<|"),
                                 Required(rules.CommandInput, rules.MissingExpression),
                                 shape216)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape157, CreateMissingEToken("from"), rules.MissingNameReference())))));
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape157, CreateMissingToken("from"), rules.MissingNameReference())))));
 
             var DropExtentTagsRetention = Command("DropExtentTagsRetention", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("extent"),
-                    EToken("tags"),
-                    RequiredEToken("retention")));
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("extent"),
+                    Token("tags"),
+                    RequiredToken("retention")));
 
             var DropExtent = Command("DropExtent", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("extent"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("extent"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
                     Optional(
                         Custom(
-                            EToken("from"),
+                            Token("from"),
                             Required(rules.TableNameReference, rules.MissingNameReference),
                             shape157)),
                     shape217));
 
             var DropExternalTableAdmins = Command("DropExternalTableAdmins", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("admins"),
-                    RequiredEToken("("),
+                    Token("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -5895,11 +5896,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -5912,35 +5913,35 @@ namespace Kusto.Language.Parsing
 
             var DropExternalTableMapping = Command("DropExternalTableMapping", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("mapping"),
+                    Token("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape218));
 
             var DropExternalTable = Command("DropExternalTable", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     shape219));
 
             var DropFollowerDatabases = Command("DropFollowerDatabases", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("follower"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("follower"),
                     First(
                         Custom(
-                            EToken("databases"),
-                            EToken("("),
+                            Token("databases"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.DatabaseNameReference,
                                     shape8),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -5949,17 +5950,17 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
+                            Token(")"),
                             shape220),
                         Custom(
-                            EToken("databases"),
-                            RequiredEToken("("),
+                            Token("databases"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.DatabaseNameReference,
                                         shape8),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -5969,38 +5970,38 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                            RequiredEToken(")"),
+                            RequiredToken(")"),
                             shape220),
                         Custom(
-                            EToken("database"),
+                            Token("database"),
                             rules.DatabaseNameReference,
                             shape221)),
-                    RequiredEToken("from"),
+                    RequiredToken("from"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape222));
 
             var DropFollowerDatabaseAuthorizedPrincipals = Command("DropFollowerDatabaseAuthorizedPrincipals", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("follower"),
-                    RequiredEToken("database"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("follower"),
+                    RequiredToken("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"),
+                    RequiredToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"),
                     Required(
                         First(
-                            EToken("("),
+                            Token("("),
                             Custom(
-                                EToken("from"),
+                                Token("from"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                RequiredEToken("("),
+                                RequiredToken("("),
                                 shape107)),
-                        () => CreateMissingEToken("(")),
+                        () => CreateMissingToken("(")),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6010,20 +6011,20 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     shape223));
 
             var DropFunctions = Command("DropFunctions", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("functions"),
-                    RequiredEToken("("),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("functions"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.DatabaseFunctionNameReference,
                                 shape15),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6033,23 +6034,23 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                    RequiredEToken(")"),
-                    Optional(EToken("ifexists")),
+                    RequiredToken(")"),
+                    Optional(Token("ifexists")),
                     shape224));
 
             var DropFunctionRole = Command("DropFunctionRole", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("function"),
                     rules.DatabaseFunctionNameReference,
-                    EToken("admins"),
-                    RequiredEToken("("),
+                    Token("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6059,11 +6060,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -6076,25 +6077,25 @@ namespace Kusto.Language.Parsing
 
             var DropFunction = Command("DropFunction", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
-                    Optional(EToken("ifexists")),
+                    Optional(Token("ifexists")),
                     shape225));
 
             var DropMaterializedViewAdmins = Command("DropMaterializedViewAdmins", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("admins"),
-                    RequiredEToken("("),
+                    Token("admins"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6104,7 +6105,7 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
                             rules.StringLiteral,
@@ -6113,39 +6114,39 @@ namespace Kusto.Language.Parsing
 
             var DropMaterializedView = Command("DropMaterializedView", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                     shape226));
 
             var DropRowStore = Command("DropRowStore", 
                 Custom(
-                    EToken("detach", "drop"),
-                    EToken("rowstore"),
+                    Token("detach", "drop"),
+                    Token("rowstore"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    Optional(EToken("ifexists")),
+                    Optional(Token("ifexists")),
                     shape227));
 
             var StoredQueryResultsDrop = Command("StoredQueryResultsDrop", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("stored_query_results"),
-                    RequiredEToken("by"),
-                    RequiredEToken("user"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("stored_query_results"),
+                    RequiredToken("by"),
+                    RequiredToken("user"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape228));
 
             var StoredQueryResultDrop = Command("StoredQueryResultDrop", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("stored_query_result"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("stored_query_result"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape229));
 
             var DropStoredQueryResultContainers = Command("DropStoredQueryResultContainers", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("storedqueryresultcontainers"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("storedqueryresultcontainers"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
                         List(
@@ -6160,15 +6161,15 @@ namespace Kusto.Language.Parsing
 
             var DropTables = Command("DropTables", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    RequiredEToken("("),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.TableNameReference,
                                 shape19),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6178,23 +6179,23 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                    RequiredEToken(")"),
-                    Optional(EToken("ifexists")),
+                    RequiredToken(")"),
+                    Optional(Token("ifexists")),
                     shape231));
 
             var DropTableColumns = Command("DropTableColumns", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("columns"),
-                    RequiredEToken("("),
+                    Token("columns"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.ColumnNameReference,
                                 shape25),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6204,33 +6205,33 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     shape51));
 
             var DropTableIngestionMapping = Command("DropTableIngestionMapping", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    Token("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape232));
 
             var DropTableRole = Command("DropTableRole", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.TableNameReference,
-                    EToken("admins", "ingestors"),
-                    RequiredEToken("("),
+                    Token("admins", "ingestors"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6240,11 +6241,11 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         First(
                             Custom(
-                                EToken("skip-results"),
+                                Token("skip-results"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
@@ -6257,61 +6258,61 @@ namespace Kusto.Language.Parsing
 
             var DropTable = Command("DropTable", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    Optional(EToken("ifexists")),
+                    Optional(Token("ifexists")),
                     shape233));
 
             var DropTempStorage = Command("DropTempStorage", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("tempstorage"),
-                    RequiredEToken("older"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("tempstorage"),
+                    RequiredToken("older"),
                     Required(rules.Value, rules.MissingValue),
                     shape234));
 
             var DropUnusedStoredQueryResultContainers = Command("DropUnusedStoredQueryResultContainers", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    EToken("unused"),
-                    RequiredEToken("storedqueryresultcontainers"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("unused"),
+                    RequiredToken("storedqueryresultcontainers"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     shape235));
 
             var DropWorkloadGroup = Command("DropWorkloadGroup", 
                 Custom(
-                    EToken("drop", CompletionKind.CommandPrefix),
-                    RequiredEToken("workload_group"),
+                    Token("drop", CompletionKind.CommandPrefix),
+                    RequiredToken("workload_group"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape236));
 
             var EnableContinuousExport = Command("EnableContinuousExport", 
                 Custom(
-                    EToken("enable", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("enable", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape208));
 
             var EnableDatabaseMaintenanceMode = Command("EnableDatabaseMaintenanceMode", 
                 Custom(
-                    EToken("enable", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("enable", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("maintenance_mode"),
+                    RequiredToken("maintenance_mode"),
                     shape199));
 
             var EnableDisableMaterializedView = Command("EnableDisableMaterializedView", 
                 Custom(
-                    EToken("disable", "enable"),
-                    EToken("materialized-view"),
+                    Token("disable", "enable"),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                     shape226));
 
             var EnablePlugin = Command("EnablePlugin", 
                 Custom(
-                    EToken("enable", CompletionKind.CommandPrefix),
-                    RequiredEToken("plugin"),
+                    Token("enable", CompletionKind.CommandPrefix),
+                    RequiredToken("plugin"),
                     Required(
                         First(
                             rules.StringLiteral,
@@ -6321,104 +6322,104 @@ namespace Kusto.Language.Parsing
 
             var ExportToSqlTable = Command("ExportToSqlTable", 
                 Custom(
-                    EToken("export", CompletionKind.CommandPrefix),
+                    Token("export", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("to")),
-                        EToken("to")),
-                    EToken("sql"),
+                            Token("async"),
+                            Token("to")),
+                        Token("to")),
+                    Token("sql"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"),
                                 shape64)),
-                        () => CreateMissingEToken("<|")),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape238));
 
             var ExportToExternalTable = Command("ExportToExternalTable", 
                 Custom(
-                    EToken("export", CompletionKind.CommandPrefix),
+                    Token("export", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("to")),
-                        EToken("to")),
-                    EToken("table"),
+                            Token("async"),
+                            Token("to")),
+                        Token("to")),
+                    Token("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"),
                                 shape64)),
-                        () => CreateMissingEToken("<|")),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape239));
 
             var ExportToStorage = Command("ExportToStorage", 
                 Custom(
-                    EToken("export", CompletionKind.CommandPrefix),
+                    Token("export", CompletionKind.CommandPrefix),
                     Optional(
                         First(
                             Custom(
-                                EToken("async"),
-                                Optional(EToken("compressed")),
+                                Token("async"),
+                                Optional(Token("compressed")),
                                 shape167),
-                            EToken("compressed"))),
-                    RequiredEToken("to"),
-                    RequiredEToken("csv", "json", "parquet", "tsv"),
-                    RequiredEToken("("),
+                            Token("compressed"))),
+                    RequiredToken("to"),
+                    RequiredToken("csv", "json", "parquet", "tsv"),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6428,121 +6429,121 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"),
                                 shape64)),
-                        () => CreateMissingEToken("<|")),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape240));
 
             var IngestInlineIntoTable = Command("IngestInlineIntoTable", 
                 Custom(
-                    EToken("ingest", CompletionKind.CommandPrefix),
-                    EToken("inline"),
-                    RequiredEToken("into"),
-                    RequiredEToken("table"),
+                    Token("ingest", CompletionKind.CommandPrefix),
+                    Token("inline"),
+                    RequiredToken("into"),
+                    RequiredToken("table"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
                             Custom(
-                                EToken("["),
+                                Token("["),
                                 Required(rules.BracketedInputText, rules.MissingInputText),
-                                RequiredEToken("]"),
+                                RequiredToken("]"),
                                 shape241),
                             Custom(
-                                EToken("<|"),
+                                Token("<|"),
                                 Required(rules.InputText, rules.MissingInputText),
                                 shape242),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"),
                                 Required(rules.InputText, rules.MissingInputText),
                                 shape243)),
-                        () => (SyntaxElement)new CustomNode(shape241, CreateMissingEToken("["), rules.MissingInputText(), CreateMissingEToken("]"))),
+                        () => (SyntaxElement)new CustomNode(shape241, CreateMissingToken("["), rules.MissingInputText(), CreateMissingToken("]"))),
                     shape244));
 
             var IngestIntoTable = Command("IngestIntoTable", 
                 Custom(
-                    EToken("ingest", CompletionKind.CommandPrefix),
+                    Token("ingest", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                RequiredEToken("into")),
-                            EToken("into")),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("into"))),
-                    RequiredEToken("table"),
+                                Token("async"),
+                                RequiredToken("into")),
+                            Token("into")),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("into"))),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -6552,65 +6553,65 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape245),
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
-                        () => (SyntaxElement)new CustomNode(shape245, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"))),
+                        () => (SyntaxElement)new CustomNode(shape245, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"))),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         First(
-                                            EToken("creationTime"),
-                                            EToken("distributed"),
-                                            EToken("docstring"),
-                                            EToken("extend_schema"),
-                                            EToken("folder"),
-                                            EToken("format"),
-                                            EToken("ignoreFirstRecord"),
-                                            EToken("ingestIfNotExists"),
-                                            EToken("ingestionMappingReference"),
-                                            EToken("ingestionMapping"),
-                                            EToken("persistDetails"),
-                                            EToken("policy_ingestionTime"),
-                                            EToken("recreate_schema"),
-                                            EToken("tags"),
-                                            EToken("validationPolicy"),
-                                            EToken("zipPattern"),
-                                            If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredEToken("="),
+                                            Token("creationTime"),
+                                            Token("distributed"),
+                                            Token("docstring"),
+                                            Token("extend_schema"),
+                                            Token("folder"),
+                                            Token("format"),
+                                            Token("ignoreFirstRecord"),
+                                            Token("ingestIfNotExists"),
+                                            Token("ingestionMappingReference"),
+                                            Token("ingestionMapping"),
+                                            Token("persistDetails"),
+                                            Token("policy_ingestionTime"),
+                                            Token("recreate_schema"),
+                                            Token("tags"),
+                                            Token("validationPolicy"),
+                                            Token("zipPattern"),
+                                            If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape48),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"))),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"))),
                     shape246));
 
             var MergeExtentsDryrun = Command("MergeExtentsDryrun", 
                 Custom(
-                    EToken("merge", CompletionKind.CommandPrefix),
-                    EToken("dryrun"),
+                    Token("merge", CompletionKind.CommandPrefix),
+                    Token("dryrun"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("("),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6620,29 +6621,29 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     shape247));
 
             var MergeExtents = Command("MergeExtents", 
                 Custom(
-                    EToken("merge", CompletionKind.CommandPrefix),
+                    Token("merge", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
+                                Token("async"),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 shape157),
                             Custom(
-                                If(Not(And(EToken("dryrun", "async"))), rules.TableNameReference),
+                                If(Not(And(Token("dryrun", "async"))), rules.TableNameReference),
                                 shape19)),
-                        () => (SyntaxElement)new CustomNode(shape157, CreateMissingEToken("async"), rules.MissingNameReference())),
-                    RequiredEToken("("),
+                        () => (SyntaxElement)new CustomNode(shape157, CreateMissingToken("async"), rules.MissingNameReference())),
+                    RequiredToken("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
@@ -6652,33 +6653,33 @@ namespace Kusto.Language.Parsing
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                         () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                    RequiredEToken(")"),
+                    RequiredToken(")"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
-                            RequiredEToken("rebuild"),
-                            RequiredEToken("="),
-                            RequiredEToken("true"),
-                            RequiredEToken(")"))),
+                            Token("with"),
+                            RequiredToken("("),
+                            RequiredToken("rebuild"),
+                            RequiredToken("="),
+                            RequiredToken("true"),
+                            RequiredToken(")"))),
                     shape248));
 
             var MoveExtentsFrom = Command("MoveExtentsFrom", 
                 Custom(
-                    EToken("move", CompletionKind.CommandPrefix),
+                    Token("move", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("extents")),
-                        EToken("extents")),
+                            Token("async"),
+                            Token("extents")),
+                        Token("extents")),
                     First(
                         Custom(
-                            EToken("("),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.AnyGuidLiteralOrString,
                                     shape0),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -6687,16 +6688,16 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
+                            Token(")"),
                             shape245),
                         Custom(
-                            EToken("("),
+                            Token("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -6706,329 +6707,329 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                            RequiredEToken(")"),
+                            RequiredToken(")"),
                             shape245),
-                        EToken("all")),
-                    RequiredEToken("from"),
-                    RequiredEToken("table"),
+                        Token("all")),
+                    RequiredToken("from"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("to"),
-                    RequiredEToken("table"),
+                    RequiredToken("to"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     shape249));
 
             var MoveExtentsQuery = Command("MoveExtentsQuery", 
                 Custom(
-                    EToken("move", CompletionKind.CommandPrefix),
+                    Token("move", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                RequiredEToken("extents")),
-                            EToken("extents")),
-                        () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("extents"))),
-                    RequiredEToken("to"),
-                    RequiredEToken("table"),
+                                Token("async"),
+                                RequiredToken("extents")),
+                            Token("extents")),
+                        () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("extents"))),
+                    RequiredToken("to"),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("<|"),
+                    RequiredToken("<|"),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape250));
 
             var RenameColumns = Command("RenameColumns", 
                 Custom(
-                    EToken("rename", CompletionKind.CommandPrefix),
-                    EToken("columns"),
+                    Token("rename", CompletionKind.CommandPrefix),
+                    Token("columns"),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken("="),
+                                RequiredToken("="),
                                 Required(rules.DatabaseTableColumnNameReference, rules.MissingNameReference),
                                 shape251),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape251, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingNameReference()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape251, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingNameReference()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape251, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingNameReference())))),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape251, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingNameReference())))),
                     shape252));
 
             var RenameColumn = Command("RenameColumn", 
                 Custom(
-                    EToken("rename", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("rename", CompletionKind.CommandPrefix),
+                    Token("column"),
                     Required(rules.DatabaseTableColumnNameReference, rules.MissingNameReference),
-                    RequiredEToken("to"),
+                    RequiredToken("to"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape253));
 
             var RenameMaterializedView = Command("RenameMaterializedView", 
                 Custom(
-                    EToken("rename", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("rename", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("to"),
+                    RequiredToken("to"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape254));
 
             var RenameTables = Command("RenameTables", 
                 Custom(
-                    EToken("rename", CompletionKind.CommandPrefix),
-                    EToken("tables"),
+                    Token("rename", CompletionKind.CommandPrefix),
+                    Token("tables"),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.NameDeclarationOrStringLiteral,
-                                RequiredEToken("="),
+                                RequiredToken("="),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 shape255),
-                            separatorParser: EToken(","),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape255, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingNameReference()),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape255, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingNameReference()),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape255, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingNameReference())))),
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape255, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingNameReference())))),
                     shape252));
 
             var RenameTable = Command("RenameTable", 
                 Custom(
-                    EToken("rename", CompletionKind.CommandPrefix),
-                    RequiredEToken("table"),
+                    Token("rename", CompletionKind.CommandPrefix),
+                    RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("to"),
+                    RequiredToken("to"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape256));
 
             var ReplaceExtents = Command("ReplaceExtents", 
                 Custom(
                     new Parser<LexicalToken>[] {
-                        EToken("replace", CompletionKind.CommandPrefix),
+                        Token("replace", CompletionKind.CommandPrefix),
                         Required(
                             First(
                                 Custom(
-                                    EToken("async"),
-                                    RequiredEToken("extents")),
-                                EToken("extents")),
-                            () => (SyntaxElement)new CustomNode(CreateMissingEToken("async"), CreateMissingEToken("extents"))),
-                        RequiredEToken("in"),
-                        RequiredEToken("table"),
+                                    Token("async"),
+                                    RequiredToken("extents")),
+                                Token("extents")),
+                            () => (SyntaxElement)new CustomNode(CreateMissingToken("async"), CreateMissingToken("extents"))),
+                        RequiredToken("in"),
+                        RequiredToken("table"),
                         Required(rules.TableNameReference, rules.MissingNameReference),
-                        RequiredEToken("<|"),
-                        RequiredEToken("{"),
+                        RequiredToken("<|"),
+                        RequiredToken("{"),
                         Required(rules.CommandInput, rules.MissingExpression),
-                        RequiredEToken("}"),
-                        RequiredEToken(","),
-                        RequiredEToken("{"),
+                        RequiredToken("}"),
+                        RequiredToken(","),
+                        RequiredToken("{"),
                         Required(rules.CommandInput, rules.MissingExpression),
-                        RequiredEToken("}")}
+                        RequiredToken("}")}
                     ,
                     shape257));
 
             var SetOrAppendTable = Command("SetOrAppendTable", 
                 Custom(
-                    EToken("set-or-append", CompletionKind.CommandPrefix),
+                    Token("set-or-append", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
+                                Token("async"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                                 shape258),
                             Custom(
-                                If(Not(EToken("async")), rules.NameDeclarationOrStringLiteral),
+                                If(Not(Token("async")), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingEToken("async"), rules.MissingNameDeclaration())),
+                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingToken("async"), rules.MissingNameDeclaration())),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape158));
 
             var StoredQueryResultSetOrReplace = Command("StoredQueryResultSetOrReplace", 
                 Custom(
-                    EToken("set-or-replace", CompletionKind.CommandPrefix),
+                    Token("set-or-replace", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("stored_query_result")),
-                        EToken("stored_query_result")),
+                            Token("async"),
+                            Token("stored_query_result")),
+                        Token("stored_query_result")),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape259));
 
             var SetOrReplaceTable = Command("SetOrReplaceTable", 
                 Custom(
-                    EToken("set-or-replace", CompletionKind.CommandPrefix),
+                    Token("set-or-replace", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                Required(If(Not(EToken("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
+                                Token("async"),
+                                Required(If(Not(Token("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
                                 shape258),
                             Custom(
-                                If(Not(And(EToken("async", "stored_query_result"))), rules.NameDeclarationOrStringLiteral),
+                                If(Not(And(Token("async", "stored_query_result"))), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingEToken("async"), rules.MissingNameDeclaration())),
+                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingToken("async"), rules.MissingNameDeclaration())),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape158));
 
             var SetAccess = Command("SetAccess", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("access"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("access"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("to"),
-                    RequiredEToken("readonly", "readwrite"),
+                    RequiredToken("to"),
+                    RequiredToken("readonly", "readwrite"),
                     shape260));
 
             var SetClusterRole = Command("SetClusterRole", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    RequiredEToken("admins", "databasecreators", "users", "viewers"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("admins", "databasecreators", "users", "viewers"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7038,11 +7039,11 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("skip-results"),
+                                            Token("skip-results"),
                                             Optional(
                                                 Custom(
                                                     rules.StringLiteral,
@@ -7053,40 +7054,40 @@ namespace Kusto.Language.Parsing
                                             shape0))),
                                 shape213),
                             Custom(
-                                EToken("none"),
+                                Token("none"),
                                 Optional(
                                     Custom(
-                                        EToken("skip-results"))),
+                                        Token("skip-results"))),
                                 shape167)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingEToken("skip-results"), rules.MissingStringLiteral()))),
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingToken("skip-results"), rules.MissingStringLiteral()))),
                     shape261));
 
             var SetContinuousExportCursor = Command("SetContinuousExportCursor", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("cursor"),
-                    RequiredEToken("to"),
+                    RequiredToken("cursor"),
+                    RequiredToken("to"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape262));
 
             var SetDatabaseRole = Command("SetDatabaseRole", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("database"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
+                    RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7096,11 +7097,11 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("skip-results"),
+                                            Token("skip-results"),
                                             Optional(
                                                 Custom(
                                                     rules.StringLiteral,
@@ -7111,31 +7112,31 @@ namespace Kusto.Language.Parsing
                                             shape0))),
                                 shape213),
                             Custom(
-                                EToken("none"),
+                                Token("none"),
                                 Optional(
                                     Custom(
-                                        EToken("skip-results"))),
+                                        Token("skip-results"))),
                                 shape167)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingEToken("skip-results"), rules.MissingStringLiteral()))),
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingToken("skip-results"), rules.MissingStringLiteral()))),
                     shape263));
 
             var SetExternalTableAdmins = Command("SetExternalTableAdmins", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins"),
+                    RequiredToken("admins"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7145,11 +7146,11 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("skip-results"),
+                                            Token("skip-results"),
                                             Optional(
                                                 Custom(
                                                     rules.StringLiteral,
@@ -7160,28 +7161,28 @@ namespace Kusto.Language.Parsing
                                             shape0))),
                                 shape213),
                             Custom(
-                                EToken("none"),
-                                Optional(EToken("skip-results")),
+                                Token("none"),
+                                Optional(Token("skip-results")),
                                 shape167)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape11, CreateMissingEToken("skip-results"), rules.MissingStringLiteral()))),
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape11, CreateMissingToken("skip-results"), rules.MissingStringLiteral()))),
                     shape264));
 
             var SetFunctionRole = Command("SetFunctionRole", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins"),
+                    RequiredToken("admins"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7191,11 +7192,11 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("skip-results"),
+                                            Token("skip-results"),
                                             Optional(
                                                 Custom(
                                                     rules.StringLiteral,
@@ -7206,30 +7207,30 @@ namespace Kusto.Language.Parsing
                                             shape0))),
                                 shape213),
                             Custom(
-                                EToken("none"),
+                                Token("none"),
                                 Optional(
                                     Custom(
-                                        EToken("skip-results"))),
+                                        Token("skip-results"))),
                                 shape167)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingEToken("skip-results"), rules.MissingStringLiteral()))),
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingToken("skip-results"), rules.MissingStringLiteral()))),
                     shape265));
 
             var SetMaterializedViewAdmins = Command("SetMaterializedViewAdmins", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("admins"),
+                    Token("admins"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7239,25 +7240,25 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     Custom(
                                         rules.StringLiteral,
                                         shape0)),
                                 shape266),
-                            EToken("none")),
-                        () => (SyntaxElement)new CustomNode(shape266, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), rules.MissingStringLiteral())),
+                            Token("none")),
+                        () => (SyntaxElement)new CustomNode(shape266, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), rules.MissingStringLiteral())),
                     shape267));
 
             var SetMaterializedViewConcurrency = Command("SetMaterializedViewConcurrency", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("concurrency"),
+                    Token("concurrency"),
                     Optional(
                         Custom(
-                            EToken("="),
+                            Token("="),
                             Required(
                                 First(
                                     rules.Value,
@@ -7268,94 +7269,94 @@ namespace Kusto.Language.Parsing
 
             var SetMaterializedViewCursor = Command("SetMaterializedViewCursor", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                    RequiredEToken("cursor"),
-                    RequiredEToken("to"),
+                    RequiredToken("cursor"),
+                    RequiredToken("to"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape270));
 
             var StoredQueryResultSet = Command("StoredQueryResultSet", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
+                    Token("set", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("async"),
-                            EToken("stored_query_result")),
-                        EToken("stored_query_result")),
+                            Token("async"),
+                            Token("stored_query_result")),
+                        Token("stored_query_result")),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape259));
 
             var SetTableRowStoreReferences = Command("SetTableRowStoreReferences", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("table"),
                     rules.DatabaseTableNameReference,
-                    RequiredEToken("rowstore_references"),
+                    RequiredToken("rowstore_references"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape271));
 
             var SetTableRole = Command("SetTableRole", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
-                    EToken("table"),
+                    Token("set", CompletionKind.CommandPrefix),
+                    Token("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredEToken("admins", "ingestors"),
+                    RequiredToken("admins", "ingestors"),
                     Required(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7365,11 +7366,11 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     First(
                                         Custom(
-                                            EToken("skip-results"),
+                                            Token("skip-results"),
                                             Optional(
                                                 Custom(
                                                     rules.StringLiteral,
@@ -7380,155 +7381,168 @@ namespace Kusto.Language.Parsing
                                             shape0))),
                                 shape213),
                             Custom(
-                                EToken("none"),
+                                Token("none"),
                                 Optional(
                                     Custom(
-                                        EToken("skip-results"))),
+                                        Token("skip-results"))),
                                 shape167)),
-                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingEToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingEToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingEToken("skip-results"), rules.MissingStringLiteral()))),
+                        () => (SyntaxElement)new CustomNode(shape213, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral())), CreateMissingToken(")"), (SyntaxElement)new CustomNode(shape6, CreateMissingToken("skip-results"), rules.MissingStringLiteral()))),
                     shape272));
 
             var SetTable = Command("SetTable", 
                 Custom(
-                    EToken("set", CompletionKind.CommandPrefix),
+                    Token("set", CompletionKind.CommandPrefix),
                     Required(
                         First(
                             Custom(
-                                EToken("async"),
-                                Required(If(Not(EToken("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
+                                Token("async"),
+                                Required(If(Not(Token("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
                                 shape258),
                             Custom(
-                                If(Not(And(EToken("access", "cluster", "continuous-export", "database", "external", "function", "materialized-view", "async", "stored_query_result", "table"))), rules.NameDeclarationOrStringLiteral),
+                                If(Not(And(Token("access", "cluster", "continuous-export", "database", "external", "function", "materialized-view", "async", "stored_query_result", "table"))), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingEToken("async"), rules.MissingNameDeclaration())),
+                        () => (SyntaxElement)new CustomNode(shape258, CreateMissingToken("async"), rules.MissingNameDeclaration())),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("creationTime"),
-                                                EToken("distributed"),
-                                                EToken("docstring"),
-                                                EToken("extend_schema"),
-                                                EToken("folder"),
-                                                EToken("format"),
-                                                EToken("ignoreFirstRecord"),
-                                                EToken("ingestIfNotExists"),
-                                                EToken("ingestionMappingReference"),
-                                                EToken("ingestionMapping"),
-                                                EToken("persistDetails"),
-                                                EToken("policy_ingestionTime"),
-                                                EToken("recreate_schema"),
-                                                EToken("tags"),
-                                                EToken("validationPolicy"),
-                                                EToken("zipPattern"),
-                                                If(Not(And(EToken("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("creationTime"),
+                                                Token("distributed"),
+                                                Token("docstring"),
+                                                Token("extend_schema"),
+                                                Token("folder"),
+                                                Token("format"),
+                                                Token("ignoreFirstRecord"),
+                                                Token("ingestIfNotExists"),
+                                                Token("ingestionMappingReference"),
+                                                Token("ingestionMapping"),
+                                                Token("persistDetails"),
+                                                Token("policy_ingestionTime"),
+                                                Token("recreate_schema"),
+                                                Token("tags"),
+                                                Token("validationPolicy"),
+                                                Token("zipPattern"),
+                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("creationTime"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape158));
 
             var ShowBasicAuthUsers = Command("ShowBasicAuthUsers", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("basicauth"),
-                    RequiredEToken("users")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("basicauth"),
+                    RequiredToken("users")));
 
             var ShowCache = Command("ShowCache", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cache")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cache")));
 
             var ShowCallStacks = Command("ShowCallStacks", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("callstacks"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("callstacks"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var ShowCapacity = Command("ShowCapacity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("capacity"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("capacity"),
                     Optional(
-                        Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
-                            RequiredEToken("scope"),
-                            RequiredEToken("="),
-                            RequiredEToken("cluster", "workloadgroup"),
-                            RequiredEToken(")"),
-                            shape273)),
+                        First(
+                            Custom(
+                                Token("data-export", "extents-merge", "extents-partition", "ingestions", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
+                                Optional(
+                                    Custom(
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("scope"),
+                                        RequiredToken("="),
+                                        RequiredToken("cluster", "workloadgroup"),
+                                        RequiredToken(")"),
+                                        shape273)),
+                                shape274),
+                            Custom(
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("scope"),
+                                RequiredToken("="),
+                                RequiredToken("cluster", "workloadgroup"),
+                                RequiredToken(")"),
+                                shape273))),
                     shape184));
 
             var ShowClusterAdminState = Command("ShowClusterAdminState", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("admin"),
-                    RequiredEToken("state")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("admin"),
+                    RequiredToken("state")));
 
             var ShowClusterBlockedPrincipals = Command("ShowClusterBlockedPrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("blockedprincipals")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("blockedprincipals")));
 
             var ShowClusterExtentsMetadata = Command("ShowClusterExtentsMetadata", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("extents"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -7537,67 +7551,67 @@ namespace Kusto.Language.Parsing
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                EToken(")"),
-                                Optional(EToken("hot")),
+                                Token(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
-                    EToken("metadata"),
+                            Token("hot"))),
+                    Token("metadata"),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape276));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape277));
 
             var ShowClusterExtents = Command("ShowClusterExtents", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("extents"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -7607,481 +7621,481 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
-                                Optional(EToken("hot")),
+                                RequiredToken(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
+                            Token("hot"))),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape277));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape278));
 
             var ShowClusterJournal = Command("ShowClusterJournal", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("journal")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("journal")));
 
             var ShowClusterMonitoring = Command("ShowClusterMonitoring", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("monitoring")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("monitoring")));
 
             var ShowClusterNetwork = Command("ShowClusterNetwork", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("network"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("network"),
                     Optional(
                         Custom(
                             rules.Value,
                             shape0)),
-                    shape278));
+                    shape279));
 
             var ShowClusterPendingContinuousExports = Command("ShowClusterPendingContinuousExports", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("pending"),
-                    RequiredEToken("continuous-exports"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("pending"),
+                    RequiredToken("continuous-exports"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape204));
 
             var ShowClusterPolicyCaching = Command("ShowClusterPolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("caching")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("caching")));
 
             var ShowClusterPolicyCallout = Command("ShowClusterPolicyCallout", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("callout")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("callout")));
 
             var ShowClusterPolicyCapacity = Command("ShowClusterPolicyCapacity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("capacity")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("capacity")));
 
             var ShowClusterPolicyDiagnostics = Command("ShowClusterPolicyDiagnostics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("diagnostics")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("diagnostics")));
 
             var ShowClusterPolicyIngestionBatching = Command("ShowClusterPolicyIngestionBatching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("ingestionbatching")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("ingestionbatching")));
 
             var ShowClusterPolicyManagedIdentity = Command("ShowClusterPolicyManagedIdentity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("managed_identity")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("managed_identity")));
 
             var ShowClusterPolicyMultiDatabaseAdmins = Command("ShowClusterPolicyMultiDatabaseAdmins", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("multidatabaseadmins")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("multidatabaseadmins")));
 
             var ShowClusterPolicyQueryWeakConsistency = Command("ShowClusterPolicyQueryWeakConsistency", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("query_weak_consistency")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("query_weak_consistency")));
 
             var ShowClusterPolicyRequestClassification = Command("ShowClusterPolicyRequestClassification", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("request_classification")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("request_classification")));
 
             var ShowClusterPolicyRowStore = Command("ShowClusterPolicyRowStore", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("rowstore")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("rowstore")));
 
             var ShowClusterPolicySandbox = Command("ShowClusterPolicySandbox", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sandbox")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sandbox")));
 
             var ShowClusterPolicySharding = Command("ShowClusterPolicySharding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    Token("sharding"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape204));
 
             var ShowClusterPolicyStreamingIngestion = Command("ShowClusterPolicyStreamingIngestion", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("policy"),
-                    RequiredEToken("streamingingestion")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("policy"),
+                    RequiredToken("streamingingestion")));
 
             var ShowClusterPrincipals = Command("ShowClusterPrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("principals")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("principals")));
 
             var ShowClusterPrincipalRoles = Command("ShowClusterPrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("principal"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape204));
 
             var ShowClusterSandboxesStats = Command("ShowClusterSandboxesStats", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("sandboxes"),
-                    RequiredEToken("stats")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("sandboxes"),
+                    RequiredToken("stats")));
 
             var ShowClusterScaleIn = Command("ShowClusterScaleIn", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("scalein"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("scalein"),
                     Required(
                         First(
                             rules.Value,
                             rules.Value),
                         rules.MissingValue),
-                    RequiredEToken("nodes"),
-                    shape280));
+                    RequiredToken("nodes"),
+                    shape281));
 
             var ShowClusterStorageKeysHash = Command("ShowClusterStorageKeysHash", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster"),
-                    EToken("storage"),
-                    RequiredEToken("keys"),
-                    RequiredEToken("hash")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("storage"),
+                    RequiredToken("keys"),
+                    RequiredToken("hash")));
 
             var ShowCluster = Command("ShowCluster", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("cluster")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster")));
 
             var ShowColumnPolicyCaching = Command("ShowColumnPolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("column"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("column"),
                     First(
-                        EToken("*"),
-                        If(Not(EToken("*")), rules.DatabaseTableColumnNameReference)),
-                    RequiredEToken("policy"),
-                    RequiredEToken("caching"),
-                    shape281));
+                        Token("*"),
+                        If(Not(Token("*")), rules.DatabaseTableColumnNameReference)),
+                    RequiredToken("policy"),
+                    RequiredToken("caching"),
+                    shape282));
 
             var ShowColumnPolicyEncoding = Command("ShowColumnPolicyEncoding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("column"),
-                    Required(If(Not(EToken("*")), rules.TableColumnNameReference), rules.MissingNameReference),
-                    RequiredEToken("policy"),
-                    RequiredEToken("encoding"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("column"),
+                    Required(If(Not(Token("*")), rules.TableColumnNameReference), rules.MissingNameReference),
+                    RequiredToken("policy"),
+                    RequiredToken("encoding"),
                     shape190));
 
             var ShowCommandsAndQueries = Command("ShowCommandsAndQueries", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("commands-and-queries")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("commands-and-queries")));
 
             var ShowCommands = Command("ShowCommands", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("commands")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("commands")));
 
             var ShowContinuousExports = Command("ShowContinuousExports", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("continuous-exports")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("continuous-exports")));
 
             var ShowContinuousExportExportedArtifacts = Command("ShowContinuousExportExportedArtifacts", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("exported-artifacts"),
-                    shape282));
+                    Token("exported-artifacts"),
+                    shape283));
 
             var ShowContinuousExportFailures = Command("ShowContinuousExportFailures", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     rules.NameDeclarationOrStringLiteral,
-                    EToken("failures"),
-                    shape282));
+                    Token("failures"),
+                    shape283));
 
             var ShowContinuousExport = Command("ShowContinuousExport", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("continuous-export"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("continuous-export"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     shape208));
 
             var ShowDatabasesSchemaAsJson = Command("ShowDatabasesSchemaAsJson", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("databases"),
-                    EToken("("),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("databases"),
+                    Token("("),
                     OList(
                         primaryElementParser: Custom(
                             rules.DatabaseNameReference,
                             Optional(
                                 Custom(
-                                    EToken("if_later_than"),
+                                    Token("if_later_than"),
                                     rules.StringLiteral,
-                                    shape283)),
-                            shape284),
-                        separatorParser: EToken(","),
+                                    shape284)),
+                            shape285),
+                        separatorParser: Token(","),
                         secondaryElementParser: null,
                         missingPrimaryElement: null,
                         missingSeparator: null,
-                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape284, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape283, CreateMissingEToken("if_later_than"), rules.MissingStringLiteral())),
+                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape285, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape284, CreateMissingToken("if_later_than"), rules.MissingStringLiteral())),
                         endOfList: null,
                         oneOrMore: true,
                         allowTrailingSeparator: false,
                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                    EToken(")"),
-                    EToken("schema"),
-                    EToken("as"),
-                    RequiredEToken("json"),
-                    shape285));
+                    Token(")"),
+                    Token("schema"),
+                    Token("as"),
+                    RequiredToken("json"),
+                    shape286));
 
             var ShowDatabasesSchema = Command("ShowDatabasesSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("databases"),
-                    EToken("("),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("databases"),
+                    Token("("),
                     Required(
                         OList(
                             primaryElementParser: Custom(
                                 rules.DatabaseNameReference,
                                 Optional(
                                     Custom(
-                                        EToken("if_later_than"),
+                                        Token("if_later_than"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape283)),
-                                shape284),
-                            separatorParser: EToken(","),
+                                        shape284)),
+                                shape285),
+                            separatorParser: Token(","),
                             secondaryElementParser: null,
                             missingPrimaryElement: null,
                             missingSeparator: null,
-                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape284, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape283, CreateMissingEToken("if_later_than"), rules.MissingStringLiteral())),
+                            missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape285, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape284, CreateMissingToken("if_later_than"), rules.MissingStringLiteral())),
                             endOfList: null,
                             oneOrMore: true,
                             allowTrailingSeparator: false,
                             producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape284, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape283, CreateMissingEToken("if_later_than"), rules.MissingStringLiteral()))))),
-                    RequiredEToken(")"),
-                    RequiredEToken("schema"),
-                    Optional(EToken("details")),
-                    shape286));
+                        () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape285, rules.MissingNameReference(), (SyntaxElement)new CustomNode(shape284, CreateMissingToken("if_later_than"), rules.MissingStringLiteral()))))),
+                    RequiredToken(")"),
+                    RequiredToken("schema"),
+                    Optional(Token("details")),
+                    shape287));
 
             var ShowClusterDatabasesDataStats = Command("ShowClusterDatabasesDataStats", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("databases")),
-                        EToken("databases")),
-                    EToken("datastats")));
+                            Token("cluster"),
+                            Token("databases")),
+                        Token("databases")),
+                    Token("datastats")));
 
             var ShowClusterDatabasesDetails = Command("ShowClusterDatabasesDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("databases")),
-                        EToken("databases")),
-                    EToken("details")));
+                            Token("cluster"),
+                            Token("databases")),
+                        Token("databases")),
+                    Token("details")));
 
             var ShowClusterDatabasesIdentity = Command("ShowClusterDatabasesIdentity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("databases")),
-                        EToken("databases")),
-                    RequiredEToken("identity")));
+                            Token("cluster"),
+                            Token("databases")),
+                        Token("databases")),
+                    RequiredToken("identity")));
 
             var ShowDatabasesManagementGroups = Command("ShowDatabasesManagementGroups", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("databases"),
-                    EToken("management"),
-                    RequiredEToken("groups")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("databases"),
+                    Token("management"),
+                    RequiredToken("groups")));
 
             var ShowClusterDatabasesPolicies = Command("ShowClusterDatabasesPolicies", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("databases")),
-                        EToken("databases")),
-                    EToken("policies")));
+                            Token("cluster"),
+                            Token("databases")),
+                        Token("databases")),
+                    Token("policies")));
 
             var ShowClusterDatabases = Command("ShowClusterDatabases", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("databases")),
+                            Token("cluster"),
+                            Token("databases")),
                         Custom(
-                            EToken("cluster"),
-                            RequiredEToken("databases")),
-                        EToken("databases")),
+                            Token("cluster"),
+                            RequiredToken("databases")),
+                        Token("databases")),
                     Optional(
                         Custom(
-                            EToken("("),
+                            Token("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.DatabaseNameReference,
                                         shape8),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -8091,41 +8105,41 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                            RequiredEToken(")"),
+                            RequiredToken(")"),
                             shape166)),
                     shape184));
 
             var ShowDatabaseCacheQueryResults = Command("ShowDatabaseCacheQueryResults", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("cache"),
-                    RequiredEToken("query_results")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("cache"),
+                    RequiredToken("query_results")));
 
             var ShowDatabaseDataStats = Command("ShowDatabaseDataStats", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("datastats")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("datastats")));
 
             var ShowDatabaseDetails = Command("ShowDatabaseDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("details")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("details")));
 
             var ShowDatabaseExtentsMetadata = Command("ShowDatabaseExtentsMetadata", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("databases"),
-                            EToken("("),
+                            Token("databases"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.DatabaseNameReference,
                                     shape8),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -8134,25 +8148,25 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
+                            Token(")"),
                             shape220),
                         Custom(
-                            EToken("database"),
+                            Token("database"),
                             Optional(
                                 Custom(
-                                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
                                     shape8)),
-                            shape287)),
-                    EToken("extents"),
+                            shape288)),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -8161,64 +8175,64 @@ namespace Kusto.Language.Parsing
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                EToken(")"),
-                                Optional(EToken("hot")),
+                                Token(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
-                    EToken("metadata"),
+                            Token("hot"))),
+                    Token("metadata"),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape276));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape277));
 
             var ShowDatabaseExtents = Command("ShowDatabaseExtents", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("databases"),
-                            EToken("("),
+                            Token("databases"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.DatabaseNameReference,
                                     shape8),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -8227,17 +8241,17 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
+                            Token(")"),
                             shape220),
                         Custom(
-                            EToken("databases"),
-                            EToken("("),
+                            Token("databases"),
+                            Token("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.DatabaseNameReference,
                                         shape8),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -8247,26 +8261,26 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                            RequiredEToken(")"),
+                            RequiredToken(")"),
                             shape220),
                         Custom(
-                            EToken("database"),
+                            Token("database"),
                             Optional(
                                 Custom(
-                                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
                                     shape8)),
-                            shape287)),
-                    RequiredEToken("extents"),
+                            shape288)),
+                    RequiredToken("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -8276,555 +8290,555 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
-                                Optional(EToken("hot")),
+                                RequiredToken(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
+                            Token("hot"))),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape277));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape278));
 
             var ShowDatabaseExtentTagsStatistics = Command("ShowDatabaseExtentTagsStatistics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("extent"),
-                    RequiredEToken("tags"),
-                    RequiredEToken("statistics"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("extent"),
+                    RequiredToken("tags"),
+                    RequiredToken("statistics"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
-                            RequiredEToken("minCreationTime"),
-                            RequiredEToken("="),
+                            Token("with"),
+                            RequiredToken("("),
+                            RequiredToken("minCreationTime"),
+                            RequiredToken("="),
                             Required(rules.Value, rules.MissingValue),
-                            RequiredEToken(")"),
-                            shape288)),
-                    shape289));
+                            RequiredToken(")"),
+                            shape289)),
+                    shape290));
 
             var ShowDatabaseIdentity = Command("ShowDatabaseIdentity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("identity")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("identity")));
 
             var ShowDatabasePolicies = Command("ShowDatabasePolicies", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    EToken("policies")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("policies")));
 
             var ShowDatabaseCslSchema = Command("ShowDatabaseCslSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("cslschema"),
+                        Token("cslschema"),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("cslschema"),
-                            shape290)),
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("cslschema"),
+                            shape291)),
                     Optional(
                         First(
                             Custom(
-                                EToken("if_later_than"),
+                                Token("if_later_than"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape291),
+                                shape292),
                             Custom(
-                                EToken("script"),
+                                Token("script"),
                                 Optional(
                                     Custom(
-                                        EToken("if_later_than"),
+                                        Token("if_later_than"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape291)),
+                                        shape292)),
                                 shape167))),
-                    shape292));
+                    shape293));
 
             var ShowDatabaseIngestionMappings = Command("ShowDatabaseIngestionMappings", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("ingestion"),
+                        Token("ingestion"),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("ingestion"),
-                            shape290)),
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("ingestion"),
+                            shape291)),
                     Required(
                         First(
-                            EToken("mappings"),
+                            Token("mappings"),
                             Custom(
-                                EToken("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
-                                RequiredEToken("mappings"),
-                                shape293)),
-                        () => CreateMissingEToken("mappings")),
+                                Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
+                                RequiredToken("mappings"),
+                                shape294)),
+                        () => CreateMissingToken("mappings")),
                     Optional(
                         First(
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.NameDeclarationOrStringLiteral,
-                                            RequiredEToken("="),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape63),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
                                 shape87),
                             Custom(
                                 rules.StringLiteral,
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
+                                        Token("with"),
+                                        RequiredToken("("),
                                         Required(
                                             OList(
                                                 primaryElementParser: Custom(
                                                     rules.NameDeclarationOrStringLiteral,
-                                                    RequiredEToken("="),
+                                                    RequiredToken("="),
                                                     Required(rules.Value, rules.MissingValue),
                                                     shape63),
-                                                separatorParser: EToken(","),
+                                                separatorParser: Token(","),
                                                 secondaryElementParser: null,
                                                 missingPrimaryElement: null,
                                                 missingSeparator: null,
-                                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                                missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                                 endOfList: null,
                                                 oneOrMore: true,
                                                 allowTrailingSeparator: false,
                                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                                        RequiredEToken(")"),
+                                            () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                                        RequiredToken(")"),
                                         shape87)),
-                                shape294))),
+                                shape295))),
                     shape204));
 
             var ShowDatabaseSchemaAsCslScript = Command("ShowDatabaseSchemaAsCslScript", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("schema"),
+                        Token("schema"),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("schema"),
-                            shape295)),
-                    First(
-                        EToken("as"),
-                        Custom(
-                            EToken("if_later_than"),
-                            rules.StringLiteral,
-                            EToken("as"),
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("schema"),
                             shape296)),
-                    EToken("csl"),
-                    RequiredEToken("script"),
+                    First(
+                        Token("as"),
+                        Custom(
+                            Token("if_later_than"),
+                            rules.StringLiteral,
+                            Token("as"),
+                            shape297)),
+                    Token("csl"),
+                    RequiredToken("script"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape297));
+                    shape298));
 
             var ShowDatabaseSchemaAsJson = Command("ShowDatabaseSchemaAsJson", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("schema"),
+                        Token("schema"),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("schema"),
-                            shape295)),
-                    First(
-                        EToken("as"),
-                        Custom(
-                            EToken("if_later_than"),
-                            rules.StringLiteral,
-                            EToken("as"),
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("schema"),
                             shape296)),
-                    RequiredEToken("json")));
+                    First(
+                        Token("as"),
+                        Custom(
+                            Token("if_later_than"),
+                            rules.StringLiteral,
+                            Token("as"),
+                            shape297)),
+                    RequiredToken("json")));
 
             var ShowDatabaseSchema = Command("ShowDatabaseSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("schema"),
+                        Token("schema"),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("schema"),
-                            shape290)),
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("schema"),
+                            shape291)),
                     Optional(
                         First(
                             Custom(
-                                EToken("details"),
+                                Token("details"),
                                 Optional(
                                     Custom(
-                                        EToken("if_later_than"),
+                                        Token("if_later_than"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape291)),
+                                        shape292)),
                                 shape167),
                             Custom(
-                                EToken("if_later_than"),
+                                Token("if_later_than"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape291))),
-                    shape292));
+                                shape292))),
+                    shape293));
 
             var DatabaseShardGroupsStatisticsShow = Command("DatabaseShardGroupsStatisticsShow", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("shard-groups").Hide(),
+                        Token("shard-groups").Hide(),
                         Custom(
-                            If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            EToken("shard-groups").Hide(),
-                            shape295)),
-                    RequiredEToken("statistics").Hide()));
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("shard-groups").Hide(),
+                            shape296)),
+                    RequiredToken("statistics").Hide()));
 
             var ShowDatabaseExtentContainersCleanOperations = Command("ShowDatabaseExtentContainersCleanOperations", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("extentcontainers"),
-                    RequiredEToken("clean"),
-                    RequiredEToken("operations"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("extentcontainers"),
+                    RequiredToken("clean"),
+                    RequiredToken("operations"),
                     Optional(
                         Custom(
                             rules.AnyGuidLiteralOrString,
                             shape0)),
-                    shape298));
+                    shape299));
 
             var ShowDatabaseJournal = Command("ShowDatabaseJournal", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("journal"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("journal"),
                     shape199));
 
             var ShowDatabasePolicyCaching = Command("ShowDatabasePolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("caching"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("caching"),
+                    shape300));
 
             var ShowDatabasePolicyDiagnostics = Command("ShowDatabasePolicyDiagnostics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    EToken("diagnostics"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    Token("diagnostics"),
                     shape191));
 
             var ShowDatabasePolicyEncoding = Command("ShowDatabasePolicyEncoding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    Token("encoding"),
                     shape191));
 
             var ShowDatabasePolicyExtentTagsRetention = Command("ShowDatabasePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
+                    shape300));
 
             var ShowDatabasePolicyHardRetentionViolations = Command("ShowDatabasePolicyHardRetentionViolations", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    EToken("hardretention"),
-                    RequiredEToken("violations"),
-                    shape300));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    Token("hardretention"),
+                    RequiredToken("violations"),
+                    shape301));
 
             var ShowDatabasePolicyIngestionBatching = Command("ShowDatabasePolicyIngestionBatching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("ingestionbatching"),
+                    shape300));
 
             var ShowDatabasePolicyManagedIdentity = Command("ShowDatabasePolicyManagedIdentity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    EToken("managed_identity"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    Token("managed_identity"),
                     shape191));
 
             var ShowDatabasePolicyMerge = Command("ShowDatabasePolicyMerge", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("merge"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("merge"),
+                    shape300));
 
             var ShowDatabasePolicyRetention = Command("ShowDatabasePolicyRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("retention"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("retention"),
+                    shape300));
 
             var ShowDatabasePolicySharding = Command("ShowDatabasePolicySharding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("sharding"),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("sharding"),
+                    shape300));
 
             var ShowDatabasePolicyShardsGrouping = Command("ShowDatabasePolicyShardsGrouping", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
                     First(
-                        EToken("*"),
-                        If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
-                    EToken("policy"),
-                    EToken("shards_grouping").Hide(),
-                    shape299));
+                        Token("*"),
+                        If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference)),
+                    Token("policy"),
+                    Token("shards_grouping").Hide(),
+                    shape300));
 
             var ShowDatabasePolicySoftRetentionViolations = Command("ShowDatabasePolicySoftRetentionViolations", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    EToken("softretention"),
-                    RequiredEToken("violations"),
-                    shape300));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    Token("softretention"),
+                    RequiredToken("violations"),
+                    shape301));
 
             var ShowDatabasePolicyStreamingIngestion = Command("ShowDatabasePolicyStreamingIngestion", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("policy"),
-                    RequiredEToken("streamingingestion"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("policy"),
+                    RequiredToken("streamingingestion"),
                     shape191));
 
             var ShowDatabasePrincipals = Command("ShowDatabasePrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("principals"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("principals"),
                     shape199));
 
             var ShowDatabasePrincipalRoles = Command("ShowDatabasePrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("principal"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape301));
+                    shape302));
 
             var ShowDatabasePurgeOperation = Command("ShowDatabasePurgeOperation", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    EToken("purge"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("purge"),
                     Required(
                         First(
                             Custom(
-                                EToken("operations"),
+                                Token("operations"),
                                 Optional(
                                     Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0)),
                                 shape11),
                             Custom(
-                                EToken("operation"),
+                                Token("operation"),
                                 Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
-                                shape302)),
-                        () => (SyntaxElement)new CustomNode(shape11, CreateMissingEToken("operations"), rules.MissingValue())),
+                                shape303)),
+                        () => (SyntaxElement)new CustomNode(shape11, CreateMissingToken("operations"), rules.MissingValue())),
                     shape82));
 
             var ShowDatabaseSchemaViolations = Command("ShowDatabaseSchemaViolations", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database"),
-                    If(Not(And(EToken("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                    RequiredEToken("schema"),
-                    RequiredEToken("violations"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    RequiredToken("schema"),
+                    RequiredToken("violations"),
                     shape82));
 
             var ShowDatabase = Command("ShowDatabase", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("database")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database")));
 
             var ShowDiagnostics = Command("ShowDiagnostics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("diagnostics"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("diagnostics"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
-                            RequiredEToken("scope"),
-                            RequiredEToken("="),
-                            RequiredEToken("cluster", "workloadgroup"),
-                            RequiredEToken(")"),
+                            Token("with"),
+                            RequiredToken("("),
+                            RequiredToken("scope"),
+                            RequiredToken("="),
+                            RequiredToken("cluster", "workloadgroup"),
+                            RequiredToken(")"),
                             shape273)),
                     shape184));
 
             var ShowEntitySchema = Command("ShowEntitySchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("entity"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("entity"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("schema"),
-                    RequiredEToken("as"),
-                    RequiredEToken("json"),
+                    RequiredToken("schema"),
+                    RequiredToken("as"),
+                    RequiredToken("json"),
                     Optional(
                         First(
                             Custom(
-                                EToken("except"),
+                                Token("except"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape303),
+                                shape304),
                             Custom(
-                                EToken("in"),
-                                RequiredEToken("databases"),
-                                RequiredEToken("("),
+                                Token("in"),
+                                RequiredToken("databases"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -8834,86 +8848,86 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 Optional(
                                     Custom(
-                                        EToken("except"),
+                                        Token("except"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape303)),
+                                        shape304)),
                                 shape248))),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape304));
+                    shape305));
 
             var ShowExtentContainers = Command("ShowExtentContainers", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("extentcontainers"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("extentcontainers"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var ShowExtentColumnStorageStats = Command("ShowExtentColumnStorageStats", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("extent"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("extent"),
                     rules.AnyGuidLiteralOrString,
-                    EToken("column"),
+                    Token("column"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("storage"),
-                    RequiredEToken("stats"),
-                    shape305));
+                    RequiredToken("storage"),
+                    RequiredToken("stats"),
+                    shape306));
 
             var ShowExtentDetails = Command("ShowExtentDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("extent"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("extent"),
                     Required(
                         First(
                             Custom(
-                                EToken("details"),
+                                Token("details"),
                                 Required(
                                     First(
                                         Custom(
@@ -8923,330 +8937,330 @@ namespace Kusto.Language.Parsing
                                             rules.NameDeclarationOrStringLiteral,
                                             shape46)),
                                     rules.MissingValue),
-                                shape306),
+                                shape307),
                             Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0),
                             Custom(
-                                If(Not(EToken("details")), rules.NameDeclarationOrStringLiteral),
+                                If(Not(Token("details")), rules.NameDeclarationOrStringLiteral),
                                 shape46)),
-                        () => (SyntaxElement)new CustomNode(shape306, CreateMissingEToken("details"), rules.MissingValue()))));
+                        () => (SyntaxElement)new CustomNode(shape307, CreateMissingToken("details"), rules.MissingValue()))));
 
             var ShowExternalTables = Command("ShowExternalTables", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("tables")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("tables")));
 
             var ShowExternalTableArtifacts = Command("ShowExternalTableArtifacts", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("artifacts"),
+                    Token("artifacts"),
                     Optional(
                         Custom(
-                            EToken("limit"),
+                            Token("limit"),
                             Required(rules.Value, rules.MissingValue),
                             shape202)),
-                    shape307));
+                    shape308));
 
             var ShowExternalTableCslSchema = Command("ShowExternalTableCslSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("cslschema"),
-                    shape308));
+                    Token("cslschema"),
+                    shape309));
 
             var ShowExternalTableMappings = Command("ShowExternalTableMappings", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("mappings"),
-                    shape308));
+                    Token("mappings"),
+                    shape309));
 
             var ShowExternalTableMapping = Command("ShowExternalTableMapping", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("mapping"),
+                    Token("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape218));
 
             var ShowExternalTablePrincipals = Command("ShowExternalTablePrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("principals"),
-                    shape309));
+                    Token("principals"),
+                    shape310));
 
             var ShowExternalTablesPrincipalRoles = Command("ShowExternalTablesPrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("principal"),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape310));
+                    shape311));
 
             var ShowExternalTableSchema = Command("ShowExternalTableSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    EToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    Token("table"),
                     rules.ExternalTableNameReference,
-                    EToken("schema"),
-                    RequiredEToken("as"),
-                    RequiredEToken("csl", "json"),
-                    shape311));
+                    Token("schema"),
+                    RequiredToken("as"),
+                    RequiredToken("csl", "json"),
+                    shape312));
 
             var ShowExternalTable = Command("ShowExternalTable", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("external"),
-                    RequiredEToken("table"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     shape219));
 
             var ShowFabric = Command("ShowFabric", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("fabric"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("fabric"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    shape312));
+                    shape313));
 
             var ShowFollowerDatabase = Command("ShowFollowerDatabase", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("follower"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("follower"),
                     Required(
                         First(
                             Custom(
-                                EToken("databases"),
+                                Token("databases"),
                                 Optional(
                                     Custom(
-                                        EToken("("),
+                                        Token("("),
                                         CommaList(
                                             Custom(
-                                                If(Not(EToken(")")), rules.DatabaseNameReference),
+                                                If(Not(Token(")")), rules.DatabaseNameReference),
                                                 shape8)),
-                                        RequiredEToken(")"),
+                                        RequiredToken(")"),
                                         shape166)),
                                 shape167),
                             Custom(
-                                EToken("database"),
+                                Token("database"),
                                 Required(rules.DatabaseNameReference, rules.MissingNameReference),
                                 shape221)),
-                        () => (SyntaxElement)new CustomNode(shape167, CreateMissingEToken("databases"), (SyntaxElement)new CustomNode(shape166, CreateMissingEToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingEToken(")"))))));
+                        () => (SyntaxElement)new CustomNode(shape167, CreateMissingToken("databases"), (SyntaxElement)new CustomNode(shape166, CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")"))))));
 
             var ShowFreshness = Command("ShowFreshness", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("freshness").Hide(),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("freshness").Hide(),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     Optional(
                         First(
                             Custom(
-                                EToken("column"),
+                                Token("column"),
                                 Required(rules.ColumnNameReference, rules.MissingNameReference),
                                 Optional(
                                     Custom(
-                                        EToken("threshold"),
+                                        Token("threshold"),
                                         Required(rules.Value, rules.MissingValue),
-                                        shape313)),
-                                shape314),
+                                        shape314)),
+                                shape315),
                             Custom(
-                                EToken("threshold"),
+                                Token("threshold"),
                                 Required(rules.Value, rules.MissingValue),
-                                shape313))),
-                    shape315));
+                                shape314))),
+                    shape316));
 
             var ShowFunctions = Command("ShowFunctions", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("functions")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("functions")));
 
             var ShowFunctionPrincipals = Command("ShowFunctionPrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("function"),
                     rules.DatabaseFunctionNameReference,
-                    EToken("principals"),
-                    shape316));
+                    Token("principals"),
+                    shape317));
 
             var ShowFunctionPrincipalRoles = Command("ShowFunctionPrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("function"),
                     rules.DatabaseFunctionNameReference,
-                    EToken("principal"),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape317));
+                    shape318));
 
             var ShowFunctionSchemaAsJson = Command("ShowFunctionSchemaAsJson", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("function"),
                     rules.DatabaseFunctionNameReference,
-                    EToken("schema"),
-                    RequiredEToken("as"),
-                    RequiredEToken("json"),
-                    shape318));
+                    Token("schema"),
+                    RequiredToken("as"),
+                    RequiredToken("json"),
+                    shape319));
 
             var ShowFunction = Command("ShowFunction", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("function"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
-                    shape319));
+                    shape320));
 
             var ShowIngestionFailures = Command("ShowIngestionFailures", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("ingestion"),
-                    EToken("failures"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("ingestion"),
+                    Token("failures"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
-                            RequiredEToken("OperationId"),
-                            RequiredEToken("="),
+                            Token("with"),
+                            RequiredToken("("),
+                            RequiredToken("OperationId"),
+                            RequiredToken("="),
                             Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
-                            RequiredEToken(")"),
-                            shape320)),
-                    shape292));
+                            RequiredToken(")"),
+                            shape321)),
+                    shape293));
 
             var ShowIngestionMappings = Command("ShowIngestionMappings", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("ingestion")),
+                            Token("cluster"),
+                            Token("ingestion")),
                         Custom(
-                            EToken("cluster"),
-                            RequiredEToken("ingestion")),
-                        EToken("ingestion")),
+                            Token("cluster"),
+                            RequiredToken("ingestion")),
+                        Token("ingestion")),
                     Required(
                         First(
-                            EToken("mappings"),
+                            Token("mappings"),
                             Custom(
-                                EToken("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
-                                RequiredEToken("mappings"),
-                                shape293)),
-                        () => CreateMissingEToken("mappings")),
+                                Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
+                                RequiredToken("mappings"),
+                                shape294)),
+                        () => CreateMissingToken("mappings")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape292));
+                    shape293));
 
             var ShowJournal = Command("ShowJournal", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("journal")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("journal")));
 
             var ShowMaterializedViewsDetails = Command("ShowMaterializedViewsDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-views"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-views"),
                     First(
                         Custom(
-                            EToken("("),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.MaterializedViewNameReference,
                                     shape17),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -9255,17 +9269,17 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            EToken("details"),
-                            shape321),
+                            Token(")"),
+                            Token("details"),
+                            shape322),
                         Custom(
-                            EToken("("),
+                            Token("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.MaterializedViewNameReference,
                                         shape17),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -9275,79 +9289,79 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                            RequiredEToken(")"),
-                            RequiredEToken("details"),
-                            shape321),
-                        EToken("details"))));
+                            RequiredToken(")"),
+                            RequiredToken("details"),
+                            shape322),
+                        Token("details"))));
 
             var ShowMaterializedViews = Command("ShowMaterializedViews", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-views")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-views")));
 
             var ShowMaterializedViewCslSchema = Command("ShowMaterializedViewCslSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("cslschema"),
+                    Token("cslschema"),
                     shape170));
 
             var ShowMaterializedViewDetails = Command("ShowMaterializedViewDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("details"),
+                    Token("details"),
                     shape170));
 
             var ShowMaterializedViewDiagnostics = Command("ShowMaterializedViewDiagnostics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("diagnostics"),
+                    Token("diagnostics"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape269));
 
             var ShowMaterializedViewExtents = Command("ShowMaterializedViewExtents", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("extents"),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -9357,119 +9371,119 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
-                                Optional(EToken("hot")),
+                                RequiredToken(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
-                    shape322));
+                            Token("hot"))),
+                    shape323));
 
             var ShowMaterializedViewFailures = Command("ShowMaterializedViewFailures", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("failures"),
+                    Token("failures"),
                     shape171));
 
             var ShowMaterializedViewPolicyCaching = Command("ShowMaterializedViewPolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("policy"),
+                    Token("caching"),
                     shape125));
 
             var ShowMaterializedViewPolicyMerge = Command("ShowMaterializedViewPolicyMerge", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("policy"),
+                    Token("merge"),
                     shape125));
 
             var ShowMaterializedViewPolicyPartitioning = Command("ShowMaterializedViewPolicyPartitioning", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("policy"),
+                    Token("partitioning"),
                     shape125));
 
             var ShowMaterializedViewPolicyRetention = Command("ShowMaterializedViewPolicyRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("policy"),
+                    Token("retention"),
                     shape125));
 
             var ShowMaterializedViewPolicyRowLevelSecurity = Command("ShowMaterializedViewPolicyRowLevelSecurity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("policy"),
-                    RequiredEToken("row_level_security"),
+                    Token("policy"),
+                    RequiredToken("row_level_security"),
                     shape125));
 
             var ShowMaterializedViewPrincipals = Command("ShowMaterializedViewPrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("principals"),
+                    Token("principals"),
                     shape170));
 
             var ShowMaterializedViewSchemaAsJson = Command("ShowMaterializedViewSchemaAsJson", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("schema"),
-                    RequiredEToken("as"),
-                    RequiredEToken("json"),
+                    Token("schema"),
+                    RequiredToken("as"),
+                    RequiredToken("json"),
                     shape37));
 
             var ShowMaterializedViewStatistics = Command("ShowMaterializedViewStatistics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     rules.MaterializedViewNameReference,
-                    EToken("statistics"),
+                    Token("statistics"),
                     shape171));
 
             var ShowMaterializedView = Command("ShowMaterializedView", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("materialized-view"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                     shape226));
 
             var ShowMemory = Command("ShowMemory", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("memory"),
-                    Optional(EToken("details")),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("memory"),
+                    Optional(Token("details")),
                     shape184));
 
             var ShowOperations = Command("ShowOperations", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("operations"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("operations"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -9479,7 +9493,7 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
+                                RequiredToken(")"),
                                 shape245),
                             Custom(
                                 rules.AnyGuidLiteralOrString,
@@ -9488,323 +9502,323 @@ namespace Kusto.Language.Parsing
 
             var ShowOperationDetails = Command("ShowOperationDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("operation"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("operation"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
-                    RequiredEToken("details"),
-                    shape323));
+                    RequiredToken("details"),
+                    shape324));
 
             var ShowPlugins = Command("ShowPlugins", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("plugins"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("plugins"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var ShowPrincipalAccess = Command("ShowPrincipalAccess", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("principal"),
-                    EToken("access"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("principal"),
+                    Token("access"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape292));
+                    shape293));
 
             var ShowPrincipalRoles = Command("ShowPrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("principal"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape292));
+                    shape293));
 
             var ShowQueries = Command("ShowQueries", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("queries")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("queries")));
 
             var ShowQueryExecution = Command("ShowQueryExecution", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("queryexecution"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("queryexecution"),
                     Required(
                         Custom(
-                            EToken("<|"),
+                            Token("<|"),
                             Required(rules.CommandInput, rules.MissingExpression),
                             shape84),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
-                    shape324));
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
+                    shape325));
 
             var ShowQueryPlan = Command("ShowQueryPlan", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("queryplan"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("queryplan"),
                     Required(
                         First(
-                            EToken("<|"),
+                            Token("<|"),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
+                                Token("with"),
+                                RequiredToken("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             First(
-                                                EToken("reconstructCsl"),
-                                                If(Not(EToken("reconstructCsl")), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredEToken("="),
+                                                Token("reconstructCsl"),
+                                                If(Not(Token("reconstructCsl")), rules.NameDeclarationOrStringLiteral)),
+                                            RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape48),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingEToken("reconstructCsl"), CreateMissingEToken("="), rules.MissingValue()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape48, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingEToken("reconstructCsl"), CreateMissingEToken("="), rules.MissingValue())))),
-                                RequiredEToken(")"),
-                                RequiredEToken("<|"))),
-                        () => CreateMissingEToken("<|")),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape48, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue())))),
+                                RequiredToken(")"),
+                                RequiredToken("<|"))),
+                        () => CreateMissingToken("<|")),
                     Required(rules.CommandInput, rules.MissingExpression),
-                    shape325));
+                    shape326));
 
             var ShowQueryCallTree = Command("ShowQueryCallTree", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("query"),
-                    RequiredEToken("call-tree"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("query"),
+                    RequiredToken("call-tree"),
                     Required(
                         Custom(
-                            EToken("<|"),
+                            Token("<|"),
                             Required(rules.CommandInput, rules.MissingExpression),
                             shape84),
-                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingEToken("<|"), rules.MissingExpression())),
-                    shape326));
+                        () => (SyntaxElement)new CustomNode(shape84, CreateMissingToken("<|"), rules.MissingExpression())),
+                    shape327));
 
             var ShowRequestSupport = Command("ShowRequestSupport", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("request_support"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("request_support"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape327));
+                    shape328));
 
             var ShowRowStores = Command("ShowRowStores", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("rowstores")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("rowstores")));
 
             var ShowRowStoreSeals = Command("ShowRowStoreSeals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("rowstore"),
-                    EToken("seals"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("rowstore"),
+                    Token("seals"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape328));
+                    shape329));
 
             var ShowRowStoreTransactions = Command("ShowRowStoreTransactions", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("rowstore"),
-                    EToken("transactions")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("rowstore"),
+                    Token("transactions")));
 
             var ShowRowStore = Command("ShowRowStore", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("rowstore"),
-                    Required(If(Not(And(EToken("seals", "transactions"))), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
-                    shape329));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("rowstore"),
+                    Required(If(Not(And(Token("seals", "transactions"))), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
+                    shape330));
 
             var ShowRunningQueries = Command("ShowRunningQueries", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("running"),
-                    RequiredEToken("queries"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("running"),
+                    RequiredToken("queries"),
                     Optional(
                         Custom(
-                            EToken("by"),
+                            Token("by"),
                             Required(
                                 First(
-                                    EToken("*"),
+                                    Token("*"),
                                     Custom(
-                                        EToken("user"),
+                                        Token("user"),
                                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                                         shape1)),
-                                () => CreateMissingEToken("*")))),
-                    shape292));
+                                () => CreateMissingToken("*")))),
+                    shape293));
 
             var ShowSchema = Command("ShowSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("cluster"),
-                            EToken("schema")),
-                        EToken("schema")),
+                            Token("cluster"),
+                            Token("schema")),
+                        Token("schema")),
                     Optional(
                         First(
                             Custom(
-                                EToken("as"),
-                                RequiredEToken("json")),
-                            EToken("details"))),
+                                Token("as"),
+                                RequiredToken("json")),
+                            Token("details"))),
                     shape184));
 
             var StoredQueryResultsShow = Command("StoredQueryResultsShow", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("stored_query_results"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("stored_query_results"),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             CommaList(
                                 Custom(
-                                    If(Not(EToken(")")), rules.NameDeclarationOrStringLiteral),
-                                    RequiredEToken("="),
+                                    If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
+                                    RequiredToken("="),
                                     Required(rules.Value, rules.MissingValue),
                                     shape86)),
-                            RequiredEToken(")"),
+                            RequiredToken(")"),
                             shape87)),
                     shape184));
 
             var StoredQueryResultShowSchema = Command("StoredQueryResultShowSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("stored_query_result"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("stored_query_result"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    RequiredEToken("schema"),
-                    shape330));
+                    RequiredToken("schema"),
+                    shape331));
 
             var ShowStreamingIngestionFailures = Command("ShowStreamingIngestionFailures", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("streamingingestion"),
-                    EToken("failures")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("streamingingestion"),
+                    Token("failures")));
 
             var ShowStreamingIngestionStatistics = Command("ShowStreamingIngestionStatistics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("streamingingestion"),
-                    RequiredEToken("statistics")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("streamingingestion"),
+                    RequiredToken("statistics")));
 
             var ShowTablesColumnStatistics = Command("ShowTablesColumnStatistics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("tables"),
-                    EToken("column"),
-                    RequiredEToken("statistics"),
-                    RequiredEToken("older"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("tables"),
+                    Token("column"),
+                    RequiredToken("statistics"),
+                    RequiredToken("older"),
                     Required(rules.Value, rules.MissingValue),
-                    shape331));
+                    shape332));
 
             var ShowTablesDetails = Command("ShowTablesDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("tables"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("tables"),
                     First(
                         Custom(
-                            EToken("("),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -9813,23 +9827,23 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            EToken("details"),
-                            shape332),
-                        EToken("details"))));
+                            Token(")"),
+                            Token("details"),
+                            shape333),
+                        Token("details"))));
 
             var ShowTables = Command("ShowTables", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("tables"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("tables"),
                     Optional(
                         Custom(
-                            EToken("("),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -9838,22 +9852,22 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            shape333)),
+                            Token(")"),
+                            shape334)),
                     shape184));
 
             var ShowTableExtentsMetadata = Command("ShowTableExtentsMetadata", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("tables"),
-                            EToken("("),
+                            Token("tables"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -9862,22 +9876,22 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            shape334),
+                            Token(")"),
+                            shape335),
                         Custom(
-                            EToken("table"),
-                            If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
+                            Token("table"),
+                            If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                             shape157)),
-                    EToken("extents"),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -9886,64 +9900,64 @@ namespace Kusto.Language.Parsing
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                EToken(")"),
-                                Optional(EToken("hot")),
+                                Token(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
-                    EToken("metadata"),
+                            Token("hot"))),
+                    Token("metadata"),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape276));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape277));
 
             var ShowTableExtents = Command("ShowTableExtents", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("tables"),
-                            EToken("("),
+                            Token("tables"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -9952,23 +9966,23 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            shape334),
+                            Token(")"),
+                            shape335),
                         Custom(
-                            EToken("table"),
-                            If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
+                            Token("table"),
+                            If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                             shape157)),
-                    EToken("extents"),
+                    Token("extents"),
                     Optional(
                         First(
                             Custom(
-                                EToken("("),
+                                Token("("),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: EToken(","),
+                                        separatorParser: Token(","),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
@@ -9978,63 +9992,63 @@ namespace Kusto.Language.Parsing
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                     () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue()))),
-                                RequiredEToken(")"),
-                                Optional(EToken("hot")),
+                                RequiredToken(")"),
+                                Optional(Token("hot")),
                                 shape213),
-                            EToken("hot"))),
+                            Token("hot"))),
                     Optional(
                         First(
                             Custom(
-                                EToken("where"),
+                                Token("where"),
                                 Required(
                                     OList(
                                         primaryElementParser: Custom(
-                                            EToken("tags"),
-                                            RequiredEToken("!contains", "!has", "contains", "has"),
+                                            Token("tags"),
+                                            RequiredToken("!contains", "!has", "contains", "has"),
                                             Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape274),
-                                        separatorParser: EToken("and"),
+                                            shape275),
+                                        separatorParser: Token("and"),
                                         secondaryElementParser: null,
                                         missingPrimaryElement: null,
                                         missingSeparator: null,
-                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
+                                        missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral()),
                                         endOfList: null,
                                         oneOrMore: true,
                                         allowTrailingSeparator: false,
                                         producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape274, CreateMissingEToken("tags"), CreateMissingEToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
+                                    () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape275, CreateMissingToken("tags"), CreateMissingToken("Expected !contains,!has,contains,has"), rules.MissingStringLiteral())))),
                                 Optional(
                                     Custom(
-                                        EToken("with"),
-                                        RequiredEToken("("),
-                                        RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredEToken("="),
+                                        Token("with"),
+                                        RequiredToken("("),
+                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        RequiredEToken(")"),
-                                        shape275)),
+                                        RequiredToken(")"),
+                                        shape276)),
                                 shape184),
                             Custom(
-                                EToken("with"),
-                                RequiredEToken("("),
-                                RequiredEToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredEToken("="),
+                                Token("with"),
+                                RequiredToken("("),
+                                RequiredToken("extentsShowFilteringRuntimePolicy"),
+                                RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                RequiredEToken(")"),
-                                shape275))),
-                    shape277));
+                                RequiredToken(")"),
+                                shape276))),
+                    shape278));
 
             var TableShardGroupsStatisticsShow = Command("TableShardGroupsStatisticsShow", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
+                    Token("show", CompletionKind.CommandPrefix),
                     First(
                         Custom(
-                            EToken("tables"),
-                            EToken("("),
+                            Token("tables"),
+                            Token("("),
                             OList(
                                 primaryElementParser: Custom(
                                     rules.TableNameReference,
                                     shape19),
-                                separatorParser: EToken(","),
+                                separatorParser: Token(","),
                                 secondaryElementParser: null,
                                 missingPrimaryElement: null,
                                 missingSeparator: null,
@@ -10043,17 +10057,17 @@ namespace Kusto.Language.Parsing
                                 oneOrMore: true,
                                 allowTrailingSeparator: false,
                                 producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            EToken(")"),
-                            shape334),
+                            Token(")"),
+                            shape335),
                         Custom(
-                            EToken("tables"),
-                            RequiredEToken("("),
+                            Token("tables"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.TableNameReference,
                                         shape19),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
@@ -10063,462 +10077,462 @@ namespace Kusto.Language.Parsing
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
                                 () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference()))),
-                            RequiredEToken(")"),
-                            shape334),
+                            RequiredToken(")"),
+                            shape335),
                         Custom(
-                            EToken("table"),
-                            Required(If(Not(And(EToken("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
+                            Token("table"),
+                            Required(If(Not(And(Token("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
                             shape157)),
-                    RequiredEToken("shard-groups").Hide(),
-                    RequiredEToken("statistics").Hide()));
+                    RequiredToken("shard-groups").Hide(),
+                    RequiredToken("statistics").Hide()));
 
             var ShowTableStarPolicyCaching = Command("ShowTableStarPolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("caching")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("caching")));
 
             var ShowTableStarPolicyExtentTagsRetention = Command("ShowTableStarPolicyExtentTagsRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("extent_tags_retention")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("extent_tags_retention")));
 
             var ShowTableStarPolicyIngestionBatching = Command("ShowTableStarPolicyIngestionBatching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("ingestionbatching")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("ingestionbatching")));
 
             var ShowTableStarPolicyIngestionTime = Command("ShowTableStarPolicyIngestionTime", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("ingestiontime")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("ingestiontime")));
 
             var ShowTableStarPolicyMerge = Command("ShowTableStarPolicyMerge", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("merge")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("merge")));
 
             var ShowTableStarPolicyPartitioning = Command("ShowTableStarPolicyPartitioning", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("partitioning")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("partitioning")));
 
             var ShowTableStarPolicyRestrictedViewAccess = Command("ShowTableStarPolicyRestrictedViewAccess", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("restricted_view_access")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("restricted_view_access")));
 
             var ShowTableStarPolicyRetention = Command("ShowTableStarPolicyRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("retention")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("retention")));
 
             var ShowTableStarPolicyRowLevelSecurity = Command("ShowTableStarPolicyRowLevelSecurity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("row_level_security")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("row_level_security")));
 
             var ShowTableStarPolicyRowOrder = Command("ShowTableStarPolicyRowOrder", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("roworder")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("roworder")));
 
             var ShowTableStarPolicySharding = Command("ShowTableStarPolicySharding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    EToken("policy"),
-                    EToken("sharding")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("sharding")));
 
             var ShowTableStarPolicyUpdate = Command("ShowTableStarPolicyUpdate", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("*"),
-                    RequiredEToken("policy"),
-                    RequiredEToken("update")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    RequiredToken("policy"),
+                    RequiredToken("update")));
 
             var ShowTableUsageStatisticsDetails = Command("ShowTableUsageStatisticsDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("usage"),
-                    EToken("statistics"),
-                    EToken("details")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("usage"),
+                    Token("statistics"),
+                    Token("details")));
 
             var ShowTableUsageStatistics = Command("ShowTableUsageStatistics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    EToken("usage"),
-                    RequiredEToken("statistics"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("usage"),
+                    RequiredToken("statistics"),
                     Optional(
                         Custom(
-                            EToken("by"),
+                            Token("by"),
                             Required(rules.Value, rules.MissingValue),
-                            shape335)),
+                            shape336)),
                     shape204));
 
             var ShowTablePolicyAutoDelete = Command("ShowTablePolicyAutoDelete", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("auto_delete"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("auto_delete"),
                     shape195));
 
             var ShowTablePolicyCaching = Command("ShowTablePolicyCaching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("caching"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("caching"),
                     shape195));
 
             var ShowTablePolicyEncoding = Command("ShowTablePolicyEncoding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("encoding"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("encoding"),
                     shape195));
 
             var ShowTablePolicyExtentTagsRetention = Command("ShowTablePolicyExtentTagsRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("extent_tags_retention"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("extent_tags_retention"),
                     shape195));
 
             var ShowTablePolicyIngestionBatching = Command("ShowTablePolicyIngestionBatching", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("ingestionbatching"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("ingestionbatching"),
                     shape195));
 
             var ShowTablePolicyMerge = Command("ShowTablePolicyMerge", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("merge"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("merge"),
                     shape195));
 
             var ShowTablePolicyPartitioning = Command("ShowTablePolicyPartitioning", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("partitioning"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("partitioning"),
                     shape195));
 
             var ShowTablePolicyRestrictedViewAccess = Command("ShowTablePolicyRestrictedViewAccess", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("restricted_view_access"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("restricted_view_access"),
                     shape195));
 
             var ShowTablePolicyRetention = Command("ShowTablePolicyRetention", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("retention"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("retention"),
                     shape195));
 
             var ShowTablePolicyRowOrder = Command("ShowTablePolicyRowOrder", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("roworder"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("roworder"),
                     shape195));
 
             var ShowTablePolicySharding = Command("ShowTablePolicySharding", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("sharding"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("sharding"),
                     shape195));
 
             var ShowTablePolicyStreamingIngestion = Command("ShowTablePolicyStreamingIngestion", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    EToken("streamingingestion"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    Token("streamingingestion"),
                     shape195));
 
             var ShowTablePolicyUpdate = Command("ShowTablePolicyUpdate", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("policy"),
-                    RequiredEToken("update"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("policy"),
+                    RequiredToken("update"),
                     shape195));
 
             var ShowTableRowStoreReferences = Command("ShowTableRowStoreReferences", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("rowstore_references"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("rowstore_references"),
                     shape172));
 
             var ShowTableRowStoreSealInfo = Command("ShowTableRowStoreSealInfo", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    EToken("rowstore_sealinfo"),
-                    shape336));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    Token("rowstore_sealinfo"),
+                    shape337));
 
             var ShowTableRowStores = Command("ShowTableRowStores", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.DatabaseTableNameReference),
-                    RequiredEToken("rowstores"),
-                    shape336));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
+                    RequiredToken("rowstores"),
+                    shape337));
 
             var ShowTableColumnsClassification = Command("ShowTableColumnsClassification", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("columns"),
-                    RequiredEToken("classification"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("columns"),
+                    RequiredToken("classification"),
                     shape195));
 
             var ShowTableColumnStatitics = Command("ShowTableColumnStatitics", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("column"),
-                    RequiredEToken("statistics"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("column"),
+                    RequiredToken("statistics"),
                     shape195));
 
             var ShowTableCslSchema = Command("ShowTableCslSchema", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("cslschema"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("cslschema"),
                     shape172));
 
             var ShowTableDetails = Command("ShowTableDetails", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("details"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("details"),
                     shape172));
 
             var ShowTableDimensions = Command("ShowTableDimensions", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("dimensions"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("dimensions"),
                     shape172));
 
             var ShowTableIngestionMappings = Command("ShowTableIngestionMappings", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("ingestion"),
-                    EToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    EToken("mappings"),
-                    shape337));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("ingestion"),
+                    Token("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    Token("mappings"),
+                    shape338));
 
             var ShowTableIngestionMapping = Command("ShowTableIngestionMapping", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("ingestion"),
-                    RequiredEToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
-                    RequiredEToken("mapping"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("ingestion"),
+                    RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
+                    RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape232));
 
             var ShowTablePolicyIngestionTime = Command("ShowTablePolicyIngestionTime", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("policy"),
-                    EToken("ingestiontime"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("policy"),
+                    Token("ingestiontime"),
                     shape195));
 
             var ShowTablePolicyRowLevelSecurity = Command("ShowTablePolicyRowLevelSecurity", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("policy"),
-                    RequiredEToken("row_level_security"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("policy"),
+                    RequiredToken("row_level_security"),
                     shape195));
 
             var ShowTablePrincipals = Command("ShowTablePrincipals", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("principals"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("principals"),
                     shape172));
 
             var ShowTablePrincipalRoles = Command("ShowTablePrincipalRoles", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("principal"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("principal"),
                     Required(
                         First(
-                            EToken("roles"),
+                            Token("roles"),
                             Custom(
                                 rules.StringLiteral,
-                                RequiredEToken("roles"),
-                                shape279)),
-                        () => CreateMissingEToken("roles")),
+                                RequiredToken("roles"),
+                                shape280)),
+                        () => CreateMissingToken("roles")),
                     Optional(
                         Custom(
-                            EToken("with"),
-                            RequiredEToken("("),
+                            Token("with"),
+                            RequiredToken("("),
                             Required(
                                 OList(
                                     primaryElementParser: Custom(
                                         rules.NameDeclarationOrStringLiteral,
-                                        RequiredEToken("="),
+                                        RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape63),
-                                    separatorParser: EToken(","),
+                                    separatorParser: Token(","),
                                     secondaryElementParser: null,
                                     missingPrimaryElement: null,
                                     missingSeparator: null,
-                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue()),
+                                    missingSecondaryElement: () => (SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue()),
                                     endOfList: null,
                                     oneOrMore: true,
                                     allowTrailingSeparator: false,
                                     producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingEToken("="), rules.MissingValue())))),
-                            RequiredEToken(")"),
+                                () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape63, rules.MissingNameDeclaration(), CreateMissingToken("="), rules.MissingValue())))),
+                            RequiredToken(")"),
                             shape87)),
-                    shape338));
+                    shape339));
 
             var ShowTableSchemaAsJson = Command("ShowTableSchemaAsJson", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("schema"),
-                    RequiredEToken("as"),
-                    RequiredEToken("json"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("schema"),
+                    RequiredToken("as"),
+                    RequiredToken("json"),
                     shape40));
 
             var TableShardGroupsShow = Command("TableShardGroupsShow", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    If(Not(And(EToken("*", "usage"))), rules.TableNameReference),
-                    EToken("shard-groups").Hide(),
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("shard-groups").Hide(),
                     shape172));
 
             var ShowTable = Command("ShowTable", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("table"),
-                    Required(If(Not(And(EToken("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
-                    shape339));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Required(If(Not(And(Token("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
+                    shape340));
 
             var ShowVersion = Command("ShowVersion", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("version")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("version")));
 
             var ShowWorkloadGroups = Command("ShowWorkloadGroups", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    EToken("workload_groups")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("workload_groups")));
 
             var ShowWorkloadGroup = Command("ShowWorkloadGroup", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    RequiredEToken("workload_group"),
+                    Token("show", CompletionKind.CommandPrefix),
+                    RequiredToken("workload_group"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                    shape340));
+                    shape341));
 
             var UndoDropTable = Command("UndoDropTable", 
                 Custom(
-                    EToken("undo", CompletionKind.CommandPrefix),
-                    RequiredEToken("drop"),
-                    RequiredEToken("table"),
+                    Token("undo", CompletionKind.CommandPrefix),
+                    RequiredToken("drop"),
+                    RequiredToken("table"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
                             Custom(
-                                EToken("as"),
+                                Token("as"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                RequiredEToken("version"),
-                                shape341),
-                            EToken("version")),
-                        () => (SyntaxElement)new CustomNode(shape341, CreateMissingEToken("as"), rules.MissingNameDeclaration(), CreateMissingEToken("version"))),
-                    RequiredEToken("="),
+                                RequiredToken("version"),
+                                shape342),
+                            Token("version")),
+                        () => (SyntaxElement)new CustomNode(shape342, CreateMissingToken("as"), rules.MissingNameDeclaration(), CreateMissingToken("version"))),
+                    RequiredToken("="),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    Optional(EToken("internal")),
-                    shape342));
+                    Optional(Token("internal")),
+                    shape343));
 
             var commandParsers = new Parser<LexicalToken, Command>[]
             {

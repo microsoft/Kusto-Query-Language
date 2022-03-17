@@ -117,6 +117,12 @@ namespace Kusto.Language.Binding
         /// <param name="doNotRepeat">If true, ignore any further attempts to add this column.</param>
         public ColumnSymbol Add(ColumnSymbol column, string baseName = null, bool replace = false, bool doNotRepeat = false)
         {
+            // do not accept columns without names
+            if (string.IsNullOrEmpty(column.Name))
+            {
+                return column;
+            }
+
             if (_doNotAdd.Contains(column))
             {
                 // this column is ignored when attempting to add it.
@@ -127,7 +133,7 @@ namespace Kusto.Language.Binding
             {
                 _projection[index] = column;
             }
-            else
+            else 
             {
                 // make sure the column name is unique.
                 var uniqueName = _uniqueNames.GetOrAddName(column.Name, baseName);

@@ -41,8 +41,8 @@ namespace Kusto.Language.Parsing
         {
             var ShowVersion = Command("ShowVersion", 
                 Custom(
-                    EToken("show", CompletionKind.CommandPrefix),
-                    RequiredEToken("version")));
+                    Token("show", CompletionKind.CommandPrefix),
+                    RequiredToken("version")));
 
             var commandParsers = new Parser<LexicalToken, Command>[]
             {

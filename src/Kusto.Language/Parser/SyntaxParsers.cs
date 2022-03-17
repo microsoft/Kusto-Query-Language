@@ -104,7 +104,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(SyntaxKind kind, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
-            var item = GetDefaultCompletionItem(kind, ckind, priority, ctext);
+            var item = CreateCompletionItem(kind, ckind ?? GetCompletionKind(kind), priority, ctext);
             return Token(kind, item);
         }
 
@@ -115,7 +115,7 @@ namespace Kusto.Language.Parsing
         {
             var rule = Match(t => t.Kind == kind, lt => SyntaxToken.From(lt)).WithTag(GetDefaultTag(kind));
 
-            item = item ?? GetDefaultCompletionItem(kind, null, CompletionPriority.Normal, null);
+            item = item ?? CreateCompletionItem(kind, GetCompletionKind(kind), CompletionPriority.Normal, null);
             if (item != null)
             {
                 rule = rule.WithAnnotations(new[] { item });
@@ -143,14 +143,14 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next next <see cref="LexicalToken"/> if it has one of the specified <see cref="SyntaxKind"/>s, producing a corresponding <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<SyntaxKind> kinds, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal)
+        public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<SyntaxKind> kinds, CompletionKind? defaultKind = null, CompletionPriority priority = CompletionPriority.Normal)
         {
             Ensure.ArgumentNotNull(kinds, nameof(kinds));
             var set = new HashSet<SyntaxKind>(kinds);
 
             var rule = Match(t => set.Contains(t.Kind), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", kinds.Select(k => GetDefaultTag(k))));
 
-            var items = GetCompletionItems(set, ckind, priority).ToList();
+            var items = GetCompletionItems(set, defaultKind, priority).ToList();
             if (items.Count > 0)
             {
                 rule = rule.WithAnnotations(items);
@@ -222,7 +222,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
-            var item = GetDefaultCompletionItem(text, ckind, priority, ctext);
+            var item = CreateCompletionItem(text, ckind ?? GetCompletionKind(text), priority, ctext);
             return Token(text, item);
         }
 
@@ -233,7 +233,7 @@ namespace Kusto.Language.Parsing
         {
             var rule = MatchText(text).WithTag(GetDefaultTag(text));
 
-            item = item ?? GetDefaultCompletionItem(text, null, CompletionPriority.Normal, null);
+            item = item ?? CreateCompletionItem(text, GetCompletionKind(text), CompletionPriority.Normal, null);
             if (item != null)
             {
                 rule = rule.WithAnnotations(new[] { item });
@@ -245,14 +245,14 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<string> texts, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal)
+        public static Parser<LexicalToken, SyntaxToken> Token(IReadOnlyList<string> texts, CompletionKind? defaultKind = null, CompletionPriority priority = CompletionPriority.Normal)
         {
             Ensure.ArgumentNotNull(texts, nameof(texts));
-            var set = new HashSet<string>(texts);
 
-            var rule = Match(t => set.Contains(t.Text), lt => SyntaxToken.From(lt)).WithTag(string.Join(" | ", texts.Select(t => GetDefaultTag(t))));
+            var rule = First(texts.Select(t => MatchText(t)).ToArray())
+                    .WithTag(string.Join(" | ", texts.Select(t => GetDefaultTag(t))));
 
-            var items = GetCompletionItems(texts, ckind, priority).ToList();
+            var items = GetCompletionItems(texts, defaultKind, priority).ToList();
             if (items.Count > 0)
             {
                 rule = rule.WithAnnotations(items);
@@ -332,46 +332,21 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for a token with the specified <see cref="SyntaxKind"/>.
         /// </summary>
-        private static CompletionItem GetDefaultCompletionItem(SyntaxKind kind, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
+        private static CompletionItem CreateCompletionItem(SyntaxKind kind, CompletionKind ckind, CompletionPriority priority, string ctext = null)
         {
             var text = SyntaxFacts.GetText(kind);
+            return CreateCompletionItem(text, ckind, priority, ctext);
+        }
 
+        /// <summary>
+        /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
+        /// </summary>
+        private static CompletionItem CreateCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
+        {
+            // no text is not going to work
             if (string.IsNullOrWhiteSpace(text))
                 return null;
 
-            switch (kind.GetCategory())
-            {
-                case SyntaxCategory.Keyword:
-                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Keyword, priority, ctext);
-                case SyntaxCategory.Operator:
-                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.ScalarInfix, priority, ctext);
-                case SyntaxCategory.Punctuation:
-                    return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Punctuation, priority, ctext);
-                default:
-                    return null;
-            }
-        }
-
-        /// <summary>
-        /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
-        /// </summary>
-        private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind? ckind, CompletionPriority priority, string ctext = null)
-        {
-            if (SyntaxFacts.TryGetKind(text, out var kind))
-            {
-                return GetDefaultCompletionItem(kind, ckind, priority, ctext);
-            }
-            else
-            {
-                return GetDefaultCompletionItem(text, ckind ?? CompletionKind.Syntax, priority, ctext);
-            }
-        }
-
-        /// <summary>
-        /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
-        /// </summary>
-        private static CompletionItem GetDefaultCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
-        {
             // hide any syntax that starts with _ from completion
             if (text.StartsWith("_", StringComparison.Ordinal))
                 return null;
@@ -393,16 +368,44 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Gets the <see cref="CompletionKind"/> for the token text.
+        /// </summary>
+        public static CompletionKind GetCompletionKind(string text, CompletionKind? defaultKind = null)
+        {
+            return SyntaxFacts.TryGetKind(text, out var kind)
+                ? GetCompletionKind(kind, defaultKind)
+                : defaultKind ?? CompletionKind.Syntax;
+        }
+
+        /// <summary>
+        /// Gets the default <see cref="CompletionKind"/> for the token kind.
+        /// </summary>
+        public static CompletionKind GetCompletionKind(SyntaxKind kind, CompletionKind? defaultKind = null)
+        {
+            switch (kind.GetCategory())
+            {
+                case SyntaxCategory.Keyword:
+                    return CompletionKind.Keyword;
+                case SyntaxCategory.Operator:
+                    return CompletionKind.ScalarInfix;
+                case SyntaxCategory.Punctuation:
+                    return CompletionKind.Punctuation;
+                default:
+                    return defaultKind ?? CompletionKind.Syntax;
+            }
+        }
+
+        /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for tokens with any of the specified <see cref="SyntaxKind"/>.
         /// </summary>
-        private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<SyntaxKind> kinds, CompletionKind? ckind, CompletionPriority priority) =>
-            kinds.Select(k => GetDefaultCompletionItem(k, ckind, priority)).Where(i => i != null);
+        private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<SyntaxKind> kinds, CompletionKind? defaultKind, CompletionPriority priority) =>
+            kinds.Select(k => CreateCompletionItem(k, GetCompletionKind(k, defaultKind), priority)).Where(i => i != null);
 
         /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for tokens with any of the specified texts.
         /// </summary>
-        private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<string> texts, CompletionKind? ckind, CompletionPriority priority) =>
-            texts.Select(t => GetDefaultCompletionItem(t, ckind, priority)).Where(i => i != null);
+        private static IEnumerable<CompletionItem> GetCompletionItems(IEnumerable<string> texts, CompletionKind? defaultKind, CompletionPriority priority) =>
+            texts.Select(t => CreateCompletionItem(t, GetCompletionKind(t, defaultKind), priority)).Where(i => i != null);
 
         /// <summary>
         /// A parser that parses a <see cref="SyntaxList"/> of elements.

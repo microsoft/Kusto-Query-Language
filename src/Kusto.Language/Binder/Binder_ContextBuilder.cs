@@ -352,7 +352,7 @@ namespace Kusto.Language.Binding
             {
                 base.VisitMvApplyOperator(node);
 
-                if (_position >= node.OnKeyword.TextStart)
+                if (!node.OnKeyword.IsMissing && _position >= node.OnKeyword.TextStart)
                 {
                     var info = new NodeBinder(_binder).VisitMvApplyOperator(node);
                     _binder._rowScope = info?.ResultType as TableSymbol;

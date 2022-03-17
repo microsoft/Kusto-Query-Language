@@ -24,6 +24,12 @@ namespace Kusto.Language.Binding
         private readonly GlobalState _globals;
 
         /// <summary>
+        /// Keeps track of the number of dynamic nodes in the current traversal.
+        /// Used to check if the current node is a child of a dynamic node.
+        /// </summary>
+        private int _dynamicDepth = 0;
+
+        /// <summary>
         /// The cluster assumed when resolveing unqualified calls to database() 
         /// </summary>
         private readonly ClusterSymbol _currentCluster;

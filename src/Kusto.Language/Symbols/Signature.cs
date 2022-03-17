@@ -627,7 +627,7 @@ namespace Kusto.Language.Symbols
                     return Binding.Binder.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
-                    return Binding.Binder.GetWidestArgumentType(this, argumentTypes) ?? ErrorSymbol.Instance;
+                    return Binding.Binder.Promote(Binding.Binder.GetWidestArgumentType(this, argumentTypes)) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Cluster:
                     return new ClusterSymbol("", null, isOpen: true);

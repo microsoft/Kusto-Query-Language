@@ -51,7 +51,7 @@ namespace Kusto.Language.Symbols
         ParameterNLiteral,
 
         /// <summary>
-        /// The return type is the same as the type of the argument for parameter 0, but promoted (int -> long, decimal -> real)
+        /// The return type is the same as the type of the argument for parameter 0, but int is promoted to long.
         /// </summary>
         Parameter0Promoted,
 
@@ -81,7 +81,8 @@ namespace Kusto.Language.Symbols
         Common,
 
         /// <summary>
-        /// The return type is the widest numeric scalar type of all the arguments.
+        /// The return type is the widest numeric scalar type of all the arguments.  
+        /// Int is promoted to Long.
         /// </summary>
         Widest,
 

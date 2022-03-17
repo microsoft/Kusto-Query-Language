@@ -251,6 +251,10 @@ namespace Kusto.Language.Binding
                     case SyntaxKind.RealLiteralExpression:
                         return LiteralRealInfo;
                     case SyntaxKind.DecimalLiteralExpression:
+                        if (_binder._dynamicDepth != 0)
+                        {
+                            return new SemanticInfo(ScalarTypes.Decimal, DiagnosticFacts.GetDecimalInDynamic().WithLocation(node));
+                        }
                         return LiteralDecimalInfo;
                     case SyntaxKind.StringLiteralExpression:
                         return LiteralStringInfo;

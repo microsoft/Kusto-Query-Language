@@ -744,6 +744,11 @@ namespace Kusto.Language
             return new Diagnostic("KS214", "Raw guid literals are not allowed in this context, use guid(...) instead.");
         }
 
+        public static Diagnostic GetDecimalInDynamic()
+        {
+            return new Diagnostic("KS215", "Decimal values are not supported in dynamic objects.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -7,6 +7,7 @@ You'll want to include these namespaces in your C# code for the following exampl
 ```
 &nbsp;
 ## Parsing a query
+
 You can parse a Kusto query or control command by using the `KustoCode.Parse` method.
 
 ```csharp
@@ -38,7 +39,6 @@ In order to correctly distinguish between the two, you can request that the pars
 and identify for you which column is which.
 
 &nbsp;
----
 ## Parsing a query with semantic analysis enabled
 
 Semantic analysis is the process that determines what exactly all the names refer to 
@@ -75,7 +75,6 @@ instance of the `ColumnSymbol` that was defined as part of table `T` when you de
     Assert.AreEqual(1, referencesToA.Count);
 ```
 &nbsp;
----
 ## Discovering errors identified during parsing
 
 If you wanted to see if any errors were detected during parsing or semantic analysis, 
@@ -93,7 +92,6 @@ In this case, you would only get the syntax errors found during parsing.
 Not all diagnostics are errors. Check the `Severity` property to see if it is an error, warning or other type of diagnostic.
 
 &nbsp;
----
 ## Finding all the database table columns referenced in a query
 
 You can use the parsed query to discover all the columns explicitly referenced by the query that originate from a database table.
@@ -126,7 +124,7 @@ The following examples shows using the `GetDatabaseTableColumns` function on a s
 ```csharp
     var globals = GlobalState.Default.WithDatabase(
         new DatabaseSymbol("db",
-            new TableSymbol("Shapes", "(id: string, width: double, height: double)"),
+            new TableSymbol("Shapes", "(id: string, width: real, height: real)"),
             new FunctionSymbol("TallShapes", "{ Shapes | where width < height; }")
             ));
 
@@ -188,7 +186,6 @@ Now when the function is used to find all the columns referenced by the query,
 it will include the column `height` referenced by the `TallShapes` function itself.
 
 &nbsp;
----
 ## Finding all the database tables referenced in a query
 
 In a manner similar to finding all the columns referenced in a query
@@ -263,9 +260,10 @@ You can improve upon it by using the same recursive technique used to find the c
         }
     }
 ```
+
 &nbsp;
----
 ## Finding the table for a column
+
 If a column is part of a database table, you can discover that table using the `GetTable` method 
 on the `GlobalState` that includes the database table definition.
 
@@ -274,8 +272,8 @@ on the `GlobalState` that includes the database table definition.
 ```
 
 &nbsp;
----
 ## Finding the database for a table
+
 If a table symbol is declared as part of a database, you can discover which database is associated with the table
 using the `GetDatabase` method on the `GlobalState` that includes the definition of the database and table.
 
@@ -284,8 +282,8 @@ using the `GetDatabase` method on the `GlobalState` that includes the definition
 ```
 
 &nbsp;
----
 ## Finding the cluster for a database
+
 You can discover the cluster that a database belongs to using the `GetCluster` method on the `GlobalState`
 that includes the definition of both the cluster and database symbols.
 
@@ -295,15 +293,65 @@ that includes the definition of both the cluster and database symbols.
 
 &nbsp;
 ---
-## Using existing database schemas
-In order to get the most/best use of the Kusto.Language library, it is necessary to have a
-`GlobalState` defined with all the of necessary database schemas that your query may reference.
+## Declaring database schemas
 
-Declaring all these symbols manually is a bit tedious and unnecessary if you already have an existing Kusto database.
+In order to have the parser understand the existence of any particular database tables or functions, it must be told about them first.
+You tell the parser about the tables and functions by adding `DatabaseSymbol` instances to the `GlobalState` instance you use with the `ParseAndAnalyze` method.
+
+You can declare tables by constructing `TableSymbol` instances.
+
+```csharp
+    var shapes = new TableSymbol("Shapes", "(id: string, width: real, height: real)");
+```
+
+You can declare functions by constructing `FunctionSymbol` instances.
+Functions can be declared with our without parameters.
+
+```csharp
+    var tallshapes = new FunctionSymbol("TallShapes", "{ Shapes | width < height; }");
+    var shortshapes = new FunctionSymbol("ShortShapes", "(maxHeight: real)", "{ Shapes | height < maxHeight; }");
+```
+
+Once you have all the tables and function symbols you can create a `DatabaseSymbol`.
+
+```csharp
+    var mydb = new DatabaseSymbol("mydb", shapes, tallshapes, shortshapes);
+```
+
+In order to use your database symbol it must be in the `GlobalState` instance.
+Since `GlobalState` is an immutable type, you add to it by making new instances using the `With` methods.
+
+One way to get a `GlobalState` to know about your database is to modify the default database symbol that is in scope when you query is analyzed.
+
+```csharp
+    var globalsWithMyDb = GlobalState.Default.WithDatabase(mydb);
+```
+
+Another way is to add a cluster definition. It can contain multiple databases.
+
+```csharp
+    var mycluster = new ClusterSymbol("mycluster.kusto.windows.net", mydb);
+```
+
+Once you have the cluster, you can either add it as the default cluster and the database as the default database or
+add it as a separate cluster (not the default).
+
+```csharp
+    var globalsWithMyDefaultCluster = GlobalState.Globals.WithCluster(mycluster).WithDatabase(mydb);
+    var globalsWithMyClusterAdded = GlobalState.Globals.AddOrReplaceCluster(mycluster);
+```
+
+If you add the cluster that is not he default, you must use the `cluster()` function to access it in the query.
+Likewise, if you have a database that is not the default, you must use the `database()` function to access it.
+
+
+&nbsp;
+## Using database schemas from the server
+
+Declaring all these symbols manually is a bit tedious and unnecessary if you already have an existing Kusto database defined.
 It is possible to construct all the necessary symbols by using Kusto itself to query the database and request all the schema information.
 
-Unfortunately, since the language library is used in scenarios that preclude including direct network calls to actual databases
-there are no API's provided in the library to do this for you.
+Unfortunately, there are no API's provided in the library to do this for you.
 
 There is, however, another project on Github that includes the necessary code to load the symbols 
 directly from the database into a form you can use.
@@ -312,4 +360,25 @@ https://github.com/mattwar/Kushy/blob/master/README.md
 
 You can copy/paste the SymbolLoader.cs file from this project into yours.
 
+
+&nbsp;
+---
+## Adding built-in functions and aggregates
+
+You can give the parser additional functions and aggregates to know about even though they might not really exist in the server 
+by adding them to the global state instance you use when you call the `ParseAndAnalyze` method.
+
+```csharp
+    var fnFake = new FunctionSymbol("fake", ScalarTypes.Real, new Parameter("x", ScalarTypes.Long), new Parameter("y", ScalarTypes.Long));
+    var globals = GlobalState.Default.WithFunctions(globals.Functions.Concat(new [] {fnFake}).ToArray());
+    var code = KustoCode.ParseAndAnalyze("print fake(10)", globals);
+```
+
+```csharp
+    var fnMinMax = new FunctionSymbol("minmax", ScalarTypes.Real, new Parameter("x", ScalarTypes.Real));
+    var globals = GlobalState.Default.WithAggregates(globals.Aggregates.Concat(new [] {fnMinMax}).ToArray());
+    var code = KustoCode.ParseAndAnalyze("T | summarize minmax(c)", globals);
+```
+
+Likewise, if you remove functions or aggregates from the global state's list the parser will produce an error when they are used.
 

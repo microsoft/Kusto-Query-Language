@@ -369,7 +369,7 @@ namespace Kusto.Language.Binding
                     return GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
-                    return GetWidestArgumentType(signature, argumentTypes) ?? ErrorSymbol.Instance;
+                    return Promote(GetWidestArgumentType(signature, argumentTypes)) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Cluster:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
@@ -829,17 +829,13 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Promotes a type to its most general form.  int -> long, decimal -> real
+        /// Promotes int to long
         /// </summary>
         public static TypeSymbol Promote(TypeSymbol symbol)
         {
             if (symbol == ScalarTypes.Int)
             {
                 return ScalarTypes.Long;
-            }
-            else if (symbol == ScalarTypes.Decimal)
-            {
-                return ScalarTypes.Real;
             }
             else
             {

@@ -10,8 +10,8 @@ namespace Kusto.Language.Parsing
     using static SyntaxParsers;
     using CompletionHint = Editor.CompletionHint;
     using CompletionKind = Editor.CompletionKind;
+    using SP = SyntaxParsers;
     using Utils;
-    using System.Text;
 
     /// <summary>
     /// Parsers for the Kusto command grammar.
@@ -156,7 +156,7 @@ namespace Kusto.Language.Parsing
                     _left =>
                         Rule(
                             _left,
-                            Token(SyntaxKind.BarToken),
+                            SP.Token(SyntaxKind.BarToken),
                             Required(queryParser.FollowingPipeElementExpression, QueryGrammar.MissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right))
                             .WithTag("<command-output-pipe>"));
@@ -183,7 +183,7 @@ namespace Kusto.Language.Parsing
                         oneOrMore: true,
                         allowTrailingSeparator: true),
                     Optional(skippedTokens), // consumes all remaining tokens (no diagnostic)
-                    Optional(Token(SyntaxKind.EndOfTextToken)),
+                    Optional(SP.Token(SyntaxKind.EndOfTextToken)),
                     (cmd, skipped, end) =>
                         new CommandBlock(cmd, skipped, end));
 
@@ -232,14 +232,14 @@ namespace Kusto.Language.Parsing
 
         internal static readonly Parser<LexicalToken, SyntaxToken> UnknownCommandToken =
             If(Not(First(
-                Token(SyntaxKind.BarToken),
-                Token(SyntaxKind.LessThanBarToken),
-                Token(SyntaxKind.EndOfTextToken))),
+                SP.Token(SyntaxKind.BarToken),
+                SP.Token(SyntaxKind.LessThanBarToken),
+                SP.Token(SyntaxKind.EndOfTextToken))),
                 AnyToken);
 
         internal static readonly Parser<LexicalToken, Command> UnknownCommand =
             Rule(
-                Token(SyntaxKind.DotToken),
+                SP.Token(SyntaxKind.DotToken),
                 OneOrMore(UnknownCommandToken,
                     (tokens) => new SyntaxList<SyntaxToken>(tokens)),
                 (dot, parts) => (Command)new UnknownCommand(dot, parts))
@@ -247,13 +247,12 @@ namespace Kusto.Language.Parsing
 
         internal static readonly Parser<LexicalToken, Command> BadCommand =
             Rule(
-                Token(SyntaxKind.DotToken),
+                SP.Token(SyntaxKind.DotToken),
                 dot => (Command)new BadCommand(dot, new Diagnostic[] { DiagnosticFacts.GetMissingCommand() }))
                 .WithTag("<bad-command>");
 
         internal static readonly Statement MissingCommandStatementNode =
             new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));
-
 
         /// <summary>
         /// Constructs a <see cref="CustomNode"/> parser.
@@ -400,18 +399,18 @@ namespace Kusto.Language.Parsing
         public static Parser<LexicalToken, Command> Command(string commandName, Parser<LexicalToken, SyntaxElement> contentParser)
         {
             return Rule(
-                Token(SyntaxKind.DotToken),
+                SP.Token(SyntaxKind.DotToken),
                 contentParser,
                 (dot, custom) => (Command)new CustomCommand(commandName, dot, custom))
                 .WithTag($"<{commandName}>");
         }
 
-        public static SyntaxElement CreateMissingEToken(string text)
+        public static SyntaxElement CreateMissingToken(string text)
         {
             return SyntaxParsers.CreateMissingToken(text);
         }
 
-        public static SyntaxElement CreateMissingEToken(IReadOnlyList<string> texts)
+        public static SyntaxElement CreateMissingToken(IReadOnlyList<string> texts)
         {
             return SyntaxParsers.CreateMissingToken(texts);
         }
@@ -419,33 +418,37 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> EToken(string text, CompletionKind? ckind = null)
+        public static Parser<LexicalToken, SyntaxElement> Token(string text, CompletionKind? ckind = null)
         {
-            return SyntaxParsers.Token(text, ckind).Cast<SyntaxElement>();
+            // the default completion kind won't be known for most command keywords since they are not encoded in the SyntaxFacts table,
+            // so change the default to Keyword to handle this common case.
+            return SyntaxParsers.Token(text, ckind ?? SP.GetCompletionKind(text, CompletionKind.Keyword)).Cast<SyntaxElement>();
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> EToken(params string[] texts)
+        public static Parser<LexicalToken, SyntaxElement> Token(params string[] texts)
         {
-            return SyntaxParsers.Token(texts).Cast<SyntaxElement>();
+            // the default completion kind won't be known for most command keywords since they are not encoded in the SyntaxFacts table,
+            // so change the default to Keyword to handle this common case.
+            return SyntaxParsers.Token(texts, defaultKind: CompletionKind.Keyword).Cast<SyntaxElement>();
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> RequiredEToken(string text, CompletionKind? ckind = null)
+        public static Parser<LexicalToken, SyntaxElement> RequiredToken(string text, CompletionKind? ckind = null)
         {
-            return Required(EToken(text, ckind), () => (SyntaxElement)CreateMissingToken(text));
+            return Required(Token(text, ckind), () => (SyntaxElement)CreateMissingToken(text));
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> RequiredEToken(params string[] texts)
+        public static Parser<LexicalToken, SyntaxElement> RequiredToken(params string[] texts)
         {
-            return Required(EToken(texts), () => (SyntaxElement)CreateMissingToken(texts));
+            return Required(Token(texts), () => (SyntaxElement)CreateMissingToken(texts));
         }
     }
 }

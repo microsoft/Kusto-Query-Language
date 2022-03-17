@@ -731,30 +731,30 @@ namespace Kusto.Language
         public static readonly FunctionSymbol MakeDatetime =
             new FunctionSymbol("make_datetime",
                 new Signature(ScalarTypes.DateTime,
-                    new Parameter("dateTime", ParameterTypeKind.Scalar)),
-                new Signature(ScalarTypes.DateTime,
                     new Parameter("year", ParameterTypeKind.Number),
                     new Parameter("month", ParameterTypeKind.Number),
                     new Parameter("day", ParameterTypeKind.Number),
                     new Parameter("hour", ParameterTypeKind.Number, minOccurring: 0),
                     new Parameter("minute", ParameterTypeKind.Number, minOccurring: 0),
-                    new Parameter("second", ParameterTypeKind.Number, minOccurring: 0)))
+                    new Parameter("second", ParameterTypeKind.Number, minOccurring: 0)),
+              new Signature(ScalarTypes.DateTime,
+                    new Parameter("dateTime", ParameterTypeKind.Scalar)))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
         public static readonly FunctionSymbol MakeTimespan =
             new FunctionSymbol("make_timespan",
                 new Signature(ScalarTypes.TimeSpan,
-                    new Parameter("timespan", ParameterTypeKind.Scalar)),
-                new Signature(ScalarTypes.TimeSpan,
+                    new Parameter("days", ParameterTypeKind.Integer),
+                    new Parameter("hours", ParameterTypeKind.Integer),
+                    new Parameter("minutes", ParameterTypeKind.Integer),
+                    new Parameter("seconds", ParameterTypeKind.Integer)),
+                 new Signature(ScalarTypes.TimeSpan,
                     new Parameter("hours", ParameterTypeKind.Integer),
                     new Parameter("minutes", ParameterTypeKind.Integer),
                     new Parameter("seconds", ParameterTypeKind.Integer, minOccurring: 0)),
                 new Signature(ScalarTypes.TimeSpan,
-                    new Parameter("days", ParameterTypeKind.Integer),
-                    new Parameter("hours", ParameterTypeKind.Integer),
-                    new Parameter("minutes", ParameterTypeKind.Integer),
-                    new Parameter("seconds", ParameterTypeKind.Integer)))
+                    new Parameter("timespan", ParameterTypeKind.Scalar)))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
@@ -1057,7 +1057,7 @@ namespace Kusto.Language
         #region bin / floor
         public static readonly FunctionSymbol Bin =
             new FunctionSymbol("bin",
-                new Signature(ReturnTypeKind.Parameter0,
+                new Signature(ReturnTypeKind.Widest,
                     new Parameter("value", ParameterTypeKind.Number),
                     new Parameter("roundTo", ParameterTypeKind.Number)),
                 new Signature(ScalarTypes.TimeSpan,
@@ -1074,7 +1074,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Floor =
             new FunctionSymbol("floor",
-                new Signature(ReturnTypeKind.Parameter0,
+                new Signature(ReturnTypeKind.Widest,
                     new Parameter("value", ParameterTypeKind.Number),
                     new Parameter("roundTo", ParameterTypeKind.Number)),
                 new Signature(ScalarTypes.TimeSpan,
@@ -1091,11 +1091,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol BinAt =
             new FunctionSymbol("bin_at",
-                new Signature(ScalarTypes.Long,
-                    new Parameter("value", ParameterTypeKind.Integer),
-                    new Parameter("bin_size", ParameterTypeKind.Integer),
-                    new Parameter("fixed_point", ParameterTypeKind.Integer)),
-                new Signature(ScalarTypes.Real,
+                new Signature(ReturnTypeKind.Widest,
                     new Parameter("value", ParameterTypeKind.Number),
                     new Parameter("bin_size", ParameterTypeKind.Number),
                     new Parameter("fixed_point", ParameterTypeKind.Number)),
