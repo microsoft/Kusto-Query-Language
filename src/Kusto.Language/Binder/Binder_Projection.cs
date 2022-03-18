@@ -361,6 +361,10 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
+            else if (expr is ParenthesizedExpression p)
+            {
+                return GetResultColumn(p.Expression);
+            }
             else if (expr.ReferencedSymbol is ColumnSymbol c)
             {
                 return c;
@@ -537,6 +541,8 @@ namespace Kusto.Language.Binding
         {
             switch (expr)
             {
+                case ParenthesizedExpression p:
+                    return GetExpressionResultName(p.Expression, defaultName, row);
                 case NameReference n:
                     return n.SimpleName;
                 case BracketedExpression be:
