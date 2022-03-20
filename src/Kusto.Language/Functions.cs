@@ -649,6 +649,17 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol Ipv4IsInAnyRange =
+            new FunctionSymbol("ipv4_is_in_any_range",
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("ip", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ranges", ScalarTypes.String, maxOccurring: MaxRepeat)),
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("ip", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ranges", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
         public static readonly FunctionSymbol Ipv4NetmaskSuffix =
            new FunctionSymbol("ipv4_netmask_suffix", ScalarTypes.Long,
                new Parameter("ip", ScalarTypes.String))
@@ -1525,8 +1536,7 @@ namespace Kusto.Language
             new FunctionSymbol("jaccard_index", ScalarTypes.Dynamic,
                 new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 2))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         #endregion
 
@@ -3070,6 +3080,7 @@ namespace Kusto.Language
             Ipv4IsPrivate,
             Ipv6IsMatch,
             Ipv4IsInRange,
+            Ipv4IsInAnyRange,
             Ipv4NetmaskSuffix,
             #endregion
 
