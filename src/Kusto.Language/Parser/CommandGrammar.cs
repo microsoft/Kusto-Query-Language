@@ -132,18 +132,18 @@ namespace Kusto.Language.Parsing
         /// </summary>
         private Parser<LexicalToken, CommandBlock> CreateCommandBlockParser(GlobalState globals)
         {
-            Parser<LexicalToken, Command> commandCore = null;
+            Parser<LexicalToken, Expression> inputCommandCore = null;
 
-            var command = Forward(() => commandCore)
+            var inputCommand = Forward(() => inputCommandCore)
                 .WithTag("<command>");
 
             // include parsers for all command symbols
             var queryParser = QueryGrammar.From(globals);
-            var rules = new PredefinedRuleParsers(queryParser, command);
+            var rules = new PredefinedRuleParsers(queryParser, inputCommand);
             var commandParsers = this.CreateCommandParsers(rules).ToArray();
             var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
 
-            commandCore =
+            var command =
                 First(
                     bestCommand, // pick whichever command will successfully consume most input
                     UnknownCommand, // fall back for commands that are not defined
@@ -160,6 +160,9 @@ namespace Kusto.Language.Parsing
                             Required(queryParser.FollowingPipeElementExpression, QueryGrammar.MissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right))
                             .WithTag("<command-output-pipe>"));
+
+            inputCommandCore =
+                commandOutputPipeExpression;
 
             var commandStatement =
                 Rule(

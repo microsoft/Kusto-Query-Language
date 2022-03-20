@@ -57,10 +57,8 @@ namespace Kusto.Language.Parsing
 
         public PredefinedRuleParsers(
             QueryGrammar queryParser,
-            Parser<LexicalToken, Command> command)
+            Parser<LexicalToken, Expression> inputCommand)
         {
-            command = command ?? First(CommandGrammar.UnknownCommand, CommandGrammar.BadCommand);
-
             // casts are required here, bridge.net has problems with covariant delegates
             this.MissingStringLiteral = () => (SyntaxElement)Q.MissingStringLiteral();
             this.MissingValue = () => (SyntaxElement)Q.MissingValue();
@@ -244,7 +242,7 @@ namespace Kusto.Language.Parsing
             this.CommandInput =
                 First(
                     If(Token(SyntaxKind.DotToken),
-                        command.Cast<SyntaxElement>()),
+                        inputCommand.Cast<SyntaxElement>()),
                     queryParser.StatementList.Cast<SyntaxElement>());
 
             var InputTextTokens = ZeroOrMore(AnyTokenButEnd);
