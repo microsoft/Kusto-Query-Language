@@ -581,6 +581,8 @@ items:
     href: isnullfunction.md
   - name: isutf8()
     href: isutf8.md
+  - name: jaccard_index()
+    href: jaccard-index-function.md
   - name: log()
     href: log-function.md
   - name: log10()
