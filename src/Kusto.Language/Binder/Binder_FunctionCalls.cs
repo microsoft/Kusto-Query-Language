@@ -1611,14 +1611,17 @@ namespace Kusto.Language.Binding
                             ? argumentTypes[argIndex]
                             : arg.ResultType;
 
+                        // use parameter type as variable type if scalar, to avoid analyzing function bodies with incorrect types.
+                        var localType = p.IsScalar && p.TypeKind == ParameterTypeKind.Declared
+                            ? p.DeclaredTypes[0]
+                            : argType;
+
                         var isLiteral = Binding.Binder.TryGetLiteralValue(arg, out var literalValue);
-                        locals.Add(new VariableSymbol(p.Name, argType, isLiteral, literalValue));
+                        locals.Add(new VariableSymbol(p.Name, localType, isLiteral, literalValue));
                     }
                     else
                     {
-                        var type = argIndex >= 0 && argumentTypes != null && argIndex < argumentTypes.Count
-                            ? argumentTypes[argIndex]
-                            : GetRepresentativeType(p);
+                        var type = GetRepresentativeType(p);
 
                         var isConstant = p.IsOptional && p.DefaultValue != null;
                         object constantValue = null;
