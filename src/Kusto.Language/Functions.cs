@@ -2322,26 +2322,50 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol GeoLineIntersectsLine =
+        public static readonly FunctionSymbol GeoIntersects2Lines =
             new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
                 new Parameter("lineString1", ScalarTypes.Dynamic),
                 new Parameter("lineString2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol GeoLineIntersectsPolygon =
+        public static readonly FunctionSymbol GeoIntersection2Lines =
+            new FunctionSymbol("geo_intersection_2lines", ScalarTypes.Dynamic,
+                new Parameter("lineString1", ScalarTypes.Dynamic),
+                new Parameter("lineString2", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoIntersectsLineWithPolygon =
             new FunctionSymbol("geo_intersects_line_with_polygon", ScalarTypes.Bool,
                 new Parameter("lineString", ScalarTypes.Dynamic),
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol GeoPolygonIntersectsPolygon =
+        public static readonly FunctionSymbol GeoIntersectionLineWithPolygon =
+            new FunctionSymbol("geo_intersection_line_with_polygon", ScalarTypes.Dynamic,
+                new Parameter("lineString", ScalarTypes.Dynamic),
+                new Parameter("polygon", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoIntersects2Polygons =
             new FunctionSymbol("geo_intersects_2polygons", ScalarTypes.Bool,
                 new Parameter("polygon1", ScalarTypes.Dynamic),
                 new Parameter("polygon2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoIntersection2Polygons =
+            new FunctionSymbol("geo_intersection_2polygons", ScalarTypes.Dynamic,
+                new Parameter("polygon1", ScalarTypes.Dynamic),
+                new Parameter("polygon2", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
 
         public static readonly FunctionSymbol GeoPolygonsUnion =
             new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
@@ -3037,9 +3061,12 @@ namespace Kusto.Language
             GeoDistancePointToPolygon,
             GeoPointInCircle,
             GeoPointInPolygon,
-            GeoLineIntersectsLine,
-            GeoLineIntersectsPolygon,
-            GeoPolygonIntersectsPolygon,
+            GeoIntersects2Lines,
+            GeoIntersectsLineWithPolygon,
+            GeoIntersects2Polygons,
+            GeoIntersection2Lines,
+            GeoIntersectionLineWithPolygon,
+            GeoIntersection2Polygons,
             GeoPolygonsUnion,
             GeoSimplifyPolygonsArray,
             GeoLinesUnion,
