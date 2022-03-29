@@ -38,7 +38,7 @@ being used as a wildcard (representing arbitrary insertion strings), `Count` cou
 many rows in the input to the operator are represented by this pattern, and `Representative`
 is one value from the input that falls into this group.
 
-If `[kind=source]` is specified, the operator will append the `Pattern` column to the existing table structure.
+If `[kind=source]` is specified, the operator will append the `Pattern` column to the existing rows in the table (instead of aggregating by `Pattern`).
 Note that the syntax an schema of this flavor might be subjected to future changes.
 
 For example, the result of `reduce by city` might include: 

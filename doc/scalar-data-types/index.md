@@ -7,8 +7,7 @@ ms.date: 01/27/2020
 ---
 # Scalar data types
 
-Every data value (such as the value of an expression, or the parameter to a function,
-or the value of an expression) has a **data type**. A data type is either a **scalar data type**
+Every data value (such as the value of an expression, or the parameter to a function) has a **data type**. A data type is either a **scalar data type**
 (one of the built-in predefined types listed below), or a **user-defined record**
 (an ordered sequence of name/scalar-data-type pairs, such as the data type of a
 row of a table).

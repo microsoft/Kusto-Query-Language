@@ -7,7 +7,7 @@ ms.date: 02/13/2020
 ---
 # sumif() (aggregation function)
 
-Returns a sum of *Expr* for which *Predicate* evaluates to `true`.
+Returns the sum of *Expr* in records for which *Predicate* evaluates to `true`.
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
