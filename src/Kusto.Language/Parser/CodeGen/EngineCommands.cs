@@ -1609,6 +1609,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowQueryCallTree =
             new CommandSymbol("ShowQueryCallTree", _schema18);
 
+        public static readonly CommandSymbol ShowExtentCorruptedDatetime =
+            new CommandSymbol("ShowExtentCorruptedDatetime", _schema18);
+
+        public static readonly CommandSymbol PatchExtentCorruptedDatetime =
+            new CommandSymbol("PatchExtentCorruptedDatetime", _schema18);
+
         public static readonly IReadOnlyList<CommandSymbol> All = new CommandSymbol[]
         {
             ShowDatabase,
@@ -2102,7 +2108,9 @@ namespace Kusto.Language
             DropUnusedStoredQueryResultContainers,
             EnableDatabaseMaintenanceMode,
             DisableDatabaseMaintenanceMode,
-            ShowQueryCallTree
+            ShowQueryCallTree,
+            ShowExtentCorruptedDatetime,
+            PatchExtentCorruptedDatetime
         };
     }
 }
