@@ -20,11 +20,11 @@ T | evaluate activity_counts_metrics(id, datetime_column, startofday(ago(30d)), 
 ## Arguments
 
 * *T*: The input tabular expression.
-* *IdColumn*: The name of the column with ID values that represent user activity. 
+* *IdColumn*: The name of the column with ID values that represent user activity.
 * *TimelineColumn*: The name of the column that represents the timeline.
 * *Start*: Scalar with value of the analysis start period.
 * *End*: Scalar with value of the analysis end period.
-* *Window*: Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string that is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md) or [startofyear](startofyearfunction.md). 
+* *Window*: Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string that is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md) or [startofyear](startofyearfunction.md).
 * *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
 
 ## Returns
@@ -37,16 +37,15 @@ Output table schema is:
 |---|---|---|---|---|---|---|---|
 |type: as of *`TimelineColumn`*|..|..|..|long|long|long|long|
 
-
 * *`TimelineColumn`*: The time window start time.
 * *`count`*: The total records count in the time window and *dim(s)*
 * *`dcount`*: The distinct ID values count in the time window and *dim(s)*
-* *`new_dcount`*: The distinct ID values in the time window and *dim(s)* compared to all previous time windows. 
+* *`new_dcount`*: The distinct ID values in the time window and *dim(s)* compared to all previous time windows.
 * *`aggregated_dcount`*: The total aggregated distinct ID values of *dim(s)* from first-time window to current (inclusive).
 
 ## Examples
 
-### Daily activity counts 
+### Daily activity counts
 
 The next query calculates daily activity counts for the provided input table
 
@@ -82,5 +81,3 @@ let T = datatable(UserId:string, Timestamp:datetime)
 |2017-08-02 00:00:00.0000000|3|3|2|6|
 |2017-08-03 00:00:00.0000000|6|5|2|8|
 |2017-08-04 00:00:00.0000000|1|1|0|8|
-
-

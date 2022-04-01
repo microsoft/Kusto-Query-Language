@@ -24,7 +24,6 @@ Double type value with the sum of the elements of the array.
 > [!NOTE]
 > If the array contains elements of non-numeric types, the result is `null`.
 
-
 ## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -32,6 +31,7 @@ Double type value with the sum of the elements of the array.
 print arr=dynamic([1,2,3,4]) 
 | extend arr_sum=array_sum(arr)
 ```
+
 |`arr`|`arr_sum`|
 |---|---|
 |[1,2,3,4]|10|

@@ -21,7 +21,7 @@ Another alias: array_iff().
 * *ifTrue*: Input array of values or primitive value - the result value(s) when the corresponding value of *ConditionArray* is *true*.
 * *ifFalse*: Input array of values or primitive value - the result value(s) when the corresponding value of *ConditionArray* is *false*.
 
-**Notes**
+### Notes
 
 * The result length is the length of *conditionArray*.
 * Numeric condition value is treated as *condition* != *0*.

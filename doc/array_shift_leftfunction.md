@@ -38,7 +38,7 @@ Dynamic array containing the same number of elements as in the original array. E
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_left(arr, 2)
     ```
-    
+
     |`arr`|`arr_shift`|
     |---|---|
     |[1,2,3,4,5]|[3,4,5,null,null]|
@@ -50,11 +50,10 @@ Dynamic array containing the same number of elements as in the original array. E
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_left(arr, 2, -1)
     ```
-    
+
     |`arr`|`arr_shift`|
     |---|---|
     |[1,2,3,4,5]|[3,4,5,-1,-1]|
-
 
 * Shifting to the right by two positions by using negative *shift_count* value:
 
@@ -63,7 +62,7 @@ Dynamic array containing the same number of elements as in the original array. E
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_left(arr, -2, -1)
     ```
-    
+
     |`arr`|`arr_shift`|
     |---|---|
     |[1,2,3,4,5]|[-1,-1,1,2,3]|

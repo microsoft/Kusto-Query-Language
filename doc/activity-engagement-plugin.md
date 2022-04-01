@@ -22,8 +22,8 @@ T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 ## Arguments
 
 * *T*: The input tabular expression.
-* *IdColumn*: The name of the column with ID values that represent user activity. 
-* *TimelineColumn*: The name of the column that represent timeline.
+* *IdColumn*: The name of the column with ID values that represent user activity.
+* *TimelineColumn*: The name of the column that represents timeline.
 * *Start*: (optional) Scalar with value of the analysis start period.
 * *End*: (optional) Scalar with value of the analysis end period.
 * *InnerActivityWindow*: Scalar with value of the inner-scope analysis window period.
@@ -32,14 +32,13 @@ T | evaluate activity_engagement(id, datetime_column, 1d, 30d)
 
 ## Returns
 
-Returns a table that has (distinct count of ID values inside inner-scope window, distinct count of ID values inside outer-scope window, and the activity ratio)for each inner-scope window period and for each existing dimensions combination.
+Returns a table that has a distinct count of ID values inside an inner-scope window, a distinct count of ID values inside an outer-scope window, and the activity ratio for each inner-scope window period, and for each existing dimensions combination.
 
 Output table schema is:
 
 |TimelineColumn|dcount_activities_inner|dcount_activities_outer|activity_ratio|dim1|..|dim_n|
 |---|---|---|---|--|--|--|--|--|--|
 |type: as of *TimelineColumn*|long|long|double|..|..|..|
-
 
 ## Examples
 
@@ -63,7 +62,7 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-wau.png" border="false" alt-text="Activity engagement dau wau.":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-wau.png" border="false" alt-text="Graph displaying the ratio of daily active users to weekly active users as specified in the query.":::
 
 ### DAU/MAU calculation
 
@@ -85,7 +84,7 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau.png" border="false" alt-text="Activity engagement dau mau.":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau.png" border="false" alt-text="Graph displaying the ratio of daily active users to monthly active users as specified in the query.":::
 
 ### DAU/MAU calculation with additional dimensions
 
@@ -108,4 +107,4 @@ range _day from _start to _end  step 1d
 | render timechart 
 ```
 
-:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau-mod3.png" border="false" alt-text="Activity engagement dau mau mod 3.":::
+:::image type="content" source="images/activity-engagement-plugin/activity-engagement-dau-mau-mod3.png" border="false" alt-text="Graph displaying the ratio of daily active users to monthly active users with modulo 3 as specified in the query.":::

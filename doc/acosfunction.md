@@ -7,7 +7,7 @@ ms.date: 10/23/2018
 ---
 # acos()
 
-Returns the angle whose cosine is the specified number (the inverse operation of [`cos()`](cosfunction.md)) .
+Returns the angle whose cosine is the specified number (the inverse operation of [`cos()`](cosfunction.md)).
 
 ## Syntax
 

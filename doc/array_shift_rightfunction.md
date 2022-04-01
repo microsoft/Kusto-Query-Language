@@ -38,7 +38,7 @@ Dynamic array containing the same amount of the elements as in the original arra
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_right(arr, 2)
     ```
-    
+
     |arr|arr_shift|
     |---|---|
     |[1,2,3,4,5]|[null,null,1,2,3]|
@@ -50,7 +50,7 @@ Dynamic array containing the same amount of the elements as in the original arra
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_right(arr, 2, -1)
     ```
-    
+
     |arr|arr_shift|
     |---|---|
     |[1,2,3,4,5]|[-1,-1,1,2,3]|
@@ -62,8 +62,7 @@ Dynamic array containing the same amount of the elements as in the original arra
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_shift=array_shift_right(arr, -2, -1)
     ```
-    
+
     |arr|arr_shift|
     |---|---|
     |[1,2,3,4,5]|[3,4,5,-1,-1]|
-    

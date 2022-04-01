@@ -37,7 +37,7 @@ Dynamic array containing the same amount of the elements as in original array, w
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, 2)
     ```
-    
+
     |arr|arr_rotated|
     |---|---|
     |[1,2,3,4,5]|[3,4,5,1,2]|
@@ -49,7 +49,7 @@ Dynamic array containing the same amount of the elements as in original array, w
     print arr=dynamic([1,2,3,4,5]) 
     | extend arr_rotated=array_rotate_left(arr, -2)
     ```
-    
+
     |arr|arr_rotated|
     |---|---|
     |[1,2,3,4,5]|[4,5,1,2,3]|
