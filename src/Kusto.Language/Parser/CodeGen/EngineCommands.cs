@@ -62,6 +62,7 @@ namespace Kusto.Language
         private static readonly string _schema33 = "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
         private static readonly string _schema34 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
         private static readonly string _schema35 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
+        private static readonly string _schema36 = "(Name: string, Entities: string)";
 
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol("ShowDatabase", _schema0);
@@ -1345,6 +1346,24 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterStorageKeysHash =
             new CommandSymbol("ShowClusterStorageKeysHash", _schema18);
 
+        public static readonly CommandSymbol CreateEntityGroupCommand =
+            new CommandSymbol("CreateEntityGroupCommand", _schema36);
+
+        public static readonly CommandSymbol AlterEntityGroup =
+            new CommandSymbol("AlterEntityGroup", _schema36);
+
+        public static readonly CommandSymbol AlterMergeEntityGroup =
+            new CommandSymbol("AlterMergeEntityGroup", _schema36);
+
+        public static readonly CommandSymbol DropEntityGroup =
+            new CommandSymbol("DropEntityGroup", _schema36);
+
+        public static readonly CommandSymbol ShowEntityGroup =
+            new CommandSymbol("ShowEntityGroup", _schema36);
+
+        public static readonly CommandSymbol ShowEntityGroups =
+            new CommandSymbol("ShowEntityGroups", _schema36);
+
         public static readonly CommandSymbol AlterExtentContainersAdd =
             new CommandSymbol("AlterExtentContainersAdd", _schema18);
 
@@ -2021,6 +2040,12 @@ namespace Kusto.Language
             ShowClusterNetwork,
             AlterClusterStorageKeys,
             ShowClusterStorageKeysHash,
+            CreateEntityGroupCommand,
+            AlterEntityGroup,
+            AlterMergeEntityGroup,
+            DropEntityGroup,
+            ShowEntityGroup,
+            ShowEntityGroups,
             AlterExtentContainersAdd,
             AlterExtentContainersDrop,
             AlterExtentContainersRecycle,
