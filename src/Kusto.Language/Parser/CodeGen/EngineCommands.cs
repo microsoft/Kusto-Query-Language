@@ -1337,6 +1337,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterScaleIn =
             new CommandSymbol("ShowClusterScaleIn", _schema18);
 
+        public static readonly CommandSymbol ShowClusterServices =
+            new CommandSymbol(
+                "ShowClusterServices",
+                "(NodeId: string, IsClusterAdmin: bool, IsFabricManager: bool, IsDatabaseAdmin: bool, IsWeakConsistencyNode: bool, IsRowStoreHostNode: bool, IsDataNode: bool)");
+
         public static readonly CommandSymbol ShowClusterNetwork =
             new CommandSymbol("ShowClusterNetwork", _schema18);
 
@@ -2037,6 +2042,7 @@ namespace Kusto.Language
             ClearRemoteClusterDatabaseSchema,
             ShowClusterMonitoring,
             ShowClusterScaleIn,
+            ShowClusterServices,
             ShowClusterNetwork,
             AlterClusterStorageKeys,
             ShowClusterStorageKeysHash,

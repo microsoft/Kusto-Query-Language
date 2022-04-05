@@ -8042,6 +8042,12 @@ namespace Kusto.Language.Parsing
                     RequiredToken("nodes"),
                     shape286));
 
+            var ShowClusterServices = Command("ShowClusterServices", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("services")));
+
             var ShowClusterStorageKeysHash = Command("ShowClusterStorageKeysHash", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -11056,6 +11062,7 @@ namespace Kusto.Language.Parsing
                 ShowClusterPrincipalRoles,
                 ShowClusterSandboxesStats,
                 ShowClusterScaleIn,
+                ShowClusterServices,
                 ShowClusterStorageKeysHash,
                 ShowCluster,
                 ShowColumnPolicyCaching,
