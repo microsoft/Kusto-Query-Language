@@ -657,8 +657,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Bool,
                     new Parameter("ip", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ranges", ScalarTypes.Dynamic)))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Ipv4NetmaskSuffix =
            new FunctionSymbol("ipv4_netmask_suffix", ScalarTypes.Long,
