@@ -112,6 +112,9 @@ namespace Kusto.Language
         public static readonly OptionSymbol QueryResultsApplyGetSchema =
             new OptionSymbol("query_results_apply_getschema", "If set, retrieves the schema of each tabular data in the results of the query instead of the data itself.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol QueryResultsCacheForceRefresh =
+            new OptionSymbol("query_results_cache_force_refresh", "If set, forces query results cache refresh for a specific query. Must be used in combination with 'query_results_cache_max_age', and sent via ClientRequestProperties object (not as 'set' statement).", ScalarTypes.Bool);
+
         public static readonly OptionSymbol QueryResultsCacheMaxAge =
             new OptionSymbol("query_results_cache_max_age", "If positive, controls the maximum age of the cached query results the service is allowed to return", ScalarTypes.TimeSpan);
 
@@ -200,6 +203,7 @@ namespace Kusto.Language
     QueryLogQueryParameters,
     QueryNow,
     QueryResultsApplyGetSchema,
+    QueryResultsCacheForceRefresh,
     QueryResultsCacheMaxAge,
     QueryResultsCachePerShardEnabled,
     QueryWeakConsistencySessionId,
