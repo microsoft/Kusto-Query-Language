@@ -302,8 +302,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Translate =
             new FunctionSymbol("translate", ScalarTypes.String,
-                new Parameter("searchList", ScalarTypes.String, ArgumentKind.Literal),
-                new Parameter("replacementList", ScalarTypes.String, ArgumentKind.Literal),
+                new Parameter("searchList", ScalarTypes.String),
+                new Parameter("replacementList", ScalarTypes.String),
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
