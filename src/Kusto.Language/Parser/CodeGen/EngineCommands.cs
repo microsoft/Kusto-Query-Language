@@ -1203,7 +1203,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCache =
             new CommandSymbol(
                 "ShowCache",
-                "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, MemoryCacheDetails: string, DiskCacheDetails: string)");
+                "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, MemoryCacheDetails: string, DiskCacheDetails: string, WarmedShardsSize: long, ShardsSizeToWarm: long, HotShardsSize: long)");
 
         public static readonly CommandSymbol AlterCache =
             new CommandSymbol("AlterCache", _schema18);
