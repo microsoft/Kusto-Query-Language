@@ -14,12 +14,12 @@ namespace Kusto.Language
     {
         public static Diagnostic GetMissingText(string text)
         {
-            return new Diagnostic("KS001", $"Missing '{text}'");
+            return new Diagnostic("KS001", $"Missing: {text}");
         }
 
         public static Diagnostic GetUnexpectedCharacter(string text)
         {
-            return new Diagnostic("KS002", $"Unexpected: '{text}'");
+            return new Diagnostic("KS002", $"Unexpected: {text}");
         }
 
         public static Diagnostic GetMalformedToken(string term)

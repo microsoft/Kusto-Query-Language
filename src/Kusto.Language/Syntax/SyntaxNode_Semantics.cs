@@ -145,26 +145,35 @@ namespace Kusto.Language.Syntax
                 fnDescend: fnDescend);
         }
 
-        private static Diagnostic SetLocation(Diagnostic d, SyntaxElement location)
+        private static Diagnostic SetLocation(Diagnostic d, SyntaxElement element)
         {
-            if (location.Width == 0)
+            switch (d.LocationKind)
             {
-                if (location is SyntaxToken token)
-                {
-                    // move location to next token if it is
-                    // lest than two spaces away and not separated by line breaks
-                    var next = token.GetNextToken();
-
-                    if (next != null
-                        && (next.TextStart - token.End) < 2
-                        && !TextFacts.HasLineBreaks(next.Trivia))
+                case DiagnosticLocationKind.Relative:
+                    // if token associated with diagnostics is empty use next token
+                    if (element.Width == 0 && element is SyntaxToken token)
                     {
-                        location = next;
-                    }
-                }
-            }
+                        // move location to next token if it is
+                        // less than two spaces away and not separated by line breaks
+                        var next = token.GetNextToken();
 
-            return d.WithLocation(location);
+                        if (next != null
+                            && (next.TextStart - token.End) < 2
+                            && !TextFacts.HasLineBreaks(next.Trivia))
+                        {
+                            element = next;
+                        }
+                    }
+
+                    return d.WithLocation(element);
+
+                case DiagnosticLocationKind.RelativeEnd:
+                    // location is after the end of this token
+                    return d.WithLocation(element.End, 0);
+
+                default:
+                    return d;
+            }
         }
     }
 

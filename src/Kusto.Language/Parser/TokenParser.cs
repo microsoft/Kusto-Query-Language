@@ -130,7 +130,14 @@ namespace Kusto.Language.Parsing
                         var gooLen = ScanGoo(text, pos + keywordMatch.Key.Length);
                         if (gooLen > 0)
                         {
-                            return EndCheckedToken(pos, gooKind, trivia, GetSubstring(text, pos, keywordMatch.Key.Length + gooLen), ")");
+                            var gooText = GetSubstring(text, pos, keywordMatch.Key.Length + gooLen);
+
+                            // validate the expected last character is correct
+                            var dx = gooText.EndsWith(")")
+                                ? null
+                                : DiagnosticFacts.GetMissingText(")").WithLocationKind(DiagnosticLocationKind.RelativeEnd);
+
+                            return new LexicalToken(gooKind, trivia, gooText, dx);
                         }
                     }
                 }
@@ -195,14 +202,79 @@ namespace Kusto.Language.Parsing
 
         private LexicalToken ParseStringLiteral(string text, int start, string trivia)
         {
-            var len = ScanStringLiteral(text, start);
-            if (len > 0)
+            // Note: this function repeats logic found in ScanStringLiteral in order to correctly identity when the end quote is not found
+            // and apply the diagnostic without requiring ScanStringLiteral to return two values which would perform poorly when translated to javascript.
+
+            var pos = start;
+            Diagnostic dx = null;
+
+            var ch = Peek(text, pos);
+            if (ch == 'h' || ch == 'H')
             {
-                var endQuote = GetStringLiteralQuote(text, start);
-                return EndCheckedToken(start, SyntaxKind.StringLiteralToken, trivia, GetSubstring(text, start, len), endQuote);
+                pos++;
+                ch = Peek(text, pos);
             }
 
-            return null;
+            var isVerbatim = false;
+            if (ch == '@')
+            {
+                isVerbatim = true;
+                pos++;
+                ch = Peek(text, pos);
+            }
+
+            if (ch == '\'')
+            {
+                pos++;
+
+                var contentLength = ScanStringLiteralContent(text, pos, ch, isVerbatim);
+                pos += contentLength;
+
+                if (Peek(text, pos) == ch)
+                {
+                    pos++;
+                }
+                else
+                {
+                    dx = DiagnosticFacts.GetMissingText("'").WithLocationKind(DiagnosticLocationKind.RelativeEnd);
+                }
+            }
+            else if (ch == '"')
+            {
+                pos++;
+
+                var contentLength = ScanStringLiteralContent(text, pos, ch, isVerbatim);
+                pos += contentLength;
+
+                if (Peek(text, pos) == ch)
+                {
+                    pos++;
+                }
+                else
+                {
+                    dx = DiagnosticFacts.GetMissingText("\"").WithLocationKind(DiagnosticLocationKind.RelativeEnd);
+                }
+            }
+            else if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
+            {
+                pos += KustoFacts.MultiLineStringQuote.Length;
+                pos += ScanMultiLineStringLiteralContent(text, pos);
+
+                if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
+                {
+                    pos += KustoFacts.MultiLineStringQuote.Length;
+                }
+                else
+                {
+                    dx = DiagnosticFacts.GetMissingText(KustoFacts.MultiLineStringQuote).WithLocationKind(DiagnosticLocationKind.RelativeEnd);
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return new LexicalToken(SyntaxKind.StringLiteralToken, trivia, GetSubstring(text, start, pos - start), dx);
         }
 
         private static TokenInfo GetPunctuationTokenInfo(string text, int start)
@@ -661,7 +733,7 @@ namespace Kusto.Language.Parsing
         /// Returns the number of characters that are part of the string literal, or -1 if the text
         /// at the starting position is not a string literal.
         /// </summary>
-        public static int ScanStringLiteral(string text, int start = 0)
+        public static int ScanStringLiteral(string text, int start = 0, bool failWhenMissingEndQuote = false)
         {
             var pos = start;
 
@@ -691,24 +763,24 @@ namespace Kusto.Language.Parsing
                 {
                     pos++;
                 }
-            }
-            else if (ch == '`' && Peek(text, pos + 1) == '`' && Peek(text, pos + 2) == '`')
-            {
-                pos += 3;
-                
-                while (pos < text.Length &&
-                    !(text[pos] == '`' && Peek(text, pos + 1) == '`' && Peek(text, pos + 2) == '`'))
+                else if (failWhenMissingEndQuote)
                 {
-                    pos++;
+                    return -1;
                 }
+            }
+            else if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
+            {
+                pos += KustoFacts.MultiLineStringQuote.Length;
+                pos += ScanMultiLineStringLiteralContent(text, pos);
 
-                // end ```
-                if (Peek(text, pos) == '`')
-                    pos++;
-                if (Peek(text, pos) == '`')
-                    pos++;
-                if (Peek(text, pos) == '`')
-                    pos++;
+                if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
+                {
+                    pos += KustoFacts.MultiLineStringQuote.Length;
+                }
+                else if (failWhenMissingEndQuote)
+                {
+                    return -1;
+                }
             }
             else
             {
@@ -744,8 +816,7 @@ namespace Kusto.Language.Parsing
                     }
                 }
                 else if (ch == quote
-                    || ch == '\r'
-                    || ch == '\n')
+                    || TextFacts.IsLineBreakStart(ch))
                 {
                     break;
                 }
@@ -753,6 +824,18 @@ namespace Kusto.Language.Parsing
                 {
                     pos++;
                 }
+            }
+
+            return pos - start;
+        }
+
+        private static int ScanMultiLineStringLiteralContent(string text, int start)
+        {
+            var pos = start;
+
+            while (pos < text.Length && !Matches(text, pos, KustoFacts.MultiLineStringQuote))
+            {
+                pos++;
             }
 
             return pos - start;
@@ -907,41 +990,9 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static string GetStringLiteralQuote(string text, int start)
-        {
-            var pos = start;
-
-            var ch = Peek(text, pos);
-            if (ch == 'h' || ch == 'H')
-            {
-                pos++;
-                ch = Peek(text, pos);
-            }
-
-            if (ch == '@')
-            {
-                pos++;
-                ch = Peek(text, pos);
-            }
-
-            if (ch == '\'')
-            {
-                return "'";
-            }
-            else if (ch == '"')
-            {
-                return "\"";
-            }
-            else if (ch == '`')
-            {
-                return "```";
-            }
-            else
-            {
-                return null;
-            }
-        }
-
+        /// <summary>
+        /// Scans the content of a parenthesized literal
+        /// </summary>
         private static int ScanGoo(string text, int start)
         {
             var pos = start;
@@ -950,7 +1001,12 @@ namespace Kusto.Language.Parsing
             {
                 pos++;
 
-                while (pos < text.Length && text[pos] != ')')
+                char ch;
+                while (pos < text.Length 
+                    && (ch = text[pos]) != ')'
+                    // better intellisense if we stop the insanity at like break (no literal spans multiple lines since dynamic is now an expression)
+                    // probably can do even better for numeric literals too since we know the domain fully.
+                    && !TextFacts.IsLineBreakStart(ch))  
                 {
                     pos++;
                 }
@@ -1016,19 +1072,24 @@ namespace Kusto.Language.Parsing
 
         private static bool Matches(string text, int start, string match)
         {
-            return start + match.Length < text.Length
-                && match[0] == text[start]
-                && string.Compare(text, start, match, 0, match.Length, StringComparison.Ordinal) == 0;
-        }
+            if (start + match.Length > text.Length)
+                return false;
 
-        private static LexicalToken EndCheckedToken(int start, SyntaxKind kind, string trivia, string text, string expectedEndChars)
-        {
-            // validate the expected last character is correct
-            var dx = text.EndsWith(expectedEndChars)
-                ? null
-                : new Diagnostic[] { DiagnosticFacts.GetMissingText(expectedEndChars) };
-
-            return new LexicalToken(kind, trivia, text, dx);
+            switch (match.Length)
+            {
+                case 1:
+                    return match[0] == text[start];
+                case 2:
+                    return match[0] == text[start]
+                        && match[1] == text[start + 1];
+                case 3:
+                    return match[0] == text[start]
+                        && match[1] == text[start + 1]
+                        && match[2] == text[start + 2];
+                default:
+                    return match[0] == text[start]
+                    && string.Compare(text, start, match, 0, match.Length, StringComparison.Ordinal) == 0;
+            }
         }
 
         private string GetSubstring(string text, int start, int len, bool intern = true)

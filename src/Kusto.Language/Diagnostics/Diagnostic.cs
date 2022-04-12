@@ -38,36 +38,41 @@ namespace Kusto.Language
         private readonly int length;
 
         public Diagnostic(string code, string message)
-            : this(code, category: null, severity: null, message: message, description: null, start: 0, length: 0)
+            : this(code, category: null, severity: null, message: message, description: null, locationKind: DiagnosticLocationKind.Relative, start: 0, length: 0)
         {
         }
 
         public Diagnostic(string code, string category, string severity, string description)
-            : this(code, category, severity, description: description, message: null, start: 0, length: 0)
+            : this(code, category, severity, description: description, message: null, locationKind: DiagnosticLocationKind.Relative, start: 0, length: 0)
         {
         }
 
         public Diagnostic(string code, string category, string severity, string description, string message)
-            : this(code, category, severity, description: description, message: message, start: 0, length: 0)
+            : this(code, category, severity, description: description, message: message, locationKind: DiagnosticLocationKind.Relative, start: 0, length: 0)
         {
         }
 
-
-        private Diagnostic(string code, string category, string severity, string description, string message, int start, int length)
+        private Diagnostic(string code, string category, string severity, string description, string message, DiagnosticLocationKind locationKind, int start, int length)
         {
             this.Code = code ?? "";
             this.Category = category ?? DiagnosticCategory.General;
             this.Severity = severity ?? DiagnosticSeverity.Error;
             this.Description = description ?? message ?? "";
             this.Message = message ?? description ?? "";
+            this.LocationKind = locationKind;
             this.start = start >= 0 ? start: 0;
             this.length = length >= 0 ? length: 0;
         }
 
         /// <summary>
-        /// True if the diagnostic has a source location
+        /// True if the diagnostic has an known source location
         /// </summary>
-        public bool HasLocation => this.length > 0;
+        public bool HasLocation => this.LocationKind == DiagnosticLocationKind.Absolute;
+
+        /// <summary>
+        /// The kind of diagnositc location.
+        /// </summary>
+        public DiagnosticLocationKind LocationKind { get; }
 
         /// <summary>
         /// Start of diagnostic location in the source.
@@ -90,6 +95,7 @@ namespace Kusto.Language
             string severity = null,
             string description = null,
             string message = null,
+            DiagnosticLocationKind? locationKind = null,
             int start = -1,
             int length = -1)
         {
@@ -98,6 +104,7 @@ namespace Kusto.Language
             severity = severity ?? this.Severity;
             description = description ?? this.Description;
             message = message ?? this.Message;
+            var useLocationKind = locationKind != null ? locationKind.Value : this.LocationKind;
             start = start >= 0 ? start : this.start;
             length = length >= 0 ? length : this.length;
 
@@ -106,10 +113,11 @@ namespace Kusto.Language
                 || severity != this.Severity
                 || description != this.Description
                 || message != this.Message
+                || useLocationKind != this.LocationKind
                 || start != this.start
                 || length != this.length)
             {
-                return new Diagnostic(code, category, severity, description, message, start, length);
+                return new Diagnostic(code, category, severity, description, message, useLocationKind, start, length);
             }
             else
             {
@@ -139,12 +147,17 @@ namespace Kusto.Language
 
         public Diagnostic WithLocation(SyntaxElement location)
         {
-            return With(start: location.TextStart, length: location.Width);
+            return With(locationKind: DiagnosticLocationKind.Absolute, start: location.TextStart, length: location.Width);
         }
 
         public Diagnostic WithLocation(int start, int length)
         {
-            return With(start: start, length: length);
+            return With(locationKind: DiagnosticLocationKind.Absolute, start: start, length: length);
+        }
+
+        public Diagnostic WithLocationKind(DiagnosticLocationKind locationKind)
+        {
+            return With(locationKind: locationKind);
         }
 
         public static IReadOnlyList<Diagnostic> NoDiagnostics = new Diagnostic[0];
@@ -183,5 +196,23 @@ namespace Kusto.Language
         /// A diagnostic that is not meant to be relayed to the user.
         /// </summary>
         public const string Hidden = nameof(Hidden);
+    }
+
+    public enum DiagnosticLocationKind
+    {
+        /// <summary>
+        /// The diagnostic location is known with absolute start and length values.
+        /// </summary>
+        Absolute,
+
+        /// <summary>
+        /// The diagnostic location is unknown, but relative to the syntax item it is associated with.
+        /// </summary>
+        Relative,
+
+        /// <summary>
+        /// The diagnostic location is unknown, but after the end of the syntax item it is associated with.
+        /// </summary>
+        RelativeEnd
     }
 }

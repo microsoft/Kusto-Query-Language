@@ -42,6 +42,11 @@ namespace Kusto.Language.Parsing
             this.Diagnostics = diagnostics ?? Diagnostic.NoDiagnostics;
         }
 
+        public LexicalToken(SyntaxKind kind, string trivia, string text, Diagnostic diagnostic)
+            : this(kind, trivia, text, diagnostic != null ? new[] { diagnostic } : null)
+        {
+        }
+
         /// <summary>
         /// The combined length of the trivia and text of the token
         /// </summary>
