@@ -1456,6 +1456,14 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitAssertSchemaOperator(AssertSchemaOperator node)
+            {
+                var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                return new SemanticInfo(resultTable);
+            }
+
             public override SemanticInfo VisitTopOperator(TopOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -3444,7 +3452,7 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-            #endregion
+#endregion
         }
     }
 }

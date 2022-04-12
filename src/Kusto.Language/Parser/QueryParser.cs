@@ -4675,6 +4675,20 @@ namespace Kusto.Language.Parsing
             return null;
         }
         #endregion
+
+        #region assert-schema
+        private AssertSchemaOperator ParseAssertSchemaOperator()
+        {
+            var keyword = ParseToken(SyntaxKind.AssertSchemaKeyword);
+            if (keyword != null)
+            {
+                var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                return new AssertSchemaOperator(keyword, schema);
+            }
+
+            return null;
+        }
+        #endregion
         #endregion
 
         #region Query Expressions
@@ -4774,6 +4788,8 @@ namespace Kusto.Language.Parsing
                     return ParseUnionOperator();
                 case SyntaxKind.MacroExpandKeyword:
                     return ParseMacroExpand();
+                case SyntaxKind.AssertSchemaKeyword:
+                    return ParseAssertSchemaOperator();
                 default:
                     return null;
             }

@@ -30,6 +30,7 @@
         AreaChartKeyword,
         AsKeyword,
         AscKeyword,
+        AssertSchemaKeyword,
 
         BagExpansionKeyword,
         BarChartKeyword,
@@ -488,6 +489,8 @@
         BadQueryOperator,
 
         AsOperator,
+
+        AssertSchemaOperator,
 
         ConsumeOperator,
 

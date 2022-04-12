@@ -62,6 +62,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.AreaChartKeyword, "areachart"),
                 new SyntaxData(SyntaxKind.AsKeyword, "as"),
                 new SyntaxData(SyntaxKind.AscKeyword, "asc"),
+                new SyntaxData(SyntaxKind.AssertSchemaKeyword, "assert-schema"),
 
                 new SyntaxData(SyntaxKind.BagExpansionKeyword, "bagexpansion"),
                 new SyntaxData(SyntaxKind.BarChartKeyword, "barchart"),
@@ -520,6 +521,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.BadQueryOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.AsOperator, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.AssertSchemaOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.ConsumeOperator, "", SyntaxCategory.Node),
 

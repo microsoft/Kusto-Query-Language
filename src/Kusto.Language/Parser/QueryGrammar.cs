@@ -2400,6 +2400,12 @@ namespace Kusto.Language.Parsing
                     (keyword, exprs) => (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
 
+            var AssertSchemaOperator =
+                Rule(
+                    Token(SyntaxKind.AssertSchemaKeyword, CompletionKind.QueryPrefix),
+                    Required(SchemaMultipartType, MissingSchema),
+                    (keyword, schema) => (QueryOperator)new AssertSchemaOperator(keyword, schema)).Hide();
+
             var EntityGroup = Rule(
                 Token(SyntaxKind.EntityGroupKeyword),
                 RequiredToken(SyntaxKind.OpenBracketToken),
@@ -2438,6 +2444,7 @@ namespace Kusto.Language.Parsing
 
             var PostPipeQueryOperator =
                 First(
+                    AssertSchemaOperator,
                     ConsumeOperator,
                     CountOperator,
                     ExecuteAndCacheOperator,

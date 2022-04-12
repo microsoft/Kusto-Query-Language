@@ -12311,6 +12311,73 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ScanOperator */
     
+    #region class AssertSchemaOperator
+    public sealed partial class AssertSchemaOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.AssertSchemaOperator;
+        
+        public SyntaxToken AssertSchemaKeyword { get; }
+        
+        public SchemaTypeExpression Schema { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="AssertSchemaOperator"/>.
+        /// </summary>
+        internal AssertSchemaOperator(SyntaxToken assertSchemaKeyword, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.AssertSchemaKeyword = Attach(assertSchemaKeyword);
+            this.Schema = Attach(schema);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return AssertSchemaKeyword;
+                case 1: return Schema;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(AssertSchemaKeyword);
+                case 1: return nameof(Schema);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitAssertSchemaOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitAssertSchemaOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new AssertSchemaOperator((SyntaxToken)AssertSchemaKeyword?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class AssertSchemaOperator */
+    
     #region class ScanDeclareClause
     public sealed partial class ScanDeclareClause : SyntaxNode
     {
@@ -13489,6 +13556,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitJoinOnClause(JoinOnClause node);
         public abstract void VisitJoinWhereClause(JoinWhereClause node);
         public abstract void VisitScanOperator(ScanOperator node);
+        public abstract void VisitAssertSchemaOperator(AssertSchemaOperator node);
         public abstract void VisitScanDeclareClause(ScanDeclareClause node);
         public abstract void VisitScanOrderByClause(ScanOrderByClause node);
         public abstract void VisitScanPartitionByClause(ScanPartitionByClause node);
@@ -14127,6 +14195,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitAssertSchemaOperator(AssertSchemaOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitScanDeclareClause(ScanDeclareClause node)
         {
             this.DefaultVisit(node);
@@ -14340,6 +14412,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitJoinOnClause(JoinOnClause node);
         public abstract TResult VisitJoinWhereClause(JoinWhereClause node);
         public abstract TResult VisitScanOperator(ScanOperator node);
+        public abstract TResult VisitAssertSchemaOperator(AssertSchemaOperator node);
         public abstract TResult VisitScanDeclareClause(ScanDeclareClause node);
         public abstract TResult VisitScanOrderByClause(ScanOrderByClause node);
         public abstract TResult VisitScanPartitionByClause(ScanPartitionByClause node);
@@ -14975,6 +15048,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitScanOperator(ScanOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitAssertSchemaOperator(AssertSchemaOperator node)
         {
             return this.DefaultVisit(node);
         }
