@@ -3,7 +3,7 @@ title: The string data type - Azure Data Explorer
 description: This article describes The string data type in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference
-ms.date: 04/07/2021
+ms.date: 04/011/2022
 ---
 # The string data type
 
@@ -22,8 +22,8 @@ characters.
 
 There are several ways to encode literals of the `string` data type in a query text:
 
-* Enclose the string in double-quotes (`"`): "This is a string literal. Single quote characters (') don't require escaping. Double quote characters (\") are escaped by a backslash (\\)"
-* Enclose the string in single-quotes (`'`): 'Another string literal. Single quote characters (\') require escaping by a backslash (\\). Double quote characters (") do not require escaping.'
+* Enclose the string in double-quotes (`"`): `"This is a string literal. Single quote characters (') don't require escaping. Double quote characters (") are escaped by a backslash (\)."`
+* Enclose the string in single-quotes (`'`): `'Another string literal. Single quote characters (') require escaping by a backslash (\). Double quote characters (") do not require escaping.'`
 
 In the two representations above, the backslash (`\`) character indicates escaping.
 The backslash is used to escape the enclosing quote characters, tab characters (`\t`),
@@ -37,8 +37,8 @@ newline characters (`\n`), and itself (`\\`).
 
 Verbatim string literals are also supported. In this form, the backslash character (`\`) stands for itself, and not as an escape character.
 
-* Enclose in double-quotes (`"`): `@"This is a verbatim string literal that ends with a backslash\"`
-* Enclose in single-quotes (`'`): `@'This is a verbatim string literal that ends with a backslash\'`
+* Enclose in double-quotes (`"`): `@"This is a verbatim string literal that ends with a backslash\."`
+* Enclose in single-quotes (`'`): `@'This is a verbatim string literal that ends with a backslash\.'`
 
 > [!NOTE]
 > The newline character (`\n`) and the return character (`\r`) can't be included
