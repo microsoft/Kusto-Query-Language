@@ -1537,6 +1537,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol BagHasKey =
+            new FunctionSymbol("bag_has_key", ScalarTypes.Bool,
+                new Parameter("bag", ScalarTypes.Dynamic),
+                new Parameter("key", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // TODO: afridman to unhide after 2/May/2022
+            .ConstantFoldable();
         #endregion
 
         #region digest / series functions
@@ -2956,6 +2963,7 @@ namespace Kusto.Language
             BagMerge,
             DynamicToJson,
             BagRemoveKeys,
+            BagHasKey,
             JaccardIndex,
 #endregion
 
