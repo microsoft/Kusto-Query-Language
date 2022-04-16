@@ -549,7 +549,7 @@ namespace Kusto.Language.Parsing
                 If(IsSignedNumericLiteral,
                     Rule(
                         First(Token(SyntaxKind.MinusToken), Token(SyntaxKind.PlusToken)).Hide(),
-                        First(LongLiteral, RealLiteral),
+                        First(LongLiteral, RealLiteral, TimespanLiteral),
                         (sign, expr) =>
                         {
                             // combine sign and literal into single literal token and expression

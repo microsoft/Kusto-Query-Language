@@ -945,7 +945,8 @@ namespace Kusto.Language.Parsing
             if ((sign.Kind == SyntaxKind.PlusToken || sign.Kind == SyntaxKind.MinusToken)
                 && number.Trivia.Length == 0
                 && (number.Kind == SyntaxKind.LongLiteralToken
-                || number.Kind == SyntaxKind.RealLiteralToken)
+                || number.Kind == SyntaxKind.RealLiteralToken
+                || number.Kind == SyntaxKind.TimespanLiteralToken)
                 && number.Text.Length > 0 && char.IsDigit(number.Text[0]))
             {
                 return 2;
@@ -971,6 +972,8 @@ namespace Kusto.Language.Parsing
                         return new LiteralExpression(SyntaxKind.LongLiteralExpression, signedNumberToken);
                     case SyntaxKind.RealLiteralToken:
                         return new LiteralExpression(SyntaxKind.RealLiteralExpression, signedNumberToken);
+                    case SyntaxKind.TimespanLiteralToken:
+                        return new LiteralExpression(SyntaxKind.TimespanLiteralExpression, signedNumberToken);
                 }
             }
 

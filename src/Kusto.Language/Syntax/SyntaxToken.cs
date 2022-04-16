@@ -612,9 +612,7 @@ namespace Kusto.Language.Syntax
 
                 // find number/word split
                 int split = 0;
-                char ch;
-                while (split < valueText.Length
-                    && char.IsDigit(ch = valueText[split]) || (valueText[split] == '.'))
+                while (split < valueText.Length && !char.IsLetter(valueText[split]))
                 {
                     split++;
                 }
