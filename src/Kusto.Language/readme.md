@@ -137,9 +137,9 @@ The result `dbColumns` contains the column symbols for the `width` and `id` colu
 are the only columns explicitly referenced within the body of the query.
 
 However, since the query is actually over the function `TallShapes` instead of the `Shapes` table directly,
-this naive approach to finding column references does not include any additional columns referenced by the function.
+this naive approach to finding column references does not include any additional columns referenced by the called function.
 
-You can improve on this approach with a somewhat more elaborate function that recursively analyzes the function's body too.
+You can improve on this approach with a somewhat more elaborate function that recursively analyzes the called function bodies too.
 
 ```csharp
     public static HashSet<ColumnSymbol> GetDatabaseTableColumns(KustoCode code)
@@ -158,24 +158,24 @@ You can improve on this approach with a somewhat more elaborate function that re
                     {
                         columns.Add(c);
                     }
-                    else if (n.GetExpansion() is SyntaxNode expansion)
+                    else if (n.GetCalledFunctionBody() is SyntaxNode body)
                     {
-                        GatherColumns(expansion);
+                        GatherColumns(body);
                     }
                 },
                 fnDescend: n =>
-                    // skip function declarations since expansion will already take care of it
+                    // skip descending into function declarations since their bodies will be examined by the code above
                     !(n is FunctionDeclaration)
                 );
         }
     }
 ```
 
-This advanced function uses the `GetExpansion` method found on syntax nodes.
+This advanced function uses the `GetCalledFunctionBody` method found on syntax nodes.
 For nodes that refer to user or database functions (like a function call node), 
-it will return the root node of the parsed function body.
+it will return the root node of the function body.
 
-You can use this expansion of the function to analyze its body for additional column references
+You can analyze this separate function body for additional column references
 by recursively calling the `GatherColumns` method.
 
 The function also supplies the `fnDescend` delegate to the `SyntaxElemenet.WalkNodes` method,
@@ -248,13 +248,13 @@ You can improve upon it by using the same recursive technique used to find the c
                     {
                         tables.Add(ts);
                     }
-                    else if (n.GetExpansion() is SyntaxNode expansion)
+                    else if (n.GetCalledFunctionBody() is SyntaxNode body)
                     {
-                        GatherTables(expansion);
+                        GatherTables(body);
                     }
                 },
                 fnDescend: n =>
-                    // skip function declarations since expansion will already take care of it
+                    // skip descending into function declarations since their bodies will be examined by the code above
                     !(n is FunctionDeclaration)
                 );
         }
