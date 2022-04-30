@@ -418,6 +418,11 @@ namespace Kusto.Language.Parsing
             return SyntaxParsers.CreateMissingToken(texts);
         }
 
+        public static SyntaxElement CreateMissingToken(params string[] texts)
+        {
+            return SyntaxParsers.CreateMissingToken(texts);
+        }
+
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
