@@ -2385,7 +2385,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Declaration;
+                case 0: return CompletionHint.Function;
                 case 1: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }

@@ -90,7 +90,7 @@ namespace Kusto.Language.Binding
                 base.VisitFunctionCallExpression(node);
 
                 // function call arguments do not have path scope or special scope kinds like aggregate
-                if (_position >= node.ArgumentList.TextStart)
+                if (_position > node.Name.End)
                 {
                     _binder._pathScope = null;
                     _binder._scopeKind = _binder.GetArgumentScope(node, _binder._scopeKind);

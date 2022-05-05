@@ -447,6 +447,12 @@ namespace Kusto.Language.Parsing
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 diagnostics: new[] { DiagnosticFacts.GetMissingParameter() });
 
+        private static ExpressionList CreateMissingArgumentList() =>
+            new ExpressionList(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.OpenParenToken)),
+                SyntaxList<SeparatedElement<Expression>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.CloseParenToken)));
+
         private static FunctionCallExpression CreateMissingFunctionCallExpression() =>
             new FunctionCallExpression(
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
@@ -454,7 +460,7 @@ namespace Kusto.Language.Parsing
                     SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                     SyntaxList<SeparatedElement<Expression>>.Empty(),
                     SyntaxToken.Missing(SyntaxKind.CloseParenToken)),
-                new[] { DiagnosticFacts.GetMissingFunctionCall() });
+            new[] { DiagnosticFacts.GetMissingFunctionCall() });
 
         private static MaterializedViewCombineClause CreateMissingMaterializedViewCombineClause(string name) =>
             new MaterializedViewCombineClause(
@@ -1909,18 +1915,27 @@ namespace Kusto.Language.Parsing
                      || IsMultiTokenName(n))
             .ToList();
 
-        private bool ScanFunctionCallStart(int offset = 0)
+        private int ScanFunctionCallName(int offset = 0)
         {
             var len = ScanName(offset);
-            if (len > 0 && PeekToken(offset + len).Kind == SyntaxKind.OpenParenToken)
-                return true;
+            if (len > 0)
+                return len;
 
             for (int i = 0; i < s_functionsWithKeywordNames.Count; i++)
             {
-                len = ScanToken(s_functionsWithKeywordNames[i]);
-                if (len > 0 && PeekToken(offset + len).Kind == SyntaxKind.OpenParenToken)
-                    return true;
+                len = ScanToken(s_functionsWithKeywordNames[i], offset);
+                if (len > 0)
+                    return len;
             }
+
+            return -1;
+        }
+
+        private bool ScanFunctionCallStart(int offset = 0)
+        {
+            var len = ScanFunctionCallName(offset);
+            if (len > 0 && PeekToken(offset + len).Kind == SyntaxKind.OpenParenToken)
+                return true;
 
             return false;
         }
@@ -1928,7 +1943,7 @@ namespace Kusto.Language.Parsing
         private NameReference ParseFunctionCallName()
         {
             var len = ScanName();
-            if (len > 0 && PeekToken(len).Kind == SyntaxKind.OpenParenToken)
+            if (len > 0)
             {
                 return ParseNameReference();
             }
@@ -1957,6 +1972,26 @@ namespace Kusto.Language.Parsing
             }
 
             return null;
+        }
+
+        private FunctionCallExpression ParseRequiredFunctionCallExpression()
+        {
+            if (ScanFunctionCallStart())
+            {
+                var name = ParseFunctionCallName();
+                var arguments = ParseArgumentList();
+                return new FunctionCallExpression(name, arguments);
+            }
+            else if (ScanFunctionCallName() > 0)
+            {
+                var name = ParseFunctionCallName();
+                var arguments = CreateMissingArgumentList();
+                return new FunctionCallExpression(name, arguments);
+            }
+            else
+            {
+                return CreateMissingFunctionCallExpression();
+            }
         }
 
         private Expression ParseDotCompositeFunctionCall()
@@ -3797,7 +3832,7 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var parameters = ParseQueryOperatorParameterList(s_evaluateOperatorParameterMap);
-                var functionCall = ParseFunctionCallExpression() ?? CreateMissingFunctionCallExpression();
+                var functionCall = ParseRequiredFunctionCallExpression();
                 var schema = ParseEvaluateSchemaClause();
                 return new EvaluateOperator(keyword, parameters, functionCall, schema);
             }

@@ -973,6 +973,14 @@ namespace Kusto.Language.Parsing
                         (Expression)new FunctionCallExpression((NameReference)name, arguments))
                 .WithTag("<FunctionCall>");
 
+            var RequiredFunctionCall =
+                Required(
+                    First(
+                        FunctionCall,
+                        Rule(FunctionCallNames,
+                            (name) => (Expression)new FunctionCallExpression((NameReference)name, MissingArgumentList()))),
+                    MissingFunctionCallExpression);
+
             var DotCompositeFunctionCall =
                 ApplyZeroOrMore(
                     FunctionCall,
@@ -1918,7 +1926,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.EvaluateKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.EvaluateParameters),
-                    Required(FunctionCall, MissingFunctionCallExpression),
+                    RequiredFunctionCall,
                     Optional(EvaluateSchemaClause),
                     (keyword, parameters, expr, schema) => (QueryOperator)new EvaluateOperator(keyword, parameters, (FunctionCallExpression)expr, schema))
                 .WithTag("<evaluate>");
@@ -3081,6 +3089,15 @@ namespace Kusto.Language.Parsing
 
         public static readonly Func<JsonPair> MissingJsonPair =
             () => (JsonPair)MissingJsonPairNode.Clone();
+
+        private static readonly ExpressionList MissingArgumentListNode =
+            new ExpressionList(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.OpenParenToken)),
+                SyntaxList<SeparatedElement<Expression>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.CloseParenToken)));
+
+        private static readonly Func<ExpressionList> MissingArgumentList =
+            () => (ExpressionList)MissingArgumentListNode.Clone();
 
         public static readonly FunctionCallExpression MissingFunctionCallNode =
             new FunctionCallExpression(
