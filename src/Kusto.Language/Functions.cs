@@ -2340,8 +2340,7 @@ namespace Kusto.Language
                 new Parameter("lineString1", ScalarTypes.Dynamic),
                 new Parameter("lineString2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersectsLineWithPolygon =
             new FunctionSymbol("geo_intersects_line_with_polygon", ScalarTypes.Bool,
@@ -2355,8 +2354,7 @@ namespace Kusto.Language
                 new Parameter("lineString", ScalarTypes.Dynamic),
                 new Parameter("polygon", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Polygons =
             new FunctionSymbol("geo_intersects_2polygons", ScalarTypes.Bool,
@@ -2370,8 +2368,7 @@ namespace Kusto.Language
                 new Parameter("polygon1", ScalarTypes.Dynamic),
                 new Parameter("polygon2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonsUnion =
             new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
@@ -2448,16 +2445,14 @@ namespace Kusto.Language
                 new Parameter("polygon", ScalarTypes.Dynamic),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoSimplifyPolygonsArray =
             new FunctionSymbol("geo_simplify_polygons_array", ScalarTypes.Dynamic,
                 new Parameter("polygons", ScalarTypes.Dynamic),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineValidate =
             new FunctionSymbol("__geo_line_validate", ScalarTypes.String,
@@ -2497,8 +2492,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_geohash_neighbors", ScalarTypes.Dynamic,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointToS2Cell =
             new FunctionSymbol("geo_point_to_s2cell", ScalarTypes.String,
@@ -2518,8 +2512,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_s2cell_neighbors", ScalarTypes.Dynamic,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellToPolygon =
             new FunctionSymbol("geo_s2cell_to_polygon", ScalarTypes.Dynamic,
@@ -2551,8 +2544,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_h3cell_neighbors", ScalarTypes.Dynamic,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellChildren =
             new FunctionSymbol("geo_h3cell_children", ScalarTypes.Dynamic,
