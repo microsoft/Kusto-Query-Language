@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
+    using Kusto.Language;
     using Parsing;
     using Symbols;
     using Syntax;
@@ -1429,20 +1430,27 @@ namespace Kusto.Language.Binding
                 // use expansion at this call site to determine correct return type
                 // if signature facts was not yet known, it will be computed by calling GetCallSiteExpansion
                 var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes, outerScope);
+                
+                // try again after evaluating expansion
+                TryGetFunctionBodyFacts(signature, out funFacts);
+
                 var returnType = expansion?.Body?.Expression?.ResultType;
+
                 var hasErrors = funFacts != null ? funFacts.HasErrors
                     : returnType != null && returnType.IsError ? true
                     : HasErrors(expansion?.Body);
+
                 if (returnType == null || returnType.IsError)
                     returnType = ScalarTypes.Unknown;
-                return new FunctionCallResult(returnType, new FunctionCallInfo(expansion, hasErrors));
+
+                return new FunctionCallResult(returnType, new FunctionCallInfo(expansion, funFacts, hasErrors));
             }
             else
             {
                 // body has non-variable (fixed) return type.
                 return new FunctionCallResult(
                     funFacts.NonVariableComputedReturnType,
-                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts.HasErrors));
+                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts, funFacts.HasErrors));
             }
         }
 
@@ -1508,7 +1516,7 @@ namespace Kusto.Language.Binding
                             if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {
                                 // compute function body facts as side effect
-                                GetOrComputeFunctionBodyFacts(signature, expansion.Body);
+                                var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Body);
                             }
                             else
                             {
@@ -1728,24 +1736,6 @@ namespace Kusto.Language.Binding
             {
                 fs.NonDatabaseFunctionBodyFacts = facts;
             }
-        }
-
-        /// <summary>
-        /// Entry point for <see cref="FunctionBodyFacts"/> to access the cache.
-        /// </summary>
-        public static bool TryGetDatabaseFunctionBodyFacts(FunctionSymbol symbol, GlobalState globals, out FunctionBodyFacts facts)
-        {
-            if (globals.Cache != null)
-            {
-                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
-                lock (bindingCache)
-                {
-                    return bindingCache.DatabaseFunctionBodyFacts.TryGetValue(symbol.Signatures[0], out facts);
-                }
-            }
-
-            facts = null;
-            return false;
         }
 
         private static IEnumerable<TElement> GetMainBodyOnlyDescendants<TElement>(FunctionBody body, Func<TElement, bool> predicate)

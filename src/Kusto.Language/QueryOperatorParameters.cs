@@ -13,8 +13,20 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter BagExpansion =
             new QueryOperatorParameter("bagexpansion", QueryOperatorParameterValueKind.Word, values: KustoFacts.MvExpandKinds).Hide();
 
+        public static readonly QueryOperatorParameter BinLegacy =
+            new QueryOperatorParameter("bin_legacy", QueryOperatorParameterValueKind.Any);
+
+        public static readonly QueryOperatorParameter CrossCluster =
+            new QueryOperatorParameter("__crossCluster", QueryOperatorParameterValueKind.Any);
+
+        public static readonly QueryOperatorParameter CrossDB =
+            new QueryOperatorParameter("__crossDB", QueryOperatorParameterValueKind.Any);
+
         public static readonly QueryOperatorParameter DecodeBlocks =
             new QueryOperatorParameter("decodeblocks", QueryOperatorParameterValueKind.BoolLiteral, isRepeatable: false);
+
+        public static readonly QueryOperatorParameter ExpandOutput =
+            new QueryOperatorParameter("expandoutput", QueryOperatorParameterValueKind.Any);
 
         public static readonly QueryOperatorParameter Flags =
             new QueryOperatorParameter("flags", QueryOperatorParameterValueKind.Word);
@@ -31,6 +43,12 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter HintDotNumPartitions =
             new QueryOperatorParameter("hint.num_partitions", QueryOperatorParameterValueKind.IntegerLiteral, isRepeatable: false);
 
+        public static readonly QueryOperatorParameter HintDotPassFilters =
+            new QueryOperatorParameter("hint.pass_filters", QueryOperatorParameterValueKind.Any);
+
+        public static readonly QueryOperatorParameter HintDotPassFiltersColumn =
+            new QueryOperatorParameter("hint.pass_filters_column", QueryOperatorParameterValueKind.Column);
+
         public static readonly QueryOperatorParameter HintDotProgressiveTop =
             new QueryOperatorParameter("hint.progressive_top", QueryOperatorParameterValueKind.BoolLiteral);
 
@@ -46,11 +64,23 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter HintDotStrategy =
             new QueryOperatorParameter("hint.strategy", QueryOperatorParameterValueKind.Word);
 
+        public static readonly QueryOperatorParameter Id =
+            new QueryOperatorParameter("__id", QueryOperatorParameterValueKind.Any);
+
         public static readonly QueryOperatorParameter IsFuzzy =
-            new QueryOperatorParameter("isfuzzy", QueryOperatorParameterValueKind.BoolLiteral);
+            new QueryOperatorParameter("isfuzzy", QueryOperatorParameterValueKind.BoolLiteral, aliases: new[] { "__isFuzzy" });
 
         public static readonly QueryOperatorParameter Kind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word);
+
+        public static readonly QueryOperatorParameter NoWithSource =
+            new QueryOperatorParameter("__noWithSource", QueryOperatorParameterValueKind.Any);
+
+        public static readonly QueryOperatorParameter PackedColumn =
+            new QueryOperatorParameter("__packedColumn", QueryOperatorParameterValueKind.Column);
+
+        public static readonly QueryOperatorParameter SourceColumnIndex =
+            new QueryOperatorParameter("__sourceColumnIndex", QueryOperatorParameterValueKind.Any);
 
         public static readonly QueryOperatorParameter WithMatchId =
             new QueryOperatorParameter("with_match_id", QueryOperatorParameterValueKind.NameDeclaration);
@@ -61,6 +91,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter WithSource =
             new QueryOperatorParameter("withsource", QueryOperatorParameterValueKind.NameDeclaration, aliases: new[] { "with_source" });
 
+        public static readonly QueryOperatorParameter WithStepName =
+            new QueryOperatorParameter("with_step_name", QueryOperatorParameterValueKind.NameDeclaration);
+
         /// <summary>
         /// All query operator parameters.
         /// Does not include parameters used for other syntax clauses (like render with properties)
@@ -68,22 +101,33 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> AllParameters = new QueryOperatorParameter[]
         {
             BagExpansion.Hide(),
+            BinLegacy.Hide(),
+            CrossCluster.Hide(),
+            CrossDB.Hide(),
             DecodeBlocks.Hide(),
-            Flags.Hide(),
+            ExpandOutput.Hide(),
+            //Flags.Hide(),
             HintDotConcurrency.Hide(),
             HintDotDistribution.Hide(),
             HintDotMaterialized.Hide(),
             HintDotNumPartitions.Hide(),
+            HintDotPassFilters.Hide(),
+            HintDotPassFiltersColumn.Hide(),
             HintDotProgressiveTop.Hide(),
             HintDotRemote.Hide(),
             HintDotShuffleKey.Hide(),
             HintDotSpread.Hide(),
             HintDotStrategy.Hide(),
+            Id.Hide(),
             IsFuzzy.Hide(),
             Kind.Hide(),
+            NoWithSource.Hide(),
+            PackedColumn.Hide(),
+            SourceColumnIndex.Hide(),
             WithMatchId.Hide(),
             WithItemIndex.Hide(),
-            WithSource.Hide()
+            WithSource.Hide(),
+            WithStepName.Hide(),
         };
 
         // parameter sets for specific operators
@@ -299,6 +343,11 @@ namespace Kusto.Language
 
     public enum QueryOperatorParameterValueKind
     {
+        /// <summary>
+        /// Any value
+        /// </summary>
+        Any,
+
         /// <summary>
         /// Any scalar literal value
         /// </summary>

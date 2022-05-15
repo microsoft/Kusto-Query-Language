@@ -2,6 +2,7 @@
 
 namespace Kusto.Language
 {
+    using Kusto.Language.Symbols;
     using Syntax;
     using System.Collections.Generic;
 

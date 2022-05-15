@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
+    using Kusto.Language;
     using Parsing;
     using Symbols;
     using Syntax;
@@ -220,6 +221,25 @@ namespace Kusto.Language.Binding
             expansionTree.Root.Accept(treeBinder);
 
             return true;
+        }
+
+        /// <summary>
+        /// Entry point for <see cref="FunctionBodyFacts"/> to access the cache.
+        /// This is primarily for testing.
+        /// </summary>
+        public static bool TryGetDatabaseFunctionBodyFacts(FunctionSymbol symbol, GlobalState globals, out FunctionBodyFacts facts)
+        {
+            if (globals.Cache != null)
+            {
+                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
+                lock (bindingCache)
+                {
+                    return bindingCache.DatabaseFunctionBodyFacts.TryGetValue(symbol.Signatures[0], out facts);
+                }
+            }
+
+            facts = null;
+            return false;
         }
 
         private void SetLocals(IEnumerable<Symbol> locals)

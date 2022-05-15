@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
+    using Kusto.Language;
     using Kusto.Language.Parsing;
     using Kusto.Language.Symbols;
     using Syntax;
@@ -559,10 +560,9 @@ namespace Kusto.Language.Editor
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (element is FunctionCallExpression fc && fc.ReferencedSymbol is FunctionSymbol fs)
+                if (element is Expression ex && ex.ReferencedSymbol is FunctionSymbol fs)
                 {
-                    // if this is a call to cluster('xxx') method then make a cluster reference from the literal argument if possible
-                    if (fs == Functions.Cluster)
+                    if (element is FunctionCallExpression fc && fs == Functions.Cluster)
                     {
                         var cluster = GetClusterReference(fc, location);
                         if (cluster != null)
@@ -570,17 +570,29 @@ namespace Kusto.Language.Editor
                             clusters.Add(cluster);
                         }
                     }
-                    else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasClusterCall)
+                    // if this is a call to cluster('xxx') method then make a cluster reference from the literal argument if possible
+                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts && funFacts.HasClusterCall)
                     {
                         // look for cluster('xxx') calls in function expansions
-                        var calledBody = fc.GetCalledFunctionBody();
+                        var calledBody = ex.GetCalledFunctionBody();
                         if (calledBody != null)
                         {
-                            GetClusterReferences(calledBody, location ?? fc.Name, clusters, cancellationToken);
+                            GetClusterReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), clusters, cancellationToken);
                         }
                     }
+
                 }
             });
+        }
+
+        private static SyntaxNode GetBestFunctionCallLocation(Expression ex)
+        {
+            if (ex is FunctionCallExpression fc)
+            {
+                return fc.Name;
+            }
+
+            return ex;
         }
 
         private static ClusterReference GetClusterReference(FunctionCallExpression fc, SyntaxNode location)
@@ -640,9 +652,9 @@ namespace Kusto.Language.Editor
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (element is FunctionCallExpression fc && fc.ReferencedSymbol is FunctionSymbol fs)
+                if (element is Expression ex && ex.ReferencedSymbol is FunctionSymbol fs)
                 {
-                    if (fs == Functions.Database)
+                    if (element is FunctionCallExpression fc && fs == Functions.Database)
                     {
                         var dbref = GetDatabaseReference(fc, location, defaultCluster);
                         if (dbref != null)
@@ -650,9 +662,9 @@ namespace Kusto.Language.Editor
                             refs.Add(dbref);
                         }
                     }
-                    else if (fs.TryGetFunctionBodyFacts(globals, out var funFacts) && funFacts.HasDatabaseCall)
+                    else  if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts && funFacts.HasDatabaseCall)
                     {
-                        var calledBody = fc.GetCalledFunctionBody();
+                        var calledBody = ex.GetCalledFunctionBody();
                         if (calledBody != null)
                         {
                             var db = defaultDatabase;
@@ -661,7 +673,7 @@ namespace Kusto.Language.Editor
                             db = this.globals.GetDatabase(fs) ?? defaultDatabase;
                             cluster = this.globals.GetCluster(db) ?? defaultCluster;
 
-                            GetDatabaseReferences(calledBody, location ?? fc.Name, cluster, db, refs, cancellationToken);
+                            GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
                         }
                     }
                 }

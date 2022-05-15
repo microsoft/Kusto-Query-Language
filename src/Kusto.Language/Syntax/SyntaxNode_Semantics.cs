@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Kusto.Language.Syntax
 {
     using Binding;
+    using Kusto.Language;
     using Kusto.Language.Parsing;
     using Symbols;
     using System.Linq;
@@ -37,6 +38,14 @@ namespace Kusto.Language.Syntax
         public SyntaxNode GetCalledFunctionBody()
         {
             return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Body;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="FunctionBodyFacts"/> associated with the called function.
+        /// </summary>
+        public FunctionBodyFacts GetCalledFunctionFacts()
+        {
+            return GetSemanticInfo()?.CalledFunctionInfo?.Facts;
         }
 
         /// <summary>

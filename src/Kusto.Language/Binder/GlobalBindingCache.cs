@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Binding
 {
+    using Kusto.Language;
     using Symbols;
     using Utils;
 

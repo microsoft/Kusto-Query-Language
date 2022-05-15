@@ -16,23 +16,31 @@ namespace Kusto.Language.Binding
         /// A function that returns the expanded body of the referenced function at the call site.
         /// </summary>
         private readonly Func<FunctionCallExpansion> _expander;
-        private readonly bool _hasErrors;
         private FunctionCallExpansion _expansion;
+        private FunctionBodyFacts _facts;
+        private bool _hasErrors;
 
-        public FunctionCallInfo(Func<FunctionCallExpansion> expander, bool hasErrors)
+        public FunctionCallInfo(Func<FunctionCallExpansion> expander, FunctionBodyFacts facts, bool hasErrors)
         {
             _expander = expander;
+            _facts = facts;
             _hasErrors = hasErrors;
         }
 
-        public FunctionCallInfo(FunctionCallExpansion expansion, bool hasErrors)
+        public FunctionCallInfo(FunctionCallExpansion expansion, FunctionBodyFacts facts, bool hasErrors)
         {
             _expansion = expansion;
+            _facts = facts;
             _hasErrors = hasErrors;
         }
 
         /// <summary>
-        /// The expansion of the function called
+        /// The function body facts associated with the called function.
+        /// </summary>
+        public FunctionBodyFacts Facts => _facts;
+
+        /// <summary>
+        /// The expansion (analyzed syntax tree in context of call arguments) of the called function.
         /// </summary>
         public FunctionCallExpansion Expansion
         {

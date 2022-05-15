@@ -669,7 +669,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Repeatedly parses all matching items.
         /// </summary>
-        public static IEnumerable<TParser> ParseAll<TParser>(this Parser<LexicalToken, TParser> parser, LexicalToken[] tokens)
+        public static IEnumerable<TParser> ParseAll<TParser>(this Parser<LexicalToken, TParser> parser, IReadOnlyList<LexicalToken> tokens)
         {
             var source = new ArraySource<LexicalToken>(tokens);
             var start = 0;
@@ -697,7 +697,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Parses the first matching item.
         /// </summary>
-        public static TParser ParseFirst<TParser>(this Parser<LexicalToken, TParser> parser, LexicalToken[] tokens)
+        public static TParser ParseFirst<TParser>(this Parser<LexicalToken, TParser> parser, IReadOnlyList<LexicalToken> tokens)
         {
             var source = new ArraySource<LexicalToken>(tokens);
             var result = parser.Parse(source, 0);

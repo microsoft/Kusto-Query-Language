@@ -244,7 +244,7 @@ namespace Kusto.Language
         {
             "nooptimization"
         };
-       
+
         public static readonly IReadOnlyList<string> LimitExamples = new string[]
         {
             "10", "100", "1000"
@@ -260,7 +260,70 @@ namespace Kusto.Language
             "30min", "1h", "1d"
         };
 
-        public static readonly IReadOnlyList<SyntaxKind> SpecialKeywordsAfterDot = new SyntaxKind[]
+        /// <summary>
+        /// Keywords that can always be used as identifiers
+        /// </summary>
+        public static readonly IReadOnlyList<SyntaxKind> KeywordsAsIdentifiers =
+            SyntaxFacts.GetKindsWithFixedText().Where(k => k.IsKeyword() && k.CanBeIdentifier()).ToArray();
+
+        /// <summary>
+        /// Keywords that can sometimes be used as identifiers
+        /// </summary>
+        public static readonly IReadOnlyList<SyntaxKind> ExtendedKeywordsAsIdentifiers =
+            KeywordsAsIdentifiers.Concat(
+                new SyntaxKind[]
+                {
+                    SyntaxKind.AccumulateKeyword,
+                    SyntaxKind.AsKeyword,
+                    SyntaxKind.ByKeyword,
+                    SyntaxKind.ContainsKeyword,
+                    SyntaxKind.ConsumeKeyword,
+                    SyntaxKind.CountKeyword,
+                    SyntaxKind.DataTableKeyword,
+                    SyntaxKind.DistinctKeyword,
+                    SyntaxKind.EarliestKeyword,
+                    SyntaxKind.ExtendKeyword,
+                    SyntaxKind.ExternalDataKeyword,
+                    // FALSE?? How can this be a keyword it is already a literal 
+                    SyntaxKind.FindKeyword,
+                    SyntaxKind.FilterKeyword,
+                    SyntaxKind.HasKeyword,
+                    SyntaxKind.InKeyword,
+                    SyntaxKind.InvokeKeyword,
+                    SyntaxKind.LatestKeyword,
+                    SyntaxKind.LimitKeyword,
+                    SyntaxKind.MaterializeKeyword,
+                    SyntaxKind.MdmKeyword,
+                    SyntaxKind.OfKeyword,
+                    SyntaxKind.ParseKeyword,
+                    SyntaxKind.PrintKeyword,
+                    SyntaxKind.SampleKeyword,
+                    SyntaxKind.SampleDistinctKeyword,
+                    SyntaxKind.ScanKeyword,
+                    SyntaxKind.SearchKeyword,
+                    SyntaxKind.SerializeKeyword,
+                    SyntaxKind.SetKeyword,
+                    SyntaxKind.SortKeyword,
+                    SyntaxKind.SqlKeyword,
+                    SyntaxKind.SummarizeKeyword,
+                    SyntaxKind.TakeKeyword,
+                    SyntaxKind.TitleKeyword,
+                    SyntaxKind.ToKeyword,
+                    SyntaxKind.TopKeyword,
+                    SyntaxKind.ToScalarKeyword,
+                    SyntaxKind.ToTableKeyword,
+                    SyntaxKind.TopNestedKeyword,
+                    SyntaxKind.TopHittersKeyword,
+                    SyntaxKind.VerboseKeyword,
+                    SyntaxKind.ViewersKeyword,
+                    SyntaxKind.WhereKeyword
+                })
+            .ToArray();
+
+        /// <summary>
+        /// Keywords that can be identifiers is in distinct locations.
+        /// </summary>
+        public static readonly IReadOnlyList<SyntaxKind> SpecialKeywordsAsIdentifiers = new SyntaxKind[]
         {
             SyntaxKind.KindKeyword,
             SyntaxKind.WithSourceKeyword,
