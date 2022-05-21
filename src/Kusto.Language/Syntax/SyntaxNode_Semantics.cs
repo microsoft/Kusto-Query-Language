@@ -29,7 +29,7 @@ namespace Kusto.Language.Syntax
         [Obsolete("Use GetCalledFunctionBody() instead", error: true)]
         public SyntaxNode GetExpansion()
         {
-            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Body;
+            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Root;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public SyntaxNode GetCalledFunctionBody()
         {
-            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Body;
+            return GetSemanticInfo()?.CalledFunctionInfo?.Expansion?.Root;
         }
 
         /// <summary>

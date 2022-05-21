@@ -102,9 +102,14 @@ namespace Kusto.Language.Editor
         Cluster = Database << 1,
 
         /// <summary>
+        /// An entity group
+        /// </summary>
+        EntityGroup = Cluster << 1,
+
+        /// <summary>
         /// Syntax completions only
         /// </summary>
-        Syntax = Cluster << 1,
+        Syntax = EntityGroup << 1,
 
         /// <summary>
         /// A query operator

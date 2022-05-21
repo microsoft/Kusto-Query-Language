@@ -8283,7 +8283,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.None;
-                case 2: return CompletionHint.Scalar;
+                case 2: return CompletionHint.EntityGroup;
                 case 3: return CompletionHint.Keyword;
                 case 4: return CompletionHint.None;
                 case 5: return CompletionHint.Keyword;

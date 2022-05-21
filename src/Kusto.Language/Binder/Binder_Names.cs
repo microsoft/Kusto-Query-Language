@@ -349,6 +349,13 @@ namespace Kusto.Language.Binding
                         return new SemanticInfo(item, returnType, DiagnosticFacts.GetFunctionRequiresArgumentList(name).WithLocation(location));
                     }
                 }
+                else if (resultType is EntityGroupSymbol eg)
+                {
+                    // entity group symbols are like function symbols that have a body to be evaluated
+                    // in order to determine their result type
+                    var result = GetFunctionCallResult(eg.Signature, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                    return new SemanticInfo(item, result.Type, calledFunctionInfo: result.Info);
+                }
                 else
                 {
                     return CreateSemanticInfo(item);

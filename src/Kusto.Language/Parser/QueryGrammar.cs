@@ -2455,7 +2455,7 @@ namespace Kusto.Language.Parsing
             var EntityGroup = Rule(
                 Token(SyntaxKind.EntityGroupKeyword),
                 RequiredToken(SyntaxKind.OpenBracketToken),
-                CommaList(DotCompositeFunctionCall, MissingExpressionNode, oneOrMore: true),
+                CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true),
                 RequiredToken(SyntaxKind.CloseBracketToken),
                 (keyword, open, entitiesList, close) => (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
 
@@ -2463,7 +2463,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
-                    First(UnnamedExpression, EntityGroup),
+                    First(EntityGroup, UnnamedExpression),
                     RequiredToken(SyntaxKind.AsKeyword),
                     First(IdentifierName),
                     RequiredToken(SyntaxKind.OpenParenToken),

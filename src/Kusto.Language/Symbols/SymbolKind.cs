@@ -102,5 +102,10 @@ namespace Kusto.Language.Symbols
         /// A query operator parameter
         /// </summary>
         QueryOperatorParameter,
+
+        /// <summary>
+        /// An named entity group
+        /// </summary>
+        EntityGroup
     }
 }

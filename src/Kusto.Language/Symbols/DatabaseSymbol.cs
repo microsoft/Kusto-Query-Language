@@ -12,7 +12,7 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class DatabaseSymbol : TypeSymbol
     {
-        private readonly IReadOnlyList<Symbol> members;
+        private readonly IReadOnlyList<Symbol> _members;
 
         /// <summary>
         /// If true, then the definition of the database is not fully known.
@@ -20,11 +20,12 @@ namespace Kusto.Language.Symbols
         public bool IsOpen { get; }
 
         // caches
-        private IReadOnlyList<TableSymbol> tables;
-        private IReadOnlyList<TableSymbol> externalTables;
-        private IReadOnlyList<MaterializedViewSymbol> materializedViews;
-        private IReadOnlyList<FunctionSymbol> functions;
-        private HashSet<Symbol> symbolSet;
+        private IReadOnlyList<TableSymbol> _tables;
+        private IReadOnlyList<TableSymbol> _externalTables;
+        private IReadOnlyList<MaterializedViewSymbol> _materializedViews;
+        private IReadOnlyList<FunctionSymbol> _functions;
+        private IReadOnlyList<EntityGroupSymbol> _entityGroups;
+        private HashSet<Symbol> _symbolSet;
 
         /// <summary>
         /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
@@ -32,7 +33,7 @@ namespace Kusto.Language.Symbols
         public DatabaseSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
             : base(name)
         {
-            this.members = members.ToReadOnly();
+            _members = members.ToReadOnly();
             this.IsOpen = isOpen;
         }
 
@@ -51,7 +52,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// All the symbols contained by this symbol.
         /// </summary>
-        public override IReadOnlyList<Symbol> Members => this.members;
+        public override IReadOnlyList<Symbol> Members => _members;
 
         /// <summary>
         /// The tables contained by the database.
@@ -60,12 +61,12 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.tables == null)
+                if (_tables == null)
                 {
-                    this.tables = this.Members.OfType<TableSymbol>().Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
+                    _tables = this.Members.OfType<TableSymbol>().Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
                 }
 
-                return this.tables;
+                return _tables;
             }
         }
 
@@ -76,12 +77,12 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.externalTables == null)
+                if (_externalTables == null)
                 {
-                    this.externalTables = this.Members.OfType<TableSymbol>().Where(ts => ts.IsExternal).ToReadOnly();
+                    _externalTables = this.Members.OfType<TableSymbol>().Where(ts => ts.IsExternal).ToReadOnly();
                 }
 
-                return this.externalTables;
+                return _externalTables;
             }
         }
 
@@ -92,12 +93,12 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.materializedViews == null)
+                if (_materializedViews == null)
                 {
-                    this.materializedViews = this.Members.OfType<MaterializedViewSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
+                    _materializedViews = this.Members.OfType<MaterializedViewSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
                 }
 
-                return this.materializedViews;
+                return _materializedViews;
             }
         }
 
@@ -108,12 +109,28 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.functions == null)
+                if (_functions == null)
                 {
-                    this.functions = this.Members.OfType<FunctionSymbol>().ToReadOnly();
+                    _functions = this.Members.OfType<FunctionSymbol>().ToReadOnly();
                 }
 
-                return this.functions;
+                return _functions;
+            }
+        }
+
+        /// <summary>
+        /// The entity groups contained by the database.
+        /// </summary>
+        public IReadOnlyList<EntityGroupSymbol> EntityGroups
+        {
+            get
+            {
+                if (_entityGroups == null)
+                {
+                    _entityGroups = this.Members.OfType<EntityGroupSymbol>().ToReadOnly();
+                }
+
+                return _entityGroups;
             }
         }
 
@@ -122,7 +139,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public Symbol GetMember(string name)
         {
-            return this.members.FirstOrDefault(m => m.Name == name);
+            return _members.FirstOrDefault(m => m.Name == name);
         }
 
         /// <summary>
@@ -165,6 +182,17 @@ namespace Kusto.Language.Symbols
             return this.Functions.FirstOrDefault(f => f.Name == name);
         }
 
+        /// <summary>
+        /// Gets the entitiy group with the specified name or retuns null.
+        /// </summary>
+        public EntityGroupSymbol GetEntityGroup(string name)
+        {
+            return this.EntityGroups.FirstOrDefault(eg => eg.Name == name);
+        }
+
+        /// <summary>
+        /// Creates a database that includes only the specified members.
+        /// </summary>
         public DatabaseSymbol WithMembers(IEnumerable<Symbol> members)
         {
             return new DatabaseSymbol(this.Name, members, this.IsOpen);
@@ -191,17 +219,17 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public bool Contains(Symbol symbol)
         {
-            if (this.symbolSet == null)
+            if (this._symbolSet == null)
             {
-                this.symbolSet = new HashSet<Symbol>();
+                this._symbolSet = new HashSet<Symbol>();
 
                 foreach (var member in this.Members)
                 {
-                    this.symbolSet.Add(symbol);
+                    this._symbolSet.Add(symbol);
                 }
             }
 
-            return this.symbolSet.Contains(symbol);
+            return this._symbolSet.Contains(symbol);
         }
 
         protected override string GetDisplay() =>

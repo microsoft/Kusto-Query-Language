@@ -1434,11 +1434,11 @@ namespace Kusto.Language.Binding
                 // try again after evaluating expansion
                 TryGetFunctionBodyFacts(signature, out funFacts);
 
-                var returnType = expansion?.Body?.Expression?.ResultType;
+                var returnType = GetBodyResultType(expansion?.Root);
 
                 var hasErrors = funFacts != null ? funFacts.HasErrors
                     : returnType != null && returnType.IsError ? true
-                    : HasErrors(expansion?.Body);
+                    : HasErrors(expansion?.Root);
 
                 if (returnType == null || returnType.IsError)
                     returnType = ScalarTypes.Unknown;
@@ -1452,6 +1452,14 @@ namespace Kusto.Language.Binding
                     funFacts.NonVariableComputedReturnType,
                     new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts, funFacts.HasErrors));
             }
+        }
+
+        private static TypeSymbol GetBodyResultType(SyntaxNode body)
+        {
+            return 
+                body is Expression exprBody ? exprBody.ResultType
+                : body is FunctionBody functionBody ? functionBody.Expression?.ResultType
+                : null;
         }
 
         private static bool HasErrors(SyntaxNode syntax)
@@ -1504,7 +1512,7 @@ namespace Kusto.Language.Binding
                 {
                     try
                     {
-                        var body = GetUnboundFunctionBody(signature);
+                        var body = GetUnboundBody(signature);
 
                         if (body != null)
                         {
@@ -1516,7 +1524,7 @@ namespace Kusto.Language.Binding
                             if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {
                                 // compute function body facts as side effect
-                                var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Body);
+                                var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);
                             }
                             else
                             {
@@ -1666,11 +1674,28 @@ namespace Kusto.Language.Binding
             return body;
         }
 
-        private static FunctionBody GetUnboundFunctionBody(Signature signature)
+        private static string GetEntityGroupBodyText(Signature signature)
+        {
+            var body = signature.Body.Trim();
+            if (!body.StartsWith("[", StringComparison.Ordinal))
+                body = "[" + body;
+
+            if (!body.EndsWith("]", StringComparison.Ordinal))
+                body += "\n]";
+
+            return $"entity_group {body}";
+        }
+
+        private static SyntaxNode GetUnboundBody(Signature signature)
         {
             if (signature.Declaration != null)
             {
-                return (FunctionBody)signature.Declaration.Clone();
+                return signature.Declaration.Clone();
+            }
+            else if (signature.Symbol is EntityGroupSymbol)
+            {
+                var text = GetEntityGroupBodyText(signature);
+                return QueryParser.ParseEntityGroup(text);
             }
             else
             {
@@ -1692,14 +1717,14 @@ namespace Kusto.Language.Binding
             }
         }
 
-        internal FunctionBodyFacts GetOrComputeFunctionBodyFacts(Signature signature, FunctionBody body)
+        internal FunctionBodyFacts GetOrComputeFunctionBodyFacts(Signature signature, SyntaxNode body)
         {
             if (!TryGetFunctionBodyFacts(signature, out var facts))
             {
                 var bodyFacts = ComputeFunctionBodyFlags(signature, body);
 
                 var nonVariableReturnType = (bodyFacts & FunctionBodyFlags.VariableReturn) == 0
-                    ? body.Expression?.ResultType ?? ErrorSymbol.Instance
+                    ? GetBodyResultType(body) ?? ErrorSymbol.Instance
                     : null;
 
                 var hasErrors = HasErrors(body);
@@ -1738,7 +1763,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private static IEnumerable<TElement> GetMainBodyOnlyDescendants<TElement>(FunctionBody body, Func<TElement, bool> predicate)
+        private static IEnumerable<TElement> GetMainBodyOnlyDescendants<TElement>(SyntaxNode body, Func<TElement, bool> predicate)
             where TElement : SyntaxElement
         {
             List<TElement> list = null;
@@ -1763,12 +1788,12 @@ namespace Kusto.Language.Binding
             return list ?? EmptyReadOnlyList<TElement>.Instance;
         }
 
-        private FunctionBodyFlags ComputeFunctionBodyFlags(Signature signature, FunctionBody body)
+        private FunctionBodyFlags ComputeFunctionBodyFlags(Signature signature, SyntaxNode body)
         {
             var result = FunctionBodyFlags.None;
-            var isTabular = body.Expression?.ResultType is TableSymbol;
+            var isTabular = GetBodyResultType(body) is TableSymbol;
 
-            // look for explicit calls to table(), database() or cluster() functions
+            // look for explicit calls to table(), database() or cluster() like functions
             foreach (var fc in GetMainBodyOnlyDescendants<FunctionCallExpression>(body,
                 _fc => IsSymbolLookupFunction(_fc.ReferencedSymbol)))
             {
@@ -1846,7 +1871,6 @@ namespace Kusto.Language.Binding
             || symbol == Functions.MaterializedView
             || symbol == Functions.Database
             || symbol == Functions.Cluster;
-
 
         /// <summary>
         /// Gets the <see cref="FunctionBodyFlags"/> for the function invocation

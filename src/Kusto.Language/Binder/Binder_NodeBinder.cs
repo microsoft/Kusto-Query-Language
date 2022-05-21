@@ -86,18 +86,6 @@ namespace Kusto.Language.Binding
 
             private FunctionSymbol CreateFunctionSymbol(FunctionDeclaration decl)
             {
-                // borrow name from parent variable (for debugging)
-                string name;
-                switch (decl.Parent)
-                {
-                    case LetStatement ls:
-                        name = ls.Name.SimpleName;
-                        break;
-                    default:
-                        name = "";
-                        break;
-                }
-
                 var parameters = new List<Parameter>();
 
                 // get parameter symbols already defined
@@ -113,6 +101,7 @@ namespace Kusto.Language.Binding
                     }
                 }
 
+                var name = GetNameFromContext(decl);
                 var fs = new FunctionSymbol(name, decl.Body, parameters);
 
 #if false  // TODO: check if we can add this back if we know it is invariant
@@ -122,6 +111,15 @@ namespace Kusto.Language.Binding
                 _binder.SetSignatureBindingInfo(fs.Signatures[0], decl.Body);
 #endif
                 return fs;
+            }
+
+            /// <summary>
+            /// Get the name the expression will be assigned by a let statement
+            /// it is part of, or empty string.
+            /// </summary>
+            private static string GetNameFromContext(Expression expr)
+            {
+                return (expr.Parent is LetStatement ls) ? ls.Name.SimpleName : "";
             }
 
             public override SemanticInfo VisitPatternStatement(PatternStatement node)
@@ -819,9 +817,40 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitEntityGroup(EntityGroup node)
             {
-                var anyEntityAsExpression = node.Entities.First().Element;
-                TypeSymbol typeSymbol = _binder.GetResultTypeOrError(anyEntityAsExpression);
-                return new SemanticInfo(typeSymbol);
+                var dxs = s_diagnosticListPool.AllocateFromPool();
+                var symbols = s_symbolListPool.AllocateFromPool();
+                try
+                {
+                    if (node.Entities.Count > 0)
+                    {
+                        foreach (var se in node.Entities)
+                        {
+                            if (se.Element.ResultType is DatabaseSymbol
+                                || se.Element.ResultType is TableSymbol)
+                            {
+                                symbols.Add(se.Element.ResultType);
+                            }
+                            else if (!se.Element.ResultType.IsError)
+                            {
+                                dxs.Add(DiagnosticFacts.GetDatabaseOrTableExpected().WithLocation(se.Element));
+                            }
+                        }
+
+                        var name = GetNameFromContext(node);
+                        var type = new EntityGroupSymbol(name, symbols);
+                        return new SemanticInfo(type, dxs);
+                    }
+                    else
+                    {
+                        dxs.Add(DiagnosticFacts.GetDatabaseOrTableExpected().WithLocation(node.OpenBracket));
+                        return new SemanticInfo(ErrorSymbol.Instance, dxs);
+                    }
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(dxs);
+                    s_symbolListPool.ReturnToPool(symbols);
+                }
             }
 
             public override SemanticInfo VisitOrderedExpression(OrderedExpression node)

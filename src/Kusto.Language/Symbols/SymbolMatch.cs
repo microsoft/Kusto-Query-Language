@@ -47,9 +47,14 @@ namespace Kusto.Language.Symbols
         Cluster = Database << 1,
 
         /// <summary>
+        /// Any entity group
+        /// </summary>
+        EntityGroup = Cluster << 1,
+
+        /// <summary>
         /// Any scalar item
         /// </summary>
-        Scalar = Cluster << 1,
+        Scalar = EntityGroup << 1,
 
         /// <summary>
         /// Any tabular item
@@ -69,12 +74,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
-        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView,
+        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup,
 
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView,
+        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView | EntityGroup,
     }
 
     public static class SymbolMatchExtensions
@@ -125,6 +130,9 @@ namespace Kusto.Language.Symbols
                 return false;
 
             if ((match & SymbolMatch.Function) != 0 && (symbol.Kind == SymbolKind.Function || symbol.Kind == SymbolKind.Pattern))
+                return true;
+
+            if ((match & SymbolMatch.EntityGroup) != 0 && symbol.Kind == SymbolKind.EntityGroup)
                 return true;
 
             if ((match & SymbolMatch.Local) != 0 && (symbol.Kind == SymbolKind.Variable || symbol.Kind == SymbolKind.Parameter))

@@ -12,10 +12,8 @@ namespace Kusto.Language
     /// </summary>
     internal class FunctionCallExpansion : SyntaxTree
     {
-        public FunctionBody Body => (FunctionBody)this.Root;
-
-        public FunctionCallExpansion(FunctionBody body)
-            : base(body)
+        public FunctionCallExpansion(SyntaxNode root)
+            : base(root)
         {
         }
     }

@@ -65,7 +65,7 @@ namespace Kusto.Language.Binding
             {
                 if (_diagnostics == null)
                 {
-                    _diagnostics = this.Expansion?.Body.GetContainedDiagnostics() ?? Diagnostic.NoDiagnostics;
+                    _diagnostics = this.Expansion?.Root?.GetContainedDiagnostics() ?? Diagnostic.NoDiagnostics;
                 }
 
                 return _diagnostics;

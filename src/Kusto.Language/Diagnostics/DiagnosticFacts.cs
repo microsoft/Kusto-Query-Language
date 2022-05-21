@@ -749,6 +749,11 @@ namespace Kusto.Language
             return new Diagnostic("KS215", "Decimal values are not supported in dynamic objects.");
         }
 
+        public static Diagnostic GetDatabaseOrTableExpected()
+        {
+            return new Diagnostic("KS216", "Database or Table expected.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

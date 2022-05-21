@@ -75,9 +75,19 @@ namespace Kusto.Language.Parsing
             return new QueryParser(tokens, start).ParseFunctionBody();
         }
 
+        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0)
+        {
+            return new QueryParser(tokens, start).ParseEntityGroup();
+        }
+
         public static FunctionBody ParseFunctionBody(string text)
         {
             return ParseFunctionBody(TokenParser.ParseTokens(text));
+        }
+
+        public static EntityGroup ParseEntityGroup(string text)
+        {
+            return ParseEntityGroup(TokenParser.ParseTokens(text));
         }
 
         public static Expression ParseLiteral(LexicalToken[] tokens, int start = 0)
@@ -4739,13 +4749,8 @@ namespace Kusto.Language.Parsing
 #region MacroExpand
         private Expression ParseEntityGroupReference()
         {
-            switch(PeekToken().Kind)
-            {
-                case SyntaxKind.EntityGroupKeyword:
-                    return ParseEntityGroup();
-                default:
-                    return ParseUnnamedExpression();
-            }
+            return ParseEntityGroup()
+                ?? ParseUnnamedExpression();
         }
 
         private MacroExpandOperator ParseMacroExpand()
@@ -5137,7 +5142,7 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
-                var expressions = ParseCommaList(FnParseRestrictExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
+                var expressions = ParseCommaList(FnParseUnnamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
                 return new EntityGroup(keyword, open, expressions, close);
             }

@@ -1305,6 +1305,9 @@ namespace Kusto.Language.Editor
             if ((hint & CompletionHint.Cluster) != 0)
                 match |= SymbolMatch.Cluster;
 
+            if ((hint & CompletionHint.EntityGroup) != 0)
+                match |= SymbolMatch.EntityGroup;
+
             if ((hint & CompletionHint.Option) != 0)
                 match |= SymbolMatch.Option;
 
