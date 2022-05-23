@@ -2392,7 +2392,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol GeoPolygonDensify =
             new FunctionSymbol("geo_polygon_densify", ScalarTypes.Dynamic,
                 new Parameter("polygon", ScalarTypes.Dynamic),
-                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
+                new Parameter("preserve_crossing", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -2429,7 +2430,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol GeoLineDensify =
             new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
                 new Parameter("lineString", ScalarTypes.Dynamic),
-                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
+                new Parameter("preserve_crossing", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
