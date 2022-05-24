@@ -74,7 +74,6 @@ namespace Kusto.Language.Parsing
         {
             return new QueryParser(tokens, start).ParseFunctionBody();
         }
-
         public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0)
         {
             return new QueryParser(tokens, start).ParseEntityGroup();
