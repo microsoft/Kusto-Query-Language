@@ -1542,7 +1542,6 @@ namespace Kusto.Language
                 new Parameter("bag", ScalarTypes.Dynamic),
                 new Parameter("key", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // TODO: afridman to unhide after 2/May/2022
             .ConstantFoldable();
         #endregion
 
