@@ -1521,7 +1521,7 @@ namespace Kusto.Language.Binding
                             var currentCluster = isInDatabase ? _globals.GetCluster(currentDatabase) : null;
                             expansion = new FunctionCallExpansion(body);
 
-                            if (TryBindExpansion(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
+                            if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {
                                 // compute function body facts as side effect
                                 var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);

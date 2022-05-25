@@ -227,8 +227,10 @@ namespace Kusto.Language.Binding
                     match &= ~SymbolMatch.Function;
                 }
 
+                // if there is a path scope, then the operation was <path>.<name>
                 if (_pathScope != null)
                 {
+                    // check for inferred columns associated with scan operator step variables (encoded as tuples associated with a table)
                     if (_pathScope is TupleSymbol tuple
                         && tuple.RelatedTable != null
                         && tuple.RelatedTable.IsOpen
@@ -236,6 +238,7 @@ namespace Kusto.Language.Binding
                     {
                         list.Add(col);
                     }
+                    // database('...').name
                     else if (_pathScope is DatabaseSymbol ds)
                     {
                         // first look for functions
@@ -259,25 +262,29 @@ namespace Kusto.Language.Binding
                             return allowZeroArgumentInvocation;
                         }
                     }
+                    // kusto does not allow Table.Column, unless its part of a control command
                     else if (!(_pathScope is TableSymbol) || IsInsideControlCommandProper(location))
                     {
+                        // lookup named members
                         _pathScope.GetMembers(name, match, list);
                     }
                 }
 
                 // check binding against any columns in the row scope
+                // note: the row scope is the scope containing the columns from the left that are in scope on the right of a pipe operator.
                 if (list.Count == 0 && _rowScope != null)
                 {
                     _rowScope.GetMembers(name, match, list);
                 }
 
-                // try secondary right-side row scope (from join operator)
+                // try secondary right-side row scope (used in join operator)
                 if (list.Count == 0 && _rightRowScope != null)
                 {
                     _rightRowScope.GetMembers(name, match, list);
                 }
 
                 // try local variables (includes any user-defined functions)
+                // these are defined by a previous let statement
                 if (list.Count == 0)
                 {
                     _localScope.GetSymbols(name, match, list);
@@ -286,7 +293,7 @@ namespace Kusto.Language.Binding
                     allowZeroArgumentInvocation = list.Count > 0;
                 }
 
-                // look for zero-argument functions
+                // look for zero-argument database functions
                 if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location)
                     && (match & SymbolMatch.Function) != 0)
                 {
@@ -319,8 +326,8 @@ namespace Kusto.Language.Binding
                 // infer column for this otherwise unbound reference?
                 if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
                 {
-                    // table is open, so create a dynamic column for the otherwise unbound name
-                    list.Add(GetOpenColumn(name, _rowScope));
+                    // row scope table has open definition, so create an inferred column for the otherwise unbound name
+                    list.Add(GetOpenTableInferredColumn(name, _rowScope));
                 }
             }
 

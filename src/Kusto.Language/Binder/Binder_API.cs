@@ -89,7 +89,7 @@ namespace Kusto.Language.Binding
         private readonly GlobalBindingCache _globalBindingCache;
 
         /// <summary>
-        /// Binding state that is private to one binding (including nested bindings)
+        /// Binding state that is private to one binding (including analysis of called function bodies)
         /// </summary>
         private readonly LocalBindingCache _localBindingCache;
 
@@ -187,10 +187,10 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Do semantic analysis over an inline expansion of a function body.
+        /// Do semantic analysis over the body of a called function.
         /// </summary>
-        public static bool TryBindExpansion(
-            SyntaxTree expansionTree,
+        public static bool TryBindCalledFunctionBody(
+            SyntaxTree bodyTree,
             Binder outer,
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
@@ -198,7 +198,7 @@ namespace Kusto.Language.Binding
             LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
-            if (!expansionTree.IsSafeToRecurse)
+            if (!bodyTree.IsSafeToRecurse)
                 return false;
 
             var binder = new Binder(
@@ -218,14 +218,14 @@ namespace Kusto.Language.Binding
             }
 
             var treeBinder = new TreeBinder(binder);
-            expansionTree.Root.Accept(treeBinder);
+            bodyTree.Root.Accept(treeBinder);
 
             return true;
         }
 
         /// <summary>
         /// Entry point for <see cref="FunctionBodyFacts"/> to access the cache.
-        /// This is primarily for testing.
+        /// This is used for testing.
         /// </summary>
         public static bool TryGetDatabaseFunctionBodyFacts(FunctionSymbol symbol, GlobalState globals, out FunctionBodyFacts facts)
         {
@@ -242,6 +242,9 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Adds the symbols to the current local scope.
+        /// </summary>
         private void SetLocals(IEnumerable<Symbol> locals)
         {
             foreach (var local in locals)

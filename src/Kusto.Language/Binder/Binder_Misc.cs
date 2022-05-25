@@ -36,8 +36,17 @@ namespace Kusto.Language.Binding
         #endregion
 
         #region Symbol access/caching
+
+        /// <summary>
+        /// The set of open cluster symbols so far.
+        /// This set is accumulated as the binder processes the query in lexical order.
+        /// </summary>
         private Dictionary<string, ClusterSymbol> _openClusters;
 
+        /// <summary>
+        /// Gets or creates an open cluster symbol of the given name.
+        /// This is used when a cluster('...') call does not map to a known cluster.
+        /// </summary>
         private ClusterSymbol GetOpenCluster(string name)
         {
             if (_openClusters == null)
@@ -54,8 +63,16 @@ namespace Kusto.Language.Binding
             return cluster;
         }
 
+        /// <summary>
+        /// A map between an open cluster symbol and the set of inferred open databases so far.
+        /// This set is accumulated as the binder processes the query in lexical order.
+        /// </summary>
         private Dictionary<ClusterSymbol, Dictionary<string, DatabaseSymbol>> _openDatabases;
 
+        /// <summary>
+        /// Gets or creates an open database symbol of the given name.
+        /// This is primarily used for database('...') of an unknown database within an open cluster.
+        /// </summary>
         private DatabaseSymbol GetOpenDatabase(string name, ClusterSymbol cluster)
         {
             cluster = cluster ?? _currentCluster;
@@ -80,9 +97,16 @@ namespace Kusto.Language.Binding
             return database;
         }
 
-
+        /// <summary>
+        /// A map between an open database symbol and the set of inferred open tables identified so far.
+        /// This set is accumulated as the binder processes the query in lexical order.
+        /// </summary>
         private Dictionary<DatabaseSymbol, Dictionary<string, TableSymbol>> _openTables;
 
+        /// <summary>
+        /// Gets or creates an open table symbol of the given name.
+        /// This is primarily used for db.Table or db.table('...') of an unknown table within an open database.
+        /// </summary>
         private TableSymbol GetOpenTable(string name, DatabaseSymbol database)
         {
             if (_openTables == null)
@@ -105,19 +129,26 @@ namespace Kusto.Language.Binding
             return table;
         }
 
-        private Dictionary<TableSymbol, Dictionary<string, ColumnSymbol>> openColumns;
+        /// <summary>
+        /// A map between an open table and the set of inferred columns (so far)
+        /// This set is accumulated as the binder processes the query in lexical order.
+        /// </summary>
+        private Dictionary<TableSymbol, Dictionary<string, ColumnSymbol>> _openTableInferredColumns;
 
-        private ColumnSymbol GetOpenColumn(string name, TableSymbol table)
+        /// <summary>
+        /// Gets or creates an inferred column symbol and associates it with the specified open table.
+        /// </summary>
+        private ColumnSymbol GetOpenTableInferredColumn(string name, TableSymbol table)
         {
-            if (openColumns == null)
+            if (_openTableInferredColumns == null)
             {
-                openColumns = new Dictionary<TableSymbol, Dictionary<string, ColumnSymbol>>();
+                _openTableInferredColumns = new Dictionary<TableSymbol, Dictionary<string, ColumnSymbol>>();
             }
 
-            if (!openColumns.TryGetValue(table, out var columnMap))
+            if (!_openTableInferredColumns.TryGetValue(table, out var columnMap))
             {
                 columnMap = new Dictionary<string, ColumnSymbol>();
-                openColumns.Add(table, columnMap);
+                _openTableInferredColumns.Add(table, columnMap);
             }
 
             if (!columnMap.TryGetValue(name, out var column))
@@ -129,19 +160,25 @@ namespace Kusto.Language.Binding
             return column;
         }
 
+        /// <summary>
+        /// Gets all the declared or inferred columns for the specified table.
+        /// </summary>
         private void GetDeclaredAndInferredColumns(TableSymbol table, List<ColumnSymbol> columns)
         {
             columns.AddRange(table.Columns);
 
-            if (table.IsOpen && openColumns != null && openColumns.TryGetValue(table, out var columnMap))
+            if (table.IsOpen && _openTableInferredColumns != null && _openTableInferredColumns.TryGetValue(table, out var columnMap))
             {
                 columns.AddRange(columnMap.Values);
             }
         }
 
+        /// <summary>
+        /// Gets all the declared or inferred columns for the specified table.
+        /// </summary>
         public IReadOnlyList<ColumnSymbol> GetDeclaredAndInferredColumns(TableSymbol table)
         {
-            if (table.IsOpen && openColumns != null && openColumns.ContainsKey(table))
+            if (table.IsOpen && _openTableInferredColumns != null && _openTableInferredColumns.ContainsKey(table))
             {
                 var list = new List<ColumnSymbol>();
                 GetDeclaredAndInferredColumns(table, list);
@@ -153,16 +190,19 @@ namespace Kusto.Language.Binding
             }
         }
 
+        /// <summary>
+        /// Gets the declared or inferred column of the given name for the specified table.
+        /// If the column is not declared and the table is open, a new column is inferred with the given name.
+        /// </summary>
         public bool TryGetDeclaredOrInferredColumn(TableSymbol table, string name, out ColumnSymbol column)
-        {
-            if (table.GetFirstMember(name, SymbolMatch.Column) is ColumnSymbol c)
+        {           
+            if (table.TryGetColumn(name, out column))
             {
-                column = c;
                 return true;
             }
             else if (table.IsOpen)
             {
-                column = GetOpenColumn(name, table);
+                column = GetOpenTableInferredColumn(name, table);
                 return true;
             }
             else
@@ -172,30 +212,37 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private Dictionary<TableSymbol, TupleSymbol> tupleMap;
+        private Dictionary<TableSymbol, TupleSymbol> _tupleMap;
 
         /// <summary>
         /// Gets a tuple with the same columns (declared and inferred) as the table.
         /// </summary>
         private TupleSymbol GetTuple(TableSymbol table)
         {
-            if (tupleMap == null)
+            if (_tupleMap == null)
             {
-                tupleMap = new Dictionary<TableSymbol, TupleSymbol>();
+                _tupleMap = new Dictionary<TableSymbol, TupleSymbol>();
             }
 
-            if (!tupleMap.TryGetValue(table, out var tuple))
+            if (!_tupleMap.TryGetValue(table, out var tuple))
             {
                 tuple = new TupleSymbol(table.Columns, table);
-                tupleMap.Add(table, tuple);
+                _tupleMap.Add(table, tuple);
             }
 
             return tuple;
         }
 
-        private bool CanCache(IReadOnlyList<TableSymbol> tables)
+        /// <summary>
+        /// Returns true if the list of tables can be cached globally (tied by global state cache)
+        /// </summary>
+        private bool CanGlobalCache(IReadOnlyList<TableSymbol> tables)
         {
-            return tables == _currentDatabase.Tables || tables.All(t => _globals.IsDatabaseTable(t));
+            // if this is the list of tables from the current database definition, then okay.
+            // otherwise if its a list of stricly database tables then allow
+            //     (note: this still may cause excessive caching if queries have lots of queries with joins,unions of strictly database tables)
+            return tables == _currentDatabase.Tables 
+                || tables.All(t => _globals.IsDatabaseTable(t));
         }
 
         /// <summary>
@@ -206,7 +253,7 @@ namespace Kusto.Language.Binding
             // consider making this cache thread safe
             if (!_globalBindingCache.UnifiedNameColumnsMap.TryGetValue(tables, out var unifiedColumnsTable))
             {
-                var cache = CanCache(tables);
+                var canCache = CanGlobalCache(tables);
 
                 tables = tables.ToReadOnly();
                 var columns = new List<ColumnSymbol>();
@@ -220,7 +267,7 @@ namespace Kusto.Language.Binding
 
                 unifiedColumnsTable = new TableSymbol(columns).WithIsOpen(tables.Any(t => t.IsOpen));
 
-                if (cache)
+                if (canCache)
                 {
                     _globalBindingCache.UnifiedNameColumnsMap[tables] = unifiedColumnsTable;
                 }
@@ -237,7 +284,7 @@ namespace Kusto.Language.Binding
             // consider making this cache thread safe
             if (!_globalBindingCache.UnifiedNameAndTypeColumnsMap.TryGetValue(tables, out var unifiedColumnsTable))
             {
-                var cache = CanCache(tables);
+                var canCache = CanGlobalCache(tables);
 
                 tables = tables.ToReadOnly();
                 var columns = new List<ColumnSymbol>();
@@ -251,7 +298,7 @@ namespace Kusto.Language.Binding
 
                 unifiedColumnsTable = new TableSymbol(columns).WithIsOpen(tables.Any(t => t.IsOpen));
 
-                if (cache)
+                if (canCache)
                 {
                     _globalBindingCache.UnifiedNameAndTypeColumnsMap[tables] = unifiedColumnsTable;
                 }
@@ -268,7 +315,7 @@ namespace Kusto.Language.Binding
             // consider making this cache thread safe
             if (!_globalBindingCache.CommonColumnsMap.TryGetValue(tables, out var commonColumnsTable))
             {
-                var cache = CanCache(tables);
+                var canCache = CanGlobalCache(tables);
 
                 tables = tables.ToReadOnly();
                 var columns = new List<ColumnSymbol>();
@@ -283,7 +330,7 @@ namespace Kusto.Language.Binding
                     commonColumnsTable = commonColumnsTable.WithIsOpen(true);
                 }
 
-                if (cache)
+                if (canCache)
                 {
                     _globalBindingCache.CommonColumnsMap[tables] = commonColumnsTable;
                 }
