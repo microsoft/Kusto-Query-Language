@@ -272,7 +272,7 @@ on the `GlobalState` that includes the database table definition.
 ```
 
 &nbsp;
-## Finding the database for a table
+## Finding the database for a table 
 
 If a table symbol is declared as part of a database, you can discover which database is associated with the table
 using the `GetDatabase` method on the `GlobalState` that includes the definition of the database and table.
