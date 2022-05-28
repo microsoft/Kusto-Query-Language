@@ -274,6 +274,610 @@ namespace Kusto.Language.Parsing
             Func<SyntaxElement> missing81 = () => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
             Func<SyntaxElement> missing82 = () => (SyntaxElement)new CustomNode(new [] {CD(), CD("TableName", CompletionHint.None), CD()}, CreateMissingToken("as"), rules.MissingNameDeclaration(), CreateMissingToken("version"));
 
+            var fragment0 = Custom(
+                    Token("user"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape1);
+            var fragment1 = Custom(
+                    Token("reason"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape2);
+            var fragment2 = Custom(
+                    Token("skip-results"),
+                    Optional(
+                        Custom(
+                            rules.StringLiteral,
+                            shape0)),
+                    shape3);
+            var fragment3 = Custom(
+                    Token("recoverability"),
+                    RequiredToken("="),
+                    RequiredToken("disabled", "enabled"),
+                    shape7);
+            var fragment4 = Custom(
+                    Token("softdelete"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    Optional(
+                        fragment3),
+                    shape9);
+            var fragment5 = Custom(
+                    Token("hotdata"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    RequiredToken("hotindex"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape15);
+            var fragment6 = Custom(
+                    Token("hot"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape16);
+            var fragment7 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.NameDeclarationOrStringLiteral,
+                                RequiredToken("="),
+                                Required(rules.Value, rules.MissingValue),
+                                shape24)),
+                        missing12),
+                    RequiredToken(")"),
+                    RequiredToken("decryption-certificate-thumbprint"),
+                    shape25);
+            var fragment8 = Custom(
+                    Token("cluster"),
+                    RequiredToken("("),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    RequiredToken(")"),
+                    RequiredToken("."),
+                    RequiredToken("database"),
+                    RequiredToken("("),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    RequiredToken(")"),
+                    shape26);
+            var fragment9 = Custom(
+                    Token("database"),
+                    RequiredToken("("),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    RequiredToken(")"),
+                    shape27);
+            var fragment10 = Custom(
+                    rules.NameDeclarationOrStringLiteral,
+                    RequiredToken(":"),
+                    Required(rules.Type, rules.MissingType),
+                    shape29);
+            var fragment11 = Custom(
+                    rules.NameDeclarationOrStringLiteral,
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape33);
+            var fragment12 = Custom(
+                    Token("datetime_pattern"),
+                    RequiredToken("("),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    RequiredToken(","),
+                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                    RequiredToken(")"),
+                    shape32);
+            var fragment13 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            fragment11),
+                        missing18),
+                    RequiredToken(")"),
+                    shape34);
+            var fragment14 = Custom(
+                    Token("hot_window"),
+                    RequiredToken("="),
+                    Required(
+                        Custom(
+                            rules.Value,
+                            RequiredToken(".."),
+                            Required(rules.Value, rules.MissingValue),
+                            shape37),
+                        missing29),
+                    shape38);
+            var fragment15 = Custom(
+                    Token("caching-policies-modification-kind"),
+                    Token("="),
+                    Token("none", "replace", "union"),
+                    shape36);
+            var fragment16 = Custom(
+                    Token("caching-policies-modification-kind"),
+                    RequiredToken("="),
+                    RequiredToken("none", "replace", "union"),
+                    shape36);
+            var fragment17 = Custom(
+                    Token("database-name-override"),
+                    RequiredToken("="),
+                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                    shape39);
+            var fragment18 = Custom(
+                    Token("metadata"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape41);
+            var fragment19 = Custom(
+                    Token("prefetch-extents"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape42);
+            var fragment20 = Custom(
+                    Token("principals-modification-kind"),
+                    RequiredToken("="),
+                    RequiredToken("none", "replace", "union"),
+                    shape36);
+            var fragment21 = Custom(
+                    Token("external"),
+                    Token("tables"));
+            var fragment22 = Custom(
+                    Token("external"),
+                    RequiredToken("tables"));
+            var fragment23 = Custom(
+                    Token("materialized-views"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.NameDeclarationOrStringLiteral,
+                                shape12),
+                            missingElement: rules.MissingNameDeclaration),
+                        missing31),
+                    RequiredToken(")"),
+                    shape34);
+            var fragment24 = Custom(
+                    Token("materialized-view"),
+                    Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
+                    shape43);
+            var fragment25 = Custom(
+                    Token("tables"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.NameDeclarationOrStringLiteral,
+                                shape12),
+                            missingElement: rules.MissingNameDeclaration),
+                        missing31),
+                    RequiredToken(")"),
+                    shape34);
+            var fragment26 = Custom(
+                    Token("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    shape44);
+            var fragment27 = Custom(
+                    Token(","),
+                    Required(
+                        OneOrMoreCommaList(
+                            fragment14),
+                        missing30));
+            var fragment28 = Custom(
+                    rules.ColumnNameReference,
+                    RequiredToken("asc", "desc"),
+                    shape57);
+            var fragment29 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                First(
+                                    Token("docstring"),
+                                    Token("folder"),
+                                    If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
+                                RequiredToken("="),
+                                Required(rules.Value, rules.MissingValue),
+                                shape49)),
+                        missing7),
+                    RequiredToken(")"));
+            var fragment30 = Custom(
+                    rules.ColumnNameReference,
+                    RequiredToken(":"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape65);
+            var fragment31 = Custom(
+                    rules.StringLiteral,
+                    Token(";"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape69);
+            var fragment32 = Custom(
+                    Token("<|"),
+                    Required(rules.CommandInput, rules.MissingExpression),
+                    shape70);
+            var fragment33 = Custom(
+                    Token("("),
+                    ZeroOrMoreCommaList(
+                        Custom(
+                            If(Not(Token(")")), rules.DatabaseNameReference),
+                            shape4),
+                        missingElement: rules.MissingNameReference
+                        ),
+                    RequiredToken(")"),
+                    shape71);
+            var fragment34 = Custom(
+                    Token("partition"),
+                    RequiredToken("by"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.NameDeclarationOrStringLiteral,
+                                RequiredToken(":"),
+                                Required(
+                                    First(
+                                        Custom(
+                                            Token("datetime"),
+                                            Optional(
+                                                Custom(
+                                                    Token("="),
+                                                    Required(
+                                                        First(
+                                                            Custom(
+                                                                Token("bin"),
+                                                                RequiredToken("("),
+                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                                                                RequiredToken(","),
+                                                                Required(rules.Value, rules.MissingValue),
+                                                                RequiredToken(")"),
+                                                                shape73),
+                                                            Custom(
+                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
+                                                                RequiredToken("("),
+                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                                                                RequiredToken(")"),
+                                                                shape74)),
+                                                        missing20))),
+                                            shape30),
+                                        Custom(
+                                            Token("long"),
+                                            RequiredToken("="),
+                                            RequiredToken("hash"),
+                                            RequiredToken("("),
+                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                                            RequiredToken(","),
+                                            Required(rules.Value, rules.MissingValue),
+                                            RequiredToken(")"),
+                                            shape75),
+                                        Custom(
+                                            Token("string"),
+                                            Optional(
+                                                Custom(
+                                                    Token("="),
+                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
+                                                    shape76)),
+                                            shape30)),
+                                    missing48),
+                                shape77)),
+                        missing49),
+                    RequiredToken(")"),
+                    Optional(
+                        Custom(
+                            Token("pathformat"),
+                            RequiredToken("="),
+                            RequiredToken("("),
+                            Required(
+                                First(
+                                    Custom(
+                                        rules.StringLiteral,
+                                        Required(
+                                            OneOrMoreList(
+                                                Custom(
+                                                    First(
+                                                        fragment12,
+                                                        Custom(
+                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                            shape12)),
+                                                    Optional(
+                                                        Custom(
+                                                            rules.StringLiteral,
+                                                            shape0)),
+                                                    shape31)),
+                                            missing23),
+                                        shape78),
+                                    OneOrMoreList(
+                                        Custom(
+                                            First(
+                                                Custom(
+                                                    Token("datetime_pattern"),
+                                                    RequiredToken("("),
+                                                    rules.StringLiteral,
+                                                    Token(","),
+                                                    rules.NameDeclarationOrStringLiteral,
+                                                    Token(")"),
+                                                    shape32),
+                                                fragment12,
+                                                Custom(
+                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
+                                                    shape12)),
+                                            Optional(
+                                                Custom(
+                                                    rules.StringLiteral,
+                                                    shape0)),
+                                            shape31))),
+                                missing24),
+                            RequiredToken(")"),
+                            shape79)),
+                    RequiredToken("dataformat"),
+                    shape80);
+            var fragment35 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    ZeroOrMoreCommaList(
+                        fragment11),
+                    RequiredToken(")"),
+                    shape34);
+            var fragment36 = Custom(
+                    rules.NameDeclarationOrStringLiteral,
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            fragment10),
+                        missing6),
+                    RequiredToken(")"),
+                    shape87);
+            var fragment37 = Custom(
+                    First(
+                        Token("autoUpdateSchema"),
+                        Token("backfill"),
+                        Token("dimensionTables"),
+                        Token("docString"),
+                        Token("effectiveDateTime"),
+                        Token("folder"),
+                        Token("lookback"),
+                        Token("updateExtentsCreationTime"),
+                        If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape49);
+            var fragment38 = Custom(
+                    Token("async"),
+                    RequiredToken("table"));
+            var fragment39 = Custom(
+                    Token("limit"),
+                    Required(rules.Value, rules.MissingValue),
+                    shape93);
+            var fragment40 = Custom(
+                    Token("application"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    Optional(
+                        fragment0),
+                    shape94);
+            var fragment41 = Custom(
+                    Token("all"),
+                    RequiredToken("tables"));
+            var fragment42 = Custom(
+                    Token("trim"),
+                    RequiredToken("by"),
+                    RequiredToken("datasize", "extentsize"),
+                    Required(rules.Value, rules.MissingValue),
+                    RequiredToken("bytes", "GB", "MB"),
+                    Optional(
+                        fragment39),
+                    shape99);
+            var fragment43 = Custom(
+                    Token("from"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    shape98);
+            var fragment44 = Custom(
+                    Token("skip-results"),
+                    Optional(
+                        Custom(
+                            rules.StringLiteral,
+                            shape0)),
+                    shape31);
+            var fragment45 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            fragment11),
+                        missing12),
+                    RequiredToken(")"),
+                    RequiredToken("<|"),
+                    shape25);
+            var fragment46 = Custom(
+                    Token("async"),
+                    Token("to"));
+            var fragment47 = Custom(
+                    First(
+                        Token("creationTime"),
+                        Token("distributed"),
+                        Token("docstring"),
+                        Token("extend_schema"),
+                        Token("folder"),
+                        Token("format"),
+                        Token("ignoreFirstRecord"),
+                        Token("ingestIfNotExists"),
+                        Token("ingestionMappingReference"),
+                        Token("ingestionMapping"),
+                        Token("persistDetails"),
+                        Token("policy_ingestionTime"),
+                        Token("recreate_schema"),
+                        Token("tags"),
+                        Token("validationPolicy"),
+                        Token("zipPattern"),
+                        If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape49);
+            var fragment48 = Custom(
+                    Token("async"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    shape98);
+            var fragment49 = Custom(
+                    Token("async"),
+                    RequiredToken("extents"));
+            var fragment50 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            fragment47),
+                        missing41),
+                    RequiredToken(")"),
+                    RequiredToken("<|"));
+            var fragment51 = Custom(
+                    Token("async"),
+                    Required(If(Not(Token("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
+                    shape110);
+            var fragment52 = Custom(
+                    Token("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.StringLiteral,
+                                shape0),
+                            missingElement: rules.MissingStringLiteral),
+                        missing1),
+                    RequiredToken(")"),
+                    Optional(
+                        First(
+                            fragment2,
+                            Custom(
+                                rules.StringLiteral,
+                                shape0))),
+                    shape111);
+            var fragment53 = Custom(
+                    Token("none"),
+                    Optional(
+                        Custom(
+                            Token("skip-results"))),
+                    shape85);
+            var fragment54 = Custom(
+                    Token("async"),
+                    Token("stored_query_result"));
+            var fragment55 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    RequiredToken("scope"),
+                    RequiredToken("="),
+                    RequiredToken("cluster", "workloadgroup"),
+                    RequiredToken(")"),
+                    shape113);
+            var fragment56 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    RequiredToken("extentsShowFilteringRuntimePolicy"),
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    RequiredToken(")"),
+                    shape114);
+            var fragment57 = Custom(
+                    Token("where"),
+                    Required(
+                        OneOrMoreList(
+                            Custom(
+                                Token("tags"),
+                                RequiredToken("!contains", "!has", "contains", "has"),
+                                Required(rules.StringLiteral, rules.MissingStringLiteral),
+                                shape115),
+                            separatorParser: Token("and")),
+                        missing73),
+                    Optional(
+                        fragment56),
+                    shape86);
+            var fragment58 = Custom(
+                    Token("cluster"),
+                    Token("databases"));
+            var fragment59 = Custom(
+                    Token("databases"),
+                    Token("("),
+                    OneOrMoreCommaList(
+                        Custom(
+                            rules.DatabaseNameReference,
+                            shape4),
+                        missingElement: rules.MissingNameReference),
+                    Token(")"),
+                    shape101);
+            var fragment60 = Custom(
+                    Token("("),
+                    OneOrMoreCommaList(
+                        Custom(
+                            rules.AnyGuidLiteralOrString,
+                            shape0),
+                        missingElement: rules.MissingValue),
+                    Token(")"),
+                    Optional(Token("hot")),
+                    shape111);
+            var fragment61 = Custom(
+                    Token("database"),
+                    Optional(
+                        Custom(
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            shape4)),
+                    shape121);
+            var fragment62 = Custom(
+                    Token("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.AnyGuidLiteralOrString,
+                                shape0),
+                            missingElement: rules.MissingValue),
+                        missing58),
+                    RequiredToken(")"),
+                    Optional(Token("hot")),
+                    shape111);
+            var fragment63 = Custom(
+                    Token("if_later_than"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape123);
+            var fragment64 = Custom(
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("schema"),
+                    shape125);
+            var fragment65 = Custom(
+                    Token("if_later_than"),
+                    rules.StringLiteral,
+                    Token("as"),
+                    shape126);
+            var fragment66 = Custom(
+                    rules.StringLiteral,
+                    RequiredToken("roles"),
+                    shape130);
+            var fragment67 = Custom(
+                    Token("except"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    shape133);
+            var fragment68 = Custom(
+                    Token("threshold"),
+                    Required(rules.Value, rules.MissingValue),
+                    shape139);
+            var fragment69 = Custom(
+                    Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
+                    RequiredToken("mappings"),
+                    shape140);
+            var fragment70 = Custom(
+                    Token("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.AnyGuidLiteralOrString,
+                                shape0),
+                            missingElement: rules.MissingValue),
+                        missing58),
+                    RequiredToken(")"),
+                    shape107);
+            var fragment71 = Custom(
+                    Token("tables"),
+                    Token("("),
+                    OneOrMoreCommaList(
+                        Custom(
+                            rules.TableNameReference,
+                            shape10),
+                        missingElement: rules.MissingNameReference),
+                    Token(")"),
+                    shape146);
+            var fragment72 = Custom(
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    shape98);
+
             var AddClusterBlockedPrincipals = Command("AddClusterBlockedPrincipals", 
                 Custom(
                     Token("add", CompletionKind.CommandPrefix),
@@ -282,34 +886,17 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         First(
-                            Custom(
-                                Token("application"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                Optional(
-                                    Custom(
-                                        Token("user"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape1)),
-                                shape94),
-                            Custom(
-                                Token("user"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape1))),
+                            fragment40,
+                            fragment0)),
                     Optional(
                         First(
                             Custom(
                                 Token("period"),
                                 Required(rules.Value, rules.MissingValue),
                                 Optional(
-                                    Custom(
-                                        Token("reason"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape2)),
+                                    fragment1),
                                 new [] {CD(), CD("Period", CompletionHint.Literal), CD(isOptional: true)}),
-                            Custom(
-                                Token("reason"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape2))),
+                            fragment1)),
                     new [] {CD(), CD(), CD(), CD("Principal", CompletionHint.Literal), CD(isOptional: true), CD(isOptional: true)}));
 
             var AddClusterRole = Command("AddClusterRole", 
@@ -319,30 +906,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "databasecreators", "users", "viewers"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -356,30 +929,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -394,30 +953,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape31),
+                            fragment44,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -441,19 +986,11 @@ namespace Kusto.Language.Parsing
                         missing2),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
@@ -470,30 +1007,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -507,19 +1030,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
@@ -536,30 +1051,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "ingestors"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -695,22 +1196,8 @@ namespace Kusto.Language.Parsing
                     Token("retention"),
                     Required(
                         First(
-                            Custom(
-                                Token("recoverability"),
-                                RequiredToken("="),
-                                RequiredToken("disabled", "enabled"),
-                                shape7),
-                            Custom(
-                                Token("softdelete"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                Optional(
-                                    Custom(
-                                        Token("recoverability"),
-                                        RequiredToken("="),
-                                        RequiredToken("disabled", "enabled"),
-                                        shape7)),
-                                shape9),
+                            fragment3,
+                            fragment4,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -754,34 +1241,10 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: First(
-                                Custom(
-                                    Token("cluster"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    RequiredToken("."),
-                                    RequiredToken("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape26),
-                                Custom(
-                                    Token("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape27)),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            First(
+                                fragment8,
+                                fragment9)),
                         missing4),
                     RequiredToken(")"),
                     shape28));
@@ -805,22 +1268,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken("retention"),
                     Required(
                         First(
-                            Custom(
-                                Token("recoverability"),
-                                RequiredToken("="),
-                                RequiredToken("disabled", "enabled"),
-                                shape7),
-                            Custom(
-                                Token("softdelete"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                Optional(
-                                    Custom(
-                                        Token("recoverability"),
-                                        RequiredToken("="),
-                                        RequiredToken("disabled", "enabled"),
-                                        shape7)),
-                                shape9),
+                            fragment3,
+                            fragment4,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -856,22 +1305,8 @@ namespace Kusto.Language.Parsing
                     Token("retention"),
                     Required(
                         First(
-                            Custom(
-                                Token("recoverability"),
-                                RequiredToken("="),
-                                RequiredToken("disabled", "enabled"),
-                                shape7),
-                            Custom(
-                                Token("softdelete"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                Optional(
-                                    Custom(
-                                        Token("recoverability"),
-                                        RequiredToken("="),
-                                        RequiredToken("disabled", "enabled"),
-                                        shape7)),
-                                shape9),
+                            fragment3,
+                            fragment4,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -887,20 +1322,8 @@ namespace Kusto.Language.Parsing
                     Token("roworder"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.ColumnNameReference,
-                                RequiredToken("asc", "desc"),
-                                shape57),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment28),
                         missing5),
                     RequiredToken(")"),
                     shape58));
@@ -942,48 +1365,12 @@ namespace Kusto.Language.Parsing
                     rules.TableNameReference,
                     Token("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         missing6),
                     RequiredToken(")"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        First(
-                                            Token("docstring"),
-                                            Token("folder"),
-                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing7),
-                            RequiredToken(")"))),
+                        fragment29),
                     shape64));
 
             var AlterMergeTableColumnDocStrings = Command("AlterMergeTableColumnDocStrings", 
@@ -994,21 +1381,8 @@ namespace Kusto.Language.Parsing
                     Token("column-docstrings"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.ColumnNameReference,
-                                RequiredToken(":"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape65),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment30),
                         missing8),
                     RequiredToken(")"),
                     shape66));
@@ -1054,19 +1428,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10)));
 
             var AlterClusterPolicyCallout = Command("AlterClusterPolicyCallout", 
@@ -1195,29 +1558,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("decryption-certificate-thumbprint"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("decryption-certificate-thumbprint"),
-                                shape25)),
+                            fragment7),
                         missing13),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD("thumbprint", CompletionHint.Literal)}));
@@ -1231,19 +1572,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10),
                     new [] {CD(), CD(), CD("ColumnName", CompletionHint.Column), CD(), CD(), CD()}));
 
@@ -1300,11 +1630,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("metadata"),
                     Required(
                         First(
-                            Custom(
-                                rules.StringLiteral,
-                                Token(";"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape69),
+                            fragment31,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -1320,19 +1646,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10),
                     shape18));
 
@@ -1469,29 +1784,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("decryption-certificate-thumbprint"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("decryption-certificate-thumbprint"),
-                                shape25)),
+                            fragment7),
                         missing13),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD(), CD("thumbprint", CompletionHint.Literal)}));
@@ -1503,34 +1796,10 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: First(
-                                Custom(
-                                    Token("cluster"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    RequiredToken("."),
-                                    RequiredToken("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape26),
-                                Custom(
-                                    Token("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape27)),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            First(
+                                fragment8,
+                                fragment9)),
                         missing4),
                     RequiredToken(")"),
                     shape28));
@@ -1607,26 +1876,15 @@ namespace Kusto.Language.Parsing
                     RequiredToken("tags"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Required(
-                        Custom(
-                            Token("<|"),
-                            Required(rules.CommandInput, rules.MissingExpression),
-                            shape70),
+                        fragment32,
                         missing17),
                     new [] {CD(), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD("csl")}));
 
@@ -1638,21 +1896,8 @@ namespace Kusto.Language.Parsing
                         Token("table"),
                         rules.NameDeclarationOrStringLiteral,
                         Token("("),
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -1664,28 +1909,7 @@ namespace Kusto.Language.Parsing
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape72));
 
@@ -1698,21 +1922,8 @@ namespace Kusto.Language.Parsing
                         rules.NameDeclarationOrStringLiteral,
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.NameDeclarationOrStringLiteral,
-                                    RequiredToken(":"),
-                                    Required(rules.Type, rules.MissingType),
-                                    shape29),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            OneOrMoreCommaList(
+                                fragment10),
                             missing6),
                         RequiredToken(")"),
                         RequiredToken("kind"),
@@ -1726,183 +1937,21 @@ namespace Kusto.Language.Parsing
                         Required(
                             First(
                                 Token("dataformat"),
-                                Custom(
-                                    Token("partition"),
-                                    RequiredToken("by"),
-                                    RequiredToken("("),
-                                    Required(
-                                        OList(
-                                            primaryElementParser: Custom(
-                                                rules.NameDeclarationOrStringLiteral,
-                                                RequiredToken(":"),
-                                                Required(
-                                                    First(
-                                                        Custom(
-                                                            Token("datetime"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(
-                                                                        First(
-                                                                            Custom(
-                                                                                Token("bin"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(","),
-                                                                                Required(rules.Value, rules.MissingValue),
-                                                                                RequiredToken(")"),
-                                                                                shape73),
-                                                                            Custom(
-                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(")"),
-                                                                                shape74)),
-                                                                        missing20))),
-                                                            shape30),
-                                                        Custom(
-                                                            Token("long"),
-                                                            RequiredToken("="),
-                                                            RequiredToken("hash"),
-                                                            RequiredToken("("),
-                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredToken(","),
-                                                            Required(rules.Value, rules.MissingValue),
-                                                            RequiredToken(")"),
-                                                            shape75),
-                                                        Custom(
-                                                            Token("string"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    shape76)),
-                                                            shape30)),
-                                                    missing21),
-                                                shape77),
-                                            separatorParser: Token(","),
-                                            secondaryElementParser: null,
-                                            missingPrimaryElement: null,
-                                            missingSeparator: null,
-                                            missingSecondaryElement: null,
-                                            endOfList: null,
-                                            oneOrMore: true,
-                                            allowTrailingSeparator: false,
-                                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        missing22),
-                                    RequiredToken(")"),
-                                    Optional(
-                                        Custom(
-                                            Token("pathformat"),
-                                            RequiredToken("="),
-                                            RequiredToken("("),
-                                            Required(
-                                                First(
-                                                    Custom(
-                                                        rules.StringLiteral,
-                                                        Required(
-                                                            List(
-                                                                Custom(
-                                                                    First(
-                                                                        Custom(
-                                                                            Token("datetime_pattern"),
-                                                                            RequiredToken("("),
-                                                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredToken(","),
-                                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredToken(")"),
-                                                                            shape32),
-                                                                        Custom(
-                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                            shape12)),
-                                                                    Optional(
-                                                                        Custom(
-                                                                            rules.StringLiteral,
-                                                                            shape0)),
-                                                                    shape31),
-                                                                missingElement: null,
-                                                                oneOrMore: true,
-                                                                producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            missing23),
-                                                        shape78),
-                                                    List(
-                                                        Custom(
-                                                            First(
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    rules.StringLiteral,
-                                                                    Token(","),
-                                                                    rules.NameDeclarationOrStringLiteral,
-                                                                    Token(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredToken(","),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredToken(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                    shape12)),
-                                                            Optional(
-                                                                Custom(
-                                                                    rules.StringLiteral,
-                                                                    shape0)),
-                                                            shape31),
-                                                        missingElement: null,
-                                                        oneOrMore: true,
-                                                        producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                missing24),
-                                            RequiredToken(")"),
-                                            shape79)),
-                                    RequiredToken("dataformat"),
-                                    shape80)),
+                                fragment34),
                             missing25),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingStringLiteral,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingStringLiteral),
                             missing1),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape81));
 
@@ -1986,68 +2035,14 @@ namespace Kusto.Language.Parsing
                     RequiredToken("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape45),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape46)),
+                            fragment5,
+                            fragment6),
                         missing28),
                     Optional(
                         First(
-                            Custom(
-                                Token(","),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("hot_window"),
-                                            RequiredToken("="),
-                                            Required(
-                                                Custom(
-                                                    rules.Value,
-                                                    RequiredToken(".."),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape37),
-                                                missing29),
-                                            shape38),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing30)),
-                            OList(
-                                primaryElementParser: Custom(
-                                    Token("hot_window"),
-                                    RequiredToken("="),
-                                    Required(
-                                        Custom(
-                                            rules.Value,
-                                            RequiredToken(".."),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape37),
-                                        missing29),
-                                    shape38),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)))),
+                            fragment27,
+                            OneOrMoreCommaList(
+                                fragment14))),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(), CD(), CD(), CD("hotWindows", isOptional: true)}));
 
             var AlterFollowerDatabaseConfiguration = Command("AlterFollowerDatabaseConfiguration", 
@@ -2057,69 +2052,23 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     First(
-                        Custom(
-                            Token("caching-policies-modification-kind"),
-                            Token("="),
-                            Token("none", "replace", "union"),
-                            shape36),
-                        Custom(
-                            Token("caching-policies-modification-kind"),
-                            RequiredToken("="),
-                            RequiredToken("none", "replace", "union"),
-                            shape36),
-                        Custom(
-                            Token("database-name-override"),
-                            RequiredToken("="),
-                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                            shape39),
+                        fragment15,
+                        fragment16,
+                        fragment17,
                         Custom(
                             Token("from"),
                             rules.StringLiteral,
                             First(
-                                Custom(
-                                    Token("caching-policies-modification-kind"),
-                                    Token("="),
-                                    Token("none", "replace", "union"),
-                                    shape36),
-                                Custom(
-                                    Token("caching-policies-modification-kind"),
-                                    RequiredToken("="),
-                                    RequiredToken("none", "replace", "union"),
-                                    shape36),
-                                Custom(
-                                    Token("database-name-override"),
-                                    RequiredToken("="),
-                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                    shape39),
-                                Custom(
-                                    Token("metadata"),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    shape41),
-                                Custom(
-                                    Token("prefetch-extents"),
-                                    RequiredToken("="),
-                                    Required(rules.Value, rules.MissingValue),
-                                    shape42),
-                                Custom(
-                                    Token("principals-modification-kind"),
-                                    RequiredToken("="),
-                                    RequiredToken("none", "replace", "union"),
-                                    shape36)),
+                                fragment15,
+                                fragment16,
+                                fragment17,
+                                fragment18,
+                                fragment19,
+                                fragment20),
                             shape40),
-                        Custom(
-                            Token("metadata"),
-                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                            shape41),
-                        Custom(
-                            Token("prefetch-extents"),
-                            RequiredToken("="),
-                            Required(rules.Value, rules.MissingValue),
-                            shape42),
-                        Custom(
-                            Token("principals-modification-kind"),
-                            RequiredToken("="),
-                            RequiredToken("none", "replace", "union"),
-                            shape36)),
+                        fragment18,
+                        fragment19,
+                        fragment20),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD()}));
 
             var AlterFollowerDatabaseChildEntities = Command("AlterFollowerDatabaseChildEntities", 
@@ -2130,22 +2079,14 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         First(
-                            Custom(
-                                Token("external"),
-                                Token("tables")),
-                            Custom(
-                                Token("external"),
-                                RequiredToken("tables")),
+                            fragment21,
+                            fragment22,
                             Custom(
                                 Token("from"),
                                 rules.StringLiteral,
                                 First(
-                                    Custom(
-                                        Token("external"),
-                                        Token("tables")),
-                                    Custom(
-                                        Token("external"),
-                                        RequiredToken("tables")),
+                                    fragment21,
+                                    fragment22,
                                     Token("materialized-views"),
                                     Token("tables")),
                                 shape40),
@@ -2155,19 +2096,11 @@ namespace Kusto.Language.Parsing
                         RequiredToken("add", "drop"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.WildcardedNameDeclaration,
                                     shape12),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameDeclaration,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingNameDeclaration),
                             missing31),
                         RequiredToken(")")}
                     ,
@@ -2186,171 +2119,29 @@ namespace Kusto.Language.Parsing
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 Required(
                                     First(
-                                        Custom(
-                                            Token("materialized-views"),
-                                            RequiredToken("("),
-                                            Required(
-                                                OList(
-                                                    primaryElementParser: Custom(
-                                                        rules.NameDeclarationOrStringLiteral,
-                                                        shape12),
-                                                    separatorParser: Token(","),
-                                                    secondaryElementParser: null,
-                                                    missingPrimaryElement: null,
-                                                    missingSeparator: null,
-                                                    missingSecondaryElement: rules.MissingNameDeclaration,
-                                                    endOfList: null,
-                                                    oneOrMore: true,
-                                                    allowTrailingSeparator: false,
-                                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                                missing31),
-                                            RequiredToken(")"),
-                                            shape34),
-                                        Custom(
-                                            Token("materialized-view"),
-                                            Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                                            shape43),
-                                        Custom(
-                                            Token("tables"),
-                                            RequiredToken("("),
-                                            Required(
-                                                OList(
-                                                    primaryElementParser: Custom(
-                                                        rules.NameDeclarationOrStringLiteral,
-                                                        shape12),
-                                                    separatorParser: Token(","),
-                                                    secondaryElementParser: null,
-                                                    missingPrimaryElement: null,
-                                                    missingSeparator: null,
-                                                    missingSecondaryElement: rules.MissingNameDeclaration,
-                                                    endOfList: null,
-                                                    oneOrMore: true,
-                                                    allowTrailingSeparator: false,
-                                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                                missing31),
-                                            RequiredToken(")"),
-                                            shape34),
-                                        Custom(
-                                            Token("table"),
-                                            Required(rules.TableNameReference, rules.MissingNameReference),
-                                            shape44)),
+                                        fragment23,
+                                        fragment24,
+                                        fragment25,
+                                        fragment26),
                                     missing32),
                                 shape40),
-                            Custom(
-                                Token("materialized-views"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            shape12),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingNameDeclaration,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing31),
-                                RequiredToken(")"),
-                                shape34),
-                            Custom(
-                                Token("materialized-view"),
-                                Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                                shape43),
-                            Custom(
-                                Token("tables"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            shape12),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingNameDeclaration,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing31),
-                                RequiredToken(")"),
-                                shape34),
-                            Custom(
-                                Token("table"),
-                                Required(rules.TableNameReference, rules.MissingNameReference),
-                                shape44)),
+                            fragment23,
+                            fragment24,
+                            fragment25,
+                            fragment26),
                         missing33),
                     RequiredToken("policy"),
                     RequiredToken("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape45),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape46)),
+                            fragment5,
+                            fragment6),
                         missing28),
                     Optional(
                         First(
-                            Custom(
-                                Token(","),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("hot_window"),
-                                            RequiredToken("="),
-                                            Required(
-                                                Custom(
-                                                    rules.Value,
-                                                    RequiredToken(".."),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape37),
-                                                missing29),
-                                            shape38),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing30)),
-                            OList(
-                                primaryElementParser: Custom(
-                                    Token("hot_window"),
-                                    RequiredToken("="),
-                                    Required(
-                                        Custom(
-                                            rules.Value,
-                                            RequiredToken(".."),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape37),
-                                        missing29),
-                                    shape38),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)))),
+                            fragment27,
+                            OneOrMoreCommaList(
+                                fragment14))),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(), CD(), CD(), CD(), CD("hotWindows", isOptional: true)}));
 
             var AlterFunctionDocString = Command("AlterFunctionDocString", 
@@ -2381,21 +2172,8 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment11),
                                     missing18),
                                 RequiredToken(")"),
                                 Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
@@ -2450,24 +2228,15 @@ namespace Kusto.Language.Parsing
                         Custom(
                             Token("with"),
                             RequiredToken("("),
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     First(
                                         Token("dimensionTables"),
                                         Token("lookback"),
                                         If(Not(And(Token("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
                                     RequiredToken("="),
                                     rules.Value,
-                                    shape49),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    shape49)),
                             Token(")"),
                             rules.MaterializedViewNameReference,
                             shape50),
@@ -2475,24 +2244,15 @@ namespace Kusto.Language.Parsing
                             Token("with"),
                             RequiredToken("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         First(
                                             Token("dimensionTables"),
                                             Token("lookback"),
                                             If(Not(And(Token("dimensionTables", "lookback"))), rules.NameDeclarationOrStringLiteral)),
                                         RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        shape49)),
                                 missing35),
                             RequiredToken(")"),
                             Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
@@ -2515,19 +2275,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10),
                     shape51));
 
@@ -2584,86 +2333,24 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10),
                     Optional(
                         First(
-                            Custom(
-                                Token(","),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("hot_window"),
-                                            RequiredToken("="),
-                                            Required(
-                                                Custom(
-                                                    rules.Value,
-                                                    RequiredToken(".."),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape37),
-                                                missing29),
-                                            shape38),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing30)),
-                            OList(
-                                primaryElementParser: Custom(
-                                    Token("hot_window"),
-                                    RequiredToken("="),
-                                    Required(
-                                        Custom(
-                                            rules.Value,
-                                            RequiredToken(".."),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape37),
-                                        missing29),
-                                    shape38),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)))),
+                            fragment27,
+                            OneOrMoreCommaList(
+                                fragment14))),
                     new [] {CD(), CD(), CD(), CD(CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)}));
 
             var AlterTablesPolicyIngestionBatching = Command("AlterTablesPolicyIngestionBatching", 
@@ -2671,19 +2358,11 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("ingestionbatching"),
@@ -2695,19 +2374,11 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("ingestiontime"),
@@ -2719,19 +2390,11 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("merge"),
@@ -2743,19 +2406,11 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("restricted_view_access"),
@@ -2767,19 +2422,11 @@ namespace Kusto.Language.Parsing
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.TableNameReference,
                             shape10),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: rules.MissingNameReference,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        missingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("retention"),
@@ -2793,39 +2440,22 @@ namespace Kusto.Language.Parsing
                         Token("tables"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.TableNameReference,
                                     shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingNameReference),
                             missing37),
                         RequiredToken(")"),
                         RequiredToken("policy"),
                         RequiredToken("roworder"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.NameDeclarationOrStringLiteral,
                                     RequiredToken("asc", "desc"),
-                                    new [] {CD("ColumnName", CompletionHint.None), CD()}),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    new [] {CD("ColumnName", CompletionHint.None), CD()})),
                             missing38),
                         RequiredToken(")")}
                     ,
@@ -2862,19 +2492,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            Custom(
-                                Token("hotdata"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("hotindex"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape15),
-                            Custom(
-                                Token("hot"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape16)),
+                            fragment5,
+                            fragment6),
                         missing10),
                     shape54));
 
@@ -2947,20 +2566,8 @@ namespace Kusto.Language.Parsing
                     Token("roworder"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.ColumnNameReference,
-                                RequiredToken("asc", "desc"),
-                                shape57),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment28),
                         missing5),
                     RequiredToken(")"),
                     shape58));
@@ -3012,28 +2619,7 @@ namespace Kusto.Language.Parsing
                     Token("blocked"),
                     RequiredToken("keys"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape61));
 
             var AlterTableRowStoreReferencesDisableKey = Command("AlterTableRowStoreReferencesDisableKey", 
@@ -3046,28 +2632,7 @@ namespace Kusto.Language.Parsing
                     Token("key"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape62));
 
             var AlterTableRowStoreReferencesDisableRowStore = Command("AlterTableRowStoreReferencesDisableRowStore", 
@@ -3080,28 +2645,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("rowstore"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape63));
 
             var AlterTableRowStoreReferencesDropBlockedKeys = Command("AlterTableRowStoreReferencesDropBlockedKeys", 
@@ -3114,28 +2658,7 @@ namespace Kusto.Language.Parsing
                     Token("blocked"),
                     RequiredToken("keys"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape61));
 
             var AlterTableRowStoreReferencesDropKey = Command("AlterTableRowStoreReferencesDropKey", 
@@ -3148,28 +2671,7 @@ namespace Kusto.Language.Parsing
                     Token("key"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape62));
 
             var AlterTableRowStoreReferencesDropRowStore = Command("AlterTableRowStoreReferencesDropRowStore", 
@@ -3182,28 +2684,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("rowstore"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape63));
 
             var AlterTable = Command("AlterTable", 
@@ -3213,48 +2694,12 @@ namespace Kusto.Language.Parsing
                     rules.TableNameReference,
                     Token("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         missing6),
                     RequiredToken(")"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        First(
-                                            Token("docstring"),
-                                            Token("folder"),
-                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing7),
-                            RequiredToken(")"))),
+                        fragment29),
                     shape64));
 
             var AlterTableColumnDocStrings = Command("AlterTableColumnDocStrings", 
@@ -3265,21 +2710,8 @@ namespace Kusto.Language.Parsing
                     Token("column-docstrings"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.ColumnNameReference,
-                                RequiredToken(":"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape65),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment30),
                         missing8),
                     RequiredToken(")"),
                     shape66));
@@ -3302,7 +2734,7 @@ namespace Kusto.Language.Parsing
                     rules.TableNameReference,
                     Token("column"),
                     RequiredToken("statistics"),
-                    CommaList(
+                    ZeroOrMoreCommaList(
                         Custom(
                             rules.NameDeclarationOrStringLiteral,
                             Required(rules.StringLiteral, rules.MissingStringLiteral),
@@ -3372,12 +2804,8 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("with"),
                                 RequiredToken("("),
-                                CommaList(
-                                    Custom(
-                                        If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape33)),
+                                ZeroOrMoreCommaList(
+                                    fragment11),
                                 RequiredToken(")"),
                                 Required(rules.StringLiteral, rules.MissingStringLiteral),
                                 new [] {CD(), CD(), CD(CompletionHint.None), CD(), CD("Query", CompletionHint.Literal)}),
@@ -3392,10 +2820,7 @@ namespace Kusto.Language.Parsing
                     Token("append", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                Required(rules.TableNameReference, rules.MissingNameReference),
-                                shape98),
+                            fragment48,
                             Custom(
                                 If(Not(Token("async")), rules.TableNameReference),
                                 shape10)),
@@ -3403,45 +2828,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape109));
@@ -3455,11 +2842,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("from"),
                     Required(
                         First(
-                            Custom(
-                                rules.StringLiteral,
-                                Token(";"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape69),
+                            fragment31,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -3474,11 +2857,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("from"),
                     Required(
                         First(
-                            Custom(
-                                rules.StringLiteral,
-                                Token(";"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape69),
+                            fragment31,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -3496,13 +2875,10 @@ namespace Kusto.Language.Parsing
                     Token("container"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Required(
-                        List(
+                        OneOrMoreList(
                             Custom(
                                 rules.AnyGuidLiteralOrString,
-                                shape0),
-                            missingElement: null,
-                            oneOrMore: true,
-                            producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
+                                shape0)),
                         missing42),
                     new [] {CD(), CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD("containerUri", CompletionHint.Literal), CD(CompletionHint.Literal)}));
 
@@ -3511,26 +2887,19 @@ namespace Kusto.Language.Parsing
                     Token("attach", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                RequiredToken("extents")),
+                            fragment49,
                             Token("extents")),
                         missing44),
-                    List(
-                        elementParser: Custom(
+                    ZeroOrMoreList(
+                        Custom(
                             Token("into"),
                             RequiredToken("table"),
                             Required(rules.TableNameReference, rules.MissingNameReference),
-                            new [] {CD(), CD(), CD("tableName", CompletionHint.Table)}),
-                        oneOrMore: false,
-                        producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
+                            new [] {CD(), CD(), CD("tableName", CompletionHint.Table)})),
                     RequiredToken("by"),
                     RequiredToken("metadata"),
                     Required(
-                        Custom(
-                            Token("<|"),
-                            Required(rules.CommandInput, rules.MissingExpression),
-                            shape70),
+                        fragment32,
                         missing17),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD("csl")}));
 
@@ -3540,28 +2909,7 @@ namespace Kusto.Language.Parsing
                     Token("operation"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD("obj", CompletionHint.Literal), CD(isOptional: true)}));
 
             var CancelQuery = Command("CancelQuery", 
@@ -3577,25 +2925,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("databases"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                CommaList(
-                                    Custom(
-                                        If(Not(Token(")")), rules.DatabaseNameReference),
-                                        shape4)),
-                                RequiredToken(")"),
-                                shape71),
+                            fragment33,
                             Custom(
                                 Token("async"),
                                 Optional(
-                                    Custom(
-                                        Token("("),
-                                        CommaList(
-                                            Custom(
-                                                If(Not(Token(")")), rules.DatabaseNameReference),
-                                                shape4)),
-                                        RequiredToken(")"),
-                                        shape71)),
+                                    fragment33),
                                 shape85))),
                     RequiredToken("extentcontainers"),
                     new [] {CD(), CD(), CD(isOptional: true), CD()}));
@@ -3671,9 +3005,7 @@ namespace Kusto.Language.Parsing
                     Token("clear", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                RequiredToken("table")),
+                            fragment38,
                             Token("table")),
                         missing45),
                     Required(rules.TableNameReference, rules.MissingNameReference),
@@ -3685,62 +3017,11 @@ namespace Kusto.Language.Parsing
                     Token("create-merge", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken(":"),
-                                            Required(rules.Type, rules.MissingType),
-                                            shape29),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing6),
-                                RequiredToken(")"),
-                                shape87),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment36),
                         missing46),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape88));
 
             var CreateMergeTable = Command("CreateMergeTable", 
@@ -3750,21 +3031,8 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         missing6),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD()}));
@@ -3780,19 +3048,11 @@ namespace Kusto.Language.Parsing
                                 Token("over"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.NameDeclarationOrStringLiteral,
                                             shape12),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingNameDeclaration,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingNameDeclaration),
                                     missing31),
                                 RequiredToken(")"),
                                 RequiredToken("to"),
@@ -3804,29 +3064,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("<|"),
-                                shape25)),
+                            fragment45),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     new [] {CD(), CD(), CD("ContinuousExportName", CompletionHint.None), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD("Query", CompletionHint.Tabular)}));
@@ -3839,21 +3077,8 @@ namespace Kusto.Language.Parsing
                         Token("table"),
                         rules.NameDeclarationOrStringLiteral,
                         Token("("),
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -3865,28 +3090,7 @@ namespace Kusto.Language.Parsing
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape72));
 
@@ -3899,21 +3103,8 @@ namespace Kusto.Language.Parsing
                         Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.NameDeclarationOrStringLiteral,
-                                    RequiredToken(":"),
-                                    Required(rules.Type, rules.MissingType),
-                                    shape29),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            OneOrMoreCommaList(
+                                fragment10),
                             missing6),
                         RequiredToken(")"),
                         RequiredToken("kind"),
@@ -3927,183 +3118,21 @@ namespace Kusto.Language.Parsing
                         Required(
                             First(
                                 Token("dataformat"),
-                                Custom(
-                                    Token("partition"),
-                                    RequiredToken("by"),
-                                    RequiredToken("("),
-                                    Required(
-                                        OList(
-                                            primaryElementParser: Custom(
-                                                rules.NameDeclarationOrStringLiteral,
-                                                RequiredToken(":"),
-                                                Required(
-                                                    First(
-                                                        Custom(
-                                                            Token("datetime"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(
-                                                                        First(
-                                                                            Custom(
-                                                                                Token("bin"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(","),
-                                                                                Required(rules.Value, rules.MissingValue),
-                                                                                RequiredToken(")"),
-                                                                                shape73),
-                                                                            Custom(
-                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(")"),
-                                                                                shape74)),
-                                                                        missing20))),
-                                                            shape30),
-                                                        Custom(
-                                                            Token("long"),
-                                                            RequiredToken("="),
-                                                            RequiredToken("hash"),
-                                                            RequiredToken("("),
-                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredToken(","),
-                                                            Required(rules.Value, rules.MissingValue),
-                                                            RequiredToken(")"),
-                                                            shape75),
-                                                        Custom(
-                                                            Token("string"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    shape76)),
-                                                            shape30)),
-                                                    missing48),
-                                                shape77),
-                                            separatorParser: Token(","),
-                                            secondaryElementParser: null,
-                                            missingPrimaryElement: null,
-                                            missingSeparator: null,
-                                            missingSecondaryElement: null,
-                                            endOfList: null,
-                                            oneOrMore: true,
-                                            allowTrailingSeparator: false,
-                                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        missing49),
-                                    RequiredToken(")"),
-                                    Optional(
-                                        Custom(
-                                            Token("pathformat"),
-                                            RequiredToken("="),
-                                            RequiredToken("("),
-                                            Required(
-                                                First(
-                                                    Custom(
-                                                        rules.StringLiteral,
-                                                        Required(
-                                                            List(
-                                                                Custom(
-                                                                    First(
-                                                                        Custom(
-                                                                            Token("datetime_pattern"),
-                                                                            RequiredToken("("),
-                                                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredToken(","),
-                                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredToken(")"),
-                                                                            shape32),
-                                                                        Custom(
-                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                            shape12)),
-                                                                    Optional(
-                                                                        Custom(
-                                                                            rules.StringLiteral,
-                                                                            shape0)),
-                                                                    shape31),
-                                                                missingElement: null,
-                                                                oneOrMore: true,
-                                                                producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            missing23),
-                                                        shape78),
-                                                    List(
-                                                        Custom(
-                                                            First(
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    rules.StringLiteral,
-                                                                    Token(","),
-                                                                    rules.NameDeclarationOrStringLiteral,
-                                                                    Token(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredToken(","),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredToken(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                    shape12)),
-                                                            Optional(
-                                                                Custom(
-                                                                    rules.StringLiteral,
-                                                                    shape0)),
-                                                            shape31),
-                                                        missingElement: null,
-                                                        oneOrMore: true,
-                                                        producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                missing24),
-                                            RequiredToken(")"),
-                                            shape79)),
-                                    RequiredToken("dataformat"),
-                                    shape80)),
+                                fragment34),
                             missing25),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingStringLiteral,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingStringLiteral),
                             missing1),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape81));
 
@@ -4117,21 +3146,8 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment11),
                                     missing18),
                                 RequiredToken(")"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
@@ -4152,30 +3168,8 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("autoUpdateSchema"),
-                                                Token("backfill"),
-                                                Token("dimensionTables"),
-                                                Token("docString"),
-                                                Token("effectiveDateTime"),
-                                                Token("folder"),
-                                                Token("lookback"),
-                                                Token("updateExtentsCreationTime"),
-                                                If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment37),
                                     missing51),
                                 RequiredToken(")"),
                                 Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
@@ -4219,19 +3213,11 @@ namespace Kusto.Language.Parsing
                     Token("persist"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(Token("ifnotexists")),
@@ -4265,34 +3251,10 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: First(
-                                Custom(
-                                    Token("cluster"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    RequiredToken("."),
-                                    RequiredToken("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape26),
-                                Custom(
-                                    Token("database"),
-                                    RequiredToken("("),
-                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                    RequiredToken(")"),
-                                    shape27)),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            First(
+                                fragment8,
+                                fragment9)),
                         missing4),
                     RequiredToken(")"),
                     shape28));
@@ -4305,21 +3267,8 @@ namespace Kusto.Language.Parsing
                         Token("table"),
                         rules.NameDeclarationOrStringLiteral,
                         Token("("),
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -4331,28 +3280,7 @@ namespace Kusto.Language.Parsing
                         Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape72));
 
@@ -4365,21 +3293,8 @@ namespace Kusto.Language.Parsing
                         rules.NameDeclarationOrStringLiteral,
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.NameDeclarationOrStringLiteral,
-                                    RequiredToken(":"),
-                                    Required(rules.Type, rules.MissingType),
-                                    shape29),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: null,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            OneOrMoreCommaList(
+                                fragment10),
                             missing6),
                         RequiredToken(")"),
                         RequiredToken("kind"),
@@ -4393,183 +3308,21 @@ namespace Kusto.Language.Parsing
                         Required(
                             First(
                                 Token("dataformat"),
-                                Custom(
-                                    Token("partition"),
-                                    RequiredToken("by"),
-                                    RequiredToken("("),
-                                    Required(
-                                        OList(
-                                            primaryElementParser: Custom(
-                                                rules.NameDeclarationOrStringLiteral,
-                                                RequiredToken(":"),
-                                                Required(
-                                                    First(
-                                                        Custom(
-                                                            Token("datetime"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(
-                                                                        First(
-                                                                            Custom(
-                                                                                Token("bin"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(","),
-                                                                                Required(rules.Value, rules.MissingValue),
-                                                                                RequiredToken(")"),
-                                                                                shape73),
-                                                                            Custom(
-                                                                                Token("startofday", "startofmonth", "startofweek", "startofyear"),
-                                                                                RequiredToken("("),
-                                                                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                                RequiredToken(")"),
-                                                                                shape74)),
-                                                                        missing20))),
-                                                            shape30),
-                                                        Custom(
-                                                            Token("long"),
-                                                            RequiredToken("="),
-                                                            RequiredToken("hash"),
-                                                            RequiredToken("("),
-                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                            RequiredToken(","),
-                                                            Required(rules.Value, rules.MissingValue),
-                                                            RequiredToken(")"),
-                                                            shape75),
-                                                        Custom(
-                                                            Token("string"),
-                                                            Optional(
-                                                                Custom(
-                                                                    Token("="),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    shape76)),
-                                                            shape30)),
-                                                    missing53),
-                                                shape77),
-                                            separatorParser: Token(","),
-                                            secondaryElementParser: null,
-                                            missingPrimaryElement: null,
-                                            missingSeparator: null,
-                                            missingSecondaryElement: null,
-                                            endOfList: null,
-                                            oneOrMore: true,
-                                            allowTrailingSeparator: false,
-                                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                        missing54),
-                                    RequiredToken(")"),
-                                    Optional(
-                                        Custom(
-                                            Token("pathformat"),
-                                            RequiredToken("="),
-                                            RequiredToken("("),
-                                            Required(
-                                                First(
-                                                    Custom(
-                                                        rules.StringLiteral,
-                                                        Required(
-                                                            List(
-                                                                Custom(
-                                                                    First(
-                                                                        Custom(
-                                                                            Token("datetime_pattern"),
-                                                                            RequiredToken("("),
-                                                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                            RequiredToken(","),
-                                                                            Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                            RequiredToken(")"),
-                                                                            shape32),
-                                                                        Custom(
-                                                                            If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                            shape12)),
-                                                                    Optional(
-                                                                        Custom(
-                                                                            rules.StringLiteral,
-                                                                            shape0)),
-                                                                    shape31),
-                                                                missingElement: null,
-                                                                oneOrMore: true,
-                                                                producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
-                                                            missing23),
-                                                        shape78),
-                                                    List(
-                                                        Custom(
-                                                            First(
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    rules.StringLiteral,
-                                                                    Token(","),
-                                                                    rules.NameDeclarationOrStringLiteral,
-                                                                    Token(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    Token("datetime_pattern"),
-                                                                    RequiredToken("("),
-                                                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                                                    RequiredToken(","),
-                                                                    Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                                                    RequiredToken(")"),
-                                                                    shape32),
-                                                                Custom(
-                                                                    If(Not(Token("datetime_pattern")), rules.NameDeclarationOrStringLiteral),
-                                                                    shape12)),
-                                                            Optional(
-                                                                Custom(
-                                                                    rules.StringLiteral,
-                                                                    shape0)),
-                                                            shape31),
-                                                        missingElement: null,
-                                                        oneOrMore: true,
-                                                        producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray()))),
-                                                missing24),
-                                            RequiredToken(")"),
-                                            shape79)),
-                                    RequiredToken("dataformat"),
-                                    shape80)),
+                                fragment34),
                             missing25),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
                         RequiredToken("("),
                         Required(
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.StringLiteral,
                                     shape0),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingStringLiteral,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingStringLiteral),
                             missing1),
                         RequiredToken(")"),
                         Optional(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape33),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing18),
-                                RequiredToken(")"),
-                                shape34))}
+                            fragment13)}
                     ,
                     shape81));
 
@@ -4593,29 +3346,9 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("ifnotexists"),
                                 Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        CommaList(
-                                            Custom(
-                                                If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
-                                                RequiredToken("="),
-                                                Required(rules.Value, rules.MissingValue),
-                                                shape33)),
-                                        RequiredToken(")"),
-                                        shape34)),
+                                    fragment35),
                                 shape85),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                CommaList(
-                                    Custom(
-                                        If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape33)),
-                                RequiredToken(")"),
-                                shape34))),
+                            fragment35)),
                     Required(If(Not(And(Token("ifnotexists", "with"))), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration),
                     new [] {CD(), CD(), CD(isOptional: true), CD("FunctionName", CompletionHint.None), CD()}));
@@ -4625,28 +3358,7 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("request_support"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape86));
 
             var CreateRowStore = Command("CreateRowStore", 
@@ -4654,28 +3366,7 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("rowstore"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape86));
 
             var CreateTables = Command("CreateTables", 
@@ -4683,62 +3374,11 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken(":"),
-                                            Required(rules.Type, rules.MissingType),
-                                            shape29),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing6),
-                                RequiredToken(")"),
-                                shape87),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment36),
                         missing46),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape88));
 
             var CreateTable = Command("CreateTable", 
@@ -4748,48 +3388,12 @@ namespace Kusto.Language.Parsing
                     rules.NameDeclarationOrStringLiteral,
                     Token("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken(":"),
-                                Required(rules.Type, rules.MissingType),
-                                shape29),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment10),
                         missing6),
                     RequiredToken(")"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        First(
-                                            Token("docstring"),
-                                            Token("folder"),
-                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing7),
-                            RequiredToken(")"))),
+                        fragment29),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(isOptional: true)}));
 
             var CreateTableBasedOnAnother = Command("CreateTableBasedOnAnother", 
@@ -4800,30 +3404,7 @@ namespace Kusto.Language.Parsing
                     Token("based-on"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        First(
-                                            Token("docstring"),
-                                            Token("folder"),
-                                            If(Not(And(Token("docstring", "folder"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing7),
-                            RequiredToken(")"))),
+                        fragment29),
                     new [] {CD(), CD(), CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.None), CD(isOptional: true)}));
 
             var CreateTableIngestionMapping = Command("CreateTableIngestionMapping", 
@@ -4860,30 +3441,8 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("autoUpdateSchema"),
-                                                Token("backfill"),
-                                                Token("dimensionTables"),
-                                                Token("docString"),
-                                                Token("effectiveDateTime"),
-                                                Token("folder"),
-                                                Token("lookback"),
-                                                Token("updateExtentsCreationTime"),
-                                                If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment37),
                                     missing51),
                                 RequiredToken(")"),
                                 Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
@@ -4903,62 +3462,11 @@ namespace Kusto.Language.Parsing
                     Token("define", CompletionKind.CommandPrefix),
                     RequiredToken("tables"),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
-                                rules.NameDeclarationOrStringLiteral,
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken(":"),
-                                            Required(rules.Type, rules.MissingType),
-                                            shape29),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing6),
-                                RequiredToken(")"),
-                                shape87),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                        OneOrMoreCommaList(
+                            fragment36),
                         missing46),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape88));
 
             var DeleteClusterPolicyCaching = Command("DeleteClusterPolicyCaching", 
@@ -5152,54 +3660,10 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
                         First(
-                            Custom(
-                                Token("materialized-views"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            shape12),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingNameDeclaration,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing31),
-                                RequiredToken(")"),
-                                shape34),
-                            Custom(
-                                Token("materialized-view"),
-                                Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
-                                shape43),
-                            Custom(
-                                Token("tables"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            shape12),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingNameDeclaration,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing31),
-                                RequiredToken(")"),
-                                shape34),
-                            Custom(
-                                Token("table"),
-                                Required(rules.TableNameReference, rules.MissingNameReference),
-                                shape44)),
+                            fragment23,
+                            fragment24,
+                            fragment25,
+                            fragment26),
                         missing32),
                     RequiredToken("policy"),
                     RequiredToken("caching"),
@@ -5240,19 +3704,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("retention"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD(CompletionHint.Literal), CD()}));
@@ -5397,9 +3853,7 @@ namespace Kusto.Language.Parsing
                     Token("delete", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                RequiredToken("table")),
+                            fragment38,
                             Token("table")),
                         missing56),
                     Required(rules.TableNameReference, rules.MissingNameReference),
@@ -5407,36 +3861,17 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Custom(
-                                Custom(
-                                    Token("<|"),
-                                    Required(rules.CommandInput, rules.MissingExpression),
-                                    shape70)),
+                                fragment32),
                             Custom(
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment11),
                                     missing12),
                                 RequiredToken(")"),
                                 Required(
-                                    Custom(
-                                        Token("<|"),
-                                        Required(rules.CommandInput, rules.MissingExpression),
-                                        shape70),
+                                    fragment32,
                                     missing17),
                                 new [] {CD(), CD(), CD(CompletionHint.None), CD(), CD("csl")})),
                         missing17),
@@ -5491,31 +3926,15 @@ namespace Kusto.Language.Parsing
                         missing26),
                     Required(
                         First(
-                            Custom(
-                                Token("all"),
-                                RequiredToken("tables")),
+                            fragment41,
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
                                 shape10)),
                         missing57),
                     Optional(
                         First(
-                            Custom(
-                                Token("limit"),
-                                Required(rules.Value, rules.MissingValue),
-                                shape93),
-                            Custom(
-                                Token("trim"),
-                                RequiredToken("by"),
-                                RequiredToken("datasize", "extentsize"),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken("bytes", "GB", "MB"),
-                                Optional(
-                                    Custom(
-                                        Token("limit"),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape93)),
-                                shape99))),
+                            fragment39,
+                            fragment42)),
                     shape116));
 
             var DropBasicAuthUser = Command("DropBasicAuthUser", 
@@ -5534,19 +3953,8 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         First(
-                            Custom(
-                                Token("application"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                Optional(
-                                    Custom(
-                                        Token("user"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape1)),
-                                shape94),
-                            Custom(
-                                Token("user"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape1))),
+                            fragment40,
+                            fragment0)),
                     new [] {CD(), CD(), CD(), CD("Principal", CompletionHint.Literal), CD(isOptional: true)}));
 
             var DropClusterRole = Command("DropClusterRole", 
@@ -5556,30 +3964,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "databasecreators", "users", "viewers"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -5626,30 +4020,16 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -5676,51 +4056,9 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("whatif"),
                                 Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        Required(
-                                            OList(
-                                                primaryElementParser: Custom(
-                                                    rules.NameDeclarationOrStringLiteral,
-                                                    RequiredToken("="),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape24),
-                                                separatorParser: Token(","),
-                                                secondaryElementParser: null,
-                                                missingPrimaryElement: null,
-                                                missingSeparator: null,
-                                                missingSecondaryElement: null,
-                                                endOfList: null,
-                                                oneOrMore: true,
-                                                allowTrailingSeparator: false,
-                                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                            missing12),
-                                        RequiredToken(")"),
-                                        shape34)),
+                                    fragment13),
                                 shape85),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                shape34))),
+                            fragment13)),
                     new [] {CD(), CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD("d", CompletionHint.Literal), CD(isOptional: true)}));
 
             var DropEntityGroup = Command("DropEntityGroup", 
@@ -5742,10 +4080,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Custom(
-                                Custom(
-                                    Token("<|"),
-                                    Required(rules.CommandInput, rules.MissingExpression),
-                                    shape70)),
+                                fragment32),
                             Custom(
                                 Token("between"),
                                 RequiredToken("("),
@@ -5754,10 +4089,7 @@ namespace Kusto.Language.Parsing
                                 Required(rules.Value, rules.MissingValue),
                                 RequiredToken(")"),
                                 Required(
-                                    Custom(
-                                        Token("<|"),
-                                        Required(rules.CommandInput, rules.MissingExpression),
-                                        shape70),
+                                    fragment32,
                                     missing17),
                                 new [] {CD(), CD(), CD("d1", CompletionHint.Literal), CD(), CD("d2", CompletionHint.Literal), CD(), CD("csl")})),
                         missing17),
@@ -5772,26 +4104,15 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.AnyGuidLiteralOrString,
                                             shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingValue),
                                     missing58),
                                 RequiredToken(")"),
                                 Optional(
-                                    Custom(
-                                        Token("from"),
-                                        Required(rules.TableNameReference, rules.MissingNameReference),
-                                        shape98)),
+                                    fragment43),
                                 shape111),
                             Custom(
                                 Token("<|"),
@@ -5801,31 +4122,15 @@ namespace Kusto.Language.Parsing
                                 Token("from"),
                                 Required(
                                     First(
-                                        Custom(
-                                            Token("all"),
-                                            RequiredToken("tables")),
+                                        fragment41,
                                         Custom(
                                             If(Not(Token("all")), rules.TableNameReference),
                                             shape10)),
                                     missing59),
                                 Optional(
                                     First(
-                                        Custom(
-                                            Token("limit"),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape93),
-                                        Custom(
-                                            Token("trim"),
-                                            RequiredToken("by"),
-                                            RequiredToken("datasize", "extentsize"),
-                                            Required(rules.Value, rules.MissingValue),
-                                            RequiredToken("bytes", "GB", "MB"),
-                                            Optional(
-                                                Custom(
-                                                    Token("limit"),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape93)),
-                                            shape99))),
+                                        fragment39,
+                                        fragment42)),
                                 shape86),
                             Custom(
                                 Token("older"),
@@ -5834,31 +4139,15 @@ namespace Kusto.Language.Parsing
                                 RequiredToken("from"),
                                 Required(
                                     First(
-                                        Custom(
-                                            Token("all"),
-                                            RequiredToken("tables")),
+                                        fragment41,
                                         Custom(
                                             If(Not(Token("all")), rules.TableNameReference),
                                             shape10)),
                                     missing60),
                                 Optional(
                                     First(
-                                        Custom(
-                                            Token("limit"),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape93),
-                                        Custom(
-                                            Token("trim"),
-                                            RequiredToken("by"),
-                                            RequiredToken("datasize", "extentsize"),
-                                            Required(rules.Value, rules.MissingValue),
-                                            RequiredToken("bytes", "GB", "MB"),
-                                            Optional(
-                                                Custom(
-                                                    Token("limit"),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape93)),
-                                            shape99))),
+                                        fragment39,
+                                        fragment42)),
                                 new [] {CD(), CD("Older", CompletionHint.Literal), CD(), CD(), CD(), CD(isOptional: true)}),
                             Custom(
                                 Token("whatif"),
@@ -5880,10 +4169,7 @@ namespace Kusto.Language.Parsing
                     Token("extent"),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
                     Optional(
-                        Custom(
-                            Token("from"),
-                            Required(rules.TableNameReference, rules.MissingNameReference),
-                            shape98)),
+                        fragment43),
                     new [] {CD(), CD(), CD("ExtentId", CompletionHint.Literal), CD(isOptional: true)}));
 
             var DropExternalTableAdmins = Command("DropExternalTableAdmins", 
@@ -5895,30 +4181,16 @@ namespace Kusto.Language.Parsing
                     Token("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape31),
+                            fragment44,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -5947,41 +4219,16 @@ namespace Kusto.Language.Parsing
                     Token("drop", CompletionKind.CommandPrefix),
                     Token("follower"),
                     First(
-                        Custom(
-                            Token("databases"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.DatabaseNameReference,
-                                    shape4),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape101),
+                        fragment59,
                         Custom(
                             Token("databases"),
                             RequiredToken("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.DatabaseNameReference,
                                         shape4),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             shape101),
@@ -6010,19 +4257,11 @@ namespace Kusto.Language.Parsing
                                 shape40)),
                         missing0),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD("operationRole"), CD(), CD(CompletionHint.Literal), CD()}));
@@ -6033,19 +4272,11 @@ namespace Kusto.Language.Parsing
                     Token("functions"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.DatabaseFunctionNameReference,
                                 shape48),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingNameReference,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingNameReference),
                         missing37),
                     RequiredToken(")"),
                     Optional(Token("ifexists")),
@@ -6059,30 +4290,16 @@ namespace Kusto.Language.Parsing
                     Token("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -6104,19 +4321,11 @@ namespace Kusto.Language.Parsing
                     Token("admins"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
@@ -6162,13 +4371,10 @@ namespace Kusto.Language.Parsing
                     Token("storedqueryresultcontainers"),
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     Required(
-                        List(
+                        OneOrMoreList(
                             Custom(
                                 rules.AnyGuidLiteralOrString,
-                                shape0),
-                            missingElement: null,
-                            oneOrMore: true,
-                            producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.ToArray())),
+                                shape0)),
                         missing42),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(CompletionHint.Literal)}));
 
@@ -6178,19 +4384,11 @@ namespace Kusto.Language.Parsing
                     Token("tables"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.TableNameReference,
                                 shape10),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingNameReference,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingNameReference),
                         missing37),
                     RequiredToken(")"),
                     Optional(Token("ifexists")),
@@ -6204,19 +4402,11 @@ namespace Kusto.Language.Parsing
                     Token("columns"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.ColumnNameReference,
                                 shape11),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingNameReference,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingNameReference),
                         missing37),
                     RequiredToken(")"),
                     shape66));
@@ -6240,30 +4430,16 @@ namespace Kusto.Language.Parsing
                     Token("admins", "ingestors"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Optional(
                         First(
-                            Custom(
-                                Token("skip-results"),
-                                Optional(
-                                    Custom(
-                                        rules.StringLiteral,
-                                        shape0)),
-                                shape3),
+                            fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0))),
@@ -6337,9 +4513,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("export", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("async"),
-                            Token("to")),
+                        fragment46,
                         Token("to")),
                     Token("sql"),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
@@ -6347,29 +4521,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("<|"),
-                                shape25)),
+                            fragment45),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     new [] {CD(), CD(), CD(), CD("SqlTableName", CompletionHint.None), CD("SqlConnectionString", CompletionHint.Literal), CD(), CD("Query", CompletionHint.Tabular)}));
@@ -6378,38 +4530,14 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("export", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("async"),
-                            Token("to")),
+                        fragment46,
                         Token("to")),
                     Token("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("<|"),
-                                shape25)),
+                            fragment45),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD("Query", CompletionHint.Tabular)}));
@@ -6428,47 +4556,17 @@ namespace Kusto.Language.Parsing
                     RequiredToken("csv", "json", "parquet", "tsv"),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.StringLiteral,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingStringLiteral,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingStringLiteral),
                         missing1),
                     RequiredToken(")"),
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                RequiredToken("<|"),
-                                shape25)),
+                            fragment45),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(), CD("Query", CompletionHint.Tabular)}));
@@ -6495,38 +4593,8 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    OneOrMoreCommaList(
+                                        fragment47),
                                     missing41),
                                 RequiredToken(")"),
                                 RequiredToken("<|"),
@@ -6552,19 +4620,11 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingStringLiteral),
                                     missing1),
                                 RequiredToken(")"),
                                 shape107),
@@ -6577,38 +4637,8 @@ namespace Kusto.Language.Parsing
                             Token("with"),
                             RequiredToken("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        First(
-                                            Token("creationTime"),
-                                            Token("distributed"),
-                                            Token("docstring"),
-                                            Token("extend_schema"),
-                                            Token("folder"),
-                                            Token("format"),
-                                            Token("ignoreFirstRecord"),
-                                            Token("ingestIfNotExists"),
-                                            Token("ingestionMappingReference"),
-                                            Token("ingestionMapping"),
-                                            Token("persistDetails"),
-                                            Token("policy_ingestionTime"),
-                                            Token("recreate_schema"),
-                                            Token("tags"),
-                                            Token("validationPolicy"),
-                                            Token("zipPattern"),
-                                            If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape49),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                OneOrMoreCommaList(
+                                    fragment47),
                                 missing41),
                             RequiredToken(")"))),
                     new [] {CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true)}));
@@ -6620,19 +4650,11 @@ namespace Kusto.Language.Parsing
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingValue,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingValue),
                         missing58),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(CompletionHint.Literal), CD()}));
@@ -6642,29 +4664,18 @@ namespace Kusto.Language.Parsing
                     Token("merge", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                Required(rules.TableNameReference, rules.MissingNameReference),
-                                shape98),
+                            fragment48,
                             Custom(
                                 If(Not(And(Token("dryrun", "async"))), rules.TableNameReference),
                                 shape10)),
                         missing40),
                     RequiredToken("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: rules.MissingValue,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            missingElement: rules.MissingValue),
                         missing58),
                     RequiredToken(")"),
                     Optional(
@@ -6688,40 +4699,14 @@ namespace Kusto.Language.Parsing
                     First(
                         Custom(
                             Token("("),
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.AnyGuidLiteralOrString,
                                     shape0),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingValue,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingValue),
                             Token(")"),
                             shape107),
-                        Custom(
-                            Token("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.AnyGuidLiteralOrString,
-                                        shape0),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingValue,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing58),
-                            RequiredToken(")"),
-                            shape107),
+                        fragment70,
                         Token("all")),
                     RequiredToken("from"),
                     RequiredToken("table"),
@@ -6736,9 +4721,7 @@ namespace Kusto.Language.Parsing
                     Token("move", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                RequiredToken("extents")),
+                            fragment49,
                             Token("extents")),
                         missing65),
                     RequiredToken("to"),
@@ -6768,21 +4751,12 @@ namespace Kusto.Language.Parsing
                     Token("rename", CompletionKind.CommandPrefix),
                     Token("columns"),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.NameDeclarationOrStringLiteral,
                                 RequiredToken("="),
                                 Required(rules.DatabaseTableColumnNameReference, rules.MissingNameReference),
-                                new [] {CD("NewColumnName", CompletionHint.None), CD(), CD("ColumnName", CompletionHint.Column)}),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                new [] {CD("NewColumnName", CompletionHint.None), CD(), CD("ColumnName", CompletionHint.Column)})),
                         missing66),
                     shape108));
 
@@ -6809,21 +4783,12 @@ namespace Kusto.Language.Parsing
                     Token("rename", CompletionKind.CommandPrefix),
                     Token("tables"),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.NameDeclarationOrStringLiteral,
                                 RequiredToken("="),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
-                                new [] {CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.Table)}),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                new [] {CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.Table)})),
                         missing67),
                     shape108));
 
@@ -6842,9 +4807,7 @@ namespace Kusto.Language.Parsing
                         Token("replace", CompletionKind.CommandPrefix),
                         Required(
                             First(
-                                Custom(
-                                    Token("async"),
-                                    RequiredToken("extents")),
+                                fragment49,
                                 Token("extents")),
                             missing68),
                         RequiredToken("in"),
@@ -6866,10 +4829,7 @@ namespace Kusto.Language.Parsing
                     Token("set-or-append", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
-                                shape110),
+                            fragment51,
                             Custom(
                                 If(Not(Token("async")), rules.NameDeclarationOrStringLiteral),
                                 shape12)),
@@ -6877,45 +4837,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape109));
@@ -6924,53 +4846,13 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("set-or-replace", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("async"),
-                            Token("stored_query_result")),
+                        fragment54,
                         Token("stored_query_result")),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape112));
@@ -6980,10 +4862,7 @@ namespace Kusto.Language.Parsing
                     Token("set-or-replace", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                Required(If(Not(Token("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
-                                shape110),
+                            fragment51,
                             Custom(
                                 If(Not(And(Token("async", "stored_query_result"))), rules.NameDeclarationOrStringLiteral),
                                 shape12)),
@@ -6991,45 +4870,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape109));
@@ -7050,43 +4891,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "databasecreators", "users", "viewers"),
                     Required(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.StringLiteral,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing1),
-                                RequiredToken(")"),
-                                Optional(
-                                    First(
-                                        Custom(
-                                            Token("skip-results"),
-                                            Optional(
-                                                Custom(
-                                                    rules.StringLiteral,
-                                                    shape0)),
-                                            shape3),
-                                        Custom(
-                                            rules.StringLiteral,
-                                            shape0))),
-                                shape111),
-                            Custom(
-                                Token("none"),
-                                Optional(
-                                    Custom(
-                                        Token("skip-results"))),
-                                shape85)),
+                            fragment52,
+                            fragment53),
                         missing70),
                     new [] {CD(), CD(), CD("Role"), CD()}));
 
@@ -7108,43 +4914,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
                     Required(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.StringLiteral,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing1),
-                                RequiredToken(")"),
-                                Optional(
-                                    First(
-                                        Custom(
-                                            Token("skip-results"),
-                                            Optional(
-                                                Custom(
-                                                    rules.StringLiteral,
-                                                    shape0)),
-                                            shape3),
-                                        Custom(
-                                            rules.StringLiteral,
-                                            shape0))),
-                                shape111),
-                            Custom(
-                                Token("none"),
-                                Optional(
-                                    Custom(
-                                        Token("skip-results"))),
-                                shape85)),
+                            fragment52,
+                            fragment53),
                         missing70),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD("Role"), CD()}));
 
@@ -7160,30 +4931,16 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingStringLiteral),
                                     missing1),
                                 RequiredToken(")"),
                                 Optional(
                                     First(
-                                        Custom(
-                                            Token("skip-results"),
-                                            Optional(
-                                                Custom(
-                                                    rules.StringLiteral,
-                                                    shape0)),
-                                            shape31),
+                                        fragment44,
                                         Custom(
                                             rules.StringLiteral,
                                             shape0))),
@@ -7203,43 +4960,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins"),
                     Required(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.StringLiteral,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing1),
-                                RequiredToken(")"),
-                                Optional(
-                                    First(
-                                        Custom(
-                                            Token("skip-results"),
-                                            Optional(
-                                                Custom(
-                                                    rules.StringLiteral,
-                                                    shape0)),
-                                            shape3),
-                                        Custom(
-                                            rules.StringLiteral,
-                                            shape0))),
-                                shape111),
-                            Custom(
-                                Token("none"),
-                                Optional(
-                                    Custom(
-                                        Token("skip-results"))),
-                                shape85)),
+                            fragment52,
+                            fragment53),
                         missing70),
                     new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD("Role"), CD()}));
 
@@ -7254,19 +4976,11 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingStringLiteral),
                                     missing1),
                                 RequiredToken(")"),
                                 Optional(
@@ -7309,53 +5023,13 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("set", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("async"),
-                            Token("stored_query_result")),
+                        fragment54,
                         Token("stored_query_result")),
                     Required(rules.NameDeclarationOrStringLiteral, rules.MissingNameDeclaration),
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape112));
@@ -7377,43 +5051,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken("admins", "ingestors"),
                     Required(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.StringLiteral,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing1),
-                                RequiredToken(")"),
-                                Optional(
-                                    First(
-                                        Custom(
-                                            Token("skip-results"),
-                                            Optional(
-                                                Custom(
-                                                    rules.StringLiteral,
-                                                    shape0)),
-                                            shape3),
-                                        Custom(
-                                            rules.StringLiteral,
-                                            shape0))),
-                                shape111),
-                            Custom(
-                                Token("none"),
-                                Optional(
-                                    Custom(
-                                        Token("skip-results"))),
-                                shape85)),
+                            fragment52,
+                            fragment53),
                         missing70),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD("Role"), CD()}));
 
@@ -7422,10 +5061,7 @@ namespace Kusto.Language.Parsing
                     Token("set", CompletionKind.CommandPrefix),
                     Required(
                         First(
-                            Custom(
-                                Token("async"),
-                                Required(If(Not(Token("stored_query_result")), rules.NameDeclarationOrStringLiteral), rules.MissingNameDeclaration),
-                                shape110),
+                            fragment51,
                             Custom(
                                 If(Not(And(Token("access", "cluster", "continuous-export", "database", "external", "function", "materialized-view", "async", "stored_query_result", "table"))), rules.NameDeclarationOrStringLiteral),
                                 shape12)),
@@ -7433,45 +5069,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("<|"),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            First(
-                                                Token("creationTime"),
-                                                Token("distributed"),
-                                                Token("docstring"),
-                                                Token("extend_schema"),
-                                                Token("folder"),
-                                                Token("format"),
-                                                Token("ignoreFirstRecord"),
-                                                Token("ingestIfNotExists"),
-                                                Token("ingestionMappingReference"),
-                                                Token("ingestionMapping"),
-                                                Token("persistDetails"),
-                                                Token("policy_ingestionTime"),
-                                                Token("recreate_schema"),
-                                                Token("tags"),
-                                                Token("validationPolicy"),
-                                                Token("zipPattern"),
-                                                If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclarationOrStringLiteral)),
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing41),
-                                RequiredToken(")"),
-                                RequiredToken("<|"))),
+                            fragment50),
                         missing11),
                     Required(rules.CommandInput, rules.MissingExpression),
                     shape109));
@@ -7492,28 +5090,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("callstacks"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape86));
 
             var ShowCapacity = Command("ShowCapacity", 
@@ -7525,23 +5102,9 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("data-export", "extents-merge", "extents-partition", "ingestions", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
                                 Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("scope"),
-                                        RequiredToken("="),
-                                        RequiredToken("cluster", "workloadgroup"),
-                                        RequiredToken(")"),
-                                        shape113)),
+                                    fragment55),
                                 new [] {CD("Resource"), CD(isOptional: true)}),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("scope"),
-                                RequiredToken("="),
-                                RequiredToken("cluster", "workloadgroup"),
-                                RequiredToken(")"),
-                                shape113))),
+                            fragment55)),
                     shape86));
 
             var ShowClusterAdminState = Command("ShowClusterAdminState", 
@@ -7564,65 +5127,13 @@ namespace Kusto.Language.Parsing
                     Token("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.AnyGuidLiteralOrString,
-                                        shape0),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingValue,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                Token(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment60,
                             Token("hot"))),
                     Token("metadata"),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape120));
 
             var ShowClusterExtents = Command("ShowClusterExtents", 
@@ -7632,66 +5143,12 @@ namespace Kusto.Language.Parsing
                     Token("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing58),
-                                RequiredToken(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment62,
                             Token("hot"))),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape122));
 
             var ShowClusterJournal = Command("ShowClusterJournal", 
@@ -7724,28 +5181,7 @@ namespace Kusto.Language.Parsing
                     Token("pending"),
                     RequiredToken("continuous-exports"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape116));
 
             var ShowClusterPolicyCaching = Command("ShowClusterPolicyCaching", 
@@ -7832,28 +5268,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("sharding"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape116));
 
             var ShowClusterPolicyStreamingIngestion = Command("ShowClusterPolicyStreamingIngestion", 
@@ -7877,34 +5292,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape116));
 
             var ShowClusterSandboxesStats = Command("ShowClusterSandboxesStats", 
@@ -8009,24 +5400,15 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("databases"),
                     Token("("),
-                    OList(
-                        primaryElementParser: Custom(
+                    OneOrMoreCommaList(
+                        Custom(
                             rules.DatabaseNameReference,
                             Optional(
                                 Custom(
                                     Token("if_later_than"),
                                     rules.StringLiteral,
                                     shape118)),
-                            shape119),
-                        separatorParser: Token(","),
-                        secondaryElementParser: null,
-                        missingPrimaryElement: null,
-                        missingSeparator: null,
-                        missingSecondaryElement: null,
-                        endOfList: null,
-                        oneOrMore: true,
-                        allowTrailingSeparator: false,
-                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                            shape119)),
                     Token(")"),
                     Token("schema"),
                     Token("as"),
@@ -8039,24 +5421,12 @@ namespace Kusto.Language.Parsing
                     Token("databases"),
                     Token("("),
                     Required(
-                        OList(
-                            primaryElementParser: Custom(
+                        OneOrMoreCommaList(
+                            Custom(
                                 rules.DatabaseNameReference,
                                 Optional(
-                                    Custom(
-                                        Token("if_later_than"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape118)),
-                                shape119),
-                            separatorParser: Token(","),
-                            secondaryElementParser: null,
-                            missingPrimaryElement: null,
-                            missingSeparator: null,
-                            missingSecondaryElement: null,
-                            endOfList: null,
-                            oneOrMore: true,
-                            allowTrailingSeparator: false,
-                            producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    fragment63),
+                                shape119)),
                         missing75),
                     RequiredToken(")"),
                     RequiredToken("schema"),
@@ -8067,9 +5437,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("cluster"),
-                            Token("databases")),
+                        fragment58,
                         Token("databases")),
                     Token("datastats")));
 
@@ -8077,9 +5445,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("cluster"),
-                            Token("databases")),
+                        fragment58,
                         Token("databases")),
                     Token("details")));
 
@@ -8087,9 +5453,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("cluster"),
-                            Token("databases")),
+                        fragment58,
                         Token("databases")),
                     RequiredToken("identity")));
 
@@ -8104,9 +5468,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("cluster"),
-                            Token("databases")),
+                        fragment58,
                         Token("databases")),
                     Token("policies")));
 
@@ -8114,9 +5476,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("cluster"),
-                            Token("databases")),
+                        fragment58,
                         Custom(
                             Token("cluster"),
                             RequiredToken("databases")),
@@ -8125,19 +5485,11 @@ namespace Kusto.Language.Parsing
                         Custom(
                             Token("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.DatabaseNameReference,
                                         shape4),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             shape71)),
@@ -8166,207 +5518,47 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("databases"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.DatabaseNameReference,
-                                    shape4),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape101),
-                        Custom(
-                            Token("database"),
-                            Optional(
-                                Custom(
-                                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                                    shape4)),
-                            shape121)),
+                        fragment59,
+                        fragment61),
                     Token("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.AnyGuidLiteralOrString,
-                                        shape0),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingValue,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                Token(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment60,
                             Token("hot"))),
                     Token("metadata"),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape120));
 
             var ShowDatabaseExtents = Command("ShowDatabaseExtents", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("databases"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.DatabaseNameReference,
-                                    shape4),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape101),
+                        fragment59,
                         Custom(
                             Token("databases"),
                             Token("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.DatabaseNameReference,
                                         shape4),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             shape101),
-                        Custom(
-                            Token("database"),
-                            Optional(
-                                Custom(
-                                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                                    shape4)),
-                            shape121)),
+                        fragment61),
                     RequiredToken("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing58),
-                                RequiredToken(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment62,
                             Token("hot"))),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape122));
 
             var ShowDatabaseExtentTagsStatistics = Command("ShowDatabaseExtentTagsStatistics", 
@@ -8411,17 +5603,11 @@ namespace Kusto.Language.Parsing
                             shape124)),
                     Optional(
                         First(
-                            Custom(
-                                Token("if_later_than"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape123),
+                            fragment63,
                             Custom(
                                 Token("script"),
                                 Optional(
-                                    Custom(
-                                        Token("if_later_than"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape123)),
+                                    fragment63),
                                 shape85))),
                     shape127));
 
@@ -8438,60 +5624,15 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("mappings"),
-                            Custom(
-                                Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
-                                RequiredToken("mappings"),
-                                shape140)),
+                            fragment69),
                         missing76),
                     Optional(
                         First(
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.NameDeclarationOrStringLiteral,
-                                            RequiredToken("="),
-                                            Required(rules.Value, rules.MissingValue),
-                                            shape24),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing12),
-                                RequiredToken(")"),
-                                shape34),
+                            fragment13,
                             Custom(
                                 rules.StringLiteral,
                                 Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        Required(
-                                            OList(
-                                                primaryElementParser: Custom(
-                                                    rules.NameDeclarationOrStringLiteral,
-                                                    RequiredToken("="),
-                                                    Required(rules.Value, rules.MissingValue),
-                                                    shape24),
-                                                separatorParser: Token(","),
-                                                secondaryElementParser: null,
-                                                missingPrimaryElement: null,
-                                                missingSeparator: null,
-                                                missingSecondaryElement: null,
-                                                endOfList: null,
-                                                oneOrMore: true,
-                                                allowTrailingSeparator: false,
-                                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                            missing12),
-                                        RequiredToken(")"),
-                                        shape34)),
+                                    fragment13),
                                 new [] {CD("name", CompletionHint.Literal), CD(isOptional: true)}))),
                     shape116));
 
@@ -8501,42 +5642,14 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     First(
                         Token("schema"),
-                        Custom(
-                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            Token("schema"),
-                            shape125)),
+                        fragment64),
                     First(
                         Token("as"),
-                        Custom(
-                            Token("if_later_than"),
-                            rules.StringLiteral,
-                            Token("as"),
-                            shape126)),
+                        fragment65),
                     Token("csl"),
                     RequiredToken("script"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD(isOptional: true)}));
 
             var ShowDatabaseSchemaAsJson = Command("ShowDatabaseSchemaAsJson", 
@@ -8545,17 +5658,10 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     First(
                         Token("schema"),
-                        Custom(
-                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            Token("schema"),
-                            shape125)),
+                        fragment64),
                     First(
                         Token("as"),
-                        Custom(
-                            Token("if_later_than"),
-                            rules.StringLiteral,
-                            Token("as"),
-                            shape126)),
+                        fragment65),
                     RequiredToken("json")));
 
             var ShowDatabaseSchema = Command("ShowDatabaseSchema", 
@@ -8564,24 +5670,15 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     First(
                         Token("schema"),
-                        Custom(
-                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
-                            Token("schema"),
-                            shape124)),
+                        fragment64),
                     Optional(
                         First(
                             Custom(
                                 Token("details"),
                                 Optional(
-                                    Custom(
-                                        Token("if_later_than"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape123)),
+                                    fragment63),
                                 shape85),
-                            Custom(
-                                Token("if_later_than"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape123))),
+                            fragment63)),
                     shape127));
 
             var DatabaseShardGroupsStatisticsShow = Command("DatabaseShardGroupsStatisticsShow", 
@@ -8768,34 +5865,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD(isOptional: true)}));
 
             var ShowDatabasePurgeOperation = Command("ShowDatabasePurgeOperation", 
@@ -8839,14 +5912,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("diagnostics"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            RequiredToken("scope"),
-                            RequiredToken("="),
-                            RequiredToken("cluster", "workloadgroup"),
-                            RequiredToken(")"),
-                            shape113)),
+                        fragment55),
                     shape86));
 
             var ShowEntityGroups = Command("ShowEntityGroups", 
@@ -8871,59 +5937,24 @@ namespace Kusto.Language.Parsing
                     RequiredToken("json"),
                     Optional(
                         First(
-                            Custom(
-                                Token("except"),
-                                Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                shape133),
+                            fragment67,
                             Custom(
                                 Token("in"),
                                 RequiredToken("databases"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             rules.StringLiteral,
                                             shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingStringLiteral,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                        missingElement: rules.MissingStringLiteral),
                                     missing1),
                                 RequiredToken(")"),
                                 Optional(
-                                    Custom(
-                                        Token("except"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape133)),
+                                    fragment67),
                                 shape134))),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD("entity", CompletionHint.None), CD(), CD(), CD(), CD(isOptional: true), CD(isOptional: true)}));
 
             var ShowExtentContainers = Command("ShowExtentContainers", 
@@ -8931,28 +5962,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("extentcontainers"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape86));
 
             var ShowExtentColumnStorageStats = Command("ShowExtentColumnStorageStats", 
@@ -9006,10 +6016,7 @@ namespace Kusto.Language.Parsing
                     rules.ExternalTableNameReference,
                     Token("artifacts"),
                     Optional(
-                        Custom(
-                            Token("limit"),
-                            Required(rules.Value, rules.MissingValue),
-                            shape93)),
+                        fragment39),
                     new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(isOptional: true)}));
 
             var ShowExternalTableCslSchema = Command("ShowExternalTableCslSchema", 
@@ -9059,34 +6066,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD(isOptional: true)}));
 
             var ShowExternalTableSchema = Command("ShowExternalTableSchema", 
@@ -9124,14 +6107,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("databases"),
                                 Optional(
-                                    Custom(
-                                        Token("("),
-                                        CommaList(
-                                            Custom(
-                                                If(Not(Token(")")), rules.DatabaseNameReference),
-                                                shape4)),
-                                        RequiredToken(")"),
-                                        shape71)),
+                                    fragment33),
                                 shape85),
                             Custom(
                                 Token("database"),
@@ -9150,15 +6126,9 @@ namespace Kusto.Language.Parsing
                                 Token("column"),
                                 Required(rules.ColumnNameReference, rules.MissingNameReference),
                                 Optional(
-                                    Custom(
-                                        Token("threshold"),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape139)),
+                                    fragment68),
                                 new [] {CD(), CD("columnName", CompletionHint.Column), CD(isOptional: true)}),
-                            Custom(
-                                Token("threshold"),
-                                Required(rules.Value, rules.MissingValue),
-                                shape139))),
+                            fragment68)),
                     new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(isOptional: true)}));
 
             var ShowFunctions = Command("ShowFunctions", 
@@ -9183,34 +6153,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(), CD(), CD(isOptional: true)}));
 
             var ShowFunctionSchemaAsJson = Command("ShowFunctionSchemaAsJson", 
@@ -9260,34 +6206,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("mappings"),
-                            Custom(
-                                Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
-                                RequiredToken("mappings"),
-                                shape140)),
+                            fragment69),
                         missing76),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape127));
 
             var ShowJournal = Command("ShowJournal", 
@@ -9302,38 +6224,22 @@ namespace Kusto.Language.Parsing
                     First(
                         Custom(
                             Token("("),
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.MaterializedViewNameReference,
                                     shape8),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingNameReference),
                             Token(")"),
                             Token("details"),
                             shape141),
                         Custom(
                             Token("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.MaterializedViewNameReference,
                                         shape8),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             RequiredToken("details"),
@@ -9368,28 +6274,7 @@ namespace Kusto.Language.Parsing
                     rules.MaterializedViewNameReference,
                     Token("diagnostics"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape143));
 
             var ShowMaterializedViewExtents = Command("ShowMaterializedViewExtents", 
@@ -9400,26 +6285,7 @@ namespace Kusto.Language.Parsing
                     Token("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing58),
-                                RequiredToken(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment62,
                             Token("hot"))),
                     new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)}));
 
@@ -9522,25 +6388,7 @@ namespace Kusto.Language.Parsing
                     Token("operations"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing58),
-                                RequiredToken(")"),
-                                shape107),
+                            fragment70,
                             Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape0))),
@@ -9559,28 +6407,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("plugins"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape86));
 
             var ShowPrincipalAccess = Command("ShowPrincipalAccess", 
@@ -9589,28 +6416,7 @@ namespace Kusto.Language.Parsing
                     Token("principal"),
                     Token("access"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape127));
 
             var ShowPrincipalRoles = Command("ShowPrincipalRoles", 
@@ -9620,34 +6426,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     shape127));
 
             var ShowQueries = Command("ShowQueries", 
@@ -9660,10 +6442,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("queryexecution"),
                     Required(
-                        Custom(
-                            Token("<|"),
-                            Required(rules.CommandInput, rules.MissingExpression),
-                            shape70),
+                        fragment32,
                         missing17),
                     new [] {CD(), CD(), CD("queryText")}));
 
@@ -9678,23 +6457,14 @@ namespace Kusto.Language.Parsing
                                 Token("with"),
                                 RequiredToken("("),
                                 Required(
-                                    OList(
-                                        primaryElementParser: Custom(
+                                    OneOrMoreCommaList(
+                                        Custom(
                                             First(
                                                 Token("reconstructCsl"),
                                                 If(Not(Token("reconstructCsl")), rules.NameDeclarationOrStringLiteral)),
                                             RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
-                                            shape49),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                            shape49)),
                                     missing80),
                                 RequiredToken(")"),
                                 RequiredToken("<|"))),
@@ -9708,10 +6478,7 @@ namespace Kusto.Language.Parsing
                     Token("query"),
                     RequiredToken("call-tree"),
                     Required(
-                        Custom(
-                            Token("<|"),
-                            Required(rules.CommandInput, rules.MissingExpression),
-                            shape70),
+                        fragment32,
                         missing17),
                     new [] {CD(), CD(), CD(), CD("queryText")}));
 
@@ -9734,28 +6501,7 @@ namespace Kusto.Language.Parsing
                     Token("seals"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Literal), CD(isOptional: true)}));
 
             var ShowRowStoreTransactions = Command("ShowRowStoreTransactions", 
@@ -9782,10 +6528,7 @@ namespace Kusto.Language.Parsing
                             Required(
                                 First(
                                     Token("*"),
-                                    Custom(
-                                        Token("user"),
-                                        Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                        shape1)),
+                                    fragment0),
                                 missing9))),
                     shape127));
 
@@ -9810,17 +6553,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("stored_query_results"),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            CommaList(
-                                Custom(
-                                    If(Not(Token(")")), rules.NameDeclarationOrStringLiteral),
-                                    RequiredToken("="),
-                                    Required(rules.Value, rules.MissingValue),
-                                    shape33)),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment35),
                     shape86));
 
             var StoredQueryResultShowSchema = Command("StoredQueryResultShowSchema", 
@@ -9860,19 +6593,11 @@ namespace Kusto.Language.Parsing
                     First(
                         Custom(
                             Token("("),
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.TableNameReference,
                                     shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingNameReference),
                             Token(")"),
                             Token("details"),
                             new [] {CD(), CD(CompletionHint.Table), CD(), CD()}),
@@ -9886,19 +6611,11 @@ namespace Kusto.Language.Parsing
                         Custom(
                             Token("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.TableNameReference,
                                         shape10),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             shape145)),
@@ -9924,247 +6641,65 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("tables"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.TableNameReference,
-                                    shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape146),
-                        Custom(
-                            Token("table"),
-                            If(Not(And(Token("*", "usage"))), rules.TableNameReference),
-                            shape98)),
+                        fragment71,
+                        fragment72),
                     Token("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.AnyGuidLiteralOrString,
-                                        shape0),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingValue,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                Token(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment60,
                             Token("hot"))),
                     Token("metadata"),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape120));
 
             var ShowTableExtents = Command("ShowTableExtents", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
+                        fragment71,
                         Custom(
                             Token("tables"),
                             Token("("),
-                            OList(
-                                primaryElementParser: Custom(
+                            OneOrMoreCommaList(
+                                Custom(
                                     rules.TableNameReference,
                                     shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape146),
-                        Custom(
-                            Token("tables"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.TableNameReference,
-                                    shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                missingElement: rules.MissingNameReference),
                             RequiredToken(")"),
                             shape146),
-                        Custom(
-                            Token("table"),
-                            If(Not(And(Token("*", "usage"))), rules.TableNameReference),
-                            shape98)),
+                        fragment72),
                     RequiredToken("extents"),
                     Optional(
                         First(
-                            Custom(
-                                Token("("),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        separatorParser: Token(","),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: rules.MissingValue,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing58),
-                                RequiredToken(")"),
-                                Optional(Token("hot")),
-                                shape111),
+                            fragment62,
                             Token("hot"))),
                     Optional(
                         First(
-                            Custom(
-                                Token("where"),
-                                Required(
-                                    OList(
-                                        primaryElementParser: Custom(
-                                            Token("tags"),
-                                            RequiredToken("!contains", "!has", "contains", "has"),
-                                            Required(rules.StringLiteral, rules.MissingStringLiteral),
-                                            shape115),
-                                        separatorParser: Token("and"),
-                                        secondaryElementParser: null,
-                                        missingPrimaryElement: null,
-                                        missingSeparator: null,
-                                        missingSecondaryElement: null,
-                                        endOfList: null,
-                                        oneOrMore: true,
-                                        allowTrailingSeparator: false,
-                                        producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                    missing73),
-                                Optional(
-                                    Custom(
-                                        Token("with"),
-                                        RequiredToken("("),
-                                        RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        RequiredToken(")"),
-                                        shape114)),
-                                shape86),
-                            Custom(
-                                Token("with"),
-                                RequiredToken("("),
-                                RequiredToken("extentsShowFilteringRuntimePolicy"),
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                RequiredToken(")"),
-                                shape114))),
+                            fragment57,
+                            fragment56)),
                     shape122));
 
             var TableShardGroupsStatisticsShow = Command("TableShardGroupsStatisticsShow", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     First(
-                        Custom(
-                            Token("tables"),
-                            Token("("),
-                            OList(
-                                primaryElementParser: Custom(
-                                    rules.TableNameReference,
-                                    shape10),
-                                separatorParser: Token(","),
-                                secondaryElementParser: null,
-                                missingPrimaryElement: null,
-                                missingSeparator: null,
-                                missingSecondaryElement: rules.MissingNameReference,
-                                endOfList: null,
-                                oneOrMore: true,
-                                allowTrailingSeparator: false,
-                                producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                            Token(")"),
-                            shape146),
+                        fragment71,
                         Custom(
                             Token("tables"),
                             Token("("),
                             Required(
-                                OList(
-                                    primaryElementParser: Custom(
+                                OneOrMoreCommaList(
+                                    Custom(
                                         rules.TableNameReference,
                                         shape10),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: rules.MissingNameReference,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
+                                    missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
                             shape146),
-                        Custom(
-                            Token("table"),
-                            If(Not(And(Token("*", "usage"))), rules.TableNameReference),
-                            shape98)),
+                        fragment72),
                     RequiredToken("shard-groups").Hide(),
                     RequiredToken("statistics").Hide()));
 
@@ -10524,34 +7059,10 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("roles"),
-                            Custom(
-                                rules.StringLiteral,
-                                RequiredToken("roles"),
-                                shape130)),
+                            fragment66),
                         missing74),
                     Optional(
-                        Custom(
-                            Token("with"),
-                            RequiredToken("("),
-                            Required(
-                                OList(
-                                    primaryElementParser: Custom(
-                                        rules.NameDeclarationOrStringLiteral,
-                                        RequiredToken("="),
-                                        Required(rules.Value, rules.MissingValue),
-                                        shape24),
-                                    separatorParser: Token(","),
-                                    secondaryElementParser: null,
-                                    missingPrimaryElement: null,
-                                    missingSeparator: null,
-                                    missingSecondaryElement: null,
-                                    endOfList: null,
-                                    oneOrMore: true,
-                                    allowTrailingSeparator: false,
-                                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)),
-                                missing12),
-                            RequiredToken(")"),
-                            shape34)),
+                        fragment13),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)}));
 
             var ShowTableSchemaAsJson = Command("ShowTableSchemaAsJson", 

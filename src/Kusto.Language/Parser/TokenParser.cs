@@ -368,6 +368,22 @@ namespace Kusto.Language.Parsing
             "false", "False", "FALSE"
         };
 
+        private static readonly SubstringMap<SyntaxKind> s_literalValueMap =
+            new SubstringMap<SyntaxKind>(s_booleanValues.Select(v => new KeyValuePair<string, SyntaxKind>(v, SyntaxKind.BooleanLiteralToken)));
+
+        public static int ScanBooleanLiteral(string text, int start = 0)
+        {
+            var literalMatch = s_literalValueMap.GetLongestMatch(text, start);
+            if (literalMatch.Key.Length > 0 
+                && literalMatch.Value == SyntaxKind.BooleanLiteralToken
+                && !IsIdentifierChar(Peek(text, start + literalMatch.Key.Length)))
+            {
+                return literalMatch.Key.Length;
+            }
+
+            return -1;
+        }
+
         private static SyntaxKind GetGooLiteralTokenKind(SyntaxKind keywordKind)
         {
             switch (keywordKind)
@@ -395,9 +411,6 @@ namespace Kusto.Language.Parsing
                     return SyntaxKind.None;
             }
         }
-
-        private static readonly SubstringMap<SyntaxKind> s_literalValueMap =
-            new SubstringMap<SyntaxKind>(s_booleanValues.Select(v => new KeyValuePair<string, SyntaxKind>(v, SyntaxKind.BooleanLiteralToken)));
 
         /// <summary>
         /// Table of blank strings of varying sizes
@@ -692,7 +705,7 @@ namespace Kusto.Language.Parsing
             return pos > start ? pos - start : -1;
         }
 
-        private static int ScanTimespanLiteral(string text, int start)
+        public static int ScanTimespanLiteral(string text, int start = 0)
         {
             var numberLen = ScanDigits(text, start);
             if (numberLen <= 0)

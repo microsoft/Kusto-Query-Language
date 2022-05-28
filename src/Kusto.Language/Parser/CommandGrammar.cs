@@ -458,5 +458,85 @@ namespace Kusto.Language.Parsing
         {
             return Required(Token(texts), () => (SyntaxElement)CreateMissingToken(texts));
         }
+
+        public static Parser<LexicalToken, SyntaxElement> ZeroOrMoreList(
+            Parser<LexicalToken, SyntaxElement> elementParser,
+            Parser<LexicalToken, SyntaxElement> separatorParser = null,
+            Func<SyntaxElement> missingElement = null,
+            bool allowTrailingSeparator = false)
+        {
+            if (separatorParser != null)
+            {
+                return OList(
+                    primaryElementParser: elementParser,
+                    secondaryElementParser: null,
+                    separatorParser: separatorParser,
+                    missingPrimaryElement: null,
+                    missingSecondaryElement: missingElement,
+                    missingSeparator: null,
+                    endOfList: null,
+                    oneOrMore: false,
+                    allowTrailingSeparator: allowTrailingSeparator,
+                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)
+                    );
+            }
+            else
+            {
+                return List(
+                    elementParser: elementParser,
+                    missingElement: null,
+                    oneOrMore: false,
+                    producer: elements => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.OfType<SyntaxElement>().ToArray())
+                    );
+            }
+        }
+
+        public static Parser<LexicalToken, SyntaxElement> ZeroOrMoreCommaList(
+            Parser<LexicalToken, SyntaxElement> elementParser,
+            Func<SyntaxElement> missingElement = null,
+            bool allowTrailingSeparator = false)
+        {
+            return ZeroOrMoreList(elementParser, Token(","), missingElement, allowTrailingSeparator);
+        }
+
+        public static Parser<LexicalToken, SyntaxElement> OneOrMoreList(
+            Parser<LexicalToken, SyntaxElement> elementParser,
+            Parser<LexicalToken, SyntaxElement> separatorParser = null,
+            Func<SyntaxElement> missingElement = null,
+            bool allowTrailingSeparator = false)
+        {
+            if (separatorParser != null)
+            {
+                return OList(
+                    primaryElementParser: elementParser,
+                    secondaryElementParser: null,
+                    separatorParser: separatorParser,
+                    missingPrimaryElement: null,
+                    missingSecondaryElement: missingElement,
+                    missingSeparator: null,
+                    endOfList: null,
+                    oneOrMore: true,
+                    allowTrailingSeparator: allowTrailingSeparator,
+                    producer: list => (SyntaxElement)MakeSeparatedList<SyntaxElement>(list)
+                    );
+            }
+            else
+            {
+                return List(
+                    elementParser: elementParser,
+                    missingElement: null,
+                    oneOrMore: true,
+                    producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.OfType<SyntaxElement>().ToArray())
+                    );
+            }
+        }
+
+        public static Parser<LexicalToken, SyntaxElement> OneOrMoreCommaList(
+            Parser<LexicalToken, SyntaxElement> elementParser,
+            Func<SyntaxElement> missingElement = null,
+            bool allowTrailingSeparator = false)
+        {
+            return OneOrMoreList(elementParser, Token(","), missingElement, allowTrailingSeparator);
+        }
     }
 }

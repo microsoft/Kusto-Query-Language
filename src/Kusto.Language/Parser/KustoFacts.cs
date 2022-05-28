@@ -433,10 +433,14 @@ namespace Kusto.Language
         };
 
         /// <summary>
-        /// True if the text can be used as an identifier in all places that declare or reference names.
+        /// True if the text can be used as an identifier in all contexts that declare or reference names.
+        /// (note: some names may be legal in one context but not another)
         /// </summary>
         public static bool CanBeIdentifier(string text) =>
-            !IsKeyword(text) && TokenParser.ScanIdentifier(text) == text.Length;
+            TokenParser.ScanIdentifier(text) == text.Length   // looks like an identifier
+            && !(TokenParser.ScanTimespanLiteral(text) == text.Length)  // does not look like a timespan literal: 10days, etc
+            && !(TokenParser.ScanBooleanLiteral(text) == text.Length)   // does not look like a boolean literal: true, false
+            && (!IsKeyword(text) || IsKeywordThatCanBeIdentifier(text));
 
         /// <summary>
         /// True if the text is a keyword.
