@@ -2460,7 +2460,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        const int MaxDepth = 500;
+        const int MaxDepth = 300;
         private int _depth;
         private StackSafeParser<LexicalToken> _safeParser;
         private List<object> _safeOutput;

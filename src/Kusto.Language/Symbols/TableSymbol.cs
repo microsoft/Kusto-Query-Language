@@ -30,8 +30,6 @@ namespace Kusto.Language.Symbols
             Serialized =        0b0000_0001,
             Sorted =            0b0000_0010,
             Open =              0b0000_0100,
-            External =          0b0000_1000,
-            MaterializedView =  0b0001_0000
         }
 
         /// <summary>
@@ -49,6 +47,11 @@ namespace Kusto.Language.Symbols
 
         private TableSymbol(TableState state, IEnumerable<ColumnSymbol> columns, string description)
             : this("", state, columns, description)
+        {
+        }
+
+        internal TableSymbol(TableSymbol sourceTable)
+            : this(sourceTable.Name, sourceTable.state, sourceTable.Columns, sourceTable.Description)
         {
         }
 
@@ -120,12 +123,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// True if the table is external.
         /// </summary>
-        public bool IsExternal => (this.state & TableState.External) != 0;
+        public bool IsExternal => this is ExternalTableSymbol;
 
         /// <summary>
         /// True if the table is a materialized view.
         /// </summary>
-        public bool IsMaterializedView => (this.state & TableState.MaterializedView) != 0;
+        public bool IsMaterializedView => this is MaterializedViewSymbol;
 
         /// <summary>
         /// Construct a new <see cref="TableSymbol"/> if one of the optional arguments is different that the current values.
@@ -250,7 +253,18 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithIsExternal(bool isExternal)
         {
-            return WithState(isExternal ? (this.state | TableState.External) : (this.state & ~TableState.External));
+            if (this is ExternalTableSymbol == isExternal)
+            {
+                return this;
+            }
+            else if (isExternal)
+            {
+                return new ExternalTableSymbol(this);
+            }
+            else
+            {
+                return new TableSymbol(this);
+            }
         }
 
         /// <summary>
@@ -258,7 +272,18 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithIsMaterializedView(bool isMaterializedView)
         {
-            return WithState(isMaterializedView ? (this.state | TableState.MaterializedView) : (this.state & ~TableState.MaterializedView));
+            if (this is MaterializedViewSymbol == isMaterializedView)
+            {
+                return this;
+            }
+            else if (isMaterializedView)
+            {
+                return new MaterializedViewSymbol(this);
+            }
+            else
+            {
+                return new TableSymbol(this);
+            }
         }
 
         /// <summary>
@@ -402,19 +427,25 @@ namespace Kusto.Language.Symbols
         // TODO: find better solution for storing this data for analyzer
         internal MaterializedViewKind MaterializedViewKind { get; set; }
 
-        private MaterializedViewSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description, string mvQuery)
+        private MaterializedViewSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description, string query)
             : base(name, state, columns, description)
         {
-            MaterializedViewQuery = mvQuery;
+            this.MaterializedViewQuery = query;
         }
 
-        public MaterializedViewSymbol(string name, IEnumerable<ColumnSymbol> columns, string mvQuery, string description = null)
-            : this(name, TableState.MaterializedView, columns, description, mvQuery)
+        internal MaterializedViewSymbol(TableSymbol sourceTable, string query = null)
+            : base(sourceTable)
+        {
+            this.MaterializedViewQuery = query;
+        }
+
+        public MaterializedViewSymbol(string name, IEnumerable<ColumnSymbol> columns, string query, string description = null)
+            : this(name, TableState.None, columns, description, query)
         {
         }
 
-        public MaterializedViewSymbol(string name, string columns, string mvQuery, string description = null)
-            : this(name, TableSymbol.From(columns).Columns, mvQuery, description)
+        public MaterializedViewSymbol(string name, string columns, string query, string description = null)
+            : this(name, TableSymbol.From(columns).Columns, query, description)
         {
         }
 
@@ -434,8 +465,13 @@ namespace Kusto.Language.Symbols
         {
         }
 
+        internal ExternalTableSymbol(TableSymbol sourceTable)
+            : base(sourceTable)
+        {
+        }
+
         public ExternalTableSymbol(string name, IEnumerable<ColumnSymbol> columns, string description = null)
-            : this(name, TableState.External, columns, description)
+            : this(name, TableState.None, columns, description)
         {
         }
 

@@ -21,7 +21,7 @@ namespace Kusto.Language.Symbols
 
         // caches
         private IReadOnlyList<TableSymbol> _tables;
-        private IReadOnlyList<TableSymbol> _externalTables;
+        private IReadOnlyList<ExternalTableSymbol> _externalTables;
         private IReadOnlyList<MaterializedViewSymbol> _materializedViews;
         private IReadOnlyList<FunctionSymbol> _functions;
         private IReadOnlyList<EntityGroupSymbol> _entityGroups;
@@ -73,13 +73,13 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The external tables accessible from the database.
         /// </summary>
-        public IReadOnlyList<TableSymbol> ExternalTables
+        public IReadOnlyList<ExternalTableSymbol> ExternalTables
         {
             get
             {
                 if (_externalTables == null)
                 {
-                    _externalTables = this.Members.OfType<TableSymbol>().Where(ts => ts.IsExternal).ToReadOnly();
+                    _externalTables = this.Members.OfType<ExternalTableSymbol>().ToReadOnly();
                 }
 
                 return _externalTables;

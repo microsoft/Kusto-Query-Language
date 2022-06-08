@@ -242,8 +242,7 @@ namespace Kusto.Language
                    new Parameter("jsonText", ScalarTypes.String),
                    new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
            .WithResultNameKind(ResultNameKind.None)
-           .ConstantFoldable()
-           .Hide(); // TODO: unhide on Dec 14th 2021 (alexans)
+           .ConstantFoldable();
 
         public static readonly FunctionSymbol Replace =
             new FunctionSymbol("replace", ScalarTypes.String,
@@ -955,6 +954,21 @@ namespace Kusto.Language
                 new Parameter("number", ParameterTypeKind.Number))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol DatetimeLocalToUtc =
+            new FunctionSymbol("datetime_local_to_utc", ScalarTypes.DateTime,
+                new Parameter("from", ScalarTypes.DateTime),
+                new Parameter("timezone", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
+        public static readonly FunctionSymbol DatetimeUtcToLocal =
+            new FunctionSymbol("datetime_utc_to_local", ScalarTypes.DateTime,
+                new Parameter("from", ScalarTypes.DateTime),
+                new Parameter("timezone", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
         #endregion
 
         #region hash functions
@@ -2777,6 +2791,8 @@ namespace Kusto.Language
             MakeString,
             DateTimeToLocaleString,
             NumberToLocaleString,
+            DatetimeLocalToUtc,
+            DatetimeUtcToLocal,
 #endregion
 
 #region type conversion functions
