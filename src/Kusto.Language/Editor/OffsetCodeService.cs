@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Kusto.Language.Editor
 {
+    using System;
     using Utils;
 
     /// <summary>
@@ -158,22 +159,21 @@ namespace Kusto.Language.Editor
             return _service.GetAnalyzers();
         }
 
-        public override CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken = default)
+        public override CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
         {
-            return _service.GetCodeActions(position - _offset, cancellationToken);
+            position -= _offset;
+            var selectionEnd = Math.Min(position + length, _service.Text.Length);
+            length = selectionEnd - position;
+            return _service.GetCodeActions(position, length, actors, cancellationToken);
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken = default)
+        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
         {
-            var result = _service.ApplyCodeAction(position - _offset, codeAction, cancellationToken);
-            if (_offset > 0)
-            {
-                return new CodeActionResult(result.NewText, result.NewPosition + _offset);
-            }
-            else
-            {
-                return result;
-            }
+            position -= _offset;
+            var selectionEnd = Math.Min(position + length, _service.Text.Length);
+            length = selectionEnd - position;
+            var result = _service.ApplyCodeAction(position, length, codeAction, actors, cancellationToken);
+            return result.WithAdjustedPosition(_offset);
         }
 
         public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)

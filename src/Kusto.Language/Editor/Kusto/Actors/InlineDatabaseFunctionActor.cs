@@ -3,24 +3,25 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
-    using Kusto.Language.Parsing;
     using Kusto.Language.Symbols;
     using Kusto.Language.Syntax;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Text;
     using Utils;
-
+    using static ActorUtilities;
 
     internal class InlineDatabaseFunctionActor : KustoActor
     {
         private static readonly CodeAction InlineAction = new CodeAction(
             nameof(InlineDatabaseFunctionActor), "Inline Function", "Copy database function into this query", "");
 
-        public override void GetActions(KustoCode code, int position, IReadOnlyList<Diagnostic> additionalDiagnostics, List<CodeAction> actions, CancellationToken cancellationToken)
+        public override void GetActions(
+            KustoCode code, 
+            int position, int length, 
+            IReadOnlyList<Diagnostic> additionalDiagnostics, 
+            List<CodeAction> actions,
+            CancellationToken cancellationToken)
         {
             var token = code.Syntax.GetTokenAt(position);
-            if (position >= token.TextStart && position <= token.End)
+            if (position >= token.TextStart && position <= token.End && length == 0)
             {
                 var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
                 if (node is Name name
@@ -42,10 +43,15 @@ namespace Kusto.Language.Editor
                 || fs.MinArgumentCount == 0;
         }
 
-        public override CodeActionResult ApplyAction(KustoCode code, int position, IReadOnlyList<Diagnostic> additionalDiagnostics, CodeAction action, CancellationToken cancellationToken)
+        public override CodeActionResult ApplyAction(
+            KustoCode code, 
+            int position, int length,
+            IReadOnlyList<Diagnostic> additionalDiagnostics, 
+            CodeAction action, 
+            CancellationToken cancellationToken)
         {
             var token = code.Syntax.GetTokenAt(position);
-            if (position >= token.TextStart && position <= token.End)
+            if (position >= token.TextStart && position <= token.End && length == 0)
             {
                 var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
                 if (node is Name name
@@ -57,7 +63,7 @@ namespace Kusto.Language.Editor
                     // we need to insert the function before the first reference to it.
                     var firstRef = GetFirstReference(code.Syntax, fs);
 
-                    if (TryGetInsertionPosition(code, firstRef.TextStart, out var insertPosition))
+                    if (TryGetNearestTopLevelStatementInsertionPosition(code, firstRef.TextStart, out var insertPosition))
                     {
                         var body = nr.Parent is FunctionCallExpression fc
                             ? fc.GetCalledFunctionBody()
@@ -66,82 +72,25 @@ namespace Kusto.Language.Editor
                         if (body != null)
                         {
                             var requalifiedBody = GetBodyWithBraces(GetRequalifiedDatabaseFunctionBody(body, code.Globals));
-                            var declaration = GetDeclarationStatement(fs, requalifiedBody);
-                            var requalifiedQuery = GetRequalifiedQuery(code.Syntax, fs, code.Globals);
+                            var declaration = GetLetStatement(fs, requalifiedBody);
+                            var requalifiedQuery = GetQueryWithDatabaseQualifiersRemoved(code.Syntax, fs, code.Globals);
                             var newText = requalifiedQuery.Insert(insertPosition, declaration + "\n");
                             var newPosition = newText.GetCurrentPosition(position);
                             return new CodeActionResult(newText, newPosition);
                         }
                         else
                         {
-                            return new CodeActionResult(code.Text, position, "Could not access definition of referenced function");
+                            return CodeActionResult.Failure("Could not access definition of referenced function");
                         }
                     }
                 }
             }
 
             // nothing happened
-            return new CodeActionResult(code.Text, position, "Reference to database function not found");
+            return CodeActionResult.Failure("Reference to database function not found");
         }
 
-        private static NameReference GetFirstReference(SyntaxNode root, FunctionSymbol symbol)
-        {
-            return root.GetFirstDescendant<NameReference>(nr => nr.ReferencedSymbol == symbol);
-        }
-
-        private static bool TryGetInsertionPosition(KustoCode code, int position, out int insertPosition)
-        {
-            // first find statement that the position is inside of
-            var statement = GetTopLevelStatement(code, position);
-            if (statement != null)
-            {
-                var trivia = statement.GetFirstToken()?.Trivia ?? "";
-
-                if (statement.TriviaStart == 0)
-                {
-                    // statement is the first statement of the query block
-                    // assume any leading trivia with line breaks is comments and that comments are for entire query
-                    var lastLbEnd = TextFacts.GetLastLineBreakEnd(trivia);
-                    insertPosition = (lastLbEnd >= 0 ? lastLbEnd : 0) + statement.TriviaStart;
-                }
-                else
-                {
-                    // statement is not first, so place new statement after on the next new line
-                    var firstLbEnd = TextFacts.GetFirstLineBreakEnd(trivia);
-                    insertPosition = (firstLbEnd >= 0 ? firstLbEnd : 0) + statement.TriviaStart;
-                }
-
-                return true;
-            }
-            else
-            {
-                insertPosition = 0;
-                return false;
-            }
-        }
-
-        private static Statement GetTopLevelStatement(KustoCode code, int position)
-        {
-            var token = code.Syntax.GetTokenAt(position);
-            SyntaxNode node = token.Parent;
-
-            while (node != null && !IsTopLevelStatement(node))
-            {
-                node = node.GetFirstAncestor<Statement>();
-            }
-
-            return node as Statement;
-        }
-
-        private static bool IsTopLevelStatement(SyntaxNode node)
-        {
-            return node is Statement
-                && node.Parent is SeparatedElement<Statement> element
-                && element.Parent is SyntaxList<SeparatedElement<Statement>> list
-                && list.Parent is QueryBlock;
-        }
-
-        private static string GetDeclarationStatement(FunctionSymbol function, string body = null)
+        private static string GetLetStatement(FunctionSymbol function, string body = null)
         {
             if (body == null)
                 body = GetBodyWithBraces(function.Signatures[0].Body);
@@ -214,62 +163,6 @@ namespace Kusto.Language.Editor
             else
             {
                 return null;
-            }
-        }
-
-        private static bool IsDatabaseQualifiedName(SyntaxNode node)
-        {
-            if (node.Parent is FunctionCallExpression pfc)
-                node = pfc;
-
-            if (node.Parent is PathExpression pe)
-            {
-                return (pe.Expression is FunctionCallExpression fc && fc.ReferencedSymbol == Functions.Database)
-                  || (pe.Expression is PathExpression ppe && ppe.Selector is FunctionCallExpression ppefc && ppefc.ReferencedSymbol == Functions.Database);
-            }
-
-            return false;
-        }
-
-        private static bool IsDatabaseMemberNotFromCurrentDatabase(Symbol symbol, GlobalState globals)
-        {
-            return globals.GetDatabase(symbol) is DatabaseSymbol db && db != globals.Database;
-        }
-
-        private static EditString GetRequalifiedQuery(SyntaxNode query, FunctionSymbol symbol, GlobalState globals)
-        {
-            var text = new EditString(query.ToString());
-
-            var nameRefsToDequalify = query.GetDescendants<NameReference>(nr =>
-                IsDatabaseQualifiedName(nr) && nr.ReferencedSymbol == symbol);
-
-            for (int i = nameRefsToDequalify.Count - 1; i >= 0; i--)
-            {
-                var nr = nameRefsToDequalify[i];
-                var qualifier = GetQualifierToRemove(nr);
-                if (qualifier != nr)
-                {
-                    var len = nr.TextStart - qualifier.TextStart;
-                    text = text.Remove(qualifier.TextStart, len);
-                }
-            }
-
-            return text;
-        }
-
-        private static SyntaxNode GetQualifierToRemove(SyntaxNode node)
-        {
-            if (node.Parent is FunctionCallExpression fc)
-                node = node.Parent;
-
-            if (IsDatabaseQualifiedName(node))
-            {
-                // works for database(...).name and cluster(...).database(...).name
-                return node.Parent;
-            }
-            else
-            {
-                return node;
             }
         }
     }

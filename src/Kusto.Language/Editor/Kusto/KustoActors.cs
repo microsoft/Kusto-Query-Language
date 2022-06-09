@@ -8,22 +8,12 @@ namespace Kusto.Language.Editor
     public static class KustoActors
     {
         public static KustoActor FunctionInliner = new InlineDatabaseFunctionActor();
+        public static KustoActor ExtractExpression = new ExtractExpressionActor();
 
         public static IReadOnlyList<KustoActor> All = new KustoActor[]
         {
-            FunctionInliner
+            FunctionInliner,
+            ExtractExpression
         };
-
-        private static Dictionary<string, KustoActor> _nameToActorMap;
-
-        public static bool TryGetActor(string name, out KustoActor fixer)
-        {
-            if (_nameToActorMap == null)
-            {
-                _nameToActorMap = All.ToDictionary(f => f.Name);
-            }
-
-            return _nameToActorMap.TryGetValue(name, out fixer);
-        }
     }
 }

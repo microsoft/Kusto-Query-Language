@@ -359,6 +359,19 @@ namespace Kusto.Language
             return null;
         }
 
+        /// <summary>
+        /// Gets the <see cref="TableSymbol"/> that holds the columns that are implicitly in scope at the position within the query.
+        /// </summary>
+        public TableSymbol GetColumnsInScope(int position, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (this.HasSemantics)
+            {
+                return Binder.GetRowScope(this.Tree, position, this.Globals, cancellationToken);
+            }
+
+            return null;
+        }
+
         private List<int> lineStarts;
 
         /// <summary>

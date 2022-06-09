@@ -319,9 +319,12 @@ namespace Kusto.Language.Binding
                         semanticInfoSetter: null,
                         cancellationToken: cancellationToken);
                     var startNode = GetStartNode(tree.Root, position);
-                    binder.SetContext(startNode, position);
-                    var info = binder.BindName(name, match, startNode);
-                    return info?.ReferencedSymbol;
+                    if (startNode != null)
+                    {
+                        binder.SetContext(startNode, position);
+                        var info = binder.BindName(name, match, startNode);
+                        return info?.ReferencedSymbol;
+                    }
                 }
             }
 
@@ -350,14 +353,15 @@ namespace Kusto.Language.Binding
                         semanticInfoSetter: null,
                         cancellationToken: cancellationToken);
                     var startNode = GetStartNode(tree.Root, position);
-                    binder.SetContext(startNode, position);
-                    return binder._rowScope;
+                    if (startNode != null)
+                    {
+                        binder.SetContext(startNode, position);
+                        return binder._rowScope;
+                    }
                 }
             }
-            else
-            {
-                return TableSymbol.Empty;
-            }
+
+            return TableSymbol.Empty;
         }
 
         /// <summary>
@@ -382,8 +386,11 @@ namespace Kusto.Language.Binding
                         semanticInfoSetter: null,
                         cancellationToken: cancellationToken);
                     var startNode = GetStartNode(tree.Root, position);
-                    binder.SetContext(startNode, position);
-                    binder.GetSymbolsInContext(startNode, match, include, list);
+                    if (startNode != null)
+                    {
+                        binder.SetContext(startNode, position);
+                        binder.GetSymbolsInContext(startNode, match, include, list);
+                    }
                 }
             }
         }
@@ -392,12 +399,15 @@ namespace Kusto.Language.Binding
         {
             var token = root.GetTokenAt(position);
 
-            if (token != null && position <= token.TextStart)
+            if (token != null)
             {
-                var prev = token.GetPreviousToken();
-                if (prev != null && prev.Depth >= token.Depth)
+                if (position <= token.TextStart)
                 {
-                    return prev.Parent;
+                    var prev = token.GetPreviousToken();
+                    if (prev != null && prev.Depth >= token.Depth)
+                    {
+                        return prev.Parent;
+                    }
                 }
 
                 return token.Parent;

@@ -253,19 +253,24 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CodeActionInfo GetCodeActions(int position, CancellationToken cancellationToken)
+        public override CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            actors = actors ?? KustoActors.All;
+
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 var actions = new List<CodeAction>();
 
-                foreach (var actor in KustoActors.All)
+                foreach (var actor in actors)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
                     try
                     {
-                        actor.GetActions(code, position, null, actions, cancellationToken);
+                        if (actor is KustoActor kustoActor)
+                        {
+                            kustoActor.GetActions(code, position, length, null, actions, cancellationToken);
+                        }
                     }
                     catch (Exception)
                     {
@@ -281,25 +286,28 @@ namespace Kusto.Language.Editor
                 return new CodeActionInfo(actions);
             }
 
-            return base.GetCodeActions(position, cancellationToken);
+            return base.GetCodeActions(position, length, actors, cancellationToken);
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, CodeAction codeAction, CancellationToken cancellationToken)
+        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            actors = actors ?? KustoActors.All;
+
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
-                if (KustoActors.TryGetActor(codeAction.Actor, out var actor))
+                var actor = actors.OfType<KustoActor>().FirstOrDefault(a => a.Name == codeAction.Actor);
+                if (actor != null)
                 {
-                    return actor.ApplyAction(code, position, null, codeAction, cancellationToken);
+                    return actor.ApplyAction(code, position, length, null, codeAction, cancellationToken);
                 }
                 else
                 {
-                    return new CodeActionResult(this.Text, position, $"Unknown actor: {codeAction.Actor}");
+                    return CodeActionResult.Failure($"Unknown actor: {codeAction.Actor}");
                 }
             }
             else
             {
-                return new CodeActionResult(this.Text, position, "No semantic information available for this query");
+                return CodeActionResult.Failure("No semantic information available for this query");
             }
         }
 

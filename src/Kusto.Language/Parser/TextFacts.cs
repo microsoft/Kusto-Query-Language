@@ -59,6 +59,20 @@ namespace Kusto.Language.Parsing
             return true;
         }
 
+        /// <summary>
+        /// Gets the contiguous whitespace in the text from the starting position.
+        /// </summary>
+        public static string GetWhitespace(string text, int start)
+        {
+            var end = start;
+            while (end < text.Length && TextFacts.IsWhitespace(text[end]))
+            {
+                end++;
+            }
+
+            return text.Substring(start, end - start);
+        }
+
         public static bool IsLineBreakStart(char ch)
         {
             switch (ch)
