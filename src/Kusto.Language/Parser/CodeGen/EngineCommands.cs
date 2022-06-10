@@ -204,6 +204,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol CreateMergeTable =
             new CommandSymbol("CreateMergeTable", _schema10);
 
+        public static readonly CommandSymbol DefineTable =
+            new CommandSymbol("DefineTable", _schema10);
+
         public static readonly CommandSymbol CreateTables =
             new CommandSymbol("CreateTables", _schema11);
 
@@ -1681,6 +1684,7 @@ namespace Kusto.Language
             CreateTable,
             CreateTableBasedOnAnother,
             CreateMergeTable,
+            DefineTable,
             CreateTables,
             CreateMergeTables,
             DefineTables,
