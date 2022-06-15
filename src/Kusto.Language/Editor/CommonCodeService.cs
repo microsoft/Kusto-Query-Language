@@ -56,14 +56,12 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<AnalyzerInfo>.Instance;
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
+        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
-            return NoCodeActions;
+            return CodeActionInfo.NoActions;
         }
 
-        private readonly CodeActionInfo NoCodeActions = new CodeActionInfo(EmptyReadOnlyList<CodeAction>.Instance);
-
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
+        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
             // nothing happens
             return CodeActionResult.Nothing;

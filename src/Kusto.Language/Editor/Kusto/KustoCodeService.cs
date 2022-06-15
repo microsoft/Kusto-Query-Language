@@ -253,9 +253,10 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken))
+        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            actors = actors ?? KustoActors.All;
+            options = options ?? CodeActionOptions.Default;
+            var actors = options.Actors.Count > 0 ? options.Actors.AsEnumerable() : KustoActors.All;
 
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
@@ -269,7 +270,7 @@ namespace Kusto.Language.Editor
                     {
                         if (actor is KustoActor kustoActor)
                         {
-                            kustoActor.GetActions(code, position, length, null, actions, cancellationToken);
+                            kustoActor.GetActions(code, position, length, options, actions, cancellationToken);
                         }
                     }
                     catch (Exception)
@@ -286,19 +287,20 @@ namespace Kusto.Language.Editor
                 return new CodeActionInfo(actions);
             }
 
-            return base.GetCodeActions(position, length, actors, cancellationToken);
+            return CodeActionInfo.NoActions;
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken))
+        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            actors = actors ?? KustoActors.All;
+            options = options ?? CodeActionOptions.Default;
+            var actors = options.Actors.Count > 0 ? options.Actors : KustoActors.All;
 
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
                 var actor = actors.OfType<KustoActor>().FirstOrDefault(a => a.Name == codeAction.Actor);
                 if (actor != null)
                 {
-                    return actor.ApplyAction(code, position, length, null, codeAction, cancellationToken);
+                    return actor.ApplyAction(code, position, length, options, codeAction, cancellationToken);
                 }
                 else
                 {

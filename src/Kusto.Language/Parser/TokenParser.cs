@@ -418,6 +418,9 @@ namespace Kusto.Language.Parsing
         private static readonly string[] s_spaces = 
             System.Linq.Enumerable.Range(0, 32).Select(n => new string(' ', n)).ToArray();
 
+        /// <summary>
+        /// Parses the sequence of trivia in the string from the specified start position.
+        /// </summary>
         public string ParseTrivia(string text, int start)
         {
             // first check for spaces only
@@ -483,7 +486,10 @@ namespace Kusto.Language.Parsing
             return pos - start;
         }
 
-        private static int ScanWhitespace(string text, int start)
+        /// <summary>
+        /// Returns the number of consecutive whitespace characters from the start position.
+        /// </summary>
+        public static int ScanWhitespace(string text, int start)
         {
             int pos = start;
 
@@ -495,6 +501,9 @@ namespace Kusto.Language.Parsing
             return pos - start;
         }
 
+        /// <summary>
+        /// Returns the number of consecutive trivia characters from the start position.
+        /// </summary>
         public static int ScanTrivia(string text, int start)
         {
             var pos = start;
@@ -523,6 +532,9 @@ namespace Kusto.Language.Parsing
             return pos - start;
         }
 
+        /// <summary>
+        /// Returns the number of characters in a comment starting at the start position.
+        /// </summary>
         public static int ScanComment(string text, int start)
         {
             if (Peek(text, start) == '/' 

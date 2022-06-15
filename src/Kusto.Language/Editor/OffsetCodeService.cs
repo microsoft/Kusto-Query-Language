@@ -159,20 +159,20 @@ namespace Kusto.Language.Editor
             return _service.GetAnalyzers();
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
+        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
             position -= _offset;
             var selectionEnd = Math.Min(position + length, _service.Text.Length);
             length = selectionEnd - position;
-            return _service.GetCodeActions(position, length, actors, cancellationToken);
+            return _service.GetCodeActions(position, length, options, cancellationToken);
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors, CancellationToken cancellationToken = default)
+        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
             position -= _offset;
             var selectionEnd = Math.Min(position + length, _service.Text.Length);
             length = selectionEnd - position;
-            var result = _service.ApplyCodeAction(position, length, codeAction, actors, cancellationToken);
+            var result = _service.ApplyCodeAction(position, length, codeAction, options, cancellationToken);
             return result.WithAdjustedPosition(_offset);
         }
 

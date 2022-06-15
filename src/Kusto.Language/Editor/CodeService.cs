@@ -66,9 +66,9 @@ namespace Kusto.Language.Editor
         /// </summary>
         /// <param name="position">The position of the caret or the start of the selection range.</param>
         /// <param name="length">The length of the selection (or zero if no selection).</param>
-        /// <param name="actors">An optional list of actors that overrides the default set.</param>
+        /// <param name="options">An optional set of code action options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
-        public abstract CodeActionInfo GetCodeActions(int position, int length, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Applies the code action at ths specified position.
@@ -76,9 +76,9 @@ namespace Kusto.Language.Editor
         /// <param name="position">The position of the caret or the start of the selection range.</param>
         /// <param name="length">The length of the selection (or zero if not selection).</param>
         /// <param name="codeAction">The <see cref="CodeAction"/> to apply.</param>
-        /// <param name="actors">An optional list of actors that overrides the default set.</param>
+        /// <param name="options">An optional set of code action options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
-        public abstract CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, IReadOnlyList<CodeActor> actors = null, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

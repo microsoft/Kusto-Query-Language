@@ -15,8 +15,9 @@ namespace Kusto.Language.Editor
 
         public override void GetActions(
             KustoCode code, 
-            int position, int length, 
-            IReadOnlyList<Diagnostic> additionalDiagnostics, 
+            int position, 
+            int length, 
+            CodeActionOptions options,
             List<CodeAction> actions,
             CancellationToken cancellationToken)
         {
@@ -45,8 +46,9 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyAction(
             KustoCode code, 
-            int position, int length,
-            IReadOnlyList<Diagnostic> additionalDiagnostics, 
+            int position, 
+            int length,
+            CodeActionOptions options,
             CodeAction action, 
             CancellationToken cancellationToken)
         {

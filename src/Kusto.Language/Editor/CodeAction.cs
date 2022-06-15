@@ -31,6 +31,43 @@ namespace Kusto.Language.Editor
         {
             this.Actions = actions;
         }
+
+        public static readonly CodeActionInfo NoActions =
+            new CodeActionInfo(EmptyReadOnlyList<CodeAction>.Instance);
+    }
+
+    public class CodeActionOptions
+    {
+        public IReadOnlyList<CodeActor> Actors { get; }
+        public IReadOnlyList<Diagnostic> AdditionalDiagnostics { get; }
+        public FormattingOptions FormattingOptions { get; }
+
+        private CodeActionOptions(
+            IReadOnlyList<CodeActor> actors,
+            IReadOnlyList<Diagnostic> additionalDiagnostics,
+            FormattingOptions formattingOptions)
+        {
+            this.Actors = actors ?? EmptyReadOnlyList<CodeActor>.Instance;
+            this.AdditionalDiagnostics = additionalDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+            this.FormattingOptions = formattingOptions ?? FormattingOptions.Default;
+        }
+
+        public CodeActionOptions WithActors(IReadOnlyList<CodeActor> actors)
+        {
+            return new CodeActionOptions(actors, this.AdditionalDiagnostics, this.FormattingOptions);
+        }
+
+        public CodeActionOptions WithAdditionalDiagnostics(IReadOnlyList<Diagnostic> diagnostics)
+        {
+            return new CodeActionOptions(this.Actors, diagnostics, this.FormattingOptions);
+        }
+
+        public CodeActionOptions WithFormattingOptions(FormattingOptions options)
+        {
+            return new CodeActionOptions(this.Actors, this.AdditionalDiagnostics, options);
+        }
+
+        public static readonly CodeActionOptions Default = new CodeActionOptions(null, null, null);
     }
 
     /// <summary>
