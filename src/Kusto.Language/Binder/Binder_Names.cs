@@ -13,7 +13,7 @@ namespace Kusto.Language.Binding
 
     internal sealed partial class Binder
     {
-        private SemanticInfo BindName(string name, SymbolMatch match, SyntaxNode location)
+        private SemanticInfo BindName(string name, SymbolMatch match, SyntaxNode location, bool includeRowScope = true, bool inferColumns = true)
         {
             if (name == "")
                 return ErrorInfo;
@@ -48,7 +48,7 @@ namespace Kusto.Language.Binding
                         foreach (var s in grp.Members)
                         {
                             _pathScope = s;
-                            var alz = GetMatchingSymbols(name, match, location, list);
+                            var alz = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
                             allowZeroArgumentInvocation |= alz;
                         }
                         _pathScope = savePathScope;
@@ -70,10 +70,72 @@ namespace Kusto.Language.Binding
 
                 if (list.Count == 0)
                 {
-                    allowZeroArgumentInvocation = GetMatchingSymbols(name, match, location, list);
+                    allowZeroArgumentInvocation = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
                 }
 
                 return GetMatchingSymbolResult(name, location, list, allowZeroArgumentInvocation);
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private bool CanBindName(string name, SymbolMatch match, SyntaxNode location, bool includeRowScope = true, bool inferColumns = true)
+        {
+            if (name == "")
+                return false;
+
+            var list = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                if (_pathScope != null)
+                {
+                    if (_pathScope == ScalarTypes.Dynamic)
+                    {
+                        // any x.y where x is dynamic, is also dynamic
+                        return true;
+                    }
+                    else if (_pathScope == ScalarTypes.Unknown)
+                    {
+                        // any x.y where x is unknown, is also unknown (though probably dynamic)
+                        return true;
+                    }
+                    else if (_pathScope == ErrorSymbol.Instance)
+                    {
+                        // any x.y where x is an error, is also an error
+                        return true;
+                    }
+                    else if (_pathScope is GroupSymbol grp
+                        && IsPassThrough(grp))
+                    {
+                        // get all symbols for all databases
+                        var savePathScope = _pathScope;
+                        foreach (var s in grp.Members)
+                        {
+                            _pathScope = s;
+                            var _ = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                        }
+                        _pathScope = savePathScope;
+
+                        return list.Count > 0;
+                    }
+                }
+                else if (name == "$left" && _rowScope != null && _rightRowScope != null)
+                {
+                    return true;
+                }
+                else if (name == "$right" && _rightRowScope != null)
+                {
+                    return true;
+                }
+
+                if (list.Count == 0)
+                {
+                    var _ = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                }
+
+                return list.Count > 0;
             }
             finally
             {
@@ -183,7 +245,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private bool GetMatchingSymbols(string name, SymbolMatch match, SyntaxNode location, List<Symbol> list)
+        private bool GetMatchingSymbols(string name, SymbolMatch match, SyntaxNode location, List<Symbol> list, bool includeRowScope, bool inferColumns)
         {
             var allowZeroArgumentInvocation = false;
 
@@ -234,6 +296,7 @@ namespace Kusto.Language.Binding
                     if (_pathScope is TupleSymbol tuple
                         && tuple.RelatedTable != null
                         && tuple.RelatedTable.IsOpen
+                        && inferColumns
                         && TryGetDeclaredOrInferredColumn(tuple.RelatedTable, name, out var col))
                     {
                         list.Add(col);
@@ -272,7 +335,7 @@ namespace Kusto.Language.Binding
 
                 // check binding against any columns in the row scope
                 // note: the row scope is the scope containing the columns from the left that are in scope on the right of a pipe operator.
-                if (list.Count == 0 && _rowScope != null)
+                if (list.Count == 0 && _rowScope != null && includeRowScope)
                 {
                     _rowScope.GetMembers(name, match, list);
                 }
@@ -324,7 +387,8 @@ namespace Kusto.Language.Binding
                 }
 
                 // infer column for this otherwise unbound reference?
-                if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0)
+                if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0
+                    && includeRowScope && inferColumns)
                 {
                     // row scope table has open definition, so create an inferred column for the otherwise unbound name
                     list.Add(GetOpenTableInferredColumn(name, _rowScope));

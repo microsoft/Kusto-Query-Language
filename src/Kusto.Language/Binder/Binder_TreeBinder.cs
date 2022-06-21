@@ -526,14 +526,17 @@ namespace Kusto.Language.Binding
             public override void VisitFunctionDeclaration(FunctionDeclaration node)
             {
                 var oldLocalScope = _binder._localScope;
+                var oldDefaultColumnNameSuffix = _binder._defaultColumnNameSuffix;
                 try
                 {
                     _binder._localScope = new LocalScope(oldLocalScope);
+                    _binder._defaultColumnNameSuffix = 1;
                     base.VisitFunctionDeclaration(node);
                 }
                 finally
                 {
                     _binder._localScope = oldLocalScope;
+                    _binder._defaultColumnNameSuffix = oldDefaultColumnNameSuffix;
                 }
             }
 

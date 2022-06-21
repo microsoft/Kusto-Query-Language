@@ -72,6 +72,10 @@ namespace Kusto.Language.Binding
                 expression = oe.Expression;
             }
 
+            // this is poorly formed syntax?
+            if (expression == null)
+                return;
+
             if (style == ProjectionStyle.Rename)
             {
                 switch (expression)
@@ -263,9 +267,9 @@ namespace Kusto.Language.Binding
                             }
                             else
                             {
-                                var name = GetFunctionResultName(f, null, _rowScope);
-                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? ftype);
-                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
+                                var name = GetFunctionResultName(f, null, _rowScope) ?? columnName ?? GetDefaultColumnName(expression, style == ProjectionStyle.Extend);
+                                col = new ColumnSymbol(name, columnType ?? ftype);
+                                builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
                         break;
@@ -345,14 +349,27 @@ namespace Kusto.Language.Binding
                             }
                             else
                             {
-                                var name = GetExpressionResultName(expression, null);
-                                col = new ColumnSymbol(name ?? columnName ?? "Column1", columnType ?? type);
-                                builder.Add(col, name ?? "Column", replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
+                                var name = GetExpressionResultName(expression, null) ?? columnName ?? GetDefaultColumnName(expression, style == ProjectionStyle.Extend);
+                                col = new ColumnSymbol(name, columnType ?? type);
+                                builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
                         break;
                 }
             }
+        }
+
+        private int _defaultColumnNameSuffix = 1;
+        private string GetDefaultColumnName(SyntaxNode location, bool includeRowScope)
+        {
+            var name = "Column" + _defaultColumnNameSuffix++;
+
+            while (this.CanBindName(name, SymbolMatch.Any, location, includeRowScope: includeRowScope, inferColumns: false))
+            {
+                name = "Column" + _defaultColumnNameSuffix++;
+            }
+
+            return name;
         }
 
         public static ColumnSymbol GetResultColumn(Expression expr)
