@@ -10,7 +10,7 @@ namespace Kusto.Language
     /// <summary>
     /// Well known scalar and special functions.
     /// </summary>
-    public class Functions
+    public partial class Functions
     {
         #region cluster / database / table
         public static readonly FunctionSymbol Cluster =
@@ -3131,6 +3131,17 @@ namespace Kusto.Language
             FormatIPV4,
             FormatIPV4Mask,
             FormatBytes,
+            #endregion
+
+            #region convert functions
+            ConvertAngle,
+            ConvertEnergy,
+            ConvertForce,
+            ConvertLength,
+            ConvertMass,
+            ConvertSpeed,
+            ConvertTemperature,
+            ConvertVolume,
             #endregion
 
             #region other
