@@ -4185,7 +4185,7 @@ namespace Kusto.Language.Parsing
         private Expression ParseDistinctExpression()
         {
             return ParseStarExpression()
-                ?? ParseUnnamedExpression();
+                ?? ParseNamedExpression();
         }
 
         private static readonly Func<QueryParser, Expression> FnParseDistinctExpression =

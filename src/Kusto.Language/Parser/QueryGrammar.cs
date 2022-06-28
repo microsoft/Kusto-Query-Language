@@ -2118,7 +2118,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DistinctKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DistinctParameters, equalsNeeded: true),
-                    CommaList(First(StarExpression, UnnamedExpression), MissingExpressionNode, oneOrMore: true),
+                    CommaList(First(StarExpression, NamedExpression), MissingExpressionNode, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new DistinctOperator(keyword, parameters, list))
                 .WithTag("<distinct>");
 
