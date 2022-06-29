@@ -176,6 +176,7 @@
         PackKeyword,
         ParseKeyword,
         ParseWhereKeyword,
+        ParseKvKeyword,
         PartitionKeyword,
         PathFormatKeyword,
         PatternKeyword,

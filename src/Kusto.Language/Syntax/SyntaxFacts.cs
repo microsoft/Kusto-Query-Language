@@ -208,6 +208,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PackKeyword, "pack", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
                 new SyntaxData(SyntaxKind.ParseWhereKeyword, "parse-where"),
+                new SyntaxData(SyntaxKind.ParseKvKeyword, "parse-kv"),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PathFormatKeyword, "pathformat"),
                 new SyntaxData(SyntaxKind.PatternKeyword, "pattern", canBeIdentifier: true),
@@ -228,7 +229,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.RangeKeyword, "range", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ReduceKeyword, "reduce", canBeIdentifier: true),
-                new SyntaxData(SyntaxKind.RegexKeyword, "regex"),
+                new SyntaxData(SyntaxKind.RegexKeyword, "regex", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.RelaxedKeyword, "relaxed"),
                 new SyntaxData(SyntaxKind.RenderKeyword, "render", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.RestrictedViewAccessKeyword, "restricted_view_access"),

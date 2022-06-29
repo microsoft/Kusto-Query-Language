@@ -405,7 +405,8 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.OpenParenToken),
                         CommaList<Expression>(
                             Rule(NameAndTypeDeclaration, nat => (Expression)nat),
-                            MissingNameAndTypeDeclarationNode),
+                            MissingNameAndTypeDeclarationNode,
+                            allowTrailingComma: true),
                         RequiredToken(SyntaxKind.CloseParenToken),
 
                         (openParen, columns, closeParen) =>

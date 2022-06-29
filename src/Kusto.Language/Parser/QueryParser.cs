@@ -1498,7 +1498,7 @@ namespace Kusto.Language.Parsing
             if (PeekToken().Kind == SyntaxKind.OpenParenToken)
             {
                 var open = ParseToken();
-                var list = ParseCommaList(FnParseNameAndTypeDeclarationExpression, CreateMissingNameAndTypeDeclarationExpression, FnScanCommonListEnd);
+                var list = ParseCommaList(FnParseNameAndTypeDeclarationExpression, CreateMissingNameAndTypeDeclarationExpression, FnScanCommonListEnd, allowTrailingComma: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                 return new SchemaTypeExpression(open, list, close);
             }
