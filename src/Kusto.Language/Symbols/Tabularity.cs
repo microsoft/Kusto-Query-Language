@@ -23,6 +23,11 @@ namespace Kusto.Language.Symbols
         Tabular,
 
         /// <summary>
+        /// This symbol is a graph
+        /// </summary>
+        Graph,
+
+        /// <summary>
         /// The tabularity is not known.
         /// </summary>
         Unknown,

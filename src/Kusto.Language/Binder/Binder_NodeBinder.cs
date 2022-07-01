@@ -3174,6 +3174,166 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                 }
             }
+
+            public override SemanticInfo VisitMakeGraphOperator(MakeGraphOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    _binder.CheckIsColumn(node.SourceColumn, diagnostics);
+                    _binder.CheckIsColumn(node.TargetColumn, diagnostics);
+
+                    GraphSymbol symbol;
+
+                    if (node.WithClause != null)
+                    {
+                        var tables = s_tableListPool.AllocateFromPool();
+                        try
+                        {
+                            for (int i = 0; i < node.WithClause.TablesAndKeys.Count; i++)
+                            {
+                                var tableAndKey = node.WithClause.TablesAndKeys[i].Element;
+                                _binder.CheckIsTabular(tableAndKey.Table, diagnostics);
+
+                                if (tableAndKey.Table.ResultType is TableSymbol table)
+                                {
+                                    tables.Add(table);
+                                }
+                            }
+
+                            symbol = new GraphSymbol(this.RowScopeOrEmpty, tables);
+                        }
+                        finally
+                        {
+                            s_tableListPool.ReturnToPool(tables);
+                        }
+                    }
+                    else
+                    {
+                        symbol = new GraphSymbol(this.RowScopeOrEmpty);
+                    }
+
+                    return new SemanticInfo(symbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            public override SemanticInfo VisitMakeGraphWithClause(MakeGraphWithClause node)
+            {
+                // handled by VisitMakeGraphOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+            {
+                // handled by VisitMakeGraphOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitGraphMergeOperator(GraphMergeOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    if (leftGraph == null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMergeKeyword));
+                    }
+
+                    _binder.CheckIsGraph(node.Graph, diagnostics);
+
+                    var rightGraph = node.Graph.ResultType as GraphSymbol;
+
+                    var symbol = (TypeSymbol)GraphSymbol.Merge(leftGraph, rightGraph) ?? ErrorSymbol.Instance;
+
+                    // TODO: handle possible implications of on-clause
+
+                    return new SemanticInfo(symbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            public override SemanticInfo VisitGraphMatchOperator(GraphMatchOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var builder = s_projectionBuilderPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    TypeSymbol symbol = null;
+
+                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    if (leftGraph == null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMatchKeyword));
+                    }
+
+                    if (node.WhereClause != null)
+                    {
+                        _binder.CheckIsExactType(node.WhereClause.Condition, ScalarTypes.Bool, diagnostics);
+                    }
+
+                    if (node.ProjectClause != null)
+                    {
+                        _binder.CreateProjectionColumns(node.ProjectClause.Expressions, builder, diagnostics);
+                        symbol = new TableSymbol(builder.GetProjection());
+                    }
+                    else
+                    {
+                        symbol = (TypeSymbol)leftGraph ?? ErrorSymbol.Instance;
+                    }
+
+                    return new SemanticInfo(symbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_projectionBuilderPool.ReturnToPool(builder);
+                }
+            }
+
+            public override SemanticInfo VisitGraphMatchPatternNode(GraphMatchPatternNode node)
+            {
+                // handled by VisitGraphMatchOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitGraphMatchPatternEdge(GraphMatchPatternEdge node)
+            {
+                // handled by VisitGraphMatchOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node)
+            {
+                // handled by VisitGraphMatchOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitWhereClause(WhereClause node)
+            {
+                // handled by containing node
+                return null;
+            }
+
+            public override SemanticInfo VisitProjectClause(ProjectClause node)
+            {
+                // handled by containing node
+                return null;
+            }
+
             #endregion
 
             #region clauses 

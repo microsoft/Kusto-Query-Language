@@ -127,6 +127,11 @@ namespace Kusto.Language.Editor
         MaterialiedView,
 
         /// <summary>
+        /// The name of a graph
+        /// </summary>
+        Graph,
+
+        /// <summary>
         /// The name of a scalar type
         /// </summary>
         ScalarType,

@@ -105,6 +105,9 @@ namespace Kusto.Language.Editor
                         case SyntaxKind.EqualToken:
                         case SyntaxKind.FatArrowToken:
                         case SyntaxKind.CloseParenToken: // some clauses end in ) but there is more to go
+                        case SyntaxKind.DashDashToken:
+                        case SyntaxKind.DashDashGreaterThanToken:
+                        case SyntaxKind.LessThanDashDashToken:
                             return true;
                     }
 
@@ -1311,6 +1314,9 @@ namespace Kusto.Language.Editor
             if ((hint & CompletionHint.Option) != 0)
                 match |= SymbolMatch.Option;
 
+            if ((hint & CompletionHint.Graph) != 0)
+                match |= SymbolMatch.Graph;
+
             return match;
         }
 
@@ -2334,6 +2340,8 @@ namespace Kusto.Language.Editor
                     return CompletionKind.Table;
                 case SymbolKind.MaterializedView:
                     return CompletionKind.MaterialiedView;
+                case SymbolKind.Graph:
+                    return CompletionKind.Graph;
                 case SymbolKind.Tuple:
                 case SymbolKind.Scalar:
                 case SymbolKind.Group:
@@ -2350,6 +2358,7 @@ namespace Kusto.Language.Editor
                 case SymbolKind.Table:
                 case SymbolKind.Function:
                 case SymbolKind.Pattern:
+                case SymbolKind.Graph:
                     return GetCompletionKind(vs.Type);
                 default:
                     return CompletionKind.Variable;

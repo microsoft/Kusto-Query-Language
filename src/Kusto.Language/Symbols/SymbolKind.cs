@@ -54,6 +54,11 @@ namespace Kusto.Language.Symbols
         Table,
 
         /// <summary>
+        /// A graph symbol (has nodes and edges)
+        /// </summary>
+        Graph, 
+
+        /// <summary>
         /// A database (contains tables, functions, etc)
         /// </summary>
         Database,

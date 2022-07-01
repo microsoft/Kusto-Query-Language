@@ -197,8 +197,8 @@ namespace Kusto.Language.Syntax
             {
                 var type = this.RawResultType;
 
-                // don't show type as tuple if it only has one column
-                if (type is TupleSymbol ts && ts.Columns.Count == 1)
+                // if only one column, reduce to just the one column's scalar value
+                if (type is TupleSymbol ts && ts.Columns.Count == 1 && ts.IsReducibleToScalar)
                 {
                     return ts.Columns[0].Type;
                 }

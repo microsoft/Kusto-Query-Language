@@ -86,6 +86,8 @@
         GetSchemaKeyword,
         GrannyAscKeyword,
         GrannyDescKeyword,
+        GraphMatchKeyword,
+        GraphMergeKeyword,
 
         HardDeleteKeyword,
         HardRetentionKeyword,
@@ -130,6 +132,7 @@
         LookupKeyword,
 
         MacroExpandKeyword,
+        MakeGraphKeyword,
         MakeSeriesKeyword,
         MatchesRegexKeyword,
         MaterializeKeyword,
@@ -344,11 +347,22 @@
         RawGuidLiteralToken,       // this is a raw guid only legal in specific syntax
         StringLiteralToken,
 
-        // other tokens
+        // identifier
         IdentifierToken,
+
+        // other tokens
         DirectiveToken,
         EndOfTextToken,
         BadToken,
+
+        // pseudo tokens -- not produced by lexer (produced contextually by parser)
+        DashDashToken,
+        DashDashGreaterThanToken,
+        LessThanDashDashToken,
+        BracketDashToken,
+        BracketDashGreaterThanToken,
+        DashBracketToken,
+        LessThanDashBracketToken,
 
         // nodes
         List,
@@ -514,6 +528,11 @@
         FindProjectClause,
 
         GetSchemaOperator,
+        GraphMatchOperator,
+        GraphMatchPatternNode,
+        GraphMatchPatternEdge,
+        GraphMatchPatternEdgeRange,
+        GraphMergeOperator,
 
         InvokeOperator,
 
@@ -528,6 +547,9 @@
         ForkExpression,
 
         MacroExpandOperator,
+        MakeGraphOperator,
+        MakeGraphWithClause,
+        MakeGraphTableAndKeyClause,
 
         MakeSeriesOperator,
         MakeSeriesExpression,
@@ -558,6 +580,7 @@
 
         EvaluateOperator,
 
+        ProjectClause,
         ProjectOperator,
         ProjectAwayOperator,
         ProjectKeepOperator,
@@ -592,6 +615,8 @@
         OrderingClause,
         OrderingNullsClause,
 
+        PrintOperator,
+
         SummarizeOperator,
         SummarizeByClause,
 
@@ -606,7 +631,7 @@
 
         UnionOperator,
 
-        PrintOperator,
+        WhereClause,
 
         // statements
         AliasStatement,

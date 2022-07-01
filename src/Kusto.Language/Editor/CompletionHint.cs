@@ -106,10 +106,16 @@ namespace Kusto.Language.Editor
         /// </summary>
         EntityGroup = Cluster << 1,
 
+
+        /// <summary>
+        /// A graph
+        /// </summary>
+        Graph = EntityGroup << 1,
+
         /// <summary>
         /// Syntax completions only
         /// </summary>
-        Syntax = EntityGroup << 1,
+        Syntax = Graph << 1,
 
         /// <summary>
         /// A query operator

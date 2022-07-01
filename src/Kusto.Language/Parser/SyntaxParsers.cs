@@ -196,26 +196,35 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Create a <see cref="SyntaxToken"/> from one or more <see cref="LexicalToken"/>.
         /// </summary>
-        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text)
+        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text, SyntaxKind kind = SyntaxKind.IdentifierToken)
         {
+            var firstToken = source.Peek(start);
+
             if (length == 1)
             {
-                return SyntaxToken.From(source.Peek(start));
+                return SyntaxToken.From(firstToken);
             }
             else
             {
-                // use the trivia form the first token and the text supplied (instead of concatenating the same text from the tokens)
-                return SyntaxToken.Identifier(source.Peek(start).Trivia, text);
+                switch (kind.GetCategory())
+                {
+                    case SyntaxCategory.Identifier:
+                        return SyntaxToken.Identifier(firstToken.Trivia, text);
+                    case SyntaxCategory.Other:
+                        return SyntaxToken.Other(firstToken.Trivia, text, kind);
+                    default:
+                        throw new InvalidOperationException($"Cannot produce syntax token for kind: {kind}");
+                }
             }
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) that combined has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> MatchText(string text) =>
+        public static Parser<LexicalToken, SyntaxToken> MatchText(string text, SyntaxKind kind = SyntaxKind.IdentifierToken) =>
             Match(
                 (source, start) => MatchesText(source, start, text), 
-                (source, start, length) => ProduceSyntaxToken(source, start, length, text));
+                (source, start, length) => ProduceSyntaxToken(source, start, length, text, kind));
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.

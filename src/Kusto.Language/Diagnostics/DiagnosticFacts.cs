@@ -754,6 +754,21 @@ namespace Kusto.Language
             return new Diagnostic("KS216", "Database or Table expected.");
         }
 
+        public static Diagnostic GetMissingGraphMatchPattern()
+        {
+            return new Diagnostic("KS217", "Missing graph-match pattern.");
+        }
+
+        public static Diagnostic GetGraphExpected()
+        {
+            return new Diagnostic("KS218", "Graph expected.");
+        }
+
+        public static Diagnostic GetQueryOperatorExpectsGraph()
+        {
+            return new Diagnostic("KS219", "The query operator requires an input graph.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

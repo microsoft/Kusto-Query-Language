@@ -118,6 +118,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GetSchemaKeyword, "getschema"),
                 new SyntaxData(SyntaxKind.GrannyAscKeyword, "granny-asc"),
                 new SyntaxData(SyntaxKind.GrannyDescKeyword, "granny-desc"),
+                new SyntaxData(SyntaxKind.GraphMatchKeyword, "graph-match"),
+                new SyntaxData(SyntaxKind.GraphMergeKeyword, "graph-merge"),
 
                 new SyntaxData(SyntaxKind.HardDeleteKeyword, "harddelete"),
                 new SyntaxData(SyntaxKind.HardRetentionKeyword, "hardretention"),
@@ -162,6 +164,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.LookupKeyword, "lookup", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.MacroExpandKeyword, "macro-expand"),
+                new SyntaxData(SyntaxKind.MakeGraphKeyword, "make-graph"),
                 new SyntaxData(SyntaxKind.MakeSeriesKeyword, "make-series"),
                 new SyntaxData(SyntaxKind.MatchesRegexKeyword, "matches regex", opKind: OperatorKind.MatchRegex),
                 new SyntaxData(SyntaxKind.MaterializeKeyword, "materialize"),
@@ -376,11 +379,22 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GuidLiteralToken, "", SyntaxCategory.Literal),
                 new SyntaxData(SyntaxKind.RawGuidLiteralToken, "", SyntaxCategory.Literal),
 
-                // other tokens
+                // identifiers
                 new SyntaxData(SyntaxKind.IdentifierToken, "", SyntaxCategory.Identifier),
+
+                // other tokens
                 new SyntaxData(SyntaxKind.EndOfTextToken, "", SyntaxCategory.Other),
                 new SyntaxData(SyntaxKind.DirectiveToken, "", SyntaxCategory.Other),
                 new SyntaxData(SyntaxKind.BadToken, "", SyntaxCategory.Other),
+
+                // pseudo tokens -- not produced by lexer (introduced by parser)
+                new SyntaxData(SyntaxKind.DashDashToken, "--", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.DashDashGreaterThanToken, "-->", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.LessThanDashDashToken, "<--", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.BracketDashToken, "]-", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.BracketDashGreaterThanToken, "]->", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.DashBracketToken, "-[", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.LessThanDashBracketToken, "<-[", SyntaxCategory.Other),
 
                 // list
                 new SyntaxData(SyntaxKind.List, "", SyntaxCategory.List),
@@ -550,6 +564,13 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.GetSchemaOperator, "", SyntaxCategory.Node),
 
+                new SyntaxData(SyntaxKind.GraphMatchOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphMatchPatternNode, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphMatchPatternEdge, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphMatchPatternEdgeRange, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.GraphMergeOperator, "", SyntaxCategory.Node),
+
                 new SyntaxData(SyntaxKind.InvokeOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.LookupOperator, "", SyntaxCategory.Node),
@@ -558,6 +579,10 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.JoinWhereClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.MacroExpandOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphWithClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),                
+
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesOnClause, "", SyntaxCategory.Node),
@@ -589,6 +614,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.PrintOperator, "", SyntaxCategory.Node),
 
+                new SyntaxData(SyntaxKind.ProjectClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectAwayOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectKeepOperator, "", SyntaxCategory.Node),
@@ -638,6 +664,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.TopNestedWithOthersClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.UnionOperator, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.WhereClause, "", SyntaxCategory.Node),
 
                 // statements
                 new SyntaxData(SyntaxKind.AliasStatement, "", SyntaxCategory.Node),

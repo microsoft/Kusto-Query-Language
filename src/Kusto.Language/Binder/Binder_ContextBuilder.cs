@@ -22,7 +22,7 @@ namespace Kusto.Language.Binding
         /// a given position, recreating the state for the ancestor nodes first and refining that state
         /// on the walk back to down the original node.
         /// </remarks>
-        private class ContextBuilder : DefaultSyntaxVisitor
+        internal class ContextBuilder : DefaultSyntaxVisitor
         {
             private readonly Binder _binder;
             private readonly int _position;
@@ -228,7 +228,21 @@ namespace Kusto.Language.Binding
             {
                 base.VisitCommandBlock(node);
 
-                AddStatementDeclarationsToScope(node.Statements);
+                if (node.Statements.Count > 0
+                    && node.Statements[0].Separator != null
+                    && _position > node.Statements[0].End)
+                {
+                    var command = node.Statements[0].Element.GetFirstDescendant<Command>();
+                    if (command != null)
+                    {
+                        var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
+                        _binder._localScope.AddSymbol(commandResults);
+                    }
+                }
+                else
+                {
+                    AddStatementDeclarationsToScope(node.Statements);
+                }
             }
 
             private void AddStatementDeclarationsToScope(SyntaxList<SeparatedElement<Statement>> statementList)
@@ -437,73 +451,6 @@ namespace Kusto.Language.Binding
                     _binder._scopeKind = ScopeKind.Option;
                 }
             }
-        }
-
-        class AsContextBuilder : DefaultSyntaxVisitor
-        {
-            private readonly int _position;
-            private readonly Binder _binder;
-
-            protected override void DefaultVisit(SyntaxNode node)
-            {
-                // visit children
-                if (node != null)
-                {
-                    for (int i = 0, n = node.ChildCount; i < n; i++)
-                    {
-                        var child = node.GetChild(i) as SyntaxNode;
-                        if (child != null)
-                        {
-                            child.Accept(this);
-                        }
-                    }
-                }
-            }
-
-            public AsContextBuilder(int position, Binder binder)
-            {
-                _position = position;
-                _binder = binder;
-            }
-
-            public override void VisitAsOperator(AsOperator node)
-            {
-                base.VisitAsOperator(node);
-
-                var name = node.Name.SimpleName;
-                var type = node.ResultType;
-                if (!string.IsNullOrEmpty(name) && _position > node.End && type != null)
-                {
-                    var declaration = new VariableSymbol(node.Name.SimpleName, type);
-                    _binder._localScope.AddSymbol(declaration);
-                }
-            }
-
-            public override void VisitFunctionBody(FunctionBody node)
-            {
-                // only include as-operators inside function bodies if the position is also within the body
-                if (_position > node.TextStart && _position < node.End)
-                {
-                    base.VisitFunctionBody(node);
-                }
-            }
-
-            public override void VisitCommandBlock(CommandBlock node)
-            {
-                base.VisitCommandBlock(node);
-
-                if (node.Statements.Count > 0 
-                    && node.Statements[0].Separator != null
-                    && _position > node.Statements[0].End)
-                {
-                    var command = node.Statements[0].Element.GetFirstDescendant<Command>();
-                    if (command != null)
-                    {
-                        var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
-                        _binder._localScope.AddSymbol(commandResults);
-                    }
-                }
-            }
 
             public override void VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
             {
@@ -512,6 +459,46 @@ namespace Kusto.Language.Binding
                 if (_position > node.AggregationsClause.OpenParen.TextStart)
                 {
                     _binder._rowScope = _binder.GetResultType(node.DeltaClause.Expression) as TableSymbol;
+                }
+            }
+
+            public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+            {
+                base.VisitMakeGraphTableAndKeyClause(node);
+
+                if (_position >= node.OnKeyword.TextStart)
+                {
+                    _binder._rowScope = node.Table.ResultType as TableSymbol;
+                }
+            }
+
+            public override void VisitGraphMatchOperator(GraphMatchOperator node)
+            {
+                base.VisitGraphMatchOperator(node);
+
+                if ((node.WhereClause != null && _position >= node.WhereClause.TextStart)
+                    || (node.ProjectClause != null && _position >= node.ProjectClause.TextStart))
+                {
+                    _binder._localScope = new LocalScope(_binder._localScope);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node);
+                }
+            }
+
+            public override void VisitGraphMergeOperator(GraphMergeOperator node)
+            {
+                base.VisitGraphMergeOperator(node);
+
+                if (node.OnClause == null || _position < node.OnClause.TextStart)
+                {
+                    // no row scope
+                    _binder._rowScope = null;
+                }
+                else if (node.OnClause != null && _position >= node.OnClause.TextStart)
+                {
+                    var leftShape = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol lgs ? lgs.EdgeShape : null;
+                    var rightShape = node.Graph.ResultType is GraphSymbol rgs ? rgs.EdgeShape : null;
+                    _binder._rowScope = leftShape ?? rightShape;
+                    _binder._rightRowScope = rightShape ?? leftShape;
                 }
             }
         }

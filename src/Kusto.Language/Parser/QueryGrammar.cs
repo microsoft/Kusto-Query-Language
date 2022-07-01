@@ -2474,6 +2474,116 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new MacroExpandOperator(macroExpandKeyword, parameters, entitygroup, asKeyword, identifierName, openParen, statementList, closeParen))
                 .WithTag("<macro-expand>");
 
+            var MakeGraphTableAndKeyClause =
+                Rule(
+                    InvocationExpression,
+                    RequiredToken(SyntaxKind.OnKeyword),
+                    Required(SimpleNameReference, MissingNameReference),
+                    (table, onKeyword, column) =>
+                        new MakeGraphTableAndKeyClause(table, onKeyword, (NameReference)column))
+                .WithTag("<table-and-key-clause>");
+
+            var MakeGraphWithClause =
+                Rule(
+                    Token(SyntaxKind.WithKeyword),
+                    CommaList(MakeGraphTableAndKeyClause, MissingMakeGraphTableAndKeyClauseNode, oneOrMore: true),
+                    (withKeyword, tablesAndKeys) =>
+                        new MakeGraphWithClause(withKeyword, tablesAndKeys))
+                .WithTag("<make-graph-with-clause>");
+
+            var MakeGraphOperator =
+                Rule(
+                    Token(SyntaxKind.MakeGraphKeyword).Hide(),
+                    Required(SimpleNameReference, MissingNameReference),
+                    Required(
+                        First(
+                            MatchText("-->", SyntaxKind.DashDashGreaterThanToken),
+                            MatchText("--", SyntaxKind.DashDashToken)),
+                        () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
+                    Required(SimpleNameReference, MissingNameReference),
+                    Optional(MakeGraphWithClause),
+                    (keyword, sourceColumn, direction, targetColumn, withClause) =>
+                        (QueryOperator)new MakeGraphOperator(keyword, (NameReference)sourceColumn, direction, (NameReference)targetColumn, withClause)
+                    )
+                .WithTag("<make-graph>");
+
+
+            var GraphMergeOperaor =
+                Rule(
+                    Token(SyntaxKind.GraphMergeKeyword).Hide(),
+                    Required(InvocationExpression, MissingExpression),
+                    Optional(JoinOnClause),
+                    (keyword, graph, onClause) =>
+                        (QueryOperator)new GraphMergeOperator(keyword, graph, onClause))
+                .WithTag("<graph-merge>");
+
+            var WhereClause =
+                Rule(
+                    Token(SyntaxKind.WhereKeyword),
+                    Required(Expression, MissingExpression),
+                    (keyword, expression) =>
+                        new WhereClause(keyword, expression));
+
+            var ProjectClause =
+                Rule(
+                    Token(SyntaxKind.ProjectKeyword),
+                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    (keyword, list) =>
+                        new ProjectClause(keyword, list));
+
+            var GraphMatchPatternEdgeRange =
+                Rule(
+                    Token(SyntaxKind.AsteriskToken),
+                    Required(InvocationExpression, MissingExpression),
+                    RequiredToken(SyntaxKind.DotDotToken),
+                    Required(InvocationExpression, MissingExpression),
+                    (asterisk, rangeStart, dotDotToken, rangeEnd) =>
+                        new GraphMatchPatternEdgeRange(asterisk, rangeStart, dotDotToken, rangeEnd));
+
+            var GraphMatchPatternEdge =
+                First(
+                    Rule(
+                        First(
+                            MatchText("-->", SyntaxKind.DashDashGreaterThanToken),
+                            MatchText("<--", SyntaxKind.LessThanDashDashToken),
+                            MatchText("--", SyntaxKind.DashDashToken)),
+                        (token) => (GraphMatchPatternNotation) new GraphMatchPatternEdge(token, null, null, null)),
+                    Rule(
+                        First(
+                            MatchText("<-[", SyntaxKind.LessThanDashBracketToken),
+                            MatchText("-[", SyntaxKind.DashBracketToken)),
+                        Optional(SimpleNameDeclaration),
+                        Optional(GraphMatchPatternEdgeRange),
+                        First(
+                            MatchText("]->", SyntaxKind.BracketDashGreaterThanToken),
+                            MatchText("]-", SyntaxKind.BracketDashToken)),
+                        (firstToken, name, range, lastToken) => 
+                            (GraphMatchPatternNotation) new GraphMatchPatternEdge(firstToken, name, range, lastToken))
+                    );
+
+            var GraphMatchPatternNode =
+                Rule(
+                    Token(SyntaxKind.OpenParenToken),
+                    Optional(SimpleNameDeclaration),
+                    Token(SyntaxKind.CloseParenToken),
+                    (open, name, close) => 
+                        (GraphMatchPatternNotation) new GraphMatchPatternNode(open, name, close));
+
+            var GraphMatchPatternNotation =
+                First(
+                    GraphMatchPatternNode,
+                    GraphMatchPatternEdge);
+
+            var GraphMatchOperator =
+                Rule(
+                    Token(SyntaxKind.GraphMatchKeyword).Hide(),
+                    List(GraphMatchPatternNotation, MissingGraphMatchPatternNotation, oneOrMore: true)
+                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)")),
+                    Optional(WhereClause),
+                    Optional(ProjectClause),
+                    (keyword, pattern, whereClause, projectClause) =>
+                        (QueryOperator)new GraphMatchOperator(keyword, pattern, whereClause, projectClause));
+
             var PrePipeQueryOperator =
                 First(
                     EvaluateOperator,
@@ -2491,45 +2601,48 @@ namespace Kusto.Language.Parsing
 
             var PostPipeQueryOperator =
                 First(
+                    AsOperator,
                     AssertSchemaOperator,
                     ConsumeOperator,
                     CountOperator,
+                    DistinctOperator,
+                    EvaluateOperator,
                     ExecuteAndCacheOperator,
                     ExtendOperator,
                     FacetOperator,
                     FilterOperator,
-                    GetSchemaOperator,
-                    JoinOperator,
                     ForkOperator,
+                    GetSchemaOperator,
+                    GraphMatchOperator,
+                    GraphMergeOperaor,
+                    InvokeOperator,
+                    JoinOperator,
                     LookupOperator,
+                    MakeGraphOperator,
                     MakeSeriesOperator,
                     MvApplyOperator,
                     MvExpandOperator,
-                    EvaluateOperator,
                     ParseOperator,
                     ParseWhereOperator,
                     PartitionOperator,
                     ProjectOperator,
-                    SampleOperator,
-                    SampleDistinctOperator,
                     ProjectAwayOperator,
                     ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
                     ReduceByOperator,
-                    SummarizeOperator,
-                    DistinctOperator,
-                    TakeOperator,
+                    RenderOperator,
+                    SampleOperator,
+                    SampleDistinctOperator,
+                    ScanOperator,
+                    SerializeOperator,
                     SortOperator,
+                    SummarizeOperator,
+                    TakeOperator,
                     TopHittersOperator,
                     TopOperator,
                     TopNestedOperator,
-                    UnionOperator,
-                    RenderOperator,
-                    AsOperator,
-                    SerializeOperator,
-                    InvokeOperator,
-                    ScanOperator);
+                    UnionOperator);
 
             // all operators
             this.QueryOperator =
@@ -3296,6 +3409,28 @@ namespace Kusto.Language.Parsing
 
         public static Func<Expression> MissingTokenLiteral(params string[] tokens) =>
             MissingTokenLiteral((IReadOnlyList<string>)tokens);
+
+        private static MakeGraphTableAndKeyClause MissingMakeGraphTableAndKeyClauseNode =
+            new MakeGraphTableAndKeyClause(
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.OnKeyword),
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                new[] { DiagnosticFacts.GetMissingExpression() });
+
+        private static Func<MakeGraphTableAndKeyClause> MissingMakeGraphTableAndKeyClause =
+            () => (MakeGraphTableAndKeyClause)MissingMakeGraphTableAndKeyClauseNode.Clone();
+
+
+        private static GraphMatchPatternNotation MissingGraphPatternNotationNode =
+            new GraphMatchPatternNode(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
+
+        private static Func<GraphMatchPatternNotation> MissingGraphMatchPatternNotation =
+            () => (GraphMatchPatternNotation)MissingMakeGraphTableAndKeyClauseNode.Clone();
+
 #endregion
 
 #region other

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
-    using Parsing;
     using Symbols;
     using Syntax;
     using Utils;
@@ -534,6 +531,42 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private void BindGraphMatchPatternDeclarations(GraphMatchOperator graphMatch)
+        {
+            var graphScope = graphMatch.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+            var edgeTuple = graphScope != null ? new TupleSymbol(graphScope.EdgeShape.Columns, graphScope.EdgeShape) : TupleSymbol.Empty;
+            var nodeTuple = graphScope?.NodeShape != null ? new TupleSymbol(graphScope.NodeShape.Columns, graphScope.NodeShape) : TupleSymbol.Empty;
+
+            foreach (var notation in graphMatch.Pattern)
+            {
+                if (notation is GraphMatchPatternNode node && node.Name != null)
+                {
+                    var local = new VariableSymbol(node.Name.SimpleName, nodeTuple);
+                    SetSemanticInfo(node.Name, new SemanticInfo(local, nodeTuple));
+                }
+                else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
+                {
+                    var local = new VariableSymbol(edge.Name.SimpleName, edgeTuple);
+                    SetSemanticInfo(edge.Name, new SemanticInfo(local, edgeTuple));
+                }
+            }
+        }
+
+        private void AddGraphMatchPatternDeclarationsToLocalScope(GraphMatchOperator graphMatch)
+        {
+            foreach (var notation in graphMatch.Pattern)
+            {
+                if (notation is GraphMatchPatternNode node && node.Name != null)
+                {
+                    AddDeclarationToLocalScope(node.Name);
+                }
+                else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
+                {
+                    AddDeclarationToLocalScope(edge.Name);
+                }
+            }
+        }
+
         #endregion
 
         #region Other
@@ -733,6 +766,7 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Pattern:
                 case SymbolKind.Group:
                 case SymbolKind.MaterializedView:
+                case SymbolKind.Graph:
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics);
                 case SymbolKind.Variable:
                     var v = (VariableSymbol)referencedSymbol;
@@ -1344,6 +1378,24 @@ namespace Kusto.Language.Binding
                 if (!resultType.IsError)
                 {
                     diagnostics.Add(DiagnosticFacts.GetTableExpected().WithLocation(expression));
+                }
+            }
+
+            return false;
+        }
+
+        private bool CheckIsGraph(Expression expression, List<Diagnostic> diagnostics, Symbol resultType = null)
+        {
+            resultType = resultType ?? GetResultType(expression);
+
+            if (resultType != null)
+            {
+                if (resultType is GraphSymbol)
+                    return true;
+
+                if (!resultType.IsError)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetGraphExpected().WithLocation(expression));
                 }
             }
 

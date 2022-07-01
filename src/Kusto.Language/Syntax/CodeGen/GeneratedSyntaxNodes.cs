@@ -9705,6 +9705,818 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class RenderOperator */
     
+    #region class MakeGraphOperator
+    public sealed partial class MakeGraphOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphOperator;
+        
+        public SyntaxToken MakeGraphKeyword { get; }
+        
+        public NameReference SourceColumn { get; }
+        
+        public SyntaxToken DirectionToken { get; }
+        
+        public NameReference TargetColumn { get; }
+        
+        public MakeGraphWithClause WithClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphOperator"/>.
+        /// </summary>
+        internal MakeGraphOperator(SyntaxToken makeGraphKeyword, NameReference sourceColumn, SyntaxToken directionToken, NameReference targetColumn, MakeGraphWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.MakeGraphKeyword = Attach(makeGraphKeyword);
+            this.SourceColumn = Attach(sourceColumn);
+            this.DirectionToken = Attach(directionToken);
+            this.TargetColumn = Attach(targetColumn);
+            this.WithClause = Attach(withClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return MakeGraphKeyword;
+                case 1: return SourceColumn;
+                case 2: return DirectionToken;
+                case 3: return TargetColumn;
+                case 4: return WithClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(MakeGraphKeyword);
+                case 1: return nameof(SourceColumn);
+                case 2: return nameof(DirectionToken);
+                case 3: return nameof(TargetColumn);
+                case 4: return nameof(WithClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 4:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Column;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Column;
+                case 4: return CompletionHint.Clause;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeGraphOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeGraphOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MakeGraphOperator((SyntaxToken)MakeGraphKeyword?.Clone(includeDiagnostics), (NameReference)SourceColumn?.Clone(includeDiagnostics), (SyntaxToken)DirectionToken?.Clone(includeDiagnostics), (NameReference)TargetColumn?.Clone(includeDiagnostics), (MakeGraphWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MakeGraphOperator */
+    
+    #region class MakeGraphWithClause
+    public sealed partial class MakeGraphWithClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphWithClause;
+        
+        public SyntaxToken WithKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>> TablesAndKeys { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphWithClause"/>.
+        /// </summary>
+        internal MakeGraphWithClause(SyntaxToken withKeyword, SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>> tablesAndKeys, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.WithKeyword = Attach(withKeyword);
+            this.TablesAndKeys = Attach(tablesAndKeys);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return WithKeyword;
+                case 1: return TablesAndKeys;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(WithKeyword);
+                case 1: return nameof(TablesAndKeys);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Tabular;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeGraphWithClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeGraphWithClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MakeGraphWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>>)TablesAndKeys?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MakeGraphWithClause */
+    
+    #region class MakeGraphTableAndKeyClause
+    public sealed partial class MakeGraphTableAndKeyClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphTableAndKeyClause;
+        
+        public Expression Table { get; }
+        
+        public SyntaxToken OnKeyword { get; }
+        
+        public NameReference Column { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphTableAndKeyClause"/>.
+        /// </summary>
+        internal MakeGraphTableAndKeyClause(Expression table, SyntaxToken onKeyword, NameReference column, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Table = Attach(table);
+            this.OnKeyword = Attach(onKeyword);
+            this.Column = Attach(column);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Table;
+                case 1: return OnKeyword;
+                case 2: return Column;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Table);
+                case 1: return nameof(OnKeyword);
+                case 2: return nameof(Column);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Tabular;
+                case 1: return CompletionHint.Keyword;
+                case 2: return CompletionHint.Column;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeGraphTableAndKeyClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeGraphTableAndKeyClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MakeGraphTableAndKeyClause((Expression)Table?.Clone(includeDiagnostics), (SyntaxToken)OnKeyword?.Clone(includeDiagnostics), (NameReference)Column?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MakeGraphTableAndKeyClause */
+    
+    #region class GraphMergeOperator
+    public sealed partial class GraphMergeOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMergeOperator;
+        
+        public SyntaxToken GraphMergeKeyword { get; }
+        
+        public Expression Graph { get; }
+        
+        public JoinConditionClause OnClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMergeOperator"/>.
+        /// </summary>
+        internal GraphMergeOperator(SyntaxToken graphMergeKeyword, Expression graph, JoinConditionClause onClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphMergeKeyword = Attach(graphMergeKeyword);
+            this.Graph = Attach(graph);
+            this.OnClause = Attach(onClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphMergeKeyword;
+                case 1: return Graph;
+                case 2: return OnClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphMergeKeyword);
+                case 1: return nameof(Graph);
+                case 2: return nameof(OnClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Graph;
+                case 2: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMergeOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMergeOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMergeOperator((SyntaxToken)GraphMergeKeyword?.Clone(includeDiagnostics), (Expression)Graph?.Clone(includeDiagnostics), (JoinConditionClause)OnClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMergeOperator */
+    
+    #region class GraphMatchOperator
+    public sealed partial class GraphMatchOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMatchOperator;
+        
+        public SyntaxToken GraphMatchKeyword { get; }
+        
+        public SyntaxList<GraphMatchPatternNotation> Pattern { get; }
+        
+        public WhereClause WhereClause { get; }
+        
+        public ProjectClause ProjectClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchOperator"/>.
+        /// </summary>
+        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<GraphMatchPatternNotation> pattern, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphMatchKeyword = Attach(graphMatchKeyword);
+            this.Pattern = Attach(pattern);
+            this.WhereClause = Attach(whereClause, optional: true);
+            this.ProjectClause = Attach(projectClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphMatchKeyword;
+                case 1: return Pattern;
+                case 2: return WhereClause;
+                case 3: return ProjectClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphMatchKeyword);
+                case 1: return nameof(Pattern);
+                case 2: return nameof(WhereClause);
+                case 3: return nameof(ProjectClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMatchOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMatchOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<GraphMatchPatternNotation>)Pattern?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMatchOperator */
+    
+    #region class GraphMatchPatternNotation
+    public abstract partial class GraphMatchPatternNotation : SyntaxNode
+    {
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchPatternNotation"/>.
+        /// </summary>
+        internal GraphMatchPatternNotation(IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+        }
+    }
+    #endregion /* class GraphMatchPatternNotation */
+    
+    #region class GraphMatchPatternNode
+    public sealed partial class GraphMatchPatternNode : GraphMatchPatternNotation
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMatchPatternNode;
+        
+        public SyntaxToken Open { get; }
+        
+        public NameDeclaration Name { get; }
+        
+        public SyntaxToken Close { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchPatternNode"/>.
+        /// </summary>
+        internal GraphMatchPatternNode(SyntaxToken open, NameDeclaration name, SyntaxToken close, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Open = Attach(open);
+            this.Name = Attach(name, optional: true);
+            this.Close = Attach(close);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Open;
+                case 1: return Name;
+                case 2: return Close;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Open);
+                case 1: return nameof(Name);
+                case 2: return nameof(Close);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Keyword;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMatchPatternNode(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMatchPatternNode(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMatchPatternNode((SyntaxToken)Open?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)Close?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMatchPatternNode */
+    
+    #region class GraphMatchPatternEdge
+    public sealed partial class GraphMatchPatternEdge : GraphMatchPatternNotation
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMatchPatternEdge;
+        
+        public SyntaxToken FirstToken { get; }
+        
+        public NameDeclaration Name { get; }
+        
+        public GraphMatchPatternEdgeRange Range { get; }
+        
+        public SyntaxToken LastToken { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchPatternEdge"/>.
+        /// </summary>
+        internal GraphMatchPatternEdge(SyntaxToken firstToken, NameDeclaration name, GraphMatchPatternEdgeRange range, SyntaxToken lastToken, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.FirstToken = Attach(firstToken);
+            this.Name = Attach(name, optional: true);
+            this.Range = Attach(range, optional: true);
+            this.LastToken = Attach(lastToken, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return FirstToken;
+                case 1: return Name;
+                case 2: return Range;
+                case 3: return LastToken;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(FirstToken);
+                case 1: return nameof(Name);
+                case 2: return nameof(Range);
+                case 3: return nameof(LastToken);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.None;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMatchPatternEdge(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMatchPatternEdge(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMatchPatternEdge((SyntaxToken)FirstToken?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (GraphMatchPatternEdgeRange)Range?.Clone(includeDiagnostics), (SyntaxToken)LastToken?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMatchPatternEdge */
+    
+    #region class GraphMatchPatternEdgeRange
+    public sealed partial class GraphMatchPatternEdgeRange : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMatchPatternEdgeRange;
+        
+        public SyntaxToken Asterisk { get; }
+        
+        public Expression RangeStart { get; }
+        
+        public SyntaxToken DotDotToken { get; }
+        
+        public Expression RangeEnd { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchPatternEdgeRange"/>.
+        /// </summary>
+        internal GraphMatchPatternEdgeRange(SyntaxToken asterisk, Expression rangeStart, SyntaxToken dotDotToken, Expression rangeEnd, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Asterisk = Attach(asterisk);
+            this.RangeStart = Attach(rangeStart);
+            this.DotDotToken = Attach(dotDotToken);
+            this.RangeEnd = Attach(rangeEnd);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Asterisk;
+                case 1: return RangeStart;
+                case 2: return DotDotToken;
+                case 3: return RangeEnd;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Asterisk);
+                case 1: return nameof(RangeStart);
+                case 2: return nameof(DotDotToken);
+                case 3: return nameof(RangeEnd);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Scalar;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMatchPatternEdgeRange(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMatchPatternEdgeRange(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMatchPatternEdgeRange((SyntaxToken)Asterisk?.Clone(includeDiagnostics), (Expression)RangeStart?.Clone(includeDiagnostics), (SyntaxToken)DotDotToken?.Clone(includeDiagnostics), (Expression)RangeEnd?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMatchPatternEdgeRange */
+    
+    #region class WhereClause
+    public sealed partial class WhereClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.WhereClause;
+        
+        public SyntaxToken WhereKeyword { get; }
+        
+        public Expression Condition { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="WhereClause"/>.
+        /// </summary>
+        internal WhereClause(SyntaxToken whereKeyword, Expression condition, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.WhereKeyword = Attach(whereKeyword);
+            this.Condition = Attach(condition);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return WhereKeyword;
+                case 1: return Condition;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(WhereKeyword);
+                case 1: return nameof(Condition);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Boolean;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitWhereClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitWhereClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new WhereClause((SyntaxToken)WhereKeyword?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class WhereClause */
+    
+    #region class ProjectClause
+    public sealed partial class ProjectClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.ProjectClause;
+        
+        public SyntaxToken ProjectKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ProjectClause"/>.
+        /// </summary>
+        internal ProjectClause(SyntaxToken projectKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ProjectKeyword = Attach(projectKeyword);
+            this.Expressions = Attach(expressions);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ProjectKeyword;
+                case 1: return Expressions;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ProjectKeyword);
+                case 1: return nameof(Expressions);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitProjectClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitProjectClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new ProjectClause((SyntaxToken)ProjectKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class ProjectClause */
+    
     #region class NameReferenceList
     public sealed partial class NameReferenceList : Expression
     {
@@ -13524,6 +14336,16 @@ namespace Kusto.Language.Syntax
         public abstract void VisitSerializeOperator(SerializeOperator node);
         public abstract void VisitInvokeOperator(InvokeOperator node);
         public abstract void VisitRenderOperator(RenderOperator node);
+        public abstract void VisitMakeGraphOperator(MakeGraphOperator node);
+        public abstract void VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
+        public abstract void VisitGraphMergeOperator(GraphMergeOperator node);
+        public abstract void VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract void VisitGraphMatchPatternNode(GraphMatchPatternNode node);
+        public abstract void VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
+        public abstract void VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node);
+        public abstract void VisitWhereClause(WhereClause node);
+        public abstract void VisitProjectClause(ProjectClause node);
         public abstract void VisitNameReferenceList(NameReferenceList node);
         public abstract void VisitRenderWithClause(RenderWithClause node);
         public abstract void VisitPrintOperator(PrintOperator node);
@@ -14067,6 +14889,46 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitMakeGraphOperator(MakeGraphOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeGraphWithClause(MakeGraphWithClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphMergeOperator(GraphMergeOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphMatchOperator(GraphMatchOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphMatchPatternNode(GraphMatchPatternNode node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphMatchPatternEdge(GraphMatchPatternEdge node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitWhereClause(WhereClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitProjectClause(ProjectClause node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitNameReferenceList(NameReferenceList node)
         {
             this.DefaultVisit(node);
@@ -14380,6 +15242,16 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitSerializeOperator(SerializeOperator node);
         public abstract TResult VisitInvokeOperator(InvokeOperator node);
         public abstract TResult VisitRenderOperator(RenderOperator node);
+        public abstract TResult VisitMakeGraphOperator(MakeGraphOperator node);
+        public abstract TResult VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
+        public abstract TResult VisitGraphMergeOperator(GraphMergeOperator node);
+        public abstract TResult VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract TResult VisitGraphMatchPatternNode(GraphMatchPatternNode node);
+        public abstract TResult VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
+        public abstract TResult VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node);
+        public abstract TResult VisitWhereClause(WhereClause node);
+        public abstract TResult VisitProjectClause(ProjectClause node);
         public abstract TResult VisitNameReferenceList(NameReferenceList node);
         public abstract TResult VisitRenderWithClause(RenderWithClause node);
         public abstract TResult VisitPrintOperator(PrintOperator node);
@@ -14920,6 +15792,46 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitRenderOperator(RenderOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeGraphOperator(MakeGraphOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeGraphWithClause(MakeGraphWithClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMergeOperator(GraphMergeOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMatchOperator(GraphMatchOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMatchPatternNode(GraphMatchPatternNode node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMatchPatternEdge(GraphMatchPatternEdge node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitWhereClause(WhereClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitProjectClause(ProjectClause node)
         {
             return this.DefaultVisit(node);
         }

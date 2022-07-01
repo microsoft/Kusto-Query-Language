@@ -72,14 +72,19 @@ namespace Kusto.Language.Symbols
         Option = MaterializedView << 1,
 
         /// <summary>
+        /// Any graph
+        /// </summary>
+        Graph = Option << 1,
+
+        /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
-        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup,
+        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup | Graph,
 
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView | EntityGroup,
+        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView | EntityGroup | Graph,
     }
 
     public static class SymbolMatchExtensions
@@ -133,6 +138,9 @@ namespace Kusto.Language.Symbols
                 return true;
 
             if ((match & SymbolMatch.EntityGroup) != 0 && symbol.Kind == SymbolKind.EntityGroup)
+                return true;
+
+            if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
                 return true;
 
             if ((match & SymbolMatch.Local) != 0 && (symbol.Kind == SymbolKind.Variable || symbol.Kind == SymbolKind.Parameter))

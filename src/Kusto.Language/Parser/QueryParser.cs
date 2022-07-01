@@ -246,12 +246,12 @@ namespace Kusto.Language.Parsing
         /// Parses one or more adjacent lexical tokens that together matches the text into a single token,
         /// or returns null.
         /// </summary>
-        private SyntaxToken ParseToken(string text)
+        private SyntaxToken ParseToken(string text, SyntaxKind kind = SyntaxKind.IdentifierToken)
         {
             var len = SyntaxParsers.MatchesText(_source, _pos, text);
             if (len > 0)
             {
-                var token = SyntaxParsers.ProduceSyntaxToken(_source, _pos, len, text);
+                var token = SyntaxParsers.ProduceSyntaxToken(_source, _pos, len, text, kind);
                 _pos += len;
                 return token;
             }
@@ -271,39 +271,13 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private SyntaxToken ParseCombinedIdentifier(int count)
-        {
-            if (count == 1)
-            {
-                return ParseToken();
-            }
-            else
-            {
-                var builder = new StringBuilder();
-
-                var firstToken = PeekToken();
-                builder.Append(firstToken.Text);
-
-                for (int i = 1; i < count; i++)
-                {
-                    var tok = PeekToken(i);
-                    builder.Append(tok.Trivia);
-                    builder.Append(tok.Text);
-                }
-
-                _pos += count;
-
-                return SyntaxToken.Identifier(firstToken.Trivia, builder.ToString());
-            }
-        }
-
         /// <summary>
         /// Parses one or more adjacent lexical tokens that together matches the text into a single token,
         /// or returns a missing token.
         /// </summary>
-        private SyntaxToken ParseRequiredToken(string text)
+        private SyntaxToken ParseRequiredToken(string text, SyntaxKind kind = SyntaxKind.IdentifierToken)
         {
-            return ParseToken(text) ?? SyntaxParsers.CreateMissingToken(text);
+            return ParseToken(text, kind) ?? SyntaxParsers.CreateMissingToken(text);
         }
 
         private SyntaxToken ParseRequiredToken(IReadOnlyList<string> texts)
@@ -4784,6 +4758,198 @@ namespace Kusto.Language.Parsing
             return null;
         }
 #endregion
+
+#region make-graph
+        private QueryOperator ParseMakeGraphOperator()
+        {
+            if (ParseToken(SyntaxKind.MakeGraphKeyword) is SyntaxToken makeGraphKeyword)
+            {
+                var sourceColumn = ParseNameReference() ?? CreateMissingNameReference();
+                var directionToken = 
+                    ParseToken("-->", SyntaxKind.DashDashGreaterThanToken) 
+                    ?? ParseToken("--", SyntaxKind.DashDashToken) 
+                    ?? CreateMissingDirectionToken();
+                var targetColumn = ParseNameReference() ?? CreateMissingNameReference();
+                var withClause = ParseMakeGraphWithClause();
+
+                return new MakeGraphOperator(makeGraphKeyword, sourceColumn, directionToken, targetColumn, withClause);
+            }
+
+            return null;
+        }
+
+        private static Func<SyntaxToken> CreateMissingDirectionToken = () =>
+            CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken });
+
+        private MakeGraphWithClause ParseMakeGraphWithClause()
+        {
+            if (ParseToken(SyntaxKind.WithKeyword) is SyntaxToken withKeyword)
+            {
+                var tablesAndKeys = ParseCommaList(FnParseMakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, FnScanCommonListEnd, oneOrMore: true);
+                return new MakeGraphWithClause(withKeyword, tablesAndKeys);
+            }
+
+            return null;
+        }
+
+        private static Func<MakeGraphTableAndKeyClause> CreateMissingMakeGraphTableAndKeyClause = () =>
+            new MakeGraphTableAndKeyClause(
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.OnKeyword),
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                new[] { DiagnosticFacts.GetMissingExpression() }
+                );
+
+
+        private static Func<QueryParser, MakeGraphTableAndKeyClause> FnParseMakeGraphTableAndKeyClause =
+            qp => qp.ParseMakeGraphTableAndKeyClause();
+
+        private MakeGraphTableAndKeyClause ParseMakeGraphTableAndKeyClause()
+        {
+            if (ParseInvocationExpression() is Expression table)
+            {
+                var onKeyword = ParseRequiredToken(SyntaxKind.OnKeyword);
+                var column = ParseNameReference() ?? CreateMissingNameReference();
+                return new MakeGraphTableAndKeyClause(table, onKeyword, column);
+            }
+
+            return null;
+        }
+#endregion
+
+
+#region GraphMergeOperator
+        private GraphMergeOperator ParseGraphMergeOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphMergeKeyword) is SyntaxToken keyword)
+            {
+                var rightGraph = ParseInvocationExpression() ?? CreateMissingExpression();
+                var onClause = ParseJoinOnClause();
+                return new GraphMergeOperator(keyword, rightGraph, onClause);
+            }
+
+            return null;
+        }
+#endregion
+
+
+#region GraphMergeOperator
+        private GraphMatchOperator ParseGraphMatchOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphMatchKeyword) is SyntaxToken keyword)
+            {
+                var pattern = ParseList(FnParseGraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, FnScanCommonListEnd, oneOrMore: true);
+                var whereClause = ParseWhereClause();
+                var projectClause = ParseProjectClause();
+                return new GraphMatchOperator(keyword, pattern, whereClause, projectClause);
+            }
+
+            return null;
+        }
+
+        private static Func<GraphMatchPatternNotation> CreateMissingGraphMatchPatternNotation = () =>
+            new GraphMatchPatternNode(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new Diagnostic[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
+
+        private static Func<QueryParser, GraphMatchPatternNotation> FnParseGraphMatchPatternNotation =
+            qp => qp.ParseGraphMatchPatternNotation();
+
+        private GraphMatchPatternNotation ParseGraphMatchPatternNotation()
+        {
+            return ParseGraphMatchPatternNode()
+                ?? ParseGraphMatchPatternEdge();
+        }
+
+        private GraphMatchPatternNotation ParseGraphMatchPatternNode()
+        {
+            if (ParseToken(SyntaxKind.OpenParenToken) is SyntaxToken open)
+            {
+                var name = ParseNameDeclaration();
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new GraphMatchPatternNode(open, name, close);
+            }
+
+            return null;
+        }
+
+        private GraphMatchPatternNotation ParseGraphMatchPatternEdge()
+        {
+            var firstToken =
+                ParseToken("-->", SyntaxKind.DashDashGreaterThanToken)
+                ?? ParseToken("<--", SyntaxKind.LessThanDashDashToken)
+                ?? ParseToken("--", SyntaxKind.DashDashToken);
+
+            if (firstToken != null)
+            {
+                return new GraphMatchPatternEdge(firstToken, null, null, null);
+            }
+
+            firstToken =
+                ParseToken("-[", SyntaxKind.DashBracketToken)
+                ?? ParseToken("<-[", SyntaxKind.LessThanDashBracketToken);
+
+            if (firstToken != null)
+            {
+                var name = ParseNameDeclaration();
+                var range = ParseGraphMatchPatternEdgeRange();
+
+                var lastToken =
+                    ParseToken("]->", SyntaxKind.BracketDashGreaterThanToken)
+                    ?? ParseToken("]-", SyntaxKind.BracketDashToken)
+                    ?? CreateMissingToken(s_rangeEndTokens);
+
+                return new GraphMatchPatternEdge(firstToken, name, range, lastToken);
+            }
+
+            return null;
+        }
+
+        private static readonly SyntaxKind[] s_rangeEndTokens = new SyntaxKind[]
+        {
+            SyntaxKind.BracketDashGreaterThanToken, 
+            SyntaxKind.BracketDashToken
+        };
+
+
+        private GraphMatchPatternEdgeRange ParseGraphMatchPatternEdgeRange()
+        {
+            if (ParseToken(SyntaxKind.AsteriskToken) is SyntaxToken asterisk)
+            {
+                var rangeStart = ParseInvocationExpression() ?? CreateMissingValue();
+                var dotDotToken = ParseRequiredToken(SyntaxKind.DotDotToken);
+                var rangeEnd = ParseInvocationExpression() ?? CreateMissingExpression();
+                return new GraphMatchPatternEdgeRange(asterisk, rangeStart, dotDotToken, rangeEnd);
+            }
+
+            return null;
+        }
+
+        private WhereClause ParseWhereClause()
+        {
+            if (ParseToken(SyntaxKind.WhereKeyword) is SyntaxToken keyword)
+            {
+                var expression = ParseExpression() ?? CreateMissingExpression();
+                return new WhereClause(keyword, expression);
+            }
+
+            return null;
+        }
+
+        private ProjectClause ParseProjectClause()
+        {
+            if (ParseToken(SyntaxKind.ProjectKeyword) is SyntaxToken keyword)
+            {
+                var expressions = ParseCommaList(FnParseNamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
+                return new ProjectClause(keyword, expressions);
+            }
+
+            return null;
+        }
+#endregion
+
 #endregion
 
 #region Query Expressions
@@ -4883,6 +5049,12 @@ namespace Kusto.Language.Parsing
                     return ParseUnionOperator();
                 case SyntaxKind.MacroExpandKeyword:
                     return ParseMacroExpand();
+                case SyntaxKind.MakeGraphKeyword:
+                    return ParseMakeGraphOperator();
+                case SyntaxKind.GraphMergeKeyword:
+                    return ParseGraphMergeOperator();
+                case SyntaxKind.GraphMatchKeyword:
+                    return ParseGraphMatchOperator();
                 case SyntaxKind.AssertSchemaKeyword:
                     return ParseAssertSchemaOperator();
                 default:

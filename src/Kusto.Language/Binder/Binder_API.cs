@@ -53,12 +53,12 @@ namespace Kusto.Language.Binding
         private LocalScope _localScope;
 
         /// <summary>
-        /// Columns accessible in piped query operators
+        /// Columns accessible in piped query operators, or from the $left variable in a join on clause.
         /// </summary>
         private TableSymbol _rowScope;
 
         /// <summary>
-        /// Columns accessible from right side of join operator
+        /// Columns accessible from right side of join operator via the $right variable
         /// </summary>
         private TableSymbol _rightRowScope;
 
@@ -126,7 +126,6 @@ namespace Kusto.Language.Binding
         }
 
         public TableSymbol RowScopeOrEmpty => _rowScope ?? TableSymbol.Empty;
-
         public TableSymbol RightRowScopeOrEmpty => _rightRowScope ?? TableSymbol.Empty;
 
         /// <summary>

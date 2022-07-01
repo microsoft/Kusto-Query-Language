@@ -857,6 +857,73 @@ namespace Kusto.Language.Binding
 
                 BindNode(node);
             }
+
+            public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+            {
+                node.Table?.Accept(this);
+
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = node.Table.ResultType as TableSymbol;
+                try
+                {
+                    node.Column?.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
+            }
+
+            public override void VisitGraphMergeOperator(GraphMergeOperator node)
+            {
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = null;
+                try
+                {
+                    node.Graph.Accept(this);
+
+                    if (node.OnClause != null)
+                    {
+                        var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                        var rightGraph = node.Graph.ResultType as GraphSymbol;
+
+                        _binder._rowScope = leftGraph?.EdgeShape;
+                        _binder._rightRowScope = rightGraph?.EdgeShape;
+                        node.OnClause?.Accept(this);
+                    }
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
+            }
+
+            public override void VisitGraphMatchOperator(GraphMatchOperator node)
+            {
+                var oldScope = _binder._rowScope;
+                var oldLocalScope = _binder._localScope;
+                _binder._rowScope = null;
+                _binder._localScope = new LocalScope(oldLocalScope);
+                try
+                {
+                    _binder.BindGraphMatchPatternDeclarations(node);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node);
+
+                    node.WhereClause?.Accept(this);
+                    node.ProjectClause?.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                    _binder._localScope = oldLocalScope;
+                }
+
+                BindNode(node);
+            }
         }
     }
 }
