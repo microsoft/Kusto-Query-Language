@@ -146,6 +146,7 @@ namespace Kusto.Language.Editor
                     if (v.Type is FunctionSymbol
                         || v.Type is PatternSymbol
                         || v.Type is TableSymbol
+                        || v.Type is GraphSymbol
                         || v.Type is ScalarSymbol)
                     {
                         return GetItemKind(v.Type);
@@ -160,6 +161,8 @@ namespace Kusto.Language.Editor
                     return QuickInfoKind.Command;
                 case OptionSymbol _:
                     return QuickInfoKind.Option;
+                case GraphSymbol _:
+                    return QuickInfoKind.Graph;
                 case GroupSymbol gs:
                     if (gs.Members.Count > 0)
                         return GetItemKind(gs.Members[0]);
@@ -328,6 +331,8 @@ namespace Kusto.Language.Editor
                     return ClassificationKind.Command;
                 case OptionSymbol _:
                     return ClassificationKind.Option;
+                //case GraphSymbol _:
+                //return ClassificationKind.Graph;
                 case ScalarSymbol s:
                     if (s == ScalarTypes.String)
                     {

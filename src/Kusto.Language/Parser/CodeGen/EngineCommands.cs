@@ -1145,7 +1145,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol(
                 "ShowCluster",
-                "(NodeId: string, Address: string, Name: string, StartTime: string, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
+                "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
 
         public static readonly CommandSymbol ShowDiagnostics =
             new CommandSymbol(
@@ -1256,6 +1256,9 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol TableShardGroupsStatisticsShow =
             new CommandSymbol("TableShardGroupsStatisticsShow", _schema31);
+
+        public static readonly CommandSymbol TablesShardGroupsStatisticsShow =
+            new CommandSymbol("TablesShardGroupsStatisticsShow", _schema31);
 
         public static readonly CommandSymbol DatabaseShardGroupsStatisticsShow =
             new CommandSymbol("DatabaseShardGroupsStatisticsShow", _schema31);
@@ -1437,6 +1440,9 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol DropExtentTagsRetention =
             new CommandSymbol("DropExtentTagsRetention", _schema18);
+
+        public static readonly CommandSymbol MergeDatabaseShardGroups =
+            new CommandSymbol("MergeDatabaseShardGroups", _schema18);
 
         public static readonly CommandSymbol AlterFollowerClusterConfiguration =
             new CommandSymbol("AlterFollowerClusterConfiguration", _schema18);
@@ -2024,6 +2030,7 @@ namespace Kusto.Language
             ShowTableExtentsMetadata,
             TableShardGroupsShow,
             TableShardGroupsStatisticsShow,
+            TablesShardGroupsStatisticsShow,
             DatabaseShardGroupsStatisticsShow,
             MergeExtents,
             MergeExtentsDryrun,
@@ -2081,6 +2088,7 @@ namespace Kusto.Language
             AlterExtentTagsFromQuery,
             AlterMergeExtentTagsFromQuery,
             DropExtentTagsRetention,
+            MergeDatabaseShardGroups,
             AlterFollowerClusterConfiguration,
             AddFollowerDatabaseAuthorizedPrincipals,
             DropFollowerDatabaseAuthorizedPrincipals,

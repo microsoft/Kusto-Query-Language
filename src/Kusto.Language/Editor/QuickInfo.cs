@@ -95,6 +95,8 @@ namespace Kusto.Language.Editor
                     return "function";
                 case QuickInfoKind.Operator:
                     return "operator";
+                case QuickInfoKind.Graph:
+                    return "graph";
             }
         }  
 
@@ -237,7 +239,12 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The <see cref="QuickInfoItem"/> is a query option.
         /// </summary>
-        Option
+        Option,
+
+        /// <summary>
+        /// The <see cref="QuickInfoItem"/> is a graph.
+        /// </summary>
+        Graph
     }
 
     public class ClassifiedText

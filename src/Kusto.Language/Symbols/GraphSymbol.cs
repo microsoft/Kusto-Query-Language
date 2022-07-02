@@ -86,22 +86,22 @@ namespace Kusto.Language.Symbols
             {
                 if (this.NodeShape != null)
                 {
-                    return $"{this.Name}: [{this.EdgeShape.Display}, {this.NodeShape.Display}]";
+                    return $"{this.Name}: [Edge{this.EdgeShape.Display}, Node{this.NodeShape.Display}]";
                 }
                 else
                 {
-                    return $"{this.Name}: [{this.EdgeShape.Display}]";
+                    return $"{this.Name}: [Edge{this.EdgeShape.Display}]";
                 }
             }
             else
             {
                 if (this.NodeShape != null)
                 {
-                    return $"[{this.EdgeShape.Display}, {this.NodeShape.Display}]";
+                    return $"[Edge{this.EdgeShape.Display}, Node{this.NodeShape.Display}]";
                 }
                 else
                 {
-                    return $"[{this.EdgeShape.Display}]";
+                    return $"[Edge{this.EdgeShape.Display}]";
                 }
             }
         }
