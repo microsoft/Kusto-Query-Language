@@ -634,8 +634,7 @@ namespace Kusto.Language.Binding
 
                 if (context is UnionOperator uo)
                 {
-                    var np = uo.Parameters.GetParameter(QueryOperatorParameters.IsFuzzy);
-                    return np != null && np.Expression.ConstantValue is bool b && b;
+                    return uo.Parameters.GetParameterLiteralValue<bool>(QueryOperatorParameters.IsFuzzy);
                 }
             }
 

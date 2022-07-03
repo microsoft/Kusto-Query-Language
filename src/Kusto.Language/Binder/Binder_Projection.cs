@@ -650,25 +650,5 @@ namespace Kusto.Language.Binding
                     return expression;
             }
         }
-
-        public static string GetNameDeclarationName(Expression expr)
-        {
-            switch (expr)
-            {
-                case NameDeclaration nd:
-                    return nd.Name.SimpleName;
-                case NameReference nr:
-                    return nr.Name.SimpleName;
-                case LiteralExpression le:
-                    if (le.Kind == SyntaxKind.StringLiteralExpression
-                        || le.Kind == SyntaxKind.TokenLiteralExpression)
-                        return (string)le.LiteralValue;
-                    break;
-                case CompoundStringLiteralExpression cs:
-                    return (string)cs.LiteralValue;
-            }
-
-            return null;
-        }
     }
 }

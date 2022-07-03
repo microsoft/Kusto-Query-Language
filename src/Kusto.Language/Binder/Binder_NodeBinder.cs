@@ -1947,8 +1947,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.FindParameters, diagnostics);
                     _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
 
-                    var withSource = node.Parameters.GetParameter(QueryOperatorParameters.WithSource);
-                    string sourceColumnName = (withSource != null) ? GetNameDeclarationName(withSource.Expression) ?? "source_" : "source_";
+                    var sourceColumnName = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithSource) ?? "source_";
                     columns.Add(new ColumnSymbol(sourceColumnName, ScalarTypes.String));
 
                     var tables = _binder.GetFindTables(node);
@@ -2146,14 +2145,9 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.UnionParameters, diagnostics);
 
-                    var withSourceParameter = node.Parameters.GetParameter(QueryOperatorParameters.WithSource);
-                    if (withSourceParameter != null)
+                    if (node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithSource) is string name)
                     {
-                        var name = GetNameDeclarationName(withSourceParameter.Expression);
-                        if (name != null)
-                        {
-                            columns.Add(new ColumnSymbol(name, ScalarTypes.String));
-                        }
+                        columns.Add(new ColumnSymbol(name, ScalarTypes.String));
                     }
 
                     if (RowScopeOrEmpty != null)
@@ -2298,9 +2292,7 @@ namespace Kusto.Language.Binding
                             break;
                     }
 
-                    var joinKindNode = node.Parameters.GetParameter(QueryOperatorParameters.Kind);
-                    var joinKind = joinKindNode?.Expression is LiteralExpression lit ? lit.Token.ValueText : "";
-
+                    var joinKind = node.Parameters.GetParameterLiteralValue<string>(QueryOperatorParameters.Kind);
                     var resultIsOpen = false;
 
                     // if not explicitly a right-anti/semi join, then add left-side columns
@@ -2684,10 +2676,8 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, style: ProjectionStyle.Replace, columnType: type);
                     }
 
-                    var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
-                    if (itemIndex != null)
+                    if (node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithItemIndex) is string indexName)
                     {
-                        var indexName = GetNameDeclarationName(itemIndex.Expression);
                         builder.Add(new ColumnSymbol(indexName, ScalarTypes.Long));
                     }
 
@@ -2749,10 +2739,8 @@ namespace Kusto.Language.Binding
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, style: ProjectionStyle.Replace);
                     }
 
-                    var itemIndex = node.Parameters.GetParameter(QueryOperatorParameters.WithItemIndex);
-                    if (itemIndex != null)
+                    if (node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithItemIndex) is string indexName)
                     {
-                        var indexName = GetNameDeclarationName(itemIndex.Expression);
                         builder.Add(new ColumnSymbol(indexName, ScalarTypes.Long));
                     }
 
@@ -2859,7 +2847,22 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryOperatorParameters(node.With.Parameters, QueryOperatorParameters.ReduceWithParameters, diagnostics);
                     }
 
-                    var resultType = new TableSymbol(s_ReduceColumns);
+                    TableSymbol resultType;
+
+                    var kind = node.Parameters.GetParameterLiteralValue<string>(QueryOperatorParameters.Kind);
+                    if (kind == "source")
+                    {
+                        var columns = s_columnListPool.AllocateFromPool();
+                        _binder.GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
+                        columns.Add(s_PatternColumn);
+                        resultType = new TableSymbol(columns);
+                        s_columnListPool.ReturnToPool(columns);
+                    }
+                    else
+                    {
+                        resultType = new TableSymbol(s_ReduceColumns);
+                    }
+
                     return new SemanticInfo(resultType, diagnostics);
                 }
                 finally
@@ -2868,9 +2871,12 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            private static readonly ColumnSymbol s_PatternColumn =
+                new ColumnSymbol("Pattern", ScalarTypes.String);
+
             private static readonly IReadOnlyList<ColumnSymbol> s_ReduceColumns = new[]
             {
-                new ColumnSymbol("Pattern", ScalarTypes.String),
+                s_PatternColumn,
                 new ColumnSymbol("Count", ScalarTypes.Long),
                 new ColumnSymbol("Representative", ScalarTypes.String)
             };
