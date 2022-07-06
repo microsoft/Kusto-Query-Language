@@ -323,16 +323,6 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable()
             .Hide();
-
-        public static readonly FunctionSymbol NumberToLocaleString =
-            new FunctionSymbol("number_to_locale_string",
-                ScalarTypes.String,
-                new Parameter("number", ParameterTypeKind.Number),
-                new Parameter("culture", ScalarTypes.String),
-                new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.FirstArgument)
-            .ConstantFoldable()
-            .Hide();
         #endregion
 
         #region type conversion functions
@@ -2790,7 +2780,6 @@ namespace Kusto.Language
             Translate,
             MakeString,
             DateTimeToLocaleString,
-            NumberToLocaleString,
             DatetimeLocalToUtc,
             DatetimeUtcToLocal,
 #endregion
