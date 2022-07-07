@@ -1676,53 +1676,6 @@ namespace Kusto.Language.Parsing
                     (forkKeyword, list) => (QueryOperator)new ForkOperator(forkKeyword, list))
                 .WithTag("<fork>");
 
-            var PartitionScopeClause =
-                Rule(
-                    Token(SyntaxKind.InKeyword).Hide(),
-                    Required(First(FunctionCall, DynamicLiteral), MissingExpression),
-                    (inKeyword, expr) => new PartitionScope(inKeyword, expr));
-
-            var PartitionQueryExpression =
-               Rule(
-                   Token(SyntaxKind.OpenBraceToken),
-                   Required(Expression, MissingExpression),
-                   RequiredToken(SyntaxKind.CloseBraceToken),
-                   (openBrace, expr, closeBrace) =>
-                       (PartitionOperand)new PartitionQuery(openBrace, expr, closeBrace));
-
-            var ScopedPartitionSubqueryExpression =
-                Rule(
-                    PartitionScopeClause,
-                    RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
-                    RequiredToken(SyntaxKind.CloseParenToken),
-                    (scope, openParen, expr, closeParen) =>
-                        (PartitionOperand)new PartitionSubquery(scope, openParen, expr, closeParen));
-
-            var UnscopedPartitionSubqueryExpression =
-                Rule(
-                    Token(SyntaxKind.OpenParenToken),
-                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
-                    RequiredToken(SyntaxKind.CloseParenToken),
-                    (openParen, expr, closeParen) =>
-                        (PartitionOperand)new PartitionSubquery(null, openParen, expr, closeParen));
-
-            var PartitionOperator =
-                Rule(
-                    Token(SyntaxKind.PartitionKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    QueryParameterList(QueryOperatorParameters.PartitionParameters),
-                    RequiredToken(SyntaxKind.ByKeyword),
-                    Required(EntityReferenceExpression, MissingNameReference),
-                    Required(
-                        First(
-                            ScopedPartitionSubqueryExpression, 
-                            UnscopedPartitionSubqueryExpression,
-                            PartitionQueryExpression), 
-                        MissingPartitionOperand),
-                    (partitionKeyword, parameters, byKeyword, byExpression, operand) =>
-                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, operand))
-                .WithTag("<partition>");
-
             var JoinEqualityExpression =
                 ApplyOptional(
                     FunctionCallOrPath,
@@ -2015,6 +1968,72 @@ namespace Kusto.Language.Parsing
                     (parseKeyword, parameters, expr, withKeyword, expressions) =>
                         (QueryOperator)new ParseWhereOperator(parseKeyword, parameters, expr, withKeyword, expressions))
                 .WithTag("<parse-where>");
+
+            var PartitionScopeClause =
+                Rule(
+                    Token(SyntaxKind.InKeyword).Hide(),
+                    Required(First(FunctionCall, DynamicLiteral), MissingExpression),
+                    (inKeyword, expr) => new PartitionScope(inKeyword, expr));
+
+            var PartitionQueryExpression =
+               Rule(
+                   Token(SyntaxKind.OpenBraceToken),
+                   Required(Expression, MissingExpression),
+                   RequiredToken(SyntaxKind.CloseBraceToken),
+                   (openBrace, expr, closeBrace) =>
+                       (PartitionOperand)new PartitionQuery(openBrace, expr, closeBrace));
+
+            var ScopedPartitionSubqueryExpression =
+                Rule(
+                    PartitionScopeClause,
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (scope, openParen, expr, closeParen) =>
+                        (PartitionOperand)new PartitionSubquery(scope, openParen, expr, closeParen));
+
+            var UnscopedPartitionSubqueryExpression =
+                Rule(
+                    Token(SyntaxKind.OpenParenToken),
+                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (openParen, expr, closeParen) =>
+                        (PartitionOperand)new PartitionSubquery(null, openParen, expr, closeParen));
+
+            var PartitionOperator =
+                Rule(
+                    Token(SyntaxKind.PartitionKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
+                    QueryParameterList(QueryOperatorParameters.PartitionParameters),
+                    RequiredToken(SyntaxKind.ByKeyword),
+                    Required(EntityReferenceExpression, MissingNameReference),
+                    Required(
+                        First(
+                            ScopedPartitionSubqueryExpression,
+                            UnscopedPartitionSubqueryExpression,
+                            PartitionQueryExpression),
+                        MissingPartitionOperand),
+                    (partitionKeyword, parameters, byKeyword, byExpression, operand) =>
+                        (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, operand))
+                .WithTag("<partition>");
+
+            var PartitionByIdClause =
+                Rule(
+                    Token(SyntaxKind.IdKeyword),
+                    Literal,
+                    (keyword, value) =>
+                        new PartitionByIdClause(keyword, value));
+
+            var PartitionByOperator =
+                Rule(
+                    HiddenToken(SyntaxKind.PartitionByKeyword),
+                    QueryParameterList(QueryOperatorParameters.PartitionByParameters),
+                    Required(EntityReferenceExpression, MissingNameReference),
+                    Optional(PartitionByIdClause),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(ContextualSubExpression, MissingExpression),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, parameters, entity, idClause, openParen, subQuery, closeParen) =>
+                        (QueryOperator)new PartitionByOperator(keyword, parameters, entity, idClause, openParen, subQuery, closeParen));
 
             var ProjectOperator =
                 Rule(
@@ -2624,6 +2643,7 @@ namespace Kusto.Language.Parsing
                     MvExpandOperator,
                     ParseOperator,
                     ParseWhereOperator,
+                    PartitionByOperator,
                     PartitionOperator,
                     ProjectOperator,
                     ProjectAwayOperator,

@@ -1796,7 +1796,6 @@ namespace Kusto.Language.Editor
             return false;
         }
 
-
         private void GetSyntaxCompletions(int position, CompletionBuilder builder)
         {
             var hints = GetCompletionHint(position);

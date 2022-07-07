@@ -175,7 +175,11 @@ namespace Kusto.Language.Binding
         /// </summary>
         public IReadOnlyList<ColumnSymbol> GetDeclaredAndInferredColumns(TableSymbol table)
         {
-            if (table.IsOpen && _openTableInferredColumns != null && _openTableInferredColumns.ContainsKey(table))
+            if (table == null)
+            {
+                return EmptyReadOnlyList<ColumnSymbol>.Instance;
+            }
+            else if (table.IsOpen && _openTableInferredColumns != null && _openTableInferredColumns.ContainsKey(table))
             {
                 var list = new List<ColumnSymbol>();
                 GetDeclaredAndInferredColumns(table, list);

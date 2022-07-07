@@ -4374,7 +4374,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private ScanPartitionByClause ParseScanParitionByClause()
+        private ScanPartitionByClause ParseScanPartitionByClause()
         {
             var keyword = ParseToken(SyntaxKind.PartitionKeyword);
             if (keyword != null)
@@ -4411,7 +4411,7 @@ namespace Kusto.Language.Parsing
             {
                 var parameters = ParseQueryOperatorParameterList(s_scanOperatorParameterMap);
                 var order = ParseScanOrderByClause();
-                var partition = ParseScanParitionByClause();
+                var partition = ParseScanPartitionByClause();
                 var declare = ParseScanDeclareClause();
                 var with = ParseRequiredToken(SyntaxKind.WithKeyword);
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
@@ -4423,9 +4423,39 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        private PartitionByOperator ParsePartitionByOperator()
+        {
+            if (ParseToken(SyntaxKind.PartitionByKeyword) is SyntaxToken keyword)
+            {
+                var parameters = ParseQueryOperatorParameterList(s_partitionByParameters);
+                var entity = ParseEntityReferenceExpression() ?? CreateMissingNameReference();
+                var idClause = ParsePartitionByIdClause();
+                var openParen = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var subQuery = ParseContextualSubExpression() ?? CreateMissingExpression();
+                var closeParen = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new PartitionByOperator(keyword, parameters, entity, idClause, openParen, subQuery, closeParen);
+            }
 
-#region top / top-nested / top-hitters
+            return null;
+        }
+
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_partitionByParameters =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.PartitionByParameters);
+
+        private PartitionByIdClause ParsePartitionByIdClause()
+        {
+            if (ParseToken(SyntaxKind.IdKeyword) is SyntaxToken keyword)
+            {
+                var value = ParseLiteral() ?? CreateMissingValue();
+                return new PartitionByIdClause(keyword, value);
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        #region top / top-nested / top-hitters
 
         private TopHittersByClause ParseTopHittersByClause()
         {
@@ -4953,7 +4983,6 @@ namespace Kusto.Language.Parsing
 #endregion
 
 #region Query Expressions
-
         private QueryOperator ParseQueryOperator()
         {
             switch (PeekToken().Kind)
@@ -5001,6 +5030,8 @@ namespace Kusto.Language.Parsing
                     return ParseParseOperator();
                 case SyntaxKind.ParseWhereKeyword:
                     return ParseParseWhereOperator();
+                case SyntaxKind.PartitionByKeyword:
+                    return ParsePartitionByOperator();
                 case SyntaxKind.PartitionKeyword:
                     return ParsePartitionOperator();
                 case SyntaxKind.PrintKeyword:

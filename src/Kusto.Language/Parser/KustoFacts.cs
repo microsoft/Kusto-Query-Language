@@ -420,6 +420,7 @@ namespace Kusto.Language
             return (expr.Parent is ForkExpression fce && fce.Expression == expr)
                 || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
                 || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
+                || (expr.Parent is PartitionByOperator pbo && pbo.Subquery == expr)
                 || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
                 || (expr.Parent is FacetWithOperatorClause fwoc && fwoc.Operator == expr)
                 || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))

@@ -6343,7 +6343,7 @@ namespace Kusto.Language.Syntax
                 case 3: return CompletionHint.Clause;
                 case 4: return CompletionHint.Clause;
                 case 5: return CompletionHint.Keyword;
-                case 6: return CompletionHint.Tabular;
+                case 6: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -6628,7 +6628,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Clause;
+                case 1: return CompletionHint.Query;
                 case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -13744,6 +13744,181 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ScanAssignment */
     
+    #region class PartitionByOperator
+    public sealed partial class PartitionByOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.PartitionByOperator;
+        
+        public SyntaxToken PartitionByKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        public Expression Entity { get; }
+        
+        public PartitionByIdClause IdClause { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public Expression Subquery { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="PartitionByOperator"/>.
+        /// </summary>
+        internal PartitionByOperator(SyntaxToken partitionByKeyword, SyntaxList<NamedParameter> parameters, Expression entity, PartitionByIdClause idClause, SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PartitionByKeyword = Attach(partitionByKeyword);
+            this.Parameters = Attach(parameters);
+            this.Entity = Attach(entity);
+            this.IdClause = Attach(idClause, optional: true);
+            this.OpenParen = Attach(openParen);
+            this.Subquery = Attach(subquery);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 7;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PartitionByKeyword;
+                case 1: return Parameters;
+                case 2: return Entity;
+                case 3: return IdClause;
+                case 4: return OpenParen;
+                case 5: return Subquery;
+                case 6: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PartitionByKeyword);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Entity);
+                case 3: return nameof(IdClause);
+                case 4: return nameof(OpenParen);
+                case 5: return nameof(Subquery);
+                case 6: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Column;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
+                case 5: return CompletionHint.Query;
+                case 6: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitPartitionByOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitPartitionByOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new PartitionByOperator((SyntaxToken)PartitionByKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)Entity?.Clone(includeDiagnostics), (PartitionByIdClause)IdClause?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Subquery?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class PartitionByOperator */
+    
+    #region class PartitionByIdClause
+    public sealed partial class PartitionByIdClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.PartitionByIdClause;
+        
+        public SyntaxToken IdKeyword { get; }
+        
+        public Expression Value { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="PartitionByIdClause"/>.
+        /// </summary>
+        internal PartitionByIdClause(SyntaxToken idKeyword, Expression value, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.IdKeyword = Attach(idKeyword);
+            this.Value = Attach(value);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return IdKeyword;
+                case 1: return Value;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(IdKeyword);
+                case 1: return nameof(Value);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Literal;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitPartitionByIdClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitPartitionByIdClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new PartitionByIdClause((SyntaxToken)IdKeyword?.Clone(includeDiagnostics), (Expression)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class PartitionByIdClause */
+    
     #region class CommandWithClause
     public abstract partial class CommandWithClause : Clause
     {
@@ -14386,6 +14561,8 @@ namespace Kusto.Language.Syntax
         public abstract void VisitScanStep(ScanStep node);
         public abstract void VisitScanComputationClause(ScanComputationClause node);
         public abstract void VisitScanAssignment(ScanAssignment node);
+        public abstract void VisitPartitionByOperator(PartitionByOperator node);
+        public abstract void VisitPartitionByIdClause(PartitionByIdClause node);
         public abstract void VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract void VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract void VisitUnknownCommand(UnknownCommand node);
@@ -15089,6 +15266,14 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitPartitionByOperator(PartitionByOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitPartitionByIdClause(PartitionByIdClause node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitCommandWithValueClause(CommandWithValueClause node)
         {
             this.DefaultVisit(node);
@@ -15292,6 +15477,8 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitScanStep(ScanStep node);
         public abstract TResult VisitScanComputationClause(ScanComputationClause node);
         public abstract TResult VisitScanAssignment(ScanAssignment node);
+        public abstract TResult VisitPartitionByOperator(PartitionByOperator node);
+        public abstract TResult VisitPartitionByIdClause(PartitionByIdClause node);
         public abstract TResult VisitCommandWithValueClause(CommandWithValueClause node);
         public abstract TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract TResult VisitUnknownCommand(UnknownCommand node);
@@ -15992,6 +16179,14 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitScanAssignment(ScanAssignment node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitPartitionByOperator(PartitionByOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitPartitionByIdClause(PartitionByIdClause node)
         {
             return this.DefaultVisit(node);
         }

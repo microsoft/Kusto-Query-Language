@@ -1848,6 +1848,38 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitPartitionByOperator(PartitionByOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    // todo: check parameters when the correct set is known
+                    //_binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.PartitionParameters, diagnostics);
+
+                    _binder.CheckIsColumn(node.Entity, diagnostics);
+                    CheckQueryOperators(node.Subquery, KustoFacts.PostPipeOperatorKinds, diagnostics, allowContextualRoot: true);
+
+                    var tableType = node.Subquery.ResultType as TableSymbol;
+
+                    var result = new TableSymbol(_binder.GetDeclaredAndInferredColumns(tableType))
+                                    .WithInheritableProperties(RowScopeOrEmpty)
+                                    .WithIsSorted(false);
+
+                    return new SemanticInfo(result, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            public override SemanticInfo VisitPartitionByIdClause(PartitionByIdClause node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitPartitionOperator(PartitionOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

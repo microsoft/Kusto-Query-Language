@@ -213,6 +213,15 @@ namespace Kusto.Language
             Flags,
         }.ToReadOnly();
 
+        public static readonly IReadOnlyList<QueryOperatorParameter> PartitionByParameters = new QueryOperatorParameter[]
+        {
+            HintDotConcurrency,
+            HintDotSpread,
+            HintDotMaterialized,
+            HintDotShuffleKey,
+            HintDotStrategy.WithValues(KustoFacts.PartitionHintStrategies)
+        }.ToReadOnly();
+
         public static readonly IReadOnlyList<QueryOperatorParameter> PartitionParameters = new QueryOperatorParameter[]
         {
             HintDotConcurrency,
@@ -472,11 +481,11 @@ namespace Kusto.Language
         public QueryOperatorParameter(
             string name, 
             QueryOperatorParameterValueKind kind, 
-            bool caseSensitive = true, 
+            bool isCaseSensitive = true, 
             IEnumerable<string> values = null, 
             bool isRepeatable = false,
             IReadOnlyList<string> aliases = null)
-            : this(name, kind, caseSensitive, values, isRepeatable, false, false, aliases)
+            : this(name, kind, isCaseSensitive, values, isRepeatable, false, false, aliases)
         {
         }
 

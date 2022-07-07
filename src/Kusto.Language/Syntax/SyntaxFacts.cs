@@ -212,6 +212,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse"),
                 new SyntaxData(SyntaxKind.ParseWhereKeyword, "parse-where"),
                 new SyntaxData(SyntaxKind.ParseKvKeyword, "parse-kv"),
+                new SyntaxData(SyntaxKind.PartitionByKeyword, "__partitionby", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PathFormatKeyword, "pathformat"),
                 new SyntaxData(SyntaxKind.PatternKeyword, "pattern", canBeIdentifier: true),
@@ -602,6 +603,9 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MvExpandOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MvExpandExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MvExpandRowLimitClause, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.PartitionByOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.PartitionByIdClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.PartitionOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.PartitionSubquery, "", SyntaxCategory.Node),

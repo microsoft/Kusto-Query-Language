@@ -180,6 +180,7 @@
         ParseKeyword,
         ParseWhereKeyword,
         ParseKvKeyword,
+        PartitionByKeyword,
         PartitionKeyword,
         PathFormatKeyword,
         PatternKeyword,
@@ -514,6 +515,8 @@
 
         DistinctOperator,
 
+        EvaluateOperator,
+
         ExecuteAndCacheOperator,
         ExtendOperator,
 
@@ -571,6 +574,9 @@
         MvExpandExpression,
         MvExpandRowLimitClause,
 
+        PartitionByOperator,
+        PartitionByIdClause,
+
         PartitionSubquery,
         PartitionQuery,
         PartitionScope,
@@ -578,7 +584,7 @@
         ParseOperator,
         ParseWhereOperator,
 
-        EvaluateOperator,
+        PrintOperator,
 
         ProjectClause,
         ProjectOperator,
@@ -614,8 +620,6 @@
         OrderedExpression,
         OrderingClause,
         OrderingNullsClause,
-
-        PrintOperator,
 
         SummarizeOperator,
         SummarizeByClause,
