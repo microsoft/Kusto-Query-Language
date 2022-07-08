@@ -99,14 +99,14 @@ namespace Kusto.Language.Parsing
             return ParseLiteral(TokenParser.ParseTokens(text));
         }
 
-        public static SchemaTypeExpression ParseSchemaType(LexicalToken[] tokens, int start = 0)
+        public static RowSchema ParseRowSchema(LexicalToken[] tokens, int start = 0)
         {
-            return new QueryParser(tokens, start).ParseSchemaType();
+            return new QueryParser(tokens, start).ParseRowSchema();
         }
 
-        public static SchemaTypeExpression ParseSchemaType(string text)
+        public static RowSchema ParseRowSchema(string text)
         {
-            return ParseSchemaType(TokenParser.ParseTokens(text));
+            return ParseRowSchema(TokenParser.ParseTokens(text));
         }
 
         #region Reset Points
@@ -421,10 +421,18 @@ namespace Kusto.Language.Parsing
         private static readonly Func<Name> CreateMissingIdentifierName = () =>
             new TokenName(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
 
-        private static readonly Func<SchemaTypeExpression> CreateMissingSchema = () =>
+        private static readonly Func<SchemaTypeExpression> CreateMissingSchemaType = () =>
             new SchemaTypeExpression(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 SyntaxList<SeparatedElement<Expression>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
+        private static readonly Func<RowSchema> CreateMissingRowSchema = () =>
+            new RowSchema(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
@@ -1480,9 +1488,26 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        /// <summary>
+        /// Parses a tabular row schema
+        /// </summary>
+        private RowSchema ParseRowSchema()
+        {
+            if (PeekToken().Kind == SyntaxKind.OpenParenToken)
+            {
+                var open = ParseToken();
+                var leadingComma = ParseToken(SyntaxKind.CommaToken);
+                var list = ParseCommaList(FnParseNameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, FnScanCommonListEnd, allowTrailingComma: true);
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new RowSchema(open, leadingComma, list, close);
+            }
 
-#region Non-Query Expressions
+            return null;
+        }
+
+        #endregion
+
+        #region Non-Query Expressions
 
         private Expression ParsePrimaryExpression()
         {
@@ -1531,11 +1556,12 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var parameters = ParseQueryOperatorParameterList(s_dataTableParameters);
-                var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                 var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
+                var leadingComma = ParseToken(SyntaxKind.CommaToken);
                 var values = ParseCommaList(FnParseLiteral, CreateMissingValue, FnScanCommonListEnd, allowTrailingComma: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
-                return new DataTableExpression(keyword, parameters, schema, open, values, close);
+                return new DataTableExpression(keyword, parameters, schema, open, leadingComma, values, close);
             }
 
             return null;
@@ -1547,7 +1573,7 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var id = ParseLiteral() ?? ParseUnnamedExpression() ?? CreateMissingExpression();
-                var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                 return new ContextualDataTableExpression(keyword, id, schema);
             }
 
@@ -1562,7 +1588,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.External_DataKeyword:
                     var keyword = ParseToken();
                     var parameters = ParseQueryOperatorParameterList(s_dataTableParameters);
-                    var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                    var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                     var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
                     var values = ParseCommaList(FnParseLiteral, CreateMissingValue, FnScanCommonListEnd, allowTrailingComma: true);
                     var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
@@ -3852,7 +3878,7 @@ namespace Kusto.Language.Parsing
             var colon = ParseToken(SyntaxKind.ColonToken);
             if (colon != null)
             {
-                var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                 return new EvaluateSchemaClause(colon, schema);
             }
 
@@ -4781,7 +4807,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.AssertSchemaKeyword);
             if (keyword != null)
             {
-                var schema = ParseSchemaMultipartType() ?? CreateMissingSchema();
+                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                 return new AssertSchemaOperator(keyword, schema);
             }
 

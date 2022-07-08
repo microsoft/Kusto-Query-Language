@@ -475,63 +475,34 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Creates column symbols for all the columns declared in the schema.
         /// </summary>
-        private static void CreateColumnsFromSchema(SchemaTypeExpression schema, List<ColumnSymbol> columns, HashSet<string> declaredNames, List<Diagnostic> diagnostics)
+        public static void CreateColumnsFromRowSchema(RowSchema schema, List<ColumnSymbol> columns, List<Diagnostic> diagnostics = null)
         {
-            for (int i = 0, n = schema.Columns.Count; i < n; i++)
+            var declaredNames = s_stringSetPool.AllocateFromPool();
+            try
             {
-                var expr = schema.Columns[i].Element;
-                switch (expr)
+                for (int i = 0, n = schema.Columns.Count; i < n; i++)
                 {
-                    case NameAndTypeDeclaration nat:
-                        CreateColumnsFromSchema(nat, columns, declaredNames, diagnostics);
-                        break;
+                    var nat = schema.Columns[i].Element;
 
-                    case StarExpression _:
-                        // not sure what this means here yet.
-                        break;
+                    switch (nat.Type)
+                    {
+                        case PrimitiveTypeExpression p:
+                            var type = GetType(p); // diagnostics should already have been added
+                            if (DeclareColumnName(declaredNames, nat.Name.SimpleName, diagnostics, nat.Name.Name))
+                            {
+                                columns.Add(new ColumnSymbol(nat.Name.SimpleName, type));
+                            }
+                            break;
+
+                        default:
+                            diagnostics?.Add(DiagnosticFacts.GetInvalidColumnDeclaration().WithLocation(nat));
+                            break;
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        /// Creates a column symbol for the column declared by the <see cref="NameAndTypeDeclaration"/>
-        /// </summary>
-        private static void CreateColumnsFromSchema(NameAndTypeDeclaration declaration, List<ColumnSymbol> columns, HashSet<string> declaredNames, List<Diagnostic> diagnostics)
-        {
-            var name = declaration.Name.SimpleName;
-
-            switch (declaration.Type)
+            finally
             {
-                case PrimitiveTypeExpression p:
-                    var type = GetType(p); // diagnostics should already have been added
-                    if (DeclareColumnName(declaredNames, name, diagnostics, declaration.Name))
-                    {
-                        columns.Add(new ColumnSymbol(name, type));
-                    }
-                    break;
-
-                case SchemaTypeExpression s:
-                    var subSchemaColumns = s_columnListPool.AllocateFromPool();
-                    var subSchemaNames = s_stringSetPool.AllocateFromPool();
-                    try
-                    {
-                        CreateColumnsFromSchema(s, subSchemaColumns, subSchemaNames, diagnostics);
-
-                        if (DeclareColumnName(declaredNames, name, diagnostics, declaration.Name))
-                        {
-                            columns.Add(new ColumnSymbol(name, new TableSymbol(subSchemaColumns)));
-                        }
-                    }
-                    finally
-                    {
-                        s_columnListPool.ReturnToPool(subSchemaColumns);
-                        s_stringSetPool.ReturnToPool(subSchemaNames);
-                    }
-                    break;
-
-                default:
-                    diagnostics.Add(DiagnosticFacts.GetInvalidColumnDeclaration().WithLocation(declaration));
-                    break;
+                s_stringSetPool.ReturnToPool(declaredNames);
             }
         }
 

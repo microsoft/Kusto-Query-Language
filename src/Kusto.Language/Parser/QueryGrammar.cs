@@ -1405,23 +1405,37 @@ namespace Kusto.Language.Parsing
 
             this.LiteralList = CommaList(Literal, MissingExpressionNode, allowTrailingComma: true);
 
+            var RowSchema =
+                    Rule(
+                        Token(SyntaxKind.OpenParenToken),
+                        Optional(Token(SyntaxKind.CommaToken)),
+                        CommaList<NameAndTypeDeclaration>(
+                            NameAndTypeDeclaration,
+                            MissingNameAndTypeDeclarationNode,
+                            allowTrailingComma: true),
+                        RequiredToken(SyntaxKind.CloseParenToken),
+                        (openParen, leadingComma, columns, closeParen) =>
+                            new RowSchema(openParen, leadingComma, columns, closeParen));
+
             var DataTableExpression =
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DataTableParameters),
-                    Required(SchemaMultipartType, MissingSchema),
+                    Required(RowSchema, MissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
+                    Optional(Token(SyntaxKind.CommaToken)),
                     LiteralList,
                     RequiredToken(SyntaxKind.CloseBracketToken),
-                    (keyword, parameters, schema, openBracket, values, closeBracket) =>
-                        (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, values, closeBracket));
+                    (keyword, parameters, schema, openBracket, leadingComma, values, closeBracket) =>
+                        (Expression)new DataTableExpression(keyword, parameters, schema, openBracket, leadingComma, values, closeBracket));
 
             var ContextualDataTableExpression =
                 Rule(
                     Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
                     Required(UnnamedExpression, MissingExpression), // guid literal expected, though parse any expression
-                    Required(SchemaMultipartType, MissingSchema),
-                    (keyword, id, schema) => (Expression)new ContextualDataTableExpression(keyword, id, schema));
+                    Required(RowSchema, MissingRowSchema),
+                    (keyword, id, schema) => 
+                        (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
             var ExternalDataWithClausePropertyValue =
                 First(
@@ -1456,7 +1470,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
                         Token(SyntaxKind.External_DataKeyword).Hide()),
                     List(KnownQueryOperatorParameters),
-                    Required(SchemaMultipartType, MissingSchema),
+                    Required(RowSchema, MissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     CommaList(Literal, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
@@ -1912,8 +1926,9 @@ namespace Kusto.Language.Parsing
             var EvaluateSchemaClause =
                 Rule(
                     Token(SyntaxKind.ColonToken),
-                    Required(SchemaMultipartType, MissingSchema),
-                    (keyword, expr) => new EvaluateSchemaClause(keyword, expr));
+                    Required(RowSchema, MissingRowSchema),
+                    (keyword, expr) =>
+                        new EvaluateSchemaClause(keyword, expr));
 
             var EvaluateOperator =
                 Rule(
@@ -1921,7 +1936,8 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.EvaluateParameters),
                     RequiredFunctionCall,
                     Optional(EvaluateSchemaClause),
-                    (keyword, parameters, expr, schema) => (QueryOperator)new EvaluateOperator(keyword, parameters, (FunctionCallExpression)expr, schema))
+                    (keyword, parameters, expr, schema) =>
+                        (QueryOperator)new EvaluateOperator(keyword, parameters, (FunctionCallExpression)expr, schema))
                 .WithTag("<evaluate>");
 
             var NameAndOptionalTypeDeclaration =
@@ -2463,21 +2479,24 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.PrintKeyword, CompletionKind.QueryPrefix),
                     CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
-                    (keyword, exprs) => (QueryOperator)new PrintOperator(keyword, exprs))
+                    (keyword, exprs) => 
+                        (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
 
             var AssertSchemaOperator =
                 Rule(
                     Token(SyntaxKind.AssertSchemaKeyword, CompletionKind.QueryPrefix),
-                    Required(SchemaMultipartType, MissingSchema),
-                    (keyword, schema) => (QueryOperator)new AssertSchemaOperator(keyword, schema)).Hide();
+                    Required(RowSchema, MissingRowSchema),
+                    (keyword, schema) =>
+                        (QueryOperator)new AssertSchemaOperator(keyword, schema)).Hide();
 
             var EntityGroup = Rule(
                 Token(SyntaxKind.EntityGroupKeyword),
                 RequiredToken(SyntaxKind.OpenBracketToken),
                 CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true),
                 RequiredToken(SyntaxKind.CloseBracketToken),
-                (keyword, open, entitiesList, close) => (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
+                (keyword, open, entitiesList, close) =>
+                    (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
 
             var MacroExpandOperator =
                 Rule(
@@ -3286,15 +3305,26 @@ namespace Kusto.Language.Parsing
         public static readonly Func<Expression> MissingFunctionCallExpression =
             () => (FunctionCallExpression)MissingFunctionCallNode.Clone();
 
-        public static readonly SchemaTypeExpression MissingSchemaNode =
+        public static readonly SchemaTypeExpression MissingSchemaTypeNode =
             new SchemaTypeExpression(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 SyntaxList<SeparatedElement<Expression>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
-        public static readonly Func<SchemaTypeExpression> MissingSchema =
-            () => (SchemaTypeExpression)MissingSchemaNode.Clone();
+        public static readonly Func<SchemaTypeExpression> MissingSchemaType =
+            () => (SchemaTypeExpression)MissingSchemaTypeNode.Clone();
+
+        public static readonly RowSchema MissingRowSchemaNode =
+            new RowSchema(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
+        public static readonly Func<RowSchema> MissingRowSchema =
+            () => (RowSchema)MissingRowSchemaNode.Clone();
 
         public static readonly QueryOperator MissingQueryOperatorNode =
             new BadQueryOperator(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetQueryOperatorExpected() });

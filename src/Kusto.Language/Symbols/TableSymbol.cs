@@ -90,13 +90,15 @@ namespace Kusto.Language.Symbols
                 throw new ArgumentNullException(nameof(schema));
             }
 
-            var schemaType = QueryParser.ParseSchemaType(schema);
-            if (schemaType == null)
+            var rowSchema = QueryParser.ParseRowSchema(schema);
+            if (rowSchema == null)
             {
                 throw new InvalidOperationException($"Invalid schema: {schema}");
             }
 
-            return (TableSymbol)Binding.Binder.GetDeclaredType(schemaType);
+            var columns = new List<ColumnSymbol>();
+            Binding.Binder.CreateColumnsFromRowSchema(rowSchema, columns);
+            return new TableSymbol(columns);
         }
 
         public override SymbolKind Kind => IsMaterializedView ? SymbolKind.MaterializedView : SymbolKind.Table;

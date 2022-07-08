@@ -447,7 +447,7 @@ namespace Kusto.Language.Binding
         {
             if (declaredNames.Contains(newName))
             {
-                diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(newName).WithLocation(location));
+                diagnostics?.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(newName).WithLocation(location));
                 return false;
             }
             else

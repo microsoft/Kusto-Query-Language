@@ -6722,16 +6722,16 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.EvaluateSchemaClause;
         
-        public SyntaxToken ColonKeyword { get; }
+        public SyntaxToken ColonToken { get; }
         
-        public SchemaTypeExpression Schema { get; }
+        public RowSchema Schema { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="EvaluateSchemaClause"/>.
         /// </summary>
-        internal EvaluateSchemaClause(SyntaxToken colonKeyword, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal EvaluateSchemaClause(SyntaxToken colonToken, RowSchema schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
-            this.ColonKeyword = Attach(colonKeyword);
+            this.ColonToken = Attach(colonToken);
             this.Schema = Attach(schema, optional: true);
             this.Init();
         }
@@ -6742,7 +6742,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return ColonKeyword;
+                case 0: return ColonToken;
                 case 1: return Schema;
                 default: throw new ArgumentOutOfRangeException();
             }
@@ -6752,7 +6752,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(ColonKeyword);
+                case 0: return nameof(ColonToken);
                 case 1: return nameof(Schema);
                 default: throw new ArgumentOutOfRangeException();
             }
@@ -6773,7 +6773,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Keyword;
+                case 0: return CompletionHint.Syntax;
                 case 1: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -6790,7 +6790,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new EvaluateSchemaClause((SyntaxToken)ColonKeyword?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new EvaluateSchemaClause((SyntaxToken)ColonToken?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class EvaluateSchemaClause */
@@ -12343,9 +12343,11 @@ namespace Kusto.Language.Syntax
         
         public SyntaxList<NamedParameter> Parameters { get; }
         
-        public SchemaTypeExpression Schema { get; }
+        public RowSchema Schema { get; }
         
         public SyntaxToken OpenBracket { get; }
+        
+        public SyntaxToken LeadingComma { get; }
         
         public SyntaxList<SeparatedElement<Expression>> Values { get; }
         
@@ -12354,18 +12356,19 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="DataTableExpression"/>.
         /// </summary>
-        internal DataTableExpression(SyntaxToken dataTableKeyword, SyntaxList<NamedParameter> parameters, SchemaTypeExpression schema, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> values, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal DataTableExpression(SyntaxToken dataTableKeyword, SyntaxList<NamedParameter> parameters, RowSchema schema, SyntaxToken openBracket, SyntaxToken leadingComma, SyntaxList<SeparatedElement<Expression>> values, SyntaxToken closeBracket, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DataTableKeyword = Attach(dataTableKeyword);
             this.Parameters = Attach(parameters);
             this.Schema = Attach(schema);
             this.OpenBracket = Attach(openBracket);
+            this.LeadingComma = Attach(leadingComma, optional: true);
             this.Values = Attach(values);
             this.CloseBracket = Attach(closeBracket);
             this.Init();
         }
         
-        public override int ChildCount => 6;
+        public override int ChildCount => 7;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -12375,8 +12378,9 @@ namespace Kusto.Language.Syntax
                 case 1: return Parameters;
                 case 2: return Schema;
                 case 3: return OpenBracket;
-                case 4: return Values;
-                case 5: return CloseBracket;
+                case 4: return LeadingComma;
+                case 5: return Values;
+                case 6: return CloseBracket;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12389,9 +12393,21 @@ namespace Kusto.Language.Syntax
                 case 1: return nameof(Parameters);
                 case 2: return nameof(Schema);
                 case 3: return nameof(OpenBracket);
-                case 4: return nameof(Values);
-                case 5: return nameof(CloseBracket);
+                case 4: return nameof(LeadingComma);
+                case 5: return nameof(Values);
+                case 6: return nameof(CloseBracket);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 4:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -12403,8 +12419,9 @@ namespace Kusto.Language.Syntax
                 case 1: return CompletionHint.None;
                 case 2: return CompletionHint.Syntax;
                 case 3: return CompletionHint.Syntax;
-                case 4: return CompletionHint.Literal;
-                case 5: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
+                case 5: return CompletionHint.Literal;
+                case 6: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -12420,10 +12437,100 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new DataTableExpression((SyntaxToken)DataTableKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxToken)LeadingComma?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Values?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DataTableExpression */
+    
+    #region class RowSchema
+    public sealed partial class RowSchema : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.RowSchema;
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxToken LeadingComma { get; }
+        
+        public SyntaxList<SeparatedElement<NameAndTypeDeclaration>> Columns { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="RowSchema"/>.
+        /// </summary>
+        internal RowSchema(SyntaxToken openParen, SyntaxToken leadingComma, SyntaxList<SeparatedElement<NameAndTypeDeclaration>> columns, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OpenParen = Attach(openParen);
+            this.LeadingComma = Attach(leadingComma, optional: true);
+            this.Columns = Attach(columns);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OpenParen;
+                case 1: return LeadingComma;
+                case 2: return Columns;
+                case 3: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OpenParen);
+                case 1: return nameof(LeadingComma);
+                case 2: return nameof(Columns);
+                case 3: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Declaration;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitRowSchema(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitRowSchema(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new RowSchema((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxToken)LeadingComma?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Columns?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class RowSchema */
     
     #region class ExternalDataExpression
     public sealed partial class ExternalDataExpression : Expression
@@ -12434,7 +12541,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxList<NamedParameter> Parameters { get; }
         
-        public SchemaTypeExpression Schema { get; }
+        public RowSchema Schema { get; }
         
         public SyntaxToken OpenBracket { get; }
         
@@ -12447,7 +12554,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="ExternalDataExpression"/>.
         /// </summary>
-        internal ExternalDataExpression(SyntaxToken externalDataKeyword, SyntaxList<NamedParameter> parameters, SchemaTypeExpression schema, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> uRIs, SyntaxToken closeBracket, ExternalDataWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ExternalDataExpression(SyntaxToken externalDataKeyword, SyntaxList<NamedParameter> parameters, RowSchema schema, SyntaxToken openBracket, SyntaxList<SeparatedElement<Expression>> uRIs, SyntaxToken closeBracket, ExternalDataWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.ExternalDataKeyword = Attach(externalDataKeyword);
             this.Parameters = Attach(parameters);
@@ -12528,7 +12635,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ExternalDataExpression((SyntaxToken)ExternalDataKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)URIs?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (ExternalDataWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new ExternalDataExpression((SyntaxToken)ExternalDataKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (SyntaxToken)OpenBracket?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)URIs?.Clone(includeDiagnostics), (SyntaxToken)CloseBracket?.Clone(includeDiagnostics), (ExternalDataWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ExternalDataExpression */
@@ -12542,12 +12649,12 @@ namespace Kusto.Language.Syntax
         
         public Expression Id { get; }
         
-        public SchemaTypeExpression Schema { get; }
+        public RowSchema Schema { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="ContextualDataTableExpression"/>.
         /// </summary>
-        internal ContextualDataTableExpression(SyntaxToken contextualDataTableKeyword, Expression id, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal ContextualDataTableExpression(SyntaxToken contextualDataTableKeyword, Expression id, RowSchema schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.ContextualDataTableKeyword = Attach(contextualDataTableKeyword);
             this.Id = Attach(id);
@@ -12601,7 +12708,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new ContextualDataTableExpression((SyntaxToken)ContextualDataTableKeyword?.Clone(includeDiagnostics), (Expression)Id?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new ContextualDataTableExpression((SyntaxToken)ContextualDataTableKeyword?.Clone(includeDiagnostics), (Expression)Id?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class ContextualDataTableExpression */
@@ -13130,12 +13237,12 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken AssertSchemaKeyword { get; }
         
-        public SchemaTypeExpression Schema { get; }
+        public RowSchema Schema { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="AssertSchemaOperator"/>.
         /// </summary>
-        internal AssertSchemaOperator(SyntaxToken assertSchemaKeyword, SchemaTypeExpression schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal AssertSchemaOperator(SyntaxToken assertSchemaKeyword, RowSchema schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.AssertSchemaKeyword = Attach(assertSchemaKeyword);
             this.Schema = Attach(schema);
@@ -13185,7 +13292,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new AssertSchemaOperator((SyntaxToken)AssertSchemaKeyword?.Clone(includeDiagnostics), (SchemaTypeExpression)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new AssertSchemaOperator((SyntaxToken)AssertSchemaKeyword?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class AssertSchemaOperator */
@@ -14545,6 +14652,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitPatternPathValue(PatternPathValue node);
         public abstract void VisitDataScopeExpression(DataScopeExpression node);
         public abstract void VisitDataTableExpression(DataTableExpression node);
+        public abstract void VisitRowSchema(RowSchema node);
         public abstract void VisitExternalDataExpression(ExternalDataExpression node);
         public abstract void VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract void VisitExternalDataWithClause(ExternalDataWithClause node);
@@ -15202,6 +15310,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitRowSchema(RowSchema node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitExternalDataExpression(ExternalDataExpression node)
         {
             this.DefaultVisit(node);
@@ -15461,6 +15573,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitPatternPathValue(PatternPathValue node);
         public abstract TResult VisitDataScopeExpression(DataScopeExpression node);
         public abstract TResult VisitDataTableExpression(DataTableExpression node);
+        public abstract TResult VisitRowSchema(RowSchema node);
         public abstract TResult VisitExternalDataExpression(ExternalDataExpression node);
         public abstract TResult VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract TResult VisitExternalDataWithClause(ExternalDataWithClause node);
@@ -16115,6 +16228,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitDataTableExpression(DataTableExpression node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitRowSchema(RowSchema node)
         {
             return this.DefaultVisit(node);
         }

@@ -1643,15 +1643,20 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitRowSchema(RowSchema node)
+            {
+                // handled by parent node
+                return null;
+            }
+
             public override SemanticInfo VisitDataTableExpression(DataTableExpression node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
-                var declaredNames = s_stringSetPool.AllocateFromPool();
                 try
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DataTableParameters, diagnostics);
-                    CreateColumnsFromSchema(node.Schema, columns, declaredNames, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
                     _binder.CheckDataValueTypes(node.Values, columns, diagnostics);
                     return new SemanticInfo(new TableSymbol(columns), diagnostics);
                 }
@@ -1659,7 +1664,6 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
-                    s_stringSetPool.ReturnToPool(declaredNames);
                 }
             }
 
@@ -1667,10 +1671,9 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
-                var declaredNames = s_stringSetPool.AllocateFromPool();
                 try
                 {
-                    CreateColumnsFromSchema(node.Schema, columns, declaredNames, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
 
                     if (node.Id != null)
                     {
@@ -1684,7 +1687,6 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
-                    s_stringSetPool.ReturnToPool(declaredNames);
                 }
             }
 
@@ -1692,10 +1694,9 @@ namespace Kusto.Language.Binding
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
-                var declaredNames = s_stringSetPool.AllocateFromPool();
                 try
                 {
-                    CreateColumnsFromSchema(node.Schema, columns, declaredNames, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
 
                     node.URIs.Select(item => _binder.CheckIsExactType(item.Element, ScalarTypes.String, diagnostics));
 
@@ -1710,7 +1711,6 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
-                    s_stringSetPool.ReturnToPool(declaredNames);
                 }
             }
 

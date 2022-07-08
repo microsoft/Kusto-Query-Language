@@ -500,6 +500,7 @@
         DefaultExpressionClause,
         ToTypeOfClause,
         EvaluateSchemaClause,
+        RowSchema,
 
         // query operators
         BadQueryOperator,
