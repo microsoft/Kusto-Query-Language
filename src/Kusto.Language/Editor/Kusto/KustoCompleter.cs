@@ -2220,6 +2220,10 @@ namespace Kusto.Language.Editor
         {
             switch (parameter.TypeKind)
             {
+                case ParameterTypeKind.Any:
+                    // always matches
+                    return true;
+
                 case ParameterTypeKind.Declared:
                     if (Binder.SymbolsAssignable(parameter.DeclaredTypes, type))
                     {

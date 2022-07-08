@@ -614,8 +614,12 @@ namespace Kusto.Language.Binding
                     return GetType(p, diagnostics);
 
                 case SchemaTypeExpression s:
-
-                    if (s.Columns.Count == 1 && s.Columns[0].Element is StarExpression)
+                    var cannotBeEmpty = typeExpression.Parent is NameAndTypeDeclaration;
+                    if (s.Columns.Count == 0 && cannotBeEmpty && diagnostics != null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetColumnDeclarationExpected().WithLocation(s));
+                    }
+                    else if (s.Columns.Count == 1 && s.Columns[0].Element is StarExpression)
                     {
                         // (*) was the entire declaration.. no columns specified.
                         return TableSymbol.Empty;
@@ -1788,6 +1792,10 @@ namespace Kusto.Language.Binding
 
                     switch (parameter.TypeKind)
                     {
+                        case ParameterTypeKind.Any:
+                            // do no checks
+                            break;
+
                         case ParameterTypeKind.Declared:
                             switch (GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType))
                             {

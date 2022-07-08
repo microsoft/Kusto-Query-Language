@@ -10,6 +10,11 @@ namespace Kusto.Language.Symbols
     public enum ParameterTypeKind
     {
         /// <summary>
+        /// The parameter type can be any type
+        /// </summary>
+        Any,
+
+        /// <summary>
         /// The parameter type is the type specified.
         /// </summary>
         Declared,

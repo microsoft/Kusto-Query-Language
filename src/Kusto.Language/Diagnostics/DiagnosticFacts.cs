@@ -769,6 +769,11 @@ namespace Kusto.Language
             return new Diagnostic("KS219", "The query operator requires an input graph.");
         }
 
+        public static Diagnostic GetColumnDeclarationExpected()
+        {
+            return new Diagnostic("KS220", "Column declaration expected");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -260,6 +260,48 @@ namespace Kusto.Language
             "30min", "1h", "1d"
         };
 
+        public static readonly IReadOnlyList<string> KnownInternalFunctionNames = new string[]
+        {
+            "__blackbox",
+            "__box",
+            "__burn_cpu",
+            "__cast",
+            "__columnifexists",
+            "__const_cast",
+            "__fetch_contextual_scalar_value",
+            "__geo_line_validate",
+            "__geo_polygon_validate",
+            "__getobject",
+            "__getobjectex",
+            "__has_ipv4",
+            "__has_ipv4_prefix",
+            "__hash_crc32",
+            "__hash_djb2",
+            "__hash_many_crc32",
+            "__hash_xxxh64",
+            "__invoke",
+            "__is_scalar",
+            "__lz4_compress_dynamic_array_to_base64_string",
+            "__make_const",
+            "__null",
+            "__null_as",
+            "__object",
+            "__query_parameter",
+            "__regex_complexity",
+            "__row_offset",
+            "__rowstore_ref",
+            "__search_wildcard",
+            "__search_wildcard_explicit_cols",
+            "__shard_record_position",
+            "__sql_add",
+            "__sql_divide",
+            "__sql_modulo",
+            "__sql_multiply",
+            "__sql_subtract",
+            "__trace_information",
+            "__var",
+        };
+
         /// <summary>
         /// Keywords that can always be used as identifiers
         /// </summary>

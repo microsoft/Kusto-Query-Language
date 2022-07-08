@@ -2731,6 +2731,23 @@ namespace Kusto.Language
                     new Parameter("source", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ip_prefixes", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol Invoke =
+            new FunctionSymbol("__invoke",
+                ReturnTypeKind.Parameter1Literal,
+                new Parameter("name", ScalarTypes.String, ArgumentKind.Literal),
+                new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal),
+                new Parameter("arg", ParameterTypeKind.Any, minOccurring: 0, maxOccurring: MaxRepeat))
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol Cast =
+            new FunctionSymbol("__cast",
+                ReturnTypeKind.Parameter0Literal,
+                new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal),
+                new Parameter("value", ParameterTypeKind.Scalar))
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region All
@@ -3160,7 +3177,9 @@ namespace Kusto.Language
             Next,
             RowstoreOrdinalRange,
             EstimateDataSize,
-            NewGuid
+            NewGuid,
+            Invoke,
+            Cast
 #endregion
         };
         #endregion

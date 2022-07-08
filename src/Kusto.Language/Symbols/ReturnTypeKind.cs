@@ -46,6 +46,16 @@ namespace Kusto.Language.Symbols
         ParameterN,
 
         /// <summary>
+        /// The return the is the same as the type specified by parameter 0's type literal
+        /// </summary>
+        Parameter0Literal,
+
+        /// <summary>
+        /// The return the is the same as the type specified by parameter 1's type literal
+        /// </summary>
+        Parameter1Literal,
+
+        /// <summary>
         /// The return the is the same as the type specified by the last parameter's argument's type literal
         /// </summary>
         ParameterNLiteral,

@@ -358,6 +358,14 @@ namespace Kusto.Language.Binding
                     iArg = argumentParameters.IndexOf(signature.Parameters[signature.Parameters.Count - 1]);
                     return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
+                case ReturnTypeKind.Parameter0Literal:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[0]);
+                    return iArg >= 0 && iArg < arguments.Count ? GetTypeOfType(arguments[iArg]) : ErrorSymbol.Instance;
+
+                case ReturnTypeKind.Parameter1Literal:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[1]);
+                    return iArg >= 0 && iArg < arguments.Count ? GetTypeOfType(arguments[iArg]) : ErrorSymbol.Instance;
+
                 case ReturnTypeKind.ParameterNLiteral:
                     iArg = argumentParameters.IndexOf(signature.Parameters[signature.Parameters.Count - 1]);
                     return iArg >= 0 && iArg < arguments.Count ? GetTypeOfType(arguments[iArg]) : ErrorSymbol.Instance;
@@ -1275,6 +1283,9 @@ namespace Kusto.Language.Binding
 
             switch (parameter.TypeKind)
             {
+                case ParameterTypeKind.Any:
+                    return ParameterMatchKind.Unknown;
+
                 case ParameterTypeKind.Declared:
                     if (SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.None))
                     {

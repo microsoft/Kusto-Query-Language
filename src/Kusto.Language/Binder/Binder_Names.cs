@@ -486,6 +486,11 @@ namespace Kusto.Language.Binding
                             new TableSymbol("").WithIsOpen(true),
                             DiagnosticFacts.GetNameDoesNotReferToAnyKnownFunction(name).WithLocation(location));
                     }
+                    else if (IsPossibleInternalFunction(name))
+                    {
+                        // if it looks like it might be an internal function, give it a pass.
+                        return UnknownInfo;
+                    }
                     else
                     {
                         return new SemanticInfo(
@@ -527,6 +532,11 @@ namespace Kusto.Language.Binding
                     ErrorSymbol.Instance,
                     DiagnosticFacts.GetNameRefersToMoreThanOneItem(name).WithLocation(location));
             }
+        }
+
+        private static bool IsPossibleInternalFunction(string name)
+        {
+            return name.StartsWith("__");
         }
 
         private static void RemoveFunctionsThatCannotBeInvokedWithZeroArgs(List<Symbol> list)
