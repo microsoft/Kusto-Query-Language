@@ -3058,6 +3058,41 @@ namespace Kusto.Language.Binding
                 return ParseVisitCommon(node, node.Expression, node.Patterns, node.Parameters);
             }
 
+            public override SemanticInfo VisitParseKvWithClause(ParseKvWithClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitParseKvOperator(ParseKvOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, columns);
+                    _binder.CheckIsScalar(node.Expression, diagnostics);
+
+                    CreateColumnsFromRowSchema(node.Keys, columns, diagnostics);
+
+                    if (node.WithClause != null)
+                    {
+                        _binder.CheckQueryOperatorParameters(node.WithClause.Properties, QueryOperatorParameters.ParseKvParameters, diagnostics);
+                    }
+
+                    var result = new TableSymbol(columns)
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    return new SemanticInfo(result, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
+                }
+            }
+
             public override SemanticInfo VisitInvokeOperator(InvokeOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

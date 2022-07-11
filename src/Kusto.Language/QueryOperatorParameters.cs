@@ -213,6 +213,16 @@ namespace Kusto.Language
             Flags,
         }.ToReadOnly();
 
+        public static readonly IReadOnlyList<QueryOperatorParameter> ParseKvParameters = new QueryOperatorParameter[]
+        {
+            new QueryOperatorParameter("pair_delimiter", QueryOperatorParameterValueKind.StringLiteral),
+            new QueryOperatorParameter("kv_delimiter", QueryOperatorParameterValueKind.StringLiteral),
+            new QueryOperatorParameter("regex", QueryOperatorParameterValueKind.StringLiteral),
+            new QueryOperatorParameter("quote", QueryOperatorParameterValueKind.StringLiteral, isRepeatable: true),
+            new QueryOperatorParameter("escape", QueryOperatorParameterValueKind.StringLiteral, isRepeatable: true),
+            new QueryOperatorParameter("greedy", QueryOperatorParameterValueKind.BoolLiteral),
+        };
+
         public static readonly IReadOnlyList<QueryOperatorParameter> PartitionByParameters = new QueryOperatorParameter[]
         {
             HintDotConcurrency,

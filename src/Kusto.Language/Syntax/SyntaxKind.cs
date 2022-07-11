@@ -424,6 +424,7 @@
         ExternalDataUriList,
         MaterializedViewCombineExpression,
         MaterializedViewCombineClause,
+        ParseKvWithClause,
 
         // nullary?
         StarExpression,
@@ -584,6 +585,7 @@
         PartitionOperator,
         ParseOperator,
         ParseWhereOperator,
+        ParseKvOperator,
 
         PrintOperator,
 

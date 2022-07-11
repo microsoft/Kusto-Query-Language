@@ -354,7 +354,7 @@ namespace Kusto.Language.Parsing
 
         private static readonly Func<Expression> CreateMissingBoolLiteral = () =>
             new LiteralExpression(
-                SyntaxKind.StringLiteralExpression,
+                SyntaxKind.BooleanLiteralExpression,
                 SyntaxToken.Missing(SyntaxKind.BooleanLiteralToken),
                 new[] { DiagnosticFacts.GetMissingBoolean() });
 
@@ -3949,9 +3949,43 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region project / project-rename / project-away / project-keep / project-reorder
+        #region parse-kv
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_parseKvOperatorWithParametersMap =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.ParseKvParameters);
+
+        private ParseKvWithClause ParseParseKvWithClause()
+        {
+            var keyword = ParseToken(SyntaxKind.WithKeyword);
+            if (keyword != null)
+            {
+                var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var props = ParseQueryOperatorParameterCommaList(s_parseKvOperatorWithParametersMap, namesAllowed: AllowedNameKind.DeclaredOnly);
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new ParseKvWithClause(keyword, open, props, close);
+            }
+
+            return null;
+        }
+
+        private ParseKvOperator ParseParseKvOperator()
+        {
+            var keyword = ParseToken(SyntaxKind.ParseKvKeyword);
+            if (keyword != null)
+            {
+                var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
+                var asKeyword = ParseRequiredToken(SyntaxKind.AsKeyword);
+                var keys = ParseRowSchema() ?? CreateMissingRowSchema();
+                var withClause = ParseParseKvWithClause();
+                return new ParseKvOperator(keyword, expr, asKeyword, keys, withClause);
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region project / project-rename / project-away / project-keep / project-reorder
 
         private ProjectOperator ParseProjectOperator()
         {
@@ -5056,6 +5090,8 @@ namespace Kusto.Language.Parsing
                     return ParseParseOperator();
                 case SyntaxKind.ParseWhereKeyword:
                     return ParseParseWhereOperator();
+                case SyntaxKind.ParseKvKeyword:
+                    return ParseParseKvOperator();
                 case SyntaxKind.PartitionByKeyword:
                     return ParsePartitionByOperator();
                 case SyntaxKind.PartitionKeyword:

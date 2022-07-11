@@ -1985,6 +1985,26 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new ParseWhereOperator(parseKeyword, parameters, expr, withKeyword, expressions))
                 .WithTag("<parse-where>");
 
+            var ParseKvWithClause =
+                Rule(
+                    Token(SyntaxKind.WithKeyword).Hide(),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    QueryParameterCommaList(QueryOperatorParameters.ParseKvParameters),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (withKeyword, openParen, properties, closeParen) =>
+                        new ParseKvWithClause(withKeyword, openParen, properties, closeParen));
+
+            var ParseKvOperator =
+                Rule(
+                    Token(SyntaxKind.ParseKvKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
+                    Required(UnnamedExpression, MissingExpression),
+                    RequiredToken(SyntaxKind.AsKeyword),
+                    Required(RowSchema, MissingRowSchema),
+                    Optional(ParseKvWithClause),
+                    (parseKvKeyword, expression, asKeyword, keys, withClause) => 
+                        (QueryOperator)new ParseKvOperator(parseKvKeyword, expression, asKeyword, keys, withClause))
+                .WithTag("<parse-kv>");
+
             var PartitionScopeClause =
                 Rule(
                     Token(SyntaxKind.InKeyword).Hide(),
@@ -2662,6 +2682,7 @@ namespace Kusto.Language.Parsing
                     MvExpandOperator,
                     ParseOperator,
                     ParseWhereOperator,
+                    ParseKvOperator,
                     PartitionByOperator,
                     PartitionOperator,
                     ProjectOperator,
@@ -2694,6 +2715,7 @@ namespace Kusto.Language.Parsing
                     FilterOperator,
                     ParseOperator,
                     ParseWhereOperator,
+                    ParseKvOperator,
                     TakeOperator,
                     TopNestedOperator,
                     ProjectOperator,

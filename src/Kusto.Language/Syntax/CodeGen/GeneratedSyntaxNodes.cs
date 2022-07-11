@@ -7055,6 +7055,181 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ParseWhereOperator */
     
+    #region class ParseKvWithClause
+    public sealed partial class ParseKvWithClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.ParseKvWithClause;
+        
+        public SyntaxToken WithKeyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxList<SeparatedElement<NamedParameter>> Properties { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ParseKvWithClause"/>.
+        /// </summary>
+        internal ParseKvWithClause(SyntaxToken withKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<NamedParameter>> properties, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.WithKeyword = Attach(withKeyword);
+            this.OpenParen = Attach(openParen);
+            this.Properties = Attach(properties);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return WithKeyword;
+                case 1: return OpenParen;
+                case 2: return Properties;
+                case 3: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(WithKeyword);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(Properties);
+                case 3: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.None;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitParseKvWithClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitParseKvWithClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new ParseKvWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class ParseKvWithClause */
+    
+    #region class ParseKvOperator
+    public sealed partial class ParseKvOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.ParseKvOperator;
+        
+        public SyntaxToken ParseKvKeyword { get; }
+        
+        public Expression Expression { get; }
+        
+        public SyntaxToken AsKeyword { get; }
+        
+        public RowSchema Keys { get; }
+        
+        public ParseKvWithClause WithClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ParseKvOperator"/>.
+        /// </summary>
+        internal ParseKvOperator(SyntaxToken parseKvKeyword, Expression expression, SyntaxToken asKeyword, RowSchema keys, ParseKvWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ParseKvKeyword = Attach(parseKvKeyword);
+            this.Expression = Attach(expression);
+            this.AsKeyword = Attach(asKeyword);
+            this.Keys = Attach(keys);
+            this.WithClause = Attach(withClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ParseKvKeyword;
+                case 1: return Expression;
+                case 2: return AsKeyword;
+                case 3: return Keys;
+                case 4: return WithClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ParseKvKeyword);
+                case 1: return nameof(Expression);
+                case 2: return nameof(AsKeyword);
+                case 3: return nameof(Keys);
+                case 4: return nameof(WithClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 4:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                case 2: return CompletionHint.Keyword;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Clause;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitParseKvOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitParseKvOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new ParseKvOperator((SyntaxToken)ParseKvKeyword?.Clone(includeDiagnostics), (Expression)Expression?.Clone(includeDiagnostics), (SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (RowSchema)Keys?.Clone(includeDiagnostics), (ParseKvWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class ParseKvOperator */
+    
     #region class PartitionOperator
     public sealed partial class PartitionOperator : QueryOperator
     {
@@ -14584,6 +14759,8 @@ namespace Kusto.Language.Syntax
         public abstract void VisitEvaluateOperator(EvaluateOperator node);
         public abstract void VisitParseOperator(ParseOperator node);
         public abstract void VisitParseWhereOperator(ParseWhereOperator node);
+        public abstract void VisitParseKvWithClause(ParseKvWithClause node);
+        public abstract void VisitParseKvOperator(ParseKvOperator node);
         public abstract void VisitPartitionOperator(PartitionOperator node);
         public abstract void VisitPartitionQuery(PartitionQuery node);
         public abstract void VisitPartitionScope(PartitionScope node);
@@ -15035,6 +15212,14 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitParseWhereOperator(ParseWhereOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitParseKvWithClause(ParseKvWithClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitParseKvOperator(ParseKvOperator node)
         {
             this.DefaultVisit(node);
         }
@@ -15505,6 +15690,8 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitEvaluateOperator(EvaluateOperator node);
         public abstract TResult VisitParseOperator(ParseOperator node);
         public abstract TResult VisitParseWhereOperator(ParseWhereOperator node);
+        public abstract TResult VisitParseKvWithClause(ParseKvWithClause node);
+        public abstract TResult VisitParseKvOperator(ParseKvOperator node);
         public abstract TResult VisitPartitionOperator(PartitionOperator node);
         public abstract TResult VisitPartitionQuery(PartitionQuery node);
         public abstract TResult VisitPartitionScope(PartitionScope node);
@@ -15956,6 +16143,14 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitParseWhereOperator(ParseWhereOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitParseKvWithClause(ParseKvWithClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitParseKvOperator(ParseKvOperator node)
         {
             return this.DefaultVisit(node);
         }

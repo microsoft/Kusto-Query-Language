@@ -614,6 +614,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PartitionScope, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ParseWhereOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ParseKvWithClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ParseKvOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.EvaluateOperator, "", SyntaxCategory.Node), // evaluate
 
