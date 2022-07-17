@@ -959,6 +959,11 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None).Hide();
 
+        public static readonly FunctionSymbol DateTimeListTimezones =
+            new FunctionSymbol("datetime_list_timezones", ScalarTypes.Dynamic)
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
         #endregion
 
         #region hash functions
@@ -2799,6 +2804,7 @@ namespace Kusto.Language
             DateTimeToLocaleString,
             DatetimeLocalToUtc,
             DatetimeUtcToLocal,
+            DateTimeListTimezones,
 #endregion
 
 #region type conversion functions
