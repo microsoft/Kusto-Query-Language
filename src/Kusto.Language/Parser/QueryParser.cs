@@ -246,12 +246,12 @@ namespace Kusto.Language.Parsing
         /// Parses one or more adjacent lexical tokens that together matches the text into a single token,
         /// or returns null.
         /// </summary>
-        private SyntaxToken ParseToken(string text, SyntaxKind kind = SyntaxKind.IdentifierToken)
+        private SyntaxToken ParseToken(string text, SyntaxKind? asKind = null)
         {
             var len = SyntaxParsers.MatchesText(_source, _pos, text);
             if (len > 0)
             {
-                var token = SyntaxParsers.ProduceSyntaxToken(_source, _pos, len, text, kind);
+                var token = SyntaxParsers.ProduceSyntaxToken(_source, _pos, len, text, asKind);
                 _pos += len;
                 return token;
             }
@@ -3135,9 +3135,9 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.GetSchemaKeyword);
             if (keyword != null)
             {
-                return new GetSchemaOperator(keyword);
+                var kind = ParseQueryOperatorParameter(QueryOperatorParameters.GetSchemaKind);
+                return new GetSchemaOperator(keyword, kind);
             }
-
             return null;
         }
 

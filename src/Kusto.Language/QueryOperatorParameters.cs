@@ -260,7 +260,9 @@ namespace Kusto.Language
         {
             RenderKind.Hide(),
             RenderTitle.Hide(),
-            RenderAccumulate.Hide()
+            RenderAccumulate.Hide(),
+            RenderWithDeprecated.Hide(),
+            RenderByDeprecated.Hide()
         };
 
         public static readonly IReadOnlyList<QueryOperatorParameter> RenderWithProperties = new QueryOperatorParameter[]
@@ -358,6 +360,8 @@ namespace Kusto.Language
             HintDotSpread
         }.ToReadOnly();
 
+        public static readonly QueryOperatorParameter GetSchemaKind =
+            new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word, values: new[] {"csl"});
     }
 
     public enum QueryOperatorParameterValueKind

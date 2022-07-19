@@ -3131,6 +3131,10 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
+                    if ((string)node.KindParameter?.Expression?.LiteralValue == "csl")
+                    {
+                        return s_GetSchemaAsCslInfo;
+                    }
                     return s_GetSchemaInfo;
                 }
                 finally
@@ -3146,6 +3150,11 @@ namespace Kusto.Language.Binding
                 new ColumnSymbol("ColumnType", ScalarTypes.String));
 
             private static readonly SemanticInfo s_GetSchemaInfo = new SemanticInfo(s_GetSchemaSchema);
+
+            private static readonly TableSymbol s_GetSchemaAsCslSchema = new TableSymbol(
+                new ColumnSymbol("Schema", ScalarTypes.String));
+
+            private static readonly SemanticInfo s_GetSchemaAsCslInfo = new SemanticInfo(s_GetSchemaAsCslSchema);
 
 
             public override SemanticInfo VisitScanOperator(ScanOperator node)

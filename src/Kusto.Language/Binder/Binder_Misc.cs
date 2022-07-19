@@ -970,32 +970,28 @@ namespace Kusto.Language.Binding
         {
             if (!IsQueryOperatorParameterKind(parameter, qop))
             {
+                var actualType = GetResultTypeOrError(parameter.Expression);
+
                 switch (qop.ValueKind)
                 {
                     case QueryOperatorParameterValueKind.IntegerLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsInteger(parameter.Expression, diagnostics);
+                        CheckIsIntegerLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.NumericLiteral:
                     case QueryOperatorParameterValueKind.ForcedRealLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsNumber(parameter.Expression, diagnostics);
+                        CheckIsNumericLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.ScalarLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsScalar(parameter.Expression, diagnostics);
+                        CheckIsScalarLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.SummableLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsSummable(parameter.Expression, diagnostics);
+                        CheckIsSummableLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.StringLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsExactType(parameter.Expression, ScalarTypes.String, diagnostics);
+                        CheckIsStringLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.BoolLiteral:
-                        CheckIsLiteral(parameter.Expression, diagnostics);
-                        CheckIsExactType(parameter.Expression, ScalarTypes.Bool, diagnostics);
+                        CheckIsBooleanlLiteral(parameter.Expression, diagnostics);
                         break;
                     case QueryOperatorParameterValueKind.Column:
                         CheckIsColumn(parameter.Expression, diagnostics);
@@ -1139,6 +1135,96 @@ namespace Kusto.Language.Binding
             if (!GetResultTypeOrError(expression).IsError)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeInteger().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsIntegerLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (IsInteger(type) && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetIntegerLiteralExpected().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsStringLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type == ScalarTypes.String && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetStringLiteralExpected().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsBooleanlLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type == ScalarTypes.Bool && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetBooleanLiteralExpected().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsSummableLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type is ScalarSymbol s && s.IsSummable && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetSummableLiteralExpected().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsNumericLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type is ScalarSymbol s && s.IsNumeric && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetSummableLiteralExpected().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsScalarLiteral(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type is ScalarSymbol s && expression.IsLiteral)
+                return true;
+
+            if (!type.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetScalarLiteralExpected().WithLocation(expression));
             }
 
             return false;

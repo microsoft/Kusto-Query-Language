@@ -196,16 +196,17 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Create a <see cref="SyntaxToken"/> from one or more <see cref="LexicalToken"/>.
         /// </summary>
-        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text, SyntaxKind kind = SyntaxKind.IdentifierToken)
+        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text, SyntaxKind? asKind = null)
         {
             var firstToken = source.Peek(start);
 
-            if (length == 1)
+            if (length == 1 && (asKind == null || asKind.Value == firstToken.Kind))
             {
                 return SyntaxToken.From(firstToken);
             }
-            else
+            else if (asKind is SyntaxKind kind)
             {
+                // assigning kinds only works for token categories that hold onto their text
                 switch (kind.GetCategory())
                 {
                     case SyntaxCategory.Identifier:
@@ -216,39 +217,40 @@ namespace Kusto.Language.Parsing
                         throw new InvalidOperationException($"Cannot produce syntax token for kind: {kind}");
                 }
             }
+            else
+            {
+                return SyntaxToken.Identifier(firstToken.Trivia, text);
+            }
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) that combined has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> MatchText(string text, SyntaxKind kind = SyntaxKind.IdentifierToken) =>
+        public static Parser<LexicalToken, SyntaxToken> MatchText(string text, SyntaxKind? asKind = null) =>
             Match(
                 (source, start) => MatchesText(source, start, text), 
-                (source, start, length) => ProduceSyntaxToken(source, start, length, text, kind));
+                (source, start, length) => ProduceSyntaxToken(source, start, length, text, asKind));
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
+        public static Parser<LexicalToken, SyntaxToken> Token(string text, SyntaxKind? asKind = null, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
+            var rule = MatchText(text, asKind).WithTag(GetDefaultTag(text));
+
             var item = CreateCompletionItem(text, ckind ?? GetCompletionKind(text), priority, ctext);
-            return Token(text, item);
+            return rule.WithCompletion(item);
         }
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionItem item)
+        public static Parser<LexicalToken, SyntaxToken> Token(string text, CompletionKind ckind, CompletionPriority priority = CompletionPriority.Normal, string ctext = null)
         {
             var rule = MatchText(text).WithTag(GetDefaultTag(text));
 
-            item = item ?? CreateCompletionItem(text, GetCompletionKind(text), CompletionPriority.Normal, null);
-            if (item != null)
-            {
-                rule = rule.WithAnnotations(new[] { item });
-            }
-
-            return rule;
+            var item = CreateCompletionItem(text, ckind, priority, ctext);
+            return rule.WithCompletion(item);
         }
 
         /// <summary>
@@ -274,9 +276,9 @@ namespace Kusto.Language.Parsing
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// It does not show up in intellisense completion lists.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> HiddenToken(string text)
+        public static Parser<LexicalToken, SyntaxToken> HiddenToken(string text, SyntaxKind? asKind = null)
         {
-            return MatchText(text).WithTag(GetDefaultTag(text));
+            return MatchText(text, asKind).WithTag(GetDefaultTag(text));
         }
 
         /// <summary>
@@ -323,14 +325,8 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> RequiredToken(string text, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null) =>
-            Required(Token(text, ckind, priority, ctext), () => CreateMissingToken(text));
-
-        /// <summary>
-        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> RequiredToken(string text, CompletionItem item) =>
-            Required(Token(text, item), () => CreateMissingToken(text));
+        public static Parser<LexicalToken, SyntaxToken> RequiredToken(string text, SyntaxKind? asKind = null, CompletionKind? ckind = null, CompletionPriority priority = CompletionPriority.Normal, string ctext = null) =>
+            Required(Token(text, asKind, ckind, priority, ctext), () => CreateMissingToken(text));
 
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has one of the specified texts, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.

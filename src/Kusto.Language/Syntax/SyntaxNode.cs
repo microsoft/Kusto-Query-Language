@@ -79,7 +79,7 @@ namespace Kusto.Language.Syntax
             {
                 if (this.literalValue == null)
                 {
-                    this.literalValue = string.Concat(this.Tokens.Select(t => t.Value));
+                    this.literalValue = string.Concat(this.Tokens.Select(t => t.ValueText));
                 }
 
                 return this.literalValue;

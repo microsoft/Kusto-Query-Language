@@ -426,11 +426,21 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> Token(string text, CompletionKind? ckind = null)
+        public static Parser<LexicalToken, SyntaxElement> Token(string text, SyntaxKind? asKind = null, CompletionKind? ckind = null)
         {
             // the default completion kind won't be known for most command keywords since they are not encoded in the SyntaxFacts table,
             // so change the default to Keyword to handle this common case.
-            return SyntaxParsers.Token(text, ckind ?? SP.GetCompletionKind(text, CompletionKind.Keyword)).Cast<SyntaxElement>();
+            return SyntaxParsers.Token(text, asKind, ckind ?? SP.GetCompletionKind(text, CompletionKind.Keyword)).Cast<SyntaxElement>();
+        }
+
+        /// <summary>
+        /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a single <see cref="SyntaxToken"/>.
+        /// </summary>
+        public static Parser<LexicalToken, SyntaxElement> Token(string text, CompletionKind ckind)
+        {
+            // the default completion kind won't be known for most command keywords since they are not encoded in the SyntaxFacts table,
+            // so change the default to Keyword to handle this common case.
+            return SyntaxParsers.Token(text, null, ckind).Cast<SyntaxElement>();
         }
 
         /// <summary>
@@ -446,9 +456,9 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) if it has the specified text, producing a corresponding <see cref="SyntaxToken"/> or an equivalent missing token otherwise.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxElement> RequiredToken(string text, CompletionKind? ckind = null)
+        public static Parser<LexicalToken, SyntaxElement> RequiredToken(string text, SyntaxKind? asKind = null, CompletionKind? ckind = null)
         {
-            return Required(Token(text, ckind), () => (SyntaxElement)CreateMissingToken(text));
+            return Required(Token(text, asKind, ckind), () => (SyntaxElement)CreateMissingToken(text));
         }
 
         /// <summary>

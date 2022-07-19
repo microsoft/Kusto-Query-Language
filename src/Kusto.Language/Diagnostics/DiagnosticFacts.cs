@@ -774,6 +774,36 @@ namespace Kusto.Language
             return new Diagnostic("KS220", "Column declaration expected");
         }
 
+        public static Diagnostic GetIntegerLiteralExpected()
+        {
+            return new Diagnostic("KS221", "Integer literal expected.");
+        }
+
+        public static Diagnostic GetStringLiteralExpected()
+        {
+            return new Diagnostic("KS222", "String literal expected.");
+        }
+
+        public static Diagnostic GetBooleanLiteralExpected()
+        {
+            return new Diagnostic("KS223", "Boolean literal expected.");
+        }
+
+        public static Diagnostic GetSummableLiteralExpected()
+        {
+            return new Diagnostic("KS224", "Summable literal expected.");
+        }
+
+        public static Diagnostic GetNumericLiteralExpected()
+        {
+            return new Diagnostic("KS225", "Numeric literal expected.");
+        }
+
+        public static Diagnostic GetScalarLiteralExpected()
+        {
+            return new Diagnostic("KS226", "Scalar literal expected.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

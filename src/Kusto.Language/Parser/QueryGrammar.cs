@@ -1551,7 +1551,8 @@ namespace Kusto.Language.Parsing
             var GetSchemaOperator =
                 Rule(
                     Token(SyntaxKind.GetSchemaKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    keyword => (QueryOperator)new GetSchemaOperator(keyword))
+                    Optional(QueryParameter(QueryOperatorParameters.GetSchemaKind, equalsNeeded: false)),
+                    (keyword, kind) => (QueryOperator)new GetSchemaOperator(keyword, kind))
                 .WithTag("<get-schema>");
 
             Parser<LexicalToken, DataScopeClause> DataScopeClause(CompletionKind ckind) =>
@@ -2555,8 +2556,8 @@ namespace Kusto.Language.Parsing
                     Required(SimpleNameReference, MissingNameReference),
                     Required(
                         First(
-                            MatchText("-->", SyntaxKind.DashDashGreaterThanToken),
-                            MatchText("--", SyntaxKind.DashDashToken)),
+                            Token("-->", SyntaxKind.DashDashGreaterThanToken),
+                            Token("--", SyntaxKind.DashDashToken)),
                         () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
                     Required(SimpleNameReference, MissingNameReference),
                     Optional(MakeGraphWithClause),
@@ -2636,7 +2637,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword).Hide(),
                     List(GraphMatchPatternNotation, MissingGraphMatchPatternNotation, oneOrMore: true)
-                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)")),
+                        .WithCompletion(
+                            new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"),
+                            new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
                     Optional(WhereClause),
                     Optional(ProjectClause),
                     (keyword, pattern, whereClause, projectClause) =>

@@ -4250,23 +4250,26 @@ namespace Kusto.Language.Syntax
         public override SyntaxKind Kind => SyntaxKind.GetSchemaOperator;
         
         public SyntaxToken GetSchemaKeyword { get; }
+        public NamedParameter KindParameter { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="GetSchemaOperator"/>.
         /// </summary>
-        internal GetSchemaOperator(SyntaxToken getSchemaKeyword, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal GetSchemaOperator(SyntaxToken getSchemaKeyword, NamedParameter kindParameter, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.GetSchemaKeyword = Attach(getSchemaKeyword);
+            this.KindParameter = Attach(kindParameter, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 1;
+        public override int ChildCount => 2;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return GetSchemaKeyword;
+                case 1: return KindParameter;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -4276,7 +4279,19 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(GetSchemaKeyword);
+                case 1: return nameof(KindParameter);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -4285,6 +4300,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -4300,7 +4316,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new GetSchemaOperator((SyntaxToken)GetSchemaKeyword?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new GetSchemaOperator((SyntaxToken)GetSchemaKeyword?.Clone(includeDiagnostics), (NamedParameter)KindParameter?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class GetSchemaOperator */
