@@ -34,8 +34,15 @@ namespace Kusto.Language
 
         public static Diagnostic GetTermsExpected(params string[] terms)
         {
-            var list = terms.ToArray().Join(", ", " or ");
-            return new Diagnostic("KS005", $"Expected: {list}");
+            if (terms.Length == 1)
+            {
+                return new Diagnostic("KS005", $"Expected: {terms[0]}");
+            }
+            else
+            {
+                var list = string.Join(", ", terms);
+                return new Diagnostic("KS005", $"Expected one of: {list}");
+            }
         }
 
         public static Diagnostic GetTokenExpected(params SyntaxKind[] kinds)
@@ -50,7 +57,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetTokenExpected(IEnumerable<string> texts)
         {
-            return GetTermsExpected(texts.Select(t => $"'{t}'").ToArray());
+            return GetTermsExpected(texts.ToArray());
         }
 
         public static Diagnostic GetTokenExpected(params string[] tokens)
@@ -218,18 +225,18 @@ namespace Kusto.Language
 
         public static Diagnostic GetTypeExpected(Symbol type)
         {
-            return new Diagnostic("KS107", $"A value of type '{type.Name}' expected.");
+            return new Diagnostic("KS107", $"A value of type {type.Name} expected.");
         }
 
         public static Diagnostic GetTypeExpected(IReadOnlyList<TypeSymbol> types)
         {
-            if (types.Count == 0)
+            if (types.Count == 1)
             {
                 return GetTypeExpected(types[0]);
             }
             else
             {
-                var list = types.Select(t => "'" + t.Name + "'").ToList().Join(", ", " or ");
+                var list = types.Select(t => t.Name).ToList().Join(", ", " or ");
                 return new Diagnostic("KS107", $"A value of type {list} expected.");
             }
         }
