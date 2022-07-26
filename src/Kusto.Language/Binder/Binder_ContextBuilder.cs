@@ -93,7 +93,7 @@ namespace Kusto.Language.Binding
                 if (_position > node.Name.End)
                 {
                     _binder._pathScope = null;
-                    _binder._scopeKind = _binder.GetArgumentScope(node, _binder._scopeKind);
+                    _binder._scopeKind = _binder.GetArgumentScope(node, _position, _binder._scopeKind);
                     _binder._implicitArgumentType = null;
                 }
             }

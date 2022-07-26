@@ -811,6 +811,11 @@ namespace Kusto.Language
             return new Diagnostic("KS226", "Scalar literal expected.");
         }
 
+        public static Diagnostic GetRealLiteralExpected()
+        {
+            return new Diagnostic("KS225", "Real literal expected.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

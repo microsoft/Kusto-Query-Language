@@ -15,5 +15,8 @@ namespace Kusto.Language.Binding
 
         internal Dictionary<CallSiteInfo, FunctionCallExpansion> CallSiteToExpansionMap =
             new Dictionary<CallSiteInfo, FunctionCallExpansion>(CallSiteInfo.Comparer.Instance);
+
+        internal readonly Dictionary<Signature, FunctionBodyFacts> NonDatabaseFunctionBodyFacts =
+            new Dictionary<Signature, FunctionBodyFacts>();
     }
 }

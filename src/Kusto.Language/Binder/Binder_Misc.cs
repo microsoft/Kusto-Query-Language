@@ -576,7 +576,7 @@ namespace Kusto.Language.Binding
         #region Other
 
         /// <summary>
-        /// Gets the <see cref="ScopeKind"/> in effect for a function's arguments.
+        /// Gets the <see cref="ScopeKind"/> in effect for all of a function's arguments.
         /// </summary>
         private ScopeKind GetArgumentScope(FunctionCallExpression fc, ScopeKind outerScope)
         {
@@ -596,6 +596,179 @@ namespace Kusto.Language.Binding
             {
                 return ScopeKind.Normal;
             }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ScopeKind"/> in effect for a function's specific argument.
+        /// </summary>
+        private ScopeKind GetArgumentScope(FunctionCallExpression fc, int position, ScopeKind outerScope)
+        {
+            var fs = fc.Name.ReferencedSymbol as FunctionSymbol;
+            var sig = fc.Name.ReferencedSignature;
+
+            if (fs != null)
+            {
+                if (_globals.IsAggregateFunction(fs))
+                {
+                    // aggregate function arguments are always normal
+                    return ScopeKind.Normal;
+                }
+                else if ((sig != null && sig.HasAggregateParameters) || (sig == null && HasAggregateParameters(fs)))
+                {
+                    // if the specific argument may be an aggregate then use aggregate scoping
+                    var possibleParameters = s_parameterListPool.AllocateFromPool();
+                    GetPossibleArgumentParameters(fc, position, possibleParameters);
+                    var anyAggregate = possibleParameters.Any(pp => pp.ArgumentKind == ArgumentKind.Aggregate);
+                    s_parameterListPool.ReturnToPool(possibleParameters);
+                    if (anyAggregate)
+                        return ScopeKind.Aggregate;
+                }
+            }
+            
+            if (outerScope == ScopeKind.Aggregate)
+            {
+                // if the function is not a known aggregate then keep aggregate scope as there may be
+                // aggregates nested in the function arguments
+                return ScopeKind.Aggregate;
+            }
+            else
+            {
+                return ScopeKind.Normal;
+            }
+        }
+
+        private static bool HasAggregateParameters(FunctionSymbol fs)
+        {
+            if (fs.Signatures.Count == 1)
+            {
+                return fs.Signatures[0].HasAggregateParameters;
+            }
+            else if (fs.Signatures.Count > 1)
+            {
+                foreach (var sig in fs.Signatures)
+                {
+                    if (sig.HasAggregateParameters)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void GetPossibleArgumentParameters(
+            FunctionCallExpression fc, 
+            int position, 
+            List<Parameter> possibleParameters)
+        {
+            var childIndex = GetChildIndex(fc.ArgumentList.Expressions, position);
+            var fs = fc.ReferencedSymbol as FunctionSymbol;
+            var sig = fc.ReferencedSignature;
+
+            // check for easy lookup named parameter case
+            if (sig != null
+                && sig.AllowsNamedArguments
+                && childIndex >= 0 
+                && childIndex <= fc.ArgumentList.Expressions.Count)
+            {
+                var child = fc.ArgumentList.Expressions[childIndex].Element;
+                if (child is SimpleNamedExpression nex)
+                {
+                    var parameter = sig.GetParameter(nex.Name.SimpleName);
+                    possibleParameters.Add(parameter);
+                    return;
+                }
+            }
+
+            // otherwise we need to do a parameter layout to know which to choose
+            var arguments = s_expressionListPool.AllocateFromPool();
+            try
+            {
+                // get all arguments
+                foreach (var arg in fc.ArgumentList.Expressions)
+                {
+                    if (arg.Element != null)
+                    {
+                        arguments.Add(arg.Element);
+                    }
+                }
+
+                if (sig != null)
+                {
+                    GetPossibleArgumentParameters(sig, position, arguments, childIndex, possibleParameters);
+                }
+                else if (fs != null)
+                {
+                    foreach (var fsig in fs.Signatures)
+                    {
+                        GetPossibleArgumentParameters(fsig, position, arguments, childIndex, possibleParameters);
+                    }
+                }
+            }
+            finally
+            {
+                s_expressionListPool.ReturnToPool(arguments);
+            }
+        }
+
+        private static void GetPossibleArgumentParameters(
+            Signature sig, 
+            int position, 
+            List<Expression> arguments, 
+            int argumentIndex,
+            List<Parameter> possibleParameters)
+        {
+            // the position is right of the existing arguments
+            if (arguments.Count == 0 || position > arguments[arguments.Count - 1].End)
+            {
+                // drop any trailing missing arguments
+                while (arguments.Count > 0 && arguments[arguments.Count - 1].IsMissing)
+                {
+                    arguments.RemoveAt(arguments.Count - 1);
+                }
+
+                sig.GetNextPossibleParameters(arguments, possibleParameters);
+            }
+            else
+            {
+                var parameters = s_parameterListPool.AllocateFromPool();
+                sig.GetArgumentParameters(arguments, parameters);
+                
+                if (argumentIndex >= 0 && argumentIndex <= parameters.Count)
+                {
+                    // we know the signature and are at a specific argument index
+                    // so use the argument here
+                    possibleParameters.Add(parameters[argumentIndex]);
+                }
+
+                s_parameterListPool.ReturnToPool(parameters);
+            }
+        }
+
+        /// <summary>
+        /// Gets the index of the child in the parent or -1 if none found
+        /// </summary>
+        private static int GetChildIndex(SyntaxElement parent, int position)
+        {
+            var firstMissingChildIndex = -1;
+
+            // look for existing child that matches position
+            for (int i = 0; i < parent.ChildCount; i++)
+            {
+                var child = parent.GetChild(i);
+                if (child != null)
+                {
+                    if (position >= child.TextStart && position < child.End)
+                    {
+                        return i;
+                    }
+                    else if (child.IsMissing && position == child.TextStart)
+                    {
+                        firstMissingChildIndex = i;
+                    }
+                }
+            }
+
+            return firstMissingChildIndex;
         }
 
         /// <summary>
@@ -993,6 +1166,9 @@ namespace Kusto.Language.Binding
                     case QueryOperatorParameterValueKind.BoolLiteral:
                         CheckIsBooleanlLiteral(parameter.Expression, diagnostics);
                         break;
+                    case QueryOperatorParameterValueKind.String:
+                        CheckIsStringOrDynamic(parameter.Expression, diagnostics);
+                        break;
                     case QueryOperatorParameterValueKind.Column:
                         CheckIsColumn(parameter.Expression, diagnostics);
                         break;
@@ -1041,6 +1217,10 @@ namespace Kusto.Language.Binding
                     break;
                 case QueryOperatorParameterValueKind.BoolLiteral:
                     if (!(parameter.Expression.IsLiteral && IsType(parameter.Expression, ScalarTypes.Bool)))
+                        return false;
+                    break;
+                case QueryOperatorParameterValueKind.String:
+                    if (!IsType(parameter.Expression, ScalarTypes.String))
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.Column:
@@ -1129,10 +1309,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsInteger(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsInteger(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsInteger(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeInteger().WithLocation(expression));
             }
@@ -1147,7 +1329,7 @@ namespace Kusto.Language.Binding
             if (IsInteger(type) && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetIntegerLiteralExpected().WithLocation(expression));
             }
@@ -1162,7 +1344,7 @@ namespace Kusto.Language.Binding
             if (type == ScalarTypes.String && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetStringLiteralExpected().WithLocation(expression));
             }
@@ -1177,7 +1359,7 @@ namespace Kusto.Language.Binding
             if (type == ScalarTypes.Bool && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetBooleanLiteralExpected().WithLocation(expression));
             }
@@ -1192,7 +1374,7 @@ namespace Kusto.Language.Binding
             if (type is ScalarSymbol s && s.IsSummable && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetSummableLiteralExpected().WithLocation(expression));
             }
@@ -1207,7 +1389,7 @@ namespace Kusto.Language.Binding
             if (type is ScalarSymbol s && s.IsNumeric && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetSummableLiteralExpected().WithLocation(expression));
             }
@@ -1222,7 +1404,7 @@ namespace Kusto.Language.Binding
             if (type is ScalarSymbol s && expression.IsLiteral)
                 return true;
 
-            if (!type.IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetScalarLiteralExpected().WithLocation(expression));
             }
@@ -1232,10 +1414,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsRealOrDecimal(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsRealOrDecimal(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsRealOrDecimal(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeRealOrDecimal().WithLocation(expression));
             }
@@ -1245,10 +1429,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsIntegerOrDynamic(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsIntegerOrDynamic(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsIntegerOrDynamic(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeIntegerOrDynamic().WithLocation(expression));
             }
@@ -1258,10 +1444,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsStringOrDynamic(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsStringOrDynamic(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsStringOrDynamic(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String, ScalarTypes.Dynamic).WithLocation(expression));
             }
@@ -1271,10 +1459,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsNumber(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsNumber(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsNumber(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeNumeric().WithLocation(expression));
             }
@@ -1289,7 +1479,7 @@ namespace Kusto.Language.Binding
             if (IsNumber(type) || type == ScalarTypes.Bool)
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeNumericOrBool().WithLocation(expression));
             }
@@ -1299,10 +1489,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsSummable(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsSummable(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsSummable(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeSummable().WithLocation(expression));
             }
@@ -1312,10 +1504,12 @@ namespace Kusto.Language.Binding
 
         private bool CheckIsOrderable(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (IsOrderable(GetResultTypeOrError(expression)))
+            var type = GetResultTypeOrError(expression);
+
+            if (IsOrderable(type))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            if (!type.IsError && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeOrderable().WithLocation(expression));
             }
@@ -1336,7 +1530,7 @@ namespace Kusto.Language.Binding
                 || SymbolsAssignable(ScalarTypes.Dynamic, exprType))
                 return true;
 
-            if (!exprType.IsError)
+            if (!exprType.IsError && exprType != ScalarTypes.Unknown)
             {
                 if (SymbolsAssignable(ScalarTypes.Dynamic, type))
                 {
@@ -1362,7 +1556,8 @@ namespace Kusto.Language.Binding
             if (IsType(expression, type, conversionKind))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError && !type.IsError)
+            var exprType = GetResultTypeOrError(expression);
+            if (!exprType.IsError && !type.IsError && exprType != ScalarTypes.Unknown && type != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(type).WithLocation(expression));
             }
@@ -1389,7 +1584,8 @@ namespace Kusto.Language.Binding
             if (IsAnyType(expression, types, conversionKind))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            var exprType = GetResultTypeOrError(expression);
+            if (!exprType.IsError && exprType != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(types).WithLocation(expression));
             }
@@ -1422,7 +1618,8 @@ namespace Kusto.Language.Binding
             if (info.ReferencedSymbol != null && SymbolsAssignable(rangeType, info.ResultType))
                 return true;
 
-            if (!rangeType.IsError && !GetResultTypeOrError(expression).IsError)
+            var exprType = GetResultTypeOrError(expression);
+            if (!rangeType.IsError && !exprType.IsError && rangeType != ScalarTypes.Unknown && exprType != ScalarTypes.Unknown)
             {
                 diagnostics.Add(DiagnosticFacts.GetTypeIsNotIntervalType(GetResultTypeOrError(expression), rangeType).WithLocation(expression));
             }
@@ -1452,7 +1649,8 @@ namespace Kusto.Language.Binding
             if (IsLiteralOrName(expression))
                 return true;
 
-            if (!GetResultTypeOrError(expression).IsError)
+            var exprType = GetResultTypeOrError(expression);
+            if (!exprType.IsError)
             {
                 diagnostics.Add(DiagnosticFacts.GetExpressionMustBeConstantOrIdentifier().WithLocation(expression));
             }
@@ -1583,8 +1781,8 @@ namespace Kusto.Language.Binding
 
         private bool CheckLiteralStringNotEmpty(Expression expression, List<Diagnostic> diagnostics)
         {
-            var result = GetResultTypeOrError(expression);
-            if (!result.IsError && expression.IsLiteral)
+            var exprType = GetResultTypeOrError(expression);
+            if (!exprType.IsError && exprType != ScalarTypes.Unknown && expression.IsLiteral)
             {
                 string value = expression.LiteralValue?.ToString();
                 if (!string.IsNullOrEmpty(value))

@@ -78,24 +78,6 @@ namespace Kusto.Language
         /// </summary>
         public bool IsInteresting =>
             Flags != FunctionBodyFlags.None;
-
-        /// <summary>
-        /// Gets the <see cref="FunctionBodyFacts"/> associated with this <see cref="FunctionSymbol"/>
-        /// that may have been cached with the <see cref="GlobalState"/> during analysis.
-        /// </summary>
-        public static bool TryGetFacts(FunctionSymbol function, GlobalState globals, out FunctionBodyFacts facts)
-        {
-            if (globals.IsDatabaseFunction(function))
-            {
-                return Binding.Binder.TryGetDatabaseFunctionBodyFacts(function, globals, out facts);
-            }
-            else
-            {
-                // non-database function symbols get their facts cached on the symbol itself.
-                facts = function.NonDatabaseFunctionBodyFacts;
-                return facts != null;
-            }
-        }
     }
 
     [Flags]

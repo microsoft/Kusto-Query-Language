@@ -1752,11 +1752,8 @@ namespace Kusto.Language.Binding
             if (_globalBindingCache.DatabaseFunctionBodyFacts.TryGetValue(signature, out facts))
                 return true;
 
-            if (signature.Symbol is FunctionSymbol fs)
-            {
-                facts = fs.NonDatabaseFunctionBodyFacts;
-                return facts != null;
-            }
+            if (_localBindingCache.NonDatabaseFunctionBodyFacts.TryGetValue(signature, out facts))
+                return true;
 
             facts = null;
             return false;
@@ -1768,9 +1765,9 @@ namespace Kusto.Language.Binding
             {
                 _globalBindingCache.DatabaseFunctionBodyFacts[signature] = facts;
             }
-            else if (signature.Symbol is FunctionSymbol fs)
+            else
             {
-                fs.NonDatabaseFunctionBodyFacts = facts;
+                _localBindingCache.NonDatabaseFunctionBodyFacts[signature] = facts;
             }
         }
 

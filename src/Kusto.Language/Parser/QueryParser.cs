@@ -2556,6 +2556,9 @@ namespace Kusto.Language.Parsing
                 case QueryOperatorParameterValueKind.ScalarLiteral:
                     return ParseAnyQueryOperatorParameterValue() 
                         ?? CreateMissingValue();
+                case QueryOperatorParameterValueKind.String:
+                    return ParseFunctionCallOrPath()
+                        ?? CreateMissingValue();
                 case QueryOperatorParameterValueKind.Word:
                 case QueryOperatorParameterValueKind.WordOrNumber:
                     if (queryParameter.Values.Count > 0)

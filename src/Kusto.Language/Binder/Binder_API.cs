@@ -223,25 +223,6 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Entry point for <see cref="FunctionBodyFacts"/> to access the cache.
-        /// This is used for testing.
-        /// </summary>
-        public static bool TryGetDatabaseFunctionBodyFacts(FunctionSymbol symbol, GlobalState globals, out FunctionBodyFacts facts)
-        {
-            if (globals.Cache != null)
-            {
-                var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
-                lock (bindingCache)
-                {
-                    return bindingCache.DatabaseFunctionBodyFacts.TryGetValue(symbol.Signatures[0], out facts);
-                }
-            }
-
-            facts = null;
-            return false;
-        }
-
-        /// <summary>
         /// Adds the symbols to the current local scope.
         /// </summary>
         private void SetLocals(IEnumerable<Symbol> locals)

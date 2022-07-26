@@ -1165,5 +1165,61 @@ namespace Kusto.Language
                 return Tabularity.None;
             }
         }
+
+        /// <summary>
+        /// Gets the scalar type for the literal syntax kind.
+        /// </summary>
+        public static ScalarSymbol GetLiteralType(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.BooleanLiteralExpression:
+                case SyntaxKind.BooleanLiteralToken:
+                    return ScalarTypes.Bool;
+
+                case SyntaxKind.StringLiteralExpression:
+                case SyntaxKind.StringLiteralToken:
+                case SyntaxKind.CompoundStringLiteralExpression:
+                    return ScalarTypes.String;
+
+                case SyntaxKind.IntLiteralExpression:
+                case SyntaxKind.IntLiteralToken:
+                    return ScalarTypes.Int;
+
+                case SyntaxKind.LongLiteralExpression:
+                case SyntaxKind.LongLiteralToken:
+                    return ScalarTypes.Long;
+
+                case SyntaxKind.RealLiteralExpression:
+                case SyntaxKind.RealLiteralToken:
+                    return ScalarTypes.Real;
+
+                case SyntaxKind.DecimalLiteralExpression:
+                case SyntaxKind.DecimalLiteralToken:
+                    return ScalarTypes.Decimal;
+
+                case SyntaxKind.TimespanLiteralExpression:
+                case SyntaxKind.TimespanLiteralToken:
+                    return ScalarTypes.TimeSpan;
+
+                case SyntaxKind.DateTimeLiteralExpression:
+                case SyntaxKind.DateTimeLiteralToken:
+                    return ScalarTypes.DateTime;
+
+                case SyntaxKind.GuidLiteralExpression:
+                case SyntaxKind.GuidLiteralToken:
+                case SyntaxKind.RawGuidLiteralToken:
+                    return ScalarTypes.Guid;
+
+                case SyntaxKind.TypeOfLiteralExpression:
+                    return ScalarTypes.Type;
+
+                case SyntaxKind.DynamicExpression:
+                    return ScalarTypes.Dynamic;
+
+                default:
+                    return ScalarTypes.Unknown;
+            }
+        }
     }
 }

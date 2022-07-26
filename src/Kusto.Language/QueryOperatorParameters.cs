@@ -245,7 +245,7 @@ namespace Kusto.Language
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartKinds);
 
         public static readonly QueryOperatorParameter RenderTitle =
-            new QueryOperatorParameter("title", QueryOperatorParameterValueKind.StringLiteral);
+            new QueryOperatorParameter("title", QueryOperatorParameterValueKind.String);
 
         public static readonly QueryOperatorParameter RenderAccumulate =
             new QueryOperatorParameter("accumulate", QueryOperatorParameterValueKind.BoolLiteral);
@@ -274,8 +274,8 @@ namespace Kusto.Language
             new QueryOperatorParameter("ycolumns", QueryOperatorParameterValueKind.ColumnList),
             new QueryOperatorParameter("anomalycolumns", QueryOperatorParameterValueKind.ColumnList),
             new QueryOperatorParameter("series", QueryOperatorParameterValueKind.ColumnList),
-            new QueryOperatorParameter("xtitle", QueryOperatorParameterValueKind.StringLiteral),
-            new QueryOperatorParameter("ytitle", QueryOperatorParameterValueKind.StringLiteral),
+            new QueryOperatorParameter("xtitle", QueryOperatorParameterValueKind.String),
+            new QueryOperatorParameter("ytitle", QueryOperatorParameterValueKind.String),
             new QueryOperatorParameter("xaxis", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartAxis),
             new QueryOperatorParameter("yaxis", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartAxis),
             new QueryOperatorParameter("legend", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartLegends),
@@ -407,6 +407,11 @@ namespace Kusto.Language
         SummableLiteral,
 
         /// <summary>
+        /// Any string expression
+        /// </summary>
+        String,
+
+        /// <summary>
         /// The parameter is an word token (identifier or keyword)
         /// </summary>
         Word,
@@ -429,7 +434,7 @@ namespace Kusto.Language
         /// <summary>
         /// The parameter is a list of column references
         /// </summary>
-        ColumnList
+        ColumnList,
     }
 
     /// <summary>

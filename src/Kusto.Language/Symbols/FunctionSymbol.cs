@@ -494,11 +494,5 @@ namespace Kusto.Language.Symbols
                     return "scalar";
             }
         }
-
-        /// <summary>
-        /// Non-database function symbols exist only for the lifetime of a single syntax tree analysis,
-        /// so it is convenient to stash their facts on the symbol itself.
-        /// </summary>
-        internal FunctionBodyFacts NonDatabaseFunctionBodyFacts { get; set; }
     }
 }

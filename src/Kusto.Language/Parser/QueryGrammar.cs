@@ -866,6 +866,11 @@ namespace Kusto.Language.Parsing
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             AnyQueryOperatorParameterValue);
+                    case QueryOperatorParameterValueKind.String:
+                        return QParameter(
+                            QueryParameterName(parameter),
+                            hasEquals, equalsNeeded,
+                            FunctionCallOrPath);
                     case QueryOperatorParameterValueKind.Word:
                     case QueryOperatorParameterValueKind.WordOrNumber:
                         return parameter.Values.Count > 0
