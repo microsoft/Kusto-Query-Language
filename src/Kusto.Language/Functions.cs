@@ -1595,6 +1595,12 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None).Hide();
 
+        public static readonly FunctionSymbol HllIsValid =
+            new FunctionSymbol("hll_isvalid", ScalarTypes.Bool,
+                new Parameter("hll", ScalarTypes.Dynamic),
+                new Parameter("value", ParameterTypeKind.Scalar))
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
         public static readonly FunctionSymbol TDigestMerge =
             new FunctionSymbol("tdigest_merge", ScalarTypes.Dynamic,
                 new Parameter("tdigest", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 16))
@@ -2994,6 +3000,7 @@ namespace Kusto.Language
             PercentRankTDigest,
             RankTDigest,
             TdigestIsValid,
+            HllIsValid,
             TDigestMerge,
             MergeTDigests,
             HllMerge,

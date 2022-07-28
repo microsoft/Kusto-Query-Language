@@ -36,7 +36,42 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitFunctionDeclaration(FunctionDeclaration node)
             {
-                return new SemanticInfo(CreateFunctionSymbol(node));
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    var parameters = new List<Parameter>();
+
+                    // first series of parameters can be tabular
+                    var canBeTabular = true;
+
+                    // get parameter symbols already defined
+                    for (int i = 0; i < node.Parameters.Parameters.Count; i++)
+                    {
+                        var fp = node.Parameters.Parameters[i].Element;
+
+                        bool isOptional = fp.DefaultValue != null;
+
+                        if (fp.NameAndType.Name.ReferencedSymbol is ParameterSymbol p)
+                        {
+                            if (p.IsTabular && !canBeTabular)
+                            {
+                                diagnostics.Add(DiagnosticFacts.GetTabularParametersMustBeDeclaredFirst().WithLocation(fp));
+                            }
+                            canBeTabular = p.IsTabular;
+
+                            parameters.Add(Parameter.From(p, isOptional, fp.DefaultValue?.Value));
+                        }
+                    }
+
+                    var name = GetNameFromContext(node);
+                    var fs = new FunctionSymbol(name, node.Body, parameters);
+
+                    return new SemanticInfo(fs, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
 
             public override SemanticInfo VisitFunctionParameter(FunctionParameter node)
@@ -82,35 +117,6 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitFunctionParameters(FunctionParameters node)
             {
                 return null;
-            }
-
-            private FunctionSymbol CreateFunctionSymbol(FunctionDeclaration decl)
-            {
-                var parameters = new List<Parameter>();
-
-                // get parameter symbols already defined
-                for (int i = 0; i < decl.Parameters.Parameters.Count; i++)
-                {
-                    var fp = decl.Parameters.Parameters[i].Element;
-
-                    bool isOptional = fp.DefaultValue != null;
-
-                    if (_binder.GetReferencedSymbol(fp.NameAndType.Name) is ParameterSymbol p)
-                    {
-                        parameters.Add(Parameter.From(p, isOptional, fp.DefaultValue?.Value));
-                    }
-                }
-
-                var name = GetNameFromContext(decl);
-                var fs = new FunctionSymbol(name, decl.Body, parameters);
-
-#if false  // TODO: check if we can add this back if we know it is invariant
-                // add exiting declaration as default expansion
-                var cs = _binder.GetCallSiteInfo(fs.Signatures[0], EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
-                _binder._localBindingCache.CallSiteToExpansionMap.Add(cs, decl.Body);
-                _binder.SetSignatureBindingInfo(fs.Signatures[0], decl.Body);
-#endif
-                return fs;
             }
 
             /// <summary>

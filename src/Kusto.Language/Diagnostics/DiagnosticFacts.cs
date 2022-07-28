@@ -816,6 +816,11 @@ namespace Kusto.Language
             return new Diagnostic("KS225", "Real literal expected.");
         }
 
+        public static Diagnostic GetTabularParametersMustBeDeclaredFirst()
+        {
+            return new Diagnostic("KS226", "Tabular parameters must be declared first.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {
