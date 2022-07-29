@@ -108,10 +108,14 @@ namespace Kusto.Language.Parsing
                     case '#':
                         var directiveEnd = GetNextLineStart(text, pos);
                         return new LexicalToken(SyntaxKind.DirectiveToken, trivia, GetSubstring(text, pos, directiveEnd - pos));
-                    case '\0':
-                        if (trivia.Length > 0 || alwaysProduceEndToken)
-                            return new LexicalToken(SyntaxKind.EndOfTextToken, trivia, "");
-                        return null;
+                    default:
+                        if (IsAtEnd(text, pos))
+                        {
+                            if (trivia.Length > 0 || alwaysProduceEndToken)
+                                return new LexicalToken(SyntaxKind.EndOfTextToken, trivia, "");
+                            return null;
+                        }
+                        break;
                 }
             }
 
@@ -509,8 +513,10 @@ namespace Kusto.Language.Parsing
             var pos = start;
             char ch;
 
-            while ((ch = Peek(text, pos)) != '\0')
+            while (!IsAtEnd(text, pos))
             {
+                ch = Peek(text, pos);
+
                 if (TextFacts.IsWhitespace(ch))
                 {
                     pos++;
@@ -576,8 +582,9 @@ namespace Kusto.Language.Parsing
             {
                 pos++;
 
-                while ((ch = Peek(text, pos)) != '\0')
+                while (!IsAtEnd(text, pos))
                 {
+                    ch = Peek(text, pos);
                     if (IsIdentifierChar(ch))
                     {
                         pos++;
@@ -820,8 +827,10 @@ namespace Kusto.Language.Parsing
             int pos = start;
 
             char ch;
-            while ((ch = Peek(text, pos)) != '\0')
+            while (!IsAtEnd(text, pos))
             {
+                ch = Peek(text, pos);
+
                 if (ch == quote && isVerbatim && Peek(text, pos + 1) == quote)
                 {
                     pos += 2;
@@ -1093,6 +1102,11 @@ namespace Kusto.Language.Parsing
             {
                 return '\0';
             }
+        }
+
+        private static bool IsAtEnd(string text, int position)
+        {
+            return position >= text.Length;
         }
 
         private static bool Matches(string text, int start, string match)

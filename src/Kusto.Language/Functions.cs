@@ -950,19 +950,19 @@ namespace Kusto.Language
                 new Parameter("from", ScalarTypes.DateTime),
                 new Parameter("timezone", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol DatetimeUtcToLocal =
             new FunctionSymbol("datetime_utc_to_local", ScalarTypes.DateTime,
                 new Parameter("from", ScalarTypes.DateTime),
                 new Parameter("timezone", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol DateTimeListTimezones =
             new FunctionSymbol("datetime_list_timezones", ScalarTypes.Dynamic)
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         #endregion
 
