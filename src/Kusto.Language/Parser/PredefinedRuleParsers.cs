@@ -36,7 +36,8 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxElement> BracketedStringLiteral { get; }
         public Parser<LexicalToken, SyntaxElement> Value { get; }
         public Parser<LexicalToken, SyntaxElement> Type { get; }
-        public Parser<LexicalToken, SyntaxElement> NameDeclarationOrStringLiteral { get; }
+        public Parser<LexicalToken, SyntaxElement> NameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> QualifiedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> WildcardedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> QualifiedWildcardedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> FunctionDeclaration { get; }
@@ -110,13 +111,51 @@ namespace Kusto.Language.Parsing
             var StringName =
                 Rule(Token(SyntaxKind.StringLiteralToken), token => (Name)new TokenName(token));
 
+            var BracketedStringLiteralToken =
+                Convert(
+                    And(
+                        Token("["),
+                        ZeroOrMore(Match(t =>
+                            t.Text != "]"
+                            && t.Text != "["
+                            && !TextFacts.HasLineBreaks(t.Trivia)
+                            && !TextFacts.HasLineBreaks(t.Text))),
+                        Optional(Token("]"))),
+                    (IReadOnlyList<LexicalToken> list) =>
+                    {
+                        var text = string.Concat(list.Select(e => (e != list[0] ? e.Trivia : "") + e.Text));
+                        return SyntaxToken.Literal(list[0].Trivia, text, SyntaxKind.StringLiteralToken);
+                    }).WithTag("<bracketed-string>");
+
+            this.BracketedStringLiteral =
+                Rule(BracketedStringLiteralToken,
+                    token => (SyntaxElement)new LiteralExpression(SyntaxKind.StringLiteralExpression, token));
+
+            var BracketedStringLiteralName =
+                Rule(BracketedStringLiteralToken,
+                    token => (Name)new TokenName(token));
+
             var Name =
                 First(
                     queryParser.IdentifierName,
                     queryParser.BracketedName,
                     queryParser.BracedName,
-                    StringName)
+                    StringName,
+                    BracketedStringLiteralName)
                     .WithTag("<name>");
+
+            this.NameDeclaration =
+                Rule(Name,
+                    name => (SyntaxElement)new NameDeclaration(name))
+                .WithTag("<name>");
+
+            this.QualifiedNameDeclaration =
+                ApplyZeroOrMore(
+                    NameDeclaration,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(NameDeclaration, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<qualified_name>");
 
             this.ColumnNameReference =
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Column))
@@ -192,42 +231,25 @@ namespace Kusto.Language.Parsing
                             (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
                     .WithTag("<table_column>");
 
-            this.BracketedStringLiteral =
-                Convert(
-                    And(
-                        Token("["),
-                        ZeroOrMore(Match(t =>
-                            t.Text != "]"
-                            && t.Text != "["
-                            && !TextFacts.HasLineBreaks(t.Trivia)
-                            && !TextFacts.HasLineBreaks(t.Text))),
-                        Optional(Token("]"))),
-                    (IReadOnlyList<LexicalToken> list) =>
-                    {
-                        var text = string.Concat(list.Select(e => (e != list[0] ? e.Trivia : "") + e.Text));
-                        return (SyntaxElement)new LiteralExpression(SyntaxKind.StringLiteralExpression,
-                            SyntaxToken.Literal(list[0].Trivia, text, SyntaxKind.StringLiteralToken));
-                    }).WithTag("<bracketed-string>");
-
             this.Value = First(GuidLiteral, RawGuidLiteral, queryParser.Literal.Cast<SyntaxElement>());
 
             this.Type = queryParser.ParamTypeExtended.Cast<SyntaxElement>();
-
-            this.NameDeclarationOrStringLiteral =
-                First(
-                    queryParser.SimpleNameDeclarationExpression.Cast<SyntaxElement>(),
-                    queryParser.StringLiteral.Cast<SyntaxElement>());
 
             this.WildcardedNameDeclaration =
                 Rule(queryParser.WildcardedIdentifier,
                     id => (SyntaxElement)new NameDeclaration(new WildcardedName(id)));
 
+            var WildcardedOrNameDeclaration =
+                First(
+                    WildcardedNameDeclaration,
+                    NameDeclaration);
+
             // either name.wildname or wildname
             this.QualifiedWildcardedNameDeclaration =
                 First(
-                    If(And(queryParser.SimpleNameDeclaration, Token("."), queryParser.WildcardedIdentifier),
-                        Rule(queryParser.SimpleNameDeclaration, Token("."), Required(WildcardedNameDeclaration.Cast<Expression>(), Q.MissingNameReference),
-                            (qual, dot, name) => (SyntaxElement)new PathExpression(qual, dot, name))),
+                    If(And(NameDeclaration, Token("."), WildcardedOrNameDeclaration),
+                        Rule(NameDeclaration, Token("."), WildcardedOrNameDeclaration,
+                            (qual, dot, name) => (SyntaxElement)new PathExpression((Expression)qual, dot, (Expression)name))),
                     WildcardedNameDeclaration.Cast<SyntaxElement>());
 
             this.FunctionDeclaration =
