@@ -1,19 +1,27 @@
 ﻿namespace Kusto.Language.Editor
 {
+    /// <summary>
+    /// Bracketting style determines how bracket pairs are aligned when on separate lines.
+    /// </summary>
     public enum BrackettingStyle
     {
         /// <summary>
-        /// Do not adjust bracketting.
+        /// Use the default style.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Bracket alignment is not adjusted.
         /// </summary>
         None,
 
         /// <summary>
-        /// Bracketting pairs are aligned horizontally when they are place on new lines.
+        /// Bracket pairs are aligned vertically when on separate lines.
         /// </summary>
         Vertical,
 
         /// <summary>
-        /// Bracketting pairs are aligned diagonally, KR style, when placed on new lines.
+        /// Bracket pairs are aligned diagonally when on separate lines.
         /// </summary>
         Diagonal
     }

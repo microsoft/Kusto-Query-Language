@@ -13,7 +13,7 @@
         NewLine,
 
         /// <summary>
-        /// Place on a new line if other parts are already span multiple lines
+        /// Place on a new line if related parts span multiple lines
         /// </summary>
         Smart,
     }
