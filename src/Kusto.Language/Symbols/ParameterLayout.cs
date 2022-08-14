@@ -50,8 +50,34 @@ namespace Kusto.Language.Symbols
                 // try to get parameter layout for this extended list of arguments
                 GetArgumentParameters(signature, newArguments, argumentParameters);
 
-                // use last parameter in this layout
-                possibleParameters.Add(argumentParameters[argumentParameters.Count - 1]);
+                // use next parameter in this layout
+                var argIndex = arguments.Count;
+                var argParam = argumentParameters[argIndex];
+                possibleParameters.Add(argParam);
+
+                // if this is optional, also get next possible parameters too
+                if (argParam.MinOccurring == 0)
+                {
+                    // align arg index with first argument using this parameter in this sequence
+                    while (argIndex > 0 && argumentParameters[argIndex - 1] == argParam)
+                    {
+                        argIndex--;
+                    }
+
+                    // if argument is in order with parameter definition also allow next consecutive parameters
+                    var paramIndex = signature.Parameters.IndexOf(argParam);
+                    if (paramIndex == argIndex && paramIndex < signature.Parameters.Count - 1)
+                    {
+                        paramIndex++;
+                        Parameter nextParam;
+                        do
+                        {
+                            nextParam = signature.Parameters[paramIndex];
+                            possibleParameters.Add(nextParam);
+                        }
+                        while (nextParam.MinOccurring == 0 && paramIndex < signature.Parameters.Count - 1);
+                    }
+                }
             }
             finally
             {

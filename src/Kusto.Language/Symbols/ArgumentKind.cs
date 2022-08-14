@@ -30,9 +30,19 @@ namespace Kusto.Language.Symbols
         Aggregate,
 
         /// <summary>
-        /// The argument must be a column reference
+        /// The argument must be a column reference 
         /// </summary>
         Column,
+
+        /// <summary>
+        /// The argument must be a column reference of a table from parameter0
+        /// </summary>
+        Column_Parameter0,
+
+        /// <summary>
+        /// The argument must be a column reference that is common between the row context and the table from parameter0.
+        /// </summary>
+        Column_Parameter0_Common,
 
         /// <summary>
         /// The argument must be a literal expression.

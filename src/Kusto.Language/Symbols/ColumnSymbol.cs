@@ -85,31 +85,34 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public static IReadOnlyList<ColumnSymbol> Combine(CombineKind kind, IEnumerable<IReadOnlyList<ColumnSymbol>> columnSets)
         {
-            var result = new List<ColumnSymbol>();
+            var columns = new List<ColumnSymbol>();
 
             foreach (var list in columnSets)
             {
-                result.AddRange(list);
+                columns.AddRange(list);
             }
 
             switch (kind)
             {
                 case CombineKind.UnifySameNameAndType:
-                    Binding.Binder.UnifyColumnsWithSameNameAndType(result);
+                    Binding.Binder.UnifyColumnsWithSameNameAndType(columns);
                     break;
 
                 case CombineKind.UnifySameName:
-                    Binding.Binder.UnifyColumnsWithSameName(result);
+                    Binding.Binder.UnifyColumnsWithSameName(columns);
                     break;
 
                 case CombineKind.UniqueNames:
-                    Binding.Binder.MakeColumnNamesUnique(result);
+                    Binding.Binder.MakeColumnNamesUnique(columns);
                     break;
             }
 
-            return result;
+            return columns;
         }
 
+        /// <summary>
+        /// Combines multiple sets of columns into a single set of columns.
+        /// </summary>
         public static IReadOnlyList<ColumnSymbol> Combine(CombineKind kind, params IReadOnlyList<ColumnSymbol>[] columnSets)
         {
             return Combine(kind, (IEnumerable<IReadOnlyList<ColumnSymbol>>)columnSets);

@@ -637,6 +637,37 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private static TableSymbol GetArgumentRowScope(FunctionCallExpression fc, int position, TableSymbol defaultRowScope)
+        {
+            var fs = fc.Name.ReferencedSymbol as FunctionSymbol;
+            var sig = fc.Name.ReferencedSignature;
+
+            if (fs != null)
+            {
+                var possibleParameters = s_parameterListPool.AllocateFromPool();
+                GetPossibleArgumentParameters(fc, position, possibleParameters);
+
+                var anyP0 = possibleParameters.Any(p => p.ArgumentKind == ArgumentKind.Column_Parameter0);
+                var anyP0_Common = possibleParameters.Any(p => p.ArgumentKind == ArgumentKind.Column_Parameter0_Common);
+
+                if ((anyP0 || anyP0_Common)
+                    && fc.ArgumentList.Expressions.Count > 0 
+                    && fc.ArgumentList.Expressions[0].Element.ResultType is TableSymbol p0Table)
+                {
+                    // if both, show all p0Table columns
+                    if (anyP0)
+                        return p0Table;
+
+                    var rowScope = defaultRowScope ?? TableSymbol.Empty;
+                    var commonColumns = new List<ColumnSymbol>();
+                    GetCommonColumns(rowScope.Columns, p0Table.Columns, commonColumns);
+                    return new TableSymbol(commonColumns);
+                }
+            }
+
+            return defaultRowScope;
+        }
+
         private static bool HasAggregateParameters(FunctionSymbol fs)
         {
             if (fs.Signatures.Count == 1)
@@ -2234,6 +2265,8 @@ namespace Kusto.Language.Binding
                     switch (parameter.ArgumentKind)
                     {
                         case ArgumentKind.Column:
+                        case ArgumentKind.Column_Parameter0:
+                        case ArgumentKind.Column_Parameter0_Common:
                             CheckIsColumn(argument, diagnostics);
                             break;
 

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Kusto.Language.Symbols;
 using Kusto.Language.Syntax;
-using Kusto.Language.Utils;
 
 namespace Kusto.Language.Binding
 {
@@ -446,21 +443,59 @@ namespace Kusto.Language.Binding
 
             private void VisitArgumentList(ExpressionList list, Signature signature, ScopeKind argumentScope)
             {
+                var arguments = s_expressionListPool.AllocateFromPool();
+                var argumentParameters = s_parameterListPool.AllocateFromPool();
+
                 for (int i = 0, n = list.Expressions.Count; i < n; i++)
                 {
-                    var arg = list.Expressions[i].Element;
-                    var p = i < signature.Parameters.Count ? signature.Parameters[i] : null;
+                    arguments.Add(list.Expressions[i].Element);
+                }
 
-                    if (p != null && signature.HasAggregateParameters)
+                signature.GetArgumentParameters(arguments, argumentParameters);
+
+                for (int i = 0, n = arguments.Count; i < n; i++)
+                {
+                    var arg = arguments[i];
+                    var p = argumentParameters[i];
+
+                    if (p != null)
                     {
-                        if (p.ArgumentKind == ArgumentKind.Aggregate)
+                        switch (p.ArgumentKind)
                         {
-                            // switch to aggregate scope for arguments that need to be aggregate expressions
-                            this.VisitInScope(arg, ScopeKind.Aggregate);
-                        }
-                        else
-                        {
-                            this.VisitInScope(arg, argumentScope);
+                            case ArgumentKind.Aggregate:
+                                // switch to aggregate scope for arguments that need to be aggregate expressions
+                                this.VisitInScope(arg, ScopeKind.Aggregate);
+                                break;
+
+                            case ArgumentKind.Column_Parameter0:
+                            case ArgumentKind.Column_Parameter0_Common:
+                                if (i > 0 && arguments[0]?.ResultType is TableSymbol p0Table)
+                                {
+                                    var oldRowScope = _binder._rowScope;
+
+                                    if (p.ArgumentKind == ArgumentKind.Column_Parameter0_Common)
+                                    {
+                                        var commonColumns = new List<ColumnSymbol>();
+                                        GetCommonColumns(_binder._rowScope.Columns, p0Table.Columns, commonColumns);
+                                        _binder._rowScope = new TableSymbol(commonColumns);
+                                    }
+                                    else
+                                    {
+                                        _binder._rowScope = p0Table;
+                                    }
+
+                                    this.VisitInScope(arg, argumentScope);
+                                    _binder._rowScope = oldRowScope;
+                                }
+                                else
+                                {
+                                    this.VisitInScope(arg, ScopeKind.Aggregate);
+                                }
+                                break;
+
+                            default:
+                                this.VisitInScope(arg, argumentScope);
+                                break;
                         }
                     }
                     else
@@ -468,6 +503,9 @@ namespace Kusto.Language.Binding
                         this.VisitInScope(arg, argumentScope);
                     }
                 }
+
+                s_expressionListPool.ReturnToPool(arguments);
+                s_parameterListPool.ReturnToPool(argumentParameters);
             }
 
             public override void VisitInvokeOperator(InvokeOperator node)

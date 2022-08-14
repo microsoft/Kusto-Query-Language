@@ -94,6 +94,7 @@ namespace Kusto.Language.Binding
                 {
                     _binder._pathScope = null;
                     _binder._scopeKind = _binder.GetArgumentScope(node, _position, _binder._scopeKind);
+                    _binder._rowScope = Binder.GetArgumentRowScope(node, _position, _binder._rowScope);
                     _binder._implicitArgumentType = null;
                 }
             }

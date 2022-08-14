@@ -86,6 +86,11 @@ namespace Kusto.Language.Parsing
             /// </summary>
             public int BestSuccessResult;
 
+            /// <summary>
+            /// The previous input source
+            /// </summary>
+            public Source<TInput> PreviousSource;
+
             public void Init(Parser<TInput> parser, int inputStart)
             {
                 this.Parser = parser;
@@ -462,6 +467,32 @@ namespace Kusto.Language.Parsing
             }
             else
             {
+                state.InputLength = state.LastResult;
+                return null;
+            }
+        }
+
+        public override Parser<TInput> VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser)
+        {
+            if (state.State == 0)
+            {
+                var len = parser.Limiter.Scan(source, state.InputStart);
+                if (len > 0)
+                {
+                    state.PreviousSource = this.source;
+                    this.source = new LimitSource<TInput>(this.source, state.InputStart + len);
+                    state.State = 1;
+                    return parser.Limited;
+                }
+                else
+                {
+                    state.InputLength = -1;
+                    return null;
+                }
+            }
+            else
+            {
+                this.source = state.PreviousSource;
                 state.InputLength = state.LastResult;
                 return null;
             }

@@ -1328,6 +1328,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol StoredQueryResultsDrop =
             new CommandSymbol("StoredQueryResultsDrop", _schema35);
 
+        public static readonly CommandSymbol ExecuteDatabaseScript =
+            new CommandSymbol("ExecuteDatabaseScript", _schema18);
+
         public static readonly CommandSymbol CreateRequestSupport =
             new CommandSymbol("CreateRequestSupport", _schema18);
 
@@ -2054,6 +2057,7 @@ namespace Kusto.Language
             StoredQueryResultShowSchema,
             StoredQueryResultDrop,
             StoredQueryResultsDrop,
+            ExecuteDatabaseScript,
             CreateRequestSupport,
             ShowRequestSupport,
             ShowClusterAdminState,

@@ -172,6 +172,12 @@ namespace Kusto.Language.Parsing
             new IfParser<TInput>(test, parser);
 
         /// <summary>
+        /// A parser that constrains the amount of input that can be accessed by another parser.
+        /// </summary>
+        public static Parser<TInput, TOutput> Limit<TOutput>(Parser<TInput> limiter, Parser<TInput, TOutput> limited) =>
+            new LimitParser<TInput, TOutput>(limiter, limited);
+
+        /// <summary>
         /// Creates a parser that parses a list of elements.
         /// </summary>
         /// <param name="elementParser">The parser for each element.</param>
@@ -1576,6 +1582,71 @@ namespace Kusto.Language.Parsing
             }
 
             return new ParseResult<TOutput>(length, default(TOutput));
+        }
+    }
+
+    public sealed class LimitParser<TInput, TOutput> : Parser<TInput, TOutput>
+    {
+        public readonly Parser<TInput> Limiter;
+        public readonly Parser<TInput, TOutput> Limited;
+
+        public LimitParser(Parser<TInput> limiter, Parser<TInput, TOutput> limited)
+        {
+            this.Limiter = limiter;
+            this.Limited = limited;
+        }
+
+        public override void Accept(ParserVisitor<TInput> visitor)
+        {
+            visitor.VisitLimit(this);
+        }
+
+        public override TResult Accept<TResult>(ParserVisitor<TInput, TResult> visitor)
+        {
+            return visitor.VisitLimit(this);
+        }
+
+        public override TResult Accept<TArg, TResult>(ParserVisitor<TInput, TArg, TResult> visitor, TArg arg)
+        {
+            return visitor.VisitLimit(this, arg);
+        }
+
+        public override ParseResult<TOutput> Parse(Source<TInput> input, int inputStart)
+        {
+            var len = this.Limiter.Scan(input, inputStart);
+            if (len > 0)
+            {
+                var limitSource = new LimitSource<TInput>(input, inputStart + len);
+                return this.Limited.Parse(limitSource, inputStart);
+            }
+            return new ParseResult<TOutput>(-1, default(TOutput));
+        }
+
+        public override int Parse(Source<TInput> input, int inputStart, List<object> output, int outputStart)
+        {
+            var len = this.Limiter.Scan(input, inputStart);
+            if (len > 0)
+            {
+                var limitSource = new LimitSource<TInput>(input, inputStart + len);
+                return this.Limited.Parse(limitSource, inputStart, output, outputStart);
+            }
+            return -1;
+        }
+
+        public override int Scan(Source<TInput> input, int inputStart)
+        {
+            var len = this.Limiter.Scan(input, inputStart);
+            if (len > 0)
+            {
+                var limitSource = new LimitSource<TInput>(input, inputStart + len);
+                return this.Limited.Scan(limitSource, inputStart);
+            }
+            return -1;
+        }
+
+        protected override Parser<TInput> Clone()
+        {
+            return new LimitParser<TInput, TOutput>(this.Limiter, this.Limited);
         }
     }
 
@@ -3372,6 +3443,7 @@ namespace Kusto.Language.Parsing
         public abstract void VisitRule<TOutput>(RuleParser<TInput, TOutput> parser);
         public abstract void VisitSequence(SequenceParser<TInput> parser);
         public abstract void VisitZeroOrMore(ZeroOrMoreParser<TInput> parser);
+        public abstract void VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser);
     }
 
     public abstract class ParserVisitor<TInput, TResult>
@@ -3397,6 +3469,7 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitRule<TOutput>(RuleParser<TInput, TOutput> parser);
         public abstract TResult VisitSequence(SequenceParser<TInput> parser);
         public abstract TResult VisitZeroOrMore(ZeroOrMoreParser<TInput> parser);
+        public abstract TResult VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser);
     }
 
     public abstract class ParserVisitor<TInput, TArg, TResult>
@@ -3422,6 +3495,7 @@ namespace Kusto.Language.Parsing
         public abstract TResult VisitRule<TOutput>(RuleParser<TInput, TOutput> parser, TArg arg);
         public abstract TResult VisitSequence(SequenceParser<TInput> parser, TArg arg);
         public abstract TResult VisitZeroOrMore(ZeroOrMoreParser<TInput> parser, TArg arg);
+        public abstract TResult VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser, TArg arg);
     }
 
     #endregion

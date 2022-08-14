@@ -43,9 +43,9 @@ namespace Kusto.Language.Parsing
         /// </summary>
         private sealed class ReuseableTextSource : Source<char>
         {
-            private string source = string.Empty;
-            private int offset;
-            private int end;
+            private string _source = string.Empty;
+            private int _offset;
+            private int _end;
 
             public ReuseableTextSource()
             {
@@ -53,9 +53,9 @@ namespace Kusto.Language.Parsing
 
             public void Init(string source, int offset, int length)
             {
-                this.source = source;
-                this.offset = offset;
-                this.end = offset + length;
+                _source = source;
+                _offset = offset;
+                _end = offset + length;
             }
 
             public void Init(string source)
@@ -65,30 +65,19 @@ namespace Kusto.Language.Parsing
 
             public void Clear()
             {
-                this.source = string.Empty;
-                this.offset = 0;
-                this.end = 0;
+                _source = string.Empty;
+                _offset = 0;
+                _end = 0;
             }
 
             public override char Peek(int n = 0)
             {
-                return this.offset + n < this.end ? this.source[this.offset + n] : '\0';
+                return _offset + n < _end ? _source[_offset + n] : '\0';
             }
 
             public override bool IsEnd(int n = 0)
             {
-                return this.offset + n >= this.end;
-            }
-
-            /// <summary>
-            /// Eat the specified number of characters from the input.
-            /// </summary>
-            public override void Eat(int n)
-            {
-                if (this.offset < this.end)
-                {
-                    this.offset += n;
-                }
+                return _offset + n >= _end;
             }
         }
     }

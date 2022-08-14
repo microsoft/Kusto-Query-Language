@@ -167,13 +167,14 @@ namespace Kusto.Language.Parsing
         public static int GetLastLineBreakStart(string text, int start = 0)
         {
             var result = -1;
+            var lastLbEnd = start;
 
             while (start >= 0)
             {
-                var lastLbEnd = start + GetLineBreakLength(text, start);
                 var nextLbStart = GetNextLineBreakStart(text, lastLbEnd);
                 if (nextLbStart >= 0)
                 {
+                    lastLbEnd = nextLbStart + GetLineBreakLength(text, lastLbEnd);
                     result = start = nextLbStart;
                     continue;
                 }

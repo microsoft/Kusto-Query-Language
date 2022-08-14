@@ -222,5 +222,11 @@ namespace Kusto.Language
 
             return symbols ?? EmptyReadOnlyList<ColumnSymbol>.Instance;
         }
+
+        public static bool IsBoolean(Expression expr)
+        {
+            return expr.ResultType == ScalarTypes.Bool
+                || (expr is LiteralExpression lit && lit.Kind == SyntaxKind.BooleanLiteralExpression);
+        }
     }
 }

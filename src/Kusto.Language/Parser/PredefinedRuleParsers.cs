@@ -42,7 +42,8 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxElement> QualifiedWildcardedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> FunctionDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> FunctionBody { get; }
-        public Parser<LexicalToken, SyntaxElement> CommandInput { get; }
+        public Parser<LexicalToken, SyntaxElement> QueryInput { get; }
+        public Parser<LexicalToken, SyntaxElement> ScriptInput { get; }
         public Parser<LexicalToken, SyntaxElement> InputText { get; }
         public Parser<LexicalToken, SyntaxElement> BracketedInputText { get; }
 
@@ -54,11 +55,13 @@ namespace Kusto.Language.Parsing
         public Func<SyntaxElement> MissingFunctionDeclaration { get; }
         public Func<SyntaxElement> MissingFunctionBody { get; }
         public Func<SyntaxElement> MissingExpression { get; }
+        public Func<SyntaxElement> MissingStatement { get; }
         public Func<SyntaxElement> MissingInputText { get; }
 
         public PredefinedRuleParsers(
             QueryGrammar queryParser,
-            Parser<LexicalToken, Expression> inputCommand)
+            Parser<LexicalToken, SyntaxElement> queryInput,
+            Parser<LexicalToken, SyntaxElement> scriptInput)
         {
             // casts are required here, bridge.net has problems with covariant delegates
             this.MissingStringLiteral = () => (SyntaxElement)Q.MissingStringLiteral();
@@ -67,6 +70,7 @@ namespace Kusto.Language.Parsing
             this.MissingNameReference = () => (SyntaxElement)Q.MissingNameReference();
             this.MissingNameDeclaration = () => (SyntaxElement)Q.MissingNameDeclaration();
             this.MissingExpression = () => (SyntaxElement)Q.MissingExpression();
+            this.MissingStatement = () => (SyntaxElement)Q.MissingStatement();
 
             this.MissingFunctionDeclaration = () =>
                  (SyntaxElement)new FunctionDeclaration(
@@ -261,11 +265,8 @@ namespace Kusto.Language.Parsing
             this.FunctionBody =
                 queryParser.FunctionBody.Cast<SyntaxElement>();
 
-            this.CommandInput =
-                First(
-                    If(Token(SyntaxKind.DotToken),
-                        inputCommand.Cast<SyntaxElement>()),
-                    queryParser.StatementList.Cast<SyntaxElement>());
+            this.QueryInput = queryInput;
+            this.ScriptInput = scriptInput;
 
             var InputTextTokens = ZeroOrMore(AnyTokenButEnd);
 

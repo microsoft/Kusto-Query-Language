@@ -1230,6 +1230,9 @@ namespace Kusto.Language.Parsing
 
                         _left =>
                             First(
+                                If(And(Token(SyntaxKind.DotToken), ScanFunctionCall),
+                                    Rule(_left, Token(SyntaxKind.DotToken), FunctionCall,
+                                        (left, dot, fc) => (Expression)new PathExpression(left, dot, fc))),
                                 Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
                                     (left, dot, selector) => (Expression)new PathExpression(left, dot, selector)),
                                 Rule(_left, BracketedExpression,

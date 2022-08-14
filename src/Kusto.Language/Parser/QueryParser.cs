@@ -2094,7 +2094,16 @@ namespace Kusto.Language.Parsing
                 var kind = PeekToken().Kind;
                 if (kind == SyntaxKind.DotToken)
                 {
-                    expr = new PathExpression(expr, ParseToken(), ParsePathElementSelector() ?? CreateMissingNameReference());
+                    if (ScanFunctionCallStart(1))
+                    {
+                        var dot = ParseToken();
+                        var call = ParseFunctionCallExpression();
+                        expr = new PathExpression(expr, dot, call);
+                    }
+                    else
+                    {
+                        expr = new PathExpression(expr, ParseToken(), ParsePathElementSelector() ?? CreateMissingNameReference());
+                    }
                 }
                 else if (kind == SyntaxKind.OpenBracketToken)
                 {

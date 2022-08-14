@@ -674,6 +674,7 @@
         BadCommand,
         UnknownCommand,
         CustomCommand,
+        CommandAndSkippedTokens,
 
         // other
         QueryBlock,

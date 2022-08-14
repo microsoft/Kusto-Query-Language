@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Editor
 {
@@ -1532,6 +1530,8 @@ namespace Kusto.Language.Editor
                 switch (parameter.ArgumentKind)
                 {
                     case ArgumentKind.Column:
+                    case ArgumentKind.Column_Parameter0:
+                    case ArgumentKind.Column_Parameter0_Common:
                         return CompletionHint.Column;
                     case ArgumentKind.StarOnly:
                         return CompletionHint.None;
@@ -2420,7 +2420,7 @@ namespace Kusto.Language.Editor
     /// </summary>
     internal class AnnotationFinder<TInput> : ParserVisitor<TInput, int, int>
     {
-        private readonly Source<TInput> _source;
+        private Source<TInput> _source;
         private readonly int _findOffset;
         private readonly List<Parser<TInput>> _list;
         private bool _prevWasMissing;
@@ -2664,6 +2664,20 @@ namespace Kusto.Language.Editor
             }
 
             return length;
+        }
+
+        public override int VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser, int start)
+        {
+            var len = parser.Limiter.Scan(_source, start);
+            if (len > 0)
+            {
+                var oldSource = _source;
+                _source = new LimitSource<TInput>(_source, start + len);
+                var result = Find(parser.Limited, start);
+                _source = oldSource;
+                return result;
+            }
+            return -1;
         }
 
         public override int VisitMap<TOutput>(MapParser<TInput, TOutput> parser, int start)

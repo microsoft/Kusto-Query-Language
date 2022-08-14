@@ -3,32 +3,35 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Parsing
 {
-    public class ArraySource<TInput> : Source<TInput>
+    /// <summary>
+    /// An input source based on an array or input items.
+    /// </summary>
+    public sealed class ArraySource<TInput> : Source<TInput>
     {
-        private readonly IReadOnlyList<TInput> input;
-        private int offset;
-        private int end;
+        private readonly IReadOnlyList<TInput> _input;
+        private int _offset;
+        private int _end;
 
         public ArraySource(IReadOnlyList<TInput> input, int start = 0, int length = -1)
         {
-            this.input = input;
-            this.offset = start;
+            _input = input;
+            _offset = start;
 
             if (length >= 0)
             {
-                this.end = start + Math.Min(length, input.Count - start);
+                _end = start + Math.Min(length, input.Count - start);
             }
             else
             {
-                this.end = input.Count;
+                _end = input.Count;
             }
         }
 
         public override TInput Peek(int n)
         {
-            if (offset + n < this.end)
+            if (_offset + n < _end)
             {
-                return input[n + offset];
+                return _input[n + _offset];
             }
             else
             {
@@ -38,12 +41,7 @@ namespace Kusto.Language.Parsing
 
         public override bool IsEnd(int n = 0)
         {
-            return offset + n >= this.end;
-        }
-
-        public override void Eat(int n)
-        {
-            offset += n;
+            return _offset + n >= _end;
         }
     }
 }

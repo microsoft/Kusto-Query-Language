@@ -1421,7 +1421,7 @@ namespace Kusto.Language
         {
             for (var i = 0; i < arguments.Count; i++)
             {
-                if ((i < arguments.Count - 1) || (arguments[i].ResultType != ScalarTypes.Bool))
+                if ((i < arguments.Count - 1) || !IsBoolean(arguments[i]))
                 {
                     argumentParameters.Add(m_ArraySort_ArraysArg);
                 }

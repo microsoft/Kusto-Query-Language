@@ -231,6 +231,11 @@ namespace Kusto.Language.Parsing
                 this.Visit(parser.Parser);
             }
 
+            public override void VisitLimit<TOutput>(LimitParser<TInput, TOutput> parser)
+            {
+                this.Visit(parser.Limited);
+            }
+
             public override void VisitMap<TOutput>(MapParser<TInput, TOutput> parser)
             {
                 WriteTerm("map()");

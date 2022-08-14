@@ -831,14 +831,10 @@ namespace Kusto.Language.Binding
                     {
                         foreach (var se in node.Entities)
                         {
-                            if (se.Element.ResultType is DatabaseSymbol
-                                || se.Element.ResultType is TableSymbol)
+                            var expectedKind = symbols.Count > 0 ? symbols[0].Kind : (SymbolKind?)null;
+                            if (CheckEntityGroupElementKind(expectedKind, se.Element, dxs))
                             {
                                 symbols.Add(se.Element.ResultType);
-                            }
-                            else if (!se.Element.ResultType.IsError)
-                            {
-                                dxs.Add(DiagnosticFacts.GetDatabaseOrTableExpected().WithLocation(se.Element));
                             }
                         }
 
@@ -848,7 +844,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        dxs.Add(DiagnosticFacts.GetDatabaseOrTableExpected().WithLocation(node.OpenBracket));
+                        dxs.Add(DiagnosticFacts.GetClusterDatabaseOrTableExpected().WithLocation(node.OpenBracket));
                         return new SemanticInfo(ErrorSymbol.Instance, dxs);
                     }
                 }
@@ -856,6 +852,47 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(dxs);
                     s_symbolListPool.ReturnToPool(symbols);
+                }
+            }
+
+            private bool CheckEntityGroupElementKind(SymbolKind? kind, Expression expr, List<Diagnostic> diagnostics)
+            {
+                var resultType = _binder.GetResultTypeOrError(expr);
+
+                if (kind is SymbolKind expectedKind)
+                {
+                    if (resultType.Kind == expectedKind)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        switch (expectedKind)
+                        {
+                            case SymbolKind.Table:
+                                diagnostics.Add(DiagnosticFacts.GetTableExpected().WithLocation(expr));
+                                break;
+                            case SymbolKind.Database:
+                                diagnostics.Add(DiagnosticFacts.GetDatabaseExpected().WithLocation(expr));
+                                break;
+                            case SymbolKind.Cluster:
+                                diagnostics.Add(DiagnosticFacts.GetClusterExpected().WithLocation(expr));
+                                break;
+                        }
+
+                        return false;
+                    }
+                }
+                else if (resultType is ClusterSymbol
+                    || resultType is DatabaseSymbol
+                    || resultType is TableSymbol)
+                {
+                    return true;
+                }
+                else
+                {
+                    diagnostics.Add(DiagnosticFacts.GetClusterDatabaseOrTableExpected().WithLocation(expr));
+                    return false;
                 }
             }
 
@@ -3703,6 +3740,11 @@ namespace Kusto.Language.Binding
             }
 
             public override SemanticInfo VisitBadCommand(BadCommand node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitCommandAndSkippedTokens(CommandAndSkippedTokens node)
             {
                 return null;
             }

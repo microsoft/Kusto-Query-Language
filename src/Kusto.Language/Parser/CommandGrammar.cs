@@ -25,9 +25,99 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }
 
+
         public CommandGrammar(GlobalState globals)
         {
-            this.CommandBlock = CreateCommandBlockParser(globals);
+            Parser<LexicalToken, SyntaxElement> queryInputCore = null;
+            Parser<LexicalToken, SyntaxElement> scriptInputCore = null;
+
+            var queryInput = Forward(() => queryInputCore)
+                .WithTag("<query-input>");
+
+            var scriptInput = Forward(() => scriptInputCore)
+                .WithTag("<script-input>");
+
+            // include parsers for all command symbols
+            var queryParser = QueryGrammar.From(globals);
+
+            var rules = new PredefinedRuleParsers(queryParser, queryInput, scriptInput);
+            var commandParsers = this.CreateCommandParsers(rules).ToArray();
+            var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
+
+            var commandSkippedTokens =
+                If(UnknownCommandToken,
+                    Rule(
+                        List(UnknownCommandToken),
+                        tokens => new SkippedTokens(tokens)));
+
+            var commandAndSkippedTokens =
+                ApplyOptional(
+                    bestCommand,
+                    _left =>
+                        Rule(_left, commandSkippedTokens,
+                            (cmd, skippedTokens) =>
+                                (Command)new CommandAndSkippedTokens(cmd, skippedTokens)
+                            ));
+            var command =
+                First(
+                    commandAndSkippedTokens, // pick whichever command will successfully consume most input
+                    UnknownCommand, // fall back for commands that are not defined
+                    BadCommand) // otherwise its just bad
+                .WithTag("<command>");
+
+            var commandPipeExpression =
+                ApplyZeroOrMore(
+                    command.Cast<Expression>(),
+                    _left =>
+                        Rule(
+                            _left,
+                            SP.Token(SyntaxKind.BarToken),
+                            Required(queryParser.FollowingPipeElementExpression, QueryGrammar.MissingQueryOperator),
+                            (left, op, right) => (Expression)new PipeExpression(left, op, right))
+                            .WithTag("<command-pipe-expression>"));
+
+            queryInputCore =
+                First(
+                    If(SP.Token(SyntaxKind.DotToken),
+                        commandPipeExpression.Cast<SyntaxElement>()),
+                        queryParser.StatementList.Cast<SyntaxElement>());
+
+            var commandStatement =
+                Rule(
+                    commandPipeExpression,
+                    cmd => (Statement)new ExpressionStatement(cmd));
+
+            var commandBlockSkippedTokens =
+                If(AnyTokenButEnd,
+                    Rule(
+                        List(AnyTokenButEnd), // consumes all remaining tokens
+                        tokens => new SkippedTokens(tokens)));
+
+            this.CommandBlock =
+                Rule(
+                    SeparatedList(
+                        commandStatement, // first one is a command statement
+                        SyntaxKind.SemicolonToken,
+                        queryParser.Statement,      // all others elements are query statements
+                        MissingCommandStatementNode,
+                        endOfList: EndOfText,
+                        oneOrMore: true,
+                        allowTrailingSeparator: true),
+                    Optional(commandBlockSkippedTokens), // consumes all remaining tokens (no diagnostic)
+                    Optional(SP.Token(SyntaxKind.EndOfTextToken)),
+                    (statements, skipped, end) =>
+                        new CommandBlock(statements, skipped, end));
+
+            var scriptElement =
+                Rule(
+                    commandPipeExpression,
+                    Optional(SP.Token(SyntaxKind.SemicolonToken)),
+                    (cmd, semi) => (SyntaxElement)new SeparatedElement<Expression>(cmd, semi));
+
+            scriptInputCore =
+                OneOrMoreList(
+                    Limit(CommandLimiter, scriptElement),  // limit parsing up until next command starts
+                    missingElement: MissingCommandStatement);
         }
 
         /// <summary>
@@ -127,72 +217,6 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        /// <summary>
-        /// Creates a new <see cref="CommandGrammar"/> given the <see cref="GlobalState"/>
-        /// </summary>
-        private Parser<LexicalToken, CommandBlock> CreateCommandBlockParser(GlobalState globals)
-        {
-            Parser<LexicalToken, Expression> inputCommandCore = null;
-
-            var inputCommand = Forward(() => inputCommandCore)
-                .WithTag("<command>");
-
-            // include parsers for all command symbols
-            var queryParser = QueryGrammar.From(globals);
-            var rules = new PredefinedRuleParsers(queryParser, inputCommand);
-            var commandParsers = this.CreateCommandParsers(rules).ToArray();
-            var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
-
-            var command =
-                First(
-                    bestCommand, // pick whichever command will successfully consume most input
-                    UnknownCommand, // fall back for commands that are not defined
-                    BadCommand) // otherwise its just bad
-                .WithTag("<command>");
-
-            var commandOutputPipeExpression =
-                ApplyZeroOrMore(
-                    command.Cast<Expression>(),
-                    _left =>
-                        Rule(
-                            _left,
-                            SP.Token(SyntaxKind.BarToken),
-                            Required(queryParser.FollowingPipeElementExpression, QueryGrammar.MissingQueryOperator),
-                            (left, op, right) => (Expression)new PipeExpression(left, op, right))
-                            .WithTag("<command-output-pipe>"));
-
-            inputCommandCore =
-                commandOutputPipeExpression;
-
-            var commandStatement =
-                Rule(
-                    commandOutputPipeExpression,
-                    cmd => (Statement)new ExpressionStatement(cmd));
-
-            var skippedTokens =
-                If(AnyTokenButEnd,
-                    Rule(
-                        List(AnyTokenButEnd), // consumes all remaining tokens
-                        tokens => new SkippedTokens(tokens)));
-
-            var commandBlock =
-                Rule(
-                    SeparatedList(
-                        commandStatement, // first one is a command statement
-                        SyntaxKind.SemicolonToken,
-                        queryParser.Statement,      // all others elements are query statements
-                        MissingCommandStatementNode,
-                        endOfList: EndOfText,
-                        oneOrMore: true,
-                        allowTrailingSeparator: true),
-                    Optional(skippedTokens), // consumes all remaining tokens (no diagnostic)
-                    Optional(SP.Token(SyntaxKind.EndOfTextToken)),
-                    (cmd, skipped, end) =>
-                        new CommandBlock(cmd, skipped, end));
-
-            return commandBlock;
-        }
-
         private static bool IsBetterSyntax(SyntaxElement command1, SyntaxElement command2)
         {
             // neither command has diagnostics, neither is better
@@ -237,7 +261,9 @@ namespace Kusto.Language.Parsing
             If(Not(First(
                 SP.Token(SyntaxKind.BarToken),
                 SP.Token(SyntaxKind.LessThanBarToken),
-                SP.Token(SyntaxKind.EndOfTextToken))),
+                SP.Token(SyntaxKind.EndOfTextToken),
+                SP.Token(SyntaxKind.SemicolonToken)
+                )),
                 AnyToken);
 
         internal static readonly Parser<LexicalToken, Command> UnknownCommand =
@@ -248,11 +274,52 @@ namespace Kusto.Language.Parsing
                 (dot, parts) => (Command)new UnknownCommand(dot, parts))
                 .WithTag("<unknown-command>");
 
+        internal static bool IsPossibleStartOfCommand(LexicalToken token, bool isFirstToken = false)
+        {
+            if (token.Kind == SyntaxKind.DotToken)
+            {
+                if (TextFacts.HasLineBreaks(token.Trivia))
+                {
+                    var lastLineStart = TextFacts.GetLastLineBreakEnd(token.Trivia);
+                    if (lastLineStart >= 0 && TextFacts.IsWhitespaceOnly(token.Trivia, lastLineStart, token.Trivia.Length - lastLineStart))
+                    {
+                        // first non-whitespace on line is a dot token
+                        return true;
+                    }
+                }
+                else if (isFirstToken && (token.Trivia.Length == 0 || TextFacts.IsWhitespaceOnly(token.Trivia)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static Parser<LexicalToken> CommandLimiter =
+            Match((source, start) =>
+            {
+                // skip first token since it is assumed to be the start of the current command
+                var pos = start + 1; 
+
+                // allow any token up until end of input or when the next command starts
+                while (!source.IsEnd(pos) && !IsPossibleStartOfCommand(source.Peek(pos)))
+                {
+                    pos++;
+                }
+
+                // return number of tokens allowed
+                return pos - start;
+            });
+
         internal static readonly Parser<LexicalToken, Command> BadCommand =
             Rule(
                 SP.Token(SyntaxKind.DotToken),
                 dot => (Command)new BadCommand(dot, new Diagnostic[] { DiagnosticFacts.GetMissingCommand() }))
                 .WithTag("<bad-command>");
+
+        internal static readonly Func<SyntaxElement> MissingCommandStatement = () =>
+            new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));
 
         internal static readonly Statement MissingCommandStatementNode =
             new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));

@@ -708,6 +708,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.BadCommand, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.UnknownCommand, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.CustomCommand, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.CommandAndSkippedTokens, "", SyntaxCategory.Node),
 
                 // other
                 new SyntaxData(SyntaxKind.QueryBlock, "", SyntaxCategory.Node),

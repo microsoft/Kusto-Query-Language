@@ -4250,6 +4250,7 @@ namespace Kusto.Language.Syntax
         public override SyntaxKind Kind => SyntaxKind.GetSchemaOperator;
         
         public SyntaxToken GetSchemaKeyword { get; }
+        
         public NamedParameter KindParameter { get; }
         
         /// <summary>
@@ -14535,6 +14536,84 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class CustomCommand */
     
+    #region class CommandAndSkippedTokens
+    public sealed partial class CommandAndSkippedTokens : Command
+    {
+        public override SyntaxKind Kind => SyntaxKind.CommandAndSkippedTokens;
+        
+        public Command Command { get; }
+        
+        public SkippedTokens SkippedTokens { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="CommandAndSkippedTokens"/>.
+        /// </summary>
+        internal CommandAndSkippedTokens(Command command, SkippedTokens skippedTokens, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Command = Attach(command);
+            this.SkippedTokens = Attach(skippedTokens, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Command;
+                case 1: return SkippedTokens;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Command);
+                case 1: return nameof(SkippedTokens);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Tabular;
+                case 1: return CompletionHint.None;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitCommandAndSkippedTokens(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitCommandAndSkippedTokens(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new CommandAndSkippedTokens((Command)Command?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class CommandAndSkippedTokens */
+    
     #region class BadCommand
     public sealed partial class BadCommand : Command
     {
@@ -14868,6 +14947,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract void VisitUnknownCommand(UnknownCommand node);
         public abstract void VisitCustomCommand(CustomCommand node);
+        public abstract void VisitCommandAndSkippedTokens(CommandAndSkippedTokens node);
         public abstract void VisitBadCommand(BadCommand node);
         public abstract void VisitCommandBlock(CommandBlock node);
     }
@@ -15603,6 +15683,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitCommandAndSkippedTokens(CommandAndSkippedTokens node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitBadCommand(BadCommand node)
         {
             this.DefaultVisit(node);
@@ -15799,6 +15883,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract TResult VisitUnknownCommand(UnknownCommand node);
         public abstract TResult VisitCustomCommand(CustomCommand node);
+        public abstract TResult VisitCommandAndSkippedTokens(CommandAndSkippedTokens node);
         public abstract TResult VisitBadCommand(BadCommand node);
         public abstract TResult VisitCommandBlock(CommandBlock node);
     }
@@ -16531,6 +16616,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitCustomCommand(CustomCommand node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitCommandAndSkippedTokens(CommandAndSkippedTokens node)
         {
             return this.DefaultVisit(node);
         }

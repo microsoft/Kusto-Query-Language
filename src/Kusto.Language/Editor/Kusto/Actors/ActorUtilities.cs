@@ -232,7 +232,7 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Gets the stastement insertion position before the start of the specified node.
+        /// Gets the statement insertion position before the start of the specified node.
         /// </summary>
         private static int GetInsertionPositionBefore(SyntaxNode node)
         {

@@ -16,10 +16,5 @@ namespace Kusto.Language.Parsing
         /// Returns true if the position is beyond the last element.
         /// </summary>
         public abstract bool IsEnd(int n = 0);
-
-        /// <summary>
-        /// Advances the current position in the source.
-        /// </summary>
-        public abstract void Eat(int n = 1);
     }
 }

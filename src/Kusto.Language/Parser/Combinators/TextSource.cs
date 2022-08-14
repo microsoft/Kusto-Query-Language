@@ -11,16 +11,16 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public sealed class TextSource : Source<char>
     {
-        private readonly string source;
-        private int offset;
-        private int end;
-        private StringTable strings;
+        private readonly string _source;
+        private int _offset;
+        private int _end;
+        private StringTable _strings;
 
         public TextSource(string source, int offset, int length)
         {
-            this.source = source;
-            this.offset = offset;
-            this.end = offset + length;
+            _source = source;
+            _offset = offset;
+            _end = offset + length;
         }
 
         public TextSource(string source)
@@ -30,23 +30,12 @@ namespace Kusto.Language.Parsing
 
         public override char Peek(int n = 0)
         {
-            return this.offset + n < this.end ? this.source[this.offset + n] : '\0';
+            return _offset + n < _end ? _source[_offset + n] : '\0';
         }
 
         public override bool IsEnd(int n = 0)
         {
-            return this.offset + n >= this.end;
-        }
-
-        /// <summary>
-        /// Eat the specified number of characters from the input.
-        /// </summary>
-        public override void Eat(int n)
-        {
-            if (this.offset < this.end)
-            {
-                this.offset += n;
-            }
+            return _offset + n >= _end;
         }
 
         public string PeekText(int length)
@@ -56,39 +45,32 @@ namespace Kusto.Language.Parsing
 
         public string PeekText(int start, int length)
         {
-            if (this.strings == null)
+            if (_strings == null)
             {
-                 this.strings = new StringTable();
+                 _strings = new StringTable();
             }
 
-            return this.strings.Add(this.source, this.offset + start, length);
+            return _strings.Add(_source, _offset + start, length);
         }
 
         public bool Matches(int start, string text)
         {
             // compare first character before calling string.Compare (perf)
-            var offs = this.offset + start;
-            return offs < this.source.Length 
+            var offs = _offset + start;
+            return offs < _source.Length 
                 && text.Length > 0 
-                && this.source[offs] == text[0]
-                && string.Compare(this.source, offs, text, 0, text.Length) == 0;
+                && _source[offs] == text[0]
+                && string.Compare(_source, offs, text, 0, text.Length) == 0;
         }
 
         public bool Matches(int start, string text, bool ignoreCase)
         {
-            return string.Compare(this.source, this.offset + start, text, 0, text.Length, ignoreCase) == 0;
-        }
-
-        public string EatText(int length)
-        {
-            var text = this.PeekText(0, length);
-            this.Eat(length);
-            return text;
+            return string.Compare(_source, _offset + start, text, 0, text.Length, ignoreCase) == 0;
         }
 
         /// <summary>
         ///  The current position within the source text.
         /// </summary>
-        public int Position => this.offset;
+        public int Position => this._offset;
     }
 }

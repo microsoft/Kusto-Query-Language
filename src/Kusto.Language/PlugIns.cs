@@ -190,7 +190,7 @@ namespace Kusto.Language
 
                     // after cohort, all non-tabular arguments are dimension arguments
                     int i = list.Count;
-                    for (; i < args.Count && !args[i].ResultType.IsTabular; i++)
+                    for (; i < args.Count && !(args[i].ResultType is TableSymbol); i++)
                     {
                         list.Add(nam_Dimension);
                     }
@@ -393,6 +393,64 @@ namespace Kusto.Language
                  }),
                  new Parameter("Options", ScalarTypes.Dynamic));
 
+
+        private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
+        private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
+        private static readonly Parameter Ipv4_lookup_IPv4LookupKey = new Parameter("IPv4LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
+        private static readonly Parameter IPv4_lookup_ExtraKey = new Parameter("ExtraKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0_Common, minOccurring: 0, maxOccurring: MaxRepeat);
+        private static readonly Parameter IPv4_lookup_return_unmatched = new Parameter("return_unmatched", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0);
+
+        public static readonly FunctionSymbol Ipv4_Lookup =
+            new FunctionSymbol("ipv4_lookup",
+                new Signature(
+                    (table, args, signature) => {
+                        var lookupTable = GetArgument(args, signature, Ipv4_lookup_LookupTable.Name)?.ResultType as TableSymbol;
+                        if (lookupTable != null)
+                        {
+                            var keyColumns = GetArguments(args, signature, IPv4_lookup_ExtraKey.Name).Select(e => e.ReferencedSymbol as ColumnSymbol).Where(c => c != null).ToList();
+                            var cols = new List<ColumnSymbol>();
+                            // add all left side columns
+                            cols.AddRange(table.Columns);
+                            // add all right side columns except those used as join keys from both tables
+                            cols.AddRange(lookupTable.Columns.Where(c => !keyColumns.Any(kc => kc.Name == c.Name)));
+                            // make final set of columns have unique names
+                            var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
+                            return new TableSymbol(combinedColumns);
+                        }
+                        else
+                        {
+                            // lookup table unknown, so default to input table
+                            return table;
+                        }
+                    },
+                    Tabularity.Tabular,
+                    Ipv4_lookup_LookupTable,
+                    Ipv4_lookup_SourceIPv4Key,
+                    Ipv4_lookup_IPv4LookupKey,
+                    IPv4_lookup_ExtraKey,
+                    IPv4_lookup_return_unmatched)
+                    .WithLayout((signature, args, parameters) =>
+                    {
+                        parameters.Add(Ipv4_lookup_LookupTable);
+                        parameters.Add(Ipv4_lookup_SourceIPv4Key);
+                        parameters.Add(Ipv4_lookup_IPv4LookupKey);
+
+                        for (int i = 3; i < args.Count; i++)
+                        {
+                            if (i == args.Count - 1 
+                                && ((args[i] is SimpleNamedExpression sne
+                                     && sne.Name.SimpleName == IPv4_lookup_return_unmatched.Name)
+                                    || (args[i] is LiteralExpression lit && lit.Kind == SyntaxKind.BooleanLiteralExpression)))
+                            {
+                                parameters.Add(IPv4_lookup_return_unmatched);
+                            }
+                            else
+                            {
+                                parameters.Add(IPv4_lookup_ExtraKey);
+                            }
+                        }
+                    }));
+
         public static readonly FunctionSymbol SchemaMerge =
              new FunctionSymbol("schema_merge",
                  new TableSymbol(new[] {
@@ -582,7 +640,7 @@ namespace Kusto.Language
                      int i = list.Count;
 
                      // any following bool args are also expr args
-                     for (; i < args.Count && args[i].ResultType == ScalarTypes.Bool; i++)
+                     for (; i < args.Count && IsBoolean(args[i]); i++)
                      {
                          list.Add(SD_Expr);
                      }
@@ -676,6 +734,7 @@ namespace Kusto.Language
             Identity,
             IdentityV3,
             InferStorageSchema,
+            Ipv4_Lookup,
             Narrow,
             NewActivityMetrics,
             Pivot,
