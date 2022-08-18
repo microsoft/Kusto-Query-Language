@@ -1328,6 +1328,42 @@ namespace Kusto.Language
         public static readonly CommandSymbol StoredQueryResultsDrop =
             new CommandSymbol("StoredQueryResultsDrop", _schema35);
 
+        public static readonly CommandSymbol ShowCertificates =
+            new CommandSymbol("ShowCertificates", _schema18);
+
+        public static readonly CommandSymbol ShowCommConcurrency =
+            new CommandSymbol("ShowCommConcurrency", _schema18);
+
+        public static readonly CommandSymbol ShowCommPools =
+            new CommandSymbol("ShowCommPools", _schema18);
+
+        public static readonly CommandSymbol ShowFabricCache =
+            new CommandSymbol("ShowFabricCache", _schema18);
+
+        public static readonly CommandSymbol ShowFabricLocks =
+            new CommandSymbol("ShowFabricLocks", _schema18);
+
+        public static readonly CommandSymbol ShowFabricClocks =
+            new CommandSymbol("ShowFabricClocks", _schema18);
+
+        public static readonly CommandSymbol ShowFeatureFlags =
+            new CommandSymbol("ShowFeatureFlags", _schema18);
+
+        public static readonly CommandSymbol ShowMemPools =
+            new CommandSymbol("ShowMemPools", _schema18);
+
+        public static readonly CommandSymbol ShowServicePoints =
+            new CommandSymbol("ShowServicePoints", _schema18);
+
+        public static readonly CommandSymbol ShowTcpConnections =
+            new CommandSymbol("ShowTcpConnections", _schema18);
+
+        public static readonly CommandSymbol ShowTcpPorts =
+            new CommandSymbol("ShowTcpPorts", _schema18);
+
+        public static readonly CommandSymbol ShowThreadPools =
+            new CommandSymbol("ShowThreadPools", _schema18);
+
         public static readonly CommandSymbol ExecuteDatabaseScript =
             new CommandSymbol("ExecuteDatabaseScript", _schema18);
 
@@ -2057,6 +2093,18 @@ namespace Kusto.Language
             StoredQueryResultShowSchema,
             StoredQueryResultDrop,
             StoredQueryResultsDrop,
+            ShowCertificates,
+            ShowCommConcurrency,
+            ShowCommPools,
+            ShowFabricCache,
+            ShowFabricLocks,
+            ShowFabricClocks,
+            ShowFeatureFlags,
+            ShowMemPools,
+            ShowServicePoints,
+            ShowTcpConnections,
+            ShowTcpPorts,
+            ShowThreadPools,
             ExecuteDatabaseScript,
             CreateRequestSupport,
             ShowRequestSupport,

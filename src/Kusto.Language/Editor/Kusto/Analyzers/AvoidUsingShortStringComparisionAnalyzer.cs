@@ -10,6 +10,8 @@ namespace Kusto.Language.Editor
 
     internal class AvoidUsingShortStringComparisionAnalyzer : KustoAnalyzer
     {
+        private const int MinimumNoWarnLength = 4;
+
         private static readonly Diagnostic _diagnostic =
             new Diagnostic(
                 KustoAnalyzerCodes.AvoidUsingShortStringComparision,
@@ -25,37 +27,65 @@ namespace Kusto.Language.Editor
 
         public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            foreach (var node in code.Syntax.GetDescendants<BinaryExpression>())
+            foreach (var exp in code.Syntax.GetDescendants<Expression>(x =>
+                x is BinaryExpression
+                || x is HasAnyExpression
+                || x is HasAllExpression
+                ))
             {
-                if (!node.Right.IsConstant && !node.Left.IsConstant)
-                    continue;
-
-                if (node.Kind == SyntaxKind.EqualExpression ||
-                    node.Kind == SyntaxKind.HasExpression ||
-                    node.Kind == SyntaxKind.NotEqualExpression ||
-                    node.Kind == SyntaxKind.NotHasExpression ||
-                    node.Kind == SyntaxKind.StartsWithExpression ||
-                    node.Kind == SyntaxKind.NotStartsWithExpression)
+                if (exp is BinaryExpression bex)
                 {
-                    string constValue = null;
+                    if (!bex.Right.IsConstant && !bex.Left.IsConstant)
+                        continue;
 
-                    if (node.Right.IsConstant && node.Right.ResultType == ScalarTypes.String)
+                    if (bex.Kind == SyntaxKind.EqualExpression ||
+                        bex.Kind == SyntaxKind.NotEqualExpression ||
+                        bex.Kind == SyntaxKind.HasExpression ||
+                        bex.Kind == SyntaxKind.NotHasExpression ||
+                        bex.Kind == SyntaxKind.HasCsExpression ||
+                        bex.Kind == SyntaxKind.NotHasCsExpression ||
+                        bex.Kind == SyntaxKind.StartsWithExpression ||
+                        bex.Kind == SyntaxKind.NotStartsWithExpression)
                     {
-                        constValue = node.Right.ConstantValue as string;
+                        CheckShortConstants(bex.Left, bex.Right, bex, code.Globals, diagnostics);
                     }
-                    else if (node.Left.IsConstant && node.Left.ResultType == ScalarTypes.String)
+                }
+                else if (exp is HasAnyExpression anyex)
+                {
+                    foreach (var sep in anyex.Right.Expressions)
                     {
-                        constValue = node.Left.ConstantValue as string;
+                        CheckShortConstants(anyex.Left, sep.Element, sep.Element, code.Globals, diagnostics);
                     }
+                }
+                else if (exp is HasAllExpression allex)
+                {
+                    foreach (var sep in allex.Right.Expressions)
+                    {
+                        CheckShortConstants(allex.Left, sep.Element, sep.Element, code.Globals, diagnostics);
+                    }
+                }
+            }
+        }
 
-                    if (!string.IsNullOrEmpty(constValue) && constValue.Length < 4)
-                    {
-                        // only report if db column is being used directly
-                        if (!IsDbColumn(node.Right, code.Globals) && !IsDbColumn(node.Left, code.Globals))
-                            continue;
+        private static void CheckShortConstants(Expression left, Expression right, SyntaxNode location, GlobalState globals, List<Diagnostic> diagnostics)
+        {
+            string constValue = null;
 
-                        diagnostics.Add(_diagnostic.WithLocation(node));
-                    }
+            if (right.IsConstant && right.ResultType == ScalarTypes.String)
+            {
+                constValue = right.ConstantValue as string;
+            }
+            else if (left.IsConstant && left.ResultType == ScalarTypes.String)
+            {
+                constValue = left.ConstantValue as string;
+            }
+
+            if (!string.IsNullOrEmpty(constValue) && constValue.Length < MinimumNoWarnLength)
+            {
+                // only report if db column is being used directly
+                if (IsDbColumn(right, globals) || IsDbColumn(left, globals))
+                {
+                    diagnostics.Add(_diagnostic.WithLocation(location));
                 }
             }
         }

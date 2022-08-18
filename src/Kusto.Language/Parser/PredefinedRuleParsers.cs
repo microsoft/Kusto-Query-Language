@@ -38,6 +38,8 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxElement> Type { get; }
         public Parser<LexicalToken, SyntaxElement> NameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> QualifiedNameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> EntityGroups { get; }
+
         public Parser<LexicalToken, SyntaxElement> WildcardedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> QualifiedWildcardedNameDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> FunctionDeclaration { get; }
@@ -180,6 +182,11 @@ namespace Kusto.Language.Parsing
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.MaterializedView))
                     .WithCompletionHint(Editor.CompletionHint.MaterializedView)
                     .WithTag("<materializedview>");
+
+            this.EntityGroups =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.EntityGroup))
+                    .WithCompletionHint(Editor.CompletionHint.EntityGroup)
+                    .WithTag("<entitygroup>");
 
             this.DatabaseNameReference =
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database))
