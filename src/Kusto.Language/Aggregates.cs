@@ -69,7 +69,7 @@ namespace Kusto.Language
             new FunctionSymbol("tdigest_merge", ScalarTypes.Dynamic,
                 new Parameter("tdigest", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
-            .WithResultNamePrefix("tdigest_merge");
+            .WithResultNamePrefix("merge_tdigests");
 
         public static readonly FunctionSymbol MergeTDigests =
             new FunctionSymbol("merge_tdigests", ScalarTypes.Dynamic,

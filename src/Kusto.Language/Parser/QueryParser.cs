@@ -3398,29 +3398,26 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private PartitionSubquery ParsePartitionUnscopedSubquery()
+        private PartitionSubquery ParsePartitionSubquery()
         {
             var open = ParseToken(SyntaxKind.OpenParenToken);
             if (open != null)
             {
                 var expr = ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression();
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new PartitionSubquery(null, open, expr, close);
+                return new PartitionSubquery(open, expr, close);
             }
 
             return null;
         }
 
-        private PartitionSubquery ParsePartitionScopedSubquery()
+        private PartitionScope ParsePartitionScope()
         {
             var inKeyword = ParseToken(SyntaxKind.InKeyword);
             if (inKeyword != null)
             {
                 var scope = ParseFunctionCallExpression() ?? ParseDynamicLiteral() ?? CreateMissingExpression();
-                var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
-                var expr = ParsePipeSubExpression() ?? ParseExpression() ?? CreateMissingExpression();
-                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new PartitionSubquery(new PartitionScope(inKeyword, scope), open, expr, close);
+                return new PartitionScope(inKeyword, scope);
             }
 
             return null;
@@ -3433,9 +3430,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.OpenBraceToken:
                     return ParsePartitionQuery();
                 case SyntaxKind.OpenParenToken:
-                    return ParsePartitionUnscopedSubquery();
-                case SyntaxKind.InKeyword:
-                    return ParsePartitionScopedSubquery();
+                    return ParsePartitionSubquery();
                 default:
                     return null;
             }
@@ -3443,13 +3438,13 @@ namespace Kusto.Language.Parsing
 
         private static PartitionOperand CreateMissingPartitionOperand() =>
             new PartitionSubquery(
-                null,
                 CreateMissingToken(SyntaxKind.OpenParenToken),
                 CreateMissingExpression(),
                 CreateMissingToken(SyntaxKind.CloseParenToken));
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_partitionOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.PartitionParameters);
+
 
         private PartitionOperator ParsePartitionOperator()
         {
@@ -3459,8 +3454,9 @@ namespace Kusto.Language.Parsing
                 var parameters = ParseQueryOperatorParameterList(s_partitionOperatorParameterMap);
                 var byKeyword = ParseRequiredToken(SyntaxKind.ByKeyword);
                 var byExpr = ParseEntityReferenceExpression() ?? CreateMissingNameReference();
+                var scope = ParsePartitionScope();
                 var operand = ParsePartitionOperand() ?? CreateMissingPartitionOperand();
-                return new PartitionOperator(keyword, parameters, byKeyword, byExpr, operand);
+                return new PartitionOperator(keyword, parameters, byKeyword, byExpr, scope, operand);
             }
 
             return null;
@@ -4076,7 +4072,7 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(SyntaxKind.ProjectReorderKeyword);
             if (keyword != null)
             {
-                var expressions = ParseCommaList(FnParseProjectReorderExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
+                var expressions = ParseCommaList(FnParseProjectReorderExpression, CreateMissingExpression, FnScanCommonListEnd);
                 return new ProjectReorderOperator(keyword, expressions);
             }
 
