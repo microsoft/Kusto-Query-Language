@@ -140,7 +140,7 @@ namespace Kusto.Language.Binding
                 if (uniqueName != column.Name)
                 {
                     // include knowledge of the original column before it got renamed
-                    column = column.WithName(uniqueName);
+                    column = new ColumnSymbol(uniqueName, column.Type, column.Description, originalColumns: new[] { column });
                 }
 
                 _projection.Add(column);
@@ -211,7 +211,7 @@ namespace Kusto.Language.Binding
             }
 
             var oldColumn = _projection[index];
-            var newColumn = oldColumn.WithName(newName);
+            var newColumn = new ColumnSymbol(newName, oldColumn.Type, oldColumn.Description, originalColumns: new[] { oldColumn });
 
             _projection[index] = newColumn;
             _columnIndexMap.Remove(oldName);

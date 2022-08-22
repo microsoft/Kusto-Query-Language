@@ -2284,6 +2284,7 @@ namespace Kusto.Language.Binding
 
                     // figure out the result type
                     columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+
                     var resultIsOpen = RowScopeOrEmpty.IsOpen;
 
                     var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;

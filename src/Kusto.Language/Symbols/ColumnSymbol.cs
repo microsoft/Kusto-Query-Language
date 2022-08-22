@@ -21,13 +21,53 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public string Description { get; }
 
+        /// <summary>
+        /// One or more columns that this column is based on
+        /// due to either an automatic rename like with join operator
+        /// or unification of multiple columns like with union operator.
+        /// </summary>
+        public IReadOnlyList<ColumnSymbol> OriginalColumns { get; }
+
         public override SymbolKind Kind => SymbolKind.Column;
 
-        public ColumnSymbol(string name, TypeSymbol type, string description = null)
+        public ColumnSymbol(string name, TypeSymbol type, string description = null, IReadOnlyList<ColumnSymbol> originalColumns = null)
             : base(name)
         {
             this.Type = type ?? throw new ArgumentNullException(nameof(type));
             this.Description = description ?? "";
+
+            if (originalColumns != null && originalColumns.Count > 0)
+            {
+                this.OriginalColumns = GetTrulyOriginalColumns(originalColumns);
+            }
+            else
+            {
+                this.OriginalColumns = EmptyReadOnlyList<ColumnSymbol>.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the set of columns that do not declare other original columns.
+        /// </summary>
+        private static IReadOnlyList<ColumnSymbol> GetTrulyOriginalColumns(IReadOnlyList<ColumnSymbol> columns)
+        {
+            if (columns.All(c => c.OriginalColumns.Count == 0))
+                return columns;
+
+            var mostOriginal = new List<ColumnSymbol>();
+            foreach (var col in columns)
+            {
+                if (col.OriginalColumns.Count > 0)
+                {
+                    mostOriginal.AddRange(col.OriginalColumns);
+                }
+                else
+                {
+                    mostOriginal.Add(col);
+                }
+            }
+
+            return mostOriginal;
         }
 
         public override Tabularity Tabularity => Tabularity.Scalar;
@@ -39,7 +79,7 @@ namespace Kusto.Language.Symbols
         {
             if (name != this.Name)
             {
-                return new ColumnSymbol(name, this.Type, this.Description);
+                return new ColumnSymbol(name, this.Type, this.Description, this.OriginalColumns);
             }
             else
             {
@@ -54,7 +94,7 @@ namespace Kusto.Language.Symbols
         {
             if (type != this.Type)
             {
-                return new ColumnSymbol(this.Name, type, this.Description);
+                return new ColumnSymbol(this.Name, type, this.Description, this.OriginalColumns);
             }
             else
             {
@@ -69,7 +109,22 @@ namespace Kusto.Language.Symbols
         {
             if (description != this.Description)
             {
-                return new ColumnSymbol(this.Name, this.Type, description);
+                return new ColumnSymbol(this.Name, this.Type, description, this.OriginalColumns);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="ColumnSymbol"/> with the specified list of original columns.
+        /// </summary>
+        public ColumnSymbol WithOriginalColumns(IReadOnlyList<ColumnSymbol> originalColumns)
+        {
+            if (this.OriginalColumns != originalColumns)
+            {
+                return new ColumnSymbol(this.Name, this.Type, this.Description, originalColumns);
             }
             else
             {

@@ -210,34 +210,40 @@ namespace Kusto.Language.Binding
             var newColumns = s_columnListPool.AllocateFromPool();
             try
             {
-                // TODO: pool this too?
-                var map = BuildColumnNameMap(columns);
+                var map = new ColumnMap(columns);
 
                 // go through original column order and build out new column list
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var col = columns[i];
 
-                    if (map.TryGetValue(col.Name, out var sameNamedColumns))
+                    if (map.HasColumns(col.Name))
                     {
-                        if (sameNamedColumns.Count == 1)
+                        if (map.HasMultipleTypes(col.Name))
                         {
-                            // exactly one column with this name
-                            newColumns.Add(GetUniqueColumn(col, uniqueNames));
-                        }
-                        else if (sameNamedColumns.Count > 1)
-                        {
-                            // more than one column, so lets make a unique column for each type used
-                            foreach (var colType in sameNamedColumns)
+                            var types = map.GetTypes(col.Name);
+                            foreach (var type in types)
                             {
-                                var name = uniqueNames.GetOrAddName(col.Name + "_" + colType.Name);
-                                newColumns.Add(new ColumnSymbol(name, colType));
+                                var newName = uniqueNames.GetOrAddName(col.Name + "_" + type.Name);
+                                var sameTypeColumns = map.GetColumns(col.Name, type);
+                                var newCol = new ColumnSymbol(newName, type, originalColumns: sameTypeColumns);
+                                newColumns.Add(newCol);
                             }
                         }
-
-                        // we've already handled this name, remove it so we don't try adding it again
-                        map.Remove(col.Name);
+                        else if (map.HasMultipleColumns(col.Name, col.Type))
+                        {
+                            var cols = map.GetColumns(col.Name, col.Type);
+                            var newCol = new ColumnSymbol(col.Name, col.Type, originalColumns: cols);
+                            newColumns.Add(GetUniqueColumn(newCol, uniqueNames));
+                        }
+                        else
+                        {
+                            newColumns.Add(GetUniqueColumn(col, uniqueNames));
+                        }
                     }
+
+                    // we've already handled this name, remove it so we don't try adding it again
+                    map.Remove(col.Name);
                 }
 
                 // copy new list back to original
@@ -255,48 +261,45 @@ namespace Kusto.Language.Binding
         /// Converts list of columns to a list of columns with distinct names.
         /// If multiple columns have the same name, but differ in type, the resulting single columns has the type dynamic.
         /// </summary>
-        /// <param name="columns"></param>
         internal static void UnifyColumnsWithSameName(List<ColumnSymbol> columns)
         {
             var newColumns = s_columnListPool.AllocateFromPool();
             try
             {
-                var map = BuildColumnNameMap(columns);
+                var map = new ColumnMap(columns);
 
                 // go through original column order and build out new column list
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var col = columns[i];
 
-                    if (map.TryGetValue(col.Name, out var sameNamedColumns))
+                    if (map.HasColumns(col.Name))
                     {
-                        if (sameNamedColumns.Count == 1)
+                        if (map.HasMultipleTypes(col.Name))
                         {
-                            // exactly one column with this name (and type)
-                            newColumns.Add(col);
-                        }
-                        else if (sameNamedColumns.Count > 1)
-                        {
-                            // multiple columns with same name, add a single one that uses a common type.
-                            var types = sameNamedColumns.ToArray();
+                            var types = map.GetTypes(col.Name);
                             var commonType = GetCommonScalarType(types);
-
                             if (commonType == null)
                                 commonType = ScalarTypes.Dynamic;
 
-                            if (col.Type == commonType)
-                            {
-                                newColumns.Add(col);
-                            }
-                            else
-                            {
-                                newColumns.Add(new ColumnSymbol(col.Name, commonType));
-                            }
+                            var originalCols = map.GetColumns(col.Name).ToList();
+                            var newCol = new ColumnSymbol(col.Name, commonType, originalColumns: originalCols);
+                            newColumns.Add(newCol);
                         }
-
-                        // we've already handled this name, so remove it so we don't add it again
-                        map.Remove(col.Name);
+                        else if (map.HasMultipleColumns(col.Name, col.Type))
+                        {
+                            var originalCols = map.GetColumns(col.Name, col.Type);
+                            var newCol = new ColumnSymbol(col.Name, col.Type, originalColumns: originalCols);
+                            newColumns.Add(newCol);
+                        }
+                        else
+                        {
+                            newColumns.Add(col);
+                        }
                     }
+
+                    // we've already handled this name, so remove it so we don't add it again
+                    map.Remove(col.Name);
                 }
 
                 // copy new list back to original
@@ -335,32 +338,6 @@ namespace Kusto.Language.Binding
                 s_uniqueNameTablePool.ReturnToPool(names);
                 s_columnListPool.ReturnToPool(newColumns);
             }
-        }
-
-        /// <summary>
-        /// Builds a map between names and columns with that name.
-        /// </summary>
-        private static Dictionary<string, List<TypeSymbol>> BuildColumnNameMap(List<ColumnSymbol> columns)
-        {
-            var map = new Dictionary<string, List<TypeSymbol>>();
-
-            // build up a map between column names and types.
-            for (int i = 0; i < columns.Count; i++)
-            {
-                var col = columns[i];
-                if (!map.TryGetValue(col.Name, out var sameNameColumns))
-                {
-                    sameNameColumns = new List<TypeSymbol>();
-                    map.Add(col.Name, sameNameColumns);
-                }
-
-                if (!sameNameColumns.Contains(col.Type))
-                {
-                    sameNameColumns.Add(col.Type);
-                }
-            }
-
-            return map;
         }
 
         /// <summary>
@@ -404,6 +381,22 @@ namespace Kusto.Language.Binding
                         result.Add(c);
                     }
                 }
+
+                names.Clear();
+                foreach (var c in columnsA)
+                {
+                    names.Add(c.Name);
+                }
+
+                foreach (var c in columnsB)
+                {
+                    if (names.Contains(c.Name))
+                    {
+                        result.Add(c);
+                    }
+                }
+
+                UnifyColumnsWithSameName(result);
             }
             finally
             {
@@ -464,7 +457,7 @@ namespace Kusto.Language.Binding
             var uniqueName = uniqueNames.GetOrAddName(column.Name);
             if (uniqueName != column.Name)
             {
-                return new ColumnSymbol(uniqueName, column.Type);
+                return new ColumnSymbol(uniqueName, column.Type, originalColumns: new[] { column });
             }
             else
             {

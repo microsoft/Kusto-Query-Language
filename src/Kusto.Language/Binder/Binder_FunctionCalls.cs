@@ -966,16 +966,21 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private static TypeSymbol GetCommonScalarType(params TypeSymbol[] types)
+        {
+            return GetCommonScalarType((IReadOnlyList<TypeSymbol>)types);
+        }
+
         /// <summary>
         /// Gets the common scalar type amongst a set of types.
         /// This is either the one type if they are all them same type, the most promoted of the types, or the common type of the types that are not dynamic.
         /// </summary>
-        private static TypeSymbol GetCommonScalarType(params TypeSymbol[] types)
+        private static TypeSymbol GetCommonScalarType(IReadOnlyList<TypeSymbol> types)
         {
             TypeSymbol commonType = null;
             bool hadUnknown = false;
 
-            for (int i = 0; i < types.Length; i++)
+            for (int i = 0; i < types.Count; i++)
             {
                 var type = types[i];
 
