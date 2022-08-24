@@ -147,6 +147,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.InCsKeyword, "in~", opKind: OperatorKind.InCs),
                 new SyntaxData(SyntaxKind.InvokeKeyword, "invoke"),
                 new SyntaxData(SyntaxKind.IsFuzzyKeyword, "isfuzzy"),
+                new SyntaxData(SyntaxKind.ForceRemoteKeyword, "force_remote"),
 
                 new SyntaxData(SyntaxKind.JoinKeyword, "join"),
                 new SyntaxData(SyntaxKind.JournalKeyword, "journal"),

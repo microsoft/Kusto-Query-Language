@@ -96,6 +96,7 @@ namespace Kusto.Language
             "__noWithSource",
             "__packedColumn",
             "__sourceColumnIndex",
+            "force_remote",
           };
 
         public static readonly IReadOnlyList<string> ChartTypes = new string[]

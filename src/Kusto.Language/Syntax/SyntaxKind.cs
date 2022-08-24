@@ -115,6 +115,7 @@
         InCsKeyword,
         InvokeKeyword,
         IsFuzzyKeyword,
+        ForceRemoteKeyword,
 
         JoinKeyword,
         JournalKeyword,

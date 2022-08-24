@@ -94,6 +94,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter WithStepName =
             new QueryOperatorParameter("with_step_name", QueryOperatorParameterValueKind.NameDeclaration);
 
+        public static readonly QueryOperatorParameter ForceRemote =
+            new QueryOperatorParameter("force_remote", QueryOperatorParameterValueKind.BoolLiteral);
+
         /// <summary>
         /// All query operator parameters.
         /// Does not include parameters used for other syntax clauses (like render with properties)
@@ -128,6 +131,7 @@ namespace Kusto.Language
             WithItemIndex.Hide(),
             WithSource.Hide(),
             WithStepName.Hide(),
+            ForceRemote.Hide(),
         };
 
         // parameter sets for specific operators
