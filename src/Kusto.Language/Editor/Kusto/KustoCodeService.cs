@@ -257,6 +257,7 @@ namespace Kusto.Language.Editor
         {
             options = options ?? CodeActionOptions.Default;
             var actors = options.Actors.Count > 0 ? options.Actors.AsEnumerable() : KustoActors.All;
+            var actorActions = new List<CodeAction>();
 
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
@@ -270,7 +271,11 @@ namespace Kusto.Language.Editor
                     {
                         if (actor is KustoActor kustoActor)
                         {
-                            kustoActor.GetActions(code, position, length, options, actions, cancellationToken);
+                            actorActions.Clear();
+                            kustoActor.GetActions(code, position, length, options, actorActions, cancellationToken);
+
+                            // add actor name to action data
+                            actions.AddRange(actorActions.Select(a => a.AddData(actor.Name)));
                         }
                     }
                     catch (Exception)
@@ -297,15 +302,24 @@ namespace Kusto.Language.Editor
 
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
-                var actor = actors.OfType<KustoActor>().FirstOrDefault(a => a.Name == codeAction.Actor);
-                if (actor != null)
+                var actorName = codeAction.Data.LastOrDefault();
+                if (actorName != null)
                 {
-                    return actor.ApplyAction(code, position, length, options, codeAction, cancellationToken);
+                    // remove the actor name from the code action's data
+                    codeAction = codeAction.RemoveData(1);
+
+                    var actor = actors.OfType<KustoActor>().FirstOrDefault(a => a.Name == actorName);
+                    if (actor != null)
+                    {
+                        return actor.ApplyAction(code, position, length, options, codeAction, cancellationToken);
+                    }
+                    else
+                    {
+                        return CodeActionResult.Failure($"Unknown actor: {actorName}");
+                    }
                 }
-                else
-                {
-                    return CodeActionResult.Failure($"Unknown actor: {codeAction.Actor}");
-                }
+
+                return CodeActionResult.Failure("Unknown actor");
             }
             else
             {

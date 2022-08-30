@@ -9,11 +9,13 @@ namespace Kusto.Language.Editor
     {
         public static KustoActor FunctionInliner = new InlineDatabaseFunctionActor();
         public static KustoActor ExtractExpression = new ExtractExpressionActor();
+        public static KustoActor AnalyzerFixer = new AnalyzerFixActor();
 
         public static IReadOnlyList<KustoActor> All = new KustoActor[]
         {
             FunctionInliner,
-            ExtractExpression
+            ExtractExpression,
+            AnalyzerFixer,
         };
     }
 }

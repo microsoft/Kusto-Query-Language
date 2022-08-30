@@ -83,7 +83,7 @@ namespace Kusto.Language.Parsing
         /// A parser that converts all the successfully scanned input characters into a single output item.
         /// </summary>
         public static Parser<char, TOutput> Convert<TOutput>(Parser<char> pattern, Func<string, TOutput> producer) =>
-            Parsers<char>.Convert(pattern, (Source<char> source, int start, int length) => 
+            Parsers<char>.Convert(pattern, (Source<char> source, int start, int length) =>
             {
                 // check for TextSource to do it the easy way
                 if (source is TextSource ts)
@@ -94,12 +94,12 @@ namespace Kusto.Language.Parsing
                 {
                     // otherwise, do it the hard way
                     var builder = new System.Text.StringBuilder();
-                    
+
                     for (int i = 0; i < length; i++)
                     {
                         builder.Append(source.Peek(start + i));
                     }
-                    
+
                     return producer(builder.ToString());
                 }
             });
@@ -189,9 +189,9 @@ namespace Kusto.Language.Parsing
             Func<IReadOnlyList<TElement>, TProducer> producer)
         {
             return List(
-                elementParser, 
-                missingElement: null, 
-                oneOrMore: oneOrMore, 
+                elementParser,
+                missingElement: null,
+                oneOrMore: oneOrMore,
                 producer: producer);
         }
 
@@ -582,15 +582,36 @@ namespace Kusto.Language.Parsing
             Match(i => comparer.Equals(i, item));
 
         /// <summary>
-        /// A parser that consumes one or more sequential matching input items.
+        /// A parser that consumes one input item that matches one of the specified items
         /// </summary>
-        public static Parser<TInput> Match(IReadOnlyList<TInput> items) =>
-            Match(items, EqualityComparer<TInput>.Default);
+        public static Parser<TInput> MatchAny(IReadOnlyList<TInput> items) =>
+            MatchAny(items, EqualityComparer<TInput>.Default);
+
+        /// <summary>
+        /// A parser that consumes one input item that matches one of the specified items
+        /// </summary>
+        public static Parser<TInput> MatchAny(params TInput[] items) =>
+            MatchAny(items, EqualityComparer<TInput>.Default);
+
+        /// <summary>
+        /// A parser that consumes one input item that matches one of the specified items
+        /// </summary>
+        public static Parser<TInput> MatchAny(IReadOnlyList<TInput> items, EqualityComparer<TInput> comparer)
+        {
+            var hashset = new HashSet<TInput>(items, comparer);
+            return Match((TInput item) => items.Contains(item));
+        }
 
         /// <summary>
         /// A parser that consumes one or more sequential matching input items.
         /// </summary>
-        public static Parser<TInput> Match(IReadOnlyList<TInput> items, EqualityComparer<TInput> comparer) =>
+        public static Parser<TInput> MatchSequence(IReadOnlyList<TInput> items) =>
+            MatchSequence(items, EqualityComparer<TInput>.Default);
+
+        /// <summary>
+        /// A parser that consumes one or more sequential matching input items.
+        /// </summary>
+        public static Parser<TInput> MatchSequence(IReadOnlyList<TInput> items, EqualityComparer<TInput> comparer) =>
             new MatchParser<TInput>(
                 (source, start) =>
                 {

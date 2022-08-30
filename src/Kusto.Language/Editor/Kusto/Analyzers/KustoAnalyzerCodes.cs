@@ -14,20 +14,20 @@ namespace Kusto.Language.Editor
     /// </summary>
     internal static class KustoAnalyzerCodes
     {
-        internal static string AvoidUsingContains = "KS500";
-        internal static string AvoidUsingIsNullStringComparision = "KS501";
-        internal static string AvoidUsingIsNotNullStringComparison = "KS502";
-        internal static string AvoidUsingShortStringComparision = "KS503";
-        internal static string AvoidUsingToBoolOnNumerics = "KS504";
-        internal static string NullAggregation = "KS505";
-        internal static string AvoidUsingFormatDateTimeInPredicate = "KS506";
-        internal static string AvoidUsingObsoleteFunctions = "KS507";
-        internal static string AvoidJoinWithoutKind = "KS508";
-        internal static string StdevTimespanConversion = "KS509";
-        internal static string ColumnHasSameNameAsVariable = "KS510";
-        internal static string PreferUsingMaterializedViewIntrinsic = "KS511";
-        internal static string CalledFunctionHasErrors = "KS512";
-        internal static string AvoidUsingLegacyPartition = "KS513";
+        internal const string AvoidUsingContains = "KS500";
+        internal const string AvoidUsingIsNullStringComparision = "KS501";
+        internal const string AvoidUsingIsNotNullStringComparison = "KS502";
+        internal const string AvoidUsingShortStringComparision = "KS503";
+        internal const string AvoidUsingToBoolOnNumerics = "KS504";
+        internal const string NullAggregation = "KS505";
+        internal const string AvoidUsingFormatDateTimeInPredicate = "KS506";
+        internal const string AvoidUsingObsoleteFunctions = "KS507";
+        internal const string AvoidJoinWithoutKind = "KS508";
+        internal const string StdevTimespanConversion = "KS509";
+        internal const string ColumnHasSameNameAsVariable = "KS510";
+        internal const string PreferUsingMaterializedViewIntrinsic = "KS511";
+        internal const string CalledFunctionHasErrors = "KS512";
+        internal const string AvoidUsingLegacyPartition = "KS513";
+        internal const string AvoidUsingHasWithIPv4Strings = "KS514";
     }
-
 }

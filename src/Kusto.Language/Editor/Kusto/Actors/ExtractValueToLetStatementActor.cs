@@ -18,13 +18,13 @@ namespace Kusto.Language.Editor
         private const string ExtractFunctionName = "Extract Function";
 
         private static readonly CodeAction ExtractValueAction = new CodeAction(
-            nameof(ExtractExpressionActor), ExtractValueName, "Extract value into new let statement variable declaration.", "");
+            ExtractValueName, "Extract value into new let statement variable declaration.");
 
         private static readonly CodeAction ExtractExpressionAction = new CodeAction(
-            nameof(ExtractExpressionActor), ExtractExpressionName, "Extract expression into new let statement variable declaration.", "");
+            ExtractExpressionName, "Extract expression into new let statement variable declaration.");
 
         private static readonly CodeAction ExtractFunctionAction = new CodeAction(
-            nameof(ExtractExpressionActor), ExtractFunctionName, "Extract expression into new let statement function declaration.", "");
+            ExtractFunctionName, "Extract expression into new let statement function declaration.");
 
         public override void GetActions(
             KustoCode code,

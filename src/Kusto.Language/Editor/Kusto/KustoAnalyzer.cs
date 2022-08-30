@@ -40,5 +40,20 @@ namespace Kusto.Language.Editor
         /// Analyzes the <see cref="KustoCode"/> and outputs any diagnostics found into the diagnostics list.
         /// </summary>
         public abstract void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Gets the fix actions for the diagnostic
+        /// </summary>
+        public virtual void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        {
+        }
+
+        /// <summary>
+        /// Applies the fix action
+        /// </summary>
+        public virtual CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        {
+            return CodeActionResult.Nothing;
+        }
     }
 }

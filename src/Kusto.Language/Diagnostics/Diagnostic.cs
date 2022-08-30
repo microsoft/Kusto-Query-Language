@@ -140,6 +140,11 @@ namespace Kusto.Language
             return With(severity: severity);
         }
 
+        public Diagnostic WithDescription(string description)
+        {
+            return With(description: description);
+        }
+
         public Diagnostic WithMessage(string message)
         {
             return With(message: message);

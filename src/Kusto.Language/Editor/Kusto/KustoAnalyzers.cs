@@ -16,8 +16,8 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidUsingContains =
             new AvoidUsingContainsAnalyzer();
 
-        public static readonly KustoAnalyzer AvoidUsingIsNullStringComparison =
-            new AvoidUsingIsNullStringComparisonAnalyzer();
+        public static readonly KustoAnalyzer AvoidUsingNullStringComparison =
+            new AvoidUsingNullStringComparisonAnalyzer();
 
         public static readonly KustoAnalyzer AvoidUsingShortStringComparision =
             new AvoidUsingShortStringComparisionAnalyzer();
@@ -52,6 +52,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer CalledFunctionHasErrors =
             new CalledFunctionHasErrorsAnalyzer();
 
+        public static readonly KustoAnalyzer AvoidUsingHasWithIPv4Strings =
+            new AvoidUsingHasWithIPv4StringsAnalyzer();
+
         /// <summary>
         /// The set of all known kusto analyzers
         /// </summary>
@@ -59,7 +62,7 @@ namespace Kusto.Language.Editor
              new KustoAnalyzer[]
              {
                  AvoidUsingContains,
-                 AvoidUsingIsNullStringComparison,
+                 AvoidUsingNullStringComparison,
                  AvoidUsingToBoolOnNumerics,
                  AvoidUsingShortStringComparision,
                  NullAggregation,
@@ -70,7 +73,8 @@ namespace Kusto.Language.Editor
                  AvoidUsingLegacyPartition,
                  ColumnHasSameNameAsVariable,
                  PreferUsingMaterializedViewIntrinsic,
-                 CalledFunctionHasErrors
+                 CalledFunctionHasErrors,
+                 AvoidUsingHasWithIPv4Strings
              }
              .ToReadOnly();
     }

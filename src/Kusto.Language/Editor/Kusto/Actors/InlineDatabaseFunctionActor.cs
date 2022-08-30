@@ -11,7 +11,7 @@ namespace Kusto.Language.Editor
     internal class InlineDatabaseFunctionActor : KustoActor
     {
         private static readonly CodeAction InlineAction = new CodeAction(
-            nameof(InlineDatabaseFunctionActor), "Inline Function", "Copy database function into this query", "");
+            "Inline Function", "Copy database function into this query");
 
         public override void GetActions(
             KustoCode code, 

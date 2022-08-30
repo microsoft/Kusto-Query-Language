@@ -9,18 +9,101 @@ namespace Kusto.Language.Editor
 {
     public class CodeAction
     {
-        public string Actor { get; }
+        /// <summary>
+        /// The the name of the action displayed in the right-click menu
+        /// </summary>
         public string Name { get; }
-        public string Description { get; }
-        public string Data { get; }
 
-        internal CodeAction(string actor, string name, string description, string data)
+        /// <summary>
+        /// The longer description displayed in the hover tip.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
+        /// Addition data for the action used by the <see cref="CodeActor"/>
+        /// </summary>
+        public IReadOnlyList<string> Data { get; }
+
+        public CodeAction(string name, string description, IReadOnlyList<string> data)
         {
-            this.Actor = actor;
-            this.Name = name;
-            this.Description = description;
-            this.Data = data;
+            this.Name = name ?? "";
+            this.Description = description ?? "";
+            this.Data = data ?? EmptyReadOnlyList<string>.Instance;
         }
+
+        public CodeAction(string name, string description, params string[] data)
+            : this(name, description, (IReadOnlyList<string>)data)
+        {
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the name changed.
+        /// </summary>
+        public CodeAction WithName(string name)
+        {
+            if (this.Name != name)
+            {
+                return new CodeAction(name, this.Description, this.Data);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the description changed.
+        /// </summary>
+        public CodeAction WithDescription(string description)
+        {
+            if (this.Description != description)
+            {
+                return new CodeAction(this.Name, description, this.Data);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the data values changed.
+        /// </summary>
+        public CodeAction WithData(IReadOnlyList<string> data)
+        {
+            if (this.Data != data)
+            {
+                return new CodeAction(this.Name, this.Description, data);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the data values changed.
+        /// </summary>
+        public CodeAction WithData(params string[] data) =>
+            WithData((IReadOnlyList<string>)data);
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the data values changed.
+        /// </summary>
+        public CodeAction WithData(IEnumerable<string> data) =>
+            WithData(data.ToReadOnly());
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the additional data appended to the list of data values.
+        /// </summary>
+        public CodeAction AddData(IEnumerable<string> additionalData) =>
+            WithData(this.Data.Concat(additionalData));
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with the additional data appended to the list of data values.
+        /// </summary>
+        public CodeAction AddData(params string[] additionalData) =>
+            AddData((IEnumerable<string>)additionalData);
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with a number of data values removed from the end of the data value list.
+        /// </summary>
+        public CodeAction RemoveData(int count) =>
+            WithData(this.Data.Take(this.Data.Count - count));
     }
 
     public class CodeActionInfo
@@ -39,32 +122,32 @@ namespace Kusto.Language.Editor
     public class CodeActionOptions
     {
         public IReadOnlyList<CodeActor> Actors { get; }
-        public IReadOnlyList<Diagnostic> AdditionalDiagnostics { get; }
+        public IReadOnlyList<Diagnostic> RelatedDiagnostics { get; }
         public FormattingOptions FormattingOptions { get; }
 
         private CodeActionOptions(
             IReadOnlyList<CodeActor> actors,
-            IReadOnlyList<Diagnostic> additionalDiagnostics,
+            IReadOnlyList<Diagnostic> relatedDiagnostics,
             FormattingOptions formattingOptions)
         {
             this.Actors = actors ?? EmptyReadOnlyList<CodeActor>.Instance;
-            this.AdditionalDiagnostics = additionalDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+            this.RelatedDiagnostics = relatedDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
             this.FormattingOptions = formattingOptions ?? FormattingOptions.Default;
         }
 
         public CodeActionOptions WithActors(IReadOnlyList<CodeActor> actors)
         {
-            return new CodeActionOptions(actors, this.AdditionalDiagnostics, this.FormattingOptions);
+            return new CodeActionOptions(actors, this.RelatedDiagnostics, this.FormattingOptions);
         }
 
-        public CodeActionOptions WithAdditionalDiagnostics(IReadOnlyList<Diagnostic> diagnostics)
+        public CodeActionOptions WithRelatedDiagnostics(IReadOnlyList<Diagnostic> diagnostics)
         {
             return new CodeActionOptions(this.Actors, diagnostics, this.FormattingOptions);
         }
 
         public CodeActionOptions WithFormattingOptions(FormattingOptions options)
         {
-            return new CodeActionOptions(this.Actors, this.AdditionalDiagnostics, options);
+            return new CodeActionOptions(this.Actors, this.RelatedDiagnostics, options);
         }
 
         public static readonly CodeActionOptions Default = new CodeActionOptions(null, null, null);

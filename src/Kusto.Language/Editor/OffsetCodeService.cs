@@ -161,6 +161,12 @@ namespace Kusto.Language.Editor
 
         public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
+            // adjust diagnostic locations to be relative to service offset
+            if (options != null &&  options.RelatedDiagnostics.Count > 0 && _offset > 0)
+            {
+                options = options.WithRelatedDiagnostics(options.RelatedDiagnostics.Select(dx => dx.WithLocation(dx.Start - _offset, dx.Length)).ToList());
+            }
+
             position -= _offset;
             var selectionEnd = Math.Min(position + length, _service.Text.Length);
             length = selectionEnd - position;
@@ -169,6 +175,12 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options, CancellationToken cancellationToken = default)
         {
+            // adjust diagnostic locations to be relative to service offset
+            if (options != null && options.RelatedDiagnostics.Count > 0 && _offset > 0)
+            {
+                options = options.WithRelatedDiagnostics(options.RelatedDiagnostics.Select(dx => dx.WithLocation(dx.Start - _offset, dx.Length)).ToList());
+            }
+
             position -= _offset;
             var selectionEnd = Math.Min(position + length, _service.Text.Length);
             length = selectionEnd - position;

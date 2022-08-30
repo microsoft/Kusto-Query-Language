@@ -11,7 +11,7 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// Analyzer for detecting usage of short string comparisons
     /// </summary>
-    internal class AvoidUsingIsNullStringComparisonAnalyzer : KustoAnalyzer
+    internal class AvoidUsingNullStringComparisonAnalyzer : KustoAnalyzer
     {
         private static readonly Diagnostic _diagnostic_equals =
             new Diagnostic(
@@ -53,6 +53,39 @@ namespace Kusto.Language.Editor
                     }
                 }
             }
+        }
+
+        public override void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        {
+            if (code.Syntax.GetNodeAt(dx.Start, dx.Length) is FunctionCallExpression fc)
+            {
+                var fnName = fc.Name.SimpleName;
+                var newFnName = fnName == Functions.IsNull.Name ? Functions.IsEmpty.Name
+                              : fnName == Functions.IsNotNull.Name ? Functions.IsNotEmpty.Name : null;
+
+                if (newFnName != null)
+                {
+                    actions.Add(new CodeAction(
+                        $"Change to '{newFnName}'",
+                        $"Replace call to function '{fnName}' with function '{newFnName}'",
+                        new string[] { fc.Name.TextStart.ToString(), fc.Name.Width.ToString(), newFnName }));
+                }
+            }
+        }
+
+        public override CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        {
+            if (action.Data.Count == 3
+                && Int32.TryParse(action.Data[0], out var fnNameStart)
+                && Int32.TryParse(action.Data[1], out var fnNameLength))
+            {
+                var newFnName = action.Data[2];
+                return new CodeActionResult(
+                    new EditString(code.Text).ReplaceAt(fnNameStart, fnNameLength, newFnName),
+                    fnNameStart);
+            }
+
+            return CodeActionResult.Nothing;
         }
     }
 }

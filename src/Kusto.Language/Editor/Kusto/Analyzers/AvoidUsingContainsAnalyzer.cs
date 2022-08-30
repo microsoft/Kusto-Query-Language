@@ -28,10 +28,7 @@ namespace Kusto.Language.Editor
         {
             foreach (var node in code.Syntax.GetDescendants<BinaryExpression>())
             {
-                if (node.Kind == SyntaxKind.ContainsExpression ||
-                    node.Kind == SyntaxKind.NotContainsExpression ||
-                    node.Kind == SyntaxKind.ContainsCsExpression ||
-                    node.Kind == SyntaxKind.NotContainsCsExpression)
+                if (GetHasOperatorKind(node.Operator.Kind) != SyntaxKind.None)
                 {
                     // only report if db column is being used directly
                     if (IsDbColumn(node.Left, code.Globals))
@@ -44,5 +41,63 @@ namespace Kusto.Language.Editor
 
         protected static bool IsDbColumn(Expression expr, GlobalState globals) =>
             expr.ReferencedSymbol is ColumnSymbol c && globals.GetTable(c) != null;
+
+        public override void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        {
+            if (dx.Code == KustoAnalyzerCodes.AvoidUsingContains)
+            {
+                var opToken = code.Syntax.GetTokenAt(dx.Start);
+                if (options != null)
+                {
+                    var hasKind = GetHasOperatorKind(opToken.Kind);
+                    if (hasKind != SyntaxKind.None)
+                    {
+                        var hasOp = hasKind.GetText();
+                        actions.Add(new CodeAction(
+                            $"Change to '{hasOp}'", 
+                            $"Replace operator '{opToken.Text}' with operator '{hasOp}'", 
+                            dx.Start.ToString(), 
+                            hasOp));
+                    }
+                }
+            }
+        }
+
+        public override CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        {
+            if (action.Data.Count == 2
+                && Int32.TryParse(action.Data[0], out var opTokenStart))
+            {
+                var opToken = code.Syntax.GetTokenAt(opTokenStart);
+                var newOpName = action.Data[1];
+                var originalText = new EditString(code.Text);
+                var changedText = originalText.ReplaceAt(opToken.TextStart, opToken.Width, newOpName);
+                return new CodeActionResult(changedText, opToken.TextStart);
+            }
+            else
+            {
+                return CodeActionResult.Nothing;
+            }
+        }
+
+        private static SyntaxKind GetHasOperatorKind(SyntaxKind tokenKind)
+        {
+            switch (tokenKind)
+            {
+                case SyntaxKind.ContainsKeyword:
+                    return SyntaxKind.HasKeyword;
+                case SyntaxKind.ContainsCsKeyword:
+                case SyntaxKind.Contains_CsKeyword:
+                    return SyntaxKind.HasCsKeyword;
+                case SyntaxKind.NotContainsKeyword:
+                case SyntaxKind.NotBangContainsKeyword:
+                    return SyntaxKind.NotHasKeyword;
+                case SyntaxKind.NotContainsCsKeyword:
+                case SyntaxKind.NotBangContainsCsKeyword:
+                    return SyntaxKind.NotHasCsKeyword;
+                default:
+                    return SyntaxKind.None;
+            }
+        }
     }
 }

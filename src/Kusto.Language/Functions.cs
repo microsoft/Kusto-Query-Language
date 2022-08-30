@@ -222,7 +222,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtractJson_Deprecated =
             new FunctionSymbol("extractjson",
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(ScalarTypes.String,
                     new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("jsonText", ScalarTypes.String)),
                 new Signature(ReturnTypeKind.ParameterNLiteral,
@@ -234,7 +234,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtractJson =
            new FunctionSymbol("extract_json",
-               new Signature(ScalarTypes.Dynamic,
+               new Signature(ScalarTypes.String,
                    new Parameter("jsonPath", ScalarTypes.String, ArgumentKind.Constant),
                    new Parameter("jsonText", ScalarTypes.String)),
                new Signature(ReturnTypeKind.ParameterNLiteral,
