@@ -1,4 +1,6 @@
-﻿namespace Kusto.Language.Editor
+﻿using System;
+
+namespace Kusto.Language.Editor
 {
     /// <summary>
     /// A range of text.
@@ -24,6 +26,24 @@
         {
             this.Start = start;
             this.Length = length;
+        }
+
+        /// <summary>
+        /// True if this text range overlaps the other text range.
+        /// </summary>
+        public bool Overlaps(TextRange other)
+        {
+            return other != null && Overlaps(this.Start, this.Length, other.Start, other.Length);
+        }
+
+        /// <summary>
+        /// True if the range A overlaps the range B
+        /// </summary>
+        public static bool Overlaps(int startA, int lengthA, int startB, int lengthB)
+        {
+            var endA = startA + lengthA;
+            var endB = startB + lengthB;
+            return Math.Max(startA, startB) <= Math.Min(endA, endB);
         }
     }
 }

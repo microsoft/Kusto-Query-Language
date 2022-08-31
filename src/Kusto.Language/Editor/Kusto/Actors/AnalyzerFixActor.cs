@@ -32,38 +32,61 @@ namespace Kusto.Language.Editor
         }
 
         public override void GetActions(
+            KustoCodeService service,
             KustoCode code,
             int position,
             int length,
             CodeActionOptions options,
             List<CodeAction> actions,
+            bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
-            var fixActions = new List<CodeAction>();
-
-            foreach (var dx in options.RelatedDiagnostics)
+            IReadOnlyList<Diagnostic> analyzerDiagnostics = null;
+            if (waitForAnalysis)
             {
-                // look for kusto analyzers that can fix their diagnostics
-                if (_codeToAnalyzerMap.TryGetValue(dx.Code, out var analyzer))
-                {
-                    fixActions.Clear();
-                    analyzer.GetFixActions(code, dx, options, fixActions, cancellationToken);
+                analyzerDiagnostics = service.GetAnalyzerDiagnostics(waitForAnalysis, cancellationToken);
+            }
+            else
+            {
+                // don't wait for analyzers to run either
+                service.TryGetCachedAnalyzerDiagnostics(out analyzerDiagnostics);
+            }
 
-                    if (fixActions.Count > 0)
+            // if analyzer diagnostics are not available then return no actions
+            if (analyzerDiagnostics != null)
+            {
+                var diagnosticsToFix =
+                    analyzerDiagnostics
+                    .Where(d =>
+                        TextRange.Overlaps(position, length, d.Start, d.Length)
+                        && options.DiagnosticFilter.IsDiagnosticEnabled(d))
+                    .ToList();
+
+                var fixActions = new List<CodeAction>();
+
+                foreach (var dx in diagnosticsToFix)
+                {
+                    // look for kusto analyzers that can fix their diagnostics
+                    if (_codeToAnalyzerMap.TryGetValue(dx.Code, out var analyzer))
                     {
-                        // add analyzer name to data so we can route this to the appropriate analyzer later when applied
-                        actions.AddRange(fixActions.Select(a => a.AddData(analyzer.Name)));
+                        fixActions.Clear();
+                        analyzer.GetFixActions(code, dx, options, fixActions, cancellationToken);
+
+                        if (fixActions.Count > 0)
+                        {
+                            // add analyzer name to data so we can route this to the appropriate analyzer later when applied
+                            actions.AddRange(fixActions.Select(a => a.AddData(analyzer.Name)));
+                        }
                     }
                 }
             }
         }
 
         public override CodeActionResult ApplyAction(
+            KustoCodeService service,
             KustoCode code,
-            int position,
-            int length,
-            CodeActionOptions options,
             CodeAction action,
+            CodeActionOptions options,
             CancellationToken cancellationToken)
         {
             var analyzerName = action.Data.LastOrDefault();          

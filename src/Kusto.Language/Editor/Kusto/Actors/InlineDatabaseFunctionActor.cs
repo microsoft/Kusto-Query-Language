@@ -14,11 +14,12 @@ namespace Kusto.Language.Editor
             "Inline Function", "Copy database function into this query");
 
         public override void GetActions(
+            KustoCodeService service,
             KustoCode code, 
-            int position, 
-            int length, 
-            CodeActionOptions options,
+            int position, int length, 
+            CodeActionOptions options,           
             List<CodeAction> actions,
+            bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
             var token = code.Syntax.GetTokenAt(position);
@@ -31,7 +32,7 @@ namespace Kusto.Language.Editor
                     && code.Globals.IsDatabaseFunction(fs)
                     && IsGoodReference(nr, fs))
                 {
-                    actions.Add(InlineAction);
+                    actions.Add(InlineAction.WithData(position.ToString(), length.ToString()));
                 }
             }
         }
@@ -45,51 +46,59 @@ namespace Kusto.Language.Editor
         }
 
         public override CodeActionResult ApplyAction(
-            KustoCode code, 
-            int position, 
-            int length,
+            KustoCodeService service,
+            KustoCode code,
+            CodeAction action,
             CodeActionOptions options,
-            CodeAction action, 
             CancellationToken cancellationToken)
         {
-            var token = code.Syntax.GetTokenAt(position);
-            if (position >= token.TextStart && position <= token.End && length == 0)
+            if (action.Data.Count == 2
+                && Int32.TryParse(action.Data[0], out var position)
+                && Int32.TryParse(action.Data[1], out var length))
             {
-                var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
-                if (node is Name name
-                    && name.Parent is NameReference nr
-                    && nr.ReferencedSymbol is FunctionSymbol fs
-                    && code.Globals.IsDatabaseFunction(fs)
-                    && IsGoodReference(nr, fs))
+                var token = code.Syntax.GetTokenAt(position);
+                if (position >= token.TextStart && position <= token.End && length == 0)
                 {
-                    // we need to insert the function before the first reference to it.
-                    var firstRef = GetFirstReference(code.Syntax, fs);
-
-                    if (TryGetNearestTopLevelStatementInsertionPosition(code, firstRef.TextStart, out var insertPosition))
+                    var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
+                    if (node is Name name
+                        && name.Parent is NameReference nr
+                        && nr.ReferencedSymbol is FunctionSymbol fs
+                        && code.Globals.IsDatabaseFunction(fs)
+                        && IsGoodReference(nr, fs))
                     {
-                        var body = nr.Parent is FunctionCallExpression fc
-                            ? fc.GetCalledFunctionBody()
-                            : nr.GetCalledFunctionBody();
+                        // we need to insert the function before the first reference to it.
+                        var firstRef = GetFirstReference(code.Syntax, fs);
 
-                        if (body != null)
+                        if (TryGetNearestTopLevelStatementInsertionPosition(code, firstRef.TextStart, out var insertPosition))
                         {
-                            var requalifiedBody = GetBodyWithBraces(GetRequalifiedDatabaseFunctionBody(body, code.Globals));
-                            var declaration = GetLetStatement(fs, requalifiedBody);
-                            var requalifiedQuery = GetQueryWithDatabaseQualifiersRemoved(code.Syntax, fs, code.Globals);
-                            var newText = requalifiedQuery.Insert(insertPosition, declaration + "\n");
-                            var newPosition = newText.GetCurrentPosition(position);
-                            return new CodeActionResult(newText, newPosition);
-                        }
-                        else
-                        {
-                            return CodeActionResult.Failure("Could not access definition of referenced function");
+                            var body = nr.Parent is FunctionCallExpression fc
+                                ? fc.GetCalledFunctionBody()
+                                : nr.GetCalledFunctionBody();
+
+                            if (body != null)
+                            {
+                                var requalifiedBody = GetBodyWithBraces(GetRequalifiedDatabaseFunctionBody(body, code.Globals));
+                                var declaration = GetLetStatement(fs, requalifiedBody);
+                                var requalifiedQuery = GetQueryWithDatabaseQualifiersRemoved(code.Syntax, fs, code.Globals);
+                                var newText = requalifiedQuery.Insert(insertPosition, declaration + "\n");
+                                var newPosition = newText.GetCurrentPosition(position);
+                                return new CodeActionResult(newText, newPosition);
+                            }
+                            else
+                            {
+                                return CodeActionResult.Failure("Could not access definition of referenced function");
+                            }
                         }
                     }
                 }
-            }
 
-            // nothing happened
-            return CodeActionResult.Failure("Reference to database function not found");
+                // nothing happened
+                return CodeActionResult.Failure("Reference to database function not found");
+            }
+            else
+            {
+                return CodeActionResult.Failure("Bad action data");
+            }
         }
 
         private static string GetLetStatement(FunctionSymbol function, string body = null)

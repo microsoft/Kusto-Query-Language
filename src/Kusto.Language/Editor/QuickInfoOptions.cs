@@ -6,30 +6,27 @@ using System.Text;
 
 namespace Kusto.Language.Editor
 {
-    using Utils;
-
     public class QuickInfoOptions
     {
         private QuickInfoOptions(
-            string disabledDiagnostics)
+            DisabledDiagnostics filter)
         {
-            this.DisabledDiagnostics = disabledDiagnostics ?? "";
+            this.DiagnosticFilter = filter ?? DisabledDiagnostics.Default;
         }
 
         /// <summary>
         /// A comma separated list of diagnostic codes that are disabled.
         /// </summary>
-        public string DisabledDiagnostics { get; }
+        public DisabledDiagnostics DiagnosticFilter { get; }
 
         private QuickInfoOptions With(
-            string disabledDiagnostics = null)
+            DisabledDiagnostics filter)
         {
-            var disdx = disabledDiagnostics ?? this.DisabledDiagnostics;
+            var newFilter = filter ?? DisabledDiagnostics.Default;
 
-            if (disdx != this.DisabledDiagnostics)
+            if (newFilter != this.DiagnosticFilter)
             {
-                return new QuickInfoOptions(
-                    disdx);
+                return new QuickInfoOptions(newFilter);
             }
             else
             {
@@ -37,12 +34,12 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public QuickInfoOptions WithDisabledDiagnostics(string disabledDiagnostics)
+        public QuickInfoOptions WithDiagnosticFilter(DisabledDiagnostics filter)
         {
-            return With(disabledDiagnostics: disabledDiagnostics);
+            return With(filter: filter);
         }
 
         public static readonly QuickInfoOptions Default = new QuickInfoOptions(
-            disabledDiagnostics: "");
+            filter: null);
     }
 }

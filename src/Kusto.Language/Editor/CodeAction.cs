@@ -121,36 +121,28 @@ namespace Kusto.Language.Editor
 
     public class CodeActionOptions
     {
-        public IReadOnlyList<CodeActor> Actors { get; }
-        public IReadOnlyList<Diagnostic> RelatedDiagnostics { get; }
+        public DisabledDiagnostics DiagnosticFilter { get; }
         public FormattingOptions FormattingOptions { get; }
 
         private CodeActionOptions(
-            IReadOnlyList<CodeActor> actors,
-            IReadOnlyList<Diagnostic> relatedDiagnostics,
+            DisabledDiagnostics diagnosticFilter,
             FormattingOptions formattingOptions)
         {
-            this.Actors = actors ?? EmptyReadOnlyList<CodeActor>.Instance;
-            this.RelatedDiagnostics = relatedDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+            this.DiagnosticFilter = diagnosticFilter ?? DisabledDiagnostics.Default;
             this.FormattingOptions = formattingOptions ?? FormattingOptions.Default;
-        }
-
-        public CodeActionOptions WithActors(IReadOnlyList<CodeActor> actors)
-        {
-            return new CodeActionOptions(actors, this.RelatedDiagnostics, this.FormattingOptions);
-        }
-
-        public CodeActionOptions WithRelatedDiagnostics(IReadOnlyList<Diagnostic> diagnostics)
-        {
-            return new CodeActionOptions(this.Actors, diagnostics, this.FormattingOptions);
         }
 
         public CodeActionOptions WithFormattingOptions(FormattingOptions options)
         {
-            return new CodeActionOptions(this.Actors, this.RelatedDiagnostics, options);
+            return new CodeActionOptions(this.DiagnosticFilter, options);
         }
 
-        public static readonly CodeActionOptions Default = new CodeActionOptions(null, null, null);
+        public CodeActionOptions WithDiagnosticFilter(DisabledDiagnostics filter)
+        {
+            return new CodeActionOptions(filter, this.FormattingOptions);
+        }
+
+        public static readonly CodeActionOptions Default = new CodeActionOptions(null, null);
     }
 
     /// <summary>

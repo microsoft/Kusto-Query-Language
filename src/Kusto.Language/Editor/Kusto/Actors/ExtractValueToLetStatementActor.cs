@@ -27,28 +27,29 @@ namespace Kusto.Language.Editor
             ExtractFunctionName, "Extract expression into new let statement function declaration.");
 
         public override void GetActions(
+            KustoCodeService service,
             KustoCode code,
-            int position,
-            int length,
+            int position, int length,
             CodeActionOptions options,
             List<CodeAction> actions,
+            bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
             if (length > 0 )
             {
                 if (CanExtractExpression(code, position, length))
                 {
-                    actions.Add(ExtractExpressionAction);
+                    actions.Add(ExtractExpressionAction.WithData(position.ToString(), length.ToString()));
                 }
 
                 if (CanExtractFunction(code, position, length))
                 {
-                    actions.Add(ExtractFunctionAction);
+                    actions.Add(ExtractFunctionAction.WithData(position.ToString(), length.ToString()));
                 }
             }
             else if (CanExtractValue(code, position))
             {
-                actions.Add(ExtractValueAction);
+                actions.Add(ExtractValueAction.WithData(position.ToString(), length.ToString()));
             }
         }
 
@@ -119,29 +120,37 @@ namespace Kusto.Language.Editor
         }
 
         public override CodeActionResult ApplyAction(
+            KustoCodeService service,
             KustoCode code,
-            int position,
-            int length,
-            CodeActionOptions options,
             CodeAction action,
+            CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            System.Diagnostics.Debug.Assert(options != null);
+            Debug.Assert(options != null);
 
-            if (action.Name == ExtractExpressionName)
+            if (action.Data.Count == 2
+                && Int32.TryParse(action.Data[0], out var position)
+                && Int32.TryParse(action.Data[1], out var length))
             {
-                return GetExpressionResult(code, position, length);
-            }
-            else if (action.Name == ExtractFunctionName)
-            {
-                return GetFunctionResult(code, position, length, options);
-            }
-            else if (action.Name == ExtractValueName)
-            {
-                return GetValueResult(code, position);
-            }
+                if (action.Name == ExtractExpressionName)
+                {
+                    return GetExpressionResult(code, position, length);
+                }
+                else if (action.Name == ExtractFunctionName)
+                {
+                    return GetFunctionResult(code, position, length, options);
+                }
+                else if (action.Name == ExtractValueName)
+                {
+                    return GetValueResult(code, position);
+                }
 
-            return CodeActionResult.Failure("Unknown action");
+                return CodeActionResult.Failure("Unknown action");
+            }
+            else
+            {
+                return CodeActionResult.Failure("Bad action data");
+            }
         }
 
         private CodeActionResult GetValueResult(KustoCode code, int position)

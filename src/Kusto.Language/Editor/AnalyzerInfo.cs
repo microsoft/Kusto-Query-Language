@@ -14,7 +14,7 @@ namespace Kusto.Language.Editor
         public string Name { get; }
 
         /// <summary>
-        /// The diagnostic codes produced by this analyzer.
+        /// The diagnostics produced by this analyzer.
         /// </summary>
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
 

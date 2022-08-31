@@ -23,9 +23,16 @@ namespace Kusto.Language.Editor
         private KustoCode lazyBoundCode;
         private Exception codeException;
         private IReadOnlyList<Diagnostic> lazyDiagnostics;
-        private IReadOnlyList<Diagnostic> lazyExtendedDiagnostics;
+        private IReadOnlyList<Diagnostic> lazyAnalyzerDiagnostics;
+        private IReadOnlyList<KustoAnalyzer> analyzers = KustoAnalyzers.All;
+        private IReadOnlyList<KustoActor> actors = KustoActors.All;
 
-        private KustoCodeService(string text, GlobalState globals, KustoCode code)
+        private KustoCodeService(
+            string text, 
+            GlobalState globals, 
+            KustoCode code,
+            IReadOnlyList<KustoAnalyzer> analyzers,
+            IReadOnlyList<KustoActor> actors)
             : base(text)
         {
             if (globals == null)
@@ -34,15 +41,24 @@ namespace Kusto.Language.Editor
             this.kind = KustoCode.GetKind(text);
             this.globals = globals;
             this.lazyBoundCode = code;
+            this.analyzers = analyzers ?? KustoAnalyzers.All;
+            this.actors = actors ?? KustoActors.All;
         }
 
-        public KustoCodeService(string text, GlobalState globals = null)
-            : this(text, globals ?? GlobalState.Default, null)
+        public KustoCodeService(
+            string text, 
+            GlobalState globals = null,
+            IReadOnlyList<KustoAnalyzer> analyzers = null,
+            IReadOnlyList<KustoActor> actors = null)
+            : this(text, globals ?? GlobalState.Default, null, analyzers, actors)
         {
         }
 
-        public KustoCodeService(KustoCode code)
-            : this(code.Text, code.Globals, code)
+        public KustoCodeService(
+            KustoCode code,
+            IReadOnlyList<KustoAnalyzer> analyzers = null,
+            IReadOnlyList<KustoActor> actors = null)
+            : this(code.Text, code.Globals, code, analyzers, actors)
         {
         }
 
@@ -162,14 +178,15 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (this.lazyDiagnostics == null
+            if (
+                this.lazyDiagnostics == null
                 && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
-                && CanBeAnalyzed(code))
+                && CanBeAnalyzed(code)) // if syntax too deep, don't try to gather diagnostics
             {
                 // have try-catch to keep editor from crashing from parser bugs
                 try
                 {
-                    var ds = code.GetDiagnostics(cancellationToken);
+                    var ds = code.GetDiagnostics(cancellationToken);                   
                     Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
                 }
                 catch (Exception)
@@ -183,28 +200,24 @@ namespace Kusto.Language.Editor
 
         public override bool TryGetCachedAnalyzerDiagnostics(out IReadOnlyList<Diagnostic> diagnostics)
         {
-            diagnostics = this.lazyExtendedDiagnostics;
+            diagnostics = this.lazyAnalyzerDiagnostics;
             return diagnostics != null;
         }
 
         public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
-            IReadOnlyList<string> analyzers = null,
             bool waitForAnalysis = true,
             CancellationToken cancellationToken = default)
         {
-            if (this.lazyExtendedDiagnostics == null
+            if (this.lazyAnalyzerDiagnostics == null
                 && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
                 && waitForAnalysis
                 && CanBeAnalyzed(code))
             {
                 var ds = new List<Diagnostic>();
 
-                foreach (var analyzer in KustoAnalyzers.All)
+                foreach (var analyzer in this.analyzers)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    if (analyzers != null && !analyzers.Contains(analyzer.Name))
-                        continue;
 
                     // have try-catch to keep editor from crashing from analyzer bugs
                     try
@@ -217,51 +230,63 @@ namespace Kusto.Language.Editor
                     }
                 }
 
-                Interlocked.CompareExchange(ref this.lazyExtendedDiagnostics, ds, null);
+                Interlocked.CompareExchange(ref this.lazyAnalyzerDiagnostics, ds, null);
             }
 
-            return this.lazyExtendedDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
+            return this.lazyAnalyzerDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;
         }
-
-        private static IReadOnlyList<AnalyzerInfo> _analyzers;
 
         public override IReadOnlyList<AnalyzerInfo> GetAnalyzers()
         {
-            if (_analyzers == null)
+            if (_analyzerInfos == null)
             {
-                _analyzers = KustoAnalyzers.All.Select(a => new AnalyzerInfo(a.Name, a.Diagnostics)).ToReadOnly();
+                _analyzerInfos = this.analyzers.Select(a => new AnalyzerInfo(a.Name, a.Diagnostics)).ToReadOnly();
             }
 
-            return _analyzers;
+            return _analyzerInfos;
         }
 
-        private static IReadOnlyList<Diagnostic> _analyzerDiagnostics;
+        private IReadOnlyList<AnalyzerInfo> _analyzerInfos;
 
-        /// <summary>
-        /// The set of known analyzer diagnostics
-        /// </summary>
-        public static IReadOnlyList<Diagnostic> AnalyzerDiagnostics
+        private bool TryGetActor(string name, out KustoActor actor)
         {
-            get
+            if (_nameToActorMap == null)
             {
-                if (_analyzerDiagnostics == null)
-                {
-                    _analyzerDiagnostics = new KustoCodeService("").GetAnalyzers().SelectMany(a => a.Diagnostics).ToReadOnly();
-                }
-
-                return _analyzerDiagnostics;
+                _nameToActorMap = this.actors.ToDictionary(a => a.Name);
             }
+
+            return _nameToActorMap.TryGetValue(name, out actor);
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        private Dictionary<string, KustoActor> _nameToActorMap;
+
+        public override CodeActionInfo GetCodeActions(
+            int position, int length, 
+            CodeActionOptions options, 
+            bool waitForAnalysis,
+            string actorName,
+            CancellationToken cancellationToken)
         {
             options = options ?? CodeActionOptions.Default;
-            var actors = options.Actors.Count > 0 ? options.Actors.AsEnumerable() : KustoActors.All;
             var actorActions = new List<CodeAction>();
 
-            if (this.TryGetBoundCode(cancellationToken, true, out var code))
+            if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
             {
                 var actions = new List<CodeAction>();
+
+                // if actorName is specified use just that actor
+                var actors = this.actors;
+                if (actorName != null)
+                {
+                    if (TryGetActor(actorName, out var actor))
+                    {
+                        actors = new[] { actor };
+                    }
+                    else
+                    {
+                        actors = EmptyReadOnlyList<KustoActor>.Instance;
+                    }
+                }
 
                 foreach (var actor in actors)
                 {
@@ -269,14 +294,11 @@ namespace Kusto.Language.Editor
 
                     try
                     {
-                        if (actor is KustoActor kustoActor)
-                        {
-                            actorActions.Clear();
-                            kustoActor.GetActions(code, position, length, options, actorActions, cancellationToken);
+                        actorActions.Clear();
+                        actor.GetActions(this, code, position, length, options, actorActions, waitForAnalysis, cancellationToken);
 
-                            // add actor name to action data
-                            actions.AddRange(actorActions.Select(a => a.AddData(actor.Name)));
-                        }
+                        // add actor name to action data so we can find the actor later when action is applied
+                        actions.AddRange(actorActions.Select(a => a.AddData(actor.Name)));
                     }
                     catch (Exception)
                     {
@@ -295,23 +317,24 @@ namespace Kusto.Language.Editor
             return CodeActionInfo.NoActions;
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        public override CodeActionResult ApplyCodeAction(
+            CodeAction action, 
+            CodeActionOptions options, 
+            CancellationToken cancellationToken)
         {
             options = options ?? CodeActionOptions.Default;
-            var actors = options.Actors.Count > 0 ? options.Actors : KustoActors.All;
 
             if (this.TryGetBoundCode(cancellationToken, true, out var code))
             {
-                var actorName = codeAction.Data.LastOrDefault();
+                var actorName = action.Data.LastOrDefault();
                 if (actorName != null)
                 {
                     // remove the actor name from the code action's data
-                    codeAction = codeAction.RemoveData(1);
+                    action = action.RemoveData(1);
 
-                    var actor = actors.OfType<KustoActor>().FirstOrDefault(a => a.Name == actorName);
-                    if (actor != null)
+                    if (TryGetActor(actorName, out var actor))
                     {
-                        return actor.ApplyAction(code, position, length, options, codeAction, cancellationToken);
+                        return actor.ApplyAction(this, code, action, options, cancellationToken);
                     }
                     else
                     {

@@ -139,11 +139,10 @@ namespace Kusto.Language.Editor
         }
 
         public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
-            IReadOnlyList<string> analyzers,
             bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
-            var result = _service.GetAnalyzerDiagnostics(analyzers, waitForAnalysis, cancellationToken);
+            var result = _service.GetAnalyzerDiagnostics(waitForAnalysis, cancellationToken);
             if (result.Count > 0 && _offset > 0)
             {
                 return result.Select(dx => dx.WithLocation(dx.Start + _offset, dx.Length)).ToReadOnly();
@@ -159,32 +158,25 @@ namespace Kusto.Language.Editor
             return _service.GetAnalyzers();
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options, CancellationToken cancellationToken = default)
+        public override CodeActionInfo GetCodeActions(
+            int position, int length, 
+            CodeActionOptions options, 
+            bool waitForAnalysis,
+            string actorName,
+            CancellationToken cancellationToken)
         {
-            // adjust diagnostic locations to be relative to service offset
-            if (options != null &&  options.RelatedDiagnostics.Count > 0 && _offset > 0)
-            {
-                options = options.WithRelatedDiagnostics(options.RelatedDiagnostics.Select(dx => dx.WithLocation(dx.Start - _offset, dx.Length)).ToList());
-            }
-
             position -= _offset;
             var selectionEnd = Math.Min(position + length, _service.Text.Length);
             length = selectionEnd - position;
-            return _service.GetCodeActions(position, length, options, cancellationToken);
+            return _service.GetCodeActions(position, length, options, waitForAnalysis, actorName, cancellationToken);
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options, CancellationToken cancellationToken = default)
+        public override CodeActionResult ApplyCodeAction(
+            CodeAction codeAction, 
+            CodeActionOptions options, 
+            CancellationToken cancellationToken)
         {
-            // adjust diagnostic locations to be relative to service offset
-            if (options != null && options.RelatedDiagnostics.Count > 0 && _offset > 0)
-            {
-                options = options.WithRelatedDiagnostics(options.RelatedDiagnostics.Select(dx => dx.WithLocation(dx.Start - _offset, dx.Length)).ToList());
-            }
-
-            position -= _offset;
-            var selectionEnd = Math.Min(position + length, _service.Text.Length);
-            length = selectionEnd - position;
-            var result = _service.ApplyCodeAction(position, length, codeAction, options, cancellationToken);
+            var result = _service.ApplyCodeAction(codeAction, options, cancellationToken);
             return result.WithAdjustedPosition(_offset);
         }
 

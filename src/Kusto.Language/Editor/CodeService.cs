@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
+    using System;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using Utils;
 
@@ -48,13 +50,22 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets any additional diagnostics for the code.
         /// </summary>
-        /// <param name="analyzers">An optional list of analyzers to use. If null, all known analyzers are used.</param>
         /// <param name="waitForAnalysis">If false, only return pre-computed results if any.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(
-            IReadOnlyList<string> analyzers = null,
             bool waitForAnalysis = true,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a combined list of all syntax, semantic and analyzer diagnostics.
+        /// </summary>
+        public virtual IReadOnlyList<Diagnostic> GetCombinedDiagnostics(bool waitForAnalysis = true, DisabledDiagnostics filter = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return GetDiagnostics(waitForAnalysis, cancellationToken)
+                .Concat(GetAnalyzerDiagnostics(waitForAnalysis, cancellationToken))
+                .Where(d => filter == null || filter.IsDiagnosticEnabled(d))
+                .ToList();
+        }
 
         /// <summary>
         /// Gets the list of information about the analyzers available via this <see cref="CodeService"/>.
@@ -66,19 +77,27 @@ namespace Kusto.Language.Editor
         /// </summary>
         /// <param name="position">The position of the caret or the start of the selection range.</param>
         /// <param name="length">The length of the selection (or zero if no selection).</param>
-        /// <param name="options">An optional set of code action options.</param>
+        /// <param name="options">An optional set of options.</param>
+        /// <param name="waitForAnalysis">If false only cached diagnostics will be considered.</param>
+        /// <param name="actorName">An optional actor's name get actions from. If null, actions are obtains from all known actors.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
-        public abstract CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract CodeActionInfo GetCodeActions(
+            int position, int length, 
+            CodeActionOptions options = null, 
+            bool waitForAnalysis = true, 
+            string actorName = null,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Applies the code action at ths specified position.
         /// </summary>
-        /// <param name="position">The position of the caret or the start of the selection range.</param>
-        /// <param name="length">The length of the selection (or zero if not selection).</param>
-        /// <param name="codeAction">The <see cref="CodeAction"/> to apply.</param>
-        /// <param name="options">An optional set of code action options.</param>
+        /// <param name="action">The action to apply.</param>
+        /// <param name="options">An optional set of options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
-        public abstract CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract CodeActionResult ApplyCodeAction(
+            CodeAction action, 
+            CodeActionOptions options = null,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the classifications for the elements the specified text range.

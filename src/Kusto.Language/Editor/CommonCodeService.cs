@@ -46,7 +46,7 @@ namespace Kusto.Language.Editor
             return false;
         }
 
-        public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(IReadOnlyList<string> analyzers, bool waitForAnalysis, CancellationToken cancellationToken = default)
+        public override IReadOnlyList<Diagnostic> GetAnalyzerDiagnostics(bool waitForAnalysis, CancellationToken cancellationToken = default)
         {
             return EmptyReadOnlyList<Diagnostic>.Instance;
         }
@@ -56,12 +56,20 @@ namespace Kusto.Language.Editor
             return EmptyReadOnlyList<AnalyzerInfo>.Instance;
         }
 
-        public override CodeActionInfo GetCodeActions(int position, int length, CodeActionOptions options, CancellationToken cancellationToken = default)
+        public override CodeActionInfo GetCodeActions(
+            int position, int length, 
+            CodeActionOptions options, 
+            bool waitForAnalysis,
+            string actorName,
+            CancellationToken cancellationToken)
         {
             return CodeActionInfo.NoActions;
         }
 
-        public override CodeActionResult ApplyCodeAction(int position, int length, CodeAction codeAction, CodeActionOptions options, CancellationToken cancellationToken = default)
+        public override CodeActionResult ApplyCodeAction(
+            CodeAction codeAction, 
+            CodeActionOptions options, 
+            CancellationToken cancellationToken)
         {
             // nothing happens
             return CodeActionResult.Nothing;
