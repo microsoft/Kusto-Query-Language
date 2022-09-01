@@ -81,6 +81,12 @@ namespace Kusto.Language.Binding
                 }
 
                 _symbols[symbol.Name] = symbol;
+
+                if (!string.IsNullOrEmpty(symbol.AlternateName))
+                {
+                    _symbols[symbol.AlternateName] = symbol;
+                }
+
                 return true;
             }
 

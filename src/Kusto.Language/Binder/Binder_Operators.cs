@@ -31,7 +31,7 @@ namespace Kusto.Language.Binding
                 argumentTypes.Add(leftType);
                 argumentTypes.Add(rightType);
 
-                return GetOperatorInfo(kind, arguments, argumentTypes, location);
+                return GetOperatorInfo(kind, arguments, argumentTypes, location, requireAllArgumentsMatch: true);
             }
             finally
             {
@@ -48,7 +48,7 @@ namespace Kusto.Language.Binding
             {
                 arguments.Add(operand);
 
-                return GetOperatorInfo(kind, arguments, location);
+                return GetOperatorInfo(kind, arguments, location, requireAllArgumentsMatch: true);
             }
             finally
             {
@@ -56,7 +56,11 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private SemanticInfo GetOperatorInfo(OperatorKind kind, IReadOnlyList<Expression> arguments, SyntaxElement location)
+        private SemanticInfo GetOperatorInfo(
+            OperatorKind kind, 
+            IReadOnlyList<Expression> arguments, 
+            SyntaxElement location,
+            bool requireAllArgumentsMatch = false)
         {
             var argumentTypes = s_typeListPool.AllocateFromPool();
 
@@ -67,7 +71,7 @@ namespace Kusto.Language.Binding
                     argumentTypes.Add(GetResultTypeOrError(arguments[i]));
                 }
 
-                return GetOperatorInfo(kind, arguments, argumentTypes, location);
+                return GetOperatorInfo(kind, arguments, argumentTypes, location, requireAllArgumentsMatch);
             }
             finally
             {
@@ -75,7 +79,12 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private SemanticInfo GetOperatorInfo(OperatorKind kind, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, SyntaxElement location)
+        private SemanticInfo GetOperatorInfo(
+            OperatorKind kind, 
+            IReadOnlyList<Expression> arguments, 
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            SyntaxElement location,
+            bool requireAllArgumentsMatch)
         {
             var matchingSignatures = s_signatureListPool.AllocateFromPool();
             var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -84,7 +93,7 @@ namespace Kusto.Language.Binding
             {
                 var op = _globals.GetOperator(kind);
 
-                GetBestMatchingSignatures(op.Signatures, arguments, argumentTypes, matchingSignatures);
+                GetBestMatchingSignatures(op.Signatures, arguments, argumentTypes, matchingSignatures, requireAllArgumentsMatch);
 
                 if (matchingSignatures.Count == 1)
                 {
@@ -94,13 +103,19 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
+                    if (matchingSignatures.Count == 0 && requireAllArgumentsMatch)
+                    {
+                        // try again to get better return type
+                        GetBestMatchingSignatures(op.Signatures, arguments, argumentTypes, matchingSignatures, requireAllArgumentsMatch: false);
+                    }
+
                     if (!ArgumentsHaveErrorsOrUnknown(argumentTypes))
                     {
                         diagnostics.Add(DiagnosticFacts.GetOperatorNotDefined(location.ToString(IncludeTrivia.Interior), argumentTypes).WithLocation(location));
                     }
 
                     var returnType = GetCommonReturnType(matchingSignatures, arguments, argumentTypes);
-                    return new SemanticInfo(matchingSignatures[0].Symbol, returnType, diagnostics);
+                    return new SemanticInfo(op, returnType, diagnostics);
                 }
             }
             finally

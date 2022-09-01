@@ -557,7 +557,9 @@ namespace Kusto.Language.Binding
         private TypeSymbol GetMatchingDatabase(string nameOrPattern, Symbol clusterOrGroup)
         {
             if (clusterOrGroup == _currentCluster
-                && string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0)
+                && !string.IsNullOrEmpty(nameOrPattern)
+                && (string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0
+                    || string.Compare(_currentDatabase.AlternateName, nameOrPattern, ignoreCase: true) == 0))
             {
                 return _currentDatabase;
             }
@@ -634,11 +636,15 @@ namespace Kusto.Language.Binding
         /// </summary>
         private static void GetMatchingDatabases(string nameOrPattern, ClusterSymbol cluster, List<Symbol> matches)
         {
-            foreach (var cdb in cluster.Databases)
+            if (!string.IsNullOrEmpty(nameOrPattern))
             {
-                if (KustoFacts.Matches(nameOrPattern, cdb.Name, ignoreCase: true))
+                foreach (var cdb in cluster.Databases)
                 {
-                    matches.Add(cdb);
+                    if (KustoFacts.Matches(nameOrPattern, cdb.Name, ignoreCase: true)
+                        || KustoFacts.Matches(nameOrPattern, cdb.AlternateName, ignoreCase: true))
+                    {
+                        matches.Add(cdb);
+                    }
                 }
             }
         }
@@ -1021,7 +1027,12 @@ namespace Kusto.Language.Binding
         /// Gets the signatures that best match the specified arguments.
         /// If there is no best match, then multiple signatures will be returned.
         /// </summary>
-        private void GetBestMatchingSignatures(IReadOnlyList<Signature> signatures, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, List<Signature> result)
+        private void GetBestMatchingSignatures(
+            IReadOnlyList<Signature> signatures, 
+            IReadOnlyList<Expression> arguments, 
+            IReadOnlyList<TypeSymbol> argumentTypes, 
+            List<Signature> result,
+            bool requireAllArgumentsMatch = false)
         {
             var argCount = argumentTypes.Count;
 
@@ -1091,11 +1102,16 @@ namespace Kusto.Language.Binding
                     }
                 }
 
+                if (requireAllArgumentsMatch && mostMatchingParameterCount < arguments.Count)
+                {
+                    mostMatchingParameterCount = arguments.Count;
+                }
+
                 // remove all candidates that do not have the most matching parameters
                 for (int i = result.Count - 1; i >= 0; i--)
                 {
-                    var f = result[i];
-                    if (GetParameterMatchCount(f, arguments, argumentTypes) != mostMatchingParameterCount)
+                    var sig = result[i];
+                    if (GetParameterMatchCount(sig, arguments, argumentTypes) != mostMatchingParameterCount)
                     {
                         result.RemoveAt(i);
                     }

@@ -47,7 +47,11 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public DatabaseSymbol GetDatabase(string databaseName)
         {
-            return this.Databases.FirstOrDefault(d => d.Name == databaseName);
+            if (string.IsNullOrEmpty(databaseName))
+                return null;
+
+            return this.Databases.FirstOrDefault(d => d.Name == databaseName)
+                ?? this.Databases.FirstOrDefault(d => d.AlternateName == databaseName);
         }
 
         /// <summary>

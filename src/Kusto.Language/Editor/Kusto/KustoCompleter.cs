@@ -912,6 +912,12 @@ namespace Kusto.Language.Editor
                         builder.Add(new CompletionItem(CompletionKind.Example, x));
                     }
                 }
+
+                // if only literal values can be specified, then do not allow other completions to show
+                if (possibleParameters.All(p => p.ArgumentKind == ArgumentKind.Literal || p.ArgumentKind == ArgumentKind.LiteralNotEmpty))
+                {
+                    return CompletionMode.Isolated;
+                }
             }
 
             return CompletionMode.Combined;
@@ -924,6 +930,13 @@ namespace Kusto.Language.Editor
                 if (p.Examples.Count > 0)
                 {
                     foreach (var ex in p.Examples)
+                    {
+                        examples.Add(ex);
+                    }
+                }
+                else if (p.Values.Count > 0)
+                {
+                    foreach (var ex in p.Values.Select(v => CreateValueExamples(p, v)))
                     {
                         examples.Add(ex);
                     }
@@ -952,6 +965,26 @@ namespace Kusto.Language.Editor
             {
                 examples.Add("false");
                 examples.Add("true");
+            }
+        }
+
+        private static string CreateValueExamples(Parameter p, object value)
+        {
+            switch (value)
+            {
+                case string s:
+                    // convert example to lower case (if not case sensitive) to improve matching during completion
+                    return KustoFacts.GetSingleQuotedStringLiteral(p.IsCaseSensitive ? s : s.ToLower());
+                case DateTime dt:
+                    return $"datetime({dt})";
+                case TimeSpan ts:
+                    return $"timespan({ts})";
+                case Guid g:
+                    return $"guid({g})";
+                case Decimal d:
+                    return $"decimal({d})";
+                default:
+                    return value.ToString();
             }
         }
 
@@ -1144,7 +1177,19 @@ namespace Kusto.Language.Editor
 
         private IEnumerable<CompletionItem> GetMemberNameExamples(IEnumerable<Symbol> symbols)
         {
-            return symbols.Select(s => new CompletionItem(CompletionKind.Example, KustoFacts.GetStringLiteral(s.Name)));
+            var items = new List<CompletionItem>();
+
+            foreach (var symbol in symbols)
+            {
+                items.Add(new CompletionItem(CompletionKind.Example, KustoFacts.GetStringLiteral(symbol.Name)));
+
+                if (!string.IsNullOrEmpty(symbol.AlternateName))
+                {
+                    items.Add(new CompletionItem(CompletionKind.Example, KustoFacts.GetStringLiteral(symbol.AlternateName)));
+                }
+            }
+
+            return items;
         }
 
         private bool ShowParameterNames(FunctionSymbol function)

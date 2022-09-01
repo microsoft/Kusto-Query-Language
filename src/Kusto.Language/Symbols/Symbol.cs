@@ -15,6 +15,11 @@ namespace Kusto.Language.Symbols
         public string Name { get; }
 
         /// <summary>
+        /// An alternate name of the symbol.
+        /// </summary>
+        public virtual string AlternateName => "";
+
+        /// <summary>
         /// The <see cref="SymbolKind"/> of the symbol.
         /// </summary>
         public virtual SymbolKind Kind => SymbolKind.None;
@@ -77,7 +82,10 @@ namespace Kusto.Language.Symbols
 
         private string _display;
 
-        protected virtual string GetDisplay() => this.Name;
+        protected virtual string GetDisplay() => 
+            !string.IsNullOrEmpty(this.AlternateName) 
+                ? $"{this.Name} ({this.AlternateName})" 
+                : this.Name;
 
         /// <summary>
         /// A description of the symbol.

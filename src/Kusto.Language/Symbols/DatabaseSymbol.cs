@@ -12,6 +12,7 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class DatabaseSymbol : TypeSymbol
     {
+        private readonly string _alternateName;
         private readonly IReadOnlyList<Symbol> _members;
 
         /// <summary>
@@ -30,11 +31,28 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
         /// </summary>
-        public DatabaseSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
+        public DatabaseSymbol(string name, string alternateName, IEnumerable<Symbol> members, bool isOpen = false)
             : base(name)
         {
+            _alternateName = alternateName ?? "";
             _members = members.ToReadOnly();
             this.IsOpen = isOpen;
+        }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
+        /// </summary>
+        public DatabaseSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
+            : this(name, null, members, isOpen)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="DatabaseSymbol"/>.
+        /// </summary>
+        public DatabaseSymbol(string name, string alternateName, params Symbol[] members)
+            : this(name, alternateName, (IEnumerable<Symbol>)members)
+        {
         }
 
         /// <summary>
@@ -44,6 +62,8 @@ namespace Kusto.Language.Symbols
             : this(name, (IEnumerable<Symbol>)members)
         {
         }
+
+        public override string AlternateName => _alternateName;
 
         public override SymbolKind Kind => SymbolKind.Database;
 
@@ -63,7 +83,8 @@ namespace Kusto.Language.Symbols
             {
                 if (_tables == null)
                 {
-                    _tables = this.Members.OfType<TableSymbol>().Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
+                    _tables = this.Members.OfType<TableSymbol>()
+                        .Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
                 }
 
                 return _tables;
@@ -95,7 +116,7 @@ namespace Kusto.Language.Symbols
             {
                 if (_materializedViews == null)
                 {
-                    _materializedViews = this.Members.OfType<MaterializedViewSymbol>().Where(ts => ts.IsMaterializedView).ToReadOnly();
+                    _materializedViews = this.Members.OfType<MaterializedViewSymbol>().ToReadOnly();
                 }
 
                 return _materializedViews;
@@ -155,7 +176,9 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol GetAnyTable(string name)
         {
-            return GetTable(name) ?? GetExternalTable(name) ?? GetMaterializedView(name);
+            return GetTable(name) 
+                ?? GetExternalTable(name) 
+                ?? GetMaterializedView(name);
         }
 
         /// <summary>
