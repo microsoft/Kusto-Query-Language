@@ -71,8 +71,8 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("merge_tdigests");
 
-        public static readonly FunctionSymbol MergeTDigests =
-            new FunctionSymbol("merge_tdigests", ScalarTypes.Dynamic,
+        public static readonly FunctionSymbol MergeTDigest =
+            new FunctionSymbol("merge_tdigest", ScalarTypes.Dynamic,
                 new Parameter("tdigest", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("merge_tdigests");
@@ -702,7 +702,7 @@ namespace Kusto.Language
             DCountIf,
             TDigest,
             TDigestMerge,
-            MergeTDigests,
+            MergeTDigest,
             Hll,
             HllMerge,
             Min,
