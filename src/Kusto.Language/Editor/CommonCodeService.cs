@@ -57,7 +57,9 @@ namespace Kusto.Language.Editor
         }
 
         public override CodeActionInfo GetCodeActions(
-            int position, int length, 
+            int cursorPosition,
+            int selectionStart,
+            int selectionLength,
             CodeActionOptions options, 
             bool waitForAnalysis,
             string actorName,
@@ -68,6 +70,7 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(
             CodeAction codeAction, 
+            int cursorPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)
         {

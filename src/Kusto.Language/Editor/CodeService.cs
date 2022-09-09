@@ -75,14 +75,17 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the set of code actions available at the specified position.
         /// </summary>
-        /// <param name="position">The position of the caret or the start of the selection range.</param>
-        /// <param name="length">The length of the selection (or zero if no selection).</param>
+        /// <param name="position">The position to get code actions for.</param>
+        /// <param name="selectionStart">The start of the selection range.</param>
+        /// <param name="selectionLength">The length of the selection range (or zero if no selection).</param>
         /// <param name="options">An optional set of options.</param>
         /// <param name="waitForAnalysis">If false only cached diagnostics will be considered.</param>
         /// <param name="actorName">An optional actor's name get actions from. If null, actions are obtains from all known actors.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
         public abstract CodeActionInfo GetCodeActions(
-            int position, int length, 
+            int position,
+            int selectionStart,
+            int selectionLength,
             CodeActionOptions options = null, 
             bool waitForAnalysis = true, 
             string actorName = null,
@@ -92,10 +95,12 @@ namespace Kusto.Language.Editor
         /// Applies the code action at ths specified position.
         /// </summary>
         /// <param name="action">The action to apply.</param>
+        /// <param name="caretPosition">The position of the caret before the action is applied.</param>
         /// <param name="options">An optional set of options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
         public abstract CodeActionResult ApplyCodeAction(
-            CodeAction action, 
+            CodeAction action,
+            int caretPosition,
             CodeActionOptions options = null,
             CancellationToken cancellationToken = default(CancellationToken));
 

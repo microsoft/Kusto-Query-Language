@@ -42,7 +42,12 @@ namespace Kusto.Language.Editor
         protected static bool IsDbColumn(Expression expr, GlobalState globals) =>
             expr.ReferencedSymbol is ColumnSymbol c && globals.GetTable(c) != null;
 
-        public override void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        protected override void GetFixAction(
+            KustoCode code, 
+            Diagnostic dx, 
+            CodeActionOptions options, 
+            List<CodeAction> actions,
+            CancellationToken cancellationToken)
         {
             if (dx.Code == KustoAnalyzerCodes.AvoidUsingContains)
             {
@@ -63,20 +68,25 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        protected override FixResult GetFixEdits(
+            KustoCode code,
+            CodeAction action,
+            int caretPosition,
+            CodeActionOptions options,
+            CancellationToken cancellationToken)
         {
             if (action.Data.Count == 2
                 && Int32.TryParse(action.Data[0], out var opTokenStart))
             {
                 var opToken = code.Syntax.GetTokenAt(opTokenStart);
                 var newOpName = action.Data[1];
-                var originalText = new EditString(code.Text);
-                var changedText = originalText.ReplaceAt(opToken.TextStart, opToken.Width, newOpName);
-                return new CodeActionResult(changedText, opToken.TextStart);
+                return new FixResult(
+                    opToken.TextStart,
+                    StringEdit.Replacement(opToken.TextStart, opToken.Width, newOpName));
             }
             else
             {
-                return CodeActionResult.Nothing;
+                return new FixResult(caretPosition);
             }
         }
 

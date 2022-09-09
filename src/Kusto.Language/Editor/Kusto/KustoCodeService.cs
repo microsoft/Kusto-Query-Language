@@ -261,7 +261,9 @@ namespace Kusto.Language.Editor
         private Dictionary<string, KustoActor> _nameToActorMap;
 
         public override CodeActionInfo GetCodeActions(
-            int position, int length, 
+            int position,
+            int selectionStart, 
+            int selectionLength,
             CodeActionOptions options, 
             bool waitForAnalysis,
             string actorName,
@@ -295,7 +297,7 @@ namespace Kusto.Language.Editor
                     try
                     {
                         actorActions.Clear();
-                        actor.GetActions(this, code, position, length, options, actorActions, waitForAnalysis, cancellationToken);
+                        actor.GetActions(this, code, position, selectionStart, selectionLength, options, actorActions, waitForAnalysis, cancellationToken);
 
                         // add actor name to action data so we can find the actor later when action is applied
                         actions.AddRange(actorActions.Select(a => a.AddData(actor.Name)));
@@ -319,6 +321,7 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(
             CodeAction action, 
+            int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)
         {
@@ -334,7 +337,7 @@ namespace Kusto.Language.Editor
 
                     if (TryGetActor(actorName, out var actor))
                     {
-                        return actor.ApplyAction(this, code, action, options, cancellationToken);
+                        return actor.ApplyAction(this, code, action, caretPosition, options, cancellationToken);
                     }
                     else
                     {

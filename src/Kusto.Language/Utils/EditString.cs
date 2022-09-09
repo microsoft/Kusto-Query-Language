@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace Kusto.Language.Utils
@@ -79,7 +78,7 @@ namespace Kusto.Language.Utils
 
             return new EditString(this.OriginalText, newText, newMap);
         }
- 
+
         /// <summary>
         /// Inserts the text at the specified position.
         /// </summary>
@@ -319,7 +318,7 @@ namespace Kusto.Language.Utils
             /// </summary>
             public EditMap Replace(int start, int deleteLength, int insertLength)
             {
-                var newEdits = _edits.WithItem(new Edit(start, deleteLength, insertLength));
+                var newEdits = _edits.AddItem(new Edit(start, deleteLength, insertLength));
                 return new EditMap(newEdits);
             }
 
@@ -364,7 +363,7 @@ namespace Kusto.Language.Utils
                     minStart = edit.Start + edit.DeleteLength;
                 }
 
-                var newEdits = _edits.WithItems(adjustedEdits);
+                var newEdits = _edits.AddItems(adjustedEdits);
                 return new EditMap(newEdits);
             }
 

@@ -16,19 +16,22 @@ namespace Kusto.Language.Editor
         public abstract void GetActions(
             KustoCodeService service,
             KustoCode code, 
-            int position, int length, 
+            int position,
+            int selectionStart, 
+            int selectionLength,
             CodeActionOptions options, 
             List<CodeAction> actions, 
             bool waitForAnalysis,
             CancellationToken cancellationToken);
 
         /// <summary>
-        /// Applies the action at the specified position if possible.
+        /// Applies the action if possible.
         /// </summary>
         public abstract CodeActionResult ApplyAction(
             KustoCodeService serive,
             KustoCode code,
             CodeAction action,
+            int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken);
     }

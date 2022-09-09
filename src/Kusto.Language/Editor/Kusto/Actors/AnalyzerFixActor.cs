@@ -7,7 +7,8 @@ namespace Kusto.Language.Editor
     using Utils;
 
     /// <summary>
-    /// This is kusto actor that offers up code actions for code analyzers.
+    /// This is kusto actor that produces code actions for analyzer diagnostics.
+    /// It does this via requesting the actions directly from the analyzers that created the diagnostics.
     /// </summary>
     public class AnalyzerFixActor : KustoActor
     {
@@ -35,7 +36,8 @@ namespace Kusto.Language.Editor
             KustoCodeService service,
             KustoCode code,
             int position,
-            int length,
+            int selectionStart, 
+            int selectionLength,
             CodeActionOptions options,
             List<CodeAction> actions,
             bool waitForAnalysis,
@@ -55,26 +57,52 @@ namespace Kusto.Language.Editor
             // if analyzer diagnostics are not available then return no actions
             if (analyzerDiagnostics != null)
             {
-                var diagnosticsToFix =
+                var diagnosticsAtPosition =
                     analyzerDiagnostics
                     .Where(d =>
-                        TextRange.Overlaps(position, length, d.Start, d.Length)
+                        TextRange.Overlaps(position, 0, d.Start, d.Length)
                         && options.DiagnosticFilter.IsDiagnosticEnabled(d))
                     .ToList();
 
+                // if no actual selection then assume selection is entire text
+                if (selectionLength == 0)
+                {
+                    selectionStart = 0;
+                    selectionLength = code.Text.Length;
+                }
+
+                // make a map of all dx codes to any diagnostics within the selection
+                // so we can pass along all similar diagnostics in the selection range
+                // but only if the position requested is also within the selection range.
+                Dictionary<string, List<Diagnostic>> diagnosticsInSelectionMap = null;
+                if (position >= selectionStart && position < selectionStart + selectionLength)
+                {
+                    diagnosticsInSelectionMap = GetCodeToDiagnosticMap(
+                        analyzerDiagnostics
+                        .Where(d =>
+                            TextRange.Overlaps(selectionStart, selectionLength, d.Start, d.Length)
+                            && options.DiagnosticFilter.IsDiagnosticEnabled(d)));
+                }
+
                 var fixActions = new List<CodeAction>();
 
-                foreach (var dx in diagnosticsToFix)
+                // now get the actions for each diagnostic
+                foreach (var dx in diagnosticsAtPosition)
                 {
-                    // look for kusto analyzers that can fix their diagnostics
+                    // look for the associated kusto analyzer and get its fix actions
                     if (_codeToAnalyzerMap.TryGetValue(dx.Code, out var analyzer))
                     {
+                        // get all diagnostics in selection range that have this same code
+                        // so the analzyer may choose to create fix all actions.
+                        List<Diagnostic> selectionDiagnostics = null;
+                        diagnosticsInSelectionMap?.TryGetValue(dx.Code, out selectionDiagnostics);
+
                         fixActions.Clear();
-                        analyzer.GetFixActions(code, dx, options, fixActions, cancellationToken);
+                        analyzer.GetFixActions(code, dx, selectionDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance, options, fixActions, cancellationToken);
 
                         if (fixActions.Count > 0)
                         {
-                            // add analyzer name to data so we can route this to the appropriate analyzer later when applied
+                            // add analyzer name to action data so we can route this action back to the same analyzer later when applied
                             actions.AddRange(fixActions.Select(a => a.AddData(analyzer.Name)));
                         }
                     }
@@ -82,23 +110,39 @@ namespace Kusto.Language.Editor
             }
         }
 
+        private static Dictionary<string, List<Diagnostic>> GetCodeToDiagnosticMap(IEnumerable<Diagnostic> diagnostics)
+        {
+            var map = new Dictionary<string, List<Diagnostic>>();
+
+            foreach (var dx in diagnostics)
+            {
+                if (!map.TryGetValue(dx.Code, out var list))
+                {
+                    list = new List<Diagnostic>();
+                    map.Add(dx.Code, list);
+                }
+
+                list.Add(dx);
+            }
+
+            return map;
+        }
+
         public override CodeActionResult ApplyAction(
             KustoCodeService service,
             KustoCode code,
             CodeAction action,
+            int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
             var analyzerName = action.Data.LastOrDefault();          
-            if (analyzerName != null)
+            if (!string.IsNullOrEmpty(analyzerName)
+                && _nameToAnalyzerMap.TryGetValue(analyzerName, out var analyzer))
             {
-                // remove analyzer name from data to return it to its original state
+                // return action to original state (before analyzer name was added)
                 action = action.RemoveData(1);
-
-                if (_nameToAnalyzerMap.TryGetValue(analyzerName, out var analyzer))
-                {
-                    return analyzer.ApplyFixAction(code, action, options, cancellationToken);
-                }
+                return analyzer.ApplyFixAction(code, action, caretPosition, options, cancellationToken);
             }
 
             return CodeActionResult.Failure("Unknown analyzer");

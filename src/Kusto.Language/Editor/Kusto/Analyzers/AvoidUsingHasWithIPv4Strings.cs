@@ -113,7 +113,12 @@ namespace Kusto.Language.Editor
                 $"Avoid using the '{operatorName}' operator with IPv4 strings. Use the '{ipv4FunctionName}' function instead.");
         }
 
-        public override void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        protected override void GetFixAction(
+            KustoCode code, 
+            Diagnostic dx, 
+            CodeActionOptions options, 
+            List<CodeAction> actions, 
+            CancellationToken cancellationToken)
         {
             if (dx.Code == _diagnostic.Code)
             {
@@ -128,10 +133,15 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        protected override FixResult GetFixEdits(
+            KustoCode code,
+            CodeAction action,
+            int caretPosition,
+            CodeActionOptions options,
+            CancellationToken cancellationToken)
         {
             // decode data and apply change
-            if (action.Data.Count == 2 
+            if (action.Data.Count == 2
                 && Int32.TryParse(action.Data[0], out var tokenStart))
             {
                 var opToken = code.Syntax.GetTokenAt(tokenStart);
@@ -141,26 +151,27 @@ namespace Kusto.Language.Editor
                 if (opToken != null)
                 {
                     // convert operator into a function call
-                    var changedText = new EditString(code.Text);
                     if (node is HasAnyExpression hax)
                     {
-                        changedText = changedText
-                            .ReplaceAt(hax.Operator.TriviaStart, hax.Right.OpenParen.End - hax.Operator.TriviaStart, ", ")
-                            .Insert(hax.TextStart, newName + "(");
+                        return new FixResult(
+                            hax.TextStart,
+                            StringEdit.Replacement(hax.Operator.TriviaStart, hax.Right.OpenParen.End - hax.Operator.TriviaStart, ", "),
+                            StringEdit.Insertion(hax.TextStart, newName + "(")
+                            );
                     }
                     else if (node is BinaryExpression bx)
                     {
-                        changedText = changedText
-                            .Insert(bx.End, ")")
-                            .ReplaceAt(bx.Operator.TriviaStart, bx.Right.TextStart - bx.Operator.TriviaStart, ", ")
-                            .Insert(node.TextStart, newName + "(");
+                        return new FixResult(
+                            node.TextStart,
+                            StringEdit.Insertion(bx.End, ")"),
+                            StringEdit.Replacement(bx.Operator.TriviaStart, bx.Right.TextStart - bx.Operator.TriviaStart, ", "),
+                            StringEdit.Insertion(node.TextStart, newName + "(")
+                            );
                     }
-
-                    return new CodeActionResult(changedText, node.TextStart);
                 }
             }
 
-            return CodeActionResult.Nothing;
+            return new FixResult(caretPosition);
         }
 
         private static string GetIPv4FunctionName(SyntaxKind kind)

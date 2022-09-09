@@ -29,27 +29,29 @@ namespace Kusto.Language.Editor
         public override void GetActions(
             KustoCodeService service,
             KustoCode code,
-            int position, int length,
+            int position,
+            int selectionStart, 
+            int selectionLength,
             CodeActionOptions options,
             List<CodeAction> actions,
             bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
-            if (length > 0 )
+            if (selectionLength > 0 )
             {
-                if (CanExtractExpression(code, position, length))
+                if (CanExtractExpression(code, selectionStart, selectionLength))
                 {
-                    actions.Add(ExtractExpressionAction.WithData(position.ToString(), length.ToString()));
+                    actions.Add(ExtractExpressionAction.WithData(selectionStart.ToString(), selectionLength.ToString()));
                 }
 
-                if (CanExtractFunction(code, position, length))
+                if (CanExtractFunction(code, selectionStart, selectionLength))
                 {
-                    actions.Add(ExtractFunctionAction.WithData(position.ToString(), length.ToString()));
+                    actions.Add(ExtractFunctionAction.WithData(selectionStart.ToString(), selectionLength.ToString()));
                 }
             }
             else if (CanExtractValue(code, position))
             {
-                actions.Add(ExtractValueAction.WithData(position.ToString(), length.ToString()));
+                actions.Add(ExtractValueAction.WithData(position.ToString(), "0"));
             }
         }
 
@@ -123,6 +125,7 @@ namespace Kusto.Language.Editor
             KustoCodeService service,
             KustoCode code,
             CodeAction action,
+            int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {

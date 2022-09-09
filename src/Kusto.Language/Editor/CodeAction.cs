@@ -24,15 +24,21 @@ namespace Kusto.Language.Editor
         /// </summary>
         public IReadOnlyList<string> Data { get; }
 
-        public CodeAction(string name, string description, IReadOnlyList<string> data)
+        /// <summary>
+        /// All related actions (such as fix all actions)
+        /// </summary>
+        public IReadOnlyList<CodeAction> RelatedActions { get; }
+
+        public CodeAction(string name, string description, IReadOnlyList<string> data, IReadOnlyList<CodeAction> relatedActions)
         {
             this.Name = name ?? "";
             this.Description = description ?? "";
             this.Data = data ?? EmptyReadOnlyList<string>.Instance;
+            this.RelatedActions = relatedActions ?? EmptyReadOnlyList<CodeAction>.Instance;
         }
 
         public CodeAction(string name, string description, params string[] data)
-            : this(name, description, (IReadOnlyList<string>)data)
+            : this(name, description, (IReadOnlyList<string>)data, null)
         {
         }
 
@@ -43,7 +49,7 @@ namespace Kusto.Language.Editor
         {
             if (this.Name != name)
             {
-                return new CodeAction(name, this.Description, this.Data);
+                return new CodeAction(name, this.Description, this.Data, this.RelatedActions);
             }
 
             return this;
@@ -56,7 +62,7 @@ namespace Kusto.Language.Editor
         {
             if (this.Description != description)
             {
-                return new CodeAction(this.Name, description, this.Data);
+                return new CodeAction(this.Name, description, this.Data, this.RelatedActions);
             }
 
             return this;
@@ -69,7 +75,7 @@ namespace Kusto.Language.Editor
         {
             if (this.Data != data)
             {
-                return new CodeAction(this.Name, this.Description, data);
+                return new CodeAction(this.Name, this.Description, data, this.RelatedActions);
             }
 
             return this;
@@ -104,6 +110,19 @@ namespace Kusto.Language.Editor
         /// </summary>
         public CodeAction RemoveData(int count) =>
             WithData(this.Data.Take(this.Data.Count - count));
+
+        /// <summary>
+        /// Returns a new <see cref="CodeAction"/> with a list of related actions
+        /// </summary>
+        public CodeAction WithRelatedActions(IReadOnlyList<CodeAction> actions)
+        {
+            if (this.RelatedActions != actions)
+            {
+                return new CodeAction(this.Name, this.Description, this.Data, actions);
+            }
+
+            return this;
+        }
     }
 
     public class CodeActionInfo
@@ -230,8 +249,8 @@ namespace Kusto.Language.Editor
         {
         }
 
-        public CodeActionResult(EditString newText, int newPosition)
-            : this(new ResultAction[] { new ChangeTextAction(newText), new MoveCaretAction(newPosition) })
+        public CodeActionResult(EditString newText, int newCaretPosition)
+            : this(new ResultAction[] { new ChangeTextAction(newText), new MoveCaretAction(newCaretPosition) })
         {
         }
 

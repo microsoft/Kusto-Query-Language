@@ -42,7 +42,7 @@ namespace Kusto.Language.Utils
         /// <summary>
         /// Creates a new list with the same elements as this list plus the item specified.
         /// </summary>
-        public SafeList<T> WithItem(T item)
+        public SafeList<T> AddItem(T item)
         {
             // take ownership of list if possible
             var wasOwner = Interlocked.CompareExchange(ref _isOwner, 0, 1);
@@ -62,7 +62,7 @@ namespace Kusto.Language.Utils
         /// <summary>
         /// Creates a new list with the same elements as this list plus the items specified.
         /// </summary>
-        public SafeList<T> WithItems(IEnumerable<T> items)
+        public SafeList<T> AddItems(IEnumerable<T> items)
         {
             // take ownership of list if possible
             var wasOwner = Interlocked.CompareExchange(ref _isOwner, 0, 1);

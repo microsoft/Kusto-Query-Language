@@ -55,7 +55,12 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override void GetFixActions(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        protected override void GetFixAction(
+            KustoCode code,
+            Diagnostic dx,
+            CodeActionOptions options,
+            List<CodeAction> actions,
+            CancellationToken cancellationToken)
         {
             if (code.Syntax.GetNodeAt(dx.Start, dx.Length) is FunctionCallExpression fc)
             {
@@ -73,19 +78,24 @@ namespace Kusto.Language.Editor
             }
         }
 
-        public override CodeActionResult ApplyFixAction(KustoCode code, CodeAction action, CodeActionOptions options, CancellationToken cancellationToken)
+        protected override FixResult GetFixEdits(
+            KustoCode code,
+            CodeAction action,
+            int caretPosition,
+            CodeActionOptions options,
+            CancellationToken cancellationToken)
         {
             if (action.Data.Count == 3
                 && Int32.TryParse(action.Data[0], out var fnNameStart)
                 && Int32.TryParse(action.Data[1], out var fnNameLength))
             {
                 var newFnName = action.Data[2];
-                return new CodeActionResult(
-                    new EditString(code.Text).ReplaceAt(fnNameStart, fnNameLength, newFnName),
-                    fnNameStart);
+                return new FixResult(
+                    fnNameStart,
+                    StringEdit.Replacement(fnNameStart, fnNameLength, newFnName));
             }
 
-            return CodeActionResult.Nothing;
+            return new FixResult(caretPosition);
         }
     }
 }

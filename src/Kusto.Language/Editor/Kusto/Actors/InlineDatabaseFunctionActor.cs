@@ -16,14 +16,16 @@ namespace Kusto.Language.Editor
         public override void GetActions(
             KustoCodeService service,
             KustoCode code, 
-            int position, int length, 
+            int position,
+            int selectionStart, 
+            int selectionLength,
             CodeActionOptions options,           
             List<CodeAction> actions,
             bool waitForAnalysis,
             CancellationToken cancellationToken)
         {
             var token = code.Syntax.GetTokenAt(position);
-            if (position >= token.TextStart && position <= token.End && length == 0)
+            if (position >= token.TextStart && position <= token.End)
             {
                 var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
                 if (node is Name name
@@ -32,7 +34,7 @@ namespace Kusto.Language.Editor
                     && code.Globals.IsDatabaseFunction(fs)
                     && IsGoodReference(nr, fs))
                 {
-                    actions.Add(InlineAction.WithData(position.ToString(), length.ToString()));
+                    actions.Add(InlineAction.WithData(position.ToString()));
                 }
             }
         }
@@ -49,15 +51,15 @@ namespace Kusto.Language.Editor
             KustoCodeService service,
             KustoCode code,
             CodeAction action,
+            int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            if (action.Data.Count == 2
-                && Int32.TryParse(action.Data[0], out var position)
-                && Int32.TryParse(action.Data[1], out var length))
+            if (action.Data.Count == 1
+                && Int32.TryParse(action.Data[0], out var position))
             {
                 var token = code.Syntax.GetTokenAt(position);
-                if (position >= token.TextStart && position <= token.End && length == 0)
+                if (position >= token.TextStart && position <= token.End)
                 {
                     var node = code.Syntax.GetNodeAt(token.TextStart, token.Text.Length);
                     if (node is Name name
