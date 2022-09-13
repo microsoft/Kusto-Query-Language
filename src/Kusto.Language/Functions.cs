@@ -112,11 +112,18 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol ToUtf8 =
+        public static readonly FunctionSymbol ToUtf8_Deprecated =
             new FunctionSymbol("to_utf8", ScalarTypes.Dynamic,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol UnicodeCodepointsFromString =
+            new FunctionSymbol("unicode_codepoints_from_string", ScalarTypes.Dynamic,
+                new Parameter("value", ParameterTypeKind.Scalar))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: new alias, Igor (igborodi) to unhide after 10/10/2022
 
         public static readonly FunctionSymbol Substring =
             new FunctionSymbol("substring", ScalarTypes.String,
@@ -307,12 +314,20 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol MakeString =
+        public static readonly FunctionSymbol MakeString_Deprecated =
             new FunctionSymbol("make_string",
                 ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol UnicodeCodepointsToString =
+            new FunctionSymbol("unicode_codepoints_to_string",
+                ScalarTypes.String,
+                new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide(); // TODO: new alias, Igor (igborodi) to unhide after 10/10/2022
 
         public static readonly FunctionSymbol DateTimeToLocaleString =
             new FunctionSymbol("datetime_to_locale_string",
@@ -2784,7 +2799,8 @@ namespace Kusto.Language
             StringSize,
             ToUpper,
             ToLower,
-            ToUtf8,
+            ToUtf8_Deprecated,
+            UnicodeCodepointsFromString,
             Substring,
             RegexQuote,
             IndexOf,
@@ -2806,7 +2822,8 @@ namespace Kusto.Language
             Trim,
             CountOf,
             Translate,
-            MakeString,
+            MakeString_Deprecated,
+            UnicodeCodepointsToString,
             DateTimeToLocaleString,
             DatetimeLocalToUtc,
             DatetimeUtcToLocal,
