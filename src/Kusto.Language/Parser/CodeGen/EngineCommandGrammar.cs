@@ -182,17 +182,18 @@ namespace Kusto.Language.Parsing
             var shape140 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable)};
             var shape141 = new [] {CD(), CD("databaseName", CompletionHint.Database)};
             var shape142 = new [] {CD(), CD("threshold", CompletionHint.Literal)};
-            var shape143 = new [] {CD("kind"), CD()};
-            var shape144 = new [] {CD(), CD(CompletionHint.MaterializedView), CD(), CD()};
-            var shape145 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD()};
-            var shape146 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)};
-            var shape147 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD()};
-            var shape148 = new [] {CD(), CD(CompletionHint.Table), CD(), CD()};
-            var shape149 = new [] {CD(), CD(CompletionHint.Table), CD()};
-            var shape150 = new [] {CD(), CD(), CD(CompletionHint.Table), CD()};
-            var shape151 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD()};
-            var shape152 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
-            var shape153 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD(), CD("MappingName", CompletionHint.Literal)};
+            var shape143 = new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(isOptional: true)};
+            var shape144 = new [] {CD("kind"), CD()};
+            var shape145 = new [] {CD(), CD(CompletionHint.MaterializedView), CD(), CD()};
+            var shape146 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD()};
+            var shape147 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)};
+            var shape148 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD()};
+            var shape149 = new [] {CD(), CD(CompletionHint.Table), CD(), CD()};
+            var shape150 = new [] {CD(), CD(CompletionHint.Table), CD()};
+            var shape151 = new [] {CD(), CD(), CD(CompletionHint.Table), CD()};
+            var shape152 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD()};
+            var shape153 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
+            var shape154 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD(), CD("MappingName", CompletionHint.Literal)};
 
             Func<SyntaxElement> missing0 = () => CreateMissingToken("(");
             Func<SyntaxElement> missing1 = () => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral()));
@@ -859,7 +860,7 @@ namespace Kusto.Language.Parsing
             var fragment70 = Custom(
                     Token("apacheavro", "avro", "csv", "json", "orc", "parquet", "sstream", "w3clogfile"),
                     RequiredToken("mappings"),
-                    shape143);
+                    shape144);
             var fragment71 = Custom(
                     Token("("),
                     Required(
@@ -880,7 +881,7 @@ namespace Kusto.Language.Parsing
                             shape10),
                         missingElement: rules.MissingNameReference),
                     Token(")"),
-                    shape150);
+                    shape151);
             var fragment73 = Custom(
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
@@ -3021,7 +3022,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("data"),
-                    shape145));
+                    shape146));
 
             var ClearMaterializedViewStatistics = Command("ClearMaterializedViewStatistics", 
                 Custom(
@@ -3029,7 +3030,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                     RequiredToken("statistics"),
-                    shape147));
+                    shape148));
 
             var ClearTableCacheStreamingIngestionSchema = Command("ClearTableCacheStreamingIngestionSchema", 
                 Custom(
@@ -3051,7 +3052,7 @@ namespace Kusto.Language.Parsing
                         missing45),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     RequiredToken("data"),
-                    shape151));
+                    shape152));
 
             var CreateMergeTables = Command("CreateMergeTables", 
                 Custom(
@@ -4369,7 +4370,7 @@ namespace Kusto.Language.Parsing
                     Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
                     Optional(Token("ifexists")),
-                    new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(isOptional: true)}));
+                    shape143));
 
             var DropMaterializedViewAdmins = Command("DropMaterializedViewAdmins", 
                 Custom(
@@ -4478,7 +4479,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
                     RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape153));
+                    shape154));
 
             var DropTableRole = Command("DropTableRole", 
                 Custom(
@@ -4819,7 +4820,7 @@ namespace Kusto.Language.Parsing
                                 Token("table"),
                                 Required(rules.TableNameReference, rules.MissingNameReference),
                                 RequiredToken("extents"),
-                                shape149)),
+                                shape150)),
                         missing43),
                     RequiredToken("corrupted"),
                     RequiredToken("datetime")).Hide());
@@ -5085,7 +5086,7 @@ namespace Kusto.Language.Parsing
                                     rules.Value),
                                 rules.MissingValue),
                             new [] {CD(), CD("n", CompletionHint.Literal)})),
-                    shape146));
+                    shape147));
 
             var SetMaterializedViewCursor = Command("SetMaterializedViewCursor", 
                 Custom(
@@ -6287,7 +6288,9 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("function"),
                     Required(rules.DatabaseFunctionNameReference, rules.MissingNameReference),
-                    new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function)}));
+                    Optional(
+                        fragment36),
+                    shape143));
 
             var ShowIngestionFailures = Command("ShowIngestionFailures", 
                 Custom(
@@ -6344,7 +6347,7 @@ namespace Kusto.Language.Parsing
                                 missingElement: rules.MissingNameReference),
                             Token(")"),
                             Token("details"),
-                            shape144),
+                            shape145),
                         Custom(
                             Token("("),
                             Required(
@@ -6356,7 +6359,7 @@ namespace Kusto.Language.Parsing
                                 missing37),
                             RequiredToken(")"),
                             RequiredToken("details"),
-                            shape144),
+                            shape145),
                         Token("details"))));
 
             var ShowMaterializedViews = Command("ShowMaterializedViews", 
@@ -6370,7 +6373,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("cslschema"),
-                    shape145));
+                    shape146));
 
             var ShowMaterializedViewDetails = Command("ShowMaterializedViewDetails", 
                 Custom(
@@ -6378,7 +6381,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("details"),
-                    shape145));
+                    shape146));
 
             var ShowMaterializedViewDiagnostics = Command("ShowMaterializedViewDiagnostics", 
                 Custom(
@@ -6388,7 +6391,7 @@ namespace Kusto.Language.Parsing
                     Token("diagnostics"),
                     Optional(
                         fragment15),
-                    shape146));
+                    shape147));
 
             var ShowMaterializedViewExtents = Command("ShowMaterializedViewExtents", 
                 Custom(
@@ -6408,7 +6411,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("failures"),
-                    shape147));
+                    shape148));
 
             var ShowMaterializedViewPolicyCaching = Command("ShowMaterializedViewPolicyCaching", 
                 Custom(
@@ -6461,7 +6464,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("principals"),
-                    shape145));
+                    shape146));
 
             var ShowMaterializedViewSchemaAsJson = Command("ShowMaterializedViewSchemaAsJson", 
                 Custom(
@@ -6479,7 +6482,7 @@ namespace Kusto.Language.Parsing
                     Token("materialized-view"),
                     rules.MaterializedViewNameReference,
                     Token("statistics"),
-                    shape147));
+                    shape148));
 
             var ShowMaterializedView = Command("ShowMaterializedView", 
                 Custom(
@@ -6723,7 +6726,7 @@ namespace Kusto.Language.Parsing
                                 missingElement: rules.MissingNameReference),
                             Token(")"),
                             Token("details"),
-                            shape148),
+                            shape149),
                         Token("details"))));
 
             var TablesShardGroupsStatisticsShow = Command("TablesShardGroupsStatisticsShow", 
@@ -6740,7 +6743,7 @@ namespace Kusto.Language.Parsing
                                 missingElement: rules.MissingNameReference),
                             Token(")"),
                             Token("shard-groups").Hide(),
-                            shape148),
+                            shape149),
                         Token("shard-groups").Hide()),
                     RequiredToken("statistics").Hide()));
 
@@ -6759,7 +6762,7 @@ namespace Kusto.Language.Parsing
                                     missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
-                            shape149)),
+                            shape150)),
                     shape88));
 
             var ShowExtentCorruptedDatetime = Command("ShowExtentCorruptedDatetime", 
@@ -6771,7 +6774,7 @@ namespace Kusto.Language.Parsing
                             Token("table"),
                             If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                             Token("extents"),
-                            shape149)),
+                            shape150)),
                     Required(
                         Custom(
                             Token("corrupted"),
@@ -6812,7 +6815,7 @@ namespace Kusto.Language.Parsing
                                     missingElement: rules.MissingNameReference),
                                 missing37),
                             RequiredToken(")"),
-                            shape150),
+                            shape151),
                         fragment73),
                     RequiredToken("extents"),
                     Optional(
@@ -7065,7 +7068,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("rowstore_references"),
-                    shape151));
+                    shape152));
 
             var ShowTableRowStoreSealInfo = Command("ShowTableRowStoreSealInfo", 
                 Custom(
@@ -7073,7 +7076,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("rowstore_sealinfo"),
-                    shape152));
+                    shape153));
 
             var ShowTableRowStores = Command("ShowTableRowStores", 
                 Custom(
@@ -7081,7 +7084,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     RequiredToken("rowstores"),
-                    shape152));
+                    shape153));
 
             var ShowTableColumnsClassification = Command("ShowTableColumnsClassification", 
                 Custom(
@@ -7107,7 +7110,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("cslschema"),
-                    shape151));
+                    shape152));
 
             var ShowTableDetails = Command("ShowTableDetails", 
                 Custom(
@@ -7115,7 +7118,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("details"),
-                    shape151));
+                    shape152));
 
             var ShowTableDimensions = Command("ShowTableDimensions", 
                 Custom(
@@ -7123,7 +7126,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("dimensions"),
-                    shape151));
+                    shape152));
 
             var ShowTableIngestionMappings = Command("ShowTableIngestionMappings", 
                 Custom(
@@ -7144,7 +7147,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("avro", "csv", "json", "orc", "parquet", "w3clogfile"),
                     RequiredToken("mapping"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape153));
+                    shape154));
 
             var ShowTablePolicyIngestionTime = Command("ShowTablePolicyIngestionTime", 
                 Custom(
@@ -7170,7 +7173,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("principals"),
-                    shape151));
+                    shape152));
 
             var ShowTablePrincipalRoles = Command("ShowTablePrincipalRoles", 
                 Custom(
@@ -7212,7 +7215,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("shard-groups").Hide(),
-                    shape151));
+                    shape152));
 
             var ShowTable = Command("ShowTable", 
                 Custom(
