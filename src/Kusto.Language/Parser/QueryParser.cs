@@ -1542,7 +1542,8 @@ namespace Kusto.Language.Parsing
                     if (ScanTypeOfLiteral()) // typeof can be an identifier so need to scan further than just the typeof keyword
                         return ParseTypeOfLiteral();
                     if (ScanFunctionCallStart())
-                        return ParseDotCompositeFunctionCall();
+                        //return ParseDotCompositeFunctionCall();
+                        return ParseFunctionCallExpression();
                     return ParsePrimaryPathSelector();
             }
         }
@@ -1729,6 +1730,18 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        private Expression ParsePathElementSelectorOrFunctionCall()
+        {
+            if (ScanFunctionCallStart())
+            {
+                return ParseFunctionCallExpression();
+            }
+            else
+            {
+                return ParsePathElementSelector();
+            }
+
+        }
 
         private Expression ParseBarePathElementSelector()
         {
@@ -2094,16 +2107,9 @@ namespace Kusto.Language.Parsing
                 var kind = PeekToken().Kind;
                 if (kind == SyntaxKind.DotToken)
                 {
-                    if (ScanFunctionCallStart(1))
-                    {
-                        var dot = ParseToken();
-                        var call = ParseFunctionCallExpression();
-                        expr = new PathExpression(expr, dot, call);
-                    }
-                    else
-                    {
-                        expr = new PathExpression(expr, ParseToken(), ParsePathElementSelector() ?? CreateMissingNameReference());
-                    }
+                    var dot = ParseToken();
+                    var selector = ParsePathElementSelectorOrFunctionCall() ?? CreateMissingNameReference();
+                    expr = new PathExpression(expr, dot, selector);
                 }
                 else if (kind == SyntaxKind.OpenBracketToken)
                 {
@@ -2960,10 +2966,10 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, Expression> FnParseEntityReferenceExpression =
             qp => qp.ParseEntityReferenceExpression();
 
-        private Expression ParseWildcardedEntityPathSelector() =>
-            ParseWildcardedNameReference()
-            ?? ParseBracketedEntityNamePathElementSelector()
-            ?? ParseBarePathElementSelector();
+        //private Expression ParseWildcardedEntityPathSelector() =>
+        //    ParseWildcardedNameReference()
+        //    ?? ParseBracketedEntityNamePathElementSelector()
+        //    ?? ParseBarePathElementSelector();
 
         private Expression ParseWildcardedEntityExpression()
         {
@@ -2971,22 +2977,41 @@ namespace Kusto.Language.Parsing
             {
                 return ParseWildcardedNameReference();
             }
-            else if (ScanFunctionCallStart())
+            else
             {
-                var expr = ParseDotCompositeFunctionCall();
+                var expr = ParsePathElementSelectorOrFunctionCall();
 
-                if (expr != null && PeekToken().Kind == SyntaxKind.DotToken)
+                if (expr != null)
                 {
-                    expr = new PathExpression(
-                        expr,
-                        ParseToken(),
-                        ParseWildcardedEntityPathSelector() ?? CreateMissingNameReference());
+                    while (true)
+                    {
+                        var kind = PeekToken().Kind;
+                        if (kind == SyntaxKind.DotToken)
+                        {
+                            var dot = ParseToken();
+                            if (ScanWildcardedName() > 0)
+                            {
+                                expr = new PathExpression(expr, dot, ParseWildcardedNameReference());
+                                return expr;
+                            }
+                            else
+                            {
+                                expr = new PathExpression(expr, dot, ParsePathElementSelectorOrFunctionCall() ?? CreateMissingNameReference());
+                            }
+                        }
+                        else if (kind == SyntaxKind.OpenBracketToken)
+                        {
+                            expr = new ElementExpression(expr, ParseBracketedPathElementSelector());
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
 
                 return expr;
             }
-
-            return null;
         }
 
 #endregion

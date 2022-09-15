@@ -1069,7 +1069,6 @@ namespace Kusto.Language.Parsing
                     ClientParameterReference
                     );
 
-
             // wild cards can use any keyword (but will need an asterisk somewhere)
             var ScanWildcard =
                 And(
@@ -1152,6 +1151,11 @@ namespace Kusto.Language.Parsing
                     If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
                     BracketedNameReference);
 
+            var PathElementSelectorOrFunctionCall =
+                First(
+                    If(ScanFunctionCall, FunctionCall),
+                    PathElementSelector);
+
             var EntityPathExpression =
                 ApplyZeroOrMore(
                     PathElementSelector,
@@ -1164,11 +1168,12 @@ namespace Kusto.Language.Parsing
                                 (left, right) =>
                                     (Expression)new ElementExpression(left, right))));
 
+            // this is meant for column references?
             var EntityReferenceExpression =
                 EntityPathExpression
                 .WithTag("<entity>");
 
-            var ScanWildcardedEntityReference =
+            var ScanWildcardedEntityReferenceOrFunctionCall =
                 Or(ScanWildcard, ScanFunctionCall);
 
             var SimpleOrWildcardedEntityReference =
@@ -1183,20 +1188,34 @@ namespace Kusto.Language.Parsing
                     BarePathElementSelector,
                     BracketedEntityNamePathElementSelector);
 
+            // everything up until the dot-wildcard
+            var WildcardedEntityPathRoot =
+                ApplyZeroOrMore(
+                    PathElementSelectorOrFunctionCall,
+                    _left =>
+                        First(
+                            If(And(Token(SyntaxKind.DotToken), Not(ScanWildcard)),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, MissingNameReference),
+                                    (left, dot, selector) =>
+                                        (Expression)new PathExpression(left, dot, selector))
+                            ),
+                            Rule(_left, BracketedPathElementSelector,
+                                (left, right) =>
+                                    (Expression)new ElementExpression(left, right))));
+
             var WildcardedEntityReference =
                 First(
                     WildcardedNameReference,
-                    If(ScanFunctionCall,
-                        ApplyOptional(
-                            DotCompositeFunctionCall,
-                            _left =>
-                                Rule(
-                                    _left,
-                                    Token(SyntaxKind.DotToken),
-                                    Required(WildcardedEntityReferencePathSelector, MissingNameReference),
-                                    (path, dot, selector) =>
-                                        (Expression)new PathExpression(path, dot, selector)))))
-                .WithTag("<wildcarded-entity>");
+                    ApplyOptional(
+                        WildcardedEntityPathRoot,
+                        _left =>
+                            Rule(
+                                _left,
+                                Token(SyntaxKind.DotToken),
+                                Required(WildcardedNameReference, MissingNameReference),
+                                (path, dot, selector) =>
+                                    (Expression)new PathExpression(path, dot, selector))))
+                .WithTag("<wildcarded-entity-reference>");
 
             var ToScalarExpression =
                 Rule(
@@ -1225,15 +1244,15 @@ namespace Kusto.Language.Parsing
                     ApplyZeroOrMore(
                         First(
                             ToScalarExpression, // first to preempt being seen as function call
-                            If(ScanFunctionCall, DotCompositeFunctionCall),
+                            If(ScanFunctionCall, FunctionCall),
                             PrimaryExpression),
 
                         _left =>
                             First(
-                                If(And(Token(SyntaxKind.DotToken), ScanFunctionCall),
-                                    Rule(_left, Token(SyntaxKind.DotToken), FunctionCall,
-                                        (left, dot, fc) => (Expression)new PathExpression(left, dot, fc))),
-                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
+                                //If(And(Token(SyntaxKind.DotToken), ScanFunctionCall),
+                                //    Rule(_left, Token(SyntaxKind.DotToken), FunctionCall,
+                                //        (left, dot, fc) => (Expression)new PathExpression(left, dot, fc))),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, MissingNameReference),
                                     (left, dot, selector) => (Expression)new PathExpression(left, dot, selector)),
                                 Rule(_left, BracketedExpression,
                                     (left, right) => (Expression)new ElementExpression(left, right)))));
@@ -2941,7 +2960,7 @@ namespace Kusto.Language.Parsing
 
             var Restriction =
                 First(
-                    If(ScanWildcardedEntityReference, WildcardedEntityReference),
+                    If(ScanWildcardedEntityReferenceOrFunctionCall, WildcardedEntityReference),
                     SimpleNameReference);
 
             var RestrictStatement =

@@ -5,7 +5,6 @@ using System.Linq;
 namespace Kusto.Language.Editor
 {
     using Syntax;
-    using Symbols;
     using Utils;
 
     internal class AvoidUsingFormatDateTimeInPredicateAnalyzer : KustoAnalyzer
@@ -63,5 +62,58 @@ namespace Kusto.Language.Editor
                     return false;
             }
         }
+
+#if false
+        protected override void GetFixAction(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+        {
+            if (code.Syntax.GetNodeAt(dx.Start, dx.Length) is FunctionCallExpression fc)
+            {
+                if (fc.ArgumentList.Expressions.Count == 2
+                    && fc.ArgumentList.Expressions[1].Element.ConstantValue is string format
+                    && GetAlternativeFunctionName(format) is string alternateFunctionName)
+                {
+                    actions.Add(new CodeAction(
+                        $"Change to '{alternateFunctionName}'",
+                        $"Change use of function 'format_datetime' to function '{alternateFunctionName}'",
+                        dx.Start.ToString(),
+                        dx.Length.ToString(),
+                        alternateFunctionName));
+                }
+            }
+        }
+
+        private static string GetAlternativeFunctionName(string format)
+        {
+            switch (format)
+            {
+                case "Y":
+                case "y":
+                case "YY":
+                case "yy":
+                case "YYYY":
+                case "yyyy":
+                    return "getyear";
+                default:
+                    return null;
+            }
+        }
+
+        protected override FixResult GetFixEdits(KustoCode code, CodeAction action, int cursorPosition, CodeActionOptions options, CancellationToken cancellationToken)
+        {
+            if (action.Data.Count == 3
+                && Int32.TryParse(action.Data[0], out var start)
+                && Int32.TryParse(action.Data[1], out var length)
+                && action.Data[2] is string alternateFunctionName
+                && code.Syntax.GetNodeAt(start, length) is FunctionCallExpression fc
+                && fc.ArgumentList.Expressions.Count == 2)
+            {
+                return new FixResult(fc.Name.TextStart,
+                    StringEdit.Replacement(fc.Name.TextStart, fc.Name.Width, alternateFunctionName),
+                    StringEdit.Deletion(fc.ArgumentList.Expressions[0].Element.End, fc.ArgumentList.CloseParen.TextStart - fc.ArgumentList.Expressions[0].Element.End));
+            }
+
+            return new FixResult(cursorPosition);
+        }
+#endif
     }
 }

@@ -10,6 +10,7 @@ namespace Kusto.Language.Editor
     using Utils;
     using static Parsers<char>;
     using static CharScanners;
+    using static AnalyzerUtilities;
 
     internal class AvoidUsingHasWithIPv4StringsAnalyzer : KustoAnalyzer
     {
@@ -62,36 +63,29 @@ namespace Kusto.Language.Editor
                     case SyntaxKind.HasCsExpression:
                     case SyntaxKind.ContainsExpression:
                     case SyntaxKind.ContainsCsExpression:
-                        return IsDbColumn(be.Left, globals) && IsIPv4Literal(be.Right);
+                        return IsDbColumn(be.Left, globals) && IsIPv4Constant(be.Right);
 
                     case SyntaxKind.HasPrefixExpression:
                     case SyntaxKind.HasPrefixCsExpression:
-                        return IsDbColumn(be.Left, globals) && IsIPv4PrefixLiteral(be.Right);
+                        return IsDbColumn(be.Left, globals) && IsIPv4PrefixConstant(be.Right);
                 }
             }
             else if (expr is HasAnyExpression hax)
             {
                 return IsDbColumn(hax.Left, globals)
                     && hax.Right.Expressions.Count > 0
-                    && hax.Right.Expressions.All(e => IsIPv4Literal(e.Element));
+                    && hax.Right.Expressions.All(e => IsIPv4Constant(e.Element));
             }
 
             return false;
         }
 
-        private static bool IsDbColumn(Expression expr, GlobalState globals) =>
-            expr.ReferencedSymbol is ColumnSymbol c && globals.GetTable(c) != null;
-
-        private static bool IsIPv4Literal(Expression expr) =>
-            expr is LiteralExpression lit
-            && lit.Kind == SyntaxKind.StringLiteralExpression
-            && lit.LiteralValue is string value
+        private static bool IsIPv4Constant(Expression expr) =>
+            expr.ConstantValue is string value
             && IPv4.Matches(value);
 
-        private static bool IsIPv4PrefixLiteral(Expression expr) =>
-            expr is LiteralExpression lit
-            && lit.Kind == SyntaxKind.StringLiteralExpression
-            && lit.LiteralValue is string value
+        private static bool IsIPv4PrefixConstant(Expression expr) =>
+            expr.ConstantValue is string value
             && IPv4_Prefix.Matches(value);
 
         // matches only 0-255

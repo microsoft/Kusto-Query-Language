@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kusto.Language.Editor
 {
     using Syntax;
-    using Symbols;
     using Utils;
+    using static AnalyzerUtilities;
 
     internal class AvoidUsingContainsAnalyzer : KustoAnalyzer
     {
@@ -28,19 +27,14 @@ namespace Kusto.Language.Editor
         {
             foreach (var node in code.Syntax.GetDescendants<BinaryExpression>())
             {
-                if (GetHasOperatorKind(node.Operator.Kind) != SyntaxKind.None)
+                if (GetHasOperatorKind(node.Operator.Kind) != SyntaxKind.None
+                    && IsDbColumn(node.Left, code.Globals)
+                    && !IsShortStringConstant(node.Right, code.Globals))  // don't warn for short strings
                 {
-                    // only report if db column is being used directly
-                    if (IsDbColumn(node.Left, code.Globals))
-                    {
-                        diagnostics.Add(_diagnostic.WithLocation(node.Operator));
-                    }
+                    diagnostics.Add(_diagnostic.WithLocation(node.Operator));
                 }
             }
         }
-
-        protected static bool IsDbColumn(Expression expr, GlobalState globals) =>
-            expr.ReferencedSymbol is ColumnSymbol c && globals.GetTable(c) != null;
 
         protected override void GetFixAction(
             KustoCode code, 
