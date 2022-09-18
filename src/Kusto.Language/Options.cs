@@ -137,7 +137,10 @@ namespace Kusto.Language
             new OptionSymbol("request_description", "Arbitrary text that the author of the request wants to include as the request description.", ScalarTypes.String);
 
         public static readonly OptionSymbol RequestExternalTableDisabled =
-            new OptionSymbol("request_external_table_disabled", " If specified, indicates that the request can't invoke code in the ExternalTable.", ScalarTypes.Bool);
+            new OptionSymbol("request_external_table_disabled", "If specified, indicates that the request can't access external tables.", ScalarTypes.Bool);
+        
+        public static readonly OptionSymbol RequestExternalDataDisabled =
+            new OptionSymbol("request_external_data_disabled", "If specified, indicates that the request can't access external data (using externaldata operator) or external tables.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestReadOnly =
             new OptionSymbol("request_readonly", "If specified, indicates that the request can't write anything.", ScalarTypes.Bool);
@@ -212,6 +215,7 @@ namespace Kusto.Language
     RequestCalloutDisabled,
     RequestDescription,
     RequestExternalTableDisabled,
+    RequestExternalDataDisabled,
     RequestReadOnly,
     RequestRemoteEntitiesDisabled,
     RequestSandboxedExecutionDisabled,
