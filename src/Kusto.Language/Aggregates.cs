@@ -13,13 +13,13 @@ namespace Kusto.Language
     public static class Aggregates
     {
         public static readonly FunctionSymbol Sum =
-            new FunctionSymbol("sum", ReturnTypeKind.Parameter0,
+            new FunctionSymbol("sum", ReturnTypeKind.Parameter0Promoted,
                 new Parameter("expr", ParameterTypeKind.Summable))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("sum");
 
         public static readonly FunctionSymbol SumIf =
-            new FunctionSymbol("sumif", ReturnTypeKind.Parameter0,
+            new FunctionSymbol("sumif", ReturnTypeKind.Parameter0Promoted,
                 new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
