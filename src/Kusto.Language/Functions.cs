@@ -118,8 +118,8 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        public static readonly FunctionSymbol StringToUnicodeCodepoints =
-            new FunctionSymbol("string_to_unicode_codepoints", ScalarTypes.Dynamic,
+        public static readonly FunctionSymbol UnicodeCodepointsFromString =
+            new FunctionSymbol("unicode_codepoints_from_string", ScalarTypes.Dynamic,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -2800,7 +2800,7 @@ namespace Kusto.Language
             ToUpper,
             ToLower,
             ToUtf8_Deprecated,
-            StringToUnicodeCodepoints,
+            UnicodeCodepointsFromString,
             Substring,
             RegexQuote,
             IndexOf,
