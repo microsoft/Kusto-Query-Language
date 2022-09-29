@@ -575,6 +575,52 @@ namespace Kusto.Language.Binding
 
         #region Other
 
+        public static EntityGroupElementSymbol GetMacroExpandScope(string name, EntityGroupSymbol entityGroup)
+        {
+            // define the X (in a query like macro-expand eg as X) as one of entity group items.
+            // the assumption is that all have the same schema so we pick the 1st one and work with it.
+            // we define it here in the local scope and then we call Accept on the StatementList
+            // which may use this symbol.
+            var firstSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault() ?? ErrorSymbol.Instance;
+            return new EntityGroupElementSymbol(name, firstSymbol);
+        }
+
+        /// <summary>
+        /// Finds the <see cref="EntityGroupElementSymbol"/> associated with the location.
+        /// </summary>
+        public static EntityGroupElementSymbol GetMacroExpandScope(SyntaxNode location)
+        {
+            PathExpression path = location as PathExpression;
+
+            if (location is NameReference nr)
+            {
+                if (nr.Parent is FunctionCallExpression fc
+                    && fc.Parent is PathExpression fcpe)
+                {
+                    path = fcpe;
+                }
+                else if (nr.Parent is PathExpression pe
+                        && pe.Selector == nr)
+                {
+                    path = pe;
+                }
+            }
+
+            Symbol symbol = null;
+
+            if (path != null)
+            {
+                symbol = path.Expression.ReferencedSymbol;
+            }
+
+            if (symbol is VariableSymbol vs)
+            {
+                symbol = vs.Type;
+            }
+
+            return symbol as EntityGroupElementSymbol;
+        }
+
         /// <summary>
         /// Gets the <see cref="ScopeKind"/> in effect for all of a function's arguments.
         /// </summary>
@@ -979,6 +1025,8 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Group:
                 case SymbolKind.MaterializedView:
                 case SymbolKind.Graph:
+                case SymbolKind.EntityGroup:
+                case SymbolKind.EntityGroupElement:
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics);
                 case SymbolKind.Variable:
                     var v = (VariableSymbol)referencedSymbol;

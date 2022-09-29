@@ -111,6 +111,11 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// An named entity group
         /// </summary>
-        EntityGroup
+        EntityGroup,
+
+        /// <summary>
+        /// A named entity group element (via macro-expand)
+        /// </summary>
+        EntityGroupElement,
     }
 }

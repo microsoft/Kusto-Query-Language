@@ -202,6 +202,10 @@ namespace Kusto.Language.Syntax
                 {
                     return ts.Columns[0].Type;
                 }
+                else if (type is EntityGroupElementSymbol eges)
+                {
+                    return eges.UnderlyingSymbol;
+                }
 
                 return type;
             }

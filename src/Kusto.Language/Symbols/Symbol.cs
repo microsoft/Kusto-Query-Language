@@ -158,7 +158,10 @@ namespace Kusto.Language.Symbols
                     return c.Type;
 
                 case VariableSymbol v:
-                    return v.Type;
+                    return GetExpressionResultType(v.Type);
+
+                case EntityGroupElementSymbol e:
+                    return GetExpressionResultType(e.UnderlyingSymbol);
 
                 case ParameterSymbol p:
                     return p.Type;

@@ -128,6 +128,12 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Cluster) != 0 && symbol.Kind == SymbolKind.Cluster)
                 return true;
 
+            if ((match & SymbolMatch.EntityGroup) != 0 && symbol.Kind == SymbolKind.EntityGroup)
+                return true;
+
+            if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
+                return true;
+
             if ((match & SymbolMatch.Scalar) != 0 && (match & SymbolMatch.Tabular) == 0 && !symbol.IsScalar)
                 return false;
 
@@ -135,12 +141,6 @@ namespace Kusto.Language.Symbols
                 return false;
 
             if ((match & SymbolMatch.Function) != 0 && (symbol.Kind == SymbolKind.Function || symbol.Kind == SymbolKind.Pattern))
-                return true;
-
-            if ((match & SymbolMatch.EntityGroup) != 0 && symbol.Kind == SymbolKind.EntityGroup)
-                return true;
-
-            if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
                 return true;
 
             if ((match & SymbolMatch.Local) != 0 && (symbol.Kind == SymbolKind.Variable || symbol.Kind == SymbolKind.Parameter))

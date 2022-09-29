@@ -25,6 +25,15 @@ namespace Kusto.Language.Binding
 
                 if (_pathScope != null)
                 {
+                    if (GetMacroExpandScope(location) is EntityGroupElementSymbol eges)
+                    {
+                        eges.GetMembers(name, match, list);
+                        if (list.Count > 0)
+                        {
+                            return GetMatchingSymbolResult(name, location, list, allowZeroArgumentInvocation);
+                        }
+                    }
+
                     if (_pathScope == ScalarTypes.Dynamic)
                     {
                         // any x.y where x is dynamic, is also dynamic

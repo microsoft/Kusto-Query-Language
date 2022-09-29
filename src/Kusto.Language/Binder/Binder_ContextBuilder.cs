@@ -126,6 +126,19 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitMacroExpandOperator(MacroExpandOperator node)
+            {
+                base.VisitMacroExpandOperator(node);
+
+                if (_position >= node.OpenParen.End
+                    && node.EntityGroup.ResultType is EntityGroupSymbol egSymbol
+                    && !string.IsNullOrEmpty(node.EntityGroupReferenceName.SimpleName))
+                {
+                    var scopeSymbol = GetMacroExpandScope(node.EntityGroupReferenceName.SimpleName, egSymbol);
+                    _binder._localScope.AddSymbol(new VariableSymbol(node.EntityGroupReferenceName.SimpleName, scopeSymbol));
+                }
+            }
+
             public override void VisitNamedParameter(NamedParameter node)
             {
                 base.VisitNamedParameter(node);

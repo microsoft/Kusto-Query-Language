@@ -411,8 +411,14 @@ namespace Kusto.Language.Binding
             }
             else if (_pathScope != null)
             {
-                // so far only columns, tables and functions can be dot accessed.
-                var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.Function);
+                // so far only columns, tables, materialized-views and functions can be dot accessed.
+                var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.MaterializedView | SymbolMatch.Function);
+
+                // if this is an entity group element then add special members
+                if (GetMacroExpandScope(contextNode) != null)
+                {
+                    list.AddRange(EntityGroupElementSymbol.SpecialMembers);
+                }
 
                 // table.column only works in commands
                 if (_pathScope is TableSymbol && !IsInsideControlCommandProper(contextNode))
@@ -436,7 +442,7 @@ namespace Kusto.Language.Binding
                         GetPathMembers(_pathScope, memberMatch, list);
                     }
                 }
-                else if (memberMatch != 0)
+                else if (memberMatch != SymbolMatch.None)
                 {
                     GetPathMembers(_pathScope, memberMatch, list);
                 }
@@ -578,7 +584,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    // these special methods show up as dottable methods on their respective types
+                    // these special methods show up as dot-able methods on their respective types
                     switch (_pathScope.Kind)
                     {
                         case SymbolKind.Cluster:

@@ -5705,6 +5705,19 @@ namespace Kusto.Language.Parsing
                                 shape87))),
                     shape130));
 
+            var ShowDatabaseExtentsPartitioningStatistics = Command("ShowDatabaseExtentsPartitioningStatistics", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    First(
+                        Token("extents"),
+                        Custom(
+                            If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                            Token("extents"),
+                            shape128)),
+                    Token("partitioning"),
+                    RequiredToken("statistics")));
+
             var ShowDatabaseIngestionMappings = Command("ShowDatabaseIngestionMappings", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -6281,7 +6294,9 @@ namespace Kusto.Language.Parsing
                     Token("schema"),
                     RequiredToken("as"),
                     RequiredToken("json"),
-                    new [] {CD(), CD(), CD("functionName", CompletionHint.Function), CD(), CD(), CD()}));
+                    Optional(
+                        fragment36),
+                    new [] {CD(), CD(), CD("functionName", CompletionHint.Function), CD(), CD(), CD(), CD(isOptional: true)}));
 
             var ShowFunction = Command("ShowFunction", 
                 Custom(
@@ -7643,6 +7658,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseIdentity,
                 ShowDatabasePolicies,
                 ShowDatabaseCslSchema,
+                ShowDatabaseExtentsPartitioningStatistics,
                 ShowDatabaseIngestionMappings,
                 ShowDatabaseSchemaAsCslScript,
                 ShowDatabaseSchemaAsJson,

@@ -1366,10 +1366,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
                     First(
-                        // this is a special path meant to influence completion for first argument
-                        If(Token(SyntaxKind.OpenParenToken),
-                            CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)
-                                .WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
+                        // this is a special path meant to influence completion for first argument only
+                        If(And(Token(SyntaxKind.OpenParenToken), AnyToken.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
+                            CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)),
                         CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)),
                     RequiredToken(SyntaxKind.CloseParenToken),
 

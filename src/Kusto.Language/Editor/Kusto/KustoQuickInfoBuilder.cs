@@ -299,6 +299,10 @@ namespace Kusto.Language.Editor
                     return f.Description;
                 case OptionSymbol o:
                     return o.Description;
+                case EntityGroupSymbol eg:
+                    return "Entity Group";
+                case EntityGroupElementSymbol eges:
+                    return GetDescription(eges.UnderlyingSymbol);
                 default:
                     return "";
             }
@@ -328,6 +332,8 @@ namespace Kusto.Language.Editor
                     return ClassificationKind.Command;
                 case OptionSymbol _:
                     return ClassificationKind.Option;
+                case EntityGroupElementSymbol eges:
+                    return GetNameClassificationKind(eges.UnderlyingSymbol);
                 //case GraphSymbol _:
                 //return ClassificationKind.Graph;
                 case ScalarSymbol s:
@@ -382,72 +388,83 @@ namespace Kusto.Language.Editor
 
         public static void GetTypeDisplay(TypeSymbol type, List<ClassifiedText> texts, bool useName = false)
         {
-            if (type is TableSymbol ts)
+            switch (type)
             {
-                if (useName && !string.IsNullOrEmpty(ts.Name))
-                {
-                    texts.Add(new ClassifiedText(ClassificationKind.Table, ts.Name));
-                }
-                else
-                {
-                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "("));
-
-                    var maxCol = Math.Min(MaxColumns, ts.Columns.Count);
-                    for (int i = 0; i < maxCol; i++)
+                case TableSymbol ts:
+                    if (useName && !string.IsNullOrEmpty(ts.Name))
                     {
-                        if (i > 0)
+                        texts.Add(new ClassifiedText(ClassificationKind.Table, ts.Name));
+                    }
+                    else
+                    {
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "("));
+
+                        var maxCol = Math.Min(MaxColumns, ts.Columns.Count);
+                        for (int i = 0; i < maxCol; i++)
                         {
-                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                            if (i > 0)
+                            {
+                                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                            }
+
+                            var col = ts.Columns[i];
+                            texts.Add(new ClassifiedText(ClassificationKind.SchemaMember, col.Name));
                         }
 
-                        var col = ts.Columns[i];
-                        texts.Add(new ClassifiedText(ClassificationKind.SchemaMember, col.Name));
-                    }
+                        if (maxCol < ts.Columns.Count)
+                        {
+                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+                        }
 
-                    if (maxCol < ts.Columns.Count)
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ")"));
+                    }
+                    break;
+
+                case TupleSymbol tus:
                     {
-                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
+
+                        var maxCol = Math.Min(MaxColumns, tus.Columns.Count);
+                        for (int i = 0; i < maxCol; i++)
+                        {
+                            if (i > 0)
+                            {
+                                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                            }
+
+                            var col = tus.Columns[i];
+                            texts.Add(new ClassifiedText(ClassificationKind.Column, col.Name));
+                        }
+
+                        if (maxCol < tus.Columns.Count)
+                        {
+                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
+                        }
+
+                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
+                        break;
                     }
 
-                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ")"));
-                }
-            }
-            else if (type is TupleSymbol tus)
-            {
-                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
+                case ClusterSymbol cs:
+                    texts.Add(new ClassifiedText(ClassificationKind.Type, $"cluster('{cs.Name}')"));
+                    break;
 
-                var maxCol = Math.Min(MaxColumns, tus.Columns.Count);
-                for (int i = 0; i < maxCol; i++)
-                {
-                    if (i > 0)
+                case DatabaseSymbol db:
+                    texts.Add(new ClassifiedText(ClassificationKind.Type, $"database('{db.Name}')"));
+                    break;
+
+                case EntityGroupElementSymbol eges:
+                    GetTypeDisplay(eges.UnderlyingSymbol, texts, useName);
+                    break;
+
+                default:
+                    if (type != null)
                     {
-                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, type.Display));
                     }
-
-                    var col = tus.Columns[i];
-                    texts.Add(new ClassifiedText(ClassificationKind.Column, col.Name));
-                }
-
-                if (maxCol < tus.Columns.Count)
-                {
-                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
-                }
-
-                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
-            }
-            else if (type is ClusterSymbol cs)
-            {
-                texts.Add(new ClassifiedText(ClassificationKind.Type, $"cluster('{cs.Name}')"));
-            }
-            else if (type is DatabaseSymbol db)
-            {
-                texts.Add(new ClassifiedText(ClassificationKind.Type, $"database('{db.Name}')"));
-            }
-            else if (type != null)
-            {
-                texts.Add(new ClassifiedText(ClassificationKind.Type, type.Display));
+                    break;
             }
         }
     }

@@ -8479,7 +8479,7 @@ namespace Kusto.Language.Syntax
                 case 3: return CompletionHint.Keyword;
                 case 4: return CompletionHint.None;
                 case 5: return CompletionHint.Keyword;
-                case 6: return CompletionHint.Clause;
+                case 6: return CompletionHint.Tabular;
                 case 7: return CompletionHint.Keyword;
                 default: return CompletionHint.Inherit;
             }

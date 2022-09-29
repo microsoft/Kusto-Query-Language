@@ -238,18 +238,14 @@ namespace Kusto.Language.Binding
             public override void VisitMacroExpandOperator(MacroExpandOperator node)
             {
                 node.Parameters.Accept(this);
-
                 node.EntityGroup.Accept(this);
 
-                var egSymbol = node.EntityGroup?.ResultType as EntityGroupSymbol;
-
-                // define the X (in a query like macro-expand eg as X) as one of entity group items.
-                // the assumption is that all have the same schema so we pick the 1st one and work with it.
-                // we define it here in the local scope and then we call Accept on the StatementList
-                // which may use this symbol.
-                var firstEntityType = egSymbol?.Members.OfType<TypeSymbol>().FirstOrDefault() ?? ErrorSymbol.Instance;
-
-                _binder._localScope.AddSymbol(new VariableSymbol(node.EntityGroupReferenceName.SimpleName, firstEntityType));
+                if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol
+                    && !string.IsNullOrEmpty(node.EntityGroupReferenceName.SimpleName))
+                {
+                    var scopeSymbol = GetMacroExpandScope(node.EntityGroupReferenceName.SimpleName, egSymbol);
+                    _binder._localScope.AddSymbol(new VariableSymbol(node.EntityGroupReferenceName.SimpleName, scopeSymbol));
+                }
 
                 node.StatementList.Accept(this);
 

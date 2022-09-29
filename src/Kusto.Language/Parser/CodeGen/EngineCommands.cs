@@ -1153,7 +1153,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowDiagnostics =
             new CommandSymbol(
                 "ShowDiagnostics",
-                "(IsHealthy: bool, EnvironmentDescription: string, IsScaleOutRequired: bool, MachinesTotal: int, MachinesOffline: int, NodeLastRestartedOn: datetime, AdminLastElectedOn: datetime, ExtentsTotal: int, DiskColdAllocationPercentage: int, InstancesTargetBasedOnDataCapacity: int, TotalOriginalDataSize: real, TotalExtentSize: real, IngestionsLoadFactor: real, IngestionsInProgress: long, IngestionsSuccessRate: real, MergesInProgress: long, BuildVersion: string, BuildTime: datetime, ClusterDataCapacityFactor: real, IsDataWarmingRequired: bool, DataWarmingLastRunOn: datetime, MergesSuccessRate: real, NotHealthyReason: string, IsAttentionRequired: bool, AttentionRequiredReason: string, ProductVersion: string, FailedIngestOperations: int, FailedMergeOperations: int, MaxExtentsInSingleTable: int, TableWithMaxExtents: string, WarmExtentSize: real, NumberOfDatabases: int, PurgeExtentsRebuildLoadFactor: real, PurgeExtentsRebuildInProgress: long, PurgesInProgress: long, MaxSoftRetentionPolicyViolation: timespan, RowStoreLocalStorageCapacityFactor: real, ExportsLoadFactor: real, ExportsInProgress: long, PendingContinuousExports: long, MaxContinuousExportLatenessMinutes: long, RowStoreSealsInProgress: long, IsRowStoreUnhealthy: bool, MachinesSuspended: int, DataPartitioningLoadFactor: real, DataPartitioningOperationsInProgress: long, MinPartitioningPercentageInSingleTable: real, TableWithMinPartitioningPercentage: string, V2DataCapacityFactor: real, V3DataCapacityFactor: real, CurrentDiskCacheShardsPercentage: int, TargetDiskCacheShardsPercentage: int, MaterializedViewsInProgress: long, DataPartitioningOperationsInProgress: real, IngestionCapacityUtilization: real, ShardsWarmingStatus: string, ShardsWarmingTemperature: real, ShardsWarmingDetails: string, StoredQueryResultsInProgress: long, HotDataDiskSpaceUsage: real)");
+                "(IsHealthy: bool, EnvironmentDescription: string, IsScaleOutRequired: bool, MachinesTotal: int, MachinesOffline: int, NodeLastRestartedOn: datetime, AdminLastElectedOn: datetime, ExtentsTotal: int, DiskColdAllocationPercentage: int, InstancesTargetBasedOnDataCapacity: int, TotalOriginalDataSize: real, TotalExtentSize: real, IngestionsLoadFactor: real, IngestionsInProgress: long, IngestionsSuccessRate: real, MergesInProgress: long, BuildVersion: string, BuildTime: datetime, ClusterDataCapacityFactor: real, IsDataWarmingRequired: bool, DataWarmingLastRunOn: datetime, MergesSuccessRate: real, NotHealthyReason: string, IsAttentionRequired: bool, AttentionRequiredReason: string, ProductVersion: string, FailedIngestOperations: int, FailedMergeOperations: int, MaxExtentsInSingleTable: int, TableWithMaxExtents: string, WarmExtentSize: real, NumberOfDatabases: int, PurgeExtentsRebuildLoadFactor: real, PurgeExtentsRebuildInProgress: long, PurgesInProgress: long, RowStoreLocalStorageCapacityFactor: real, ExportsLoadFactor: real, ExportsInProgress: long, PendingContinuousExports: long, MaxContinuousExportLatenessMinutes: long, RowStoreSealsInProgress: long, IsRowStoreUnhealthy: bool, MachinesSuspended: int, DataPartitioningLoadFactor: real, DataPartitioningOperationsInProgress: long, MinPartitioningPercentageInSingleTable: real, TableWithMinPartitioningPercentage: string, V2DataCapacityFactor: real, V3DataCapacityFactor: real, CurrentDiskCacheShardsPercentage: int, TargetDiskCacheShardsPercentage: int, MaterializedViewsInProgress: long, DataPartitioningOperationsInProgress: real, IngestionCapacityUtilization: real, ShardsWarmingStatus: string, ShardsWarmingTemperature: real, ShardsWarmingDetails: string, StoredQueryResultsInProgress: long, HotDataDiskSpaceUsage: real)");
 
         public static readonly CommandSymbol ShowCapacity =
             new CommandSymbol(
@@ -1245,6 +1245,11 @@ namespace Kusto.Language
             new CommandSymbol(
                 "ShowDatabaseExtentTagsStatistics",
                 "(TableName: string, TotalExtentsCount: long, TaggedExtentsCount: long, TotalTagsCount: long, TotalTagsLength: long, DropByTagsCount: long, DropByTagsLength: long, IngestByTagsCount: long, IngestByTagsLength: long)");
+
+        public static readonly CommandSymbol ShowDatabaseExtentsPartitioningStatistics =
+            new CommandSymbol(
+                "ShowDatabaseExtentsPartitioningStatistics",
+                "(TableName: string, PartitioningPolicy: dynamic, TotalRowCount: long, PartitionedRowCount: long, PartitionedRowsPercentage: double)");
 
         public static readonly CommandSymbol ShowTableExtents =
             new CommandSymbol("ShowTableExtents", _schema29);
@@ -2069,6 +2074,7 @@ namespace Kusto.Language
             ShowDatabaseExtents,
             ShowDatabaseExtentsMetadata,
             ShowDatabaseExtentTagsStatistics,
+            ShowDatabaseExtentsPartitioningStatistics,
             ShowTableExtents,
             ShowTableExtentsMetadata,
             TableShardGroupsShow,
