@@ -25,13 +25,26 @@ namespace Kusto.Language.Editor
         public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
             foreach (var node in code.Syntax.GetDescendants<FunctionCallExpression>(
-                fc => fc.ReferencedSymbol is FunctionSymbol fs && fs.IsObsolete))
+                fc => fc.ReferencedSymbol is FunctionSymbol fs 
+                    && (fs.IsObsolete || (fc.ReferencedSignature is Signature sig && sig.IsObsolete))))
             {
-                var symbol = (FunctionSymbol)node.ReferencedSymbol;
-                diagnostics.Add(
-                    _diagnostic.WithMessage($"The function '{symbol.Name}' is deprecated; use '{symbol.Alternative}' instead.")
-                    .WithLocation(node.Name)
-                    );
+                if (node.ReferencedSymbol is FunctionSymbol fs)
+                {
+                    if (fs.IsObsolete)
+                    {
+                        diagnostics.Add(
+                            _diagnostic.WithMessage($"The function '{fs.Name}' is deprecated; use '{fs.Alternative}' instead.")
+                            .WithLocation(node.Name)
+                            );
+                    }
+                    else if (node.ReferencedSignature is Signature sig && sig.IsObsolete)
+                    {
+                        diagnostics.Add(
+                            _diagnostic.WithMessage($"This form of the function '{fs.Name}' is deprecated; use '{sig.Alternative}' instead.")
+                            .WithLocation(node.Name)
+                            );
+                    }
+                }
             }
         }
     }

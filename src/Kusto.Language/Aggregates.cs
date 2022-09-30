@@ -33,7 +33,12 @@ namespace Kusto.Language
             .Hide(); // legacy
 
         public static readonly FunctionSymbol Count =
-            new FunctionSymbol("count", ScalarTypes.Long)
+            new FunctionSymbol("count", 
+                 new Signature(ScalarTypes.Long),
+                 new Signature(ScalarTypes.Long, 
+                    new Parameter("predicate", ScalarTypes.Bool))
+                    .Hide()
+                    .Obsolete("countif"))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("count");
 

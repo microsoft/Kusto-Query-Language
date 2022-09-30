@@ -71,6 +71,17 @@ namespace Kusto.Language.Symbols
         public bool IsHidden { get; }
 
         /// <summary>
+        /// The name of an alternative function to use instead of this function/signature
+        /// if this function is obsolete/deprecated.
+        /// </summary>
+        public string Alternative { get; }
+
+        /// <summary>
+        /// True if this signature is considered obsolete/deprecated.
+        /// </summary>
+        public bool IsObsolete => Alternative != null;
+
+        /// <summary>
         /// If true, this signature can have a variable number of arguments.
         /// </summary>
         public bool HasRepeatableParameters { get; }
@@ -98,7 +109,8 @@ namespace Kusto.Language.Symbols
             Tabularity tabularity,
             IReadOnlyList<Parameter> parameters,
             ParameterLayout layout = null,
-            bool isHidden = false)
+            bool isHidden = false,
+            string alternative = null)
         {
             if (returnKind == ReturnTypeKind.Declared && returnType == null)
                 throw new ArgumentNullException(nameof(returnType));
@@ -117,6 +129,7 @@ namespace Kusto.Language.Symbols
             this._tabularity = tabularity;
             this.Parameters = parameters.ToReadOnly();
             this.IsHidden = isHidden;
+            this.Alternative = alternative;
 
             if (returnKind == ReturnTypeKind.Computed
                 && returnType != null
@@ -249,7 +262,15 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public Signature WithLayout(ParameterLayout layout)
         {
-            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, layout, this.IsHidden);
+            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, layout, this.IsHidden, this.Alternative);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Signature"/> just like this one, but with IsHidden property changed.
+        /// </summary>
+        public Signature WithIsHidden(bool isHidden)
+        {
+            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, this.Layout, isHidden, this.Alternative);
         }
 
         /// <summary>
@@ -257,7 +278,23 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public Signature Hide()
         {
-            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, this.Layout, isHidden: true);
+            return WithIsHidden(true);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Signature"/> just like this one, but with Alternative property changed.
+        /// </summary>
+        public Signature WithAlternative(string alternative)
+        {
+            return new Signature(this.ReturnKind, this._returnType, this._body, this.Declaration, this.CustomReturnType, this._tabularity, this.Parameters, this.Layout, this.IsHidden, alternative);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Signature"/> just like this one, but with Alternative property set.
+        /// </summary>
+        public Signature Obsolete(string alternative)
+        {
+            return WithAlternative(alternative);
         }
 
         /// <summary>

@@ -2631,7 +2631,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtentId2 =
             new FunctionSymbol("extentid", ScalarTypes.Guid)
-            .Obsolete("extend_id")
+            .Obsolete("extent_id")
             .Hide();
 
         public static readonly FunctionSymbol ExtentTags =
