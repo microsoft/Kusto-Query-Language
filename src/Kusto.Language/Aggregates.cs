@@ -263,6 +263,21 @@ namespace Kusto.Language
                   new Parameter("expr", ParameterTypeKind.Summable)))
           .WithResultNameKind(ResultNameKind.FirstArgument);
 
+        public static readonly FunctionSymbol CountDistinct =
+            new FunctionSymbol("count_distinct", ScalarTypes.Long,
+                new Parameter("expr", ParameterTypeKind.NotDynamic))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("count_distinct")
+            .Hide();
+
+        public static readonly FunctionSymbol CountDistinctIf =
+            new FunctionSymbol("count_distinctif", ScalarTypes.Long,
+                new Parameter("expr", ParameterTypeKind.NotDynamic),
+                new Parameter("predicate", ScalarTypes.Bool))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("count_distinctif")
+            .Hide();
+
         private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
         {
             if (GetArgument(args, signature, valueParameterName) is Expression valueArg
@@ -751,6 +766,8 @@ namespace Kusto.Language
             BinaryAllOr,
             BinaryAllAnd,
             BinaryAllXor,
+            CountDistinct,
+            CountDistinctIf
         };
     }
 }
