@@ -7232,6 +7232,27 @@ namespace Kusto.Language.Parsing
                     Token("shard-groups").Hide(),
                     shape152));
 
+            var TableShardsGroupMetadataShow = Command("TableShardsGroupMetadataShow", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("shards-group").Hide(),
+                    rules.AnyGuidLiteralOrString,
+                    Token("shards").Hide(),
+                    Token("metadata").Hide(),
+                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("ShardsGroupId", CompletionHint.Literal), CD(), CD()}));
+
+            var TableShardsGroupShow = Command("TableShardsGroupShow", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("shards-group").Hide(),
+                    Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
+                    RequiredToken("shards").Hide(),
+                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("ShardsGroupId", CompletionHint.Literal), CD()}));
+
             var ShowTable = Command("ShowTable", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -7805,6 +7826,8 @@ namespace Kusto.Language.Parsing
                 ShowTableSchemaAsJson,
                 TableShardGroupsStatisticsShow,
                 TableShardGroupsShow,
+                TableShardsGroupMetadataShow,
+                TableShardsGroupShow,
                 ShowTable,
                 ShowTcpConnections,
                 ShowTcpPorts,

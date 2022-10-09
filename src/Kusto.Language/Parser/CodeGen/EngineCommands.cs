@@ -1257,6 +1257,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTableExtentsMetadata =
             new CommandSymbol("ShowTableExtentsMetadata", _schema30);
 
+        public static readonly CommandSymbol TableShardsGroupShow =
+            new CommandSymbol("TableShardsGroupShow", _schema29);
+
+        public static readonly CommandSymbol TableShardsGroupMetadataShow =
+            new CommandSymbol("TableShardsGroupMetadataShow", _schema30);
+
         public static readonly CommandSymbol TableShardGroupsShow =
             new CommandSymbol(
                 "TableShardGroupsShow",
@@ -2077,6 +2083,8 @@ namespace Kusto.Language
             ShowDatabaseExtentsPartitioningStatistics,
             ShowTableExtents,
             ShowTableExtentsMetadata,
+            TableShardsGroupShow,
+            TableShardsGroupMetadataShow,
             TableShardGroupsShow,
             TableShardGroupsStatisticsShow,
             TablesShardGroupsStatisticsShow,
