@@ -3122,7 +3122,7 @@ namespace Kusto.Language.Binding
 
                     if (node.WithClause != null)
                     {
-                        _binder.CheckQueryOperatorParameters(node.WithClause.Properties, QueryOperatorParameters.ParseKvParameters, diagnostics);
+                        _binder.CheckQueryOperatorParameters(node.WithClause.Properties, QueryOperatorParameters.ParseKvWithProperties, diagnostics);
                     }
 
                     var result = new TableSymbol(columns)

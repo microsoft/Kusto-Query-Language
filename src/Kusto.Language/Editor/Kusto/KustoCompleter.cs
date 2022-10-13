@@ -1993,7 +1993,7 @@ namespace Kusto.Language.Editor
                             // the query operator on right of pipe
                             if (op.Parent is PipeExpression pipe && pipe.Operator == op)
                             {
-                                grammar = queryGrammar.PipeSubExpression;
+                                grammar = queryGrammar.FollowingPipeElementExpression;
                                 return;
                             }
 

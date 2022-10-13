@@ -911,31 +911,34 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            // all parameters declared in QueryOperatorParameters (hidden)
-            // These have better matched parsing of the parameter value and just the names
-            var KnownQueryOperatorParameters =
-                First(QueryOperatorParameters.AllParameters.Select(p => QueryParameter(p, equalsNeeded: false, allParameters: QueryOperatorParameters.AllParameters)).ToArray());
-
-            var KnownQueryOperatorParametersEqualsNeeded =
-                First(QueryOperatorParameters.AllParameters.Select(p => QueryParameter(p, equalsNeeded: false, allParameters: QueryOperatorParameters.AllParameters)).ToArray());
-
-            Parser<LexicalToken, SyntaxList<NamedParameter>> QueryParameterList(IReadOnlyList<QueryOperatorParameter> parameters, AllowedNameKind allowedNames = AllowedNameKind.DeclaredOrKnown, bool equalsNeeded = false)
+            IReadOnlyList<Parser<LexicalToken, NamedParameter>> GetQueryOperatorParameterParsers(IReadOnlyList<QueryOperatorParameter> parameters, AllowedNameKind allowedNames = AllowedNameKind.DeclaredOrKnown, bool equalsNeeded = false)
             {
                 var paramParsers = parameters.Select(p => QueryParameter(p, equalsNeeded, parameters)).ToList();
-                
+
                 if (allowedNames != AllowedNameKind.DeclaredOnly)
                 {
-                    paramParsers.Add(equalsNeeded ? KnownQueryOperatorParametersEqualsNeeded : KnownQueryOperatorParameters);
+                    var additionalParameters = QueryOperatorParameters.AllParameters.Where(p => !parameters.Any(p2 => p.Name == p2.Name)).ToList();
+                    foreach (var ap in additionalParameters)
+                    {
+                        paramParsers.Add(QueryParameter(ap, equalsNeeded, QueryOperatorParameters.AllParameters));
+                    }
                 }
 
+                return paramParsers;
+            }
+
+            // constructs a parser for query operator parameter lists
+            Parser<LexicalToken, SyntaxList<NamedParameter>> QueryParameterList(IReadOnlyList<QueryOperatorParameter> parameters, AllowedNameKind allowedNames = AllowedNameKind.DeclaredOrKnown, bool equalsNeeded = false)
+            {
+                var paramParsers = GetQueryOperatorParameterParsers(parameters, allowedNames, equalsNeeded);
                 var first = First(paramParsers.ToArray());
                 return List(first);
             };
 
-            Parser<LexicalToken, SyntaxList<SeparatedElement<NamedParameter>>> QueryParameterCommaList(IReadOnlyList<QueryOperatorParameter> parameters)
+            // constructs a parser for comma separated query operator parameter lists
+            Parser<LexicalToken, SyntaxList<SeparatedElement<NamedParameter>>> QueryParameterCommaList(IReadOnlyList<QueryOperatorParameter> parameters, AllowedNameKind allowedNames = AllowedNameKind.DeclaredOrKnown, bool equalsNeeded = false)
             {
-                var paramParsers = parameters.Select(p => QueryParameter(p, equalsNeeded: false, allParameters: parameters)).ToList();
-                paramParsers.Add(KnownQueryOperatorParameters);
+                var paramParsers = GetQueryOperatorParameterParsers(parameters, allowedNames, equalsNeeded);
                 var first = First(paramParsers.ToArray());
                 return CommaList(first, MissingNamedParameterNode);
             };
@@ -1495,7 +1498,7 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
                         Token(SyntaxKind.External_DataKeyword).Hide()),
-                    List(KnownQueryOperatorParameters),
+                    QueryParameterList(QueryOperatorParameters.ExternalDataWithClauseProperties),
                     Required(RowSchema, MissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     CommaList(Literal, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
@@ -2016,7 +2019,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.WithKeyword).Hide(),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    QueryParameterCommaList(QueryOperatorParameters.ParseKvParameters),
+                    QueryParameterCommaList(QueryOperatorParameters.ParseKvWithProperties),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (withKeyword, openParen, properties, closeParen) =>
                         new ParseKvWithClause(withKeyword, openParen, properties, closeParen));
@@ -2714,6 +2717,7 @@ namespace Kusto.Language.Parsing
                     SampleOperator,
                     SampleDistinctOperator,
                     ScanOperator,
+                    SearchOperator,
                     SerializeOperator,
                     SortOperator,
                     SummarizeOperator,

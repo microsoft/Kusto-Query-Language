@@ -2038,7 +2038,14 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("series", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO: Aviv (t-afridman) to unhide after
+            .Hide(); // TODO: Aviv (t-afridman) to unhide after 7/November/2022
+
+        public static readonly FunctionSymbol SeriesFloor =
+            new FunctionSymbol("series_floor",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO: Aviv (t-afridman) to unhide after 7/November/2022
 
         private static TypeSymbol SeriesDecomposeResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
             MakePrefixedTuple(sig, "series", args,
@@ -3068,6 +3075,7 @@ namespace Kusto.Language
             SeriesTan,
             SeriesAtan,
             SeriesLog,
+            SeriesFloor,
             ArraySum,
             SeriesSeasonal,
             SeriesDecompose,

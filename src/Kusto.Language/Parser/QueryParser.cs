@@ -3986,7 +3986,7 @@ namespace Kusto.Language.Parsing
 
         #region parse-kv
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_parseKvOperatorWithParametersMap =
-            CreateQueryOperatorParameterMap(QueryOperatorParameters.ParseKvParameters);
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.ParseKvWithProperties);
 
         private ParseKvWithClause ParseParseKvWithClause()
         {

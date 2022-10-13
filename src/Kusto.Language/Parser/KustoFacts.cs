@@ -144,6 +144,36 @@ namespace Kusto.Language
             "none", "axes", "panels"
         };
 
+        public static readonly IReadOnlyList<string> HintDistributions = new string[]
+        {
+            "single", "per_node", "per_shard", "default"
+        };
+
+        public static readonly IReadOnlyList<string> HintRemotes = new string[]
+        {
+            "auto", "local"
+        };
+
+        public static readonly IReadOnlyList<string> HintStrategies = new string[]
+        {
+            "auto", "broadcast", "centralized", "shuffle"
+        };
+
+        public static readonly IReadOnlyList<string> HintSpreads = new string[]
+        {
+            "auto", "local"
+        };
+
+        public static readonly IReadOnlyList<string> HintConcurrencies = new string[]
+        {
+            "auto", "left", "local", "right", "unresolved"
+        };
+
+        public static readonly IReadOnlyList<string> DistinctHintStrategies = HintStrategies;
+
+        public static readonly IReadOnlyList<string> EvaluateHintDistributions = HintDistributions;
+        public static readonly IReadOnlyList<string> EvaluateHintRemotes = HintRemotes;
+
         public static readonly IReadOnlyList<string> JoinKinds = new string[]
         {
             "inner", "fullouter", "innerunique", "leftanti", "leftantisemi", "anti",
@@ -152,47 +182,14 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> JoinHintRemotes = new string[]
         {
-            "auto", "left", "local", "right"
+            "auto", "left", "local", "right", "unresolved"
         };
 
-        public static readonly IReadOnlyList<string> PluginHintRemotes = new string[]
-        {
-            "local", "auto"
-        };
-
-        public static readonly IReadOnlyList<string> JoinHintStrategies = new string[]
-        {
-            "broadcast", "centralized", "shuffle"
-        };
+        public static readonly IReadOnlyList<string> JoinHintStrategies = HintStrategies;
 
         public static readonly IReadOnlyList<string> LookupKinds = new string[]
         {
             "inner", "leftouter"
-        };
-
-        public static readonly IReadOnlyList<string> SummarizeHintStrategies = new string[]
-        {
-            "shuffle"
-        };
-
-        public static readonly IReadOnlyList<string> PartitionHintStrategies = new string[]
-        {
-            "shuffle", "native", "legacy"
-        };
-
-        public static readonly IReadOnlyList<string> OrderByHintStrategies = new string[]
-        {
-            "splitBlock", "multipleBlocks"
-        };
-
-        public static readonly IReadOnlyList<string> DistributionHintStrategies = new string[]
-        {
-            "single", "per_node", "per_shard", "default"
-        };
-
-        public static readonly IReadOnlyList<string> SearchKinds = new string[]
-        {
-            "default", "case_insensitive", "case_sensitive"
         };
 
         public static readonly IReadOnlyList<string> MakeSeriesKinds = new string[]
@@ -205,9 +202,32 @@ namespace Kusto.Language
             "bag", "array"
         };
 
+        public static readonly IReadOnlyList<string> PartitionHintConcurrencies = HintConcurrencies;
+        public static readonly IReadOnlyList<string> PartitionHintSpreads = HintSpreads;
+
+        public static readonly IReadOnlyList<string> PartitionHintStrategies = new string[]
+        {
+            "shuffle", "native", "legacy"
+        };
+
         public static readonly IReadOnlyList<string> ReduceByKinds = new string[]
         {
             "source"
+        };
+
+        public static readonly IReadOnlyList<string> SearchKinds = new string[]
+        {
+            "default", "case_insensitive", "case_sensitive"
+        };
+
+        public static readonly IReadOnlyList<string> SortHintStrategies = new string[]
+        {
+            "splitBlock", "multipleBlocks"
+        };
+
+        public static readonly IReadOnlyList<string> SummarizeHintStrategies = new string[]
+        {
+            "shuffle"
         };
 
         public static readonly IReadOnlyList<string> UnionWithSourceProperties = new string[] {
@@ -221,6 +241,9 @@ namespace Kusto.Language
             "inner", "outer"
         };
 
+        public static readonly IReadOnlyList<string> UnionHintConcurrencies = HintConcurrencies;
+        public static readonly IReadOnlyList<string> UnionHintSpreads = HintSpreads;
+
         public static readonly IReadOnlyList<string> ParseKinds = new string[]
         {
             "simple", "regex", "relaxed"
@@ -229,6 +252,12 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<string> DataScopeValues = new string[]
         {
             "all", "hotcache"
+        };
+
+        public static readonly IReadOnlyList<string> ScanKinds = new string[]
+        {
+            "partial",
+            "full"
         };
 
         public static readonly IReadOnlyList<string> ScanStepOutputValues = new string[]
@@ -470,12 +499,6 @@ namespace Kusto.Language
                 || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))
                 || (expr.Parent is MaterializedViewCombineClause mvc && mvc.Parent is MaterializedViewCombineExpression mve && mve.AggregationsClause == mvc);
         }
-
-        public static readonly IReadOnlyList<string> ScanOperatorKinds = new string[]
-        {
-            "partial",
-            "full"
-        };
 
         /// <summary>
         /// True if the text can be used as an identifier in all contexts that declare or reference names.
