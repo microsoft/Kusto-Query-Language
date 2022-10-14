@@ -7,7 +7,6 @@ using System.Text;
 namespace Kusto.Language.Syntax
 {
     using Editor;
-    using Symbols;
     using Utils;
 
     /// <summary>
@@ -17,12 +16,13 @@ namespace Kusto.Language.Syntax
     public abstract partial class SyntaxElement
     {
         /// <summary>
-        /// The parent node of this element, or extended data. Use property to access this value.
+        /// Either the current parent node or the containing syntax tree.
         /// </summary>
-        public SyntaxNode Parent { get; private set; }
+        private object _parentOrTree;
 
         /// <summary>
         /// State flags that combine up the tree.
+        /// Each flag is either explicitly set of it is the union of all the child node's flags.
         /// </summary>
         private Flags flags;
 
@@ -74,12 +74,12 @@ namespace Kusto.Language.Syntax
         {
             if (element != null)
             {
-                if (element.Parent != null)
+                if (element._parentOrTree != null)
                 {
                     throw new InvalidOperationException("The syntax element already has a parent.");
                 }
 
-                element.Parent = (SyntaxNode)this;
+                element._parentOrTree = (SyntaxNode)this;
                 this.flags |= element.flags;
             }
             else if (!optional)
@@ -88,6 +88,20 @@ namespace Kusto.Language.Syntax
             }
 
             return element;
+        }
+
+        internal void SetTree(SyntaxTree tree)
+        {
+            if (_parentOrTree != null)
+            {
+                if (_parentOrTree is SyntaxTree)
+                    throw new InvalidOperationException("Cannot assign tree. This node already has a syntax tree.");
+                throw new InvalidOperationException("Cannot assign tree. This node is not the root element.");
+            }
+            else
+            {
+                _parentOrTree = tree;
+            }
         }
         #endregion
 
@@ -169,7 +183,6 @@ namespace Kusto.Language.Syntax
 
         internal class ExtendedData
         {
-            //public SyntaxNode Parent;
             public IReadOnlyList<Diagnostic> SyntaxDiagnostics;
             public Binding.SemanticInfo SemanticInfo;
         }
@@ -202,6 +215,11 @@ namespace Kusto.Language.Syntax
         #region navigation
 
         /// <summary>
+        /// The parent node of this element.
+        /// </summary>
+        public SyntaxNode Parent => _parentOrTree as SyntaxNode;
+
+        /// <summary>
         /// The root element
         /// </summary>
         public SyntaxElement Root
@@ -222,7 +240,27 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Child Index in parent.
+        /// The <see cref="SyntaxTree"/> that contains this <see cref="SyntaxElement"/>.
+        /// </summary>
+        public SyntaxTree Tree
+        {
+            get
+            {
+                var element = this;
+                while (element._parentOrTree != null)
+                {
+                    if (element._parentOrTree is SyntaxTree tree)
+                        return tree;
+
+                    element = element._parentOrTree as SyntaxNode;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Index of this element in parent node's child elements.
         /// </summary>
         public int IndexInParent { get; private set; }
 
@@ -293,7 +331,7 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Gets the index of the child node, or -1 if the node is not a child.
+        /// Gets the index of the element within this element's childred, or -1 if the element is not a child of this element.
         /// </summary>
         public int GetChildIndex(SyntaxElement child)
         {

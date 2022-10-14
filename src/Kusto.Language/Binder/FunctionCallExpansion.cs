@@ -2,9 +2,7 @@
 
 namespace Kusto.Language
 {
-    using Kusto.Language.Symbols;
     using Syntax;
-    using System.Collections.Generic;
 
     /// <summary>
     /// A <see cref="SyntaxTree"/> that represents the evaluated body of the function called,
@@ -12,8 +10,8 @@ namespace Kusto.Language
     /// </summary>
     internal class FunctionCallExpansion : SyntaxTree
     {
-        public FunctionCallExpansion(SyntaxNode root)
-            : base(root)
+        public FunctionCallExpansion(SyntaxNode root, SyntaxTree original = null, int offsetInOriginal = 0)
+            : base(root, original, offsetInOriginal)
         {
         }
     }

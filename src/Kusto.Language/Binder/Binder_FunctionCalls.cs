@@ -1551,7 +1551,16 @@ namespace Kusto.Language.Binding
                             var isInDatabase = IsDatabaseSymbolSignature(signature);
                             var currentDatabase = isInDatabase ? _globals.GetDatabase(signature.Symbol) : null;
                             var currentCluster = isInDatabase ? _globals.GetCluster(currentDatabase) : null;
-                            expansion = new FunctionCallExpansion(body);
+
+                            if (signature.Declaration != null)
+                            {
+                                // associate new tree with tree it originated from
+                                expansion = new FunctionCallExpansion(body, signature.Declaration.Tree, signature.Declaration.TriviaStart);
+                            }
+                            else
+                            {
+                                expansion = new FunctionCallExpansion(body);
+                            }
 
                             if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
                             {

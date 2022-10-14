@@ -1,23 +1,30 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Kusto.Language.Editor;
 
 namespace Kusto.Language.Syntax
 {
-    using Utils;
-
-    internal class SyntaxTree
+    public class SyntaxTree
     {
         /// <summary>
         /// The root <see cref="SyntaxNode"/> of the <see cref="SyntaxTree"/>
         /// </summary>
         public SyntaxNode Root { get; }
 
-        public SyntaxTree(SyntaxNode root)
+        /// <summary>
+        /// If not null, then the syntax tree this tree fragment was copied from.
+        /// </summary>
+        public SyntaxTree Original { get; }
+
+        /// <summary>
+        /// The position that this syntax tree fragment starts within the original tree it was copied from.
+        /// </summary>
+        public int OffsetInOriginal { get; }
+
+        public SyntaxTree(SyntaxNode root, SyntaxTree original = null, int offsetInOriginal = 0)
         {
             this.Root = root;
+            this.Original = original;
+            this.OffsetInOriginal = offsetInOriginal;
+            root.SetTree(this);
             root.InitializeTriviaStarts();
         }
 
@@ -43,7 +50,7 @@ namespace Kusto.Language.Syntax
         /// True if the tree depth is shallow enough to allow stack recursion
         /// to walk the nodes of this tree.
         /// </summary>
-        public bool IsSafeToRecurse => Depth <= KustoCode.MaxAnalyzableSyntaxDepth;
+        internal bool IsSafeToRecurse => Depth <= KustoCode.MaxAnalyzableSyntaxDepth;
 
         /// <summary>
         /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.
