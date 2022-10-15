@@ -8,6 +8,7 @@ namespace Kusto.Language.Editor
     using Parsing;
     using Symbols;
     using Syntax;
+    using System.Text;
     using Utils;
 
     internal class KustoCompleter
@@ -28,9 +29,7 @@ namespace Kusto.Language.Editor
 
         public CompletionInfo GetCompletionItems(int position)
         {
-            var completionToken = GetTokenWithAffinity(position);
-            var editStart = completionToken?.TextStart ?? position;
-            var editLength = completionToken?.Width ?? 0;
+            GetEditRange(position, out var editStart, out var editLength);
 
             if (!ShouldComplete(position))
             {
@@ -61,6 +60,84 @@ namespace Kusto.Language.Editor
                  .ToArray();
 
             return new CompletionInfo(orderedItems, editStart, editLength);
+        }
+
+        /// <summary>
+        /// Gets the text range that will be replaced by a selected completion item
+        /// </summary>
+        private void GetEditRange(int position, out int editStart, out int editLength)
+        {
+            var affinityToken = GetTokenWithAffinity(position);
+
+            if (affinityToken != null)
+            {
+                // check for possible partially typed token with internal dashes
+                // that currently parse as multiple tokens
+                var curr = affinityToken;
+
+                // back up to start of adjacent dash-joined tokens
+                var prev = curr.GetPreviousToken();
+                while (prev != null
+                    && IsKeywordOrIdentifierOrDash(prev.Kind)
+                    && IsKeywordOrIdentifierOrDash(curr.Kind)
+                    && prev.End == curr.TextStart)
+                {
+                    curr = prev;
+                    prev = curr.GetPreviousToken();
+                }
+
+                var first = curr;
+
+                // find last token of adjacent dashed-join tokens
+                var next = curr.GetNextToken();
+                StringBuilder builder = null;
+                while (next != null
+                    && IsKeywordOrIdentifierOrDash(next.Kind)
+                    && IsKeywordOrIdentifierOrDash(curr.Kind)
+                    && curr.End == next.TextStart)
+                {
+                    if (builder == null)
+                        builder = new StringBuilder();
+                    builder.Append(curr.Text);
+                    curr = next;
+                    next = curr.GetNextToken();
+                }
+
+                var last = curr;
+
+                // use the full dashed sequence as the edit range if
+                // it is the start of any known name with dashes.
+                if (first != last 
+                    && builder != null
+                    && IsStartOfKnownNameWithDashes(builder.ToString()))
+                {
+                    editStart = first.TextStart;
+                    editLength = last.End - editStart;
+                }
+                else
+                {
+                    editStart = first.TextStart;
+                    editLength = first.Width;
+                }
+            }
+            else
+            {
+                editStart = position;
+                editLength = 0;
+            }
+        }
+
+        private static bool IsKeywordOrIdentifierOrDash(SyntaxKind kind) =>
+            kind == SyntaxKind.IdentifierToken
+            || kind == SyntaxKind.MinusToken
+            || kind.GetCategory() == SyntaxCategory.Keyword;
+
+        private static IReadOnlyList<string> s_namesWithDashes =
+            SyntaxFacts.GetKindsWithFixedText().Select(k => k.GetText()).Where(t => t.Contains("-")).ToList();
+
+        private static bool IsStartOfKnownNameWithDashes(string text)
+        {
+            return s_namesWithDashes.Any(n => n.StartsWith(text));
         }
 
         /// <summary>
@@ -2118,7 +2195,7 @@ namespace Kusto.Language.Editor
                 case CompletionKind.Example:
                     return (match & SymbolMatch.Scalar) != 0;
                 case CompletionKind.ScalarInfix:
-                    return AnyInfixMatches(left, item.DisplayText, position);
+                    return AnyInfixMatches(left, item.MatchText, position);
                 default:
                     return true;
             }

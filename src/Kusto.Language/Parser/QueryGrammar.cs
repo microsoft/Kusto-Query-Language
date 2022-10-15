@@ -1378,6 +1378,14 @@ namespace Kusto.Language.Parsing
                     (openParen, list, closeParen) =>
                         new ExpressionList(openParen, list, closeParen));
 
+            Parser<LexicalToken, SyntaxToken> InToken(SyntaxKind inKind)
+            {
+                var opText = SyntaxFacts.GetText(inKind);
+                return Token(inKind,
+                    CreateCompletionItem(opText, CompletionKind.ScalarInfix, CompletionPriority.Normal, ctext: opText + " (|)", matchText: opText)
+                    );
+            }
+
             var Equality =
                 First(
                     Rule(Token(SyntaxKind.AsteriskToken).Hide(), Token(SyntaxKind.EqualEqualToken), Relational, (asterisk, equal, expression) =>
@@ -1394,28 +1402,28 @@ namespace Kusto.Language.Parsing
                             Rule(_left, Token(SyntaxKind.LessThanGreaterThanToken, CompletionKind.ScalarInfix).Hide(), RequiredRelational,
                                 (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.NotEqualExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.InKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.InKeyword) + " (|)"), InOperatorExpressionList,
+                            Rule(_left, InToken(SyntaxKind.InKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new InExpression(SyntaxKind.InExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.InCsKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.InCsKeyword) + " (|)"), InOperatorExpressionList,
+                            Rule(_left, InToken(SyntaxKind.InCsKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new InExpression(SyntaxKind.InCsExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.NotInKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.NotInKeyword) + " (|)"), InOperatorExpressionList,
+                            Rule(_left, InToken(SyntaxKind.NotInKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new InExpression(SyntaxKind.NotInExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.NotInCsKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.NotInCsKeyword) + " (|)"), InOperatorExpressionList,
+                            Rule(_left, InToken(SyntaxKind.NotInCsKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new InExpression(SyntaxKind.NotInCsExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.HasAnyKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.HasAnyKeyword) + " (|)"), InOperatorExpressionList,
+                            Rule(_left, InToken(SyntaxKind.HasAnyKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new HasAnyExpression(SyntaxKind.HasAnyKeyword, left, op, right)),
 
-                              Rule(_left, Token(SyntaxKind.HasAllKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.HasAllKeyword) + " (|)"), InOperatorExpressionList,
+                              Rule(_left, InToken(SyntaxKind.HasAllKeyword), InOperatorExpressionList,
                                 (left, op, right) => (Expression)new HasAllExpression(SyntaxKind.HasAllKeyword, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.BetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.BetweenKeyword) + " (|)"), ExpressionCouple,
+                            Rule(_left, Token(SyntaxKind.BetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.BetweenKeyword) + " (| .. )"), ExpressionCouple,
                                 (left, op, right) => (Expression)new BetweenExpression(SyntaxKind.BetweenExpression, left, op, right)),
 
-                            Rule(_left, Token(SyntaxKind.NotBetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.NotBetweenKeyword) + " (|)"), ExpressionCouple,
+                            Rule(_left, Token(SyntaxKind.NotBetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.NotBetweenKeyword) + " (| .. )"), ExpressionCouple,
                                 (left, op, right) => (Expression)new BetweenExpression(SyntaxKind.NotBetweenExpression, left, op, right))
                             )));
 

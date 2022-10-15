@@ -483,9 +483,17 @@ namespace Kusto.Language
                     // this is explicitly referenced column (not assigned)
                     if (CanAddAnyResultColumn(c, doNotRepeat, anyStar))
                     {
-                        doNotRepeat.Add(c);
-                        // change identity of explicitly referenced columns so won't match same columns already in projection list
-                        columns.Add(new ColumnSymbol(c.Name, c.Type));
+                        if (doNotRepeat.Contains(c))
+                        {
+                            // change identity of explicitly referenced columns so won't match same columns already in projection list
+                            // this will get renamed by project builder
+                            columns.Add(new ColumnSymbol(c.Name, c.Type));
+                        }
+                        else
+                        {
+                            doNotRepeat.Add(c);
+                            columns.Add(c);
+                        }
                     }
                 }
                 else
@@ -571,9 +579,18 @@ namespace Kusto.Language
                         // this is explicitly referenced column (not assigned)
                         if (CanAddArgMinMaxResultColumn(i, c, byClauseColumns, doNotRepeat, anyStar))
                         {
-                            doNotRepeat.Add(c);
-                            // change identity of explicitly referenced columns so won't match same columns already in projection list
-                            columns.Add(new ColumnSymbol(c.Name, c.Type));
+                            if (doNotRepeat.Contains(c)
+                                || byClauseColumns.Contains(c))
+                            {
+                                // change identity of explicitly referenced columns so won't match same columns already in projection list
+                                // this will get renamed by project builder
+                                columns.Add(new ColumnSymbol(c.Name, c.Type));
+                            }
+                            else
+                            {
+                                doNotRepeat.Add(c);
+                                columns.Add(c);
+                            }
                         }
                     }
                     else

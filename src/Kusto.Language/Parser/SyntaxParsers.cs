@@ -111,14 +111,18 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// A parser that consumes the next next <see cref="LexicalToken"/> if it has the specified <see cref="SyntaxKind"/>, producing a corresponding <see cref="SyntaxToken"/>.
         /// </summary>
-        public static Parser<LexicalToken, SyntaxToken> Token(SyntaxKind kind, CompletionItem item)
+        public static Parser<LexicalToken, SyntaxToken> Token(SyntaxKind kind, params CompletionItem[] items)
         {
             var rule = Match(t => t.Kind == kind, lt => SyntaxToken.From(lt)).WithTag(GetDefaultTag(kind));
 
-            item = item ?? CreateCompletionItem(kind, GetCompletionKind(kind), CompletionPriority.Normal, null);
-            if (item != null)
+            if (items != null && items.Length == 0)
             {
-                rule = rule.WithAnnotations(new[] { item });
+                items = new[] { CreateCompletionItem(kind, GetCompletionKind(kind), CompletionPriority.Normal, null) };
+            }
+
+            if (items != null)
+            {
+                rule = rule.WithAnnotations(items);
             }
 
             return rule;
@@ -337,7 +341,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for a token with the specified <see cref="SyntaxKind"/>.
         /// </summary>
-        private static CompletionItem CreateCompletionItem(SyntaxKind kind, CompletionKind ckind, CompletionPriority priority, string ctext = null)
+        public static CompletionItem CreateCompletionItem(SyntaxKind kind, CompletionKind ckind, CompletionPriority priority, string ctext = null)
         {
             var text = SyntaxFacts.GetText(kind);
             return CreateCompletionItem(text, ckind, priority, ctext);
@@ -346,7 +350,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Gets the default <see cref="CompletionItem"/> for a token with the specified text.
         /// </summary>
-        private static CompletionItem CreateCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null)
+        public static CompletionItem CreateCompletionItem(string text, CompletionKind ckind, CompletionPriority priority, string ctext = null, string matchText = null)
         {
             // no text is not going to work
             if (string.IsNullOrWhiteSpace(text))
@@ -369,7 +373,7 @@ namespace Kusto.Language.Parsing
                 }
             }
 
-            return new CompletionItem(ckind, displayText: text, editText: editText, afterText: afterText, priority: priority);
+            return new CompletionItem(ckind, displayText: text, matchText: matchText, editText: editText, afterText: afterText, priority: priority);
         }
 
         /// <summary>
