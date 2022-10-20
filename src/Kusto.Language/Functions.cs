@@ -2047,6 +2047,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .Hide(); // TODO: Aviv (t-afridman) to unhide after 7/November/2022
 
+        public static readonly FunctionSymbol SeriesCeiling =
+            new FunctionSymbol("series_ceiling",
+                new Signature(ScalarTypes.Dynamic,
+                    new Parameter("series", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO: Aviv (t-afridman) to unhide after 7/November/2022
+
         private static TypeSymbol SeriesDecomposeResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
             MakePrefixedTuple(sig, "series", args,
                 new TupleSymbol(
@@ -3076,6 +3083,7 @@ namespace Kusto.Language
             SeriesAtan,
             SeriesLog,
             SeriesFloor,
+            SeriesCeiling,
             ArraySum,
             SeriesSeasonal,
             SeriesDecompose,

@@ -2477,7 +2477,17 @@ namespace Kusto.Language.Binding
                 if (_binder.TryGetDeclaredOrInferredColumn(RowScopeOrEmpty, name.SimpleName, out leftColumn)
                     && _binder.TryGetDeclaredOrInferredColumn(RightRowScopeOrEmpty, name.SimpleName, out rightColumn))
                 {
-                    return true;
+                    if (leftColumn.Type != rightColumn.Type
+                        && leftColumn.Type != ScalarTypes.Unknown
+                        && rightColumn.Type != ScalarTypes.Unknown)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetCommonJoinColumnsMustHaveSameType(name.SimpleName).WithLocation(name));
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 }
                 else
                 {

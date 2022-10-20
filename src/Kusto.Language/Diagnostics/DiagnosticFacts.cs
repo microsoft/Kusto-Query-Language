@@ -821,6 +821,11 @@ namespace Kusto.Language
             return new Diagnostic("KS226", "Tabular parameters must be declared first.");
         }
 
+        public static Diagnostic GetCommonJoinColumnsMustHaveSameType(string name)
+        {
+            return new Diagnostic("KS227", $"The common column '{name}' must have the same type on both sides of the join.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {
