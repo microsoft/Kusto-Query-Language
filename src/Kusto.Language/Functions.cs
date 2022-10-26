@@ -468,7 +468,7 @@ namespace Kusto.Language
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .Hide()
-            .Obsolete("base64_encode_tostring()")
+            .Obsolete("base64_encode_tostring")
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeToString =
@@ -1481,6 +1481,8 @@ namespace Kusto.Language
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("bag_pack")
+            .Hide()
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackDictionary =
@@ -1491,6 +1493,8 @@ namespace Kusto.Language
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("bag_pack")
+            .Hide()
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagPack =
