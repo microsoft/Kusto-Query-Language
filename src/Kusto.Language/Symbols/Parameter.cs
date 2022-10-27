@@ -294,7 +294,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public static string GetParameterListDeclaration(IReadOnlyList<Parameter> parameters)
         {
-            return "(" + string.Join(", ", parameters.Select(p => GetDeclaration(p))) + ")";
+            return $"({string.Join(", ", parameters.Select(p => GetDeclaration(p)))})";
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace Kusto.Language.Symbols
             }
             else
             {
-                return "(" + string.Join(", ", table.Columns.Select(c => GetColumnDeclaration(c)) + ")");
+                return $"({string.Join(", ", table.Columns.Select(c => GetColumnDeclaration(c)))})";
             }
         }
 
