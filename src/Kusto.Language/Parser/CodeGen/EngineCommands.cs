@@ -666,6 +666,42 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTablePolicyMerge =
             new CommandSymbol("DeleteTablePolicyMerge", _schema20);
 
+        public static readonly CommandSymbol AlterTablePolicyMirroring =
+            new CommandSymbol("AlterTablePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol AlterMergeTablePolicyMirroring =
+            new CommandSymbol("AlterMergeTablePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol AlterTablePolicyMirroringWithJson =
+            new CommandSymbol("AlterTablePolicyMirroringWithJson", _schema20);
+
+        public static readonly CommandSymbol AlterMergeTablePolicyMirroringWithJson =
+            new CommandSymbol("AlterMergeTablePolicyMirroringWithJson", _schema20);
+
+        public static readonly CommandSymbol DeleteTablePolicyMirroring =
+            new CommandSymbol("DeleteTablePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol ShowTablePolicyMirroring =
+            new CommandSymbol("ShowTablePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol AlterDatabasePolicyMirroring =
+            new CommandSymbol("AlterDatabasePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol AlterMergeDatabasePolicyMirroring =
+            new CommandSymbol("AlterMergeDatabasePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol AlterDatabasePolicyMirroringWithJson =
+            new CommandSymbol("AlterDatabasePolicyMirroringWithJson", _schema20);
+
+        public static readonly CommandSymbol AlterMergeDatabasePolicyMirroringWithJson =
+            new CommandSymbol("AlterMergeDatabasePolicyMirroringWithJson", _schema20);
+
+        public static readonly CommandSymbol DeleteDatabasePolicyMirroring =
+            new CommandSymbol("DeleteDatabasePolicyMirroring", _schema20);
+
+        public static readonly CommandSymbol ShowDatabasePolicyMirroring =
+            new CommandSymbol("ShowDatabasePolicyMirroring", _schema20);
+
         public static readonly CommandSymbol ShowTablePolicyPartitioning =
             new CommandSymbol("ShowTablePolicyPartitioning", _schema20);
 
@@ -1898,6 +1934,18 @@ namespace Kusto.Language
             AlterMergeTablePolicyMerge,
             DeleteDatabasePolicyMerge,
             DeleteTablePolicyMerge,
+            AlterTablePolicyMirroring,
+            AlterMergeTablePolicyMirroring,
+            AlterTablePolicyMirroringWithJson,
+            AlterMergeTablePolicyMirroringWithJson,
+            DeleteTablePolicyMirroring,
+            ShowTablePolicyMirroring,
+            AlterDatabasePolicyMirroring,
+            AlterMergeDatabasePolicyMirroring,
+            AlterDatabasePolicyMirroringWithJson,
+            AlterMergeDatabasePolicyMirroringWithJson,
+            DeleteDatabasePolicyMirroring,
+            ShowDatabasePolicyMirroring,
             ShowTablePolicyPartitioning,
             ShowTableStarPolicyPartitioning,
             AlterTablePolicyPartitioning,
