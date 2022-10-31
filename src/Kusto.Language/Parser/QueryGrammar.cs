@@ -2248,7 +2248,9 @@ namespace Kusto.Language.Parsing
                     First(
                         Token(SyntaxKind.OrderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                         Token(SyntaxKind.SortKeyword, CompletionKind.QueryPrefix, CompletionPriority.High)),
-                    QueryParameterList(QueryOperatorParameters.SortParameters),
+                    // we hide these on purpose since understanding them requires understanding the internal
+                    // implemenation of sort operator and we don't want to document it.
+                    QueryParameterList(QueryOperatorParameters.SortParameters).Hide(),
                     RequiredToken(SyntaxKind.ByKeyword),
                     CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
                     (keyword, parameters, byKeyword, list) =>
