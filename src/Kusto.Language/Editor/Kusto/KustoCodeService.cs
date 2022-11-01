@@ -702,9 +702,11 @@ namespace Kusto.Language.Editor
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (element is Expression ex && ex.ReferencedSymbol is FunctionSymbol fs)
+                if (element is Expression ex)
                 {
-                    if (element is FunctionCallExpression fc && fs == Functions.Database)
+                    if (element is FunctionCallExpression fc
+                        && ex.ReferencedSymbol is FunctionSymbol fs
+                        && fs == Functions.Database)
                     {
                         var dbref = GetDatabaseReference(fc, location, defaultCluster);
                         if (dbref != null)
@@ -712,16 +714,14 @@ namespace Kusto.Language.Editor
                             refs.Add(dbref);
                         }
                     }
-                    else  if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts && funFacts.HasDatabaseCall)
+                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts 
+                            && funFacts.HasDatabaseCall)
                     {
                         var calledBody = ex.GetCalledFunctionBody();
                         if (calledBody != null)
                         {
-                            var db = defaultDatabase;
-                            var cluster = defaultCluster;
-
-                            db = this.globals.GetDatabase(fs) ?? defaultDatabase;
-                            cluster = this.globals.GetCluster(db) ?? defaultCluster;
+                            var db = this.globals.GetDatabase(ex.ReferencedSymbol) ?? defaultDatabase;
+                            var cluster = this.globals.GetCluster(db) ?? defaultCluster;
 
                             GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
                         }

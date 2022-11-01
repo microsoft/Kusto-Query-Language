@@ -540,6 +540,14 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// Gets the <see cref="DatabaseSymbol"/> that contains the <see cref="EntityGroupSymbol"/>.
+        /// </summary>
+        public DatabaseSymbol GetDatabase(EntityGroupSymbol entityGroup)
+        {
+            return GetDatabase((Symbol)entityGroup);
+        }
+
+        /// <summary>
         /// Gets the <see cref="DatabaseSymbol"/> that contains this <see cref="Symbol"/>
         /// </summary>
         public DatabaseSymbol GetDatabase(Symbol symbol)

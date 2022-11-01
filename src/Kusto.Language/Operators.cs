@@ -33,9 +33,6 @@ namespace Kusto.Language
             ScalarTypes.DateTime
         };
 
-        private static OperatorSymbol Binary(OperatorKind kind, TypeSymbol left, TypeSymbol right, TypeSymbol result)
-            => new OperatorSymbol(kind, new Signature(result, new Parameter("left", left), new Parameter("right", right)));
-
         private static OperatorSymbol StringBinary(OperatorKind kind)
             => new OperatorSymbol(kind, 
                 new Signature(ScalarTypes.Bool, 
@@ -56,10 +53,20 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Dynamic, new Parameter("operand", ScalarTypes.Dynamic)));
 
         public static readonly OperatorSymbol And =
-            Binary(OperatorKind.And, ScalarTypes.Bool, ScalarTypes.Bool, ScalarTypes.Bool);
+            new OperatorSymbol(OperatorKind.And,
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ScalarTypes.Bool)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Bool)).Hide(),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ScalarTypes.Dynamic)).Hide(),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)).Hide()
+                );
 
         public static readonly OperatorSymbol Or =
-            Binary(OperatorKind.Or, ScalarTypes.Bool, ScalarTypes.Bool, ScalarTypes.Bool);
+            new OperatorSymbol(OperatorKind.Or,
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ScalarTypes.Bool)),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Bool)).Hide(),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Bool), new Parameter("right", ScalarTypes.Dynamic)).Hide(),
+                new Signature(ScalarTypes.Bool, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)).Hide()
+                );
 
         public static readonly OperatorSymbol Add =
             new OperatorSymbol(OperatorKind.Add,
