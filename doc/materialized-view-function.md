@@ -13,7 +13,7 @@ References the materialized part of a [materialized view](../management/material
 The `materialized_view()` function supports a way of querying the *materialized* part only of the view, while specifying the max latency the user is willing to tolerate. This option isn't guaranteed to return the most up-to-date records, but should always be more performant than querying the entire view. This function is useful for scenarios in which you're willing to sacrifice some freshness for performance, for example in telemetry dashboards.
 
 <!--- csl --->
-```
+```kusto
 materialized_view('ViewName')
 ```
 
@@ -33,14 +33,14 @@ to querying *ViewName* directly.
 Query the *materialized* part of the view only, independent on when it was last materialized.
 
 <!-- csl -->
-```
+```kusto
 materialized_view("ViewName")
 ```
 
 Query the *materialized* part only if it was materialized in the last 10 minutes. If the materialized part is older than 10 minutes, return the full view. This option is expected to be less performant than querying the materialized part.
 
 <!-- csl -->
-```
+```kusto
 materialized_view("ViewName", 10m)
 ```
 

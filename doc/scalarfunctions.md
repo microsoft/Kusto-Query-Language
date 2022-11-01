@@ -37,8 +37,10 @@ This article lists all available scalar functions grouped by type. For aggregati
 |-------------------------|--------------------------------------------------------|
 |[ago()](agofunction.md)|Subtracts the given timespan from the current UTC clock time.|
 |[datetime_add()](datetime-addfunction.md)|Calculates a new datetime from a specified datepart multiplied by a specified amount, added to a specified datetime.|
-|[datetime_part()](datetime-partfunction.md)|Extracts the requested date part as an integer value.|
 |[datetime_diff()](datetime-difffunction.md)|Returns the end of the year containing the date, shifted by an offset, if provided.|
+|[datetime_local_to_utc()](datetime-local-to-utc-function.md) |  Converts local datetime to UTC datetime using [a time-zone specification](../query/timezone.md). 
+|[datetime_part()](datetime-partfunction.md)|Extracts the requested date part as an integer value.|
+| [datetime_utc_to_local()](datetime-utc-to-local-function.md) | Converts UTC datetimgoe to local datetime using a [time-zone specification](../query/timezone.md).
 |[dayofmonth()](dayofmonthfunction.md)|Returns the integer number representing the day number of the given month.|
 |[dayofweek()](dayofweekfunction.md)|Returns the integer number of days since the preceding Sunday, as a timespan.|
 |[dayofyear()](dayofyearfunction.md)|Returns the integer number represents the day number of the given year.|
@@ -67,7 +69,6 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[unixtime_seconds_todatetime()](unixtime-seconds-todatetimefunction.md)|Converts unix-epoch seconds to UTC datetime.|
 |[weekofyear()](weekofyearfunction.md)|Returns an integer representing the week number.|
 
-
 ## Dynamic/array functions
 
 |Function Name     |Description                                          |
@@ -86,11 +87,12 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[array_sort_desc()](arraysortdescfunction.md)|Sorts a collection of arrays in descending order.|
 |[array_split()](arraysplitfunction.md)|Builds an array of arrays split from the input array.|
 |[array_sum()](array-sum-function.md)|Calculates the sum of a dynamic array.|
+|[`bag_has_key()`](bag-has-key-function.md)|Checks whether a dynamic bag column contains a given key.|
 |[bag_keys()](bagkeysfunction.md)|Enumerates all the root keys in a dynamic property-bag object.|
 |[bag_merge()](bag-merge-function.md)|Merges dynamic property-bags into a dynamic property-bag with all properties merged.|
+|[bag_pack()](packfunction.md)|Creates a dynamic object (property bag) from a list of names and values.|
 |[bag_remove_keys()](bag-remove-keys-function.md)|Removes keys and associated values from a dynamic property-bag.|
 |[jaccard_index()](jaccard-index-function.md)|Computes the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of two sets.|
-|[pack()](packfunction.md)|Creates a dynamic object (property bag) from a list of names and values.|
 |[pack_all()](packallfunction.md)|Creates a dynamic object (property bag) from all the columns of the tabular expression.|
 |[pack_array()](packarrayfunction.md)|Packs all input values into a dynamic array.|
 |[repeat()](repeatfunction.md)|Generates a dynamic array holding a series of equal values.|
@@ -296,6 +298,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |-------------------------|--------------------------------------------------------|
 |[ipv4_compare()](ipv4-comparefunction.md)|Compares two IPv4 strings.|
 |[ipv4_is_in_range()](ipv4-is-in-range-function.md)|Checks if IPv4 string address is in IPv4-prefix notation range.|
+|[ipv4_is_in_any_range()](ipv4-is-in-any-range-function.md)|Checks if IPv4 string address is any of the IPv4-prefix notation ranges.|
 |[ipv4_is_match()](ipv4-is-matchfunction.md)|Matches two IPv4 strings.|
 |[ipv4_is_private()](ipv4-is-privatefunction.md)|Checks if IPv4 string address belongs to a set of private network IPs.|
 |[ipv4_netmask_suffix](ipv4-netmask-suffix-function.md)|Returns the value of the IPv4 netmask suffix from IPv4 string address.|
@@ -307,6 +310,15 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[parse_ipv6_mask()](parse-ipv6-maskfunction.md)|Converts IPv6 or IPv4 string and netmask to a canonical IPv6 string representation.|
 |[format_ipv4()](format-ipv4-function.md)|Parses input with a netmask and returns string representing IPv4 address.|
 |[format_ipv4_mask()](format-ipv4-mask-function.md)|Parses input with a netmask and returns string representing IPv4 address as CIDR notation.|
+
+## IPv4 text match functions
+
+|Function Name     |Description                                          |
+|-------------------------|--------------------------------------------------------|
+|[has_ipv4()](has-ipv4-function.md)|Searches for an IPv4 address in a text.|
+|[has_ipv4_prefix()](has-ipv4-prefix-function.md)|Searches for an IPv4 address or prefix in a text.|
+|[has_any_ipv4()](has-any-ipv4-function.md)|Searches for any of the specified IPv4 addresses in a text.|
+|[has_any_ipv4_prefix()](has-any-ipv4-prefix-function.md)|Searches for any of the specified IPv4 addresses or prefixes in a text.|
 
 ## Type functions
 
@@ -335,23 +347,15 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[geo_distance_point_to_polygon()](geo-distance-point-to-polygon-function.md)|Calculates the shortest distance between a coordinate and a polygon or multipolygon on Earth.|
 |[geo_intersects_2lines()](geo-intersects-2lines-function.md)|Calculates whether the two lines or multilines intersects.|
 |[geo_intersects_2polygons()](geo-intersects-2polygons-function.md)|Calculates whether the two polygons or multipolygons intersects.|
-|[geo_intersects_line_with_polygon()](geo-intersects-line-with-polygon-function.md)|Calculates whether the lines or multiline intersects with polygon or a multipolygon.|
+|[geo_intersects_line_with_polygon()](geo-intersects-line-with-polygon-function.md)|Calculates whether the line or multiline intersects with polygon or multipolygon.|
+|[geo_intersection_2lines()](geo-intersection-2lines-function.md)|Calculates the intersection of two lines or multilines.|
+|[geo_intersection_2polygons()](geo-intersection-2polygons-function.md)|Calculates the intersection of two polygons or multipolygons.|
+|[geo_intersection_line_with_polygon()](geo-intersection-line-with-polygon-function.md)|Calculates the intersection of line or multiline with polygon or multipolygon.|
 |[geo_point_in_circle()](geo-point-in-circle-function.md)|Calculates whether the geospatial coordinates are inside a circle on Earth.|
 |[geo_point_in_polygon()](geo-point-in-polygon-function.md)|Calculates whether the geospatial coordinates are inside a polygon or a multipolygon on Earth.|
 |[geo_point_to_geohash()](geo-point-to-geohash-function.md)|Calculates the Geohash string value for a geographic location.|
-|[geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of a Geohash rectangular area.|
-|[geo_geohash_to_polygon()](geo-geohash-to-polygon-function.md)|Calculates the polygon that represents the geohash rectangular area.|
 |[geo_point_to_s2cell()](geo-point-to-s2cell-function.md)|Calculates the S2 Cell token string value for a geographic location.|
-|[geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of an S2 Cell.|
-|[geo_s2cell_to_polygon()](geo-s2cell-to-polygon-function.md)|Calculates the polygon that represents the S2 Cell rectangular area.|
 |[geo_point_to_h3cell()](geo-point-to-h3cell-function.md)|Calculates the H3 Cell token string value for a geographic location.|
-|[geo_h3cell_to_central_point()](geo-h3cell-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of an H3 Cell.|
-|[geo_h3cell_to_polygon()](geo-h3cell-to-polygon-function.md)|Calculates the polygon that represents the H3 Cell rectangular area.|
-|[geo_h3cell_parent()](geo-h3cell-parent-function.md)|Calculates the H3 cell parent.|
-|[geo_h3cell_children()](geo-h3cell-children-function.md)|Calculates the H3 cell children.|
-|[geo_h3cell_level()](geo-h3cell-level-function.md)|Calculates the H3 cell resolution.|
-|[geo_h3cell_rings()](geo-h3cell-rings-function.md)|Calculates the H3 cell Rings.|
-|[geo_polygon_to_s2cells()](geo-polygon-to-s2cells-function.md)|Calculates S2 Cell tokens that cover a polygon or multipolygon on Earth. Useful geospatial join tool.|
 |[geo_line_centroid()](geo-line-centroid-function.md)|Calculates the centroid of line or a multiline on Earth.|
 |[geo_line_densify()](geo-line-densify-function.md)|Converts planar line edges to geodesics by adding intermediate points.|
 |[geo_line_length()](geo-line-length-function.md)|Calculates the total length of line or a multiline on Earth.|
@@ -360,7 +364,23 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[geo_polygon_centroid()](geo-polygon-centroid-function.md)|Calculates the centroid of polygon or a multipolygon on Earth.|
 |[geo_polygon_densify()](geo-polygon-densify-function.md)|Converts polygon or multipolygon planar edges to geodesics by adding intermediate points.|
 |[geo_polygon_perimeter()](geo-polygon-perimeter-function.md)|Calculates the length of the boundary of polygon or a multipolygon on Earth.|
-[[geo_union_lines_array()](geo-union-lines-array-function.md)|Calculates the union of lines or multilines on Earth.|
+|[geo_polygon_simplify()](geo-polygon-simplify-function.md)|Simplifies polygon or a multipolygon by replacing nearly straight chains of short edges with a single long edge on Earth.|
+|[geo_polygon_to_s2cells()](geo-polygon-to-s2cells-function.md)|Calculates S2 Cell tokens that cover a polygon or multipolygon on Earth. Useful geospatial join tool.|
+|[geo_geohash_to_central_point()](geo-geohash-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of a Geohash rectangular area.|
+|[geo_geohash_neighbors()](geo-geohash-neighbors-function.md)|Calculates the geohash neighbors.|
+|[geo_geohash_to_polygon()](geo-geohash-to-polygon-function.md)|Calculates the polygon that represents the geohash rectangular area.|
+|[geo_s2cell_to_central_point()](geo-s2cell-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of an S2 Cell.|
+|[geo_s2cell_neighbors()](geo-s2cell-neighbors-function.md)|Calculates the S2 cell neighbors.|
+|[geo_s2cell_to_polygon()](geo-s2cell-to-polygon-function.md)|Calculates the polygon that represents the S2 Cell rectangular area.|
+|[geo_h3cell_to_central_point()](geo-h3cell-to-central-point-function.md)|Calculates the geospatial coordinates that represent the center of an H3 Cell.|
+|[geo_h3cell_neighbors()](geo-h3cell-neighbors-function.md)|Calculates the H3 cell neighbors.|
+|[geo_h3cell_to_polygon()](geo-h3cell-to-polygon-function.md)|Calculates the polygon that represents the H3 Cell rectangular area.|
+|[geo_h3cell_parent()](geo-h3cell-parent-function.md)|Calculates the H3 cell parent.|
+|[geo_h3cell_children()](geo-h3cell-children-function.md)|Calculates the H3 cell children.|
+|[geo_h3cell_level()](geo-h3cell-level-function.md)|Calculates the H3 cell resolution.|
+|[geo_h3cell_rings()](geo-h3cell-rings-function.md)|Calculates the H3 cell Rings.|
+|[geo_simplify_polygons_array()](geo-simplify-polygons-array-function.md)|Simplifies polygons by replacing nearly straight chains of short edges with a single long edge, while ensuring mutual boundaries consistency related to each other, on Earth.|
+|[geo_union_lines_array()](geo-union-lines-array-function.md)|Calculates the union of lines or multilines on Earth.|
 |[geo_union_polygons_array()](geo-union-polygons-array-function.md)|Calculates the union of polygons or multipolygons on Earth.|
 
 ## Hash functions
@@ -374,3 +394,16 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[hash_sha1()](sha1-hash-function.md)|Returns a SHA1 hash value for the input value.|
 |[hash_sha256()](sha256hashfunction.md)|Returns a SHA256 hash value for the input value.|
 |[hash_xxhash64()](hash-xxhash64-function.md)|Returns an XXHASH64 hash value for the input value.|
+
+## Units conversion functions
+
+|Function Name                                            | Description                                                            |
+|---------------------------------------------------------|------------------------------------------------------------------------|
+| [convert_angle()](convert-angle-function.md)             | Returns the input value converted from one angle unit to another       |
+| [convert_energy()](convert-energy-function.md)           | Returns the input value converted from one energy unit to another      |
+| [convert_force()](convert-force-function.md)             | Returns the input value converted from one force unit to another       |
+| [convert_length()](convert-length-function.md)           | Returns the input value converted from one length unit to another      |
+| [convert_mass()](convert-mass-function.md)               | Returns the input value converted from one mass unit to another        |
+| [convert_speed()](convert-speed-function.md)             | Returns the input value converted from one speed unit to another       |
+| [convert_temperature()](convert-temperature-function.md) | Returns the input value converted from one temperature unit to another |
+| [convert_volume()](convert-volume-function.md)           | Returns the input value converted from one volume unit to another      |

@@ -11,7 +11,7 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-Changes the reference of the query to a remote cluster. 
+Changes the reference of the query to a remote cluster.
 
 ```kusto
 cluster('help').database('Sample').SomeTable
@@ -23,34 +23,34 @@ cluster('help').database('Sample').SomeTable
 
 ## Arguments
 
-* *stringConstant*: Name of the cluster that is referenced. Cluster name can be either 
+* *stringConstant*: Name of the cluster that is referenced. Cluster name can be either
 a fully qualified DNS name, or a string that will be suffixed with `.kusto.windows.net`. Argument has to be _constant_ prior to the query's execution,
 i.e. cannot come from sub-query evaluation.
 
 **Notes**
 
 * For accessing database within the same cluster - use [database()](databasefunction.md) function.
-* More information about cross-cluster and cross-database queries available [here](cross-cluster-or-database-queries.md)  
+* More information about cross-cluster and cross-database queries available [here](cross-cluster-or-database-queries.md)
 
 ## Examples
 
-### Use cluster() to access remote cluster 
+### Use cluster() to access remote cluster
 
 The next query can be run on any of the Kusto clusters.
 
 ```kusto
 cluster('help').database('Samples').StormEvents | count
 
-cluster('help.kusto.windows.net').database('Samples').StormEvents | count  
+cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 ```
 
 |Count|
 |---|
 |59066|
 
-### Use cluster() inside let statements 
+### Use cluster() inside let statements
 
-The same query as above can be rewritten to use inline function (let statement) that 
+The same query as above can be rewritten to use inline function (let statement) that
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
 ```kusto
@@ -65,9 +65,9 @@ foo('help')
 |---|
 |59066|
 
-### Use cluster() inside Functions 
+### Use cluster() inside Functions
 
-The same query as above can be rewritten to be used in a function that 
+The same query as above can be rewritten to be used in a function that
 receives a parameter `clusterName` - which is passed into the cluster() function.
 
 ```kusto

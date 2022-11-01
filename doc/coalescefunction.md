@@ -23,10 +23,9 @@ coalesce(tolong("not a number"), tolong("42"), 33) == 42
 - All arguments must be of the same type.
 - Maximum of 64 arguments is supported.
 
-
 ## Returns
 
-The value of the first *expr_i* whose value is not null (or not-empty for string expressions).
+The value of the first *expr_i* whose value isn't null (or not-empty for string expressions).
 
 ## Example
 

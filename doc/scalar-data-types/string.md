@@ -3,7 +3,7 @@ title: The string data type - Azure Data Explorer
 description: This article describes The string data type in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference
-ms.date: 04/011/2022
+ms.date: 06/08/2022
 ---
 # The string data type
 
@@ -11,12 +11,10 @@ The `string` data type represents a sequence of zero or more [Unicode](https://h
 characters.
 
 > [!NOTE]
+>
 > * Internally, strings are encoded in [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Invalid (non-UTF8) characters are replaced with [U+FFFD](https://codepoints.net/U+FFFD) Unicode replacement characters at ingestion time.
-> * Kusto has no data type that is equivalent to a single character. A single character
-> is represented as a string of length 1.
-> * While the `string` data type itself has no predefined limit on the length of the string,
-> actual implementations are free to limit individual values. Commonly, strings are limited
-> to 1MB (measured using UTF-8 encoding).
+> * Kusto has no data type that is equivalent to a single character. A single character is represented as a string of length 1.
+> * When ingesting the `string` data type, if a single string value in a record exceeds 1MB (measured using UTF-8 encoding), the value is truncated and ingestion succeeds. If a single string value in a record, or the entire record, exceeds the allowed data limit of 64MB, ingestion fails.
 
 ## String literals
 
@@ -37,8 +35,8 @@ newline characters (`\n`), and itself (`\\`).
 
 Verbatim string literals are also supported. In this form, the backslash character (`\`) stands for itself, and not as an escape character.
 
-* Enclose in double-quotes (`"`): `@"This is a verbatim string literal that ends with a backslash\."`
-* Enclose in single-quotes (`'`): `@'This is a verbatim string literal that ends with a backslash\.'`
+* Enclose in double-quotes (`"`): `@"This is a verbatim string literal that ends with a backslash\. Double quote characters (") are escaped by a double quote (")."`
+* Enclose in single-quotes (`'`): `@'This is a verbatim string literal that ends with a backslash\. Single quote characters (') are escaped by a single quote (').'`
 
 > [!NOTE]
 > The newline character (`\n`) and the return character (`\r`) can't be included
@@ -46,7 +44,7 @@ Verbatim string literals are also supported. In this form, the backslash charact
 
 ## Splicing string literals
 
-Two or more string literals are automatically joined to form a new string literal in the query if they have nothing between them, or they are separated only by whitespace and comments. <br>
+Two or more string literals are automatically joined to form a new string literal in the query if they have nothing between them, or they're separated only by whitespace and comments. <br>
 For example, the following expressions all yield a string of length 13:
 
 ```kusto
@@ -62,7 +60,7 @@ print strlen("Hello"
 ## Multi-line string literals
 
 Multi-line string literals are string literals for which the newline (`\n`) and return (`\r`)
-characters do not require escaping.
+characters don't require escaping.
 
 * Multi-line string literals always appear between two occurrences of the "triple-backtick chord" (`\``).
 

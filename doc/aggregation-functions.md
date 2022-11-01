@@ -1,14 +1,14 @@
 ---
 title: Aggregation Functions - Azure Data Explorer 
-description: This article describes aggregation functions in Azure Data Explorer.
+description: Learn how to use aggregation functions to perform calculations on a set of values and return a single value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/08/2021
+ms.date: 09/20/2022
 ---
 
 # Aggregation function types at a glance
 
-An aggregation function performs a calculation on a set of values, and returns a single value. This article lists all available aggregation functions grouped by type. For scalar functions, see [Scalar function types](scalarfunctions.md).
+An aggregation function performs a calculation on a set of values, and returns a single value. These functions are used in conjunction with the [summarize operator](summarizeoperator.md). This article lists all available aggregation functions grouped by type. For scalar functions, see [Scalar function types](scalarfunctions.md).
 
 ## Binary functions
 

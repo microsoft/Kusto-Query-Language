@@ -7,11 +7,12 @@ ms.date: 02/24/2020
 ---
 # parse_ipv4()
 
-Converts IPv4 string to long (signed 64-bit) number representation.
+Converts IPv4 string to long (signed 64-bit) number representation in big-endian order.
 
 ```kusto
 parse_ipv4("127.0.0.1") == 2130706433
 parse_ipv4('192.1.168.1') < parse_ipv4('192.1.168.2') == true
+tohex(parse_ipv4('127.2.3.4')) == '7f020304'
 ```
 
 ## Syntax

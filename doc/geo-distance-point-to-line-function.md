@@ -67,7 +67,7 @@ let southCoast = dynamic({"type":"LineString","coordinates":[[-97.18505859374999
 StormEvents
 | project BeginLon, BeginLat, EventType
 | where geo_distance_point_to_line(BeginLon, BeginLat, southCoast) < 5000
-| render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
+| render scatterchart with (kind=map)
 ```
 
 NY taxi pickups. Pickups are filtered by maximum distance of 0.1 meters from the defined multiline.
@@ -81,7 +81,7 @@ nyc_taxi
 | project pickup_longitude, pickup_latitude
 | where geo_distance_point_to_line(pickup_longitude, pickup_latitude, MadisonAve) <= 0.1
 | take 100
-| render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
+| render scatterchart with (kind=map)
 ```
 
 The following example folds many lines into one multiline and queries this multiline. The query finds all taxi pickups that happened 10km away from all roads in Manhattan.

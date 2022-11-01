@@ -20,15 +20,16 @@ An array of keys, order is undetermined.
 ## Examples
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
-```
+```kusto
 datatable(index:long, d:dynamic) [
-1, dynamic({'a':'b', 'c':123}), 
-2, dynamic({'a':'b', 'c':{'d':123}}),
-3, dynamic({'a':'b', 'c':[{'d':123}]}),
-4, dynamic(null),
-5, dynamic({}),
-6, dynamic('a'),
-7, dynamic([])]
+    1, dynamic({'a':'b', 'c':123}), 
+    2, dynamic({'a':'b', 'c':{'d':123}}),
+    3, dynamic({'a':'b', 'c':[{'d':123}]}),
+    4, dynamic(null),
+    5, dynamic({}),
+    6, dynamic('a'),
+    7, dynamic([])
+]
 | extend keys = bag_keys(d)
 ```
 

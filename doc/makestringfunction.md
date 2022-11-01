@@ -57,3 +57,12 @@ print str = make_string(75, 10, 117, 10, 115, 10, 116, 10, 111)
 |str|
 |---|
 |K<br>u<br>s<br>t<br>o|
+
+
+```kusto
+print str = make_string(range(48,57), range(65,90), range(97,122))
+```
+
+|str|
+|---|
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz|

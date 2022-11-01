@@ -178,7 +178,7 @@ StormEvents
 |---|
 |14|
 
-To overcome this issue and run in shuffle strategy, choose the key which is common for the `summarize` and `join` operations. In this case, this key is `ActivityId`. Use the hint `hint.shufflekey` to specify the shuffle key on the `join` to `hint.shufflekey = ActivityId`:
+To overcome this issue and run in shuffle strategy, choose the key which is common for the `summarize` and `join` operations. In this case, this key is `EpisodeId`. Use the hint `hint.shufflekey` to specify the shuffle key on the `join` to `hint.shufflekey = EpisodeId`:
 
 ```kusto
 StormEvents

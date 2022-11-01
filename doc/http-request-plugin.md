@@ -43,6 +43,9 @@ Both plugins return a table that has a single record with the following dynamic 
 * *ResponseHeaders*: A property bag with the response header.
 * *ResponseBody*: The response body parsed as a value of type `dynamic`.
 
+If the HTTP response indicates (via the `Content-Type` response header) that the media type is `application/json`,
+the response body is automatically parsed as-if it's a JSON object. Otherwise, it's returned as-is.
+
 ## Prerequisites
 
 Before you use the `http_request` and `http_request_post` plugins, make sure that requests meet the following requirements:
@@ -59,7 +62,10 @@ You can use the query arguments to specify authentication parameters for the `ht
 |--|--|
 | *Uri* | The URI to authenticate with. |
 | *RequestHeaders* | Using the HTTP standard `Authorization` header or any custom header supported by the web service. |
+
+<!--
 | *Options* | Using the HTTP standard `Authorization` header.<br />If you want to use Azure Active Directory (Azure AD) authentication, you must use an HTTPS URI for the request and set the following values:<br />* `azure_active_directory` to `Active Directory Integrated`<br />* `AadResourceId` to the Azure AD ResourceId value of the target web service. |
+-->
 
 > [!WARNING]
 > Be extra careful not to send secret information, such as
@@ -90,53 +96,37 @@ custom headers:
 
 ## Examples
 
-The following example retrieves the canonical list of country codes:
+The following example retrieves Azure retails prices for Azure Purview in west Europe:
 
 <!-- csl -->
 ```kusto
-evaluate http_request('http://services.groupkt.com/country/get/all')
-| project CC=ResponseBody.RestResponse.result
-| mv-expand CC limit 10000
-| project
-    name        = tostring(CC.name),
-    alpha2_code = tostring(CC.alpha2_code),
-    alpha3_code = tostring(CC.alpha3_code)
-| where name startswith 'b'
+let Uri = "https://prices.azure.com/api/retail/prices?$filter=serviceName eq 'Azure Purview' and location eq 'EU West'";
+evaluate http_request(Uri)
+| project ResponseBody.Items
+| mv-expand ResponseBody_Items
+| evaluate bag_unpack(ResponseBody_Items)
 ```
 
-name                              | alpha2_code  | alpha3_code
-----------------------------------|--------------|-------------
-Bahamas                           | BS           | BHS
-Bahrain                           | BH           | BHR
-Bangladesh                        | BD           | BGD
-Barbados                          | BB           | BRB
-Belarus                           | BY           | BLR
-Belgium                           | BE           | BEL
-Belize                            | BZ           | BLZ
-Benin                             | BJ           | BEN
-Bermuda                           | BM           | BMU
-Bhutan                            | BT           | BTN
-Bolivia (Plurinational State of)  | BO           | BOL
-Bonaire, Sint Eustatius and Saba  | BQ           | BES
-Bosnia and Herzegovina            | BA           | BIH
-Botswana                          | BW           | BWA
-Bouvet Island                     | BV           | BVT
-Brazil                            | BR           | BRA
-British Indian Ocean Territory    | IO           | IOT
-Brunei Darussalam                 | BN           | BRN
-Bulgaria                          | BG           | BGR
-Burkina Faso                      | BF           | BFA
-Burundi                           | BI           | BDI
+
+| armRegionName |                   armSkuName                   | currencyCode |  effectiveStartDate  | isPrimaryMeterRegion | location |               meterId                |                      meterName                       |  productId   |                     productName                     | retailPrice | serviceFamily |  serviceId   |  serviceName  |       skuId       |                 skuName                  | tierMinimumUnits |    type     | unitOfMeasure | unitPrice |
+|---------------|------------------------------------------------|--------------|----------------------|----------------------|----------|--------------------------------------|------------------------------------------------------|--------------|-----------------------------------------------------|-------------|---------------|--------------|---------------|-------------------|------------------------------------------|------------------|-------------|---------------|-----------|
+| westeurope    | Data Insights                                  | USD          | 2022-06-01T00:00:00Z | false                | EU West  | 8ce915f7-20db-564d-8cc3-5702a7c952ab | Data Insights Insights Report Consumption            | DZH318Z08M22 | Azure Purview Data Map                              |        0.21 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M22/006C | Catalog Insights                         |                0 | Consumption | 1 API Calls   |      0.21 |
+| westeurope    | Data Map Enrichment - Data Insights Generation | USD          | 2022-06-01T00:00:00Z | false                | EU West  | 7ce2db1d-59a0-5193-8a57-0431a10622b6 | Data Map Enrichment - Data Insights Generation vCore | DZH318Z08M22 | Azure Purview Data Map                              |        0.82 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M22/005C | Data Map Enrichment - Insight Generation |                0 | Consumption | 1 Hour        |      0.82 |
+| westeurope    |                                                | USD          | 2021-09-28T00:00:00Z | false                | EU West  | 053e2dcb-82c0-5e50-86cd-1f1c8d803705 | PowerBI vCore                                        | DZH318Z08M23 | Azure Purview Scanning Ingestion and Classification |           0 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M23/0005 | PowerBI                                  |                0 | Consumption | 1 Hour        |         0 |
+| westeurope    |                                                | USD          | 2021-09-28T00:00:00Z | false                | EU West  | a7f57f26-5f31-51e5-a5ed-ffc2b0da37b9 | Resource Set vCore                                   | DZH318Z08M22 | Azure Purview Data Map                              |        0.21 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M22/000X | Resource Set                             |                0 | Consumption | 1 Hour        |      0.21 |
+| westeurope    |                                                | USD          | 2021-09-28T00:00:00Z | false                | EU West  | 5d157295-441c-5ea7-ba7c-5083026dc456 | SQL Server vCore                                     | DZH318Z08M23 | Azure Purview Scanning Ingestion and Classification |           0 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M23/000F | SQL Server                               |                0 | Consumption | 1 Hour        |         0 |
+| westeurope    |                                                | USD          | 2021-09-28T00:00:00Z | false                | EU West  | 0745df0d-ce4f-52db-ac31-ac574d4dcfe5 | Standard Capacity Unit                               | DZH318Z08M22 | Azure Purview Data Map                              |       0.411 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M22/0002 | Standard                                 |                0 | Consumption | 1 Hour        |     0.411 |
+| westeurope    |                                                | USD          | 2021-09-28T00:00:00Z | false                | EU West  | 811e3118-5380-5ee8-a5d9-01d48d0a0627 | Standard vCore                                       | DZH318Z08M23 | Azure Purview Scanning Ingestion and Classification |        0.63 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M23/0009 | Standard                                 |                0 | Consumption | 1 Hour        |      0.63 |
+
+
 
 The following example is for a hypothetical HTTPS web service that accepts additional request headers and must be authenticated to using Azure AD:
 
 <!-- csl -->
 ```kusto
 let uri='https://example.com/node/js/on/eniac';
-let headers=dynamic({'x-ms-correlation-vector':'abc.0.1.0'});
-let options=dynamic({'Authentication':'Active Directory Integrated',
-  'AadResourceId':'https://eniac.to.the.max.example.com/'});
-evaluate http_request_post(uri, headers, options)
+let headers=dynamic({'x-ms-correlation-vector':'abc.0.1.0', 'authorization':'bearer ...Azure-AD-bearer-token-for-target-endpoint...'});
+evaluate http_request_post(uri, headers)
 ```
 
 ::: zone-end

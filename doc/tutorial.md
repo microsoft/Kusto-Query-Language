@@ -16,7 +16,7 @@ The best way to learn about the Kusto Query Language is to look at some basic qu
 
 ## Count rows
 
-Our example database has a table called `StormEvents`. we want to find out how large the table is. So we'll pipe its content into an operator that counts the rows in the table. 
+Our example database has a table called `StormEvents`. we want to find out how large the table is. So we'll pipe its content into an operator that counts the rows in the table.
 
 *Syntax note*: A query is a data source (usually a table name), optionally followed by one or more pairs of the pipe character and some tabular operator.
 
@@ -30,7 +30,7 @@ Here's the output:
 |Count|
 |-----|
 |59066|
-    
+
 For more information, see [count operator](./countoperator.md).
 
 ## Select a subset of columns: *project*
@@ -166,7 +166,7 @@ StormEvents
 
 [summarize](./summarizeoperator.md) groups together rows that have the same values in the `by` clause, and then uses an aggregation function (for example, `count`) to combine each group in a single row. In this case, there's a row for each state and a column for the count of rows in that state.
 
-A range of [aggregation functions](./summarizeoperator.md#list-of-aggregation-functions) are available. You can use several aggregation functions in one `summarize` operator to produce several computed columns. For example, we could get the count of storms per state, and the sum of unique types of storm per state. Then, we could use [top](./topoperator.md) to get the most storm-affected states:
+A range of [aggregation functions](aggregation-functions.md) are available. You can use several aggregation functions in one `summarize` operator to produce several computed columns. For example, we could get the count of storms per state, and the sum of unique types of storm per state. Then, we could use [top](./topoperator.md) to get the most storm-affected states:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -217,6 +217,7 @@ The query reduces all the timestamps to intervals of one day:
 The [bin()](./binfunction.md) is the same as the [floor()](./floorfunction.md) function in many languages. It simply reduces every value to the nearest multiple of the modulus that you supply, so that [summarize](./summarizeoperator.md) can assign the rows to groups.
 
 <a name="displaychartortable"></a>
+
 ## Display a chart or table: *render*
 
 You can project two columns and use them as the x-axis and the y-axis of a chart:
@@ -236,7 +237,6 @@ StormEvents
 Although we removed `mid` in the `project` operation, we still need it if we want the chart to display the states in that order.
 
 Strictly speaking, `render` is a feature of the client rather than part of the query language. Still, it's integrated into the language, and it's useful for envisioning your results.
-
 
 ## Timecharts
 
@@ -343,7 +343,7 @@ StormEvents
 
 This section doesn't use the `StormEvents` table.
 
-Assume you have data that includes events which mark the start and end of each user session with a unique ID. 
+Assume you have data that includes events which mark the start and end of each user session with a unique ID.
 
 How would you find out how long each user session lasts?
 
@@ -388,7 +388,7 @@ StormEvents
 Or, you can use `| render columnchart`:
 
 :::image type="content" source="images/tutorial/column-event-count-duration.png" alt-text="Screenshot of a column chart for event count timechart by duration.":::
- 
+
 ## Percentiles
 
 What ranges of durations do we find in different percentages of storms?
@@ -436,7 +436,7 @@ StormEvents
 | extend Percentage = (  100 * InjuriesDirect / (InjuriesDirect + InjuriesIndirect) )
 | project StartTime, InjuriesDirect, InjuriesIndirect, Percentage
 ```
- 
+
 The query removes zero count entries:
 
 |StartTime|InjuriesDirect|InjuriesIndirect|Percentage
@@ -495,7 +495,7 @@ Use this query if your default database is `Telemetry`:
 ```kusto
 union Requests, database("Diagnostics").Logs | ...
 ```
-    
+
 The preceding two queries assume that both databases are in the cluster you're currently connected to. If the `Telemetry` database was in a cluster named *TelemetryCluster.kusto.windows.net*, to access it, use this query:
 
 ```kusto
@@ -509,18 +509,17 @@ For more information about combining data from several databases in a query, see
 
 ## Next steps
 
-- View code samples for the [Kusto Query Language](samples.md?pivots=azuredataexplorer).
+* View code samples for the [Kusto Query Language](samples.md?pivots=azuredataexplorer).
 
 ::: zone-end
 
 ::: zone pivot="azuremonitor"
 
-The best way to learn about the Azure Data Explorer Query Language is to look at some basic queries to get a "feel" for the language. These queries are similar to queries in the Azure Data Explorer tutorial, but use data from common tables in an Azure Log Analytics workspace. 
+The best way to learn about the Azure Data Explorer Query Language is to look at some basic queries to get a "feel" for the language. These queries are similar to queries in the Azure Data Explorer tutorial, but use data from common tables in an Azure Log Analytics workspace.
 
 Run these queries by using Log Analytics in the Azure portal. Log Analytics is a tool you can use to write log queries. Use log data in Azure Monitor, and then evaluate log query results. If you aren't familiar with Log Analytics, complete the [Log Analytics tutorial](/azure/azure-monitor/log-query/log-analytics-tutorial).
 
 All queries in this tutorial use the [Log Analytics demo environment](https://ms.portal.azure.com/#blade/Microsoft_Azure_Monitoring_Logs/DemoLogsBlade). You can use your own environment, but you might not have some of the tables that are used here. Because the data in the demo environment isn't static, the results of your queries might vary slightly from the results shown here.
-
 
 ## Count rows
 
@@ -538,7 +537,6 @@ Here's the output:
 |Count|
 |-----|
 |1,263,191|
-    
 
 ## Filter by Boolean expression: *where*
 
@@ -593,7 +591,7 @@ NetworkMonitoring
 | project TimeGenerated, Computer, SourceNetwork, DestinationNetwork, HighLatency, LowLatency
 ```
 
-You can get this exact behavior by instead using the [top](./topoperator.md) operator: 
+You can get this exact behavior by instead using the [top](./topoperator.md) operator:
 
 ```kusto
 NetworkMonitoring
@@ -607,7 +605,7 @@ NetworkMonitoring
 
 The [extend](./projectoperator.md) operator is similar to [project](./projectoperator.md), but it adds to the set of columns instead of replacing them. You can use both operators to create a new column based on a computation on each row.
 
-The [Perf](/azure/azure-monitor/reference/tables/perf) table has performance data that's collected from virtual machines that run the Log Analytics agent. 
+The [Perf](/azure/azure-monitor/reference/tables/perf) table has performance data that's collected from virtual machines that run the Log Analytics agent.
 
 ```kusto
 Perf
@@ -620,7 +618,7 @@ Perf
 
 ## Aggregate groups of rows: *summarize*
 
-The [summarize](./summarizeoperator.md) operator groups together rows that have the same values in the `by` clause. Then, it uses an aggregation function like `count` to combine each group in a single row. A range of [aggregation functions](./summarizeoperator.md#list-of-aggregation-functions) are available. You can use several aggregation functions in one `summarize` operator to produce several computed columns. 
+The [summarize](./summarizeoperator.md) operator groups together rows that have the same values in the `by` clause. Then, it uses an aggregation function like `count` to combine each group in a single row. A range of [aggregation functions](aggregation-functions.md) are available. You can use several aggregation functions in one `summarize` operator to produce several computed columns.
 
 The [SecurityEvent](/azure/azure-monitor/reference/tables/securityevent) table contains security events like logons and processes that started on monitored computers. You can count how many events of each level occurred on each computer. In this example, a row is produced for each computer and level combination. A column contains the count of events.
 
@@ -701,7 +699,6 @@ VMComputer
 
 Use [let](./letstatement.md) to make queries easier to read and manage. You can use this operator to assign the results of a query to a variable that you can use later. By using the `let` statement, the query in the preceding example can be rewritten as:
 
- 
 ```kusto
 let PhysicalComputer = VMComputer
     | distinct Computer, PhysicalMemoryMB;
@@ -717,7 +714,6 @@ PhysicalComputer
 
 ## Next steps
 
-- View code samples for the [Kusto Query Language](samples.md?pivots=azuremonitor).
-
+* View code samples for the [Kusto Query Language](samples.md?pivots=azuremonitor).
 
 ::: zone-end

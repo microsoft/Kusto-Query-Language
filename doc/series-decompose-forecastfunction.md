@@ -48,7 +48,7 @@ let ts=range t from 1 to 24*7*4 step 1 // generate 4 weeks of hourly data
 | extend y = 2*rand() + iff((t/24)%7>=5, 5.0, 15.0) - (((t%24)/10)*((t%24)/10)) + t/72.0 // generate a series with weekly seasonality and ongoing trend
 | extend y=iff(t==150 or t==200 or t==780, y-8.0, y) // add some dip outliers
 | extend y=iff(t==300 or t==400 or t==600, y+8.0, y) // add some spike outliers
-| make-series y=max(y) on Timestamp in range(datetime(2018-03-01 05:00), datetime(2018-03-01 05:00)+24*7*5h, 1h); // create a time series of 5 weeks (last week is empty)
+| make-series y=max(y) on Timestamp from datetime(2018-03-01 05:00) to datetime(2018-03-01 05:00)+24*7*5h step 1h; // create a time series of 5 weeks (last week is empty)
 ts 
 | extend y_forcasted = series_decompose_forecast(y, 24*7)  // forecast a week forward
 | render timechart 

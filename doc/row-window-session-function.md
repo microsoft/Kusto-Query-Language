@@ -54,6 +54,8 @@ a logical OR one of the following conditions:
 * If the value of *`Expr`* equals or exceeds the previous value of *`Expr`*
   plus *`MaxDistanceBetweenNeighbors`*.
 
+* If *`Restart`* condition is specified and evaluates to `true`. 
+
 ## Examples
 
 The following example shows how to calculate the session start values for a table
@@ -69,3 +71,7 @@ datatable (ID:string, Timestamp:datetime) [
 | sort by ID asc, Timestamp asc
 | extend SessionStarted = row_window_session(Timestamp, 1h, 5m, ID != prev(ID))
 ```
+
+## See also
+
+* [scan operator](scan-operator.md)

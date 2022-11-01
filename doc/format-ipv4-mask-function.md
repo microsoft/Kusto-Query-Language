@@ -20,7 +20,7 @@ print format_ipv4_mask(3232236031, 24) == '192.168.1.0/24'
 
 ## Arguments
 
-* *`Expr`*: A string or number representation of the IPv4 address as CIDR notation.
+* *`Expr`*: A string or number representation (in big-endian order) of the IPv4 address as CIDR notation.
 * *`PrefixMask`*: (Optional) An integer from 0 to 32 representing the number of most-significant bits that are taken into account. If argument isn't specified, all bit-masks are used (32).
 
 ## Returns

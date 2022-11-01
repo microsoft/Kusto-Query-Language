@@ -20,7 +20,7 @@ Returns the number of records in the input record set.
 ## Returns
 
 This function returns a table with a single record and column of type
-`long`. The value of the only cell is the number of records in *T*. 
+`long`. The value of the only cell is the number of records in *T*.
 
 ## Example
 

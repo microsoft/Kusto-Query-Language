@@ -16,7 +16,7 @@ Determines whether the specified set contains the specified element.
 ## Arguments
 
 * *array*: Input array to search.
-* *value*: Value to search for. The value should be of type `long`, `integer`, `double`, `datetime`, `timespan`, `decimal`, `string`, or `guid`.
+* *value*: Value to search for. The value should be of type `long`, `integer`, `double`, `datetime`, `timespan`, `decimal`, `string`, `guid`, or `boolean`.
 
 ## Returns
 

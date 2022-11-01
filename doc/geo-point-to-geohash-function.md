@@ -73,7 +73,7 @@ StormEvents
 | project BeginLon, BeginLat
 | summarize by hash=geo_point_to_geohash(BeginLon, BeginLat, 3)
 | project geo_geohash_to_central_point(hash)
-| render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
+| render scatterchart with (kind=map)
 ```
 
 <!-- csl: https://help.kusto.windows.net/Samples -->

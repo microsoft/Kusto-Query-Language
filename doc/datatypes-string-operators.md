@@ -7,18 +7,18 @@ ms.date: 09/05/2021
 ---
 # String operators
 
-Kusto offers a variety of query operators for searching string data types. The following article describes how string terms are indexed, lists the string query operators, and gives tips for optimizing performance.
+Kusto offers various query operators for searching string data types. The following article describes how string terms are indexed, lists the string query operators, and gives tips for optimizing performance.
 
 ## Understanding string terms
 
 Kusto indexes all columns, including columns of type `string`. Multiple indexes are built for such columns, depending on the actual data. These indexes aren't directly exposed, but are used in queries with the `string` operators that have `has` as part of their name, such as `has`, `!has`, `hasprefix`, `!hasprefix`. The semantics of these operators are dictated by the way the column is encoded. Instead of doing a "plain" substring match, these operators match *terms*.
 
-### What is a term? 
+### What is a term?
 
 By default, each `string` value is broken into maximal sequences of ASCII alphanumeric characters, and each of those sequences is made into a term.
 For example, in the following `string`, the terms are `Kusto`, `KustoExplorerQueryRun`, and the following substrings: `ad67d136`, `c1db`, `4f9f`, `88ef`, `d94f3b6b0b5a`.
 
-```
+```kusto
 Kusto: ad67d136-c1db-4f9f-88ef-d94f3b6b0b5a;KustoExplorerQueryRun
 ```
 
@@ -29,16 +29,15 @@ Kusto builds a term index consisting of all terms that are *three characters or 
 
 ## Operators on strings
 
-> [!NOTE]
-> The following abbreviations are used in the table below:
-> * RHS = right hand side of the expression
-> * LHS = left hand side of the expression
-> 
-> Operators with an `_cs` suffix are case sensitive.
+The following abbreviations are used in this article:
+
+* RHS = right hand side of the expression
+* LHS = left hand side of the expression
+
+Operators with an `_cs` suffix are case sensitive.
 
 > [!NOTE]
 > Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
-
 
 |Operator   |Description   |Case-Sensitive  |Example (yields `true`)  |
 |-----------|--------------|----------------|-------------------------|
@@ -68,7 +67,7 @@ Kusto builds a term index consisting of all terms that are *three characters or 
 |[`!hassuffix`](not-hassuffix-operator.md) |RHS isn't a term suffix in LHS |No |`"North America" !hassuffix "americ"`|
 |[`hassuffix_cs`](hassuffix-cs-operator.md)  |RHS is a term suffix in LHS |Yes |`"North America" hassuffix_cs "ica"`|
 |[`!hassuffix_cs`](not-hassuffix-cs-operator.md) |RHS isn't a term suffix in LHS |Yes |`"North America" !hassuffix_cs "icA"`|
-|[`in`](in-cs-operator.md) |Equals to one of the elements |Yes |`"abc" in ("123", "345", "abc")`|
+|[`in`](in-cs-operator.md) |Equals to any of the elements |Yes |`"abc" in ("123", "345", "abc")`|
 |[`!in`](not-in-cs-operator.md) |Not equals to any of the elements |Yes | `"bca" !in ("123", "345", "abc")` |
 |[`in~`](inoperator.md) |Equals to any of the elements |No | `"Abc" in~ ("123", "345", "abc")` |
 |[`!in~`](not-in-operator.md) |Not equals to any of the elements |No | `"bCa" !in~ ("123", "345", "ABC")` |
@@ -77,9 +76,6 @@ Kusto builds a term index consisting of all terms that are *three characters or 
 |[`!startswith`](not-startswith-operator.md) |RHS isn't an initial subsequence of LHS |No |`"Fabrikam" !startswith "kam"`|
 |[`startswith_cs`](startswith-cs-operator.md)  |RHS is an initial subsequence of LHS |Yes |`"Fabrikam" startswith_cs "Fab"`|
 |[`!startswith_cs`](not-startswith-cs-operator.md) |RHS isn't an initial subsequence of LHS |Yes |`"Fabrikam" !startswith_cs "fab"`|
-
-> [!TIP]
-> All operators containing `has` search on indexed *terms* of three or more characters, and not on substring matches. A term is created by breaking up the string into sequences of ASCII alphanumeric characters. See [understanding string terms](#understanding-string-terms).
 
 ## Performance tips
 
@@ -90,8 +86,10 @@ For example:
 * Use `in`, not `in~`
 * Use `hassuffix_cs`, not `hassuffix`
 
-For faster results, if you're testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters, or the start or end of a field, use `has` or `in`. 
+For faster results, if you're testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters, or the start or end of a field, use `has` or `in`.
 `has` works faster than `contains`, `startswith`, or `endswith`.
+
+To search for IPv4 addresses or their prefixes, use one of special [operators on IPv4 addresses](#operators-on-ipv4-addresses), which are optimized for this purpose.
 
 For more information, see [Query best practices](best-practices.md).
 
@@ -102,3 +100,14 @@ For example, the first of these queries will run faster:
 StormEvents | where State has "North" | count;
 StormEvents | where State contains "nor" | count
 ```
+
+## Operators on IPv4 addresses
+
+The following group of operators provide index accelerated search on IPv4 addresses or their prefixes.
+
+|Operator   |Description   |Example (yields `true`)  |
+|-----------|--------------|-------------------------|
+|[has_ipv4](has-ipv4-function.md)|LHS contains IPv4 address represented by RHS|`has_ipv4("Source address is 10.1.2.3:1234", "10.1.2.3")`|
+|[has_ipv4_prefix](has-ipv4-prefix-function.md)|LHS contains an IPv4 address that matches a prefix represented by RHS|`has_ipv4_prefix("Source address is 10.1.2.3:1234", "10.1.2.")`|
+|[has_any_ipv4](has-any-ipv4-function.md)|LHS contains one of IPv4 addresses provided by RHS|`has_any_ipv4("Source address is 10.1.2.3:1234", dynamic(["10.1.2.3", "127.0.0.1"]))`|
+|[has_any_ipv4_prefix](has-any-ipv4-prefix-function.md)|LHS contains an IPv4 address that matches one of prefixes provided by RHS|`has_any_ipv4_prefix("Source address is 10.1.2.3:1234", dynamic(["10.1.2.", "127.0.0."]))`|

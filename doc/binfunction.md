@@ -8,12 +8,12 @@ adobe-target: true
 ---
 # bin()
 
-Rounds values down to an integer multiple of a given bin size. 
+Rounds values down to an integer multiple of a given bin size.
 
 Used frequently in combination with [`summarize by ...`](./summarizeoperator.md).
-If you have a scattered set of values, they will be grouped into a smaller set of specific values.
+If you have a scattered set of values, they'll be grouped into a smaller set of specific values.
 
-Null values, a null bin size, or a negative bin size will result in null. 
+Null values, a null bin size, or a negative bin size will result in null.
 
 Alias to `floor()` function.
 
@@ -23,13 +23,13 @@ Alias to `floor()` function.
 
 ## Arguments
 
-* *value*: A number, date, or [timespan](scalar-data-types/timespan.md). 
-* *roundTo*: The "bin size". A number or timespan that divides *value*. 
+* *value*: A number, date, or [timespan](scalar-data-types/timespan.md).
+* *roundTo*: The "bin size". A number or timespan that divides *value*.
 
 ## Returns
 
-The nearest multiple of *roundTo* below *value*.  
- 
+The nearest multiple of *roundTo* below *value*.
+
 ```kusto
 (toint((value/roundTo))) * roundTo`
 ```
@@ -41,7 +41,6 @@ Expression | Result
 `bin(4.5, 1)` | `4.0`
 `bin(time(16d), 7d)` | `14d`
 `bin(datetime(1970-05-11 13:45:07), 1d)`|  `datetime(1970-05-11)`
-
 
 The following expression calculates a histogram of durations,
 with a bucket size of 1 second:

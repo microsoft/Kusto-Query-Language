@@ -25,8 +25,8 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 An ordered array of ring arrays where 1st ring contains the original cell, 2nd ring contains neighboring cells, and so on. If either the H3 Cell or distance is invalid, the query will produce a null result.
 
 > [!NOTE]
->
-> A cell might be not present in the ring if pentagonal distortion was encountered.
+> * For H3 Cell immidiate neighbors only, please see [geo_h3cell_neighbors()](geo-h3cell-neighbors-function.md).
+> * A cell might be not present in the ring if pentagonal distortion was encountered.
 
 ## Examples
 

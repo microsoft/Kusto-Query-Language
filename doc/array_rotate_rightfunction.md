@@ -1,9 +1,9 @@
 ---
 title: array_rotate_right() - Azure Data Explorer
-description: This article describes array_rotate_right() in Azure Data Explorer.
+description: Learn how to use the array_rotate_right() function to rotate values inside a dynamic array to the right.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/11/2019
+ms.date: 09/21/2022
 ---
 # array_rotate_right()
 
@@ -15,8 +15,10 @@ Rotates values inside a `dynamic` array to the right.
 
 ## Arguments
 
-* *array*: Input array to rotate, must be dynamic array.
-* *rotate_count*: Integer specifying the number of positions that array elements will be rotated to the right. If the value is negative, the elements will be rotated to the left.
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*array* | dynamic | &check;| Input array to rotate, must be dynamic array.|
+|*rotate_count*| integer | &check;| Number of positions that array elements will be rotated to the right. If the value is negative, the elements will be rotated to the Left.|
 
 ## Returns
 
@@ -32,24 +34,30 @@ Dynamic array containing the same amount of the elements as in the original arra
 
 * Rotating to the right by two positions:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
-    ```kusto
-    print arr=dynamic([1,2,3,4,5]) 
-    | extend arr_rotated=array_rotate_right(arr, 2)
-    ```
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYx0TGN1eSqUUitKEnNSwGpiC/KL0ksSU2xBbITK6G8+KLM9IwSDaCQjoKRJgBslCYKTgAAAA==)**\]**
 
-    |arr|arr_rotated|
-    |---|---|
-    |[1,2,3,4,5]|[4,5,1,2,3]|
+```kusto
+print arr=dynamic([1,2,3,4,5])
+| extend arr_rotated=array_rotate_right(arr, 2)
+```
+
+**Results**
+
+|arr|arr_rotated|
+|---|---|
+|[1,2,3,4,5]|[4,5,1,2,3]|
 
 * Rotating to the left by two positions by using negative rotate_count value:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
-    ```kusto
-    print arr=dynamic([1,2,3,4,5]) 
-    | extend arr_rotated=array_rotate_right(arr, -2)
-    ```
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYx0TGN1eSqUUitKEnNSwGpiC/KL0ksSU2xBbITK6G8+KLM9IwSDaCQjoKukSYA0VPyak8AAAA=)**\]**
 
-    |arr|arr_rotated|
-    |---|---|
-    |[1,2,3,4,5]|[3,4,5,1,2]|
+**Results**
+
+```kusto
+print arr=dynamic([1,2,3,4,5])
+| extend arr_rotated=array_rotate_right(arr, -2)
+```
+
+|arr|arr_rotated|
+|---|---|
+|[1,2,3,4,5]|[3,4,5,1,2]|

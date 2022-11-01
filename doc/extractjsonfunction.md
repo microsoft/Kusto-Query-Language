@@ -43,7 +43,7 @@ T
 | extend AvailableMB = extract_json("$.hosts[1].AvailableMB", EventText, typeof(int))
 
 T
-| extend AvailableMD = extract_json("$['hosts'][1]['AvailableMB']", EventText, typeof(int))
+| extend AvailableMB = extract_json("$['hosts'][1]['AvailableMB']", EventText, typeof(int))
 ```
 
 **Performance tips**

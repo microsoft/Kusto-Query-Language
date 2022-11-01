@@ -7,7 +7,7 @@ ms.date: 02/13/2020
 ---
 # binary_or()
 
-Returns a result of the bitwise `or` operation of the two values. 
+Returns a result of the bitwise `or` operation of the two values.
 
 ```kusto
 binary_or(x,y)

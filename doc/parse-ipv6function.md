@@ -30,7 +30,7 @@ The IP address to the LEFT of the slash (`/`) is the base IP address. The number
 ## Returns
 
 If conversion is successful, the result will be a string representing a canonical IPv6 network address.
-If conversion isn't successful, the result will be `null`.
+If conversion isn't successful, the result will be an empty string.
 
 ## Example
 

@@ -19,7 +19,7 @@ Calculates the smallest integer greater than, or equal to, the specified numeric
 
 ## Returns
 
-* The smallest integer greater than, or equal to, the specified numeric expression. 
+* The smallest integer greater than, or equal to, the specified numeric expression.
 
 ## Examples
 

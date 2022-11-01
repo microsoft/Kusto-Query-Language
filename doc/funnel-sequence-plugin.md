@@ -34,23 +34,23 @@ T | evaluate funnel_sequence(id, datetime_column, startofday(ago(30d)), startofd
 Returns three output tables, which are useful for constructing a sankey diagram for the analyzed sequence:
 
 * Table #1 - prev-sequence-next `dcount`
-    TimelineColumn: the analyzed time window
-    prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
-    next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
-    `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
-    samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
+    - TimelineColumn: the analyzed time window
+    - prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
+    - next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
+    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
+    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
 
 * Table #2 - prev-sequence `dcount`
-    TimelineColumn: the analyzed time window
-    prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
-    `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
-    samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
+    - TimelineColumn: the analyzed time window
+    - prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
+    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
+    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
 
 * Table #3 - sequence-next `dcount`
-    TimelineColumn: the analyzed time window
-    next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
-    `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
-    samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
+    - TimelineColumn: the analyzed time window
+    - next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
+    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
+    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
 
 
 ## Examples

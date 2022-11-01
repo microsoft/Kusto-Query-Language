@@ -1,72 +1,107 @@
 ---
-title: bag_pack(), pack() - Azure Data Explorer
-description: This article describes bag_pack() and pack() in Azure Data Explorer.
+title: bag_pack() - Azure Data Explorer
+description: This article describes bag_pack() function in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2022
+ms.date: 10/02/2022
 ---
-# bag_pack(), pack()
+# bag_pack()
 
-Creates a `dynamic` object (property bag) from a list of names and values.
+Creates a `dynamic` JSON object (property bag) from a list of keys and values.
 
-Alias to `pack_dictionary()` function.
-
-> [!NOTE]
-> The `bag_pack()` and `pack()` functions are interpreted equivalently.
+> **Deprecated aliases**: pack(), pack_dictionary()
 
 ## Syntax
 
 `bag_pack(`*key1*`,` *value1*`,` *key2*`,` *value2*`,... )`
 
-`pack(`*key1*`,` *value1*`,` *key2*`,` *value2*`,... )`
-
 ## Arguments
 
-* An alternating list of keys and values (the total length of the list must be even)
-* All keys must be non-empty constant strings
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*key*| string | &check; | Key name.|
+|*value* | string | &check; | Key value.|
+
+> [!NOTE]
+> The *key* and *value* strings are an alternating list the total length of the list must be even.
+
+## Returns
+
+Returns a `dynamic` JSON object (property bag) from the listed *key* and *value* inputs.
 
 ## Examples
 
-The following example returns `{"Level":"Information","ProcessID":1234,"Data":{"url":"www.bing.com"}}`:
+**Example 1**
+
+The following example creates and returns a property bag from an alternating list of keys and values.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUhKTI8vSEzO1lDySS1LzVHSUVDyzEvLL8pNLMnMzwNxA4ryk1OLiz1dgBxDI2MToJBLYkkikIfQW1oE1lleXq6XlJmXrpecn6ukqQkA9RzT32IAAAA=)**\]**
 
 ```kusto
-bag_pack("Level", "Information", "ProcessID", 1234, "Data", bag_pack("url", "www.bing.com"))
+print bag_pack("Level", "Information", "ProcessID", 1234, "Data", bag_pack("url", "www.bing.com"))
 ```
 
-Lets take 2 tables, SmsMessages and MmsMessages:
+**Results**
 
-Table SmsMessages 
+|print_0|
+|--|
+|{"Level":"Information","ProcessID":1234,"Data":{"url":"www.bing.com"}}|
 
-|SourceNumber |TargetNumber| CharsCount
-|---|---|---
-|555-555-1234 |555-555-1212 | 46 
-|555-555-1234 |555-555-1213 | 50 
-|555-555-1212 |555-555-1234 | 32 
+**Example 2**
 
-Table MmsMessages 
+The following example uses two tables, *SmsMessages* and *MmsMessages*, and returns their common columns and a property bag from the other columns. The tables are created ad-hoc as part of the query.
 
-|SourceNumber |TargetNumber| AttachmentSize | AttachmentType | AttachmentName
-|---|---|---|---|---
-|555-555-1212 |555-555-1213 | 200 | jpeg | Pic1
-|555-555-1234 |555-555-1212 | 250 | jpeg | Pic2
-|555-555-1234 |555-555-1213 | 300 | png | Pic3
+SmsMessages
 
-The following query:
+|SourceNumber |TargetNumber| CharsCount |
+|---|---|---|
+|555-555-1234 |555-555-1212 | 46 |
+|555-555-1234 |555-555-1213 | 50 |
+|555-555-1212 |555-555-1234 | 32 |
+
+MmsMessages
+
+|SourceNumber |TargetNumber| AttachmentSize | AttachmentType | AttachmentName |
+|---|---|---|---|---|
+|555-555-1212 |555-555-1213 | 200 | jpeg | Pic1 |
+|555-555-1234 |555-555-1212 | 250 | jpeg | Pic2 |
+|555-555-1234 |555-555-1213 | 300 | png | Pic3 |
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA61Sy26DMBC88xUrnxKJSmBCD604VDknikRuVVUZWIEJGGQb9aF+fG1olJgmbQ/FwmZ3Zr3MaBvUkLZqg0qxEhUkUDBtVtYgLDwwT9oNMsft0GYo70BpyUXpj8ieyRL1JWRdManW3SD0Me8t4XGESBzHN/YNabQi/nkcUhuvbs3+KzUa44D4c+Z0ybwyogS8p3uvMXI3/y73QWuWVy0KnfJ3vIbt3/qr2Ja1+JNVc1WTfhoE9qh7LO2543n43ZDLLtN4Xkr/UDp2jaauvThWRsRaez5F3gfUHRdw4KJIuBAoHdc74dhs2PiqURSwY/kBiyRj5XNvPhfkNEim1ykwfV3PDeomHIZ13mHYhMOw/jsMm1haHS8VSnR+F5JkZpKh9bKrMdcO0XdGxv9S9wkokKY3cgMAAA==)**\]**
 
 ```kusto
+let SmsMessages = datatable (
+    SourceNumber: string,
+    TargetNumber: string,
+    CharsCount: string
+) [
+    "555-555-1234", "555-555-1212", "46", 
+    "555-555-1234", "555-555-1213", "50",
+    "555-555-1212", "555-555-1234", "32" 
+];
+let MmsMessages = datatable (
+    SourceNumber: string,
+    TargetNumber: string,
+    AttachmentSize: string,
+    AttachmentType: string,
+    AttachmentName: string
+) [
+    "555-555-1212", "555-555-1213", "200", "jpeg", "Pic1",
+    "555-555-1234", "555-555-1212", "250", "jpeg", "Pic2",
+    "555-555-1234", "555-555-1213", "300", "png", "Pic3"
+];
 SmsMessages 
-| extend Packed=bag_pack("CharsCount", CharsCount) 
-| union withsource=TableName kind=inner 
-( MmsMessages 
-  | extend Packed=bag_pack("AttachmentSize", AttachmentSize, "AttachmentType", AttachmentType, "AttachmentName", AttachmentName))
+| join kind=inner MmsMessages on SourceNumber
+| extend Packed=bag_pack("CharsCount", CharsCount, "AttachmentSize", AttachmentSize, "AttachmentType", AttachmentType, "AttachmentName", AttachmentName) 
 | where SourceNumber == "555-555-1234"
-``` 
+| project SourceNumber, TargetNumber, Packed
+```
 
-Returns:
+**Results**
 
-|TableName |SourceNumber |TargetNumber | Packed
-|---|---|---|---
-|SmsMessages|555-555-1234 |555-555-1212 | {"CharsCount": 46}
-|SmsMessages|555-555-1234 |555-555-1213 | {"CharsCount": 50}
-|MmsMessages|555-555-1234 |555-555-1212 | {"AttachmentSize": 250, "AttachmentType": "jpeg", "AttachmentName": "Pic2"}
-|MmsMessages|555-555-1234 |555-555-1213 | {"AttachmentSize": 300, "AttachmentType": "png", "AttachmentName": "Pic3"}
+| SourceNumber | TargetNumber | Packed |
+|--|--|--|--|
+| 555-555-1234 | 555-555-1213 | {"CharsCount":"50","AttachmentSize":"250","AttachmentType":"jpeg","AttachmentName":"Pic2"} |
+| 555-555-1234 | 555-555-1212 | {"CharsCount":"46","AttachmentSize":"250","AttachmentType":"jpeg","AttachmentName":"Pic2"} |
+| 555-555-1234 | 555-555-1213 | {"CharsCount":"50","AttachmentSize":"300","AttachmentType":"png","AttachmentName":"Pic3"} |
+| 555-555-1234 | 555-555-1212 | {"CharsCount":"46","AttachmentSize":"300","AttachmentType":"png","AttachmentName":"Pic3"} |

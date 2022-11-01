@@ -11,7 +11,7 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-Changes the reference of the query to a specific database within the cluster scope. 
+Changes the reference of the query to a specific database within the cluster scope.
 
 ```kusto
 database('Sample').StormEvents
@@ -19,8 +19,9 @@ cluster('help').database('Sample').StormEvents
 ```
 
 > [!NOTE]
+
 > * For more information, see [cross-database and cross-cluster queries](cross-cluster-or-database-queries.md).
-> * For accessing remote cluster and remote database, see [cluster()](clusterfunction.md) scope function.
+> * For accessing remote cluster and remote database, see [`cluster()`](clusterfunction.md) scope function.
 
 ## Syntax
 
@@ -28,7 +29,7 @@ cluster('help').database('Sample').StormEvents
 
 ## Arguments
 
-* *stringConstant*: Name of the database that is referenced. Database identified can be either `DatabaseName` or `PrettyName`. Argument has to be _constant_ prior of query execution, i.e. cannot come from sub-query evaluation.
+* *stringConstant*: Name of the database that is referenced. Database identified can be either `DatabaseName` or `PrettyName`. The argument must be a *constant* value and can't come from a subquery evaluation.
 
 ## Examples
 
@@ -42,9 +43,9 @@ database('Samples').StormEvents | count
 |---|
 |59066|
 
-### Use database() inside let statements 
+### Use database() inside let statements
 
-The same query as above can be rewritten to use inline function (let statement) that 
+The same query as above can be rewritten to use inline function (let statement) that
 receives a parameter `dbName` - which is passed into the database() function.
 
 ```kusto
@@ -59,9 +60,9 @@ foo('help')
 |---|
 |59066|
 
-### Use database() inside functions 
+### Use database() inside stored functions
 
-The same query as above can be rewritten to be used in a function that 
+The same query as above can be rewritten to be used in a function that
 receives a parameter `dbName` - which is passed into the database() function.
 
 ```kusto

@@ -1,9 +1,9 @@
 ---
 title: array_rotate_left() - Azure Data Explorer
-description: This article describes array_rotate_left() in Azure Data Explorer.
+description: Learn how to use the array_rotate_left() function to rotate values inside a dynamic array to the left.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/11/2019
+ms.date: 09/21/2022
 ---
 # array_rotate_left()
 
@@ -15,8 +15,10 @@ Rotates values inside a `dynamic` array to the left.
 
 ## Arguments
 
-* *array*: Input array to rotate, must be dynamic array.
-* *rotate_count*: Integer specifying the number of positions that array elements will be rotated to the left. If the value is negative, the elements will be rotated to the right.
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*array* | dynamic | &check;| Input array to rotate, must be dynamic array.|
+|*rotate_count*| integer | &check;| Number of positions that array elements will be rotated to the left. If the value is negative, the elements will be rotated to the right.|
 
 ## Returns
 
@@ -32,24 +34,30 @@ Dynamic array containing the same amount of the elements as in original array, w
 
 * Rotating to the left by two positions:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
-    ```kusto
-    print arr=dynamic([1,2,3,4,5]) 
-    | extend arr_rotated=array_rotate_left(arr, 2)
-    ```
+ **\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYx0TGN1eSqUUitKEnNSwGpiC/KL0ksSU2xBbITK6G8+JzUtBINoIiOgpEmACPTVOVNAAAA)**\]**
 
-    |arr|arr_rotated|
-    |---|---|
-    |[1,2,3,4,5]|[3,4,5,1,2]|
+```kusto
+print arr=dynamic([1,2,3,4,5])
+| extend arr_rotated=array_rotate_left(arr, 2)
+```
+
+**Results**
+
+|arr|arr_rotated|
+|---|---|
+|[1,2,3,4,5]|[3,4,5,1,2]|
 
 * Rotating to the right by two positions by using negative rotate_count value:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
-    ```kusto
-    print arr=dynamic([1,2,3,4,5]) 
-    | extend arr_rotated=array_rotate_left(arr, -2)
-    ```
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYx0TGN1eSqUUitKEnNSwGpiC/KL0ksSU2xBbITK6G8+JzUtBINoIiOgq6RJgCXfX6MTgAAAA==)**\]**
 
-    |arr|arr_rotated|
-    |---|---|
-    |[1,2,3,4,5]|[4,5,1,2,3]|
+```kusto
+print arr=dynamic([1,2,3,4,5])
+| extend arr_rotated=array_rotate_left(arr, -2)
+```
+
+**Results**
+
+|arr|arr_rotated|
+|---|---|
+|[1,2,3,4,5]|[4,5,1,2,3]|

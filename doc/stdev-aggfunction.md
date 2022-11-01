@@ -1,21 +1,21 @@
 ---
 title: stdev() (aggregation function) - Azure Data Explorer
-description: This article describes stdev() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the stdev() aggregation function to calculate a standard deviation using Bessel's correction in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 09/20/2022
 ---
 # stdev() (aggregation function)
 
-Calculates the standard deviation of *Expr* across the group, using [Bessel's correction](https://en.wikipedia.org/wiki/Bessel's_correction) for a small data set that is considered a [sample](https://en.wikipedia.org/wiki/Sample_%28statistics%29). 
+Calculates the standard deviation of *Expr* across the group, using [Bessel's correction](https://en.wikipedia.org/wiki/Bessel's_correction) for a small data set that is considered a [sample](https://en.wikipedia.org/wiki/Sample_%28statistics%29).
 
 For a large data set that is representative of the population, use [stdevp() (aggregation function)](stdevp-aggfunction.md).
 
 * Used formula:
 
-:::image type="content" source="images/stdev-aggfunction/stdev-sample.png" alt-text="Stdev sample.":::
+:::image type="content" source="images/stdev-aggfunction/stdev-sample.png" alt-text="Image showing a Stdev sample formula.":::
 
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
@@ -23,19 +23,26 @@ For a large data set that is representative of the population, use [stdevp() (ag
 
 ## Arguments
 
-* *Expr*: Expression that will be used for aggregation calculation. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr* | string | &check; | Expression that will be used for aggregation calculation. |
 
 ## Returns
 
-The standard deviation value of *Expr* across the group.
- 
-## Examples
+Returns the standard deviation value of *Expr* across the group.
+
+## Example
+
+The following example shows the standard deviation for the group.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzBVKC5JLVAw5KpRKC7NzU0syqxKVchNzE6Nz8ksLtGo0NQBKkhJLQOyAG3qbWE9AAAA)**\]**
 
 ```kusto
 range x from 1 to 5 step 1
 | summarize make_list(x), stdev(x)
-
 ```
+
+**Results**
 
 |list_x|stdev_x|
 |---|---|

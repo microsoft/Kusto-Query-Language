@@ -17,7 +17,7 @@ type:
 |Operator name|Syntax|Meaning|
 |-------------|------|-------|
 |Equality     |`==`  |Yields `true` if both operands are non-null and equal to each other. Otherwise, `false`.|
-|Inequality   |`!=`  |Yields `true` if either one (or both) of the operands are null, or they are not equal to each other. Otherwise, `true`.|
+|Inequality   |`!=`  |Yields `true` if any of the operands are null, or if the operands are not equal to each other. Otherwise, `false`.|
 |Logical and  |`and` |Yields `true` if both operands are `true`.|
 |Logical or   |`or`  |Yields `true` if one of the operands is `true`, regardless of the other operand.|
 

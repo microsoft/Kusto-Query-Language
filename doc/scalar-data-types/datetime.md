@@ -16,11 +16,9 @@ For example, a ticks value of 31241376000000000 represents the date, Friday, Jan
 This is sometimes called "a moment in linear time".
 
 > [!WARNING]
-> A `datetime` value in Kusto is always in the UTC time zone. Displaying `datetime`
-> values in other time zones is the responsibility of the user application that
-> displays the data, not a property of the data itself. Should time zone values be
-> required to be kept as a part of the data, a separate columns should be used
-> (providing offset information relative to UTC).
+> A `datetime` value in Kusto is always in the UTC time zone. If displaying `datetime` values 
+> in other time zones is required, please use [datetime_utc_to_local()](../datetime-utc-to-local-function.md) 
+> or its counterpart, [datetime_local_to_utc()](../datetime-local-to-utc-function.md), to convert to a different time zone.
 
 ## datetime literals
 
@@ -31,15 +29,11 @@ are supported for *value*, as indicated by the following table:
 |------------------------------------------------------------|--------------------------------------------------------------|
 |`datetime(2015-12-31 23:59:59.9)`<br/>`datetime(2015-12-31)`|Times are always in UTC. Omitting the date gives a time today.|
 |`datetime(null)`                                            |See [null values](null-values.md).                            |
-|`now()`                                                     |The current time.                                             |
-|`now(`-*timespan*`)`                                        |`now()-`*timespan*                                            |
-|`ago(`*timespan*`)`                                         |`now()-`*timespan*                                            |
 
-`now()` and `ago()` indicate a `datetime` value compared with the moment
-in time when Kusto started to execute the query. These can appear multiple
-times in the same query, and a single value will be used for them all.
-(In other words, expressions such as `now(-x) - ago(x)` always evaluate
-to a `timespan` value of zero.)
+## The now() and ago() special functions
+
+Kusto provides two special functions, [now() and ago()](../nowfunction.md),
+to allow queries to reference the time at which the query starts execution.
 
 ## Supported formats
 

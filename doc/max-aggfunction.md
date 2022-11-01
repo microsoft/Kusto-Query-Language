@@ -3,13 +3,13 @@ title: max() (aggregation function) - Azure Data Explorer
 description: This article describes max() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 07/05/2022
 ---
 # max() (aggregation function)
 
-Returns the maximum value across the group. 
+Finds the maximum value across the group.
 
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
@@ -17,13 +17,30 @@ Returns the maximum value across the group.
 
 ## Arguments
 
-* *Expr*: Expression that will be used for aggregation calculation. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr*  string | &check; | Expression used for aggregation calculation. |
 
 ## Returns
 
-The maximum value of *Expr* across the group.
- 
+Returns the maximum value of *Expr* across the group.
+
 > [!TIP]
-> This gives you the min or max on its own - for example, the highest or lowest price.
-> But if you want other columns in the row - for example, the name of the supplier with the lowest
-> price - use [arg_max](arg-max-aggfunction.md) or [arg_min](arg-min-aggfunction.md).
+> This gives you the max on its own. But if you want other columns in the rowuse [arg_max](arg-max-aggfunction.md).
+
+## Example
+
+This example returns the last record in a table.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVfBJLEktLgFL2OYmVmgElyQWlYRk5qZqAgAAp60yMgAAAA==)**\]**
+
+```kusto
+StormEvents
+| summarize LatestEvent=max(StartTime)
+```
+
+**Results**
+
+| LatestEvent |
+|--|
+| 2007-12-31T23:53:00Z |

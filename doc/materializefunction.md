@@ -1,14 +1,14 @@
 ---
 title: materialize() - Azure Data Explorer
 description: This article describes materialize() function in Azure Data Explorer.
-ms.reviewer: alexans
+ms.reviewer: zivc
 ms.topic: reference
-ms.date: 06/06/2020
+ms.date: 10/31/2022
 ---
 # materialize()
 
-Allows caching a subquery result during the time of query execution in a way that other subqueries can reference the partial result.
- 
+Captures the value of a tabular expression for the duration of the query execution so that it can be referenced multiple times by the query without recalculation.
+
 ## Syntax
 
 `materialize(`*expression*`)`
@@ -17,8 +17,20 @@ Allows caching a subquery result during the time of query execution in a way tha
 
 * *expression*: Tabular expression to be evaluated and cached during query execution.
 
+## Remarks
+
+The `materialize()` function is useful in the following scenarios:
+
+* To speed up queries that perform *heavy* calculations whose results are used multiple times in the query.
+* To evaluate a tabular expression only once and use it many times in a query. This is commonly required if the tabular expression is non-deterministic. For example, if the expression uses the `rand()` or the `dcount()` functions.
+
 > [!NOTE]
 > Materialize has a cache size limit of **5 GB**. This limit is per cluster node and is mutual for all queries running concurrently. If a query uses `materialize()` and the cache can't hold any more data, the query will abort with an error.
+
+>[!TIP]
+> Another way to perform materialization of tabular expression is by using the `hint.materialized` flag
+> of the [as operator](asoperator.md) and [partition operator](partitionoperator.md). They all share a
+> single materialization cache.
 
 >[!TIP]
 >
@@ -55,12 +67,12 @@ _detailed_data
 |GULF OF MEXICO|Marine Thunderstorm Wind|71.7504332755633|414|
 |HAWAII|High Surf|70.0218818380744|320|
 
+The following example generates a set of random numbers and calculates:
 
-The following example generates a set of random numbers and calculates: 
-* how many distinct values in the set (`Dcount`)
-* the top three values in the set 
-* the sum of all these values in the set 
- 
+* How many distinct values in the set (`Dcount`)
+* The top three values in the set
+* The sum of all these values in the set
+
 This operation can be done using [batches](batches.md) and materialize:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
@@ -80,7 +92,7 @@ Result set 1:
 |---|
 |2578351|
 
-Result set 2: 
+Result set 2:
 
 |value|
 |---|
@@ -88,7 +100,7 @@ Result set 2:
 |9999998|
 |9999997|
 
-Result set 3: 
+Result set 3:
 
 |Sum|
 |---|
@@ -101,6 +113,7 @@ Result set 3:
 
 To use the `let` statement with a value that you use more than once, use the [materialize() function](./materializefunction.md). Try to push all possible operators that will reduce the materialized data set and still keep the semantics of the query. For example, use filters, or project only required columns.
 
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
     let materializedData = materialize(Table
     | where Timestamp > ago(1d));
@@ -113,7 +126,8 @@ To use the `let` statement with a value that you use more than once, use the [ma
 
 The filter on `Text` is mutual and can be pushed to the materialize expression.
 The query only needs columns `Timestamp`, `Text`, `Resource1`, and `Resource2`. Project these columns inside the materialized expression.
-    
+
+<!-- csl: https://help.kusto.windows.net/Samples -->    
 ```kusto
     let materializedData = materialize(Table
     | where Timestamp > ago(1d)
@@ -123,9 +137,10 @@ The query only needs columns `Timestamp`, `Text`, `Resource1`, and `Resource2`. 
     | summarize dcount(Resource1)), (materializedData
     | summarize dcount(Resource2))
 ```
-    
+
 If the filters aren't identical, as in the following query:  
 
+<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
     let materializedData = materialize(Table
     | where Timestamp > ago(1d));
@@ -137,7 +152,8 @@ If the filters aren't identical, as in the following query:
  ```
 
 When the combined filter reduces the materialized result drastically, combine both filters on the materialized result by a logical `or` expression as in the query below. However, keep the filters in each union leg to preserve the semantics of the query.
-     
+
+<!-- csl: https://help.kusto.windows.net/Samples -->     
 ```kusto
     let materializedData = materialize(Table
     | where Timestamp > ago(1d)
@@ -149,4 +165,3 @@ When the combined filter reduces the materialized result drastically, combine bo
     | where Text has "String2"
     | summarize dcount(Resource2))
 ```
-    

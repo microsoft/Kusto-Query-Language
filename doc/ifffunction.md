@@ -28,7 +28,10 @@ or the value of *ifFalse* otherwise.
 
 ## Example
 
+<a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRSK0oSc1LUQhKzMxTsFXITEvT0ADLhVQWpCoAxTSUPFITyyrBCpR0FJTcchKLMxTccvLzUyBcEENTE8gEG5EK0guS8MsvUShCiGgCrSooys9KTS5RCC5JLEnVUQBb45kCZYDs0wHbAgAA0TJCoAAAAA==" target="_blank">Click to run query</a>
+
 ```kusto
-T 
-| extend day = iff(floor(Timestamp, 1d)==floor(now(), 1d), "today", "anotherday")
+StormEvents
+| extend Rain = iff((EventType in ("Heavy Rain", "Flash Flood", "Flood")), "Rain event", "Not rain event")
+| project State, EventId, EventType, Rain
 ```

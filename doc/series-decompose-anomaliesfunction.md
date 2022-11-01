@@ -29,10 +29,11 @@ The function takes an expression containing a series (dynamic numerical array) a
     * "none": No trend, skip extracting this component
     * "linefit": Extract trend component using linear regression
 * *Test_points*: 0 [default] or a positive integer, that specifies the number of points at the end of the series to exclude from the learning (regression) process. This parameter should be set for forecasting purposes
-* *AD_method*: A string controlling the anomaly detection method on the residual time series, containing one of:
+* *AD_method*: A string controlling the anomaly detection method on the residual time series, containing one of the following values:
     * “ctukey”: [Tukey’s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with custom 10th-90th percentile range [default]
     * “tukey”: [Tukey’s fence test](https://en.wikipedia.org/wiki/Outlier#Tukey's_fences) with standard 25th-75th percentile range
-For more information on residual time series, see [series_outliers](series-outliersfunction.md)
+
+    For more information on residual time series, see [series_outliers](series-outliersfunction.md)
 * *Seasonality_threshold*: The threshold for seasonality score when *Seasonality* is set to autodetect. The default score threshold is `0.6`. For more information, see [series_periods_detect](series-periods-detectfunction.md)
 
 ## Returns

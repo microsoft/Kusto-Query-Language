@@ -10,7 +10,7 @@ ms.date: 02/13/2020
 Returns binary shift left operation on a pair of numbers.
 
 ```kusto
-binary_shift_left(x,y)	
+binary_shift_left(x,y)
 ```
 
 ## Syntax

@@ -7,7 +7,7 @@ ms.date: 10/21/2020
 ---
 # project-keep operator
 
-Select what columns from the input to keep in the output.
+Select what columns from the input to keep in the output using a columnname pattern matcher.
 
 ```kusto
 T | project-keep price, quantity, zz*

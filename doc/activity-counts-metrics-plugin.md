@@ -1,9 +1,9 @@
 ---
-title: activity_counts_metrics plugin - Azure Data Explorer 
-description: This article describes activity_counts_metrics plugin in Azure Data Explorer.
+title: activity_counts_metrics plugin - Azure Data Explorer
+description: Learn how to use the activity_counts_metrics plugin to compare activity metrics in different time windows.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 09/20/2022
 ---
 # activity_counts_metrics plugin
 
@@ -19,13 +19,15 @@ T | evaluate activity_counts_metrics(id, datetime_column, startofday(ago(30d)), 
 
 ## Arguments
 
-* *T*: The input tabular expression.
-* *IdColumn*: The name of the column with ID values that represent user activity.
-* *TimelineColumn*: The name of the column that represents the timeline.
-* *Start*: Scalar with value of the analysis start period.
-* *End*: Scalar with value of the analysis end period.
-* *Window*: Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string that is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md) or [startofyear](startofyearfunction.md).
-* *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *T* | tabular expression | &check; | The input tabular expression. |
+| *IdColumn* | string | &check; | The name of the column with ID values that represent user activity. |
+| *TimelineColumn* | string | &check; | The name of the column that represents the timeline. |
+| *Start* | datetime | &check; | Scalar with value of the analysis start period. |
+| *End* | datetime | &check; | Scalar with value of the analysis end period. |
+| *Window* | decimal/datetime/timespan | &check; | Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string that is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md) or [startofyear](startofyearfunction.md). |
+|  *dim1*, *dim2*, ... | dynamic |   | list of the dimensions columns that slice the activity metrics calculation. |
 
 ## Returns
 
@@ -57,10 +59,10 @@ let window=1d;
 let T = datatable(UserId:string, Timestamp:datetime)
 [
 'A', datetime(2017-08-01),
-'D', datetime(2017-08-01), 
+'D', datetime(2017-08-01),
 'J', datetime(2017-08-01),
 'B', datetime(2017-08-01),
-'C', datetime(2017-08-02),  
+'C', datetime(2017-08-02),
 'T', datetime(2017-08-02),
 'J', datetime(2017-08-02),
 'H', datetime(2017-08-03),
@@ -71,7 +73,7 @@ let T = datatable(UserId:string, Timestamp:datetime)
 'S', datetime(2017-08-03),
 'S', datetime(2017-08-04),
 ];
- T 
+ T
  | evaluate activity_counts_metrics(UserId, Timestamp, start, end, window)
 ```
 

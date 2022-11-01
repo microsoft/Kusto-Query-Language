@@ -3,14 +3,13 @@ title: make_bag_if() (aggregation function) - Azure Data Explorer
 description: This article describes make_bag_if() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 08/24/2022
 ---
 # make_bag_if() (aggregation function)
 
-Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr'* in the group, for which *Predicate* evaluates to `true`.
+Creates a `dynamic` JSON property bag (dictionary) of all the values of *'Expr'* in the group, for which *Predicate* evaluates to `true`.
 
-> [!NOTE]
-> Can only be used in context of aggregation inside [summarize](summarizeoperator.md).
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
@@ -18,20 +17,26 @@ Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr
 
 ## Arguments
 
-* *Expr*: Expression of type `dynamic` that will be used for aggregation calculation.
-* *Predicate*: Predicate that has to evaluate to `true`, in order for *'Expr'* to be added to the result.
-* *MaxSize*: An optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value can't exceed 1048576.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr* | dynamic | &check; | Expression used for aggregation calculation. |
+| *Predicate* | boolean | &check; | Predicate that evaluates to `true`, in order for *'Expr'* to be added to the result. |
+| *MaxSize* | integer |  | Limit on the maximum number of elements returned. The default value is *1048576* and can't exceed 1048576. |
 
 ## Returns
 
-Returns a `dynamic` (JSON) property-bag (dictionary) of all the values of *'Expr'* in the group that are property-bags (dictionaries), for which *Predicate* evaluates to `true`.
+Returns a `dynamic` JSON property bag (dictionary) of all the values of *'Expr'* in the group that are property bags (dictionaries), for which *Predicate* evaluates to `true`.
 Non-dictionary values will be skipped.
 If a key appears in more than one row, an arbitrary value, out of the possible values for this key, will be selected.
 
 > [!NOTE]
-> The [`make_bag`](./make-bag-aggfunction.md) function, is similar to make_bag_if() without predicate expression.
+> This function without the predicate is similar to [`make_bag`](./make-bag-aggfunction.md).
 
-## Examples
+## Example
+
+The following example shows a packed JSON property bag.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOTQuDMAyG7/0VwZNCD/u4OfwX3saQtEYpVi1tHGPsxy8bOlxyecOTFx5PDDVU0CLLGk95iHMoE0c39Rru6Bf6XSFS6ywylWaefaGuCmSyT+NwzDRk8t6gBI4L6R08bdBI6NCnP3reqF2r6nZRtXoBPZimFoL4BbTDV211KgSnZRwxuieBWHE14kCNwb5xXR52ssUbsXCntuQAAAA=)**\]**
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)
@@ -43,14 +48,17 @@ let T = datatable(prop:string, value:string, predicate:bool)
 T
 | extend p = pack(prop, value)
 | summarize dict=make_bag_if(p, predicate)
-
 ```
+
+**Results**
 
 |dict|
 |----|
 |{ "prop01": "val_a", "prop03": "val_c" } |
 
-Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag_if() output into columns. 
+Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag_if() output into columns.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOywqDMBBF9/mKwZWCiz52Fv/CXSlhoqMEo4Y8Sin9+E5Ei002J5x7wzUUoIEaOgx8laHcusVWPjg9DyU80UT6vayjTrcYqFLLYgpxF8AnS43TOSsh47hEhuAilQd52aVi6NH4P3vdbbtVxeMmGvEBegWaO7C8z2I7rtO2TQVrH6cJnX4TKBzqCUeSDFL3uT1sTUlKHeYUlHFeP2MsvmCOilb+AAAA)**\]**
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)
@@ -63,8 +71,9 @@ T
 | extend p = pack(prop, value)
 | summarize bag=make_bag_if(p, predicate)
 | evaluate bag_unpack(bag)
-
 ```
+
+**Results**
 
 |prop01|prop03|
 |---|---|

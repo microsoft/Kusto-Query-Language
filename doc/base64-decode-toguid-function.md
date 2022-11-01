@@ -15,7 +15,7 @@ Decodes a base64 string to a [GUID](./scalar-data-types/guid.md).
 
 ## Arguments
 
-* *String*: Input string to be decoded from base64 to a [GUID](./scalar-data-types/guid.md). 
+* *String*: Input string to be decoded from base64 to a [GUID](./scalar-data-types/guid.md).
 
 ## Returns
 

@@ -1,11 +1,11 @@
 ---
-title: scan operator (preview) - Azure Data Explorer
+title: scan operator - Azure Data Explorer
 description: This article describes the scan operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/28/2021
+ms.date: 07/25/2022
 ---
-# scan operator (preview)
+# scan operator
 
 Scans data, matches, and builds sequences based on the predicates.
 
@@ -57,7 +57,7 @@ A record for each match of a record from the input to a step. The schema of the 
 Calculate the cumulative sum for an input column. The result of this example is equivalent to using [row_cumsum()](rowcumsumfunction.md).
 
 ```kusto
-range x from 1 to 10 step 1 
+range x from 1 to 5 step 1 
 | scan declare (cumulative_x:long=0) with 
 (
     step s1: true => cumulative_x = x + s1.cumulative_x;
@@ -71,11 +71,29 @@ range x from 1 to 10 step 1
 |3|6|
 |4|10|
 |5|15|
-|6|21|
-|7|28|
-|8|36|
-|9|45|
-|10|55|
+
+### Cumulative sum on multiple columns with a reset condition
+
+Calculate the cumulative sum for two input column, reset the sum value to the current row value whenever the cumulative sum reached 10 or more.
+
+```kusto
+range x from 1 to 5 step 1
+| extend y = 2 * x
+| scan declare (cumulative_x:long=0, cumulative_y:long=0) with 
+(
+    step s1: true => cumulative_x = iff(s1.cumulative_x >= 10, x, x + s1.cumulative_x), 
+                     cumulative_y = iff(s1.cumulative_y >= 10, y, y + s1.cumulative_y);
+)
+```
+
+|x|y|cumulative_x|cumulative_y|
+|---|---|---|---|
+|1|2|1|2|
+|2|4|3|6|
+|3|6|6|12|
+|4|8|10|8|
+|5|10|5|18|
+
 
 ### Fill forward a column
 

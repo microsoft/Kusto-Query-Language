@@ -29,12 +29,13 @@ Returns an integral value indicating the relationship between the strings:
 
 ## Examples
 
-```
-datatable(string1:string, string2:string)
-["ABC","ABC",
-"abc","ABC",
-"ABC","abc",
-"abcde","abc"]
+```kusto
+datatable(string1:string, string2:string) [
+    "ABC","ABC",
+    "abc","ABC",
+    "ABC","abc",
+    "abcde","abc"
+]
 | extend result = strcmp(string1,string2)
 ```
 

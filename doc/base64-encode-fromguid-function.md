@@ -15,7 +15,7 @@ Encodes a [GUID](./scalar-data-types/guid.md) to a base64 string.
 
 ## Arguments
 
-* *GUID*: Input [GUID](./scalar-data-types/guid.md) to be encoded to a base64 string. 
+* *GUID*: Input [GUID](./scalar-data-types/guid.md) to be encoded to a base64 string.
 
 ## Returns
 

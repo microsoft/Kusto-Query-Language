@@ -3,11 +3,11 @@ title: print operator - Azure Data Explorer
 description: This article describes print operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/16/2019
+ms.date: 07/03/2022
 ---
 # print operator
 
-Outputs single-row with one or more scalar expressions.
+Outputs a single-row with one or more scalar expression results as columns.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -20,12 +20,12 @@ print x=1, s=strcat("Hello", ", ", "World!")
 
 ## Arguments
 
-* *ColumnName*: An option name to assign to the output's singular column.
+* *ColumnName*: An optional name to assign to the output column.
 * *ScalarExpression*: A scalar expression to evaluate.
 
 ## Returns
 
-A single-column, single-row, table whose single cell has the value of the evaluated *ScalarExpression*.
+A table with one or more columns and a single row. Each column returns the corresponding value of the evaluated *ScalarExpression*.
 
 ## Examples
 

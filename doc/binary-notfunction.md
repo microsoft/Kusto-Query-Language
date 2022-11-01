@@ -19,7 +19,7 @@ binary_not(x)
 
 ## Arguments
 
-* *num1*: numeric 
+* *num1*: numeric
 
 ## Returns
 

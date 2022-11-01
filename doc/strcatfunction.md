@@ -25,7 +25,7 @@ Arguments, concatenated to a single string.
 
 ## Examples
   
-   ```kusto
+```kusto
 print str = strcat("hello", " ", "world")
 ```
 

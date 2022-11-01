@@ -3,13 +3,13 @@ title: make_set() (aggregation function) - Azure Data Explorer
 description: This article describes make_set() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/23/2020
+ms.date: 08/14/2022
 ---
 # make_set() (aggregation function)
 
-Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes in the group.
+Creates a `dynamic` JSON array of the set of distinct values that *Expr* takes in the group.
 
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
@@ -17,28 +17,47 @@ Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes
 
 ## Arguments
 
-* *Expr*: Expression for aggregation calculation.
-* *MaxSize* is an optional integer limit on the maximum number of elements returned (default is *1048576*). MaxSize value cannot exceed 1048576.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr* | string | &check; | Expression used for the aggregation calculation. |
+| *MaxSize* |  |  | Integer limit on the maximum number of elements returned. *MaxSize* value can't exceed 1048576. The default is *1048576*. |
 
 > [!NOTE]
-> `makeset()` is a legacy and obsolete version of the function `make_set`. The legacy version has a default limit of *MaxSize* = 128.
+> `makeset()` has been deprecated in favor of `make_set`. The legacy version has a default *MaxSize* limit of 128.
 
 ## Returns
 
-Returns a `dynamic` (JSON) array of the set of distinct values that *Expr* takes in the group.
+Returns a `dynamic` JSON array of the set of distinct values that *Expr* takes in the group.
 The array's sort order is undefined.
 
 > [!TIP]
-> To only count distinct values, use [dcount()](dcount-aggfunction.md)
+> To only count distinct values, use [dcount()](dcount-aggfunction.md).
 
 ## Example
 
+This example shows the set of States grouped with the same amount of crop damage.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/NewDatabase1?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoLs3NTSzKrEpVKC5JLEktts1NzE6NL04t0QgG8TUVkioVXBJzE9NTnYvyC4oBmxrbeD8AAAA=)**\]**
+
 ```kusto
-PageViewLog 
-| summarize countries=make_set(country) by continent
+StormEvents 
+| summarize states=make_set(State) by DamageCrops
 ```
 
-:::image type="content" source="images/makeset-aggfunction/makeset.png" alt-text="Table showing Kusto Query summarize countries by continent in Azure Data Explorer.":::
+The results table shown includes only the first 10 rows.
+
+| DamageCrops | states |
+|--|--|
+| 0 | ["NORTH CAROLINA","WISCONSIN","NEW YORK","ALASKA","DELAWARE","OKLAHOMA","INDIANA","ILLINOIS","MINNESOTA","SOUTH DAKOTA","TEXAS","UTAH","COLORADO","VERMONT","NEW JERSEY","VIRGINIA","CALIFORNIA","PENNSYLVANIA","MONTANA","WASHINGTON","OREGON","HAWAII","IDAHO","PUERTO RICO","MICHIGAN","FLORIDA","WYOMING","GULF OF MEXICO","NEVADA","LOUISIANA","TENNESSEE","KENTUCKY","MISSISSIPPI","ALABAMA","GEORGIA","SOUTH CAROLINA","OHIO","NEW MEXICO","ATLANTIC SOUTH","NEW HAMPSHIRE","ATLANTIC NORTH","NORTH DAKOTA","IOWA","NEBRASKA","WEST VIRGINIA","MARYLAND","KANSAS","MISSOURI","ARKANSAS","ARIZONA","MASSACHUSETTS","MAINE","CONNECTICUT","GUAM","HAWAII WATERS","AMERICAN SAMOA","LAKE HURON","DISTRICT OF COLUMBIA","RHODE ISLAND","LAKE MICHIGAN","LAKE SUPERIOR","LAKE ST CLAIR","LAKE ERIE","LAKE ONTARIO","E PACIFIC","GULF OF ALASKA"] |
+| 30000 | ["TEXAS","NEBRASKA","IOWA","MINNESOTA","WISCONSIN"] |
+| 4000000 | ["CALIFORNIA","KENTUCKY","NORTH DAKOTA","WISCONSIN","VIRGINIA"] |
+| 3000000 | ["CALIFORNIA","ILLINOIS","MISSOURI","SOUTH CAROLINA","NORTH CAROLINA","MISSISSIPPI","NORTH DAKOTA","OHIO"] |
+| 14000000 | ["CALIFORNIA","NORTH DAKOTA"] |
+| 400000 | ["CALIFORNIA","MISSOURI","MISSISSIPPI","NEBRASKA","WISCONSIN","NORTH DAKOTA"] |
+| 50000 | ["CALIFORNIA","GEORGIA","NEBRASKA","TEXAS","WEST VIRGINIA","KANSAS","MISSOURI","MISSISSIPPI","NEW MEXICO","IOWA","NORTH DAKOTA","OHIO","WISCONSIN","ILLINOIS","MINNESOTA","KENTUCKY"] |
+| 18000 | ["WASHINGTON","WISCONSIN"] |
+| 107900000 | ["CALIFORNIA"] |
+| 28900000 | ["CALIFORNIA"] |
 
 ## See also
 

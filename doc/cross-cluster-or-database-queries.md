@@ -11,11 +11,15 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-Every Kusto query operates in the context of the current cluster, and the default database.
+Queries execute with one specific database being "in context". This database is used by default
+to check permissions, and every entity reference in the query that has no explicit cluster or database qualification
+is resolved against this default database.
+
 * In [Kusto Explorer](../tools/kusto-explorer.md), the default database is the one selected in the [Connections panel](../tools/kusto-explorer.md#connections-panel), and the current cluster is the connection containing that database.
-* When using [client library](../api/netfx/about-kusto-data.md), the current cluster and the default database are specified by the `Data Source` and `Initial Catalog` properties of the [connection strings](../api/connection-strings/kusto.md), respectively.
+* When using the [client library](../api/netfx/about-kusto-data.md), the current cluster and the default database are specified by the `Data Source` and `Initial Catalog` properties of the [connection strings](../api/connection-strings/kusto.md), respectively.
 
 ## Queries
+
 To access tables from any database other than the default, the *qualified name* syntax must be used.
 
 To access database in the current cluster.
@@ -25,6 +29,7 @@ database("<database name>").<table name>
 ```
 
 Database in remote cluster.
+
 ```kusto
 cluster("<cluster name>").database("<database name>").<table name>
 ```
@@ -32,9 +37,10 @@ cluster("<cluster name>").database("<database name>").<table name>
 *database name* is case-sensitive
 
 *cluster name* is case-insensitive and can be of one of the following forms:
-   * Well-formed URL, such as `http://contoso.kusto.windows.net:1234/`. Only HTTP and HTTPS schemes are supported.
-   * Fully qualified domain name (FQDN), such as `contoso.kusto.windows.net`. This string is equivalent to `https://`**`contoso.kusto.windows.net`**`/`.
-   * Short name (host name [and region] without the domain part), such as `contoso` or `contoso.westus`. These strings are interpreted as `https://`**`contoso`**`.kusto.windows.net/` and `https://`**`contoso.westus`**`.kusto.windows.net/`.
+
+* Well-formed URL, such as `http://contoso.kusto.windows.net:1234/`. Only HTTP and HTTPS schemes are supported.
+* Fully qualified domain name (FQDN), such as `contoso.kusto.windows.net`. This string is equivalent to `https://`**`contoso.kusto.windows.net`**`/`.
+* Short name (host name [and region] without the domain part), such as `contoso` or `contoso.westus`. These strings are interpreted as `https://`**`contoso`**`.kusto.windows.net/` and `https://`**`contoso.westus`**`.kusto.windows.net/`.
 
 > [!NOTE]
 > Cross-database access is subject to the usual permission checks.
@@ -63,6 +69,7 @@ union withsource=TableName *, database("OtherDb*").*Table, cluster("OtherCluster
 ```
 
 > [!NOTE]
+
 > * The name of the default database is also a potential match, so database("&#42;")specifies all tables of all databases including the default.
 > * For more ionformation on how schema changes affect cross-cluster queries, see [Cross-cluster queries and schema changes](../concepts/cross-cluster-and-schema-changes.md)
 
@@ -77,7 +84,7 @@ restrict access to (my*, database("MyOther*").*, cluster("OtherCluster").databas
 
 The above will restrict the query access to the following entities:
 
-* Any entity name starting with *my...* in the default database. 
+* Any entity name starting with *my...* in the default database.
 * Any table in all the databases named *MyOther...* of the current cluster.
 * Any table in all the databases named *my2...* in the cluster *OtherCluster.kusto.windows.net*.
 
@@ -114,8 +121,12 @@ database("OtherDb").MyView("exception") | extend CalCol=database("OtherDb").MyCa
 
 Tabular functions or views can be referenced across clusters. The following limitations apply:
 
-* Remote function must return tabular schema. Scalar functions can only be accessed in the same cluster.
-* Remote function can accept only scalar parameters. Functions that get one or more table arguments can only be accessed in the same cluster.
+* Remote functions must return tabular schema. Scalar functions can only be accessed in the same cluster.
+* Remote functions can accept only scalar parameters. Functions that get one or more table arguments can only be accessed in the same cluster.
+* Remote functions' result schema must be fixed (known in advance without executing parts of the query).
+  This precludes the use of query constructs such as the `pivot` plugin. (Note that some plugins,
+  such as the `bag_unpack` plugin, supports a way to indicate the result schema statically,
+  and in this form it *can* be used in cross-cluster function calls.)
 * For performance reasons, the schema of remote entities is cached by the calling cluster after the initial call. Therefore, changes made to the remote entity may result in a mismatch with the cached schema information, potentially leading to query failures. For more information, see [Cross-cluster queries and schema changes](../concepts/cross-cluster-and-schema-changes.md).
 
 The following cross-cluster call is valid.

@@ -1,9 +1,9 @@
 ---
 title: R plugin (Preview) - Azure Data Explorer
 description: This article describes R plugin (Preview) in Azure Data Explorer.
-ms.reviewer: alexans
+ms.reviewer: adieldar
 ms.topic: reference
-ms.date: 04/01/2020
+ms.date: 04/03/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -17,7 +17,7 @@ The plugin's runtime is hosted in a [sandbox](../concepts/sandboxes.md) on the c
 
 ## Syntax
 
-*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `r(`*output_schema*`,` *script* [`,` *script_parameters*]`)`
+*T* `|` `evaluate` [`hint.distribution` `=` (`single` | `per_node`)] `r(`*output_schema*`,` *script* [`,` *script_parameters*] [`,` *external_artifacts*]`)`
 
 ## Arguments
 
@@ -30,6 +30,12 @@ The plugin's runtime is hosted in a [sandbox](../concepts/sandboxes.md) on the c
    Default: `single`.
     * `single`: A single instance of the script will run over the entire query data.
     * `per_node`: If the query before the R block is distributed, an instance of the script will run on each node over the data that it contains.
+* *external_artifacts*: An optional `dynamic` literal that is a property bag of name and URL pairs, for artifacts that are accessible from cloud storage. They can be made available for the script to use at runtime.
+  * URLs referenced in this property bag are required to be:
+    * Included in the cluster's [callout policy](../management/calloutpolicy.md).
+    * In a publicly available location, or provide the necessary credentials, as explained in [storage connection strings](../api/connection-strings/storage-connection-strings.md).
+  * The artifacts are made available for the script to consume from a local temporary directory, `.\Temp`. The names provided in the property bag are used as the local file names. See [Example](#example).
+  * For more information, see [Install packages for the R plugin](#install-packages-for-the-r-plugin). 
 
 ## Reserved R variables
 
@@ -44,10 +50,9 @@ The following variables are reserved for interaction between Kusto Query Languag
 * The plugin is disabled by default.
 * Enable or disable the plugin in the Azure portal in the **Configuration** tab of your cluster. For more information see [Manage language extensions in your Azure Data Explorer cluster (Preview)](../../language-extensions.md)
 
-## Notes and limitations
+## R sandbox image
 
 * The R sandbox image is based on *R 3.4.4 for Windows*, and includes packages from [Anaconda's R Essentials bundle](https://docs.anaconda.com/anaconda/packages/r-language-pkg-docs/).
-* The R sandbox limits access to the network. The R code can't dynamically install additional packages that aren't included in the image. If you need specific packages, open a **New support request** in the Azure portal.
 
 ## Examples
 
@@ -115,6 +120,104 @@ typeof(*, fx:double),               //  Output schema: append a new fx column to
         pack('gain', 100, 'cycles', 4))
     | render linechart 
     ```
+
+## Install packages for the R plugin
+
+Follow these step by step instructions to install package(s) that are not included in the plugin's base image.
+
+### Prerequisites
+
+  1. Create a blob container to host the packages, preferably in the same place as your cluster. For example, `https://artifactswestus.blob.core.windows.net/r`, assuming your cluster is in West US.
+  1. Alter the cluster's [callout policy](../management/calloutpolicy.md) to allow access to that location.
+        * This change requires [AllDatabasesAdmin](../management/access-control/role-based-authorization.md) permissions.
+
+        * For example, to enable access to a blob located in `https://artifactswestus.blob.core.windows.net/r`, run the following command:
+
+        ```kusto
+        .alter-merge cluster policy callout @'[ { "CalloutType": "sandbox_artifacts", "CalloutUriRegex": "artifactswestus\\.blob\\.core\\.windows\\.net/r/","CanCall": true } ]'
+        ```
+
+### Install packages
+
+The example snips below assume local R machine on Windows environment.
+
+1. Verify you're using the appropriate R version – current R Sandbox version is 3.4.4:
+
+    ``` 
+    > R.Version()["version.string"]
+
+    $version.string
+    [1] "R version 3.4.4 (2018-03-15)"
+    ``` 
+
+    If needed you can download it from [here](https://cran.r-project.org/bin/windows/base/old/3.4.4/).
+
+1. Launch the x64 RGui 
+
+1. Create a new empty folder to be populated with all the relevant packages you would like to install. In this example we install the [brglm2 package](https://cran.r-project.org/web/packages/brglm2/index.html), so creating "C:\brglm2".
+
+1. Add the newly created folder path to lib paths:
+
+    ```
+    > .libPaths("C://brglm2")
+    ```
+
+1. Verify that the new folder is now the first path in .libPaths():
+
+    ```
+    > .libPaths()
+    
+    [1] "C:/brglm2"    "C:/Program Files/R/R-3.4.4/library"
+    
+    ```
+
+1. Once this setup is done, any package that we install shall be added to this new folder. Let's install the requested package and its dependencies:
+
+    ```
+    > install.packages("brglm2")
+    ```
+
+    In case the question "Do you want to install from sources the packages which need compilation?" pops up, answer "Y".
+
+1. Verify that new folders were added to "C:\brglm2":
+
+    :::image type="content" source="images/plugin/sample-directory.png" alt-text="Screenshot of library directory content.":::
+
+8. Select all items in that folder and zip them to e.g. libs.zip (do not zip the parent folder). You should get an archive structure like this:
+
+
+    libs.zip:
+
+    - brglm2 (folder)
+    - enrichwith (folder)
+    - numDeriv (folder)
+    
+9. Upload libs.zip to the blob container that was set above
+
+1. Call the `r` plugin.
+    * Specify the `external_artifacts` parameter with a property bag of name and reference to the zip file (the blob's URL, including a SAS token).
+    * In your inline r code, import `zipfile` from `sandboxutils` and call its `install()` method with the name of the zip file.
+
+### Example
+
+Install the [brglm2 package](https://cran.r-project.org/web/packages/brglm2/index.html):
+
+~~~kusto
+print x=1
+| evaluate r(typeof(*, ver:string),
+    'library(sandboxutils)\n'
+    'zipfile.install("brglm2.zip")\n'
+    'library("brglm2")\n'
+    'result <- df\n'
+    'result$ver <-packageVersion("brglm2")\n'
+    ,external_artifacts=pack(brglm2.zip', 'https://artifactswestus.blob.core.windows.net/r/libs.zip?*** REPLACE WITH YOUR SAS TOKEN ***'))
+~~~
+
+| x | ver     |
+|---|---------|
+|  1| 1.8.2   |
+
+Make sure that the archive's name (first value in pack pair) has the *.zip suffix to prevent collisions when unzipping folders whose name is identical to the archive name.
 
 ---
 

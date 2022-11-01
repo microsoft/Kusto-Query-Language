@@ -1,9 +1,9 @@
 ---
 title: array_sort_asc() - Azure Data Explorer
-description: This article describes array_sort_asc() in Azure Data Explorer.
+description: Learn how to use the array_sort_asc() function to sort arrays in ascending order.
 ms.reviewer: slneimer
 ms.topic: reference
-ms.date: 09/22/2020
+ms.date: 09/21/2022
 ---
 # array_sort_asc()
 
@@ -19,8 +19,10 @@ If *nulls_last* isn't provided, a default value of `true` is used.
 
 ## Arguments
 
-* *array1...arrayN*: Input arrays.
-* *nulls_last*: A bool indicating whether `null`s should be last
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*array1...arrayN*|  | &check; | Input arrays.|
+| *nulls_last* |bool |  | Indicating whether `null`s should be last.|
 
 ## Returns
 
@@ -37,28 +39,34 @@ If an array contains elements of different types, it will be sorted in the follo
 
 ## Example 1 - Sorting two arrays
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFILCpKrDRUsFVIqcxLzM1M1og21DHWMdEx1TGK1bTmyoEpMUJWopSopKOUBMTJQJwCxKlKIMUFRZl5UOXxxflFJfGJxckaEAt0IIZoAgAts93scwAAAA==)**\]**
+
 ```kusto
 let array1 = dynamic([1,3,4,5,2]);
 let array2 = dynamic(["a","b","c","d","e"]);
 print array_sort_asc(array1,array2)
 ```
 
+**Results**
+
 |`array1_sorted`|`array2_sorted`|
 |---|---|
 |[1,2,3,4,5]|["a","e","b","c","d"]|
 
-> [!Note]
+> [!NOTE]
 > The output column names are generated automatically, based on the arguments to the function. To assign different names to the output columns, use the following syntax: `... | extend (out1, out2) = array_sort_asc(array1,array2)`
 
 ## Example 2 - Sorting substrings
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVHwS8xNLVawVVDyys/I0wlILM3RcU/NL0pP1QnKzEvPV7LmygGqCs4vKklNgaktLilKTiyJTywqSqzUAJPxxUAF8YnFyRrFBTmZJRpglToKSjpKmpoQypqroCgzr0ShKLW4NKcEaAiSkQD+ChdoiAAAAA==)**\]**
+
 ```kusto
 let Names = "John,Paul,George,Ringo";
 let SortedNames = strcat_array(array_sort_asc(split(Names, ",")), ",");
 print result = SortedNames
 ```
+
+**Results**
 
 |`result`|
 |---|
@@ -66,7 +74,8 @@ print result = SortedNames
 
 ## Example 3 - Combining summarize and array_sort_asc
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WR0WoDIRBF3/crJC9ZYQO7tiU00C8JQSYqiY2uy4yhpPTjq23sFmIK1ZdxOPdy5WqI6e6daVXwHka9oYh2PHTs+pbRerPREE0eOnYmg9IWjDfbhqWzVEcf9LJLY0Fb0Q/Pq369Gp543i+yclh037yjL7jG96LCa4tXwQ0varw/FcVtnscKj/5uHrGu8NObvpun9t+//B9mXvzTP/O75oPROZWF9t2wjFIEPxF7YR5ORjpLsf3dJv8pt8pwtr+UmpP1hOHVqFg2s1baUaojhjG4cLAKnAyoDSZLQISLpIBRAql2jjSL+XbYfQJov9dSfAIAAA==)**\]**
+
 ```kusto
 datatable(command:string, command_time:datetime, user_id:string)
 [
@@ -83,12 +92,14 @@ datatable(command:string, command_time:datetime, user_id:string)
 | project user_id, commands_in_chronological_order = array_sort_asc(timestamps, commands)[1]
 ```
 
+**Results**
+
 |`user_id`|`commands_in_chronological_order`|
 |---|---|
 |user1|[<br>  "ls",<br>  "mkdir",<br>  "chmod",<br>  "dir",<br>  "pwd",<br>  "rm"<br>]|
 |user2|[<br>  "rm",<br>  "pwd"<br>]|
 
-> [!Note]
+> [!NOTE]
 > If your data may contain `null` values, use [make_list_with_nulls](make-list-with-nulls-aggfunction.md) instead of [make_list](makelist-aggfunction.md).
 
 ## Example 4 - Controlling location of `null` values
@@ -97,10 +108,13 @@ By default, `null` values are put last in the sorted array. However, you can con
 
 Example with default behavior:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjC/OLyqJTyxO1kipzEvMzUzWiM4rzcnRUUrKKU1V0lGqTM3JyS8HMtKLUlPzlHRAkrGamgDOvUliQgAAAA==)**\]**
+
 ```kusto
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]))
 ```
+
+**Results**
 
 |`print_0`|
 |---|
@@ -108,10 +122,13 @@ print array_sort_asc(dynamic([null,"blue","yellow","green",null]))
 
 Example with non-default behavior:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXJUQqAIAwA0KvIvhR2owhZtkJYMzYlvH319+DdVrUHMqOZvVnP5CXuU+mqJS46RBA2GQwIk0Xa8+E0ZgX8c00YDhLn9ALNIgvjSQAAAA==)**\]**
+
 ```kusto
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]), false)
 ```
+
+**Results**
 
 |`print_0`|
 |---|

@@ -8,7 +8,12 @@ items:
 - name: Samples
   href: samples.md
 - name: Query best practices
-  href: best-practices.md
+  items:
+  - name: Best practices
+    href: best-practices.md
+  - name: Optimize queries that use named expressions
+    displayName: let statement, user defined functions, as operator, calculated
+    href: ../../named-expressions.md
 - name: Cross-cluster queries
   items:
   - name: Cross-cluster queries and schema changes
@@ -157,6 +162,8 @@ items:
     href: parseoperator.md
   - name: parse-where operator
     href: parsewhereoperator.md
+  - name: parse-kv operator
+    href: parse-kv-operator.md
   - name: partition operator
     href: partitionoperator.md
   - name: print operator
@@ -368,10 +375,15 @@ items:
     href: atanfunction.md
   - name: atan2()
     href: atan2function.md
+  - name: bag_has_key()
+    href: bag-has-key-function.md
   - name: bag_keys()
     href: bagkeysfunction.md
   - name: bag_merge()
     href: bag-merge-function.md
+  - name: bag_pack()
+    displayName: pack(), pack_dictionary()
+    href: packfunction.md
   - name: bag_remove_keys()
     href: bag-remove-keys-function.md
   - name: base64_decode_toarray()
@@ -420,6 +432,22 @@ items:
     href: coalescefunction.md
   - name: column_ifexists()
     href: columnifexists.md
+  - name: convert_angle()
+    href: convert-angle-function.md
+  - name: convert_energy()
+    href: convert-energy-function.md
+  - name: convert_force()
+    href: convert-force-function.md
+  - name: convert_length()
+    href: convert-length-function.md
+  - name: convert_mass()
+    href: convert-mass-function.md
+  - name: convert_speed()
+    href: convert-speed-function.md
+  - name: convert_temperature()
+    href: convert-temperature-function.md
+  - name: convert_volume()
+    href: convert-volume-function.md
   - name: cos()
     href: cosfunction.md
   - name: cot()
@@ -447,8 +475,12 @@ items:
     href: datetime-addfunction.md
   - name: datetime_diff()
     href: datetime-difffunction.md
+  - name: datetime_local_to_utc()
+    href: datetime-local-to-utc-function.md
   - name: datetime_part()
     href: datetime-partfunction.md
+  - name: datetime_utc_to_local()
+    href: datetime-utc-to-local-function.md
   - name: dayofmonth()
     href: dayofmonthfunction.md
   - name: dayofweek()
@@ -553,6 +585,8 @@ items:
     href: ipv4-comparefunction.md
   - name: ipv4_is_in_range()
     href: ipv4-is-in-range-function.md
+  - name: ipv4_is_in_any_range()
+    href: ipv4-is-in-any-range-function.md
   - name: ipv4_is_match()
     href: ipv4-is-matchfunction.md
   - name: ipv4_is_private()
@@ -609,14 +643,10 @@ items:
     href: notfunction.md
   - name: now()
     href: nowfunction.md
-  - name: bag_pack(), pack()
-    href: packfunction.md
   - name: pack_all()
     href: packallfunction.md
   - name: pack_array()
     href: packarrayfunction.md
-  - name: pack_dictionary()
-    href: packdictionaryfunction.md
   - name: parse_command_line()
     href: parse-command-line.md
   - name: parse_csv()
@@ -785,8 +815,10 @@ items:
   - name: Aggregation function types
     href: aggregation-functions.md
   - name: arg_max()
+    displayName: last
     href: arg-max-aggfunction.md
   - name: arg_min()
+    displayName: first
     href: arg-min-aggfunction.md
   - name: avg()
     href: avg-aggfunction.md
@@ -868,6 +900,9 @@ items:
   - name: Geospatial clustering overview
     displayName: H3, S2, Geohash
     href: geospatial-grid-systems.md
+  - name: Geospatial visualizations
+    displayName: Geospatial visualizations
+    href: geospatial-visualizations.md
   - name: geo_distance_2points()
     href: geo-distance-2points-function.md
   - name: geo_distance_point_to_line()
@@ -880,38 +915,12 @@ items:
     href: geo-intersects-2polygons-function.md
   - name: geo_intersects_line_with_polygon()
     href: geo-intersects-line-with-polygon-function.md
-  - name: geo_point_in_circle()
-    href: geo-point-in-circle-function.md
-  - name: geo_point_in_polygon()
-    href: geo-point-in-polygon-function.md
-  - name: geo_point_to_geohash()
-    href: geo-point-to-geohash-function.md
-  - name: geo_geohash_to_central_point()
-    href: geo-geohash-to-central-point-function.md
-  - name: geo_geohash_to_polygon()
-    href: geo-geohash-to-polygon-function.md
-  - name: geo_point_to_s2cell()
-    href: geo-point-to-s2cell-function.md
-  - name: geo_s2cell_to_central_point()
-    href: geo-s2cell-to-central-point-function.md
-  - name: geo_s2cell_to_polygon()
-    href: geo-s2cell-to-polygon-function.md
-  - name: geo_point_to_h3cell()
-    href: geo-point-to-h3cell-function.md
-  - name: geo_h3cell_to_central_point()
-    href: geo-h3cell-to-central-point-function.md
-  - name: geo_h3cell_to_polygon()
-    href: geo-h3cell-to-polygon-function.md
-  - name: geo_h3cell_parent()
-    href: geo-h3cell-parent-function.md
-  - name: geo_h3cell_children()
-    href: geo-h3cell-children-function.md
-  - name: geo_h3cell_level()
-    href: geo-h3cell-level-function.md
-  - name: geo_h3cell_rings()
-    href: geo-h3cell-rings-function.md
-  - name: geo_polygon_to_s2cells()
-    href: geo-polygon-to-s2cells-function.md
+  - name: geo_intersection_2lines()
+    href: geo-intersection-2lines-function.md
+  - name: geo_intersection_2polygons()
+    href: geo-intersection-2polygons-function.md
+  - name: geo_intersection_line_with_polygon()
+    href: geo-intersection-line-with-polygon-function.md
   - name: geo_line_centroid()
     href: geo-line-centroid-function.md
   - name: geo_line_densify()
@@ -928,6 +937,48 @@ items:
     href: geo-polygon-densify-function.md
   - name: geo_polygon_perimeter()
     href: geo-polygon-perimeter-function.md
+  - name: geo_polygon_simplify()
+    href: geo-polygon-simplify-function.md  
+  - name: geo_polygon_to_s2cells()
+    href: geo-polygon-to-s2cells-function.md
+  - name: geo_point_in_circle()
+    href: geo-point-in-circle-function.md
+  - name: geo_point_in_polygon()
+    href: geo-point-in-polygon-function.md
+  - name: geo_point_to_geohash()
+    href: geo-point-to-geohash-function.md
+  - name: geo_point_to_h3cell()
+    href: geo-point-to-h3cell-function.md
+  - name: geo_point_to_s2cell()
+    href: geo-point-to-s2cell-function.md
+  - name: geo_geohash_to_central_point()
+    href: geo-geohash-to-central-point-function.md
+  - name: geo_geohash_neighbors()
+    href: geo-geohash-neighbors-function.md
+  - name: geo_geohash_to_polygon()
+    href: geo-geohash-to-polygon-function.md
+  - name: geo_s2cell_to_central_point()
+    href: geo-s2cell-to-central-point-function.md
+  - name: geo_s2cell_neighbors()
+    href: geo-s2cell-neighbors-function.md
+  - name: geo_s2cell_to_polygon()
+    href: geo-s2cell-to-polygon-function.md
+  - name: geo_h3cell_to_central_point()
+    href: geo-h3cell-to-central-point-function.md
+  - name: geo_h3cell_neighbors()
+    href: geo-h3cell-neighbors-function.md
+  - name: geo_h3cell_to_polygon()
+    href: geo-h3cell-to-polygon-function.md
+  - name: geo_h3cell_parent()
+    href: geo-h3cell-parent-function.md
+  - name: geo_h3cell_children()
+    href: geo-h3cell-children-function.md
+  - name: geo_h3cell_level()
+    href: geo-h3cell-level-function.md
+  - name: geo_h3cell_rings()
+    href: geo-h3cell-rings-function.md
+  - name: geo_simplify_polygons_array()
+    href: geo-simplify-polygons-array-function.md
   - name: geo_union_lines_array()
     href: geo-union-lines-array-function.md
   - name: geo_union_polygons_array()
@@ -1194,6 +1245,8 @@ items:
     href: sqlcheatsheet.md
   - name: Splunk to Kusto cheat sheet
     href: splunk-cheat-sheet.md
+  - name: Timezones
+    href: timezone.md
 - name: Query tools
   items:
   - name: Kusto.Explorer

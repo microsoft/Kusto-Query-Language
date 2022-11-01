@@ -1,13 +1,13 @@
 ---
 title: activity_metrics plugin - Azure Data Explorer
-description: This article describes activity_metrics plugin in Azure Data Explorer.
+description: Learn how to use the activity_metrics plugin to calculate activity metrics using the current time window compared to the previous window.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 09/20/2022
 ---
 # activity_metrics plugin
 
-Calculates useful activity metrics based on the current period window compared to the previous period window. The metrics include distinct count values, distinct count of new values, retention rate, and churn rate. This plugin is different from [activity_counts_metrics plugin](activity-counts-metrics-plugin.md) in which every time window is compared to *all* previous time windows.
+Calculates useful metrics that include distinct count values, distinct count of new values, retention rate, and churn rate. This plugin is different from [activity_counts_metrics plugin](activity-counts-metrics-plugin.md) in which every time window is compared to *all* previous time windows.
 
 ```kusto
 T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
@@ -19,17 +19,19 @@ T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startof
 
 ## Arguments
 
-* *T*: The input tabular expression.
-* *IdColumn*: The name of the column with ID values that represent user activity.
-* *TimelineColumn*: The name of the column that represents timeline.
-* *Start*: (optional) Scalar with value of the analysis start period.
-* *End*: (optional) Scalar with value of the analysis end period.
-* *Window*: Scalar with value of the analysis window period. Can be either a numeric, datetime, timestamp, or string value. Strings are either `week`, `month`, `year`, in which case all periods will be [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), [startofyear](startofyearfunction.md) respectively.
-* *dim1*, *dim2*, ...: (optional) list of the dimensions columns that slice the activity metrics calculation.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | tabular expression | &check; | The input tabular expression. |
+| *IdCoumn* | string | &check; | The name of the column with ID values that represent user activity. |
+| *TimelineColumn* | string | &check; | The name of the column that represents timeline. |
+| *Start* | datetime |  | Value of the analysis start period. |
+| *End* | datetime |  | Value of the analysis end period. |
+| *Window* | decimal/datetime/timespan | &check; | Value of the analysis window period. Can be either a numeric, datetime, timestamp, or string value. Strings are either `week`, `month`, or `year`, in which case all periods will be [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), or [startofyear](startofyearfunction.md) respectively. |
+| *dim1*, *dim2*, ... | table array |  | List of the dimensions columns that slice the activity metrics calculation. |
 
 ## Returns
 
-The plugin returns a table with the distinct count values, distinct count of new values, retention rate, and churn rate for each timeline period, and for each existing dimensions combination.
+The plugin returns a table with the distinct count values, distinct count of new values, retention rate, and churn rate for each timeline period for each existing dimensions combination.
 
 Output table schema is:
 
@@ -54,7 +56,7 @@ where the `# of customers returned during the period` is defined as:
 > *number of new customers acquired during the period*
 
 `Retention Rate` can vary from 0.0 to 1.0
-The higher score means the larger number of returning users.
+A higher score means a larger number of returning users.
 
 ***Churn Rate Definition***
 
@@ -74,8 +76,7 @@ where the `# of customer lost in the period` is defined as:
 The higher score means the larger number of users are NOT returning to the service.
 
 ***Churn vs. Retention Rate***
-
-Derived from the definition of `Churn Rate` and `Retention Rate`, the following calculation is always true:
+The churn vs. retention Rate is derived from the definition of `Churn Rate` and `Retention Rate`. The following calculation is always true:
 
 > [`Retention Rate`] = 100.0% - [`Churn Rate`]
 
@@ -126,7 +127,7 @@ range _day from _start to _end  step 1d
 |2017-05-22 00:00:00.0000000|0.199122325836533|0.800877674163467|
 |2017-05-29 00:00:00.0000000|0.063468992248062|0.936531007751938|
 
-:::image type="content" source="images/activity-metrics-plugin/activity-metrics-churn-and-retention.png" border="false" alt-text="Table showing the calculated retention and churn rates per 7 days as specified in the query.":::
+:::image type="content" source="images/activity-metrics-plugin/activity-metrics-churn-and-retention.png" border="false" alt-text="Table showing the calculated retention and churn rates per seven days as specified in the query.":::
 
 ### Distinct values and distinct 'new' values
 

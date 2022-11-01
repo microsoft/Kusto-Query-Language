@@ -1,13 +1,13 @@
 ---
 title: array_index_of() - Azure Data Explorer
-description: This article describes array_index_of() in Azure Data Explorer.
+description: Learn how to use the array_index_of() function to search an array for a specified item, and return its position.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/22/2020
+ms.date: 09/21/2022
 ---
 # array_index_of()
 
-Searches the array for the specified item, and returns its position.
+Searches an array for the specified item, and returns its position.
 
 ## Syntax
 
@@ -15,22 +15,27 @@ Searches the array for the specified item, and returns its position.
 
 ## Arguments
 
-* *array*: Input array to search.
-* *lookup*: Value to lookup. The value should be of type long, integer, double, datetime, timespan, decimal, string, or guid.
-* *start_index*: Search start position. A negative value will offset the starting search value from the end of the array by this many steps: abs(start_index). Optional.
-* *length*: Number of values to examine. A value of -1 means unlimited length. Optional.
-* *occurrence*: The number of the occurrence. Default 1. Optional.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *array*| array | &check; | Input array to search.|
+| *lookup* |scalar | &check; | Value to lookup. The value should be of type `long`, `integer`, `double`, `datetime`, `timespan`, `decimal`, `string`, `guid`, or `boolean`. |
+| *start_index* | number |  | Search start position. A negative value will offset the starting search value from the end of the array by `abs(start_index)` steps.
+| *length* | number |  | Number of values to examine. A value of -1 means unlimited length.
+| *occurrence* | The number of the occurrence. The default is 1.
 
 ## Returns
 
-Zero-based index position of lookup.
+Returns a zero-based index position of lookup.
 Returns -1 if the value isn't found in the array.
-
-For irrelevant inputs (*occurrence* < 0 or  *length* < -1) - returns *null*.
+Returns *null* for irrelevant inputs (*occurrence* < 0 or  *length* < -1).
 
 ## Example
 
-```
+The following example shows the position number of specific words within the array.
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52T7WrCMBiF/3sVB//MQoq0dV8Mr2QMielbDUuTkqRO735pmsk2dQ5LG0jhPOfkvK0iD27tsj5o3koxe536rXRThum4cj2stOdtp+j0xVv2Mums1H4CWe8LLAcYP6ykrmm/Ms0sbNmgyRCu+RzKmPe+Q2N6XUPqcHe9h/OBsZmADZTyAuUYomBVdo5lyRG3Yks1LNcbQgJW14FlBI7ykIZb79BY0yIqUDCsY0zTOfDGk0WJHVc9OQZnvpIIru881jRGSu6LC+5DvyVbnDEeDYwQvbWkBcE0ySEh768dqGR5kZ30ndQP59VptOGoeXjKbJyXI2FCu9/C/BpdbDqRH/9DrhJZG4RPzf5gH6mRkqhPf1LzI4823MsdjS2mwX1IpWIH4B6KO48KpKgl7V3CP1/Cxx8gX9yK/wT41ILVWgMAAA==)**\]**
+
+```kusto
 let arr=dynamic(["this", "is", "an", "example", "an", "example"]);
 print
  idx1 = array_index_of(arr,"an")    // lookup found in input string
@@ -44,6 +49,8 @@ print
  , idx9 = array_index_of(arr, "is", -4)   // negative start index will look at last 3 elements
 ```
 
+**Results**
+
 |idx1|idx2|idx3|idx4|idx5|idx6|idx7|idx8|idx9|
 |----|----|----|----|----|----|----|----|----|
 |2   |3   |-1  |-1   |3   |4   |-1  |4  |-1  |
@@ -51,5 +58,5 @@ print
 ## See also
 
 If you only want to check whether a value exists in an array,
-but you are not interested in its position, you can use
+but you aren't interested in its position, you can use
 [set_has_element(`arr`, `value`)](sethaselementfunction.md). This function will improve the readability of your query. Both functions have the same performance.

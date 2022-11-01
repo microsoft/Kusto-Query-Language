@@ -185,6 +185,7 @@ For a complete list of scalar dynamic/array functions, see [dynamic/array functi
 | *value* `in` *array*| True if there is an element of *array* that == *value*<br/>`where City in ('London', 'Paris', 'Rome')`
 | *value* `!in` *array*| True if there is no element of *array* that == *value*
 |[`array_length(`array`)`](../arraylengthfunction.md)| Null if it isn't an array
+|[`bag_has_key(`bag`,`key`)`](../bag-has-key-function.md)| Checks whether a dynamic bag column contains a given key.
 |[`bag_keys(`bag`)`](../bagkeysfunction.md)| Enumerates all the root keys in a dynamic property-bag object.
 |[`bag_merge(`bag1,...,bagN`)`](../bag-merge-function.md)| Merges dynamic property-bags into a dynamic property-bag with all properties merged.
 |[`extractjson(`path,object`)`](../extractjsonfunction.md)|Uses path to navigate into object.

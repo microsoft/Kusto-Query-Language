@@ -13,7 +13,7 @@ Returns the inverse of the beta cumulative probability beta density function.
 beta_inv(0.1, 10.0, 50.0)
 ```
 
-If *probability* = `beta_cdf(`*x*,...`)`, then `beta_inv(`*probability*,...`)` = *x*. 
+If *probability* = `beta_cdf(`*x*,...`)`, then `beta_inv(`*probability*,...`)` = *x*.
 
 The beta distribution can be used in project planning to model probable completion times given an expected completion time and variability.
 

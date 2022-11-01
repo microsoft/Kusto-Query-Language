@@ -64,4 +64,4 @@ print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77
 
 
 > [!NOTE] 
-> The daily period that can be also seen in the chart wasn't found becasue the sampling is too coarse (12h bin size), so a daily period of 2 bins is below the minimum period size of 4 points, required by the algorithm.
+> The daily period that can be also seen in the chart wasn't found because the sampling is too coarse (12h bin size), so a daily period of 2 bins is below the minimum period size of 4 points, required by the algorithm.

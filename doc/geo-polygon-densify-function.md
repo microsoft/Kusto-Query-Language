@@ -13,10 +13,13 @@ Converts polygon or multipolygon planar edges to geodesics by adding intermediat
 
 `geo_polygon_densify(`*polygon*`, `*tolerance*`)`
 
+`geo_polygon_densify(`*polygon*`, `*tolerance*`, `*preserve_crossing*`)`
+
 ## Arguments
 
 * *polygon*: Polygon or multipolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 * *tolerance*: An optional numeric that defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value is  `10`.
+* *preserve_crossing*: An optional boolean that preserves edge crossing over antimeridian. If unspecified, the default value `False` is used.
 
 ### Polygon definition
 
@@ -39,7 +42,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 
 ### Motivation
 
-* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line.
+* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while Azure Data Explorer uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
 * The decision to use geodesic or planar edges might depend on the dataset and is especially relevant in long edges.
 
 ## Returns
@@ -48,7 +51,6 @@ Densified polygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) a
 
 > [!NOTE]
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
-> * The polygon must be correctly defined, but the function does not check polygon validity.
 
 ## Examples
 

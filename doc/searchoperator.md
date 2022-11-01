@@ -9,7 +9,7 @@ zone_pivot_groups: kql-flavors
 ---
 # search operator
 
-The `search` operator provides a multi-table/multi-column search experience.
+Searches a text pattern in multiple tables and columns.
 
 ::: zone pivot="azuredataexplorer"
 
@@ -82,7 +82,7 @@ and views of the database in scope.
   |# |Syntax                                 |Meaning (equivalent `where`)           |Comments|
   |--|---------------------------------------|---------------------------------------|--------|
   | 1|`search "err"`                         |`where * has "err"`                    ||
-  | 2|`search in (T1,T2,A*) and "err"`       |<code>union T1,T2,A* &#124; where * has "err"<code>   ||
+  | 2|`search in (T1,T2,A*) "err"`           |<code>union T1,T2,A* &#124; where * has "err"<code>   ||
   | 3|`search col:"err"`                     |`where col has "err"`                  ||
   | 4|`search col=="err"`                    |`where col=="err"`                     ||
   | 5|`search "err*"`                        |`where * hasprefix "err"`              ||
@@ -114,10 +114,10 @@ search "billg"
 search "billg" and ("steveb" or "satyan")
 
 // 3. Like (1), but looking only in the TraceEvent table
-search in (TraceEvent) and "billg"
+search in (TraceEvent) "billg"
 
 // 4. Like (2), but performing a case-sensitive match of all terms
-search "BillB" and ("SteveB" or "SatyaN")
+search kind=case_sensitive "BillB" and ("SteveB" or "SatyaN")
 
 // 5. Like (1), but restricting the match to some columns
 search CEO:"billg" or CSA:"billg"

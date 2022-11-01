@@ -29,7 +29,7 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 `true` if the *ip_address_prefix* is a valid IPv4 address prefix, and it was found in *source*. Otherwise, the function returns `false`.
 
-> [!NOTE]
+> [!TIP]
 > To search for many IPv4 prefixes at once, use the [has_any_ipv4_prefix()](has-any-ipv4-prefix-function.md) function.
 
 ## Examples

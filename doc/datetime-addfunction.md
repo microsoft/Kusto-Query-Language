@@ -15,22 +15,23 @@ Calculates a new [datetime](./scalar-data-types/datetime.md) from a specified da
 
 ## Arguments
 
-* `period`: [string](./scalar-data-types/string.md). 
+* `period`: [string](./scalar-data-types/string.md).
 * `amount`: [integer](./scalar-data-types/int.md).
 * `datetime`: [datetime](./scalar-data-types/datetime.md) value.
 
-Possible values of *period*: 
-- Year
-- Quarter
-- Month
-- Week
-- Day
-- Hour
-- Minute
-- Second
-- Millisecond
-- Microsecond
-- Nanosecond
+Possible values of *period*:
+
+* Year
+* Quarter
+* Month
+* Week
+* Day
+* Hour
+* Minute
+* Second
+* Millisecond
+* Microsecond
+* Nanosecond
 
 ## Returns
 
@@ -53,9 +54,3 @@ second = datetime_add('second',1,make_datetime(2017,1,1))
 |year|quarter|month|week|day|hour|minute|second|
 |---|---|---|---|---|---|---|---|
 |2018-01-01 00:00:00.0000000|2017-04-01 00:00:00.0000000|2017-02-01 00:00:00.0000000|2017-01-08 00:00:00.0000000|2017-01-02 00:00:00.0000000|2017-01-01 01:00:00.0000000|2017-01-01 00:01:00.0000000|2017-01-01 00:00:01.0000000|
-
-
-
-
-
-

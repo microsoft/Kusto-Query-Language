@@ -70,20 +70,62 @@ Two modes of property bag expansions are supported:
 
 ## Examples
 
-### Single Column
-
-A simple expansion of a single column:
+### Single column - array expansion
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
- ```kusto
-datatable (a:int, b:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"})]
-| mv-expand b 
+```kusto
+datatable (a:int, b:dynamic)
+[1,dynamic([10, 20]),
+ 2,dynamic(['a', 'b'])]
+| mv-expand b
 ```
 
 |a|b|
 |---|---|
-|1|{"prop1":"a"}|
-|1|{"prop2":"b"}|
+|1|10|
+|1|20|
+|2|a|
+|2|b|
+
+### Single column - bag expansion
+
+A simple expansion of a single column:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+datatable (a:int, b:dynamic)
+[1,dynamic({"prop1":"a1", "prop2":"b1"}),
+ 2,dynamic({"prop1":"a2", "prop2":"b2"})]
+| mv-expand b
+```
+
+|a|b|
+|---|---|
+|1|{"prop1": "a1"}|
+|1|{"prop2": "b1"}|
+|2|{"prop1": "a2"}|
+|2|{"prop2": "b2"}|
+
+
+### Single column - bag expansion to key-value pairs
+
+A simple bag expansion to key-value pairs:
+
+<!-- csl: https://help.kusto.windows.net/Samples -->
+```kusto
+datatable (a:int, b:dynamic)
+[1,dynamic({"prop1":"a1", "prop2":"b1"}),
+ 2,dynamic({"prop1":"a2", "prop2":"b2"})]
+| mv-expand bagexpansion=array b 
+| extend key = b[0], val=b[1]
+```
+
+|a|b|key|val|
+|---|---|---|---|
+|1|["prop1","a1"]|prop1|a1|
+|1|["prop2","b1"]|prop2|b1|
+|2|["prop1","a2"]|prop1|a2|
+|2|["prop2","b2"]|prop2|b2|
 
 ### Zipped two columns
 

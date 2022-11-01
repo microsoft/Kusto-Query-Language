@@ -20,7 +20,7 @@ print format_ipv4(3232236031, 24) == '192.168.1.0'
 
 ## Arguments
 
-* *`Expr`*: A string or number representation of the IPv4 address.
+* *`Expr`*: A string or number representation (in big-endian order) of the IPv4 address.
 * *`PrefixMask`*: (Optional) An integer from 0 to 32 representing the number of most-significant bits that are taken into account. If argument isn't specified, all bit-masks are used (32).
 
 ## Returns

@@ -1,9 +1,9 @@
 ---
 title: array_iif() - Azure Data Explorer
-description: This article describes array_iif() in Azure Data Explorer.
+description: Learn how to use the array_iif() function to scan and evaluate elements in an array.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 04/28/2019
+ms.date: 09/21/2022
 ---
 # array_iif()
 
@@ -13,13 +13,15 @@ Another alias: array_iff().
 
 ## Syntax
 
-`array_iif(`*ConditionArray*, *IfTrue*, *IfFalse*]`)`
+`array_iif(`*ConditionArray*, *IfTrue*, *IfFalse*`)`
 
 ## Arguments
 
-* *conditionArray*: Input array of *boolean* or numeric values, must be dynamic array.
-* *ifTrue*: Input array of values or primitive value - the result value(s) when the corresponding value of *ConditionArray* is *true*.
-* *ifFalse*: Input array of values or primitive value - the result value(s) when the corresponding value of *ConditionArray* is *false*.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *conditionArray*| dynamic | &check;| Array of *boolean* or numeric values.|
+| *ifTrue* |  | &check; | Array of values or primitive value. This will be the result when *ConditionArray* is *true*.|
+| *ifFalse* |  | &check; | Array of values or primitive value. This will be the result when *ConditionArray* is *false*.|
 
 ### Notes
 
@@ -30,14 +32,18 @@ Another alias: array_iff().
 
 ## Returns
 
-Dynamic array of the values taken either from the *IfTrue* or *IfFalse* [array] values, according to the corresponding value of the Condition array.
+Returns a dynamic array of the values taken either from the *IfTrue* or *IfFalse* [array] values, according to the corresponding value of the Condition array.
 
 ## Example
+
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUjOz0vJLMnMz7NNqcxLzM1M1oguKSpN1UlLzClO1QExYzV1FHIQsoY6RjrGILEihJiJjqmOWaymAi9XjUJqRUlqXopCUWqxbWJRUWJlfGZmmgbcFqBRQJ2aACda2uZ8AAAA)**\]**
 
 ```kusto
 print condition=dynamic([true,false,true]), l=dynamic([1,2,3]), r=dynamic([4,5,6]) 
 | extend res=array_iif(condition, l, r)
 ```
+
+**Results** 
 
 |condition|l|r|res|
 |---|---|---|---|

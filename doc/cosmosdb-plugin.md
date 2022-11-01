@@ -11,7 +11,7 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-The `cosmosdb_sql_request` plugin sends a SQL query to a Cosmos DB SQL network endpoint and returns the results of the query. This plugin is primarily designed for querying small datasets, for example, enriching data with reference data stored in [Azure Cosmos DB](/azure/cosmos-db/). The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
+The `cosmosdb_sql_request` plugin sends a SQL query to an Azure Cosmos DB SQL network endpoint and returns the results of the query. This plugin is primarily designed for querying small datasets, for example, enriching data with reference data stored in [Azure Cosmos DB](/azure/cosmos-db/). The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
@@ -19,22 +19,22 @@ The `cosmosdb_sql_request` plugin sends a SQL query to a Cosmos DB SQL network e
 
 ## Arguments
 
-|Argument name | Description | Required/optional | 
+|Argument name | Description | Required/optional |
 |---|---|---|
-| *ConnectionString* | A `string` literal indicating the connection string that points to the Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'`| Required |
+| *ConnectionString* | A `string` literal indicating the connection string that points to the Azure Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'`| Required |
 | *SqlQuery*| A `string` literal indicating the query to execute. | Required |
 | *SqlParameters* | A constant value of type `dynamic` that holds key-value pairs to pass as parameters along with the query. Parameter names must begin with `@`. | Optional |
 | *Options* | A constant value of type `dynamic` that holds more advanced settings as key-value pairs. | Optional |
 || ----*Supported Options settings include:*-----
-|      `armResourceId` | Retrieve the API key from the Azure Resource Manager <br> **Example:** `/subscriptions/a0cd6542-7eaf-43d2-bbdd-b678a869aad1/resourceGroups/ cosmoddbresourcegrouput/providers/Microsoft.DocumentDb/databaseAccounts/cosmosdbacc`| 
+|      `armResourceId` | Retrieve the API key from the Azure Resource Manager <br> **Example:** `/subscriptions/a0cd6542-7eaf-43d2-bbdd-b678a869aad1/resourceGroups/ cosmoddbresourcegrouput/providers/Microsoft.DocumentDb/databaseAccounts/cosmosdbacc`|
 |  `token` | Provide the Azure AD access token used to authenticate with the Azure Resource Manager.
-| `preferredLocations` | Control which region the data is queried from. <br> **Example:** `['East US']` | |  
+| `preferredLocations` | Control which region the data is queried from. <br> **Example:** `['East US']` | |
 
 ## Set callout policy
 
-The plugin makes callouts to the Cosmos DB. Make sure that the cluster's [callout policy](../management/calloutpolicy.md) enables calls of type `cosmosdb` to the target *CosmosDbUri*.
+The plugin makes callouts to the Azure Cosmos DB instance. Make sure that the cluster's [callout policy](../management/calloutpolicy.md) enables calls of type `cosmosdb` to the target *CosmosDbUri*.
 
-The following example shows how to define the callout policy for Cosmos DB. It's recommended to restrict it to specific endpoints (`my_endpoint1`, `my_endpoint2`).
+The following example shows how to define the callout policy for Azure Cosmos DB. It's recommended to restrict it to specific endpoints (`my_endpoint1`, `my_endpoint2`).
 
 ```kusto
 [
@@ -59,9 +59,9 @@ The following example shows an alter callout policy command for `cosmosdb` *Call
 
 ## Examples
 
-### Query Cosmos DB
+### Query Azure Cosmos DB
 
-The following example uses the *cosmosdb_sql_request* plugin to send a SQL query to fetch data from Cosmos DB using its SQL API.
+The following example uses the *cosmosdb_sql_request* plugin to send a SQL query to fetch data from Azure Cosmos DB using its Azure Cosmos DB for NoSQL.
 
 ```kusto
 evaluate cosmosdb_sql_request(
@@ -69,7 +69,7 @@ evaluate cosmosdb_sql_request(
   'SELECT * from c')
 ```
 
-### Query Cosmos DB with parameters
+### Query Azure Cosmos DB with parameters
 
 The following example uses SQL query parameters and queries the data from an alternate region. For more information, see [`preferredLocations`](/azure/cosmos-db/tutorial-global-distribution-sql-api?tabs=dotnetv2%2Capi-async#preferred-locations).
 

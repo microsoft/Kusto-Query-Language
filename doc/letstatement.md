@@ -3,7 +3,7 @@ title: Let statement - Azure Data Explorer
 description: This article describes the Let statement in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2021
+ms.date: 09/04/2022
 ms.localizationpriority: high
 ---
 # Let statement
@@ -18,32 +18,37 @@ Use the `let` statement to set a variable name equal to an expression or a funct
 
 If the variable previously represented another value, for example in nested statements, the innermost `let` statement applies.
 
-## Syntax
+To optimize multiple uses of the `let` statement within a single query, see [Optimize queries that use named expressions](../../named-expressions.md).
 
-**Syntax for scalar or tabular expressions**
+## Syntax: Scalar or tabular expressions
 
 `let` *Name* `=` *ScalarExpression* 
 
 `let` *Name* `=` *TabularExpression* 
 
-|Field  |Definition  |Example  |
+
+### Arguments 
+
+|Argument  |Description  |Example  |
 |---------|---------|---------|
-|*Name*   | The variable name, must be valid. | You can escape the name, for example `["Name with spaces"]` |
+|*Name*   | The variable name must be valid. | You can escape the name, for example `["Name with spaces"]` |
 |*ScalarExpression* | An expression with a scalar result.| `let one=1;`  |
 |*TabularExpression*  | An expression with a tabular result. |  `let RecentLog = Logs  \| where Timestamp > ago(1h)`  |
 
-**Syntax of view or function**
+## Syntax: View or function
 
 `let` *Name* `=` [`view`] `(` [*TabularArgName* `:` `(` `*` `)` `,`   [*ArgName* `:` *ArgType* ]`,` ... ]  `)` `{` *FunctionBody* `}`
 
 `let` *Name* `=` [`view`] `(` [  [*TabularArgName* `:` `(`[*AttributeName* `:` *AttributeType*] [`,` ... ] `)` ] `,` [  [*ArgName* `:` *ArgType* , ...]  ] `)` `{` *FunctionBody* `}
 
-|Field  |Definition  |
+### Arguments
+
+|Argument |Description  |
 |---------|---------|
-|*FunctionBody* | An expression that yields a user defined function, an anonymous function declaration. | 
+|*FunctionBody* | An expression that yields a user defined function. | 
 |*view* | Appears only in a parameterless `let` statement with no arguments. When used, the `let` statement is included in queries with a `union` operator with wildcard selection of the tables/views. | 
 | *TabularArgName*| The name of the tabular argument. Can appear in the *FunctionBody* and is bound to a particular value when the user defined function is invoked. | 
-| *AttributeName* : *AttributeType*| The name and type of the attribute. Part of the table schema definition, which includes a set of attributes with their types. |  
+| *AttributeName*: *AttributeType*| The name and type of the attribute. Part of the table schema definition, which includes a set of attributes with their types. |  
 |*ArgName* | The name of the scalar argument. Can appear in the *FunctionBody* and is bound to a particular value when the user defined function is invoked.  | 
 |*ArgType* | The type of the scalar argument. Currently the following are supported for user defined functions: `bool`, `string`, `long`, `datetime`, `timespan`, `real`, and `dynamic` (and aliases to these types).|  
 
@@ -58,7 +63,6 @@ If the variable previously represented another value, for example in nested stat
 
 ### Define scalar values
 
-
 The following example uses a scalar expression statement.
 
 ```kusto
@@ -72,7 +76,7 @@ Events
 | take n
 ```
 
-The following example binds the name `x` using the `['name']` notion, and then uses it in a tabular expression statement.
+The following example binds the name `some number` using the `['name']` notation, and then uses it in a tabular expression statement.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -80,7 +84,7 @@ let ['some number'] = 20;
 range y from 0 to ['some number'] step 5
 ```
 
-### Create user defined function with scalar calculation
+### Create a user defined function with scalar calculation
 
 This example uses the let statement with arguments for scalar calculation. The query defines function `MultiplyByN` for multiplying two numbers.
 
@@ -101,7 +105,7 @@ range x from 1 to 5 step 1
 |4|20|
 |5|25|
 
-### Create user defined function that trims input
+### Create a user defined function that trims input
 
 The following example removes leading and trailing ones from the input.
 
@@ -160,7 +164,7 @@ search MyColumn == 5
 
 ### Use a materialize function
 
-The [`materialize()`](materializefunction.md) function lets you cache subquery results during the time of query execution. When you use the `materialize()` function, the data is cached and any subsequent invocation of the result uses cached data.
+The [`materialize()`](materializefunction.md) function lets you cache subquery results during the time of query execution. When you use the `materialize()` function, the data is cached, and any subsequent invocation of the result uses cached data.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

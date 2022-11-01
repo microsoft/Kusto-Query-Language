@@ -1,9 +1,9 @@
 ---
 title: array_sort_desc() - Azure Data Explorer
-description: This article describes array_sort_desc() in Azure Data Explorer.
+description: Learn how to use the array_sort_desc() function to sort arrays in descending order.
 ms.reviewer: slneimer
 ms.topic: reference
-ms.date: 09/22/2020
+ms.date: 09/21/2022
 ---
 # array_sort_desc()
 
@@ -19,8 +19,10 @@ If *nulls_last* isn't provided, a default value of `true` is used.
 
 ## Arguments
 
-* *array1...arrayN*: Input arrays.
-* *nulls_last*: A bool indicating whether `null`s should be last
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*array1...arrayN*|  | &check; | Input arrays.|
+| *nulls_last* |bool |  | Indicating whether `null`s should be last.|
 
 ## Returns
 
@@ -37,28 +39,34 @@ If an array contains elements of different types, it will be sorted in the follo
 
 ## Example 1 - Sorting two arrays
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFILCpKrDRUsFVIqcxLzM1M1og21DHWMdEx1TGK1bTmyoEpMUJWopSopKOUBMTJQJwCxKlKIMUFRZl5UOXxxflFJfEpqcXJGhAbdCCmaAIAmTiTMnQAAAA=)**\]**
+
 ```kusto
 let array1 = dynamic([1,3,4,5,2]);
 let array2 = dynamic(["a","b","c","d","e"]);
 print array_sort_desc(array1,array2)
 ```
 
+**Results**
+
 |`array1_sorted`|`array2_sorted`|
 |---|---|
 |[5,4,3,2,1]|["d","c","b","e","a"]|
 
-> [!Note]
+> [!NOTE]
 > The output column names are generated automatically, based on the arguments to the function. To assign different names to the output columns, use the following syntax: `... | extend (out1, out2) = array_sort_desc(array1,array2)`
 
 ## Example 2 - Sorting substrings
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVHwS8xNLVawVVDyys/I0wlILM3RcU/NL0pP1QnKzEvPV7LmygGqCs4vKklNgaktLilKTiyJTywqSqzUAJPxxUAF8SmpxckaxQU5mSUaYKU6Cko6SpqaEMqaq6AoM69EoSi1uDSnBGgKkpkA+RSmRokAAAA=)**\]**
+
 ```kusto
 let Names = "John,Paul,George,Ringo";
 let SortedNames = strcat_array(array_sort_desc(split(Names, ",")), ",");
 print result = SortedNames
 ```
+
+**Results**
 
 |`result`|
 |---|
@@ -66,7 +74,8 @@ print result = SortedNames
 
 ## Example 3 - Combining summarize and array_sort_desc
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WR0WoDIRBF3/crJC9ZYQO7tiU00C8JQYwOiY2uy4yhpPTjq23sFmIK1ZdxOPdy5RoV0907aHXwXo1mQxHteOjY9S2j9bAxKkIeOnYmQGkLxpttw9JZ6qMPZtmlsaCt6IfnVb9eDU887xdZOSy6b97RF1zje1HhjcWr4IYXNd6fiuI2z2OFR383j1hX+OnN3M1T++9f/g8zL/7pn/ld88HonMpC+w4soxSVn4i9MK9OIJ2l2P5uk/+UW2U4219Kzcl6wvAKOpbNrJV2lPqIYQwuHKxWTgY0gMlSIaqLpIBRGiDdzplmNd8Ou0832AsNfQIAAA==)**\]**
+
 ```kusto
 datatable(command:string, command_time:datetime, user_id:string)
 [
@@ -83,12 +92,14 @@ datatable(command:string, command_time:datetime, user_id:string)
 | project user_id, commands_in_chronological_order = array_sort_desc(timestamps, commands)[1]
 ```
 
+**Results**
+
 |`user_id`|`commands_in_chronological_order`|
 |---|---|
 |user1|[<br>  "rm",<br>  "pwd",<br>  "dir",<br>  "chmod",<br>  "mkdir",<br>  "ls"<br>]|
 |user2|[<br>  "pwd",<br>  "rm"<br>]|
 
-> [!Note]
+> [!NOTE]
 > If your data may contain `null` values, use [make_list_with_nulls](make-list-with-nulls-aggfunction.md) instead of [make_list](makelist-aggfunction.md).
 
 ## Example 4 - Controlling location of `null` values
@@ -97,10 +108,13 @@ By default, `null` values are put last in the sorted array. However, you can con
 
 Example with default behavior:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjC/OLyqJT0ktTtZIqcxLzM1M1ojOK83J0VFKyilNVdJRqkzNyckvBzLSi1JT85R0QJKxmpoAGsR2QUMAAAA=)**\]**
+
 ```kusto
 print array_sort_desc(dynamic([null,"blue","yellow","green",null]))
 ```
+
+**Results**
 
 |`print_0`|
 |---|
@@ -108,10 +122,13 @@ print array_sort_desc(dynamic([null,"blue","yellow","green",null]))
 
 Example with non-default behavior:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAxXJUQqAIAwA0KvIvhR2owhZukKYM6YS3r76e/BuKzocmdGKvdmImXvyeSnVkvymUwThkMmAsFikPR8uY1bAP/eA7iTpHF4VdlwBSgAAAA==)**\]**
+
 ```kusto
 print array_sort_desc(dynamic([null,"blue","yellow","green",null]), false)
 ```
+
+**Results**
 
 |`print_0`|
 |---|

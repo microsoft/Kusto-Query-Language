@@ -29,14 +29,14 @@ a **pretty name**. Pretty names can be used to reference the entity in queries
 in the context of their container. When a container has multiple entities with the
 same pretty name, the pretty name can't be used to reference the entity.
 
-Pretty names allow middle-tier applications to map automatically-create entity names
+Pretty names allow middle-tier applications to map automatically-created entity names
 (such as UUIDs) to names that are human-readable for display and referencing purposes.
 
 ## Identifier naming rules
 
 Identifiers are used to name various entities (entities or otherwise).
 Valid identifier names follow these rules:
-* They have between 1 and 1024 characters long.
+* They have to be between 1 and 1024 characters long.
 * They may contain letters, digits, underscores (`_`), spaces, dots (`.`), and dashes (`-`).
   * Identifiers consisting only of letters, digits, and underscores
     do not require quoting when the identifier is being referenced.
@@ -54,7 +54,7 @@ require quoting when they are referenced directly by a query:
 |-------------------|----------------------------------|
 | `entity`          |Entity names (`entity`) that do not include special characters or map to some language keyword require no quoting|
 |`['entity-name']`  |Entity names that include special characters (here: `-`) must be quoted using `['` and `']` or using `["` and `"]`|
-|`["where"]`        |Entity names that are language keywords must be quoted quoted using `['` and `']` or using `["` and `"]`|
+|`["where"]`        |Entity names that are language keywords must be quoted using `['` and `']` or using `["` and `"]`|
 
 ## Naming your entities to avoid collisions with Kusto language keywords
 

@@ -9,7 +9,7 @@ ms.date: 02/22/2020
 
 Get the month number (1-12) from a datetime.
 
-Another alias: monthoyear()
+Another alias: monthofyear()
 
 ## Example
 

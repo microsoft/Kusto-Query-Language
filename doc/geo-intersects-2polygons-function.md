@@ -40,7 +40,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 * LinearRingShell encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
 * LinearRing edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 * LinearRings must not cross and must not share edges. LinearRings may share vertices.
-* Polygon doesn't necessarily contain its vertices.
+* Polygon contains its vertices.
 
 > [!TIP]
 > * Using literal Polygon or a MultiPolygon may result in better performance.

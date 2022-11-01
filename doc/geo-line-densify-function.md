@@ -13,10 +13,13 @@ Converts planar line or multiline edges to geodesics by adding intermediate poin
 
 `geo_line_densify(`*lineString*`, `*tolerance*`)`
 
+`geo_line_densify(`*lineString*`, `*tolerance*`, `*preserve_crossing*`)`
+
 ## Arguments
 
 * *lineString*: Line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 * *tolerance*: An optional numeric that defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value `10` is used.
+* *preserve_crossing*: An optional boolean that preserves edge crossing over antimeridian. If unspecified, the default value `False` is used.
 
 ## Returns
 
@@ -42,7 +45,7 @@ dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_
 
 **Motivation**
 
-* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line.
+* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while Azure Data Explorer uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
 * The decision to use geodesic or planar edges might depend on the dataset and is especially relevant in long edges.
 
 ## Examples
@@ -57,7 +60,7 @@ print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","c
 |---|
 |{"type":"LineString","coordinates":[[-73.949247, 40.796860], [-73.973017, 40.764323]]}|
 
-The following example densifies an edge of ~130km length
+The following example densifies an edge of ~130 km length
 
 ```kusto
 print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","coordinates":[[50, 50], [51, 51]]})))

@@ -84,7 +84,7 @@ StormEvents
 | project BeginLon, BeginLat
 | summarize by hash=geo_point_to_s2cell(BeginLon, BeginLat, 5)
 | project geo_s2cell_to_central_point(hash)
-| render scatterchart with (kind=map) // map rendering available in Kusto Explorer desktop
+| render scatterchart with (kind=map)
 ```
 
 <!-- csl: https://help.kusto.windows.net/Samples -->

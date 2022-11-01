@@ -11,18 +11,18 @@ The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating e
 
 ## Syntax
 
-*T* `|` `evaluate` `bag_unpack(` *Column* [`,` *OutputColumnPrefix* ] [`,` *columnsConflict* ] [`,` *ignoredProperties* ] `)`
+*T* `|` `evaluate` `bag_unpack(` *Column* [`,` *OutputColumnPrefix* ] [`,` *columnsConflict* ] [`,` *ignoredProperties* ] `)` [`:` *OutputSchema*]
 
 ## Arguments
 
-* *T*: The tabular input whose column *Column* is to be unpacked.
-* *Column*: The column of *T* to unpack. Must be of type `dynamic`.
-* *OutputColumnPrefix*: A common prefix to add to all columns produced by the plugin. This argument is optional.
-* *columnsConflict*: A direction for column conflict resolution. This argument is optional. When argument is provided, it's expected to be a string literal matching one of the following values:
-    - `error` - Query produces an error (default)
-    - `replace_source` - Source column is replaced
-    - `keep_source` - Source column is kept
-* *ignoredProperties*: Optional set of bag properties to be ignored. When argument is provided, it's expected to be a constant of `dynamic` array with one or more string literals.
+| Name | Type | Required| Description |
+|---|---|---|---|
+| *T* |  | &check; | The tabular input whose column *Column* is to be unpacked. |
+| *Column* | dynamic | &check; | The column of *T* to unpack. |
+| *OutputColumnPrefix* | string | | A common prefix to add to all columns produced by the plugin. |
+| *columnsConflict* | string | | A direction for column conflict resolution. Valid values: <br />`error` - Query produces an error (default)<br />`replace_source` - Source column is replaced<br />`keep_source` - Source column is kept
+| *ignoredProperties* | dynamic | Optional set of bag properties to be ignored.
+| *OutputSchema* | | | The names and types for the expected columns of the `bag_unpack` plugin output.<br /><br />**Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`<br /><br />Specifying the expected schema optimizes query execution by not having to first run the actual query to explore the schema. An error is raised if the run-time schema doesn't match the *OutputSchema* schema. |
 
 ## Returns
 
@@ -36,9 +36,7 @@ The `bag_unpack` plugin returns a table with as many records as its tabular inpu
   same type, or `dynamic`, if the values differ in type.
 
 > [!NOTE]
-> The plugin's output schema depends on the data values, making it as "unpredictable"
-> as the data itself. Multiple executions of the plugin, using different
-> data inputs, may produce different output schema.
+> If the OutputSchema is not specified, the plugin's output schema varies according to the input data values. Therefore, multiple executions of the plugin using different data inputs, may produce different output schema.
 
 > [!NOTE]
 > The input data to the plugin must be such that the output schema follows all the rules for a tabular schema. In particular:
@@ -64,8 +62,6 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d)
 ```
 
-**Output**
-
 |Age|Name   |
 |---|-------|
 |20 |John   |
@@ -86,8 +82,6 @@ datatable(d:dynamic)
 ]
 | evaluate bag_unpack(d, 'Property_')
 ```
-
-**Output**
 
 |Property_Age|Property_Name|
 |------------|-------------|
@@ -110,14 +104,11 @@ datatable(Name:string, d:dynamic)
 | evaluate bag_unpack(d, columnsConflict='replace_source') // Use new name
 ```
 
-**Output**
-
 |Age|Name   |
 |---|-------|
 |20 |John   |
 |40 |Dave   |
 |30 |Jasmine|
-
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 datatable(Name:string, d:dynamic)
@@ -128,8 +119,6 @@ datatable(Name:string, d:dynamic)
 ]
 | evaluate bag_unpack(d, columnsConflict='keep_source') // Keep old name
 ```
-
-**Output**
 
 |Age|Name     |
 |---|---------|
@@ -153,10 +142,28 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d, ignoredProperties=dynamic(['Address', 'Age']))
 ```
 
-**Output**
-
 |Name|
 |---|
 |John|
 |Dave|
 |Jasmine|
+
+### Expand a bag with a query-defined OutputSchema
+
+Expand a bag and use the `OutputSchema` option to allow various optimizations to be evaluated before running the actual query.
+
+```kusto
+datatable(d:dynamic)
+[
+    dynamic({"Name": "John", "Age":20}),
+    dynamic({"Name": "Dave", "Age":40}),
+    dynamic({"Name": "Jasmine", "Age":30}),
+]
+| evaluate bag_unpack(d) : (Name:string, Age:long)
+```
+
+|Name  |Age  |
+|---------|---------|
+|John     |  20  |
+|Dave     |  40  |
+|Jasmine  |  30  |

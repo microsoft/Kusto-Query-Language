@@ -37,6 +37,9 @@ For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24
 *  `false`: Otherwise.
 * `null`: If conversion for one of the two IPv4 strings wasn't successful.
 
+>[!NOTE]
+> When matching against an IPv4 address that's not a range, we recommend using the [equals operator](equals-cs-operator.md) (`==`), for better performance.
+
 ## Examples
 
 ### IPv4 comparison equality - IP-prefix notation specified inside the IPv4 strings

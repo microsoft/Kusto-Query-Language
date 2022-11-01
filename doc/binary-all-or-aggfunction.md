@@ -3,13 +3,13 @@ title: binary_all_or() (aggregation function) - Azure Data Explorer
 description: This article describes binary_all_or() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/24/2020
+ms.date: 09/05/2022
 ---
 # binary_all_or() (aggregation function)
 
-Accumulates values using the binary `OR` operation per summarization group (or in total, if summarization is done without grouping).
+Accumulates values using the binary `OR` operation for each summarization group, or in total if a group is not specified.
 
-* Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
@@ -17,17 +17,20 @@ Accumulates values using the binary `OR` operation per summarization group (or i
 
 ## Arguments
 
-* *Expr*: long number.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr* | long | &check; | A long number used for the binary `AND`  calculation. |
 
 ## Returns
 
-Returns a value that is aggregated using the binary `OR` operation over records per summarization group (or in total, if summarization is done without grouping).
+Returns an aggregated value using the binary `OR` operation over records for each summarization group, or in total if a group is not specified.
 
 ## Example
 
-Producing 'cafe-food' using binary `OR` operations:
+The following example produces `CAFEF00D` using binary `OR` operations:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwoLEDAwsNAB80yMDMAAwjMwMDczR+KBgamOAlcsV41CcWlubmJRZlWqQlFqcWlOiYKtQkl+aUFBapFGSX5GaoVGUmZeYlFlfGJOTnx+EcheTU1NAEGLHNSIAAAA)**\]**
+
 ```kusto
 datatable(num:long)
 [
@@ -38,6 +41,8 @@ datatable(num:long)
 ]
 | summarize result = toupper(tohex(binary_all_or(num)))
 ```
+
+**Results**
 
 |result|
 |---|

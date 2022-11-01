@@ -3,7 +3,7 @@ title: summarize operator - Azure Data Explorer
 description: This article describes summarize operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/30/2021
+ms.date: 05/25/2022
 ms.localizationpriority: high 
 ---
 # summarize operator
@@ -34,12 +34,11 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 ## Arguments
 
 * *Column:* Optional name for a result column. Defaults to a name derived from the expression.
-* *Aggregation:* A call to an [aggregation function](summarizeoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](summarizeoperator.md#list-of-aggregation-functions).
+* *Aggregation:* A call to an [aggregation function](aggregation-functions.md) such as `count()` or `avg()`, with column names as arguments.
 * *GroupExpression:* A scalar expression that can reference the input data.
   The output will have as many records as there are distinct values of all the
   group expressions.
-* *SummarizeParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value*
-	that control the behavior. The following parameters are supported:
+* *SummarizeParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value* that control the behavior. The following parameters are supported:
   
   |Name  |Description  |
   |---|---|
@@ -68,55 +67,15 @@ To summarize over ranges of numeric values, use `bin()` to reduce ranges to disc
 > * Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names, or apply `bin()` to a numeric column.
 > * The automatic hourly bins for datetime columns is no longer supported. Use explicit binning instead. For example, `summarize by bin(timestamp, 1h)`.
 
-## List of aggregation functions
-
-|Function|Description|
-|--------|-----------|
-|[arg_max()](arg-max-aggfunction.md)|Returns one or more expressions when the argument is maximized|
-|[arg_min()](arg-min-aggfunction.md)|Returns one or more expressions when the argument is minimized|
-|[avg()](avg-aggfunction.md)|Returns an average value across the group|
-|[avgif()](avgif-aggfunction.md)|Returns an average value across the group (with predicate)|
-|[binary_all_and](binary-all-and-aggfunction.md)|Returns aggregated value using the binary `AND` of the group|
-|[binary_all_or](binary-all-or-aggfunction.md)|Returns aggregated value using the binary `OR` of the group|
-|[binary_all_xor](binary-all-xor-aggfunction.md)|Returns aggregated value using the binary `XOR` of the group|
-|[buildschema()](buildschema-aggfunction.md)|Returns the minimal schema that admits all values of the `dynamic` input|
-|[count()](count-aggfunction.md)|Returns a count of the group|
-|[countif()](countif-aggfunction.md)|Returns a count with the predicate of the group|
-|[dcount()](dcount-aggfunction.md)|Returns an approximate distinct count of the group elements|
-|[dcountif()](dcountif-aggfunction.md)|Returns an approximate distinct count of the group elements (with predicate)|
-|[make_bag()](make-bag-aggfunction.md)|Returns a property bag of dynamic values within the group|
-|[make_bag_if()](make-bag-if-aggfunction.md)|Returns a property bag of dynamic values within the group (with predicate)|
-|[make_list()](makelist-aggfunction.md)|Returns a list of all the values within the group|
-|[make_list_if()](makelistif-aggfunction.md)|Returns a list of all the values within the group (with predicate)|
-|[make_list_with_nulls()](make-list-with-nulls-aggfunction.md)|Returns a list of all the values within the group, including null values|
-|[make_set()](makeset-aggfunction.md)|Returns a set of distinct values within the group|
-|[make_set_if()](makesetif-aggfunction.md)|Returns a set of distinct values within the group (with predicate)|
-|[max()](max-aggfunction.md)|Returns the maximum value across the group|
-|[maxif()](maxif-aggfunction.md)|Returns the maximum value across the group (with predicate)|
-|[min()](min-aggfunction.md)|Returns the minimum value across the group|
-|[minif()](minif-aggfunction.md)|Returns the minimum value across the group (with predicate)|
-|[percentiles()](percentiles-aggfunction.md)|Returns the percentile approximate of the group|
-|[percentiles_array()](percentiles-aggfunction.md)|Returns the percentiles approximates of the group|
-|[percentilesw()](percentiles-aggfunction.md)|Returns the weighted percentile approximate of the group|
-|[percentilesw_array()](percentiles-aggfunction.md)|Returns the weighted percentiles approximates of the group|
-|[stdev()](stdev-aggfunction.md)|Returns the standard deviation across the group|
-|[stdevif()](stdevif-aggfunction.md)|Returns the standard deviation across the group (with predicate)|
-|[sum()](sum-aggfunction.md)|Returns the sum of the elements within the group|
-|[sumif()](sumif-aggfunction.md)|Returns the sum of the elements within the group (with predicate)|
-|[take_any()](take-any-aggfunction.md)|Returns a random non-empty value for the group|
-|[take_anyif()](take-anyif-aggfunction.md)|Returns a random non-empty value for the group (with predicate)|
-|[variance()](variance-aggfunction.md)|Returns the variance across the group|
-|[varianceif()](varianceif-aggfunction.md)|Returns the variance across the group (with predicate)|
-
 ## Aggregates default values
 
 The following table summarizes the default values of aggregations:
 
-Operator       |Default value                         
----------------|------------------------------------
- `count()`, `countif()`, `dcount()`, `dcountif()`         |   0                            
- `make_bag()`, `make_bag_if()`, `make_list()`, `make_list_if()`, `make_set()`, `make_set_if()` |    empty dynamic array              ([])          
- All others          |   null                           
+| Operator | Default value |
+|--|--|
+| `count()`, `countif()`, `dcount()`, `dcountif()` | 0 |
+| `make_bag()`, `make_bag_if()`, `make_list()`, `make_list_if()`, `make_set()`, `make_set_if()` | empty dynamic array              ([]) |
+| All others | null |
 
  When using these aggregates over entities which includes null values, the null values will be ignored and won't participate in the calculation (see examples below).
 
@@ -161,7 +120,7 @@ Activities | summarize cities=dcount(city) by continent
 ```
 
 |`cities`|`continent`
-|---:|---
+|---|---
 |`4290`|`Asia`|
 |`3267`|`Europe`|
 |`2673`|`North America`|
@@ -176,7 +135,7 @@ Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
 ```
 
 |`count_`|`ActivityType`|`length`
-|---:|---|---
+|---|---|---
 |`354`| `dancing` | `0:00:00.000`
 |`23`|`singing` | `0:00:00.000`
 |`2717`|`dancing`|`0:10:00.000`
@@ -230,7 +189,7 @@ range x from 1 to 2 step 1
 |---|---|
 |5|5|
 
-The regular count will count nulls: 
+The regular count will count nulls:
 
 ```kusto
 range x from 1 to 2 step 1

@@ -10,14 +10,14 @@ ms.date: 10/23/2018
 Filters a record set for data matching the values in an inclusive range.
 
 `between` can operate on any numeric, datetime, or timespan expression.
- 
+
 ## Syntax
 
-*T* `|` `where` *expr* `between` `(`*leftRange*` .. `*rightRange*`)`   
- 
+*T* `|` `where` *expr* `between` `(`*leftRange*` .. `*rightRange*`)`
+
 If *expr* expression is datetime - another syntactic sugar syntax is provided:
 
-*T* `|` `where` *expr* `between` `(`*leftRangeDateTime*` .. `*rightRangeTimespan*`)`   
+*T* `|` `where` *expr* `between` `(`*leftRangeDateTime*` .. `*rightRangeTimespan*`)`
 
 ## Arguments
 
@@ -30,9 +30,9 @@ If *expr* expression is datetime - another syntactic sugar syntax is provided:
 
 Rows in *T* for which the predicate of (*expr* >= *leftRange* and *expr* <= *rightRange*) evaluates to `true`.
 
-## Examples  
+## Examples
 
-### Filter numeric values   
+### Filter numeric values
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -49,13 +49,13 @@ range x from 1 to 100 step 1
 |54|
 |55|
 
-### Filter datetime 
+### Filter datetime
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. datetime(2007-07-30))
-| count 
+| count
 ```
 
 |Count|
@@ -66,7 +66,7 @@ StormEvents
 ```kusto
 StormEvents
 | where StartTime between (datetime(2007-07-27) .. 3d)
-| count 
+| count
 ```
 
 |Count|

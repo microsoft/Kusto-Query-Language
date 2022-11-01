@@ -3,7 +3,7 @@ title: take_any() (aggregation function) - Azure Data Explorer
 description: This article describes take_any() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/14/2021
+ms.date: 08/14/2022
 ---
 # take_any() (aggregation function)
 
@@ -11,7 +11,7 @@ Arbitrarily chooses one record for each group in a [summarize operator](summariz
 and returns the value of one or more expressions over each such record.
 
 > [!NOTE]
-> `any()` is a legacy and obsolete version of the `take_any()` function. The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
+> `any()` has been deprecated in favor of `take_any()`. The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
 
 ## Syntax
 
@@ -19,13 +19,15 @@ and returns the value of one or more expressions over each such record.
 
 ## Arguments
 
-* *Expr*: An expression over each record selected from the input to return.
-* *Expr2* .. *ExprN*: Additional expressions.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Expr* | string | &check; | Expression used for selecting a record. |
+| *Expr2* | string |  | Additional expressions. |
 
 ## Returns
 
 The `take_any` aggregation function returns the values of the expressions calculated
-for each of the records, selected randomly from each group of the summarize operator.
+for each of the records selected Indeterministically from each group of the summarize operator.
 
 If the `*` argument is provided, the function behaves as if the expressions are all columns
 of the input to the summarize operator barring the group-by columns, if any.
@@ -38,17 +40,18 @@ per value of the compound group key.
 When the function is provided with a single column reference, it will attempt to
 return a non-null/non-empty value, if such value is present.
 
-As a result of the random nature of this function, using it multiple times in
-a single application of the `summarize` operator is not equivalent to using
-it a single time with multiple expressions. The former may have each application
+As a result of the indeterministic nature of this function, using this function multiple times in
+a single application of the `summarize` operator isn't equivalent to using
+this function a single time with multiple expressions. The former may have each application
 select a different record, while the latter guarantees that all values are calculated
 over a single record (per distinct group).
 
 ## Examples
 
-Show Random State:
+Show indeterministic State:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/NewDatabase1?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSguzc1NLMqsSlUoScxOjU/Mq9QILkksSdUEALgBS0YoAAAA)**\]**
+
 ```kusto
 StormEvents
 | summarize take_any(State)
@@ -60,7 +63,8 @@ StormEvents
 
 Show all the details for a random record:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/NewDatabase1?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSgoys9KTS5RCC5JLCoJycxN1VFwLcgszk9J9UzRAYmWgERAykMqC1JBOopLc3MTizKrUhVKErNT4xPzKjW0NAGzMGIFVgAAAA==)**\]**
+
 ```kusto
 StormEvents
 | project StartTime, EpisodeId, State, EventType
@@ -73,7 +77,8 @@ StormEvents
 
 Show all the details of a random record for each State starting with 'A':
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/NewDatabase1?query=H4sIAAAAAAAAAyWMMQ7CMBAEeyT+cEoFKJ+gSEGd9OggK8Ugx9bdQmTE4xMr7c7O9EwWuy9m+vHwl2WCQXoqIU41+hI4SXNtKs2WXniycuMQIlrpcvA04ja2u7UtNTaUjGr4J0a18INQ37jrXE6XszzKfl4BiZpjAH0AAAA=)**\]**
+
 ```kusto
 StormEvents
 | where State startswith "A"

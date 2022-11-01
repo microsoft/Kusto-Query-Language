@@ -37,8 +37,7 @@ print decoded_base64_string = base64_encode_fromarray(bytes_array)
 |---|
 |S3VzdG8=|
 
-
-Trying to encode a base64 string from an invalid bytes array which was generated from invalid UTF-8 encoded string will return null:
+Trying to encode a base64 string from an invalid bytes array that was generated from invalid UTF-8 encoded string will return null:
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

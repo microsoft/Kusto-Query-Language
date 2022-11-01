@@ -19,7 +19,7 @@ Azure Blob Storage or a file in Azure Data Lake Storage.
 ::: zone pivot="azuremonitor"
 
 > [!NOTE]
-> Use the `externaldata` operator to retrieve small reference tables of up to 100 MB from an external storage artifact. The operator is not designed for large data volumes. To retrieve large volumes of external data, we recommend [ingesting the external data into Log Analytics as custom logs](/azure-monitor/logs/tutorial-custom-logs).
+> Use the `externaldata` operator to retrieve small reference tables of up to 100 MB from an external storage artifact. The operator is not designed for large data volumes. To retrieve large volumes of external data, we recommend [ingesting the external data into Log Analytics as custom logs](/azure/azure-monitor/logs/tutorial-custom-logs).
 > This operator isn't supported when the public endpoint of the storage artifact is behind a firewall.
 
 ::: zone-end

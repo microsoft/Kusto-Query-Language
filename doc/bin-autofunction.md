@@ -17,7 +17,7 @@ Rounds values down to a fixed-size "bin", with control over the bin size and sta
 
 * *Expression*: A scalar expression of a numeric type indicating the value to round.
 
-**Client Request Properties**
+## Client request properties
 
 * `query_bin_auto_size`: A numeric literal indicating the size of each bin.
 * `query_bin_auto_at`: A numeric literal indicating one value of *Expression* which is a "fixed point" (that is, a value `fixed_point`
