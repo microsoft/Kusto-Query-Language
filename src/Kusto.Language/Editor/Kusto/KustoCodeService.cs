@@ -610,20 +610,22 @@ namespace Kusto.Language.Editor
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (element is Expression ex && ex.ReferencedSymbol is FunctionSymbol fs)
+                if (element is Expression ex)
                 {
-                    if (element is FunctionCallExpression fc && fs == Functions.Cluster)
+                    if (element is FunctionCallExpression fc
+                        && ex.ReferencedSymbol == Functions.Cluster)
                     {
+                        // this is a call to cluster('ccc'), report 'ccc' as a referenced cluster
                         var cluster = GetClusterReference(fc, location);
                         if (cluster != null)
                         {
                             clusters.Add(cluster);
                         }
                     }
-                    // if this is a call to cluster('xxx') method then make a cluster reference from the literal argument if possible
-                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts && funFacts.HasClusterCall)
+                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts 
+                             && funFacts.HasClusterCall)
                     {
-                        // look for cluster('xxx') calls in function expansions
+                        // also get all cluster references inside the bodies of called functions
                         var calledBody = ex.GetCalledFunctionBody();
                         if (calledBody != null)
                         {
@@ -705,24 +707,24 @@ namespace Kusto.Language.Editor
                 if (element is Expression ex)
                 {
                     if (element is FunctionCallExpression fc
-                        && ex.ReferencedSymbol is FunctionSymbol fs
-                        && fs == Functions.Database)
+                        && ex.ReferencedSymbol == Functions.Database)
                     {
+                        // this is a call to database('xxx').. record 'xxx' as a database referenced
                         var dbref = GetDatabaseReference(fc, location, defaultCluster);
                         if (dbref != null)
                         {
                             refs.Add(dbref);
                         }
                     }
-                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts 
+                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts
                             && funFacts.HasDatabaseCall)
                     {
+                        // also get all database references inside the bodies of called functions
                         var calledBody = ex.GetCalledFunctionBody();
                         if (calledBody != null)
                         {
                             var db = this.globals.GetDatabase(ex.ReferencedSymbol) ?? defaultDatabase;
                             var cluster = this.globals.GetCluster(db) ?? defaultCluster;
-
                             GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
                         }
                     }
