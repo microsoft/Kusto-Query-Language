@@ -13,22 +13,26 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class EntityGroupSymbol : TypeSymbol
     {
-        internal Signature Signature { get; }
+        public string Definition { get; }
         public string Description { get; }
+        private readonly IReadOnlyList<Symbol> _members;
+        internal Signature Signature { get; }
 
-        public EntityGroupSymbol(string name, string definition = null, string description = null)
+        public EntityGroupSymbol(string name, string definition, string description = null)
             : base(name)
         {
-            this.Signature = new Signature(definition ?? "", Tabularity.Tabular);
+            this.Definition = definition;
+            this.Description = description ?? "";
+            this.Signature = CreateSignature(definition);
             this.Signature.Symbol = this;
             _members = EmptyReadOnlyList<Symbol>.Instance;
         }
 
-        private readonly IReadOnlyList<Symbol> _members;
-
-        public EntityGroupSymbol(string name, IEnumerable<Symbol> members)
+        public EntityGroupSymbol(string name, IEnumerable<Symbol> members, string description = null)
             : base(name)
         {
+            this.Definition = null;
+            this.Description = description ?? "";
             _members = members.ToReadOnly();
             this.Signature = new Signature(this);
             this.Signature.Symbol = this;
@@ -44,15 +48,62 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public override IReadOnlyList<Symbol> Members => _members;
+        private static Signature CreateSignature(string definition)
+        {
+            var body = GetBodyFromDefinition(definition);
+            return new Signature(body, Tabularity.Tabular);
+        }
 
-        public string Definition => this.Signature.Body;
+        internal static string GetBodyFromDefinition(string definition)
+        {
+            if (definition == null)
+            {
+                return "entity_group []";
+            }
+
+            definition = definition.Trim();
+
+            // already a entity group expression
+            if (definition.StartsWith("entity_group"))
+            {
+                return definition;
+            }
+
+            string expressionList = definition;
+
+            // remove brackets
+            if (definition.StartsWith("[") && definition.EndsWith("]"))
+            {
+                expressionList = definition.Substring(1, definition.Length - 2);           
+            }
+
+            expressionList = expressionList.Trim();
+
+            // get literal value
+            if (expressionList.StartsWith("\"") || expressionList.StartsWith("'"))
+            {
+                expressionList = KustoFacts.GetStringLiteralValue(expressionList);
+            }
+
+            return $"entity_group [{expressionList}]";
+        }
+
+        public override IReadOnlyList<Symbol> Members => _members;
 
         public override Tabularity Tabularity => Tabularity.None;
 
         public override SymbolKind Kind => SymbolKind.EntityGroup;
 
-        protected override string GetDisplay() =>
-            $"entity_group({this.Name}:{string.Join(", ", this.Members.Select(m => m.Display))})";
+        protected override string GetDisplay()
+        {
+            if (this.Definition != null)
+            {
+                return $"entity_group({this.Name}:{this.Definition})";
+            }
+            else
+            {
+                return $"entity_group({this.Name}:{string.Join(", ", this.Members.Select(m => m.Display))})";
+            }
+        }
     }
 }

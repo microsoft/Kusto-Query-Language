@@ -1717,14 +1717,8 @@ namespace Kusto.Language.Binding
 
         private static string GetEntityGroupBodyText(Signature signature)
         {
-            var body = signature.Body.Trim();
-            if (!body.StartsWith("[", StringComparison.Ordinal))
-                body = "[" + body;
-
-            if (!body.EndsWith("]", StringComparison.Ordinal))
-                body += "\n]";
-
-            return $"entity_group {body}";
+            // translate to correct body form already handled by EntityGroupSymbol
+            return signature.Body;
         }
 
         private static SyntaxNode GetUnboundBody(Signature signature)
