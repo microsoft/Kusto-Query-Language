@@ -133,7 +133,12 @@ namespace Kusto.Language
             return Create(text, globals, tokens, starts, analyze: true, cancellationToken: cancellationToken);
         }
 
-        public static List<int> GetTokenStarts(LexicalToken[] tokens)
+        /// <summary>
+        /// Gets the starting offsets for each token
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        private static List<int> GetTokenStarts(LexicalToken[] tokens)
         {
             var starts = new List<int>(tokens.Length + 1);
             int start = 0;
@@ -252,7 +257,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, this.Globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
             }
         }
 
@@ -386,7 +391,14 @@ namespace Kusto.Language
                 Interlocked.CompareExchange(ref lineStarts, tmp, null);
             }
 
-            return TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
+            var success = TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
+
+            if (success && (position < 0 || position > this.Text.Length))
+            {
+                success = false;
+            }
+
+            return success;
         }
 
         /// <summary>
