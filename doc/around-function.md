@@ -13,7 +13,7 @@ Creates a `bool` value indicating if the first argument is within a range around
 
 `around(`*value*`,`*center*`,`*delta*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|

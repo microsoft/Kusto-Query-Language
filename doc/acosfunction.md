@@ -13,9 +13,11 @@ Calculates the angle whose cosine is the specified number (the inverse operation
 
 `acos(`*x*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A real number in range [-1, 1].
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *x* | real | &check; | A real number in range [-1, 1]. |
 
 ## Returns
 

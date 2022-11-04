@@ -834,6 +834,10 @@ items:
     href: buildschema-aggfunction.md
   - name: count()
     href: count-aggfunction.md
+  - name: count_distinct()
+    href: count-distinct-aggfunction.md
+  - name: count_distinctif()
+    href: count-distinctif-aggfunction.md
   - name: countif()
     href: countif-aggfunction.md
   - name: dcount()

@@ -31,7 +31,7 @@ Returns a `dynamic` JSON array of the set of distinct values that *Expr* takes i
 The array's sort order is undefined.
 
 > [!TIP]
-> To only count distinct values, use [dcount()](dcount-aggfunction.md).
+> To only count distinct values, use [dcount()](dcount-aggfunction.md) or [count_distinct()](count-distinct-aggfunction.md).
 
 ## Example
 

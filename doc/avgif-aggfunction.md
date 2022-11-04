@@ -1,9 +1,9 @@
 ---
 title: avgif() (aggregation function) - Azure Data Explorer
-description: This article describes avgif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the avgif() function to return the average value of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/10/2022
+ms.date: 11/03/2022
 ---
 # avgif() (aggregation function)
 
@@ -38,7 +38,6 @@ StormEvents
 ```
 
 **Results**
-
 The results table shown includes only the first 10 rows.
 
 | State                | Averagedamage | Averagewhendamage |

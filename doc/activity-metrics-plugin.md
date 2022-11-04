@@ -17,7 +17,7 @@ T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startof
 
 *T* `| evaluate` `activity_metrics(`*IdColumn*`,` *TimelineColumn*`,` [*Start*`,` *End*`,`] *Window* [`,` *dim1*`,` *dim2*`,` ...]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|

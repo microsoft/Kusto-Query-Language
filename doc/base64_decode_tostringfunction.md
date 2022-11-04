@@ -1,9 +1,9 @@
 ---
 title: base64_decode_tostring() - Azure Data Explorer
-description: This article describes base64_decode_tostring() in Azure Data Explorer.
+description: Learn how to use a base64_decode_tostring() function to decode a base64 string into a UTF-8 string. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 06/22/2019
+ms.date: 11/03/2022
 ---
 # base64_decode_tostring()
 

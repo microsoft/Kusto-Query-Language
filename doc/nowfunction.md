@@ -7,8 +7,9 @@ ms.date: 02/13/2020
 ---
 # now()
 
-Returns the current UTC clock time, optionally offset by a given timespan.
-This function can be used multiple times in a statement and the clock time being referenced will be the same for all instances.
+Returns the current UTC time, optionally offset by a given [timespan](scalar-data-types/timespan.md).
+
+The current UTC time will stay the same across all uses of `now()` in a single query statement, even if there's technically a small time difference between when each `now()` runs.
 
 ```kusto
 now()

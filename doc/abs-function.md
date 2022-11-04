@@ -13,9 +13,11 @@ Calculates the absolute value of the input.
 
 `abs(`*x*`)`
 
-## Arguments
+## Parameters
 
-* *x*: An integer or real number, or a timespan value.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *x* | int, real, or timespan | &check; | The value to make absolute. |
 
 ## Returns
 

@@ -1,9 +1,9 @@
 ---
 title: bag_merge() - Azure Data Explorer 
-description: This article describes bag_merge() in Azure Data Explorer.
+description: Learn how to use the bag_merge() function to merge property bags.
 ms.reviewer: elgevork
 ms.topic: reference
-ms.date: 06/18/2020
+ms.date: 11/03/2022
 ---
 # bag_merge()
 

@@ -1,9 +1,9 @@
 ---
 title: avg() (aggregation function) - Azure Data Explorer
-description: This article describes avg() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the avg() function to calculate the average value of an expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/05/2022
+ms.date: 11/02/2022
 ---
 # avg() (aggregation function)
 
@@ -37,7 +37,6 @@ StormEvents
 ```
 
 **Results**
-
 The results table shown includes only the first 10 rows.
 
 | State                | AvgDamageToCrops |

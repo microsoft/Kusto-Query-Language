@@ -1,9 +1,9 @@
 ---
 title: bag_remove_keys() - Azure Data Explorer
-description: This article describes bag_remove_keys() in Azure Data Explorer.
+description: Learn how to use the bag_remove_keys() function to remove keys and associated values from property bags. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/21/2021
+ms.date: 11/03/2022
 ---
 # bag_remove_keys()
 

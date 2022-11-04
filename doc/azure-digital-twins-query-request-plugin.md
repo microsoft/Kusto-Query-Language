@@ -1,9 +1,10 @@
 ---
 title: azure_digital_twins_query_request plugin - Azure Data Explorer
-description: This article describes the Azure Digital Twins query request plugin in Azure Data Explorer.
+description: Learn how to use the azure_digital_twins_query_request plugin to run an Azure Digital Twins query as part of a Kusto query.
+
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/23/2022
+ms.date: 11/03/2022
 ---
 # azure_digital_twins_query_request plugin
 

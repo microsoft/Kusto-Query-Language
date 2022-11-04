@@ -1,9 +1,9 @@
 ---
 title: bag_has_key() - Azure Data Explorer
-description: This article describes bag_has_key() in Azure Data Explorer.
+description: Learn how to use the bag_has_key() function to check if a dynamic bag column contains a given key. 
 ms.reviewer: afridman
 ms.topic: reference
-ms.date: 04/27/2022
+ms.date: 11/03/2022
 ---
 # bag_has_key()
 
@@ -11,7 +11,7 @@ Checks whether a dynamic bag column contains a given key.
 
 ## Syntax
 
-`bag_has_key(`*bag*`, `*key*`)`
+`bag_has_key(`*bag*`,`*key*`)`
 
 ## Arguments
 
