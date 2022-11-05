@@ -21,7 +21,7 @@ applies a similar function, in a nested fashion. Each following clause is applie
 by the previous clause. This process continues for all aggregation clauses.
 
 For example, the `top-nested` operator can be used to answer the following question: "For a table containing sales
-figures, such as country, salesperson, and amount sold: what are the top five countries by sales? What are the top three salespeople in each of these countries?"
+figures, such as country/region, salesperson, and amount sold: what are the top five countries/regions by sales? What are the top three salespeople in each of these countries/regions?"
 
 ## Syntax
 
