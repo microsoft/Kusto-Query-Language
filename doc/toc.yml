@@ -185,7 +185,7 @@ items:
   - name: serialize operator
     href: serializeoperator.md
   - name: shuffle query
-    displayName: hint.shufflekey, hint.strategy, shufflekey, hint
+    displayName: hint.shufflekey, hint.strategy, shufflekey, hint, strategy
     href: shufflequery.md
   - name: sort operator
     href: sortoperator.md
@@ -346,6 +346,7 @@ items:
   - name: array_index_of()
     href: arrayindexoffunction.md
   - name: array_length()
+    displayName: arraylength()
     href: arraylengthfunction.md
   - name: array_reverse()
     href: array-reverse-function.md
@@ -389,12 +390,14 @@ items:
   - name: base64_decode_toarray()
     href: base64_decode_toarrayfunction.md
   - name: base64_decode_tostring()
+    displayName: base64_decodestring()
     href: base64_decode_tostringfunction.md
   - name: base64_decode_toguid()
     href: base64-decode-toguid-function.md
   - name: base64_encode_fromarray()
     href: base64_encode_fromarrayfunction.md
   - name: base64_encode_tostring()
+    displayName: base64_encodestring()
     href: base64_encode_tostringfunction.md
   - name: base64_encode_fromguid()
     href: base64-encode-fromguid-function.md
@@ -431,6 +434,7 @@ items:
   - name: coalesce()
     href: coalescefunction.md
   - name: column_ifexists()
+    displayName: columnifexists()
     href: columnifexists.md
   - name: convert_angle()
     href: convert-angle-function.md
@@ -478,6 +482,7 @@ items:
   - name: datetime_local_to_utc()
     href: datetime-local-to-utc-function.md
   - name: datetime_part()
+    displayName: datepart()
     href: datetime-partfunction.md
   - name: datetime_utc_to_local()
     href: datetime-utc-to-local-function.md
@@ -510,12 +515,14 @@ items:
   - name: exp2()
     href: exp2-function.md
   - name: extent_id()
+    displayName: extentid()
     href: extentidfunction.md
   - name: extent_tags()
     href: extenttagsfunction.md
   - name: extract()
     href: extractfunction.md
   - name: extract_all()
+    displayName: extractall()
     href: extractallfunction.md
   - name: extract_json(), extractjson()
     href: extractjsonfunction.md
@@ -607,9 +614,11 @@ items:
     href: isinffunction.md
   - name: isnan()
     href: isnanfunction.md
-  - name: isnotempty(), notempty()
+  - name: isnotempty()
+    displayName: notempty()
     href: isnotemptyfunction.md
-  - name: isnotnull(), notnull()
+  - name: isnotnull()
+    displayName: notnull()
     href: isnotnullfunction.md
   - name: isnull()
     href: isnullfunction.md
@@ -662,8 +671,10 @@ items:
   - name: parse_path()
     href: parsepathfunction.md
   - name: parse_url()
+    displayName: parseurl()
     href: parseurlfunction.md
   - name: parse_urlquery()
+    displayName: parseurlquery()
     href: parseurlqueryfunction.md
   - name: parse_user_agent()
     href: parse-useragentfunction.md
@@ -693,10 +704,11 @@ items:
     href: regexquotefunction.md
   - name: repeat()
     href: repeatfunction.md
-  - name: replace_regex()
+  - name: replace_regex(), replace_string()
     displayName: replace()
     href: replace-regex-function.md
   - name: replace_string()
+    displayName: replace()
     href: replace-string-function.md
   - name: reverse()
     href: reversefunction.md
@@ -772,6 +784,7 @@ items:
   - name: tostring()
     href: tostringfunction.md
   - name: totimespan()
+    displayName: totime()
     href: totimespanfunction.md
   - name: toupper()
     href: toupperfunction.md
@@ -799,7 +812,8 @@ items:
     href: urlencodefunction.md
   - name: url_encode_component()
     href: urlencodecomponentfunction.md
-  - name: weekofyear()
+  - name: week_of_year()
+    displayName: weekofyear()
     href: weekofyearfunction.md
   - name: welch_test()
     href: welch-testfunction.md
@@ -815,10 +829,10 @@ items:
   - name: Aggregation function types
     href: aggregation-functions.md
   - name: arg_max()
-    displayName: last
+    displayName: argmax()
     href: arg-max-aggfunction.md
   - name: arg_min()
-    displayName: first
+    displayName: argmin()
     href: arg-min-aggfunction.md
   - name: avg()
     href: avg-aggfunction.md
@@ -833,12 +847,14 @@ items:
   - name: buildschema()
     href: buildschema-aggfunction.md
   - name: count()
+    displayName: cnt()
     href: count-aggfunction.md
   - name: count_distinct()
     href: count-distinct-aggfunction.md
   - name: count_distinctif()
     href: count-distinctif-aggfunction.md
   - name: countif()
+    displayName: count(predicate)
     href: countif-aggfunction.md
   - name: dcount()
     href: dcount-aggfunction.md
@@ -853,12 +869,14 @@ items:
   - name: make_bag_if()
     href: make-bag-if-aggfunction.md
   - name: make_list()
+    displayName: makelist
     href: makelist-aggfunction.md
   - name: make_list_if()
     href: makelistif-aggfunction.md
   - name: make_list_with_nulls()
     href: make-list-with-nulls-aggfunction.md
   - name: make_set()
+    displayName: makeset()
     href: makeset-aggfunction.md
   - name: make_set_if()
     href: makesetif-aggfunction.md
@@ -883,10 +901,10 @@ items:
     href: sum-aggfunction.md
   - name: sumif()
     href: sumif-aggfunction.md
-  - name: take_any(), any()
+  - name: take_any()
     displayName: any()
     href: take-any-aggfunction.md
-  - name: take_anyif(), anyif()
+  - name: take_anyif()
     displayName: anyif()
     href: take-anyif-aggfunction.md        
   - name: tdigest()

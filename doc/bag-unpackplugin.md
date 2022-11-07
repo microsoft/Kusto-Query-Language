@@ -13,7 +13,7 @@ The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating e
 
 *T* `|` `evaluate` `bag_unpack(` *Column* [`,` *OutputColumnPrefix* ] [`,` *columnsConflict* ] [`,` *ignoredProperties* ] `)` [`:` *OutputSchema*]
 
-## Arguments
+## Parameters
 
 | Name | Type | Required| Description |
 |---|---|---|---|

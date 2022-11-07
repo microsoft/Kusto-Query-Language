@@ -61,7 +61,7 @@ The results table displays only the first 10 rows.
 
 **Example 2**
 
-Find the first time an event with a direct death happened in each state showing all the columns.
+Find the last time an event with a direct death happened in each state showing all the columns.
 
 **\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVcElNLMkodsksSk0uUbBTMABKFJfm5iYWZValKiQWpcfnJlZoBJckFpWEZOam6ihoaSokVSoABUpSAQPollZPAAAA)**\]**
 

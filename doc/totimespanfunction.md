@@ -3,7 +3,7 @@ title: totimespan() - Azure Data Explorer
 description: This article describes totimespan() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/03/2022
 ---
 # totimespan()
 
@@ -12,6 +12,8 @@ Converts input to [timespan](./scalar-data-types/timespan.md) scalar.
 ```kusto
 totimespan("0.00:01:00") == time(1min)
 ```
+
+> **Deprecated aliases:** totime()
 
 ## Syntax
 

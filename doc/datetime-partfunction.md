@@ -3,7 +3,7 @@ title: datetime_part() - Azure Data Explorer
 description: This article describes datetime_part() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/18/2020
+ms.date: 11/03/2022
 ---
 # datetime_part()
 
@@ -12,6 +12,8 @@ Extracts the requested date part as an integer value.
 ```kusto
 datetime_part("Day",datetime(2015-12-14))
 ```
+
+> **Deprecated aliases:** datepart()
 
 ## Syntax
 
@@ -22,7 +24,7 @@ datetime_part("Day",datetime(2015-12-14))
 * `date`: `datetime`
 * `part`: `string`
 
-Possible values of `part`: 
+Possible values of `part`:
 * Year
 * Quarter
 * Month

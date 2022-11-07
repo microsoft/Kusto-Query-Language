@@ -13,9 +13,11 @@ Decodes a base64 string to an array of long values.
 
 `base64_decode_toarray(`*String*`)`
 
-## Arguments
+## Parameters
 
-* *String*: Input base64 string to be decoded from base64 to an array of long values.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *String* | string | &check; |  Input base64 string to be decoded from base64 to an array of long values.|
 
 ## Returns
 

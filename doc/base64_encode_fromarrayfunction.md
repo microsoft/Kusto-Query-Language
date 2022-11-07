@@ -13,15 +13,17 @@ Encodes a base64 string from a bytes array.
 
 `base64_encode_fromarray(`*BytesArray*`)`
 
-## Arguments
+## Parameters
 
-* *BytesArray*: Input bytes array to be encoded into base64 string.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *BytesArray* | dynamic | &check; |  Input bytes array to be encoded into base64 string. |
 
 ## Returns
 
 Returns the base64 string encoded from the bytes array.
 
-* For decoding base64 strings to a UTF-8 string see [base64_decode_tostring()](base64_decode_tostringfunction.md)
+* For decoding base64 strings to a UTF-8 string, see [base64_decode_tostring()](base64_decode_tostringfunction.md)
 * For encoding strings to base64 string see [base64_encode_tostring()](base64_encode_tostringfunction.md)
 * This function is the inverse of [base64_decode_toarray()](base64_decode_toarrayfunction.md)
 

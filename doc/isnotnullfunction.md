@@ -3,17 +3,17 @@ title: isnotnull() - Azure Data Explorer
 description: This article describes isnotnull() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/03/2022
 ---
 # isnotnull()
 
 Returns `true` if the argument is not null.
 
+> **Deprecated aliases:** notnull()
+
 ## Syntax
 
 `isnotnull(`[*value*]`)`
-
-`notnull(`[*value*]`)` - alias for `isnotnull`
 
 ## Example
 

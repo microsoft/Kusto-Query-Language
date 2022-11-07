@@ -13,7 +13,7 @@ Checks whether a dynamic bag column contains a given key.
 
 `bag_has_key(`*bag*`,`*key*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |

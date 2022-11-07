@@ -3,11 +3,13 @@ title: base64_encode_tostring() - Azure Data Explorer
 description: This article describes base64_encode_tostring() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 06/22/2019
+ms.date: 11/03/2022
 ---
 # base64_encode_tostring()
 
 Encodes a string as base64 string.
+
+> **Deprecated aliases:** base64_encodestring()
 
 ## Syntax
 

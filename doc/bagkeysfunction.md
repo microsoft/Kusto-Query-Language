@@ -13,6 +13,12 @@ Enumerates all the root keys in a dynamic property-bag object.
 
 `bag_keys(`*dynamic object*`)`
 
+## Parameters
+
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *dynamic object* | dynamic | &check; | Dynamic property-bag object. |
+
 ## Returns
 
 An array of keys, order is undetermined.

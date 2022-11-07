@@ -13,9 +13,11 @@ Merges `dynamic` property-bags into a `dynamic` property-bag with all properties
 
 `bag_merge(`*bag1*`, `*bag2*`[`,` *bag3*, ...])`
 
-## Arguments
+## Parameters
 
-* *bag1...bagN*: Input `dynamic` property-bags. The function accepts between 2 to 64 arguments.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *bag1...bagN* | dynamic | &check; | Input `dynamic` property-bags. The function accepts between 2 to 64 arguments. |
 
 ## Returns
 

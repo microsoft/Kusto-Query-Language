@@ -9,13 +9,17 @@ ms.date: 11/03/2022
 
 Decodes a base64 string to a UTF-8 string.
 
+> **Deprecated aliases:** base64_decodestring()
+
 ## Syntax
 
 `base64_decode_tostring(`*String*`)`
 
-## Arguments
+## Parameters
 
-* *String*: Input string to be decoded from base64 to UTF-8 string.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+| *String* | string | &check; | Input string to be decoded from base64 to UTF-8 string. |
 
 ## Returns
 

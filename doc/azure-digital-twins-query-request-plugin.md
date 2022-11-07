@@ -16,11 +16,14 @@ Using the plugin, you can query across data in both Azure Digital Twins and any 
 
 `evaluate` `azure_digital_twins_query_request` `(` *AdtInstanceEndpoint* `,` *AdtQuery* `)`
 
-## Arguments
+## Parameters
 
-* *AdtInstanceEndpoint*: A `string` literal indicating the Azure Digital Twins instance endpoint to be queried.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *AdtInstanceEndpoint* | string | &check; | The Azure Digital Twins instance endpoint to be queried. |
 
-* *AdtQuery*: A `string` literal indicating the query that is to be run against the Azure Digital Twins endpoint. This query is written in a custom SQL-like query language for Azure Digital Twins, referred to as the **Azure Digital Twins query language**. For more information, see [**Query language for Azure Digital Twins**](/azure/digital-twins/concepts-query-language).
+| *AdtQuery* | string | &check; | The query that is to be run against the Azure Digital Twins endpoint. This query is written in a custom SQL-like query language for Azure Digital Twins, called the Azure Digital Twins query language. For more information, see [Query language for Azure Digital Twins](/azure/digital-twins/concepts-query-language).|
+
 
 ## Authentication and authorization
 

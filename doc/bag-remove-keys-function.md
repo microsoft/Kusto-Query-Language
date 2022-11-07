@@ -11,9 +11,9 @@ Removes keys and associated values from a `dynamic` property-bag.
 
 ## Syntax
 
-`bag_remove_keys(`*bag*`, `*keys*`)`
+`bag_remove_keys(`*bag*`,`*keys*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |

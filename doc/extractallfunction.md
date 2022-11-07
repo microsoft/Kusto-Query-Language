@@ -3,7 +3,7 @@ title: extract_all() - Azure Data Explorer
 description: This article describes extract_all() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/03/2022
 ---
 # extract_all()
 
@@ -13,6 +13,8 @@ Optionally, retrieve a subset of matching groups.
 ```kusto
 print extract_all(@"(\d+)", "a set of numbers: 123, 567 and 789") // results with the dynamic array ["123", "567", "789"]
 ```
+
+> **Deprecated aliases:** extractall()
 
 ## Syntax
 

@@ -15,7 +15,7 @@ Calculates the [average](avg-aggfunction.md) of *Expr* across the group for whic
 
 `avgif` `(`*Expr*`,` *Predicate*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
