@@ -4137,11 +4137,17 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     new [] {CD(), CD(), CD("ContinousExportName", CompletionHint.None)}));
 
+            var DisableDatabaseStreamingIngestionMaintenanceMode = Command("DisableDatabaseStreamingIngestionMaintenanceMode", 
+                Custom(
+                    Token("disable", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("streamingingestion_maintenance_mode")));
+
             var DisableDatabaseMaintenanceMode = Command("DisableDatabaseMaintenanceMode", 
                 Custom(
                     Token("disable", CompletionKind.CommandPrefix),
                     Token("database"),
-                    Required(rules.DatabaseNameReference, rules.MissingNameReference),
+                    Required(If(Not(Token("streamingingestion_maintenance_mode")), rules.DatabaseNameReference), rules.MissingNameReference),
                     RequiredToken("maintenance_mode"),
                     shape104));
 
@@ -4729,11 +4735,17 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     shape113));
 
+            var EnableDatabaseStreamingIngestionMaintenanceMode = Command("EnableDatabaseStreamingIngestionMaintenanceMode", 
+                Custom(
+                    Token("enable", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("streamingingestion_maintenance_mode")));
+
             var EnableDatabaseMaintenanceMode = Command("EnableDatabaseMaintenanceMode", 
                 Custom(
                     Token("enable", CompletionKind.CommandPrefix),
                     Token("database"),
-                    Required(rules.DatabaseNameReference, rules.MissingNameReference),
+                    Required(If(Not(Token("streamingingestion_maintenance_mode")), rules.DatabaseNameReference), rules.MissingNameReference),
                     RequiredToken("maintenance_mode"),
                     shape104));
 
@@ -7757,6 +7769,7 @@ namespace Kusto.Language.Parsing
                 DeleteTableRecords,
                 DetachDatabase,
                 DisableContinuousExport,
+                DisableDatabaseStreamingIngestionMaintenanceMode,
                 DisableDatabaseMaintenanceMode,
                 DisablePlugin,
                 DropPretendExtentsByProperties,
@@ -7797,6 +7810,7 @@ namespace Kusto.Language.Parsing
                 DropUnusedStoredQueryResultContainers,
                 DropWorkloadGroup,
                 EnableContinuousExport,
+                EnableDatabaseStreamingIngestionMaintenanceMode,
                 EnableDatabaseMaintenanceMode,
                 EnableDisableMaterializedView,
                 EnablePlugin,

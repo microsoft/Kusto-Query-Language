@@ -1731,6 +1731,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol DisableDatabaseMaintenanceMode =
             new CommandSymbol("DisableDatabaseMaintenanceMode", _schema18);
 
+        public static readonly CommandSymbol EnableDatabaseStreamingIngestionMaintenanceMode =
+            new CommandSymbol("EnableDatabaseStreamingIngestionMaintenanceMode", _schema18);
+
+        public static readonly CommandSymbol DisableDatabaseStreamingIngestionMaintenanceMode =
+            new CommandSymbol("DisableDatabaseStreamingIngestionMaintenanceMode", _schema18);
+
         public static readonly CommandSymbol ShowQueryCallTree =
             new CommandSymbol("ShowQueryCallTree", _schema18);
 
@@ -2273,6 +2279,8 @@ namespace Kusto.Language
             DropUnusedStoredQueryResultContainers,
             EnableDatabaseMaintenanceMode,
             DisableDatabaseMaintenanceMode,
+            EnableDatabaseStreamingIngestionMaintenanceMode,
+            DisableDatabaseStreamingIngestionMaintenanceMode,
             ShowQueryCallTree,
             ShowExtentCorruptedDatetime,
             PatchExtentCorruptedDatetime
