@@ -29,5 +29,6 @@ namespace Kusto.Language.Editor
         internal const string CalledFunctionHasErrors = "KS512";
         internal const string AvoidUsingLegacyPartition = "KS513";
         internal const string AvoidUsingHasWithIPv4Strings = "KS514";
+        internal const string PreferUsingOptimizedAlternative = "KS515";
     }
 }

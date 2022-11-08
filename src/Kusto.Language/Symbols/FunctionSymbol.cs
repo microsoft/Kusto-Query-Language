@@ -109,6 +109,12 @@ namespace Kusto.Language.Symbols
         public bool IsObsolete => Alternative != null;
 
         /// <summary>
+        /// The name of an alternative more optimized function to use
+        /// instead of this function when possible.
+        /// </summary>
+        public string OptimizedAlternative { get; }
+
+        /// <summary>
         /// If true, the symbol is hidden from Intellisense.
         /// </summary>
         public override bool IsHidden => _isHidden || base.IsHidden;
@@ -123,7 +129,8 @@ namespace Kusto.Language.Symbols
             ResultNameKind resultNameKind, 
             string resultNamePrefix,
             string description,
-            string alternative)
+            string alternative,
+            string optimizedAlternative)
             : base(name)
         {
             this.Signatures = signatures.ToReadOnly();
@@ -139,12 +146,13 @@ namespace Kusto.Language.Symbols
             this.ResultNameKind = resultNameKind;
             this.ResultNamePrefix = resultNamePrefix;
             this.Alternative = alternative;
+            this.OptimizedAlternative = optimizedAlternative;
         }
 
         public FunctionSymbol(string name, IEnumerable<Signature> signatures, string description = null)
             : this(name, signatures, hidden: false, constantFoldable: false, 
                   resultNameKind: ResultNameKind.Default, resultNamePrefix: null, 
-                  description: description, alternative: null)
+                  description: description, alternative: null, optimizedAlternative: null)
         {
         }
 
@@ -240,7 +248,8 @@ namespace Kusto.Language.Symbols
             Optional<ResultNameKind> resultNameKind = default,
             Optional<string> resultNamePrefix = default,
             Optional<string> description = default,
-            Optional<string> alternative = default)
+            Optional<string> alternative = default,
+            Optional<string> optimizedAlternative = default)
         {
             var newName = name.HasValue ? name.Value : this.Name;
             var newSignatures = signatures.HasValue ? signatures.Value : this.Signatures;
@@ -250,6 +259,7 @@ namespace Kusto.Language.Symbols
             var newResultNamePrefix = resultNamePrefix.HasValue ? resultNamePrefix.Value : this.ResultNamePrefix;
             var newDescription = description.HasValue ? description.Value : this.Description;
             var newAlternative = alternative.HasValue ? alternative.Value : this.Alternative;
+            var newOptimizedAlternative = optimizedAlternative.HasValue ? optimizedAlternative.Value : this.OptimizedAlternative;
 
             if (newName != this.Name
                 || newSignatures != this.Signatures
@@ -258,7 +268,8 @@ namespace Kusto.Language.Symbols
                 || newResultNameKind != this.ResultNameKind
                 || newResultNamePrefix != this.ResultNamePrefix
                 || newDescription != this.Description
-                || newAlternative != this.Alternative)
+                || newAlternative != this.Alternative
+                || newOptimizedAlternative != this.OptimizedAlternative)
             {
                 return new FunctionSymbol(
                     newName,
@@ -268,7 +279,8 @@ namespace Kusto.Language.Symbols
                     newResultNameKind,
                     newResultNamePrefix,
                     newDescription,
-                    newAlternative);
+                    newAlternative,
+                    newOptimizedAlternative);
             }
             else
             {
@@ -346,6 +358,15 @@ namespace Kusto.Language.Symbols
         public FunctionSymbol WithIsObsolete(bool isObsolete, string alternative = null)
         {
             return With(alternative: isObsolete ? alternative ?? "" : null);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="FunctionSymbol"/> that is considered to be less optimized
+        /// than the alternative function.
+        /// </summary>
+        public FunctionSymbol WithOptimizedAlternative(string alternative)
+        {
+            return With(optimizedAlternative: alternative);
         }
 
         /// <summary>

@@ -268,7 +268,7 @@ namespace Kusto.Language
                 new Parameter("expr", ParameterTypeKind.NotDynamic))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("count_distinct")
-            .Hide();
+            .WithOptimizedAlternative("dcount");
 
         public static readonly FunctionSymbol CountDistinctIf =
             new FunctionSymbol("count_distinctif", ScalarTypes.Long,
@@ -276,7 +276,7 @@ namespace Kusto.Language
                 new Parameter("predicate", ScalarTypes.Bool))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("count_distinctif")
-            .Hide();
+            .WithOptimizedAlternative("dcountif");
 
         private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
         {

@@ -55,6 +55,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidUsingHasWithIPv4Strings =
             new AvoidUsingHasWithIPv4StringsAnalyzer();
 
+        public static readonly KustoAnalyzer PreferUsingOptimizedAlternative =
+            new PreferUsingOptimizedAlternative();
+
         /// <summary>
         /// The set of all known kusto analyzers
         /// </summary>
@@ -74,7 +77,8 @@ namespace Kusto.Language.Editor
                  ColumnHasSameNameAsVariable,
                  PreferUsingMaterializedViewIntrinsic,
                  CalledFunctionHasErrors,
-                 AvoidUsingHasWithIPv4Strings
+                 AvoidUsingHasWithIPv4Strings,
+                 PreferUsingOptimizedAlternative,
              }
              .ToReadOnly();
     }
