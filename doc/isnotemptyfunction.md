@@ -13,11 +13,11 @@ Returns `true` if the argument isn't an empty string, and it isn't null.
 isnotempty("") == false
 ```
 
+> **Depricated aliases:** notempty()
+
 ## Syntax
 
 `isnotempty(`[*value*]`)`
-
-`notempty(`[*value*]`)` -- alias of `isnotempty`
 
 ## Example
 

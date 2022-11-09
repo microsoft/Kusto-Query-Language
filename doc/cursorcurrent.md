@@ -1,18 +1,19 @@
 ---
-title: cursor_current(), current_cursor() - Azure Data Explorer
-description: This article describes cursor_current(), current_cursor() in Azure Data Explorer.
+title: cursor_current() - Azure Data Explorer
+description: Learn how to use the cursor_current() function to return a string type value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/10/2019
+ms.date: 11/08/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
-# cursor_current(), current_cursor()
+# cursor_current()
 
 ::: zone pivot="azuredataexplorer"
 
-Retrieves the current value of the cursor of the database in scope. (The names `cursor_current`
-and `current_cursor` are synonyms.)
+Retrieves the current value of the cursor of the database in scope.
+
+> **Deprecated aliases:** current_cursor()
 
 ## Syntax
 
@@ -20,12 +21,12 @@ and `current_cursor` are synonyms.)
 
 ## Returns
 
-Returns a single value of type `string` which encodes the current value of the
+Returns a single value of type `string` that encodes the current value of the
 cursor of the database in scope.
 
 **Notes**
 
-See [database cursors](../management/databasecursor.md) for additional
+See [database cursors](../management/databasecursor.md) for more
 details on database cursors.
 
 ::: zone-end

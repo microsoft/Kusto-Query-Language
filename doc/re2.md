@@ -15,7 +15,7 @@ There are a few functions in Kusto that perform string matching, selection, and 
 - [extract_all()](extractallfunction.md)
 - [matches regex](datatypes-string-operators.md)
 - [parse operator](parseoperator.md)
-- [replace()](replace-regex-function.md)
+- [replace_regex()](replace-regex-function.md)
 - [trim()](trimfunction.md)
 - [trimend()](trimendfunction.md)
 - [trimstart()](trimstartfunction.md)

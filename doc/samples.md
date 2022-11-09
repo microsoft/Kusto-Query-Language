@@ -3,7 +3,7 @@ title: Samples for Kusto Queries - Azure Data Explorer
 description: This article describes common queries and examples that use the Kusto Query Language.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/02/2021
+ms.date: 11/08/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -19,15 +19,15 @@ This article identifies common queries and how you can use the Kusto Query Langu
 To project two or more columns, and then use the columns as the x-axis and y-axis of a chart:
 
 <!-- csl: https://help.kusto.windows.net/Samples  -->
-```kusto 
+```kusto
 StormEvents
-| where isnotempty(EndLocation) 
+| where isnotempty(EndLocation)
 | summarize event_count=count() by EndLocation
 | top 10 by event_count
 | render columnchart
 ```
 
-* The first column forms the x-axis. It can be numeric, date-time, or string. 
+* The first column forms the x-axis. It can be numeric, date-time, or string.
 * Use `where`, `summarize`, and `top` to limit the volume of data you display.
 * Sort the results to define the order of the x-axis.
 
@@ -35,7 +35,7 @@ StormEvents
 
 ## Get sessions from start and stop events
 
-In a log of events, some events mark the start or end of an extended activity or session. 
+In a log of events, some events mark the start or end of an extended activity or session.
 
 |Name|City|SessionId|Timestamp|
 |---|---|---|---|
@@ -55,9 +55,9 @@ let Events = MyLogTable | where ... ;
 Events
 | where Name == "Start"
 | project Name, City, SessionId, StartTime=timestamp
-| join (Events 
+| join (Events
         | where Name == "Stop"
-        | project StopTime=timestamp, SessionId) 
+        | project StopTime=timestamp, SessionId)
     on SessionId
 | project City, SessionId, StartTime, StopTime, Duration = StopTime - StartTime
 ```
@@ -65,8 +65,8 @@ Events
 To match start and stop events with a session ID:
 
 1. Use [let](./letstatement.md) to name a projection of the table that's pared down as far as possible before starting the join.
-1. Use [project](./projectoperator.md) to change the names of the timestamps so that both the start time and the stop time appear in the results. `project` also selects the other columns to view in the results. 
-1. Use [join](./joinoperator.md) to match the start and stop entries for the same activity. A row is created for each activity. 
+1. Use [project](./projectoperator.md) to change the names of the timestamps so that both the start time and the stop time appear in the results. `project` also selects the other columns to view in the results.
+1. Use [join](./joinoperator.md) to match the start and stop entries for the same activity. A row is created for each activity.
 1. Use `project` again to add a column to show the duration of the activity.
 
 Here's the output:
@@ -83,42 +83,42 @@ Suppose that the start and stop events don't conveniently have a session ID that
 Example:
 
 ```kusto
-Events 
-| where Name == "Start" 
+Events
+| where Name == "Start"
 | project City, ClientIp, StartTime = timestamp
 | join  kind=inner
     (Events
-    | where Name == "Stop" 
+    | where Name == "Stop"
     | project StopTime = timestamp, ClientIp)
     on ClientIp
-| extend duration = StopTime - StartTime 
+| extend duration = StopTime - StartTime
     // Remove matches with earlier stops:
-| where  duration > 0  
+| where  duration > 0
     // Pick out the earliest stop for each start and client:
 | summarize arg_min(duration, *) by bin(StartTime,1s), ClientIp
 ```
 
 The `join` matches every start time with all the stop times from the same client IP address. The sample code:
 
-- Removes matches with earlier stop times.
-- Groups by start time and IP address to get a group for each session. 
-- Supplies a `bin` function for the `StartTime` parameter. If you don't do this step, Kusto automatically uses one-hour bins that match some start times with the wrong stop times.
+* Removes matches with earlier stop times.
+* Groups by start time and IP address to get a group for each session.
+* Supplies a `bin` function for the `StartTime` parameter. If you don't do this step, Kusto automatically uses one-hour bins that match some start times with the wrong stop times.
 
-`arg_min` finds the row with the smallest duration in each group, and the `*` parameter passes through all the other columns. 
+`arg_min` finds the row with the smallest duration in each group, and the `*` parameter passes through all the other columns.
 
-The argument prefixes `min_` to each column name. 
+The argument prefixes `min_` to each column name.
 
-:::image type="content" source="images/samples/start-stop-ip-address-table.png" alt-text="Screenshot of a table that lists the results, with columns for the start time, client IP, duration, city, and earliest stop for each client/start time combination."::: 
+:::image type="content" source="images/samples/start-stop-ip-address-table.png" alt-text="Screenshot of a table that lists the results, with columns for the start time, client IP, duration, city, and earliest stop for each client/start time combination.":::
 
 Add code to count the durations in conveniently sized bins. In this example, because of a preference for a bar chart, divide by `1s` to convert the timespans to numbers:
 
-```
+```kusto
     // Count the frequency of each duration:
-    | summarize count() by duration=bin(min_duration/1s, 10) 
+    | summarize count() by duration=bin(min_duration/1s, 10)
       // Cut off the long tail:
     | where duration < 300
       // Display in a bar chart:
-    | sort by duration asc | render barchart 
+    | sort by duration asc | render barchart
 ```
 
 :::image type="content" source="images/samples/number-of-sessions-bar-chart.png" alt-text="Screenshot of a column chart that depicts the number of sessions, with durations in specified ranges.":::
@@ -126,70 +126,70 @@ Add code to count the durations in conveniently sized bins. In this example, bec
 ### Full example
 
 ```kusto
-Logs  
-| filter ActivityId == "ActivityId with Blablabla" 
-| summarize max(Timestamp), min(Timestamp)  
-| extend Duration = max_Timestamp - min_Timestamp 
- 
-wabitrace  
-| filter Timestamp >= datetime(2015-01-12 11:00:00Z)  
-| filter Timestamp < datetime(2015-01-12 13:00:00Z)  
-| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"  	 
-| extend Tenant = extract("tenantName=([^,]+),", 1, EventText) 
-| extend Environment = extract("environmentName=([^,]+),", 1, EventText)  
-| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)  
-| extend TotalLaunchedMaps = extract("totalLaunchedMaps=([^,]+),", 1, EventText, typeof(real))  
-| extend MapsSeconds = extract("mapsMilliseconds=([^,]+),", 1, EventText, typeof(real)) / 1000 
-| extend TotalMapsSeconds = MapsSeconds  / TotalLaunchedMaps 
-| filter Tenant == 'DevDiv' and Environment == 'RollupDev2'  
-| filter TotalLaunchedMaps > 0 
-| summarize sum(TotalMapsSeconds) by UnitOfWorkId  
-| extend JobMapsSeconds = sum_TotalMapsSeconds * 1 
-| project UnitOfWorkId, JobMapsSeconds 
-| join ( 
-wabitrace  
-| filter Timestamp >= datetime(2015-01-12 11:00:00Z)  
-| filter Timestamp < datetime(2015-01-12 13:00:00Z)  
-| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"  
-| extend Tenant = extract("tenantName=([^,]+),", 1, EventText) 
-| extend Environment = extract("environmentName=([^,]+),", 1, EventText)  
-| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)   
-| extend TotalLaunchedReducers = extract("totalLaunchedReducers=([^,]+),", 1, EventText, typeof(real)) 
-| extend ReducesSeconds = extract("reducesMilliseconds=([^,]+)", 1, EventText, typeof(real)) / 1000 
-| extend TotalReducesSeconds = ReducesSeconds / TotalLaunchedReducers 
-| filter Tenant == 'DevDiv' and Environment == 'RollupDev2'  
-| filter TotalLaunchedReducers > 0 
-| summarize sum(TotalReducesSeconds) by UnitOfWorkId  
-| extend JobReducesSeconds = sum_TotalReducesSeconds * 1 
-| project UnitOfWorkId, JobReducesSeconds ) 
-on UnitOfWorkId 
-| join ( 
-wabitrace  
-| filter Timestamp >= datetime(2015-01-12 11:00:00Z)  
-| filter Timestamp < datetime(2015-01-12 13:00:00Z)  
-| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"  
-| extend Tenant = extract("tenantName=([^,]+),", 1, EventText) 
-| extend Environment = extract("environmentName=([^,]+),", 1, EventText)  
-| extend JobName = extract("jobName=([^,]+),", 1, EventText)  
-| extend StepName = extract("stepName=([^,]+),", 1, EventText)  
-| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)  
-| extend LaunchTime = extract("launchTime=([^,]+),", 1, EventText, typeof(datetime))  
-| extend FinishTime = extract("finishTime=([^,]+),", 1, EventText, typeof(datetime)) 
-| extend TotalLaunchedMaps = extract("totalLaunchedMaps=([^,]+),", 1, EventText, typeof(real))  
-| extend TotalLaunchedReducers = extract("totalLaunchedReducers=([^,]+),", 1, EventText, typeof(real)) 
-| extend MapsSeconds = extract("mapsMilliseconds=([^,]+),", 1, EventText, typeof(real)) / 1000 
-| extend ReducesSeconds = extract("reducesMilliseconds=([^,]+)", 1, EventText, typeof(real)) / 1000 
-| extend TotalMapsSeconds = MapsSeconds  / TotalLaunchedMaps  
-| extend TotalReducesSeconds = (ReducesSeconds / TotalLaunchedReducers / ReducesSeconds) * ReducesSeconds  
-| extend CalculatedDuration = (TotalMapsSeconds + TotalReducesSeconds) * time(1s) 
-| filter Tenant == 'DevDiv' and Environment == 'RollupDev2') 
-on UnitOfWorkId 
-| extend MapsFactor = TotalMapsSeconds / JobMapsSeconds 
-| extend ReducesFactor = TotalReducesSeconds / JobReducesSeconds 
-| extend CurrentLoad = 1536 + (768 * TotalLaunchedMaps) + (1536 * TotalLaunchedMaps) 
-| extend NormalizedLoad = 1536 + (768 * TotalLaunchedMaps * MapsFactor) + (1536 * TotalLaunchedMaps * ReducesFactor) 
-| summarize sum(CurrentLoad), sum(NormalizedLoad) by  JobName  
-| extend SaveFactor = sum_NormalizedLoad / sum_CurrentLoad 
+Logs
+| filter ActivityId == "ActivityId with Blablabla"
+| summarize max(Timestamp), min(Timestamp)
+| extend Duration = max_Timestamp - min_Timestamp
+
+wabitrace
+| filter Timestamp >= datetime(2015-01-12 11:00:00Z)
+| filter Timestamp < datetime(2015-01-12 13:00:00Z)
+| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"
+| extend Tenant = extract("tenantName=([^,]+),", 1, EventText)
+| extend Environment = extract("environmentName=([^,]+),", 1, EventText)
+| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)
+| extend TotalLaunchedMaps = extract("totalLaunchedMaps=([^,]+),", 1, EventText, typeof(real))
+| extend MapsSeconds = extract("mapsMilliseconds=([^,]+),", 1, EventText, typeof(real)) / 1000
+| extend TotalMapsSeconds = MapsSeconds  / TotalLaunchedMaps
+| filter Tenant == 'DevDiv' and Environment == 'RollupDev2'
+| filter TotalLaunchedMaps > 0
+| summarize sum(TotalMapsSeconds) by UnitOfWorkId
+| extend JobMapsSeconds = sum_TotalMapsSeconds * 1
+| project UnitOfWorkId, JobMapsSeconds
+| join (
+wabitrace
+| filter Timestamp >= datetime(2015-01-12 11:00:00Z)
+| filter Timestamp < datetime(2015-01-12 13:00:00Z)
+| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"
+| extend Tenant = extract("tenantName=([^,]+),", 1, EventText)
+| extend Environment = extract("environmentName=([^,]+),", 1, EventText)
+| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)
+| extend TotalLaunchedReducers = extract("totalLaunchedReducers=([^,]+),", 1, EventText, typeof(real))
+| extend ReducesSeconds = extract("reducesMilliseconds=([^,]+)", 1, EventText, typeof(real)) / 1000
+| extend TotalReducesSeconds = ReducesSeconds / TotalLaunchedReducers
+| filter Tenant == 'DevDiv' and Environment == 'RollupDev2'
+| filter TotalLaunchedReducers > 0
+| summarize sum(TotalReducesSeconds) by UnitOfWorkId
+| extend JobReducesSeconds = sum_TotalReducesSeconds * 1
+| project UnitOfWorkId, JobReducesSeconds )
+on UnitOfWorkId
+| join (
+wabitrace
+| filter Timestamp >= datetime(2015-01-12 11:00:00Z)
+| filter Timestamp < datetime(2015-01-12 13:00:00Z)
+| filter EventText like "NotifyHadoopApplicationJobPerformanceCounters"
+| extend Tenant = extract("tenantName=([^,]+),", 1, EventText)
+| extend Environment = extract("environmentName=([^,]+),", 1, EventText)
+| extend JobName = extract("jobName=([^,]+),", 1, EventText)
+| extend StepName = extract("stepName=([^,]+),", 1, EventText)
+| extend UnitOfWorkId = extract("unitOfWorkId=([^,]+),", 1, EventText)
+| extend LaunchTime = extract("launchTime=([^,]+),", 1, EventText, typeof(datetime))
+| extend FinishTime = extract("finishTime=([^,]+),", 1, EventText, typeof(datetime))
+| extend TotalLaunchedMaps = extract("totalLaunchedMaps=([^,]+),", 1, EventText, typeof(real))
+| extend TotalLaunchedReducers = extract("totalLaunchedReducers=([^,]+),", 1, EventText, typeof(real))
+| extend MapsSeconds = extract("mapsMilliseconds=([^,]+),", 1, EventText, typeof(real)) / 1000
+| extend ReducesSeconds = extract("reducesMilliseconds=([^,]+)", 1, EventText, typeof(real)) / 1000
+| extend TotalMapsSeconds = MapsSeconds  / TotalLaunchedMaps
+| extend TotalReducesSeconds = (ReducesSeconds / TotalLaunchedReducers / ReducesSeconds) * ReducesSeconds
+| extend CalculatedDuration = (TotalMapsSeconds + TotalReducesSeconds) * time(1s)
+| filter Tenant == 'DevDiv' and Environment == 'RollupDev2')
+on UnitOfWorkId
+| extend MapsFactor = TotalMapsSeconds / JobMapsSeconds
+| extend ReducesFactor = TotalReducesSeconds / JobReducesSeconds
+| extend CurrentLoad = 1536 + (768 * TotalLaunchedMaps) + (1536 * TotalLaunchedMaps)
+| extend NormalizedLoad = 1536 + (768 * TotalLaunchedMaps * MapsFactor) + (1536 * TotalLaunchedMaps * ReducesFactor)
+| summarize sum(CurrentLoad), sum(NormalizedLoad) by  JobName
+| extend SaveFactor = sum_NormalizedLoad / sum_CurrentLoad
 ```
 
 ## Chart concurrent sessions over time
@@ -248,7 +248,7 @@ X
 ```
 
 * Use `todatetime()` because [mv-expand](./mvexpandoperator.md) results in a column of dynamic type.
-* Use `bin()` because, for numeric values and dates, if you don't supply an interval, `summarize` always applies a `bin()` function by using a default interval. 
+* Use `bin()` because, for numeric values and dates, if you don't supply an interval, `summarize` always applies a `bin()` function by using a default interval.
 
 Here's the output:
 
@@ -271,7 +271,7 @@ When the `summarize` operator is applied over a group key that consists of a dat
 let StartTime=ago(12h);
 let StopTime=now()
 T
-| where Timestamp > StartTime and Timestamp <= StopTime 
+| where Timestamp > StartTime and Timestamp <= StopTime
 | where ...
 | summarize Count=count() by bin(Timestamp, 5m)
 ```
@@ -284,7 +284,7 @@ What the code doesn't do is add "null bins"—rows for time bin values between `
 let StartTime=ago(12h);
 let StopTime=now()
 T
-| where Timestamp > StartTime and Timestamp <= StopTime 
+| where Timestamp > StartTime and Timestamp <= StopTime
 | summarize Count=count() by bin(Timestamp, 5m)
 | where ...
 | union ( // 1
@@ -292,10 +292,10 @@ T
   | mv-expand Timestamp=range(StartTime, StopTime, 5m) to typeof(datetime) // 3
   | extend Count=0 // 4
   )
-| summarize Count=sum(Count) by bin(Timestamp, 5m) // 5 
+| summarize Count=sum(Count) by bin(Timestamp, 5m) // 5
 ```
 
-Here's a step-by-step explanation of the preceding query: 
+Here's a step-by-step explanation of the preceding query:
 
 1. Use the `union` operator to add more rows to a table. Those rows are produced by the `union` expression.
 1. The `range` operator produces a table that has a single row and column. The table isn't used for anything other than for `mv-expand` to work on.
@@ -303,23 +303,23 @@ Here's a step-by-step explanation of the preceding query:
 1. Use a `Count` of `0`.
 1. The `summarize` operator groups together bins from the original (left, or outer) argument to `union`. The operator also bins from the inner argument to it (the null bin rows). This process ensures that the output has one row per bin whose value is either zero or the original count.
 
-## Get more from your data by using Kusto with machine learning 
+## Get more from your data by using Kusto with machine learning
 
-Many interesting use cases use machine learning algorithms and derive interesting insights from telemetry data. Often, these algorithms require a strictly structured dataset as their input. The raw log data usually doesn't match the required structure and size. 
+Many interesting use cases use machine learning algorithms and derive interesting insights from telemetry data. Often, these algorithms require a strictly structured dataset as their input. The raw log data usually doesn't match the required structure and size.
 
 Start by looking for anomalies in the error rate of a specific Bing inferences service. The logs table has 65 billion records. The following basic query filters 250,000 errors, and then creates a time series of error count that uses the anomaly detection function [series_decompose_anomalies](series-decompose-anomaliesfunction.md). The anomalies are detected by the Kusto service and are highlighted as red dots on the time series chart.
 
 ```kusto
 Logs
-| where Timestamp >= datetime(2015-08-22) and Timestamp < datetime(2015-08-23) 
-| where Level == "e" and Service == "Inferences.UnusualEvents_Main" 
+| where Timestamp >= datetime(2015-08-22) and Timestamp < datetime(2015-08-23)
+| where Level == "e" and Service == "Inferences.UnusualEvents_Main"
 | summarize count() by bin(Timestamp, 5min)
-| render anomalychart 
+| render anomalychart
 ```
 
-The service identified few time buckets that had suspicious error rates. Use Kusto to zoom into this timeframe. Then, run a query that aggregates on the `Message` column. Try to find the top errors. 
+The service identified few time buckets that had suspicious error rates. Use Kusto to zoom into this timeframe. Then, run a query that aggregates on the `Message` column. Try to find the top errors.
 
-The relevant parts of the entire stack trace of the message are trimmed out, so the results fit better on the page. 
+The relevant parts of the entire stack trace of the message are trimmed out, so the results fit better on the page.
 
 You can see successful identification of the top eight errors. However, next is a long series of errors, because the error message was created by using a format string that contained changing data:
 
@@ -327,16 +327,16 @@ You can see successful identification of the top eight errors. However, next is 
 Logs
 | where Timestamp >= datetime(2015-08-22 05:00) and Timestamp < datetime(2015-08-22 06:00)
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main"
-| summarize count() by Message 
-| top 10 by count_ 
-| project count_, Message 
+| summarize count() by Message
+| top 10 by count_
+| project count_, Message
 ```
 
 |count_|Message
 |---|---
 |7125|ExecuteAlgorithmMethod for method 'RunCycleFromInterimData' has failed...
 |7125|InferenceHostService call failed..System.NullReferenceException: Object reference not set to an instance of an object...
-|7124|Unexpected Inference System error..System.NullReferenceException: Object reference not set to an instance of an object... 
+|7124|Unexpected Inference System error..System.NullReferenceException: Object reference not set to an instance of an object...
 |5112|Unexpected Inference System error..System.NullReferenceException: Object reference not set to an instance of an object..
 |174|InferenceHostService call failed..System.ServiceModel.CommunicationException: There was an error writing to the pipe:...
 |10|ExecuteAlgorithmMethod for method 'RunCycleFromInterimData' has failed...
@@ -369,9 +369,9 @@ Logs
 
 Now, you have a good view into the top errors that contributed to the detected anomalies.
 
-To understand the effect of these errors across the sample system, consider that: 
+To understand the effect of these errors across the sample system, consider that:
 * The `Logs` table contains additional dimensional data, like `Component` and `Cluster`.
-* The new autocluster plugin can help derive component and cluster insight with a simple query. 
+* The new autocluster plugin can help derive component and cluster insight with a simple query.
 
 In the following example, you can clearly see that each of the top four errors is specific to a component. Also, although the top three errors are specific to the DB4 cluster, the fourth error happens across all clusters.
 
@@ -393,25 +393,25 @@ Logs
 
 A common query use case is static mapping of values. Static mapping can help make results more presentable.
 
-For example, in the next table, `DeviceModel` specifies a device model. Using the device model isn't a convenient form of referencing the device name.  
+For example, in the next table, `DeviceModel` specifies a device model. Using the device model isn't a convenient form of referencing the device name. 
 
-|DeviceModel |Count 
+|DeviceModel |Count
 |---|---
-|iPhone5,1 |32 
-|iPhone3,2 |432 
-|iPhone7,2 |55 
-|iPhone5,2 |66 
+|iPhone5,1 |32
+|iPhone3,2 |432
+|iPhone7,2 |55
+|iPhone5,2 |66
 
- Using a friendly name is more convenient:  
+ Using a friendly name is more convenient:
 
-|FriendlyName |Count 
+|FriendlyName |Count
 |---|---
-|iPhone 5 |32 
-|iPhone 4 |432 
-|iPhone 6 |55 
-|iPhone5 |66 
+|iPhone 5 |32
+|iPhone 4 |432
+|iPhone 6 |55
+|iPhone5 |66
 
-The next two examples demonstrate how to change from using a device model to a friendly name to identify a device.  
+The next two examples demonstrate how to change from using a device model to a friendly name to identify a device. 
 
 ### Map by using a dynamic dictionary
 
@@ -435,7 +435,7 @@ let phone_mapping = dynamic(
     "iPhone7,2" : "iPhone 6",
     "iPhone5,2" : "iPhone5"
   });
-Source 
+Source
 | project FriendlyName = phone_mapping[DeviceModel], Count
 ```
 
@@ -449,24 +449,24 @@ Source
 ### Map by using a static table
 
 You also can achieve mapping by using a persistent table and a `join` operator.
- 
+
 1. Create the mapping table only once:
 
     ```kusto
-    .create table Devices (DeviceModel: string, FriendlyName: string) 
+    .create table Devices (DeviceModel: string, FriendlyName: string)
 
-    .ingest inline into table Devices 
+    .ingest inline into table Devices
         ["iPhone5,1","iPhone 5"]["iPhone3,2","iPhone 4"]["iPhone7,2","iPhone 6"]["iPhone5,2","iPhone5"]
     ```
 
 1. Create a table of the device contents:
 
-    |DeviceModel |FriendlyName 
+    |DeviceModel |FriendlyName
     |---|---
-    |iPhone5,1 |iPhone 5 
-    |iPhone3,2 |iPhone 4 
-    |iPhone7,2 |iPhone 6 
-    |iPhone5,2 |iPhone5 
+    |iPhone5,1 |iPhone 5
+    |iPhone3,2 |iPhone 4
+    |iPhone7,2 |iPhone 6
+    |iPhone5,2 |iPhone5
 
 1. Create a test table source:
 
@@ -479,24 +479,24 @@ You also can achieve mapping by using a persistent table and a `join` operator.
 1. Join the tables and run the project:
 
    ```kusto
-   Devices  
-   | join (Source) on DeviceModel  
+   Devices
+   | join (Source) on DeviceModel
    | project FriendlyName, Count
    ```
 
 Here's the output:
 
-|FriendlyName |Count 
+|FriendlyName |Count
 |---|---
-|iPhone 5 |32 
-|iPhone 4 |432 
-|iPhone 6 |55 
-|iPhone5 |66 
+|iPhone 5 |32
+|iPhone 4 |432
+|iPhone 6 |55
+|iPhone5 |66
 
 
 ## Create and use query-time dimension tables
 
-Often, you'll want to join the results of a query with an ad-hoc dimension table that isn't stored in the database. You can define an expression whose result is a table scoped to a single query. 
+Often, you'll want to join the results of a query with an ad-hoc dimension table that isn't stored in the database. You can define an expression whose result is a table scoped to a single query.
 
 For example:
 
@@ -538,11 +538,12 @@ JobHistory
 ## Retrieve the latest records (by timestamp) per identity
 
 Suppose you have a table that includes:
+
 * An `ID` column that identifies the entity with which each row is associated, such as a user ID or a node ID
 * A `timestamp` column that provides the time reference for the row
 * Other columns
 
-You can use the [top-nested operator](topnestedoperator.md) to make a query that returns the latest two records for each value of the `ID` column, where _latest_ is defined as _having the highest value of `timestamp`_:
+You can use the [top-nested operator](topnestedoperator.md) to make a query that returns the latest two records for each value of the `ID` column, where *latest* is defined as having the highest value of `timestamp`:
 
 ```kusto
 datatable(id:string, timestamp:datetime, bla:string)           // #1
@@ -560,11 +561,10 @@ datatable(id:string, timestamp:datetime, bla:string)           // #1
 | project-away dummy0, dummy1, dummy2                          // #5
 ```
 
-
 Here's a step-by-step explanation of the preceding query (the numbering refers to the numbers in the code comments):
 
 1. The `datatable` is a way to produce some test data for demonstration purposes. Normally, you'd use real data here.
-1. This line essentially means _return all distinct values of `id`_. 
+1. This line essentially means _return all distinct values of `id`_.
 1. This line then returns, for the top two records that maximize:
      * The `timestamp` column
      * The columns of the preceding level (here, just `id`)
@@ -637,10 +637,10 @@ Here's the sliding window aggregation query. See the explanation after the query
 
 ```kusto
 let _start = datetime(2018-09-24);
-let _end = _start + 13d; 
-Fruits 
-| extend _bin = bin_at(Timestamp, 1d, _start) // #1 
-| extend _endRange = iif(_bin + 7d > _end, _end, 
+let _end = _start + 13d;
+Fruits
+| extend _bin = bin_at(Timestamp, 1d, _start) // #1
+| extend _endRange = iif(_bin + 7d > _end, _end,
                             iff( _bin + 7d - 1d < _start, _start,
                                 iff( _bin + 7d - 1d < _bin, _bin,  _bin + 7d - 1d)))  // #2
 | extend _range = range(_bin, _endRange, 1d) // #3
@@ -677,22 +677,22 @@ Here's the output:
 The query "stretches" (duplicates) each record in the input table throughout the seven days after its actual appearance. Each record actually appears seven times. As a result, the daily aggregation includes all records of the preceding seven days.
 
 
-Here's a step-by-step explanation of the preceding query: 
+Here's a step-by-step explanation of the preceding query:
 
-1. Bin each record to one day (relative to `_start`). 
-1. Determine the end of the range per record: `_bin + 7d`, unless the value is out of the range of `_start` and `_end`, in which case, it's adjusted. 
-1. For each record, create an array of seven days (timestamps), starting at the current record's day. 
-1. `mv-expand` the array, thus duplicating each record to seven records, one day apart from each other. 
-1. Perform the aggregation function for each day. Due to #4, this step actually summarizes the _past_ seven days. 
+1. Bin each record to one day (relative to `_start`).
+1. Determine the end of the range per record: `_bin + 7d`, unless the value is out of the range of `_start` and `_end`, in which case, it's adjusted.
+1. For each record, create an array of seven days (timestamps), starting at the current record's day.
+1. `mv-expand` the array, thus duplicating each record to seven records, one day apart from each other.
+1. Perform the aggregation function for each day. Due to #4, this step actually summarizes the _past_ seven days.
 1. The data for the first seven days is incomplete because there's no seven-day lookback period for the first seven days. The first seven days are excluded from the final result. In the example, they participate only in the aggregation for 2018-10-01.
 
 ## Find the preceding event
 
-The next example demonstrates how to find a preceding event between two datasets.  
+The next example demonstrates how to find a preceding event between two datasets.
 
 You have two datasets, A and B. For each record in dataset B, find its preceding event in dataset A (that is, the `arg_max` record in A that is still _older_ than B).
 
-Here are the sample datasets: 
+Here are the sample datasets:
 
 ```kusto
 let A = datatable(Timestamp:datetime, ID:string, EventA:string)
@@ -730,7 +730,7 @@ A; B
 |2019-01-01 00:00:04.0000000|y|B|
 |2019-01-01 00:02:00.0000000|z|B|
 
-Expected output: 
+Expected output:
 
 |ID|Timestamp|EventB|A_Timestamp|EventA|
 |---|---|---|---|---|
@@ -741,7 +741,7 @@ Expected output:
 
 We recommend two different approaches for this problem. You can test both on your specific dataset to find the one that is most suitable for your scenario.
 
-> [!NOTE] 
+> [!NOTE]
 > Each approach might run differently on different datasets.
 
 ### Approach 1
@@ -752,7 +752,7 @@ This approach serializes both datasets by ID and timestamp. Then, it groups all 
 A
 | extend A_Timestamp = Timestamp, Kind="A"
 | union (B | extend B_Timestamp = Timestamp, Kind="B")
-| order by ID, Timestamp asc 
+| order by ID, Timestamp asc
 | extend t = iff(Kind == "A" and (prev(Kind) != "A" or prev(Id) != ID), 1, 0)
 | extend t = row_cumsum(t)
 | summarize Timestamp=make_list(Timestamp), EventB=make_list(EventB), arg_max(A_Timestamp, EventA) by t, ID
@@ -769,19 +769,19 @@ The `join` produces all possible candidates, all dataset A records that are olde
 
 In the following example, the lookback period is set to `1m`. The record with ID `z` doesn't have a corresponding `A` event because its `A` event is older by two minutes.
 
-```kusto 
-let _maxLookbackPeriod = 1m;  
+```kusto
+let _maxLookbackPeriod = 1m;
 let _internalWindowBin = _maxLookbackPeriod / 2;
-let B_events = B 
+let B_events = B
     | extend ID = new_guid()
     | extend _time = bin(Timestamp, _internalWindowBin)
-    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin) 
-    | mv-expand _range to typeof(datetime) 
+    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin)
+    | mv-expand _range to typeof(datetime)
     | extend B_Timestamp = Timestamp, _range;
-let A_events = A 
+let A_events = A
     | extend _time = bin(Timestamp, _internalWindowBin)
-    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin) 
-    | mv-expand _range to typeof(datetime) 
+    | extend _range = range(_time - _internalWindowBin, _time + _maxLookbackPeriod, _internalWindowBin)
+    | mv-expand _range to typeof(datetime)
     | extend A_Timestamp = Timestamp, _range;
 B_events
     | join kind=leftouter (
@@ -843,13 +843,13 @@ Operator       |Description                         |Case-sensitive|Example (yie
 `=~`           |Equals                              |No            |`"abc" =~ "ABC"`
 `!~`           |Not equals                          |No            |`"aBc" !~ "xyz"`
 `has`          |Right-side value is a whole term in left-side value |No|`"North America" has "america"`
-`!has`         |Right-side value isn't a full term in left-side value       |No            |`"North America" !has "amer"` 
+`!has`         |Right-side value isn't a full term in left-side value       |No            |`"North America" !has "amer"`
 `has_cs`       |Right-side value is a whole term in left-side value |Yes|`"North America" has_cs "America"`
-`!has_cs`      |Right-side value isn't a full term in left-side value       |Yes            |`"North America" !has_cs "amer"` 
+`!has_cs`      |Right-side value isn't a full term in left-side value       |Yes            |`"North America" !has_cs "amer"`
 `hasprefix`    |Right-side value is a term prefix in left-side value         |No            |`"North America" hasprefix "ame"`
-`!hasprefix`   |Right-side value isn't a term prefix in left-side value     |No            |`"North America" !hasprefix "mer"` 
+`!hasprefix`   |Right-side value isn't a term prefix in left-side value     |No            |`"North America" !hasprefix "mer"`
 `hasprefix_cs`    |Right-side value is a term prefix in left-side value         |Yes            |`"North America" hasprefix_cs "Ame"`
-`!hasprefix_cs`   |Right-side value isn't a term prefix in left-side value     |Yes            |`"North America" !hasprefix_cs "CA"` 
+`!hasprefix_cs`   |Right-side value isn't a term prefix in left-side value     |Yes            |`"North America" !hasprefix_cs "CA"`
 `hassuffix`    |Right-side value is a term suffix in left-side value         |No            |`"North America" hassuffix "ica"`
 `!hassuffix`   |Right-side value isn't a term suffix in left-side value     |No            |`"North America" !hassuffix "americ"`
 `hassuffix_cs`    |Right-side value is a term suffix in left-side value         |Yes            |`"North America" hassuffix_cs "ica"`
@@ -879,7 +879,7 @@ Counts occurrences of a substring within a string. Can match plain strings or us
 countof(text, search [, kind])
 ```
 
-- `text`: The input string 
+- `text`: The input string
 - `search`: Plain string or regex to match inside text
 - `kind`: _normal_ | _regex_ (default: normal).
 
@@ -923,18 +923,18 @@ The following example extracts the last octet of `ComputerIP` from a heartbeat r
 
 ```kusto
 Heartbeat
-| where ComputerIP != "" 
+| where ComputerIP != ""
 | take 1
-| project ComputerIP, last_octet=extract("([0-9]*$)", 1, ComputerIP) 
+| project ComputerIP, last_octet=extract("([0-9]*$)", 1, ComputerIP)
 ```
 
 The following example extracts the last octet, casts it to a *real* type (number), and then calculates the next IP value:
 
 ```kusto
 Heartbeat
-| where ComputerIP != "" 
+| where ComputerIP != ""
 | take 1
-| extend last_octet=extract("([0-9]*$)", 1, ComputerIP, typeof(real)) 
+| extend last_octet=extract("([0-9]*$)", 1, ComputerIP, typeof(real))
 | extend next_ip=(last_octet+1)%255
 | project ComputerIP, last_octet, next_ip
 ```
@@ -946,13 +946,10 @@ let Trace="A=12, B=34, Duration=567, ...";
 print Duration = extract("Duration=([0-9.]+)", 1, Trace, typeof(real));  //result: 567
 print Duration_seconds =  extract("Duration=([0-9.]+)", 1, Trace, typeof(real)) * time(1s);  //result: 00:09:27
 ```
-
-
 ### *isempty*, *isnotempty*, *notempty*
 
 - `isempty` returns `true` if the argument is an empty string or null (see `isnull`).
 - `isnotempty` returns `true` if the argument isn't an empty string or null (see `isnotnull`). Alias: `notempty`.
-
 
 ```kusto
 isempty(value)
@@ -973,13 +970,12 @@ print isempty(5);  // result: false
 Heartbeat | where isnotempty(ComputerIP) | take 1  // return 1 Heartbeat record in which ComputerIP isn't empty
 ```
 
-
-### *parseurl*
+### *parse_url*
 
 Splits a URL into its parts, like protocol, host, and port, and then returns a dictionary object that contains the parts as strings.
 
-```
-parseurl(urlstring)
+```kusto
+parse_url(urlstring)
 ```
 
 #### Example
@@ -990,25 +986,25 @@ print parseurl("http://user:pass@contoso.com/icecream/buy.aspx?a=1&b=2#tag")
 
 Here's the output:
 
-```
+```json
 {
-	"Scheme" : "http",
-	"Host" : "contoso.com",
-	"Port" : "80",
-	"Path" : "/icecream/buy.aspx",
-	"Username" : "user",
-	"Password" : "pass",
-	"Query Parameters" : {"a":"1","b":"2"},
-	"Fragment" : "tag"
+  "Scheme" : "http",
+  "Host" : "contoso.com",
+  "Port" : "80",
+  "Path" : "/icecream/buy.aspx",
+  "Username" : "user",
+  "Password" : "pass",
+  "Query Parameters" : {"a":"1","b":"2"},
+  "Fragment" : "tag"
 }
 ```
 
 ### *replace*
 
-Replaces all regex matches with another string. 
+Replaces all regex matches with another string.
 
-```
-replace(regex, rewrite, input_text)
+```kusto
+replace_regex(regex, rewrite, input_text)
 ```
 
 - `regex`: The regular expression to match by. It can contain capture groups in parentheses \(\).
@@ -1022,8 +1018,8 @@ Returns the text after replacing all matches of regex with evaluations of rewrit
 ```kusto
 SecurityEvent
 | take 1
-| project Activity 
-| extend replaced = replace(@"(\d+) -", @"Activity ID \1: ", Activity) 
+| project Activity
+| extend replaced = replace_regex(@"(\d+) -", @"Activity ID \1: ", Activity)
 ```
 
 Here's the output:
@@ -1070,7 +1066,6 @@ strcat("string1", "string2", "string3")
 ```kusto
 print strcat("hello", " ", "world")	// result: "hello world"
 ```
-
 
 ### *strlen*
 
@@ -1131,7 +1126,7 @@ The following sections give examples of how to work with date and time values wh
 
 ### Date-time basics
 
-The Kusto Query Language has two main data types associated with dates and times: `datetime` and `timespan`. All dates are expressed in UTC. Although multiple date-time formats are supported, the ISO-8601 format is preferred. 
+The Kusto Query Language has two main data types associated with dates and times: `datetime` and `timespan`. All dates are expressed in UTC. Although multiple date-time formats are supported, the ISO-8601 format is preferred.
 
 Timespans are expressed as a decimal followed by a time unit:
 
@@ -1191,7 +1186,7 @@ You might want to express a date-time or timespan value in a time unit other tha
 Event
 | where TimeGenerated > ago(30m)
 | where EventLevelName == "Error"
-| extend timeAgo = now() - TimeGenerated 
+| extend timeAgo = now() - TimeGenerated
 ```
 
 The `timeAgo` column holds values like `00:09:31.5118992`, which are formatted as hh:mm:ss.fffffff. If you want to format these values to the `number` of minutes since the start time, divide that value by `1m`:
@@ -1201,7 +1196,7 @@ Event
 | where TimeGenerated > ago(30m)
 | where EventLevelName == "Error"
 | extend timeAgo = now() - TimeGenerated
-| extend timeAgoMinutes = timeAgo/1m 
+| extend timeAgoMinutes = timeAgo/1m
 ```
 
 ### Aggregations and bucketing by time intervals
@@ -1213,10 +1208,10 @@ Use the following query to get the number of events that occurred every five min
 ```kusto
 Event
 | where TimeGenerated > ago(30m)
-| summarize events_count=count() by bin(TimeGenerated, 5m) 
+| summarize events_count=count() by bin(TimeGenerated, 5m)
 ```
 
-This query produces the following table:  
+This query produces the following table:
 
 |TimeGenerated(UTC)|events_count|
 |--|--|
@@ -1232,7 +1227,7 @@ Another way to create buckets of results is to use functions like `startofday`:
 ```kusto
 Event
 | where TimeGenerated > ago(4d)
-| summarize events_count=count() by startofday(TimeGenerated) 
+| summarize events_count=count() by startofday(TimeGenerated)
 ```
 
 Here's the output:
@@ -1244,7 +1239,6 @@ Here's the output:
 |2018-07-30T00:00:00.000|16,847|
 |2018-07-31T00:00:00.000|12,616|
 |2018-08-01T00:00:00.000|5,416|
-
 
 ### Time zones
 
@@ -1263,30 +1257,28 @@ The following sections give examples of how to aggregate the results of a query 
 
 Count the number of rows in the result set after any filters are applied. The following example returns the total number of rows in the `Perf` table from the last 30 minutes. The results are returned in a column named `count_` unless you assign a specific name to the column:
 
-
 ```kusto
 Perf
-| where TimeGenerated > ago(30m) 
+| where TimeGenerated > ago(30m)
 | summarize count()
 ```
 
 ```kusto
 Perf
-| where TimeGenerated > ago(30m) 
-| summarize num_of_records=count() 
+| where TimeGenerated > ago(30m)
+| summarize num_of_records=count()
 ```
 
 A timechart visualization might be useful to see a trend over time:
 
 ```kusto
-Perf 
-| where TimeGenerated > ago(30m) 
+Perf
+| where TimeGenerated > ago(30m)
 | summarize count() by bin(TimeGenerated, 5m)
 | render timechart
 ```
 
 The output from this example shows the `Perf` record count trend line in five-minute intervals:
-
 
 :::image type="content" source="images/samples/perf-count-line-chart.png" alt-text="Screenshot of a line chart that shows the Perf record count trend line in five-minute intervals.":::
 
@@ -1295,16 +1287,16 @@ The output from this example shows the `Perf` record count trend line in five-mi
 Use `dcount` and `dcountif` to count distinct values in a specific column. The following query evaluates how many distinct computers sent heartbeats in the last hour:
 
 ```kusto
-Heartbeat 
-| where TimeGenerated > ago(1h) 
+Heartbeat
+| where TimeGenerated > ago(1h)
 | summarize dcount(Computer)
 ```
 
 To count only the Linux computers that sent heartbeats, use `dcountif`:
 
 ```kusto
-Heartbeat 
-| where TimeGenerated > ago(1h) 
+Heartbeat
+| where TimeGenerated > ago(1h)
 | summarize dcountif(Computer, OSType=="Linux")
 ```
 
@@ -1313,8 +1305,8 @@ Heartbeat
 To perform a count or other aggregations on subgroups in your data, use the `by` keyword. For example, to count the number of distinct Linux computers that sent heartbeats in each country or region, use this query:
 
 ```kusto
-Heartbeat 
-| where TimeGenerated > ago(1h) 
+Heartbeat
+| where TimeGenerated > ago(1h)
 | summarize distinct_computers=dcountif(Computer, OSType=="Linux") by RemoteIPCountry
 ```
 
@@ -1330,11 +1322,10 @@ Heartbeat
 To analyze even smaller subgroups of your data, add column names to the `by` section. For example, you might want to count the distinct computers from each country or region per type of operating system (`OSType`):
 
 ```kusto
-Heartbeat 
-| where TimeGenerated > ago(1h) 
+Heartbeat
+| where TimeGenerated > ago(1h)
 | summarize distinct_computers=dcountif(Computer, OSType=="Linux") by RemoteIPCountry, OSType
 ```
-
 
 ### Percentile
 
@@ -1342,8 +1333,8 @@ To find the median value, use the `percentile` function with a value to specify 
 
 ```kusto
 Perf
-| where TimeGenerated > ago(30m) 
-| where CounterName == "% Processor Time" and InstanceName == "_Total" 
+| where TimeGenerated > ago(30m)
+| where CounterName == "% Processor Time" and InstanceName == "_Total"
 | summarize percentiles(CounterValue, 50) by Computer
 ```
 
@@ -1351,8 +1342,8 @@ You also can specify different percentiles to get an aggregated result for each:
 
 ```kusto
 Perf
-| where TimeGenerated > ago(30m) 
-| where CounterName == "% Processor Time" and InstanceName == "_Total" 
+| where TimeGenerated > ago(30m)
+| where CounterName == "% Processor Time" and InstanceName == "_Total"
 | summarize percentiles(CounterValue, 25, 50, 75, 90) by Computer
 ```
 
@@ -1364,8 +1355,8 @@ To directly evaluate the variance of a value, use the standard deviation and var
 
 ```kusto
 Perf
-| where TimeGenerated > ago(30m) 
-| where CounterName == "% Processor Time" and InstanceName == "_Total" 
+| where TimeGenerated > ago(30m)
+| where CounterName == "% Processor Time" and InstanceName == "_Total"
 | summarize stdev(CounterValue), variance(CounterValue) by Computer
 ```
 
@@ -1373,20 +1364,20 @@ A good way to analyze the stability of CPU usage is to combine `stdev` with the 
 
 ```kusto
 Perf
-| where TimeGenerated > ago(130m) 
-| where CounterName == "% Processor Time" and InstanceName == "_Total" 
+| where TimeGenerated > ago(130m)
+| where CounterName == "% Processor Time" and InstanceName == "_Total"
 | summarize stdev(CounterValue), percentiles(CounterValue, 50) by Computer
 ```
 
 ### Generate lists and sets
 
-You can use `makelist` to pivot data by the order of values in a specific column. For example, you might want to explore the most common order events that take place on your computers. You can essentially pivot the data by the order of `EventID` values on each computer: 
+You can use `make_list` to pivot data by the order of values in a specific column. For example, you might want to explore the most common order events that take place on your computers. You can essentially pivot the data by the order of `EventID` values on each computer: 
 
 ```kusto
 Event
 | where TimeGenerated > ago(12h)
 | order by TimeGenerated desc
-| summarize makelist(EventID) by Computer
+| summarize make_list(EventID) by Computer
 ```
 
 Here's the output:
@@ -1397,15 +1388,15 @@ Here's the output:
 | computer2 | [326,105,302,301,300,102] |
 | ... | ... |
 
-`makelist` generates a list in the order that data was passed into it. To sort events from oldest to newest, use `asc` in the `order` statement instead of `desc`. 
+`make_list` generates a list in the order that data was passed into it. To sort events from oldest to newest, use `asc` in the `order` statement instead of `desc`. 
 
-You might find it useful to create a list only of distinct values. This list is called a _set_, and you can generate it by using the `makeset` command:
+You might find it useful to create a list only of distinct values. This list is called a _set_, and you can generate it by using the `make_set` command:
 
 ```kusto
 Event
 | where TimeGenerated > ago(12h)
 | order by TimeGenerated desc
-| summarize makeset(EventID) by Computer
+| summarize make_set(EventID) by Computer
 ```
 
 Here's the output:
@@ -1416,11 +1407,11 @@ Here's the output:
 | computer2 | [326,105,302,301,300,102] |
 | ... | ... |
 
-Like `makelist`, `makeset` also works with ordered data. The `makeset` command generates arrays based on the order of the rows that are passed into it.
+Like `make_list`, `make_set` also works with ordered data. The `make_set` command generates arrays based on the order of the rows that are passed into it.
 
 ### Expand lists
 
-The inverse operation of `makelist` or `makeset` is `mv-expand`. The `mv-expand` command expands a list of values to separate rows. It can expand across any number of dynamic columns, including JSON and array columns. For example, you can check the `Heartbeat` table for solutions that sent data from computers that sent a heartbeat in the past hour:
+The inverse operation of `make_list` or `make_set` is `mv-expand`. The `mv-expand` command expands a list of values to separate rows. It can expand across any number of dynamic columns, including JSON and array columns. For example, you can check the `Heartbeat` table for solutions that sent data from computers that sent a heartbeat in the past hour:
 
 ```kusto
 Heartbeat
@@ -1430,7 +1421,7 @@ Heartbeat
 
 Here's the output:
 
-| Computer | Solutions | 
+| Computer | Solutions |
 |--------------|----------------------|
 | computer1 | "security", "updates", "changeTracking" |
 | computer2 | "security", "updates" |
@@ -1448,7 +1439,7 @@ Heartbeat
 
 Here's the output:
 
-| Computer | Solutions | 
+| Computer | Solutions |
 |--------------|----------------------|
 | computer1 | "security" |
 | computer1 | "updates" |
@@ -1459,15 +1450,14 @@ Here's the output:
 | computer3 | "changeTracking" |
 | ... | ... |
 
-
-You can use `makelist` to group items together. In the output, you can see the list of computers per solution:
+You can use `make_list` to group items together. In the output, you can see the list of computers per solution:
 
 ```kusto
 Heartbeat
 | where TimeGenerated > ago(1h)
 | project Computer, split(Solutions, ",")
 | mv-expand Solutions
-| summarize makelist(Computer) by tostring(Solutions) 
+| summarize make_list(Computer) by tostring(Solutions)
 ```
 
 Here's the output:
@@ -1505,7 +1495,7 @@ In the output, the bucket that's associated with "2017-06-06T19:00:00Z" is missi
 
 ```kusto
 Heartbeat
-| make-series count() default=0 on TimeGenerated in range(ago(1d), now(), 1h) by Category 
+| make-series count() default=0 on TimeGenerated in range(ago(1d), now(), 1h) by Category
 ```
 
 Here's the output:
@@ -1519,7 +1509,7 @@ The third element of the *count_* array is 0, as expected. The _TimeGenerated_ a
 
 ```kusto
 Heartbeat
-| make-series count() default=0 on TimeGenerated in range(ago(1d), now(), 1h) by Category 
+| make-series count() default=0 on TimeGenerated in range(ago(1d), now(), 1h) by Category
 | mv-expand TimeGenerated, count_
 | project Category, TimeGenerated, count_
 ```
@@ -1536,9 +1526,7 @@ Here's the output:
 | Direct Agent | 2017-06-06T22:00:00Z | 60 |
 | ... | ... | ... |
 
-
-
-### Narrow results to a set of elements: *let*, *makeset*, *toscalar*, *in*
+### Narrow results to a set of elements: *let*, *make_set*, *toscalar*, *in*
 
 A common scenario is to select the names of specific entities based on a set of criteria, and then filter a different dataset down to that set of entities. For example, you might find computers that are known to have missing updates and identify IP addresses that these computers called out to.
 
@@ -1547,7 +1535,7 @@ Here's an example:
 ```kusto
 let ComputersNeedingUpdate = toscalar(
     Update
-    | summarize makeset(Computer)
+    | summarize make_set(Computer)
     | project set_Computer
 );
 WindowsFirewall
@@ -1561,16 +1549,16 @@ You can use joins to analyze data from multiple tables in the same query. A join
 Here's an example:
 
 ```kusto
-SecurityEvent 
+SecurityEvent
 | where EventID == 4624		// sign-in events
 | project Computer, Account, TargetLogonId, LogonTime=TimeGenerated
 | join kind= inner (
-    SecurityEvent 
+    SecurityEvent
     | where EventID == 4634		// sign-out events
     | project TargetLogonId, LogoffTime=TimeGenerated
 ) on TargetLogonId
 | extend Duration = LogoffTime-LogonTime
-| project-away TargetLogonId1 
+| project-away TargetLogonId1
 | top 10 by Duration desc
 ```
 
@@ -1581,12 +1569,11 @@ If both datasets have columns that have the same name, the columns of the right-
 > [!NOTE]
 > To improve performance, keep only the relevant columns of the joined datasets by using the `project` operator.
 
-
 Use the following syntax to join two datasets in which the joined key has a different name between the two tables:
 
 ```
 Table1
-| join ( Table2 ) 
+| join ( Table2 )
 on $left.key1 == $right.key2
 ```
 
@@ -1635,7 +1622,6 @@ Use `extractjson` to access a specific JSON element in a known path. This functi
 - Use _$_ to refer to the root folder.
 - Use the bracket or dot notation to refer to indexes and elements as illustrated in the following examples.
 
-
 Use brackets for indexes and dots to separate elements:
 
 ```kusto
@@ -1648,7 +1634,7 @@ This example is similar, but it uses only the brackets notation:
 
 ```kusto
 let hosts_report='{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"location":"South_DC", "status":"stopped", "rate":3}]}';
-print hosts_report 
+print hosts_report
 | extend status = extractjson("$['hosts'][0]['status']", hosts_report)
 ```
 
@@ -1656,10 +1642,9 @@ For only one element, you can use only the dot notation:
 
 ```kusto
 let hosts_report=dynamic({"location":"North_DC", "status":"running", "rate":5});
-print hosts_report 
+print hosts_report
 | extend status = hosts_report.status
 ```
-
 
 ### *parsejson*
 
@@ -1667,18 +1652,18 @@ It's easiest to access multiple elements in your JSON structure as a dynamic obj
 
 ```kusto
 let hosts_object = parsejson('{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"location":"South_DC", "status":"stopped", "rate":3}]}');
-print hosts_object 
+print hosts_object
 | extend status0=hosts_object.hosts[0].status, rate1=hosts_object.hosts[1].rate
 ```
 
 ### *arraylength*
 
-Use `arraylength` to count the number of elements in an array:
+Use `array_length` to count the number of elements in an array:
 
 ```kusto
 let hosts_object = parsejson('{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"location":"South_DC", "status":"stopped", "rate":3}]}');
-print hosts_object 
-| extend hosts_num=arraylength(hosts_object.hosts)
+print hosts_object
+| extend hosts_num=array_length(hosts_object.hosts)
 ```
 
 ### *mv-expand*
@@ -1687,7 +1672,7 @@ Use `mv-expand` to break the properties of an object into separate rows:
 
 ```kusto
 let hosts_object = parsejson('{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"location":"South_DC", "status":"stopped", "rate":3}]}');
-print hosts_object 
+print hosts_object
 | mv-expand hosts_object.hosts[0]
 ```
 
@@ -1699,7 +1684,7 @@ Use `buildschema` to get the schema that admits all values of an object:
 
 ```kusto
 let hosts_object = parsejson('{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"location":"South_DC", "status":"stopped", "rate":3}]}');
-print hosts_object 
+print hosts_object
 | summarize buildschema(hosts_object)
 ```
 
@@ -1719,13 +1704,13 @@ The result is a schema in JSON format:
 }
 ```
 
-The schema describes the names of the object fields and their matching data types. 
+The schema describes the names of the object fields and their matching data types.
 
 Nested objects might have different schemas, as in the following example:
 
 ```kusto
 let hosts_object = parsejson('{"hosts": [{"location":"North_DC", "status":"running", "rate":5},{"status":"stopped", "rate":"3", "range":100}]}');
-print hosts_object 
+print hosts_object
 | summarize buildschema(hosts_object)
 ```
 
@@ -1740,7 +1725,7 @@ Begin by reviewing the number of computers per operating system during the past 
 ```kusto
 Heartbeat
 | where TimeGenerated > ago(1h)
-| summarize count(Computer) by OSType  
+| summarize count(Computer) by OSType
 ```
 
 By default, the results display as a table:
@@ -1753,14 +1738,14 @@ For a more useful view, select **Chart**, and then select the **Pie** option to 
 
 ### Timecharts
 
-Show the average and the 50th and 95th percentiles of processor time in bins of one hour. 
+Show the average and the 50th and 95th percentiles of processor time in bins of one hour.
 
 The following query generates multiple series. In the results, you can choose which series to show in the timechart.
 
 ```kusto
 Perf
-| where TimeGenerated > ago(1d) 
-| where CounterName == "% Processor Time" 
+| where TimeGenerated > ago(1d)
+| where CounterName == "% Processor Time"
 | summarize avg(CounterValue), percentiles(CounterValue, 50, 95)  by bin(TimeGenerated, 1h)
 ```
 
@@ -1774,14 +1759,13 @@ A reference line can help you easily identify whether the metric exceeded a spec
 
 ```kusto
 Perf
-| where TimeGenerated > ago(1d) 
-| where CounterName == "% Processor Time" 
+| where TimeGenerated > ago(1d)
+| where CounterName == "% Processor Time"
 | summarize avg(CounterValue), percentiles(CounterValue, 50, 95)  by bin(TimeGenerated, 1h)
 | extend Threshold = 20
 ```
 
 :::image type="content" source="images/samples/multiple-series-threshold-line-chart.png" alt-text="Screenshot that shows a multiple-series line chart with a threshold reference line.":::
-
 
 ### Multiple dimensions
 
@@ -1803,7 +1787,7 @@ You can switch between columns by selecting the drop-down arrow for the column n
 
 ## Smart analytics
 
-This section includes examples that use smart analytics functions in Azure Log Analytics to analyze user activity. You can use these examples to analyze your own applications that are monitored by Azure Application Insights, or use the concepts in these queries for similar analysis on other data. 
+This section includes examples that use smart analytics functions in Azure Log Analytics to analyze user activity. You can use these examples to analyze your own applications that are monitored by Azure Application Insights, or use the concepts in these queries for similar analysis on other data.
 
 ### Cohorts analytics
 
@@ -1815,51 +1799,51 @@ The following example analyzes the number of activities users completed during f
 let startDate = startofweek(bin(datetime(2017-01-20T00:00:00Z), 1d));
 let week = range Cohort from startDate to datetime(2017-03-01T00:00:00Z) step 7d;
 // For each user, we find the first and last timestamp of activity
-let FirstAndLastUserActivity = (end:datetime) 
+let FirstAndLastUserActivity = (end:datetime)
 {
     customEvents
     | where customDimensions["sourceapp"]=="ai-loganalyticsui-prod"
     // Check 30 days back to see first time activity.
     | where timestamp > startDate - 30d
-    | where timestamp < end      
+    | where timestamp < end
     | summarize min=min(timestamp), max=max(timestamp) by user_AuthenticatedId
 };
 let DistinctUsers = (cohortPeriod:datetime, evaluatePeriod:datetime) {
     toscalar (
     FirstAndLastUserActivity(evaluatePeriod)
     // Find members of the cohort: only users that were observed in this period for the first time.
-    | where min >= cohortPeriod and min < cohortPeriod + 7d  
+    | where min >= cohortPeriod and min < cohortPeriod + 7d
     // Pick only the members that were active during the evaluated period or after.
     | where max > evaluatePeriod - 7d
-    | summarize dcount(user_AuthenticatedId)) 
+    | summarize dcount(user_AuthenticatedId))
 };
-week 
+week
 | where Cohort == startDate
 // Finally, calculate the desired metric for each cohort. In this sample, we calculate distinct users but you can change
 // this to any other metric that would measure the engagement of the cohort members.
-| extend 
+| extend
     r0 = DistinctUsers(startDate, startDate+7d),
     r1 = DistinctUsers(startDate, startDate+14d),
     r2 = DistinctUsers(startDate, startDate+21d),
     r3 = DistinctUsers(startDate, startDate+28d),
     r4 = DistinctUsers(startDate, startDate+35d)
-| union (week | where Cohort == startDate + 7d 
-| extend 
+| union (week | where Cohort == startDate + 7d
+| extend
     r0 = DistinctUsers(startDate+7d, startDate+14d),
     r1 = DistinctUsers(startDate+7d, startDate+21d),
     r2 = DistinctUsers(startDate+7d, startDate+28d),
     r3 = DistinctUsers(startDate+7d, startDate+35d) )
-| union (week | where Cohort == startDate + 14d 
-| extend 
+| union (week | where Cohort == startDate + 14d
+| extend
     r0 = DistinctUsers(startDate+14d, startDate+21d),
     r1 = DistinctUsers(startDate+14d, startDate+28d),
     r2 = DistinctUsers(startDate+14d, startDate+35d) )
-| union (week | where Cohort == startDate + 21d 
-| extend 
+| union (week | where Cohort == startDate + 21d
+| extend
     r0 = DistinctUsers(startDate+21d, startDate+28d),
-    r1 = DistinctUsers(startDate+21d, startDate+35d) ) 
-| union (week | where Cohort == startDate + 28d 
-| extend 
+    r1 = DistinctUsers(startDate+21d, startDate+35d) )
+| union (week | where Cohort == startDate + 28d
+| extend
     r0 = DistinctUsers (startDate+28d, startDate+35d) )
 // Calculate the retention percentage for each cohort by weeks
 | project Cohort, r0, r1, r2, r3, r4,
@@ -1867,7 +1851,7 @@ week
           p1 = todouble(r1)/todouble (r0)*100,
           p2 = todouble(r2)/todouble(r0)*100,
           p3 = todouble(r3)/todouble(r0)*100,
-          p4 = todouble(r4)/todouble(r0)*100 
+          p4 = todouble(r4)/todouble(r0)*100
 | sort by Cohort asc
 ```
 
@@ -1886,22 +1870,22 @@ let starttime = endtime-window;
 let interval = 1d;
 let user_bins_to_analyze = 28;
 // Create an array of filters coefficients for series_fir(). A list of '1' in our case will produce a simple sum.
-let moving_sum_filter = toscalar(range x from 1 to user_bins_to_analyze step 1 | extend v=1 | summarize makelist(v)); 
+let moving_sum_filter = toscalar(range x from 1 to user_bins_to_analyze step 1 | extend v=1 | summarize make_list(v));
 // Level of engagement. Users will be counted as engaged if they completed at least this number of activities.
 let min_activity = 1;
 customEvents
-| where timestamp > starttime  
+| where timestamp > starttime
 | where customDimensions["sourceapp"] == "ai-loganalyticsui-prod"
 // We want to analyze users who actually checked out in our website.
 | where (name == "Checkout") and user_AuthenticatedId <> ""
 // Create a series of activities per user.
-| make-series UserClicks=count() default=0 on timestamp 
+| make-series UserClicks=count() default=0 on timestamp
 	in range(starttime, endtime-1s, interval) by user_AuthenticatedId
-// Create a new column that contains a sliding sum. 
+// Create a new column that contains a sliding sum.
 // Passing 'false' as the last parameter to series_fir() prevents normalization of the calculation by the size of the window.
-// For each time bin in the *RollingUserClicks* column, the value is the aggregation of the user activities in the 
-// 28 days that preceded the bin. For example, if a user was active once on 2016-12-31 and then inactive throughout 
-// January, then the value will be 1 between 2016-12-31 -> 2017-01-28 and then 0s. 
+// For each time bin in the *RollingUserClicks* column, the value is the aggregation of the user activities in the
+// 28 days that preceded the bin. For example, if a user was active once on 2016-12-31 and then inactive throughout
+// January, then the value will be 1 between 2016-12-31 -> 2017-01-28 and then 0s.
 | extend RollingUserClicks=series_fir(UserClicks, moving_sum_filter, false)
 // Use the zip() operator to pack the timestamp with the user activities per time bin.
 | project User_AuthenticatedId=user_AuthenticatedId , RollingUserClicksByDay=zip(timestamp, RollingUserClicks)
@@ -1931,14 +1915,14 @@ let rollingDcount = (sliding_window_size: int, event_name:string)
     let window = 90d;
     let starttime = endtime-window;
     let interval = 1d;
-    let moving_sum_filter = toscalar(range x from 1 to sliding_window_size step 1 | extend v=1| summarize makelist(v));    
+    let moving_sum_filter = toscalar(range x from 1 to sliding_window_size step 1 | extend v=1| summarize make_list(v));
     let min_activity = 1;
     customEvents
     | where timestamp > starttime
     | where customDimensions["sourceapp"]=="ai-loganalyticsui-prod"
     | where (name == event_name)
     | where user_AuthenticatedId <> ""
-    | make-series UserClicks=count() default=0 on timestamp 
+    | make-series UserClicks=count() default=0 on timestamp
 		in range(starttime, endtime-1s, interval) by user_AuthenticatedId
     | extend RollingUserClicks=fir(UserClicks, moving_sum_filter, false)
     | project User_AuthenticatedId=user_AuthenticatedId , RollingUserClicksByDay=zip(timestamp, RollingUserClicks)
@@ -1980,9 +1964,9 @@ let minRsquare = 0.8;  // Tune the sensitivity of the detection sensor. Values c
 // Count all Good (Verbose + Info) and Bad (Error + Fatal + Warning) traces, per day.
 traces
 | where timestamp > startDate and timestamp < endDate
-| summarize 
+| summarize
     Verbose = countif(severityLevel == 0),
-    Info = countif(severityLevel == 1), 
+    Info = countif(severityLevel == 1),
     Warning = countif(severityLevel == 2),
     Error = countif(severityLevel == 3),
     Fatal = countif(severityLevel == 4) by bin(timestamp, 1d)
@@ -1991,7 +1975,7 @@ traces
 | extend Ratio = (todouble(Bad) / todouble(Good + Bad))*10000
 | project timestamp , Ratio
 // Create a time series.
-| make-series RatioSeries=any(Ratio) default=0 on timestamp in range(startDate , endDate -1d, 1d) by 'TraceSeverity' 
+| make-series RatioSeries=take_any(Ratio) default=0 on timestamp in range(startDate , endDate -1d, 1d) by 'TraceSeverity' 
 // Apply a 2-line regression to the time series.
 | extend (RSquare2, SplitIdx, Variance2,RVariance2,LineFit2)=series_fit_2lines(RatioSeries)
 // Find out if our 2-line is trending up or down.
@@ -2006,4 +1990,3 @@ traces
 
 
 ::: zone-end
-

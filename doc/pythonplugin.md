@@ -30,12 +30,7 @@ The plugin's runtime is hosted in [sandboxes](../concepts/sandboxes.md), running
   * The default value is `single`.
   * `single`: A single instance of the script will run over the entire query data.
   * `per_node`: If the query before the Python block is distributed, an instance of the script will run on each node, on the data that it contains.
-* *external_artifacts*: An optional `dynamic` literal that is a property bag of name and URL pairs, for artifacts that are accessible from cloud storage. They can be made available for the script to use at runtime.
-  * URLs referenced in this property bag are required to be:
-    * Included in the cluster's [callout policy](../management/calloutpolicy.md).
-    * In a publicly available location, or provide the necessary credentials, as explained in [storage connection strings](../api/connection-strings/storage-connection-strings.md).
-  * The artifacts are made available for the script to consume from a local temporary directory, `.\Temp`. The names provided in the property bag are used as the local file names. See [Examples](#examples).
-  * For more information, see [Install packages for the Python plugin](#install-packages-for-the-python-plugin). 
+* *external_artifacts*: An optional `dynamic` literal that is a property bag of name and URL pairs, for artifacts that are accessible from cloud storage. See more [here](#using-external-artifacts).
 * *spill_to_disk*: An optional `boolean` literal specifying an alternative method for serializing the input table to the Python sandbox. For serializing big tables set it to `true` to speed up the serialization and significantly reduce the sandbox memory consumption. Default is `false` as this parameter is experimental.
 
 ## Reserved Python variables
@@ -159,6 +154,21 @@ print "This is an example for using 'external_artifacts'"
         pack('gain', 100, 'cycles', 4))
     | render linechart 
     ```
+
+## Using External Artifacts
+
+External artifacts from cloud storage can be made available for the script and used at runtime.
+
+The URLs referenced by the external artifacts property must be:
+  * Included in the cluster's [callout policy](../management/calloutpolicy.md).
+  * In a publicly available location, or provide the necessary credentials, as explained in [storage connection strings](../api/connection-strings/storage-connection-strings.md).
+
+  > [!NOTE]
+  > When authenticating external artifacts using Managed Identities, the `SandboxArtifacts` usage must be defined on the cluster level [managed identity policy](../management/managed-identity-policy.md).
+
+The artifacts are made available for the script to consume from a local temporary directory, `.\Temp`. The names provided in the property bag are used as the local file names. See [Examples](#examples).
+
+For information regarding referencing external packages, see [Install packages for the Python plugin](#install-packages-for-the-python-plugin).
 
 ## Install packages for the Python plugin
 

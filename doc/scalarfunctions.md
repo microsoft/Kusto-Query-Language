@@ -202,14 +202,17 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[series_add()](series-addfunction.md)|Calculates the element-wise addition of two numeric series inputs.|
 |[series_asin()](series-asinfunction.md)|Calculates the element-wise arcsine function of the numeric series input.|
 |[series_atan()](series-atanfunction.md)|Calculates the element-wise arctangent function of the numeric series input.|
+|[series_ceiling()](series-ceiling-function.md)|Calculates the element-wise ceiling function of the numeric series input.|
 |[series_cos()](series-cosfunction.md)|Calculates the element-wise cosine function of the numeric series input.|
 |[series_divide()](series-dividefunction.md)|Calculates the element-wise division of two numeric series inputs.|
 |[series_equals()](series-equalsfunction.md)|Calculates the element-wise equals (`==`) logic operation of two numeric series inputs.|
 |[series_exp()](series-expfunction.md)|Calculates the element-wise base-e exponential function (e^x) of the numeric series input.|
+|[series_floor()](series-floor-function.md)|Calculates the element-wise floor function of the numeric series input.|
 |[series_greater()](series-greaterfunction.md)|Calculates the element-wise greater (`>`) logic operation of two numeric series inputs.|
 |[series_greater_equals()](series-greater-equalsfunction.md)|Calculates the element-wise greater or equals (`>=`) logic operation of two numeric series inputs.|
 |[series_less()](series-lessfunction.md)|Calculates the element-wise less (`<`) logic operation of two numeric series inputs.|
 |[series_less_equals()](series-less-equalsfunction.md)|Calculates the element-wise less or equal (`<=`) logic operation of two numeric series inputs.|
+|[series_log()](series-log-function.md)|Calculates the element-wise natural logarithm function (base-e) of the numeric series input.|
 |[series_multiply()](series-multiplyfunction.md)|Calculates the element-wise multiplication of two numeric series inputs.|
 |[series_not_equals()](series-not-equalsfunction.md)|Calculates the element-wise not equals (`!=`) logic operation of two numeric series inputs.|
 |[series_pow()](series-powfunction.md)|Calculates the element-wise power of two numeric series inputs.|
@@ -390,7 +393,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[hash()](hashfunction.md)|Returns a hash value for the input value.|
 |[hash_combine()](hash_combinefunction.md)|Combines two or more hash values.|
 |[hash_many()](hash_manyfunction.md)|Returns a combined hash value of multiple values.|
-|[hash_md5()](md5hashfunction.md)|Returns a MD5 hash value for the input value.|
+|[hash_md5()](md5hashfunction.md)|Returns an MD5 hash value for the input value.|
 |[hash_sha1()](sha1-hash-function.md)|Returns a SHA1 hash value for the input value.|
 |[hash_sha256()](sha256hashfunction.md)|Returns a SHA256 hash value for the input value.|
 |[hash_xxhash64()](hash-xxhash64-function.md)|Returns an XXHASH64 hash value for the input value.|

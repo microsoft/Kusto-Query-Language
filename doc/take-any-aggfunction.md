@@ -10,8 +10,10 @@ ms.date: 08/14/2022
 Arbitrarily chooses one record for each group in a [summarize operator](summarizeoperator.md),
 and returns the value of one or more expressions over each such record.
 
+> **Deprecated aliases:** any()
+
 > [!NOTE]
-> `any()` has been deprecated in favor of `take_any()`. The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
+> The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
 
 ## Syntax
 

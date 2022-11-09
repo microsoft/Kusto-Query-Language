@@ -3,7 +3,7 @@ title: geo_polygon_to_s2cells() - Azure Data Explorer
 description: This article describes geo_polygon_to_s2cells() in Azure Data Explorer.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 05/10/2020
+ms.date: 11/08/2022
 ---
 # geo_polygon_to_s2cells()
 
@@ -136,7 +136,7 @@ EarthAtNight
 | extend covering = geo_polygon_to_s2cells(polygon, intersection_level_hint)
 | mv-apply c = covering to typeof(string) on
 (
-    summarize is_intersects = anyif(1, array_index_of(area_of_interest_covering, c) != -1)
+    summarize is_intersects = take_anyif(1, array_index_of(area_of_interest_covering, c) != -1)
 )
 | where is_intersects == 1
 | count

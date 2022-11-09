@@ -3,7 +3,7 @@ title: reduce operator - Azure Data Explorer
 description: This article describes reduce operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/08/2022
 ---
 # reduce operator
 
@@ -39,7 +39,6 @@ many rows in the input to the operator are represented by this pattern, and `Rep
 is one value from the input that falls into this group.
 
 If `[kind=source]` is specified, the operator will append the `Pattern` column to the existing rows in the table (instead of aggregating by `Pattern`).
-Note that the syntax an schema of this flavor might be subjected to future changes.
 
 For example, the result of `reduce by city` might include: 
 
@@ -75,7 +74,7 @@ Trace | take 10000
 // We will reduce the Text column which includes random GUIDs.
 // As random GUIDs interfere with the reduce operation, replace them all
 // by the string "GUID".
-| extend Text=replace(@"[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}", @"GUID", Text)
+| extend Text=replace_regex(@"[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}", @"GUID", Text)
 // Now perform the reduce. In case there are other "quasi-random" identifiers with embedded '-'
 // or '_' characters in them, treat these as non-term-breakers.
 | reduce by Text with characters="-_"

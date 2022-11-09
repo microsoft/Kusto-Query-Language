@@ -1,9 +1,9 @@
 ---
-title: take-anyif() (aggregation function) - Azure Data Explorer
-description: This article describes take-anyif() (aggregation function) in Azure Data Explorer.
+title: take_anyif() (aggregation function) - Azure Data Explorer
+description: Learn how to use the take_anyif() function to return the value of an arbitrarily selected record for which the predicate is "true".
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/14/2022
+ms.date: 11/08/2022
 ---
 # take_anyif() (aggregation function)
 
@@ -12,8 +12,10 @@ is "true". The function returns the value of an expression over each such record
 
 This function is useful when you want to get a sample value of one column per value of the compound group key, subject to some predicate that is *true*. If such a value is present, the function attempts to return a non-null/non-empty value.
 
+> **Deprecated aliases:** anyif()
+
 > [!NOTE]
-> `anyif()` has been deprecated in favor of `take_anyif()`. The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
+> The deprecated version adds `any_` prefix to the columns returned by the `any()` aggregation.
 
 ## Syntax
 
