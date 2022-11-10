@@ -1,9 +1,9 @@
 ---
 title: base64_decode_toguid() - Azure Data Explorer
-description: This article describes base64_decode_toguid() in Azure Data Explorer.
+description: Learn how to use base64_decode_toguid() function to return a GUID from a base64 string. 
 ms.reviewer: alexans
 ms.topic: reference 
-ms.date: 08/31/2021
+ms.date: 11/07/2022
 ---
 # base64_decode_toguid()
 

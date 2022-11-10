@@ -1,9 +1,9 @@
 ---
 title: beta_cdf() - Azure Data Explorer
-description: This article describes beta_cdf() in Azure Data Explorer.
+description: Learn how to use the beta_cdf() function to return a standard beta cumulative distribution function.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/07/2022
 ---
 # beta_cdf()
 
@@ -19,7 +19,7 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 ## Syntax
 
-`beta_cdf(`*x*`, `*alpha*`, `*beta*`)`
+`beta_cdf(`*x*`,` *alpha*`,` *beta*`)`
 
 ## Arguments
 
@@ -32,7 +32,6 @@ The beta distribution is commonly used to study variation in the percentage of s
 * The [cumulative beta distribution function](https://en.wikipedia.org/wiki/Beta_distribution#Cumulative_distribution_function).
 
 **Notes**
-
 If any argument is nonnumeric, beta_cdf() returns null value.
 
 If x < 0 or x > 1, beta_cdf() returns NaN value.

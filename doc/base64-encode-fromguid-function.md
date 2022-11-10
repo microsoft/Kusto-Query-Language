@@ -1,9 +1,9 @@
 ---
 title: base64_encode_fromguid() - Azure Data Explorer
-description: This article describes base64_encode_fromguid() in Azure Data Explorer.
+description: Learn how to use the base64_encode_fromguid() function to return a base64 string from a GUID.
 ms.reviewer: alexans
 ms.topic: reference 
-ms.date: 08/31/2021
+ms.date: 11/07/2022
 ---
 # base64_encode_fromguid()
 

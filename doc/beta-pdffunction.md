@@ -1,9 +1,9 @@
 ---
 title: beta_pdf() - Azure Data Explorer
-description: This article describes beta_pdf() in Azure Data Explorer.
+description: Learn how to use the beta_pdf() function to return the beta probability density function. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/07/2022
 ---
 # beta_pdf()
 
@@ -17,7 +17,7 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 ## Syntax
 
-`beta_pdf(`*x*`, `*alpha*`, `*beta*`)`
+`beta_pdf(`*x*`,` *alpha*`,` *beta*`)`
 
 ## Arguments
 
@@ -30,7 +30,6 @@ The beta distribution is commonly used to study variation in the percentage of s
 * The [probability beta density function](https://en.wikipedia.org/wiki/Beta_distribution#Probability_density_function).
 
 **Notes**
-
 If any argument is nonnumeric, beta_pdf() returns null value.
 
 If x ≤ 0 or 1 ≤ x, beta_pdf() returns NaN value.

@@ -1,13 +1,13 @@
 ---
 title: beta_inv() - Azure Data Explorer
-description: This article describes beta_inv() in Azure Data Explorer.
+description: Learn how to use the beta_inv() function to return the inverse of the beta cumulative probability density function.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/07/2022
 ---
 # beta_inv()
 
-Returns the inverse of the beta cumulative probability beta density function.
+Returns the inverse of the beta cumulative probability density function.
 
 ```kusto
 beta_inv(0.1, 10.0, 50.0)
@@ -19,7 +19,7 @@ The beta distribution can be used in project planning to model probable completi
 
 ## Syntax
 
-`beta_inv(`*probability*`, `*alpha*`, `*beta*`)`
+`beta_inv(`*probability*`,`*alpha*`,`*beta*`)`
 
 ## Arguments
 
@@ -32,7 +32,6 @@ The beta distribution can be used in project planning to model probable completi
 * The inverse of the beta cumulative probability density function [beta_cdf()](./beta-cdffunction.md)
 
 **Notes**
-
 If any argument is nonnumeric, beta_inv() returns null value.
 
 If alpha ≤ 0 or beta ≤ 0, beta_inv() returns the null value.

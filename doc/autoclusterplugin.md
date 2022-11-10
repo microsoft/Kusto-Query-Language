@@ -1,9 +1,9 @@
 ---
 title: autocluster plugin - Azure Data Explorer
-description: Learn how to use the autocluster() function to find common patterns in data. 
+description: Learn how to use the autocluster plugin to find common patterns in data. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/02/2022
+ms.date: 11/07/2022
 ---
 # autocluster plugin
 
