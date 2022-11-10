@@ -30,7 +30,7 @@ namespace Kusto.Language.Editor
         public abstract CodeActionResult ApplyAction(
             KustoCodeService serive,
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken);

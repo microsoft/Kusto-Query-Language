@@ -60,27 +60,32 @@ namespace Kusto.Language.Editor
                 && selectionDiagnostics.Count > 1)
             {
                 var primaryAction = actions[originalCount];
-                var relatedActions = new List<CodeAction>();
+                var relatedActions = new List<ApplyAction>();
                 var tmpActions = new List<CodeAction>();
 
                 foreach (var dx in selectionDiagnostics)
                 {
                     tmpActions.Clear();
                     GetFixAction(code, dx, options, tmpActions, cancellationToken);
-                    relatedActions.AddRange(tmpActions.Where(a => a.Name == primaryAction.Name));
+                    relatedActions.AddRange(tmpActions.OfType<ApplyAction>().Where(a => a.Kind == primaryAction.Kind));
                 }
 
-                // if there are multiple related actions then add a fix all action too.
-                // (note: if there is only one action this is just the primary action.
+                // if there are multiple related actions then change action to a menu
+                // with the original action and a fix all action.
                 if (relatedActions.Count > 1)
                 {
-                    var fixAllAction = 
-                        new CodeAction(
-                            primaryAction.Name + " - all", 
-                            "Apply to all occurences in query or selection.")
-                        .WithRelatedActions(relatedActions);
+                    // replace action with menu of choices
+                    var newAction =
+                        CodeAction.CreateMenu(
+                            primaryAction.Title,
+                            primaryAction.Description,
+                            new []
+                            {
+                                primaryAction.WithTitle("Apply"),
+                                CodeAction.CreateFixAll("Fix All", "Apply to all occurences in query or selection.", relatedActions)
+                            });
 
-                    actions.Add(fixAllAction);
+                    actions[originalCount] = newAction;
                 }
             }
         }
@@ -102,15 +107,15 @@ namespace Kusto.Language.Editor
         /// </summary>
         public virtual CodeActionResult ApplyFixAction(
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            if (action.RelatedActions.Count > 0)
+            if (action is MultiAction ma)
             {
-                // assume this is an fix all action
-                return ApplyFixActions(code, action.RelatedActions, caretPosition, options, cancellationToken);
+                // apply the step actions
+                return ApplyFixActions(code, ma.Actions, caretPosition, options, cancellationToken);
             }
             else
             {
@@ -120,7 +125,7 @@ namespace Kusto.Language.Editor
 
         protected virtual CodeActionResult ApplyFixActions(
             KustoCode code,
-            IReadOnlyList<CodeAction> actions,
+            IReadOnlyList<ApplyAction> actions,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
@@ -157,10 +162,17 @@ namespace Kusto.Language.Editor
 
         private static bool EditContainsPosition(IReadOnlyList<StringEdit> edits, int position)
         {
-            var min = edits.Min(a => a.Start);
-            var max = edits.Max(a => a.Start + a.DeleteLength);
+            if (edits.Count > 0)
+            {
+                var min = edits.Min(a => a.Start);
+                var max = edits.Max(a => a.Start + a.DeleteLength);
 
-            return position >= min && position < max;
+                return position >= min && position < max;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private bool AreNonOverlapping(IReadOnlyList<StringEdit> edits)
@@ -176,7 +188,7 @@ namespace Kusto.Language.Editor
 
         protected virtual FixResult GetFixEdits(
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int cursorPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)

@@ -5403,6 +5403,12 @@ namespace Kusto.Language.Parsing
                     Token("cluster"),
                     Token("blockedprincipals")));
 
+            var ShowClusterDetails = Command("ShowClusterDetails", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("details")));
+
             var ShowClusterExtentsMetadata = Command("ShowClusterExtentsMetadata", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -7855,6 +7861,7 @@ namespace Kusto.Language.Parsing
                 ShowCertificates,
                 ShowClusterAdminState,
                 ShowClusterBlockedPrincipals,
+                ShowClusterDetails,
                 ShowClusterExtentsMetadata,
                 ShowClusterExtents,
                 ShowClusterJournal,

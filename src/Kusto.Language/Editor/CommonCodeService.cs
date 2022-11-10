@@ -69,7 +69,7 @@ namespace Kusto.Language.Editor
         }
 
         public override CodeActionResult ApplyCodeAction(
-            CodeAction codeAction, 
+            ApplyAction codeAction, 
             int cursorPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)

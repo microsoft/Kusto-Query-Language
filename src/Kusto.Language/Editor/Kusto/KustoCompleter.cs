@@ -474,6 +474,8 @@ namespace Kusto.Language.Editor
                 ? Binder.GetRowScope(this.code.Tree, position, this.code.Globals, this.cancellationToken)
                 : null;
 
+            var symbolItems = new List<CompletionItem>();
+
             foreach (var symbol in symbols)
             {
                 // don't show completion for hidden symbols
@@ -489,14 +491,20 @@ namespace Kusto.Language.Editor
                         continue;
                 }
 
-                var item = GetSymbolCompletionItem(symbol, contextNode, nameOnly: isCommand);
+                symbolItems.Clear();
+                GetCompletionItemsForSymbol(symbol, contextNode, nameOnly: isCommand, items: symbolItems);
 
-                if (ShouldAugmentSymbolCompletionItem(symbol, hint))
+                foreach (var item in symbolItems)
                 {
-                    item = GetAugmentedCompletionItem(item);
+                    if (ShouldAugmentSymbolCompletionItem(symbol, hint))
+                    {
+                        builder.Add(GetAugmentedCompletionItem(item));
+                    }
+                    else
+                    {
+                        builder.Add(item);
+                    }
                 }
-
-                builder.Add(item);
             }
 
             return CompletionMode.Combined;
@@ -555,7 +563,7 @@ namespace Kusto.Language.Editor
 
         private static readonly string AfterQueryStart = "\n| ";
 
-        private CompletionItem GetSymbolCompletionItem(Symbol symbol, SyntaxNode contextNode, bool nameOnly)
+        private void GetCompletionItemsForSymbol(Symbol symbol, SyntaxNode contextNode, bool nameOnly, List<CompletionItem> items)
         {
             var kind = GetCompletionKind(symbol);
             string editName = KustoFacts.BracketNameIfNecessary(symbol.Name);
@@ -588,27 +596,31 @@ namespace Kusto.Language.Editor
 
                     if (IsStartOfQuery(contextNode))
                     {
-                        return new CompletionItem(
-                            kind,
-                            displayText,
-                            insertionText + AfterQueryStart, // add | for start of query
-                            matchText: matchText,
-                            priority: priority);
+                        items.Add(
+                            new CompletionItem(
+                                kind,
+                                displayText,
+                                insertionText + AfterQueryStart, // add | for start of query
+                                matchText: matchText,
+                                priority: priority));
                     }
                     else
                     {
-                        return new CompletionItem(
-                            kind,
-                            displayText,
-                            insertionText,
-                            matchText: matchText,
-                            priority: priority);
+                        items.Add(
+                            new CompletionItem(
+                                kind,
+                                displayText,
+                                insertionText,
+                                matchText: matchText,
+                                priority: priority));
                     }
+                    break;
 
                 case FunctionSymbol f:
                     if (nameOnly)
                     {
-                        return new CompletionItem(kind, f.Name, editName);
+                        items.Add(new CompletionItem(kind, f.Name, editName));
+                        return;
                     }
 
                     var builtIn = this.code.Globals.IsBuiltInFunction(f);
@@ -629,11 +641,11 @@ namespace Kusto.Language.Editor
 
                         if (IsStartOfQuery(contextNode))
                         {
-                            return new CompletionItem(kind, fdisplay, editName + AfterQueryStart, matchText: f.Name);
+                            items.Add(new CompletionItem(kind, fdisplay, editName + AfterQueryStart, matchText: f.Name));
                         }
                         else
                         {
-                            return new CompletionItem(kind, fdisplay, editName, matchText: f.Name);
+                            items.Add(new CompletionItem(kind, fdisplay, editName, matchText: f.Name));
                         }
                     }
                     else
@@ -642,52 +654,65 @@ namespace Kusto.Language.Editor
 
                         if (this.options.EnableParameterInjection && f.MaxArgumentCount == 1 && !builtIn && !isInvoke)
                         {
-                            return new CompletionItem(kind, fdisplay, editName + "({parameter})", matchText: f.Name);
+                            items.Add(new CompletionItem(kind, fdisplay, editName + "({parameter})", matchText: f.Name));
                         }
                         else
                         {
-                            return new CompletionItem(kind, fdisplay, editName + "(", ")", matchText: f.Name);
+                            items.Add(new CompletionItem(kind, fdisplay, editName + "(", ")", matchText: f.Name));
                         }
                     }
+                    break;
 
                 case PatternSymbol p:
-                    return new CompletionItem(kind, p.Display, editName + "(", ")", matchText: p.Name);
+                    items.Add(new CompletionItem(kind, p.Display, editName + "(", ")", matchText: p.Name));
+                    break;
 
                 case VariableSymbol v:
                     if (v.Type is FunctionSymbol)
                     {
-                        return GetSymbolCompletionItem(v.Type, contextNode, nameOnly);
+                        GetCompletionItemsForSymbol(v.Type, contextNode, nameOnly, items);
                     }
                     else if (v.Type is TableSymbol && IsStartOfQuery(contextNode))
                     {
-                        return new CompletionItem(kind, v.Name, editName + AfterQueryStart);
+                        items.Add(new CompletionItem(kind, v.Name, editName + AfterQueryStart));
                     }
                     else
                     {
-                        return new CompletionItem(kind, v.Name, editName);
+                        items.Add(new CompletionItem(kind, v.Name, editName));
                     }
+                    break;
 
                 case ParameterSymbol p:
                     if (p.Type is FunctionSymbol)
                     {
-                        return GetSymbolCompletionItem(p.Type, contextNode, nameOnly);
+                        GetCompletionItemsForSymbol(p.Type, contextNode, nameOnly, items);
                     }
                     else
                     {
-                        return new CompletionItem(kind, symbol.Name, editName);
+                        items.Add(new CompletionItem(kind, symbol.Name, editName));
                     }
+                    break;
 
                 case DatabaseSymbol d:
-                    return new CompletionItem(CompletionKind.Database, d.Name, editName);
+                    items.Add(new CompletionItem(CompletionKind.Database, d.Name, editName));
+                    if (!string.IsNullOrEmpty(d.AlternateName))
+                    {
+                        string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName);
+                        items.Add(new CompletionItem(CompletionKind.Database, d.AlternateName, altEditName));
+                    }
+                    break;
 
                 case ClusterSymbol cl:
-                    return new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBracketedName(cl.Name));
+                    items.Add(new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBracketedName(cl.Name)));
+                    break;
 
                 case OptionSymbol opt:
-                    return new CompletionItem(CompletionKind.Option, opt.Name, editName);
+                    items.Add(new CompletionItem(CompletionKind.Option, opt.Name, editName));
+                    break;
 
                 default:
-                    return new CompletionItem(kind, symbol.Name, editName);
+                    items.Add(new CompletionItem(kind, symbol.Name, editName));
+                    break;
             }
         }
 
@@ -1209,7 +1234,7 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Get's completion items for local variables in scope that are type requested type
+        /// Get's completion items for local variables in scope that are the requested type
         /// </summary>
         private void GetMatchingSymbolCompletions(SymbolMatch match, ScalarSymbol type, int position, SyntaxNode contextNode, CompletionBuilder builder)
         {
@@ -1218,12 +1243,18 @@ namespace Kusto.Language.Editor
             Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, match, IncludeFunctionKind.All, symbols, this.cancellationToken);
 
             // get completion items for the symbols with a matching scalar type
+            var symbolItems = new List<CompletionItem>();
             foreach (var symbol in symbols)
             {
                 if (GetScalarType(symbol) == type)
                 {
-                    var item = GetSymbolCompletionItem(symbol, contextNode, nameOnly: false);
-                    builder.Add(item);
+                    symbolItems.Clear();
+                    GetCompletionItemsForSymbol(symbol, contextNode, nameOnly: false, items: symbolItems);
+
+                    foreach (var item in symbolItems)
+                    {
+                        builder.Add(item);
+                    }
                 }
             }
         }

@@ -300,7 +300,7 @@ namespace Kusto.Language.Editor
                         actor.GetActions(this, code, position, selectionStart, selectionLength, options, actorActions, waitForAnalysis, cancellationToken);
 
                         // add actor name to action data so we can find the actor later when action is applied
-                        actions.AddRange(actorActions.Select(a => a.AddData(actor.Name)));
+                        actions.AddRange(actorActions.Select(a => AddActorName(a, actor.Name)));
                     }
                     catch (Exception)
                     {
@@ -310,7 +310,7 @@ namespace Kusto.Language.Editor
                 if (actions.Count > 1)
                 {
                     // present them in ascending alphabetical order
-                    actions.Sort((a, b) => string.Compare(a.Name, b.Name, ignoreCase: true));
+                    actions.Sort((a, b) => string.Compare(a.Title, b.Title, ignoreCase: true));
                 }
 
                 return new CodeActionInfo(actions);
@@ -319,8 +319,13 @@ namespace Kusto.Language.Editor
             return CodeActionInfo.NoActions;
         }
 
+        private CodeAction AddActorName(CodeAction action, string actorName)
+        {
+            return ActorUtilities.AddData(action, actorName);
+        }
+
         public override CodeActionResult ApplyCodeAction(
-            CodeAction action, 
+            ApplyAction action, 
             int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)

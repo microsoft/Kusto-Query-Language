@@ -99,7 +99,7 @@ namespace Kusto.Language.Editor
         /// <param name="options">An optional set of options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
         public abstract CodeActionResult ApplyCodeAction(
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options = null,
             CancellationToken cancellationToken = default(CancellationToken));

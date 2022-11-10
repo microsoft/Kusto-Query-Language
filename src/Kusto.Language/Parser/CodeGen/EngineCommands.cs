@@ -1186,6 +1186,11 @@ namespace Kusto.Language
                 "ShowCluster",
                 "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
 
+        public static readonly CommandSymbol ShowClusterDetails =
+            new CommandSymbol(
+                "ShowClusterDetails",
+                "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string, NetAndClsVersion: string)");
+
         public static readonly CommandSymbol ShowDiagnostics =
             new CommandSymbol(
                 "ShowDiagnostics",
@@ -2110,6 +2115,7 @@ namespace Kusto.Language
             ClearMaterializedViewData,
             SetMaterializedViewCursor,
             ShowCluster,
+            ShowClusterDetails,
             ShowDiagnostics,
             ShowCapacity,
             ShowOperations,

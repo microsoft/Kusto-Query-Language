@@ -13,18 +13,18 @@ namespace Kusto.Language.Editor
 
     public class ExtractExpressionActor : KustoActor
     {
-        private const string ExtractValueName = "Extract Value";
-        private const string ExtractExpressionName = "Extract Expression";
-        private const string ExtractFunctionName = "Extract Function";
+        public const string ExtractValueKind = "Extract Value";
+        public const string ExtractExpressionKind = "Extract Expression";
+        public const string ExtractFunctionKind = "Extract Function";
 
-        private static readonly CodeAction ExtractValueAction = new CodeAction(
-            ExtractValueName, "Extract value into new let statement variable declaration.");
+        private static readonly ApplyAction ExtractValueAction = CodeAction.Create(
+            ExtractValueKind, "Extract value into new let statement variable declaration.");
 
-        private static readonly CodeAction ExtractExpressionAction = new CodeAction(
-            ExtractExpressionName, "Extract expression into new let statement variable declaration.");
+        private static readonly ApplyAction ExtractExpressionAction = CodeAction.Create(
+            ExtractExpressionKind, ExtractExpressionKind, "Extract expression into new let statement variable declaration.");
 
-        private static readonly CodeAction ExtractFunctionAction = new CodeAction(
-            ExtractFunctionName, "Extract expression into new let statement function declaration.");
+        private static readonly ApplyAction ExtractFunctionAction = CodeAction.Create(
+            ExtractFunctionKind, ExtractFunctionKind, "Extract expression into new let statement function declaration.");
 
         public override void GetActions(
             KustoCodeService service,
@@ -124,7 +124,7 @@ namespace Kusto.Language.Editor
         public override CodeActionResult ApplyAction(
             KustoCodeService service,
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
@@ -135,20 +135,17 @@ namespace Kusto.Language.Editor
                 && Int32.TryParse(action.Data[0], out var position)
                 && Int32.TryParse(action.Data[1], out var length))
             {
-                if (action.Name == ExtractExpressionName)
+                switch (action.Kind)
                 {
-                    return GetExpressionResult(code, position, length);
+                    case ExtractExpressionKind:
+                        return GetExpressionResult(code, position, length);
+                    case ExtractFunctionKind:
+                        return GetFunctionResult(code, position, length, options);
+                    case ExtractValueKind:
+                        return GetValueResult(code, position);
+                    default:
+                        return CodeActionResult.Failure("Unknown action");
                 }
-                else if (action.Name == ExtractFunctionName)
-                {
-                    return GetFunctionResult(code, position, length, options);
-                }
-                else if (action.Name == ExtractValueName)
-                {
-                    return GetValueResult(code, position);
-                }
-
-                return CodeActionResult.Failure("Unknown action");
             }
             else
             {

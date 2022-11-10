@@ -2,7 +2,6 @@
 
 namespace Kusto.Language.Editor
 {
-    using Kusto.Language.Binding;
     using Kusto.Language.Parsing;
     using Kusto.Language.Symbols;
     using Kusto.Language.Syntax;
@@ -441,13 +440,11 @@ namespace Kusto.Language.Editor
                     .ToReadOnly();
         }
 
-
         private static bool IsInRange(SyntaxElement element, int start, int length)
         {
             var end = start + length;
             return element.TriviaStart <= end && element.End >= start;
         }
-
 
         /// <summary>
         /// Gets all the columns in scope within a query operator.
@@ -532,6 +529,52 @@ namespace Kusto.Language.Editor
             }
 
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Add data items to <see cref="CodeAction"/>
+        /// </summary>
+        public static CodeAction AddData(CodeAction action, IReadOnlyList<string> data)
+        {
+            if (action is MenuAction ma)
+            {
+                return ma.WithActions(ma.Actions.Select(alt => (ApplyAction)AddData(alt, data)).ToList());
+            }
+            else if (action is ApplyAction aa)
+            {
+                return aa.AddData(data);
+            }
+            else
+            {
+                return action;
+            }
+        }
+
+        /// <summary>
+        /// Add data items to <see cref="CodeAction"/>
+        /// </summary>
+        public static CodeAction AddData(CodeAction action, params string[] data)
+        {
+            return AddData(action, (IReadOnlyList<string>)data);
+        }
+
+        /// <summary>
+        /// Remove data items from <see cref="CodeAction"/>
+        /// </summary>
+        public static CodeAction RemoveData(CodeAction action, int count)
+        {
+            if (action is MenuAction ma)
+            {
+                return ma.WithActions(ma.Actions.Select(alt => (ApplyAction)RemoveData(alt, count)).ToList());
+            }
+            else if (action is ApplyAction aa)
+            {
+                return aa.RemoveData(count);
+            }
+            else
+            {
+                return action;
+            }
         }
     }
 }

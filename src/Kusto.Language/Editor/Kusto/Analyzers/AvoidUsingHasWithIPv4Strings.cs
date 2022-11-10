@@ -120,16 +120,17 @@ namespace Kusto.Language.Editor
                 var ipv4Name = GetIPv4FunctionName(token.Kind);
 
                 // encode diagnostic info and new name into data
-                actions.Add(new CodeAction(
-                    $"Change to '{ipv4Name}'", 
-                    $"Replace use of operator '{token.Text}' with a call to function '{ipv4Name}'",
-                    new string[] { dx.Start.ToString(), ipv4Name }));
+                actions.Add(
+                    CodeAction.Create(
+                        $"Change to '{ipv4Name}'", 
+                        $"Replace use of operator '{token.Text}' with a call to function '{ipv4Name}'",
+                        data: new [] { dx.Start.ToString(), ipv4Name }));
             }
         }
 
         protected override FixResult GetFixEdits(
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)

@@ -52,11 +52,11 @@ namespace Kusto.Language.Editor
                     if (hasKind != SyntaxKind.None)
                     {
                         var hasOp = hasKind.GetText();
-                        actions.Add(new CodeAction(
-                            $"Change to '{hasOp}'", 
-                            $"Replace operator '{opToken.Text}' with operator '{hasOp}'", 
-                            dx.Start.ToString(), 
-                            hasOp));
+                        actions.Add(
+                            CodeAction.Create(
+                                $"Change to '{hasOp}'", 
+                                $"Replace operator '{opToken.Text}' with operator '{hasOp}'", 
+                                data: new[] { dx.Start.ToString(), hasOp }));
                     }
                 }
             }
@@ -64,7 +64,7 @@ namespace Kusto.Language.Editor
 
         protected override FixResult GetFixEdits(
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)

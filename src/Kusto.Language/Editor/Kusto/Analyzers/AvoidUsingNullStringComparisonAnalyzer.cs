@@ -70,17 +70,18 @@ namespace Kusto.Language.Editor
 
                 if (newFnName != null)
                 {
-                    actions.Add(new CodeAction(
-                        $"Change to '{newFnName}'",
-                        $"Replace call to function '{fnName}' with function '{newFnName}'",
-                        new string[] { fc.Name.TextStart.ToString(), fc.Name.Width.ToString(), newFnName }));
+                    actions.Add(
+                        CodeAction.Create(
+                            $"Change to '{newFnName}'",
+                            $"Replace call to function '{fnName}' with function '{newFnName}'",
+                            data: new [] { fc.Name.TextStart.ToString(), fc.Name.Width.ToString(), newFnName }));
                 }
             }
         }
 
         protected override FixResult GetFixEdits(
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)

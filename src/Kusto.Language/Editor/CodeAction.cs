@@ -7,75 +7,98 @@ using System.Text;
 
 namespace Kusto.Language.Editor
 {
-    public class CodeAction
+    public abstract class CodeAction
     {
         /// <summary>
-        /// The the name of the action displayed in the right-click menu
+        /// The kind of <see cref="CodeAction"/> for use by the <see cref="CodeActor"/>
+        /// and to group actions together into a fix-all action.
         /// </summary>
-        public string Name { get; }
+        public string Kind { get; }
+
+        /// <summary>
+        /// The the text of the action displayed in the menu
+        /// </summary>
+        public string Title { get; }
 
         /// <summary>
         /// The longer description displayed in the hover tip.
         /// </summary>
         public string Description { get; }
 
+        protected CodeAction(string kind, string title, string description)
+        {
+            this.Kind = kind ?? "";
+            this.Title = title ?? "";
+            this.Description = description ?? "";
+        }
+
+        protected abstract CodeAction New(string kind, string title, string description);
+
+        public CodeAction WithTitle(string title)
+        {
+            return New(this.Kind, title, this.Description);
+        }
+
+        public CodeAction WithDescription(string description)
+        {
+            return New(this.Kind, this.Title, description);
+        }
+
+        public static ApplyAction Create(string kind, string title, string description, IReadOnlyList<string> data = null)
+        {
+            return new SingleAction(kind, title, description, data);
+        }
+
+        public static ApplyAction Create(string title, string description, IReadOnlyList<string> data = null)
+        {
+            return new SingleAction(title, title, description, data);
+        }
+
+        public static ApplyAction CreateFixAll(string title, string description, IReadOnlyList<ApplyAction> actions)
+        {
+            return new MultiAction(FixAllKind, title, description, actions);
+        }
+
+        public static MenuAction CreateMenu(string title, string description, IReadOnlyList<CodeAction> actions)
+        {
+            return new MenuAction(title, description, actions);
+        }
+
+        public const string FixAllKind = "FixAll";
+        public const string MenuKind = "Menu";
+    }
+
+    /// <summary>
+    /// An <see cref="CodeAction"/> that can be applied.
+    /// </summary>
+    public abstract class ApplyAction : CodeAction
+    {
         /// <summary>
-        /// Addition data for the action used by the <see cref="CodeActor"/>
+        /// Additional data for the action used by the <see cref="CodeActor"/>
         /// </summary>
         public IReadOnlyList<string> Data { get; }
 
-        /// <summary>
-        /// All related actions (such as fix all actions)
-        /// </summary>
-        public IReadOnlyList<CodeAction> RelatedActions { get; }
-
-        public CodeAction(string name, string description, IReadOnlyList<string> data, IReadOnlyList<CodeAction> relatedActions)
+        protected ApplyAction(string kind, string title, string description, IReadOnlyList<string> data)
+            : base(kind, title, description)
         {
-            this.Name = name ?? "";
-            this.Description = description ?? "";
             this.Data = data ?? EmptyReadOnlyList<string>.Instance;
-            this.RelatedActions = relatedActions ?? EmptyReadOnlyList<CodeAction>.Instance;
         }
 
-        public CodeAction(string name, string description, params string[] data)
-            : this(name, description, (IReadOnlyList<string>)data, null)
+        protected override CodeAction New(string kind, string title, string description)
         {
+            return New(kind, title, description, this.Data);
         }
 
-        /// <summary>
-        /// Returns a new <see cref="CodeAction"/> with the name changed.
-        /// </summary>
-        public CodeAction WithName(string name)
-        {
-            if (this.Name != name)
-            {
-                return new CodeAction(name, this.Description, this.Data, this.RelatedActions);
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Returns a new <see cref="CodeAction"/> with the description changed.
-        /// </summary>
-        public CodeAction WithDescription(string description)
-        {
-            if (this.Description != description)
-            {
-                return new CodeAction(this.Name, description, this.Data, this.RelatedActions);
-            }
-
-            return this;
-        }
+        protected abstract ApplyAction New(string kind, string title, string description, IReadOnlyList<string> data);
 
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with the data values changed.
         /// </summary>
-        public CodeAction WithData(IReadOnlyList<string> data)
+        public ApplyAction WithData(IReadOnlyList<string> data)
         {
             if (this.Data != data)
             {
-                return new CodeAction(this.Name, this.Description, data, this.RelatedActions);
+                return New(this.Kind, this.Title, this.Description, data);
             }
 
             return this;
@@ -84,44 +107,105 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with the data values changed.
         /// </summary>
-        public CodeAction WithData(params string[] data) =>
+        public ApplyAction WithData(params string[] data) =>
             WithData((IReadOnlyList<string>)data);
 
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with the data values changed.
         /// </summary>
-        public CodeAction WithData(IEnumerable<string> data) =>
+        public ApplyAction WithData(IEnumerable<string> data) =>
             WithData(data.ToReadOnly());
 
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with the additional data appended to the list of data values.
         /// </summary>
-        public CodeAction AddData(IEnumerable<string> additionalData) =>
+        public ApplyAction AddData(IEnumerable<string> additionalData) =>
             WithData(this.Data.Concat(additionalData));
 
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with the additional data appended to the list of data values.
         /// </summary>
-        public CodeAction AddData(params string[] additionalData) =>
+        public ApplyAction AddData(params string[] additionalData) =>
             AddData((IEnumerable<string>)additionalData);
 
         /// <summary>
         /// Returns a new <see cref="CodeAction"/> with a number of data values removed from the end of the data value list.
         /// </summary>
-        public CodeAction RemoveData(int count) =>
+        public ApplyAction RemoveData(int count) =>
             WithData(this.Data.Take(this.Data.Count - count));
+    }
 
-        /// <summary>
-        /// Returns a new <see cref="CodeAction"/> with a list of related actions
-        /// </summary>
-        public CodeAction WithRelatedActions(IReadOnlyList<CodeAction> actions)
+    /// <summary>
+    /// An <see cref="ApplyAction"/> that is just a single action.
+    /// </summary>
+    public class SingleAction : ApplyAction
+    {
+        public SingleAction(string kind, string title, string description, IReadOnlyList<string> data = null)
+            : base(kind, title, description, data)
         {
-            if (this.RelatedActions != actions)
-            {
-                return new CodeAction(this.Name, this.Description, this.Data, actions);
-            }
+        }
 
-            return this;
+        protected override ApplyAction New(string kind, string title, string description, IReadOnlyList<string> data)
+        {
+            return new SingleAction(kind, title, description, data);
+        }
+    }
+
+    /// <summary>
+    /// An <see cref="ApplyAction"/> action that is composed of multiple actions.
+    /// </summary>
+    public class MultiAction : ApplyAction
+    {
+        public IReadOnlyList<ApplyAction> Actions { get; }
+
+        private MultiAction(string kind, string title, string description, IReadOnlyList<string> data, IReadOnlyList<ApplyAction> actions)
+            : base(kind, title, description, data)
+        {
+            this.Actions = actions ?? EmptyReadOnlyList<ApplyAction>.Instance;
+        }
+
+        public MultiAction(string kind, string title, string description, IReadOnlyList<ApplyAction> actions)
+            : this(kind, title, description, null, actions)
+        {
+        }
+
+        protected override ApplyAction New(string kind, string title, string description, IReadOnlyList<string> data)
+        {
+            return new MultiAction(kind, title, description, data, this.Actions);
+        }
+    }
+
+    /// <summary>
+    /// A <see cref="CodeAction"/> that offers a menu of alternative actions.
+    /// </summary>
+    public class MenuAction : CodeAction
+    {
+        public IReadOnlyList<CodeAction> Actions { get; }
+
+        private MenuAction(string kind, string title, string description, IReadOnlyList<CodeAction> actions)
+            : base(kind, title, description)
+        {
+            this.Actions = actions ?? EmptyReadOnlyList<CodeAction>.Instance;
+        }
+
+        public MenuAction(string title, string description, IReadOnlyList<CodeAction> actions)
+            : this(MenuKind, title, description, actions)
+        {
+        }
+
+        protected override CodeAction New(string kind, string title, string description)
+        {
+            return new MenuAction(kind, title, description, this.Actions);
+        }
+
+        public MenuAction WithActions(IReadOnlyList<CodeAction> actions)
+        {
+            return new MenuAction(this.Kind, this.Title, this.Description, actions);
+        }
+
+        public MenuAction WithActions(params CodeAction[] actions)
+        {
+            return WithActions((IReadOnlyList<CodeAction>) actions); 
         }
     }
 

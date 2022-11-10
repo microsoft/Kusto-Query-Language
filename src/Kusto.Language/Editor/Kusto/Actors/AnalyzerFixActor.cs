@@ -103,11 +103,16 @@ namespace Kusto.Language.Editor
                         if (fixActions.Count > 0)
                         {
                             // add analyzer name to action data so we can route this action back to the same analyzer later when applied
-                            actions.AddRange(fixActions.Select(a => a.AddData(analyzer.Name)));
+                            actions.AddRange(fixActions.Select(a => EncodeAnalyzerName(a, analyzer.Name)));
                         }
                     }
                 }
             }
+        }
+
+        private CodeAction EncodeAnalyzerName(CodeAction action, string analyzerName)
+        {
+            return ActorUtilities.AddData(action, analyzerName);
         }
 
         private static Dictionary<string, List<Diagnostic>> GetCodeToDiagnosticMap(IEnumerable<Diagnostic> diagnostics)
@@ -131,7 +136,7 @@ namespace Kusto.Language.Editor
         public override CodeActionResult ApplyAction(
             KustoCodeService service,
             KustoCode code,
-            CodeAction action,
+            ApplyAction action,
             int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)

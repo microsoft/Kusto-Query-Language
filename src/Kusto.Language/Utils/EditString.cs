@@ -294,6 +294,14 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
+        /// Gets the minimal range encompassing all the changes.
+        /// </summary>
+        public void GetChangeRange(out int changeStart, out int changeLength)
+        {
+            _map.GetMinimalTargetChangeRange(out changeStart, out changeLength);
+        }
+
+        /// <summary>
         /// Represents a map between source positions and target positions
         /// that can be adjusted through cumulative edits.
         /// </summary>
@@ -409,6 +417,18 @@ namespace Kusto.Language.Utils
                 }
 
                 return sourcePosition;
+            }
+
+            /// <summary>
+            /// Gets the minimal range around all the changes.
+            /// </summary>
+            public void GetMinimalTargetChangeRange(out int changeStart, out int changeLength)
+            {
+                var sourceStart = _edits[0].Start;
+                var endEdit = _edits[_edits.Count - 1];
+                var sourceEnd = endEdit.Start + endEdit.DeleteLength;
+                changeStart = sourceStart;
+                changeLength = GetTargetPosition(sourceEnd, PositionBias.Right);
             }
 
             /// <summary>
