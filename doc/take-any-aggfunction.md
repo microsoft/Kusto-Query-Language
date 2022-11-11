@@ -3,7 +3,7 @@ title: take_any() (aggregation function) - Azure Data Explorer
 description: This article describes take_any() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/14/2022
+ms.date: 11/09/2022
 ---
 # take_any() (aggregation function)
 
@@ -13,7 +13,7 @@ and returns the value of one or more expressions over each such record.
 > **Deprecated aliases:** any()
 
 > [!NOTE]
-> The legacy version adds `any_` prefix to the columns returned by the `any()` aggregation.
+> The deprecated version adds `any_` prefix to the columns returned by the `any()` aggregation.
 
 ## Syntax
 

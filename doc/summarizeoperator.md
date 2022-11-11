@@ -3,7 +3,7 @@ title: summarize operator - Azure Data Explorer
 description: This article describes summarize operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/25/2022
+ms.date: 11/09/2022
 ms.localizationpriority: high 
 ---
 # summarize operator
@@ -101,7 +101,7 @@ Activities | summarize by ActivityType, completionStatus
 
 ### Minimum and maximum timestamp
 
-Finds the minimum and maximum timestamp of all records in the Activities table. There is no group-by clause, so there is just one row in the output:
+Finds the minimum and maximum timestamp of all records in the Activities table. There's no group-by clause, so there's just one row in the output:
 
 ```kusto
 Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
@@ -146,13 +146,13 @@ Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
 
 ### Aggregates default values
 
-When the input of `summarize` operator has at least one empty group-by key, it's result is empty, too.
+When the input of `summarize` operator has at least one empty group-by key, its result is empty, too.
 
 When the input of `summarize` operator doesn't have an empty group-by key, the result is the default values of the aggregates used in the `summarize`:
 
 ```kusto
 datatable(x:long)[]
-| summarize any(x), arg_max(x, x), arg_min(x, x), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
+| summarize take_any(x), arg_max(x, x), arg_min(x, x), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
 ```
 
 |any_x|max_x|max_x_x|min_x|min_x_x|avg_x|schema_x|max_x1|min_x1|percentile_x_55|hll_x|stdev_x|sum_x|sumif_x|tdigest_x|variance_x|
@@ -177,7 +177,7 @@ datatable(x:long)[]
 |---|---|
 |[]|[]|
 
-The aggregate avg sums all the non-nulls and counts only those which participated in the calculation (will not take nulls into account).
+The aggregate avg sums all the non-nulls and counts only those which participated in the calculation (won't take nulls into account).
 
 ```kusto
 range x from 1 to 2 step 1

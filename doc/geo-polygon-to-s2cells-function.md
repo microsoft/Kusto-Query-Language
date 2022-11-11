@@ -79,7 +79,7 @@ This match can be achieved by the following process:
 * If the polygons are far from each other, choose the [S2 cell level](geo-point-to-s2cell-function.md) such that its cell edge will be similar to the edge of the average polygon.
 * In practice, covering a polygon with more than 10000 cells might not yield good performance.
 * Sample use cases:
-   - S2 cell level 5 might prove to be good for covering countries.
+   - S2 cell level 5 might prove to be good for covering countries/regions.
    - S2 cell level 16 can cover dense and relatively small Manhattan (New York) neighborhoods.
    - S2 cell level 11 can be used for covering suburbs of Australia.
 * Query run time and memory consumption might differ because of different S2 cell level values.

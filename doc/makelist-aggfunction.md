@@ -3,7 +3,7 @@ title: make_list() (aggregation function) - Azure Data Explorer
 description: This article describes make_list() (aggregation function) in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/24/2022
+ms.date: 11/09/2022
 adobe-target: true
 ---
 # make_list() (aggregation function)
@@ -11,6 +11,8 @@ adobe-target: true
 Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
+
+> **Deprecated aliases:** makelist()
 
 ## Syntax
 
@@ -24,12 +26,12 @@ Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group
 | *MaxSize* | integer |  | The limit on the maximum number of elements returned. The default is *1048576* and can't exceed *1048576*. |
 
 > [!NOTE]
-> `makelist()` has been deprecated in favor of `make_list`. The legacy version has a default *MaxSize* limit of 128.
+> The deprecated version has a default *MaxSize* limit of 128.
 
 ## Returns
 
 Returns a `dynamic` JSON array of all the values of *Expr* in the group.
-If the input to the `summarize` operator is not sorted, the order of elements in the resulting array is undefined.
+If the input to the `summarize` operator isn't sorted, the order of elements in the resulting array is undefined.
 If the input to the `summarize` operator is sorted, the order of elements in the resulting array tracks that of the input.
 
 > [!TIP]
@@ -98,7 +100,7 @@ shapes
 
 ### Packing a dynamic object
 
-The following examples shows how to [pack](./packfunction.md) a dynamic object in a column before making it a list.
+The following examples show how to [pack](./packfunction.md) a dynamic object in a column before making it a list.
 
 **\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03PTWrDMBAF4L1OMRgKNniR/qcpXoWeIMtSysQaHBFr5FjjkJQevmMshVoLi09vhF5PAvGAA0VowKLo2vcEJaOnDUQZHXc1RGdpGyaWDTiWynwa0K/QU+Sup6KGx3qheJpwnOEpwUit5FC2gViwC6z0nOhAlyQvNxly6DVRaCUssk7CgVPmLYmlNsn9yny9m6Wc+QW6CLEFqz0HbI9lMVfU2Pyr9eG5YvGvbqVzcfIeR/dD4K+9i6LzHo/0Pe9LW8H+Ci5+nIl3eUoTtxvgDh6gaWD1B75NBjppAQAA)**\]**
 
