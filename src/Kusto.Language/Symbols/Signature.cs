@@ -6,18 +6,129 @@ using System.Text;
 namespace Kusto.Language.Symbols
 {
     using Parsing;
+    using Binding;
     using Syntax;
     using Utils;
 
     /// <summary>
-    /// A function that determines the a function's return type given the list of arguments.
+    /// A binding context for a function/operator call.
     /// </summary>
-    public delegate TypeSymbol CustomReturnType(TableSymbol table, IReadOnlyList<Expression> arguments, Signature signature);
+    public abstract class CustomReturnTypeContext
+    {
+        /// <summary>
+        /// The location related to the function/operator call.
+        /// </summary>
+        public virtual SyntaxNode Location => null;
+
+        /// <summary>
+        /// The arguments provided to the function call.
+        /// </summary>
+        public virtual IReadOnlyList<Expression> Arguments => null;
+
+        /// <summary>
+        /// The types of the arguments provided to the function call.
+        /// </summary>
+        public virtual IReadOnlyList<TypeSymbol> ArgumentTypes => null;
+
+        /// <summary>
+        /// The <see cref="Parameter"/> associated with each argument provided to the function call.
+        /// </summary>
+        public virtual IReadOnlyList<Parameter> ArgumentParameters => null;
+
+        /// <summary>
+        /// The input table/schema from the left of a pipe operator.
+        /// </summary>
+        public virtual TableSymbol RowScope => null;
+
+        /// <summary>
+        /// The signature of the function being called.
+        /// </summary>
+        public virtual Signature Signature => null;
+
+        /// <summary>
+        /// Returns the symbol referenced by the name or null if no such symbol exists in scope.
+        /// </summary>
+        public abstract Symbol GetReferencedSymbol(string name);
+
+        /// <summary>
+        /// Returns the result type of the symbol referenced by the name or null if no such symbol exists in scope.
+        /// </summary>
+        public abstract TypeSymbol GetResultType(string name);
+
+        /// <summary>
+        /// Gets the column name the expression would have in a projection list.
+        /// </summary>
+        public abstract string GetResultName(Expression expr, string defaultName = "");
+
+        /// <summary>
+        /// Gets the first argument associated with the named parameter, or null if no argument is associated with the specified parameter.
+        /// </summary>
+        public Expression GetArgument(string parameterName)
+        {
+            var p = this.Signature.GetParameter(parameterName);
+            if (p != null)
+            {
+                return GetArgument(p);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the first argument associated with the named parameter, or null if no argument is associated with the specified parameter.
+        /// </summary>
+        public Expression GetArgument(Parameter parameter)
+        {
+            var argIndex = this.ArgumentParameters.IndexOf(parameter);
+            if (argIndex >= 0 && argIndex < this.Arguments.Count)
+            {
+                return this.Arguments[argIndex];
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the arguments for the specified parameter.
+        /// </summary>
+        public IReadOnlyList<Expression> GetArguments(string parameterName)
+        {
+            var parameter = this.Signature.GetParameter(parameterName);
+            if (parameter != null)
+            {
+                return GetArguments(parameter);
+            }
+            else
+            {
+                return EmptyReadOnlyList<Expression>.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Gets the arguments for the specified parameter.
+        /// </summary>
+        public IReadOnlyList<Expression> GetArguments(Parameter parameter)
+        {
+            List<Expression> arguments = null;
+
+            for (int i = 0; i < this.ArgumentParameters.Count; i++)
+            {
+                if (this.ArgumentParameters[i] == parameter)
+                {
+                    if (arguments == null)
+                        arguments = new List<Expression>();
+                    arguments.Add(this.Arguments[i]);
+                }
+            }
+
+            return arguments ?? EmptyReadOnlyList<Expression>.Instance;
+        }
+    }
 
     /// <summary>
-    /// A function that determines the a function's return type given the list of arguments.
+    /// A function that determines the a function's return type given binding info.
     /// </summary>
-    public delegate TypeSymbol CustomReturnTypeShort(TableSymbol table, IReadOnlyList<Expression> arguments);
+    public delegate TypeSymbol CustomReturnType(CustomReturnTypeContext info);
 
     /// <summary>
     /// The parameter constraints and return type rules of a function or operator symbol.
@@ -215,16 +326,6 @@ namespace Kusto.Language.Symbols
         {
             if (customReturnType == null)
                 throw new ArgumentNullException(nameof(customReturnType));
-        }
-
-        public Signature(CustomReturnTypeShort customReturnType, Tabularity tabularity, IReadOnlyList<Parameter> parameters)
-            : this((table, args, signature) => customReturnType(table, args), tabularity, parameters)
-        {
-        }
-
-        public Signature(CustomReturnTypeShort customReturnType, Tabularity tabularity, params Parameter[] parameters)
-            : this((table, args, signature) => customReturnType(table, args), tabularity, parameters)
-        {
         }
 
         public Signature(string body, Tabularity tabularity, IReadOnlyList<Parameter> parameters)
@@ -664,7 +765,7 @@ namespace Kusto.Language.Symbols
                     return Binding.Binder.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
-                    return Binding.Binder.Promote(Binding.Binder.GetWidestArgumentType(this, argumentTypes)) ?? ErrorSymbol.Instance;
+                    return TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Cluster:
                     return new ClusterSymbol("", null, isOpen: true);

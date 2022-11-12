@@ -278,45 +278,40 @@ namespace Kusto.Language
             .WithResultNamePrefix("count_distinctif")
             .WithOptimizedAlternative("dcountif");
 
-        private static void AddPercentileColumns(List<ColumnSymbol> columns, Signature signature, string valueParameterName, string percentileParameterName, IReadOnlyList<Expression> args)
+        private static void AddPercentileColumns(
+            List<ColumnSymbol> columns, CustomReturnTypeContext context, string valueParameterName, string percentileParameterName)
         {
-            if (GetArgument(args, signature, valueParameterName) is Expression valueArg
-                && GetExpressionResultName(valueArg) is string valueArgName)
+            if (context.GetArgument(valueParameterName) is Expression valueArg
+                && context.GetResultName(valueArg) is string valueArgName)
             {
-                var percentileParameter = signature.GetParameter(percentileParameterName);
-                var argumentParameters = signature.GetArgumentParameters(args);
-                GetArgumentRange(argumentParameters, percentileParameter, out var start, out var length);
-
                 var resultType = valueArg.ResultType;
                 if (resultType == ScalarTypes.Int)
                     resultType = ScalarTypes.Long;
                 else if (resultType == ScalarTypes.Decimal)
                     resultType = ScalarTypes.Real;
 
-                for (int p = start; p < start + length; p++)
+                foreach (var percentileArg in context.GetArguments(percentileParameterName))
                 {
-                    var percentileArg = args[p];
                     var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
                     var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
-
                     columns.Add(new ColumnSymbol(name, resultType));
                 }
             }
         }
 
-        private static CustomReturnType PercentileReturn = (table, args, signature) =>
+        private static CustomReturnType PercentileReturn = context =>
         {
             var cols = new List<ColumnSymbol>();
-            AddPercentileColumns(cols, signature, "expr", "percentile", args);
+            AddPercentileColumns(cols, context, "expr", "percentile");
             return new TupleSymbol(cols);
         };
 
-        private static CustomReturnType PercentileArrayReturn = (table, args, signature) =>
+        private static CustomReturnType PercentileArrayReturn = context =>
         {
             var cols = new List<ColumnSymbol>();
             
-            if (GetArgument(args, signature, "expr") is Expression valueArg
-                && GetExpressionResultName(valueArg) is string valueArgName)
+            if (context.GetArgument("expr") is Expression valueArg
+                && context.GetResultName(valueArg) is string valueArgName)
             {
                 cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic));
             }
@@ -410,11 +405,11 @@ namespace Kusto.Language
                     ReturnTypeKind.Parameter0,
                     new Parameter("expr", ParameterTypeKind.Scalar)),
                 new Signature(
-                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: null),
+                    context => GetAnyResult(context, unnamedExpressionPrefix: null),
                     Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar, minOccurring: 2, maxOccurring: MaxRepeat)),
                 new Signature(
-                    (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: null),
+                    context => GetAnyResult(context, unnamedExpressionPrefix: null),
                     Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.StarOnly)))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -424,7 +419,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol TakeAny =
            new FunctionSymbol("take_any",
                new Signature(
-                   (table, args) => GetAnyResult(table, args, unnamedExpressionPrefix: "any_"),
+                   context => GetAnyResult(context, unnamedExpressionPrefix: "any_"),
                    Tabularity.Scalar,
                    new Parameter("expr", ParameterTypeKind.Scalar, ArgumentKind.StarAllowed, minOccurring: 1, maxOccurring: MaxRepeat)));
 
@@ -446,21 +441,21 @@ namespace Kusto.Language
                    new Parameter("predicate", ScalarTypes.Bool)))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
-        public static TypeSymbol GetAnyResult(TableSymbol table, IReadOnlyList<Expression> args, string unnamedExpressionPrefix)
+        public static TypeSymbol GetAnyResult(CustomReturnTypeContext context, string unnamedExpressionPrefix)
         {
             var columns = new List<ColumnSymbol>();
             var prefix = unnamedExpressionPrefix ?? string.Empty;
 
-            var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
-            var anyStar = args.Any(a => a is StarExpression);
+            var doNotRepeat = new HashSet<ColumnSymbol>(GetSummarizeByColumns(context.Arguments));
+            var anyStar = context.Arguments.Any(a => a is StarExpression);
 
-            for (int i = 0; i < args.Count; i++)
+            for (int i = 0; i < context.Arguments.Count; i++)
             {
-                var arg = args[i];
+                var arg = context.Arguments[i];
 
                 if (arg is StarExpression)
                 {
-                    foreach (var c in table.Columns)
+                    foreach (var c in context.RowScope.Columns)
                     {                       
                         if (CanAddAnyResultColumn(c, doNotRepeat, anyStar))
                         {
@@ -523,7 +518,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ArgMin =
             new FunctionSymbol("arg_min",
                 new Signature(
-                    (table, args) => GetArgMinMaxResult(table, args, "min"),
+                    context => GetArgMinMaxResult(context, "min"),
                     Tabularity.Scalar,
                     new Parameter("minimized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.StarAllowed, minOccurring: 0, maxOccurring: MaxRepeat)));
@@ -531,32 +526,32 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ArgMax =
             new FunctionSymbol("arg_max",
                 new Signature(
-                    (table, args) => GetArgMinMaxResult(table, args, "max"), 
+                    context => GetArgMinMaxResult(context, "max"), 
                     Tabularity.Scalar,
                     new Parameter("maximized", ParameterTypeKind.Orderable),
                     new Parameter("returned", ParameterTypeKind.Scalar, ArgumentKind.StarAllowed, minOccurring: 0, maxOccurring: MaxRepeat)));
 
-        private static TypeSymbol GetArgMinMaxResult(TableSymbol table, IReadOnlyList<Expression> args, string prefix)
+        private static TypeSymbol GetArgMinMaxResult(CustomReturnTypeContext context, string prefix)
         {
             var columns = new List<ColumnSymbol>();
 
-            if (args.Count > 0)
+            if (context.Arguments.Count > 0)
             {
-                var byClauseColumns = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
+                var byClauseColumns = new HashSet<ColumnSymbol>(GetSummarizeByColumns(context.Arguments));
                 var doNotRepeat = new HashSet<ColumnSymbol>();
 
-                var primaryArg = args[0];
+                var primaryArg = context.Arguments[0];
                 var primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
 
-                var anyStar = args.Any(a => a is StarExpression);
+                var anyStar = context.Arguments.Any(a => a is StarExpression);
 
-                for (int i = 0; i < args.Count; i++)
+                for (int i = 0; i < context.Arguments.Count; i++)
                 {
-                    var arg = args[i];
+                    var arg = context.Arguments[i];
 
                     if (arg is StarExpression)
                     {
-                        foreach (var c in table.Columns)
+                        foreach (var c in context.RowScope.Columns)
                         {
                             if (CanAddArgMinMaxResultColumn(i, c, byClauseColumns, doNotRepeat, anyStar))
                             {
@@ -654,18 +649,18 @@ namespace Kusto.Language
             .Obsolete("arg_max")
             .Hide();
 
-        private static TypeSymbol GetArgMinMaxDepResult(TableSymbol table, IReadOnlyList<Expression> args)
+        private static TypeSymbol GetArgMinMaxDepResult(CustomReturnTypeContext context)
         {
             var columns = new List<ColumnSymbol>();
 
-            if (args.Count > 0)
+            if (context.Arguments.Count > 0)
             {
                 // determine columns in by expression
-                var byClauseColumns = new HashSet<ColumnSymbol>(GetSummarizeByColumns(args));
+                var byClauseColumns = new HashSet<ColumnSymbol>(GetSummarizeByColumns(context.Arguments));
                 var doNotRepeat = new HashSet<ColumnSymbol>();
-                var anyStar = args.Any(a => a is StarExpression);
+                var anyStar = context.Arguments.Any(a => a is StarExpression);
 
-                var primaryArg = args[0];
+                var primaryArg = context.Arguments[0];
                 string primaryColName;
 
                 if (GetResultColumn(primaryArg) is ColumnSymbol pc)
@@ -681,13 +676,13 @@ namespace Kusto.Language
                     columns.Add(primaryCol);
                 }
 
-                for (int i = 1; i < args.Count; i++)
+                for (int i = 1; i < context.Arguments.Count; i++)
                 {
-                    var arg = args[i];
+                    var arg = context.Arguments[i];
 
                     if (arg is StarExpression)
                     {
-                        foreach (var c in table.Columns)
+                        foreach (var c in context.RowScope.Columns)
                         {
                             if (c != primaryArg.ReferencedSymbol 
                                 && CanAddArgMinMaxResultColumn(i, c, byClauseColumns, doNotRepeat, anyStar))

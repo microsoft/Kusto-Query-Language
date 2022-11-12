@@ -14,11 +14,11 @@ namespace Kusto.Language
     {
         public static readonly FunctionSymbol ActiveUseCounts =
             new FunctionSymbol("active_users_count",
-                (table, args, signature) =>
+                context =>
                 {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline
-                    AddReferencedColumns(cols, args, signature, "Dimension"); // dimensions
+                    AddReferencedColumn(cols, context, "TimelineColumn"); // timeline
+                    AddReferencedColumns(cols, context, "Dimension"); // dimensions
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     return new TableSymbol(cols);
                 },
@@ -36,11 +36,11 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ActivityCountsMetrics =
             new FunctionSymbol("activity_counts_metrics",
-                (table, args, signature) =>
+                context =>
                 {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
-                    AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
+                    AddReferencedColumn(cols, context, "TimelineColumn"); // timeline column
+                    AddReferencedColumns(cols, context, "Dimension"); // dimension columns
                     cols.Add(new ColumnSymbol("count", ScalarTypes.Long));
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
                     cols.Add(new ColumnSymbol("new_dcount", ScalarTypes.Long));
@@ -59,10 +59,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ActivityEngagement =
             new FunctionSymbol("activity_engagement",
                 new Signature(
-                    (table, args, signature) =>
+                    context =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
+                        AddReferencedColumn(cols, context, "TimelineColumn"); // timeline column
                         cols.Add(new ColumnSymbol("dcount_activities_inner", ScalarTypes.Long)); // inner activity
                         cols.Add(new ColumnSymbol("dcount_activities_outer", ScalarTypes.Long)); // outer activity
                         cols.Add(new ColumnSymbol("activity_ratio", ScalarTypes.Real));
@@ -74,11 +74,11 @@ namespace Kusto.Language
                     new Parameter("InnerActivityWindow", ParameterTypeKind.Summable, ArgumentKind.Constant),
                     new Parameter("OuterActivityWindow", ParameterTypeKind.Summable, ArgumentKind.Constant)),
                 new Signature(
-                    (table, args, signature) =>
+                    context =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline column
-                        AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
+                        AddReferencedColumn(cols, context, "TimelineColumn"); // timeline column
+                        AddReferencedColumns(cols, context, "Dimension"); // dimension columns
                         cols.Add(new ColumnSymbol("dcount_activities_inner", ScalarTypes.Long)); // inner activity
                         cols.Add(new ColumnSymbol("dcount_activities_outer", ScalarTypes.Long)); // outer activity
                         cols.Add(new ColumnSymbol("activity_ratio", ScalarTypes.Real));
@@ -97,11 +97,11 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ActivityMetrics =
             new FunctionSymbol("activity_metrics",
                 new Signature(
-                    (table, args, signature) =>
+                    context =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
-                        AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
+                        AddReferencedColumn(cols, context, "TimelineColumn"); // timeline columns
+                        AddReferencedColumns(cols, context, "Dimension"); // dimension columns
                         cols.Add(new ColumnSymbol("dcount_values", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("dcount_newvalues", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("retention_rate", ScalarTypes.Real));
@@ -116,10 +116,10 @@ namespace Kusto.Language
                     new Parameter("Step", ParameterTypeKind.Summable, ArgumentKind.Constant),
                     new Parameter("Dimension", ParameterTypeKind.NotDynamic, ArgumentKind.Column, minOccurring: 0, maxOccurring: MaxRepeat)),
                 new Signature(
-                    (table, args, signature) =>
+                    context =>
                     {
                         var cols = new List<ColumnSymbol>();
-                        AddReferencedColumn(cols, args, signature, "TimelineColumn"); // timeline columns
+                        AddReferencedColumn(cols, context, "TimelineColumn"); // timeline columns
                         cols.Add(new ColumnSymbol("dcount_values", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("dcount_newvalues", ScalarTypes.Long));
                         cols.Add(new ColumnSymbol("retention_rate", ScalarTypes.Real));
@@ -145,19 +145,19 @@ namespace Kusto.Language
         public static readonly FunctionSymbol NewActivityMetrics =
             new FunctionSymbol("new_activity_metrics",
                  new Signature(
-                     (table, args, signature) =>
+                     context =>
                      {
                          var cols = new List<ColumnSymbol>();
 
-                         var timelineArg = GetArgument(args, signature, "TimelineColumn"); // timeline column
+                         var timelineArg = context.GetArgument("TimelineColumn"); // timeline column
                          if (timelineArg != null)
                          {
-                             var timelineArgName = GetExpressionResultName(timelineArg);
+                             var timelineArgName = context.GetResultName(timelineArg);
                              cols.Add(new ColumnSymbol(MakeColumnName("from", timelineArgName), timelineArg.ResultType));
                              cols.Add(new ColumnSymbol(MakeColumnName("to", timelineArgName), timelineArg.ResultType));
                          }
 
-                         AddReferencedColumns(cols, args, signature, "Dimension"); // dimension columns
+                         AddReferencedColumns(cols, context, "Dimension"); // dimension columns
 
                          cols.Add(new ColumnSymbol("dcount_new_values", ScalarTypes.Long));
                          cols.Add(new ColumnSymbol("dcount_retained_values", ScalarTypes.Long));
@@ -208,7 +208,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol AutoCluster =
             new FunctionSymbol("autocluster",
-                (table, args) => new TableSymbol(AutoClusterColumns.Concat(table.Columns)).WithInheritableProperties(table),
+                context => new TableSymbol(AutoClusterColumns.Concat(context.RowScope.Columns))
+                               .WithInheritableProperties(context.RowScope),
                 Tabularity.Tabular,
                 new Parameter("SizeWeight", ScalarTypes.Real, defaultValueIndicator: "~", minOccurring: 0),
                 new Parameter("WeightColumn", ParameterTypeKind.Scalar, ArgumentKind.Column, defaultValueIndicator: "~", minOccurring: 0),
@@ -217,7 +218,9 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol BagUnpack =
              new FunctionSymbol("bag_unpack",
-                 (table, args) => new TableSymbol(table.Columns.Where(c => args.Count == 0 || c != args[0].ReferencedSymbol)).WithInheritableProperties(table).WithIsOpen(true),
+                 context => new TableSymbol(context.RowScope.Columns.Where(c => context.Arguments.Count == 0 || c != context.Arguments[0].ReferencedSymbol))
+                                .WithInheritableProperties(context.RowScope)
+                                .WithIsOpen(true),
                  Tabularity.Tabular,
                  new Parameter("column", ScalarTypes.Dynamic, ArgumentKind.Column),
                  new Parameter("column_prefix", ScalarTypes.String, ArgumentKind.LiteralNotEmpty, minOccurring: 0));
@@ -230,7 +233,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Basket =
              new FunctionSymbol("basket",
-                 (table, args) => new TableSymbol(BasketColumns.Concat(table.Columns)).WithInheritableProperties(table),
+                 context => new TableSymbol(BasketColumns.Concat(context.RowScope.Columns))
+                                .WithInheritableProperties(context.RowScope),
                  Tabularity.Tabular,
                  new Parameter("Threshold", ScalarTypes.Real, defaultValueIndicator: "~", minOccurring: 0),
                  new Parameter("WeightColumn", ParameterTypeKind.Scalar, ArgumentKind.Column, defaultValueIndicator: "~", minOccurring: 0),
@@ -239,7 +243,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DCountIntersect =
              new FunctionSymbol("dcount_intersect",
-                 (table, args) => new TableSymbol(table.Columns.Concat(args.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long)))).WithInheritableProperties(table),
+                 context => new TableSymbol(context.RowScope.Columns.Concat(context.Arguments.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long))))
+                                .WithInheritableProperties(context.RowScope),
                  Tabularity.Tabular,
                  new Parameter("hll", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: MaxRepeat));
 
@@ -254,7 +259,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DiffPatterns =
              new FunctionSymbol("diffpatterns",
-                 (table, args) => new TableSymbol(DiffPatternsColumns.Concat(table.Columns)).WithInheritableProperties(table),
+                 context => new TableSymbol(DiffPatternsColumns.Concat(context.RowScope.Columns))
+                                .WithInheritableProperties(context.RowScope),
                  Tabularity.Tabular,
                  new Parameter("SplitColumn", ParameterTypeKind.Scalar, ArgumentKind.Column),
                  new Parameter("SplitValueA", ScalarTypes.String),
@@ -267,19 +273,19 @@ namespace Kusto.Language
         public static readonly FunctionSymbol EstimateRowsCount =
              new FunctionSymbol("estimate_rows_count",
                  new Signature(
-                     (table, args) => new TableSymbol(new ColumnSymbol("EstimatedRowsCount", ScalarTypes.Long)),
+                    context => new TableSymbol(new ColumnSymbol("EstimatedRowsCount", ScalarTypes.Long)),
                     Tabularity.Tabular));
 
         public static readonly FunctionSymbol ExecuteShowCommand =
              new FunctionSymbol("execute_show_command",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // depends on contents of command string
+                 context => new TableSymbol().WithIsOpen(true), // depends on contents of command string
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("command", ScalarTypes.String));
 
         public static readonly FunctionSymbol ExecuteQuery =
              new FunctionSymbol("execute_query",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // depends on contents of command string
+                 context => new TableSymbol().WithIsOpen(true), // depends on contents of command string
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("query", ScalarTypes.String));
@@ -287,7 +293,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExternalDatatable =
              new FunctionSymbol("external_datatable",
                  new Signature(
-                     (table, args) => new TableSymbol().WithIsOpen(true), // depends on the data sent from the client
+                    context => new TableSymbol().WithIsOpen(true), // depends on the data sent from the client
                     Tabularity.Tabular));
 
 #if false   // problem with multiple repeating parameters
@@ -299,13 +305,13 @@ namespace Kusto.Language
 #endif
         public static readonly FunctionSymbol FunnelSequence =
             new FunctionSymbol("funnel_sequence",
-                (table, args, signature) =>
+                context =>
                 {
                     // only declare first table, as additional schema is not useful to intellisense
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, args, signature, "TimelineColumn");
+                    AddReferencedColumn(cols, context, "TimelineColumn");
 
-                    var stateArg = GetArgument(args, signature, "StateColumn");
+                    var stateArg = context.GetArgument("StateColumn");
                     if (stateArg != null)
                     {
                         cols.Add(new ColumnSymbol("prev", stateArg.ResultType));
@@ -328,15 +334,15 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol FunnelSequenceCompletion =
             new FunctionSymbol("funnel_sequence_completion",
-                (table, args, signature) =>
+                context =>
                 {
                     var cols = new List<ColumnSymbol>();
-                    AddReferencedColumn(cols, args, signature, "TimelineColumn");
+                    AddReferencedColumn(cols, context, "TimelineColumn");
 
-                    var stateArg = GetArgument(args, signature, "StateColumn");
+                    var stateArg = context.GetArgument("StateColumn");
                     if (stateArg != null)
                     {
-                        cols.Add(new ColumnSymbol(GetExpressionResultName(stateArg), ScalarTypes.String));
+                        cols.Add(new ColumnSymbol(context.GetResultName(stateArg), ScalarTypes.String));
                     }
 
                     cols.Add(new ColumnSymbol("Period", ScalarTypes.TimeSpan));
@@ -376,12 +382,12 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Identity =
              new FunctionSymbol("identity",
                  new Signature(
-                     (table, args) => table,
+                     context => context.RowScope,
                      Tabularity.Tabular));
 
         public static readonly FunctionSymbol IdentityV3 =
              new FunctionSymbol("identity_v3",
-                (table, args) => table,
+                context => context.RowScope,
                 Tabularity.Tabular,
                 new Parameter("mode", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("exceptionText", ScalarTypes.String, ArgumentKind.Constant));
@@ -393,7 +399,6 @@ namespace Kusto.Language
                  }),
                  new Parameter("Options", ScalarTypes.Dynamic));
 
-
         private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
         private static readonly Parameter Ipv4_lookup_IPv4LookupKey = new Parameter("IPv4LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
@@ -403,14 +408,14 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Ipv4_Lookup =
             new FunctionSymbol("ipv4_lookup",
                 new Signature(
-                    (table, args, signature) => {
-                        var lookupTable = GetArgument(args, signature, Ipv4_lookup_LookupTable.Name)?.ResultType as TableSymbol;
+                    context => {
+                        var lookupTable = context.GetArgument(Ipv4_lookup_LookupTable.Name)?.ResultType as TableSymbol;
                         if (lookupTable != null)
                         {
-                            var keyColumns = GetArguments(args, signature, IPv4_lookup_ExtraKey.Name).Select(e => e.ReferencedSymbol as ColumnSymbol).Where(c => c != null).ToList();
+                            var keyColumns = context.GetArguments(IPv4_lookup_ExtraKey.Name).Select(e => e.ReferencedSymbol as ColumnSymbol).Where(c => c != null).ToList();
                             var cols = new List<ColumnSymbol>();
                             // add all left side columns
-                            cols.AddRange(table.Columns);
+                            cols.AddRange(context.RowScope.Columns);
                             // add all right side columns except those used as join keys from both tables
                             cols.AddRange(lookupTable.Columns.Where(c => !keyColumns.Any(kc => kc.Name == c.Name)));
                             // make final set of columns have unique names
@@ -420,7 +425,7 @@ namespace Kusto.Language
                         else
                         {
                             // lookup table unknown, so default to input table
-                            return table;
+                            return context.RowScope;
                         }
                     },
                     Tabularity.Tabular,
@@ -474,24 +479,24 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Pivot =
              new FunctionSymbol("pivot",
-                 (table, args) =>
+                 context =>
                  {
-                     var pivotColumn = args.Count > 0 ? args[0].ReferencedSymbol as ColumnSymbol : null;
+                     var pivotColumn = context.Arguments.Count > 0 ? context.Arguments[0].ReferencedSymbol as ColumnSymbol : null;
 
                      var aggregateColumn =
-                        args.Count > 1
-                        && args[1] is Syntax.FunctionCallExpression fc
+                        context.Arguments.Count > 1
+                        && context.Arguments[1] is Syntax.FunctionCallExpression fc
                         && fc.ArgumentList.Expressions.Count > 0
                             ? fc.ArgumentList.Expressions[0].Element.ReferencedSymbol as ColumnSymbol
                             : null;
 
                      // columns specified
-                     var columns = args.Skip(2).Select(a => a.ReferencedSymbol as ColumnSymbol).Where(c => c != null).ToList();
+                     var columns = context.Arguments.Skip(2).Select(a => a.ReferencedSymbol as ColumnSymbol).Where(c => c != null).ToList();
 
                      if (columns.Count == 0)
                      {
                          // all columns exept explicity mentioned pivot and aggregate column
-                         columns.AddRange(table.Columns.Where(c => c != pivotColumn && c != aggregateColumn));
+                         columns.AddRange(context.RowScope.Columns.Where(c => c != pivotColumn && c != aggregateColumn));
                      }
 
                      // pivot table is open because it has additional columns based on data values
@@ -504,15 +509,15 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Preview =
              new FunctionSymbol("preview",
-                 (table, args) => new GroupSymbol( // multiple result tables
-                     table,
+                 context => new GroupSymbol( // multiple result tables
+                     context.RowScope,
                      new TableSymbol(new ColumnSymbol("Count", ScalarTypes.Long))),
                  Tabularity.Tabular,
                  new Parameter("NumberOfRows", ParameterTypeKind.Integer));
 
-        private static TableSymbol GetOutputSchema(TableSymbol input, IReadOnlyList<Expression> args)
+        private static TableSymbol GetOutputSchema(CustomReturnTypeContext context)
         {
-            if (args.Count > 0 && args[0].ReferencedSymbol is TableSymbol schema)
+            if (context.Arguments.Count > 0 && context.Arguments[0].ReferencedSymbol is TableSymbol schema)
             {
                 return schema;
             }
@@ -549,14 +554,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RollingPercentile =
              new FunctionSymbol("rolling_percentile",
-                 (table, args, signature) =>
+                 context =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, args, signature, "IndexColumn");
-                     AddReferencedColumns(cols, args, signature, "Dimension");
-                     var binsPerWindow = GetArgument(args, signature, "BinsPerWindow")?.LiteralValue?.ToString() ?? "0";
-                     var percentile = GetArgument(args, signature, "Percentile")?.LiteralValue?.ToString() ?? "0";
-                     var valueColumn = GetArgument(args, signature, "ValueColumn")?.ReferencedSymbol as ColumnSymbol;
+                     AddReferencedColumn(cols, context, "IndexColumn");
+                     AddReferencedColumns(cols, context, "Dimension");
+                     var binsPerWindow = context.GetArgument("BinsPerWindow")?.LiteralValue?.ToString() ?? "0";
+                     var percentile = context.GetArgument("Percentile")?.LiteralValue?.ToString() ?? "0";
+                     var valueColumn = context.GetArgument("ValueColumn")?.ReferencedSymbol as ColumnSymbol;
                      cols.Add(new ColumnSymbol($"rolling_{binsPerWindow}_percentile_{valueColumn?.Name ?? "value"}_{percentile}", valueColumn?.Type ?? ScalarTypes.Long));
                      return new TableSymbol(cols);
                  },
@@ -571,7 +576,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RowsNear =
              new FunctionSymbol("rows_near",
-                (table, args) => table,
+                context => context.RowScope,
                 Tabularity.Tabular,
                 new Parameter("Condition", ScalarTypes.Bool, ArgumentKind.Expression),
                 new Parameter("NumRows", ParameterTypeKind.Integer, ArgumentKind.Constant),
@@ -579,11 +584,11 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SessionCount =
              new FunctionSymbol("session_count",
-                 (table, args, signature) =>
+                 context =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, args, signature, "TimelineColumn");
-                     AddReferencedColumns(cols, args, signature, "Dimension");
+                     AddReferencedColumn(cols, context, "TimelineColumn");
+                     AddReferencedColumns(cols, context, "Dimension");
                      cols.Add(new ColumnSymbol("count_sessions", ScalarTypes.Long));
                      return new TableSymbol(cols);
                  },
@@ -606,19 +611,19 @@ namespace Kusto.Language
         public static readonly FunctionSymbol SequenceDetect =
              new FunctionSymbol("sequence_detect",
                  new Signature(
-                     (table, args, signature) =>
+                     context =>
                      {
                          var cols = new List<ColumnSymbol>();
 
-                         AddReferencedColumns(cols, args, signature, SD_Dimension.Name);
+                         AddReferencedColumns(cols, context, SD_Dimension.Name);
 
-                         var timelineArg = GetArgument(args, signature, SD_TimelineColumn.Name);
+                         var timelineArg = context.GetArgument(SD_TimelineColumn.Name);
                          if (timelineArg != null)
                          {
-                             var timelineArgName = GetExpressionResultName(timelineArg);
+                             var timelineArgName = context.GetResultName(timelineArg);
 
-                             cols.AddRange(GetArguments(args, signature, SD_Expr.Name).Select(a =>
-                                new ColumnSymbol(MakeColumnName(GetExpressionResultName(a), timelineArgName), timelineArg.ResultType)));
+                             cols.AddRange(context.GetArguments(SD_Expr.Name).Select(a =>
+                                new ColumnSymbol(MakeColumnName(context.GetResultName(a), timelineArgName), timelineArg.ResultType)));
                          }
 
                          cols.Add(new ColumnSymbol("Duration", ScalarTypes.TimeSpan));
@@ -654,11 +659,11 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SlidingWindowCounts =
              new FunctionSymbol("sliding_window_counts",
-                 (table, args, signature) =>
+                 context =>
                  {
                      var cols = new List<ColumnSymbol>();
-                     AddReferencedColumn(cols, args, signature, "TimelineColumn");
-                     AddReferencedColumns(cols, args, signature, "Dimension");
+                     AddReferencedColumn(cols, context, "TimelineColumn");
+                     AddReferencedColumns(cols, context, "Dimension");
                      cols.Add(new ColumnSymbol("Count", ScalarTypes.Long));
                      cols.Add(new ColumnSymbol("Dcount", ScalarTypes.Long));
                      return new TableSymbol(cols);
@@ -674,7 +679,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SqlRequest =
              new FunctionSymbol("sql_request",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
+                 context => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
@@ -683,7 +688,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol MySqlRequest =
              new FunctionSymbol("mysql_request",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
+                 context => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
@@ -692,7 +697,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol CosmosdbSqlRequest =
              new FunctionSymbol("cosmosdb_sql_request",
-                 (table, args) => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
+                 context => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
@@ -702,7 +707,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
                      new FunctionSymbol("azure_digital_twins_query_request",
-                         (table, args) => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
+                         context => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
                          Tabularity.Tabular,
                          new Parameter("endpoint", ScalarTypes.String),
                          new Parameter("sql_query", ScalarTypes.String)

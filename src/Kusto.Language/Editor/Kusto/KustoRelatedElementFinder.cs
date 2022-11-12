@@ -195,8 +195,8 @@ namespace Kusto.Language.Editor
         private static bool AreSymbolsEqual(Symbol symbol, SyntaxElement element, FindRelatedOptions options)
         {
             var canSee = (options & FindRelatedOptions.SeeThroughVariables) != 0;
-            return (element is NameReference n && (n.ReferencedSymbol == symbol || (canSee && n.ReferencedSymbol == Symbol.GetExpressionResultType(symbol))))
-                || (element is NameDeclaration d && (d.ReferencedSymbol == symbol || (canSee && Symbol.GetExpressionResultType(d.ReferencedSymbol) == symbol)));
+            return (element is NameReference n && (n.ReferencedSymbol == symbol || (canSee && n.ReferencedSymbol == Symbol.GetResultType(symbol))))
+                || (element is NameDeclaration d && (d.ReferencedSymbol == symbol || (canSee && Symbol.GetResultType(d.ReferencedSymbol) == symbol)));
         }
     }
 }

@@ -72,7 +72,7 @@ namespace Kusto.Language.Binding
                 if (matchingSignatures.Count == 1)
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
-                    var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, diagnostics);
+                    var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
                     return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
                 }
                 else
@@ -87,7 +87,7 @@ namespace Kusto.Language.Binding
                         diagnostics.Add(DiagnosticFacts.GetFunctionNotDefinedWithMatchingParameters(functionCall.Name.SimpleName, types).WithLocation(functionCall.Name));
                     }
 
-                    var returnType = GetCommonReturnType(matchingSignatures, arguments, argumentTypes);
+                    var returnType = GetCommonReturnType(matchingSignatures, arguments, argumentTypes, functionCall.Name);
 
                     return new SemanticInfo(fn, returnType, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments));
                 }
@@ -295,6 +295,7 @@ namespace Kusto.Language.Binding
             Signature signature,
             IReadOnlyList<Expression> arguments,
             IReadOnlyList<TypeSymbol> argumentTypes,
+            SyntaxElement location,
             List<Diagnostic> diagnostics = null)
         {
             if (arguments == null)
@@ -307,7 +308,7 @@ namespace Kusto.Language.Binding
             try
             {
                 signature.GetArgumentParameters(arguments, argumentParameters);
-                return GetFunctionCallResult(signature, arguments, argumentTypes, argumentParameters, diagnostics);
+                return GetFunctionCallResult(signature, arguments, argumentTypes, argumentParameters, location, diagnostics);
             }
             finally
             {
@@ -323,6 +324,7 @@ namespace Kusto.Language.Binding
             IReadOnlyList<Expression> arguments,
             IReadOnlyList<TypeSymbol> argumentTypes,
             IReadOnlyList<Parameter> argumentParameters,
+            SyntaxElement location,
             List<Diagnostic> diagnostics = null)
         {
             if (arguments == null)
@@ -378,7 +380,7 @@ namespace Kusto.Language.Binding
                     return GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
-                    return Promote(GetWidestArgumentType(signature, argumentTypes)) ?? ErrorSymbol.Instance;
+                    return TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Parameter0Cluster:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
@@ -439,10 +441,64 @@ namespace Kusto.Language.Binding
                         return TableSymbol.Empty.WithIsOpen(true);
                     }
                 case ReturnTypeKind.Custom:
-                    return signature.CustomReturnType(_rowScope ?? TableSymbol.Empty, arguments, signature) ?? ErrorSymbol.Instance;
+                    var context = new BinderCallContext(this, location as SyntaxNode, arguments, argumentTypes, argumentParameters, signature);
+                    return signature.CustomReturnType(context) ?? ErrorSymbol.Instance;
 
                 default:
                     throw new NotImplementedException();
+            }
+        }
+
+        private sealed class BinderCallContext : CustomReturnTypeContext
+        {
+            private readonly Binder _binder;
+            private readonly SyntaxNode _location;
+            private readonly IReadOnlyList<Expression> _arguments;
+            private readonly IReadOnlyList<TypeSymbol> _argumentTypes;
+            private readonly IReadOnlyList<Parameter> _argumentParameters;
+            private readonly Signature _signature;
+
+            public BinderCallContext(
+                Binder binder, 
+                SyntaxNode location, 
+                IReadOnlyList<Expression> arguments, 
+                IReadOnlyList<TypeSymbol> argumentTypes,
+                IReadOnlyList<Parameter> argumentParameters,
+                Signature signature)
+            {
+                _binder = binder;
+                _location = location;
+                _arguments = arguments;
+                _argumentTypes = argumentTypes;
+                _argumentParameters = argumentParameters;
+                _signature = signature;
+            }
+
+            public override SyntaxNode Location => _location;
+            public override IReadOnlyList<Expression> Arguments => _arguments;
+            public override IReadOnlyList<TypeSymbol> ArgumentTypes => _argumentTypes;
+            public override IReadOnlyList<Parameter> ArgumentParameters => _argumentParameters;
+            public override Signature Signature => _signature;
+            public override TableSymbol RowScope => _binder.RowScopeOrEmpty;
+
+            private static readonly SyntaxNode Nowhere =
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken));
+
+            public override Symbol GetReferencedSymbol(string name)
+            {
+                var info = _binder.BindName(name, SymbolMatch.Default, Nowhere);
+                return info?.ReferencedSymbol as Symbol;
+            }
+
+            public override TypeSymbol GetResultType(string name)
+            {
+                var info = _binder.BindName(name, SymbolMatch.Default, Nowhere);
+                return info?.ResultType;
+            }
+
+            public override string GetResultName(Expression expr, string defaultName = "")
+            {
+                return Binder.GetExpressionResultName(expr, defaultName, this.RowScope);
             }
         }
 
@@ -859,30 +915,6 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets the widest numeric type of the argument types.
-        /// The widest type is the one that can contain the values of all the other types:
-        /// </summary>
-        public static TypeSymbol GetWidestArgumentType(Signature signature, IReadOnlyList<TypeSymbol> argumentTypes)
-        {
-            ScalarSymbol widestType = null;
-
-            for (int i = 0; i < argumentTypes.Count; i++)
-            {
-                var argType = argumentTypes[i];
-
-                if (argType is ScalarSymbol s && s.IsNumeric && s != widestType)
-                {
-                    if (widestType == null || s.IsWiderThan(widestType))
-                    {
-                        widestType = s;
-                    }
-                }
-            }
-
-            return widestType;
-        }
-
-        /// <summary>
         /// Gets the common argument type for arguments corresponding to parameters constrained to specific <see cref="ParameterTypeKind"/>.CommonXXX values.
         /// </summary>
         public static TypeSymbol GetCommonArgumentType(IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<TypeSymbol> argumentTypes)
@@ -914,7 +946,7 @@ namespace Kusto.Language.Binding
                                 commonType = argType;
                             }
                         }
-                        else if (IsPromotable(commonType, argType))
+                        else if (commonType.IsPromotableTo(argType))
                         {
                             // a type that can be promoted to is better
                             commonType = argType;
@@ -938,7 +970,7 @@ namespace Kusto.Language.Binding
         /// Gets the common return type across a set of signatures, or error if there is no common type.
         /// The common return type is the return type all the signatures share, or the error type if the return types differ.
         /// </summary>
-        private TypeSymbol GetCommonReturnType(IReadOnlyList<Signature> signatures, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
+        private TypeSymbol GetCommonReturnType(IReadOnlyList<Signature> signatures, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, SyntaxElement location)
         {
             if (signatures.Count == 0)
             {
@@ -946,15 +978,15 @@ namespace Kusto.Language.Binding
             }
             else if (signatures.Count == 1)
             {
-                return GetFunctionCallResult(signatures[0], arguments, argumentTypes).Type;
+                return GetFunctionCallResult(signatures[0], arguments, argumentTypes, location).Type;
             }
             else
             {
-                var firstType = GetFunctionCallResult(signatures[0], arguments, argumentTypes).Type;
+                var firstType = GetFunctionCallResult(signatures[0], arguments, argumentTypes, location).Type;
 
                 for (int i = 1; i < signatures.Count; i++)
                 {
-                    var type = GetFunctionCallResult(signatures[i], arguments, argumentTypes).Type;
+                    var type = GetFunctionCallResult(signatures[i], arguments, argumentTypes, location).Type;
                     if (!SymbolsAssignable(firstType, type))
                     {
                         if (ArgumentsHaveErrorsOrUnknown(argumentTypes))
@@ -970,57 +1002,6 @@ namespace Kusto.Language.Binding
 
                 return firstType;
             }
-        }
-
-        private static TypeSymbol GetCommonScalarType(params TypeSymbol[] types)
-        {
-            return GetCommonScalarType((IReadOnlyList<TypeSymbol>)types);
-        }
-
-        /// <summary>
-        /// Gets the common scalar type amongst a set of types.
-        /// This is either the one type if they are all them same type, the most promoted of the types, or the common type of the types that are not dynamic.
-        /// </summary>
-        private static TypeSymbol GetCommonScalarType(IReadOnlyList<TypeSymbol> types)
-        {
-            TypeSymbol commonType = null;
-            bool hadUnknown = false;
-
-            for (int i = 0; i < types.Count; i++)
-            {
-                var type = types[i];
-
-                if (type.IsScalar)
-                {
-                    // TODO: should there be a general betterness between types instead of these specific rules?
-                    if (commonType == null)
-                    {
-                        if (type == ScalarTypes.Unknown)
-                        {
-                            hadUnknown = true;
-                        }
-                        else
-                        {
-                            commonType = type;
-                        }
-                    }
-                    else if (IsPromotable(commonType, type))
-                    {
-                        // a type that can be promoted to is better
-                        commonType = type;
-                    }
-                    else if (SymbolsAssignable(commonType, ScalarTypes.Dynamic))
-                    {
-                        // non-dynamic scalars are better
-                        commonType = type;
-                    }
-                }
-            }
-
-            if (commonType == null && hadUnknown)
-                return ScalarTypes.Unknown;
-
-            return commonType;
         }
 
         /// <summary>

@@ -529,7 +529,7 @@ namespace Kusto.Language.Editor
                     case ParameterTypeKind.Declared:
                         foreach (var t in p.DeclaredTypes)
                         {
-                            if (t is TableSymbol ts && Binder.SymbolsAssignable(t, implicitFirstArgumentType))
+                            if (t is TableSymbol ts && implicitFirstArgumentType.IsAssignableTo(t))
                                 return true;
                         }
                         break;
@@ -546,7 +546,7 @@ namespace Kusto.Language.Editor
         {
             // only append space if the symbol is in a boolean context and is not itself boolean
             return (hint & CompletionHint.Boolean) != 0
-                && Symbol.GetExpressionResultType(symbol) != ScalarTypes.Bool;
+                && Symbol.GetResultType(symbol) != ScalarTypes.Bool;
         }
 
         private static bool IsStartOfQuery(SyntaxNode context)
@@ -2374,11 +2374,11 @@ namespace Kusto.Language.Editor
                     return true;
 
                 case ParameterTypeKind.Declared:
-                    if (Binder.SymbolsAssignable(parameter.DeclaredTypes, type))
+                    if (type.IsAssignableToAny(parameter.DeclaredTypes))
                     {
                         return true;
                     }
-                    else if (Binder.IsPromotable(type, parameter.DeclaredTypes[0]))
+                    else if (type.IsPromotableTo(parameter.DeclaredTypes[0]))
                     {
                         return true;
                     }

@@ -98,7 +98,7 @@ namespace Kusto.Language.Binding
                 if (matchingSignatures.Count == 1)
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, location, diagnostics);
-                    var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes);
+                    var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, location);
                     return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: AllAreConstant(arguments));
                 }
                 else
@@ -114,7 +114,7 @@ namespace Kusto.Language.Binding
                         diagnostics.Add(DiagnosticFacts.GetOperatorNotDefined(location.ToString(IncludeTrivia.Interior), argumentTypes).WithLocation(location));
                     }
 
-                    var returnType = GetCommonReturnType(matchingSignatures, arguments, argumentTypes);
+                    var returnType = GetCommonReturnType(matchingSignatures, arguments, argumentTypes, location);
                     return new SemanticInfo(op, returnType, diagnostics);
                 }
             }

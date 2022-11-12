@@ -1041,114 +1041,25 @@ namespace Kusto.Language.Binding
 
         private static TypeSymbol GetResultType(Symbol symbol)
         {
-            return Symbol.GetExpressionResultType(symbol);
+            return Symbol.GetResultType(symbol);
         }
         #endregion
 
         #region Symbol assignability
 
-        public static bool SymbolsAssignable(IReadOnlyList<TypeSymbol> targetTypes, Symbol sourceType, Conversion conversion = Conversion.None)
+        private static bool SymbolsAssignable(IReadOnlyList<TypeSymbol> targetTypes, Symbol sourceType, Conversion allowedConversion = Conversion.None)
         {
-            for (int i = 0; i < targetTypes.Count; i++)
-            {
-                if (SymbolsAssignable(targetTypes[i], sourceType, conversion))
-                    return true;
-            }
-
-            return false;
+            return sourceType.IsAssignableToAny(targetTypes, allowedConversion);
         }
 
         /// <summary>
         /// True if a value of type <see cref="P:valueType"/> can be assigned to a parameter of type <see cref="P:parameterType"/>
         /// </summary>
-        public static bool SymbolsAssignable(Symbol targetType, Symbol sourceType, Conversion conversion = Conversion.None)
+        private static bool SymbolsAssignable(Symbol targetType, Symbol sourceType, Conversion allowedConversion = Conversion.None)
         {
-            if (targetType == sourceType)
-                return true;
-
-            if (targetType == null || sourceType == null)
-                return false;
-
-            if (sourceType == ScalarTypes.Unknown && targetType.IsScalar)
-                return true;
-
-            if (targetType == ScalarTypes.Unknown && sourceType.IsScalar)
-                return true;
-
-            // a single column tuple is assignable to a scalar
-            if (sourceType.Kind == SymbolKind.Tuple
-                && targetType.Kind == SymbolKind.Scalar
-                && sourceType is TupleSymbol stt
-                && stt.Columns.Count == 1)
-                return SymbolsAssignable(targetType, stt.Columns[0].Type);
-
-            if (targetType.Kind != sourceType.Kind)
-                return false;
-
-            switch (targetType.Kind)
-            {
-                case SymbolKind.Column:
-                    var tarCol = (ColumnSymbol)targetType;
-                    var srcCol = (ColumnSymbol)sourceType;
-                    return tarCol.Name == srcCol.Name && SymbolsAssignable(tarCol.Type, srcCol.Type, conversion);
-
-                case SymbolKind.Tuple:
-                case SymbolKind.Group:
-                    return MembersEqual(targetType, sourceType);
-
-                case SymbolKind.Table:
-                    return TablesAssignable((TableSymbol)targetType, (TableSymbol)sourceType);
-
-                case SymbolKind.Scalar:
-                    switch (conversion)
-                    {
-                        case Conversion.Promotable:
-                            return IsPromotable((TypeSymbol)sourceType, (TypeSymbol)targetType);
-                        case Conversion.Compatible:
-                            return IsPromotable((TypeSymbol)sourceType, (TypeSymbol)targetType)
-                                || IsPromotable((TypeSymbol)targetType, (TypeSymbol)sourceType);
-                        case Conversion.Any:
-                            return true;
-                        default:
-                            return false;
-                    }
-            }
-
-            return false;
+            return sourceType.IsAssignableTo(targetType, allowedConversion);
         }
 
-        public static bool MembersEqual(Symbol target, Symbol source)
-        {
-            if (target.Members.Count != source.Members.Count)
-                return false;
-
-            for (int i = 0, n = target.Members.Count; i < n; i++)
-            {
-                if (!SymbolsAssignable(target.Members[i], source.Members[i]))
-                    return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// True if a table value can be assigned to a parameter of a specific table type.
-        /// </summary>
-        private static bool TablesAssignable(TableSymbol target, TableSymbol source)
-        {
-            // ensure that the value table has at least the columns specified for the parameter table.
-
-            foreach (var tarCol in target.Columns)
-            {
-                if (!source.TryGetColumn(tarCol.Name, out var valueColumn)
-                    || !SymbolsAssignable(tarCol.Type, valueColumn.Type))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
         #endregion
 
         #region Check methods
@@ -2350,6 +2261,6 @@ namespace Kusto.Language.Binding
         }
 
         // keep line for BRIDGE.NET bug
-        #endregion
+#endregion
     }
 }

@@ -2582,7 +2582,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsSummable(node.To, diagnostics);
                     _binder.CheckIsSummable(node.Step, diagnostics);
 
-                    var commonType = GetCommonScalarType(_binder.GetResultTypeOrError(node.From), _binder.GetResultTypeOrError(node.To), _binder.GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
+                    var commonType = TypeFacts.GetCommonScalarType(_binder.GetResultTypeOrError(node.From), _binder.GetResultTypeOrError(node.To), _binder.GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
 
                     var name = node.Name.SimpleName;
 

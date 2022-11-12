@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Kusto.Language.Binding
+namespace Kusto.Language.Symbols
 {
     /// <summary>
     /// The kinds of conversions allowed between values of two different types.
     /// </summary>
-    internal enum Conversion
+    public enum Conversion
     {
         /// <summary>
         /// No conversion allowed between different scalar types (strict)

@@ -420,12 +420,12 @@ namespace Kusto.Language.Binding
                     var sig = fn.Signatures.FirstOrDefault(s => s.MinArgumentCount == 0);
                     if (sig != null && allowZeroArgumentInvocation)
                     {
-                        var funResult = GetFunctionCallResult(sig, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                        var funResult = GetFunctionCallResult(sig, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance, location);
                         return new SemanticInfo(item, funResult.Type, calledFunctionInfo: funResult.Info);
                     }
                     else
                     {
-                        var returnType = GetCommonReturnType(fn.Signatures, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                        var returnType = GetCommonReturnType(fn.Signatures, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance, location);
                         return new SemanticInfo(item, returnType, DiagnosticFacts.GetFunctionRequiresArgumentList(name).WithLocation(location));
                     }
                 }
@@ -433,7 +433,7 @@ namespace Kusto.Language.Binding
                 {
                     // entity group symbols are like function symbols that have a body to be evaluated
                     // in order to determine their result type
-                    var result = GetFunctionCallResult(eg.Signature, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance);
+                    var result = GetFunctionCallResult(eg.Signature, EmptyReadOnlyList<Expression>.Instance, EmptyReadOnlyList<TypeSymbol>.Instance, location);
                     return new SemanticInfo(item, result.Type, calledFunctionInfo: result.Info);
                 }
                 else

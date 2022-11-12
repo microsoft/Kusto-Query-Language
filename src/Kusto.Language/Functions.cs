@@ -40,7 +40,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol StoredQueryResult =
             new FunctionSymbol("stored_query_result",
-                (table, args) => TableSymbol.Empty, // we don't want to resolve schema of SQR for now
+                context => TableSymbol.Empty, // we don't want to resolve schema of SQR for now
                 Tabularity.Tabular,
                 new Parameter("name", ScalarTypes.String));
 
@@ -1145,7 +1145,31 @@ namespace Kusto.Language
                 .ConstantFoldable();
 
         public static readonly FunctionSymbol BinAuto =
-            new FunctionSymbol("bin_auto", "bin_at(value, query_bin_auto_size, query_bin_auto_at)", Tabularity.Scalar,
+            new FunctionSymbol("bin_auto", //"bin_at(value, query_bin_auto_size, query_bin_auto_at)", 
+                context =>
+                {
+                    if (context.GetArgument("value")?.ResultType is ScalarSymbol valueType)
+                    {
+                        if (valueType.IsNumeric)
+                        {
+                            return 
+                                TypeFacts.GetCommonScalarType(
+                                    valueType,
+                                    context.GetResultType("query_bin_auto_size"),
+                                    context.GetResultType("query_bin_auto_at"))
+                                    .PromoteToLong();
+                        }
+                        else
+                        {
+                            return valueType.PromoteToLong();
+                        }
+                    }
+                    else
+                    {
+                        return ScalarTypes.Unknown;
+                    }
+                },
+                Tabularity.Scalar,
                 new Parameter("value", ParameterTypeKind.Summable))
                 .WithResultNameKind(ResultNameKind.FirstArgument)
                 .ConstantFoldable()
@@ -1447,13 +1471,13 @@ namespace Kusto.Language
             }
         }
 
-        private static TypeSymbol GetArraySortResult(TableSymbol table, IReadOnlyList<Expression> arguments, Signature signature)
+        private static TypeSymbol GetArraySortResult(CustomReturnTypeContext context)
         {
             var result = new List<ColumnSymbol>();
-            for (int i = 0; (i < arguments.Count) && (arguments[i].ResultType == ScalarTypes.Dynamic); i++)
+            for (int i = 0; (i < context.Arguments.Count) && (context.Arguments[i].ResultType == ScalarTypes.Dynamic); i++)
             {
-                var argument = arguments[i];
-                var argumentExpressionName = Binding.Binder.GetExpressionResultName(argument, "");
+                var argument = context.Arguments[i];
+                var argumentExpressionName = context.GetResultName(argument);
                 var resultColumnName = string.IsNullOrEmpty(argumentExpressionName) ? $"array{i}_sorted" : $"{argumentExpressionName}_sorted";
                 var resultColumn = new ColumnSymbol(resultColumnName, argument.ResultType);
                 result.Add(resultColumn);
@@ -1653,7 +1677,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesStats =
             new FunctionSymbol("series_stats",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("min", ScalarTypes.Real),
                         new ColumnSymbol("min_idx", ScalarTypes.Long),
@@ -1679,7 +1703,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFft =
             new FunctionSymbol("series_fft",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("real", ScalarTypes.Dynamic),
                         new ColumnSymbol("imag", ScalarTypes.Dynamic))),
@@ -1689,7 +1713,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesIFft =
             new FunctionSymbol("series_ifft",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("real", ScalarTypes.Dynamic),
                         new ColumnSymbol("imag", ScalarTypes.Dynamic))),
@@ -1699,7 +1723,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFitPoly =
             new FunctionSymbol("series_fit_poly",
-                (table, args, sig) => MakePrefixedTuple(sig, "y_series", args,
+                context => MakePrefixedTuple(context, "y_series",
                     new TupleSymbol(
                         new ColumnSymbol("rsquare", ScalarTypes.Real),
                         new ColumnSymbol("coefficients", ScalarTypes.Dynamic),
@@ -1713,7 +1737,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("rsquare", ScalarTypes.Real),
                         new ColumnSymbol("slope", ScalarTypes.Real),
@@ -1731,7 +1755,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFit2Lines =
             new FunctionSymbol("series_fit_2lines",
-                (table, args, sig) => MakePrefixedTuple(sig, "array", args,
+                context => MakePrefixedTuple(context, "array",
                     new TupleSymbol(
                         new ColumnSymbol("rsquare", ScalarTypes.Real),
                         new ColumnSymbol("split_idx", ScalarTypes.Long),
@@ -1780,7 +1804,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesPeriodsDetect =
             new FunctionSymbol("series_periods_detect",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("periods", ScalarTypes.Dynamic),
                         new ColumnSymbol("scores", ScalarTypes.Dynamic))),
@@ -1792,7 +1816,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesPeriodsValidate =
             new FunctionSymbol("series_periods_validate",
-                (table, args, sig) => MakePrefixedTuple(sig, "series", args,
+                context => MakePrefixedTuple(context, "series",
                     new TupleSymbol(
                         new ColumnSymbol("periods", ScalarTypes.Dynamic),
                         new ColumnSymbol("scores", ScalarTypes.Dynamic))),
@@ -2055,16 +2079,16 @@ namespace Kusto.Language
                     new Parameter("series", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
-        private static TypeSymbol SeriesDecomposeResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
-            MakePrefixedTuple(sig, "series", args,
+        private static TypeSymbol SeriesDecomposeResult(CustomReturnTypeContext context) =>
+            MakePrefixedTuple(context, "series",
                 new TupleSymbol(
                     new ColumnSymbol("baseline", ScalarTypes.Dynamic),
                     new ColumnSymbol("seasonal", ScalarTypes.Dynamic),
                     new ColumnSymbol("trend", ScalarTypes.Dynamic),
                     new ColumnSymbol("residual", ScalarTypes.Dynamic)));
 
-        private static TypeSymbol SeriesDecomposeAnomaliesResult(TableSymbol table, IReadOnlyList<Syntax.Expression> args, Signature sig) =>
-            MakePrefixedTuple(sig, "series", args,
+        private static TypeSymbol SeriesDecomposeAnomaliesResult(CustomReturnTypeContext context) =>
+            MakePrefixedTuple(context, "series",
                 new TupleSymbol(
                     new ColumnSymbol("ad_flag", ScalarTypes.Dynamic),
                     new ColumnSymbol("ad_score", ScalarTypes.Dynamic),

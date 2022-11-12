@@ -278,7 +278,7 @@ namespace Kusto.Language.Binding
                         if (map.HasMultipleTypes(col.Name))
                         {
                             var types = map.GetTypes(col.Name);
-                            var commonType = GetCommonScalarType(types);
+                            var commonType = TypeFacts.GetCommonScalarType(types);
                             if (commonType == null)
                                 commonType = ScalarTypes.Dynamic;
 

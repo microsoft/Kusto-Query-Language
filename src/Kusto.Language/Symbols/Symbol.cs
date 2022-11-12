@@ -150,7 +150,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Determines the result type of an expression that references the specified symbol
         /// </summary>
-        public static TypeSymbol GetExpressionResultType(Symbol symbol)
+        public static TypeSymbol GetResultType(Symbol symbol)
         {
             switch (symbol)
             {
@@ -158,10 +158,10 @@ namespace Kusto.Language.Symbols
                     return c.Type;
 
                 case VariableSymbol v:
-                    return GetExpressionResultType(v.Type);
+                    return GetResultType(v.Type);
 
                 case EntityGroupElementSymbol e:
-                    return GetExpressionResultType(e.UnderlyingSymbol);
+                    return GetResultType(e.UnderlyingSymbol);
 
                 case ParameterSymbol p:
                     return p.Type;
@@ -171,7 +171,7 @@ namespace Kusto.Language.Symbols
 
                     foreach (var m in g.Members)
                     {
-                        var rs = GetExpressionResultType(m);
+                        var rs = GetResultType(m);
                         if (rs != null)
                         {
                             resultSymbols.Add(rs);
@@ -197,6 +197,131 @@ namespace Kusto.Language.Symbols
                 default:
                     return null;
             }
+        }
+
+        /// <summary>
+        /// True if this symbol can be assigned to the specified type.
+        /// </summary>
+        public bool IsAssignableTo(Symbol targetType, Conversion allowedConversion = Conversion.None)
+        {
+            return AreAssignable(targetType, this, allowedConversion);
+        }
+
+        /// <summary>
+        /// True if this symbol can be assigned to any of the specified types.
+        /// </summary>
+        public bool IsAssignableToAny(IReadOnlyList<TypeSymbol> targetTypes, Conversion allowedConversion = Conversion.None)
+        {
+            return AreAssignable(targetTypes, this, allowedConversion);
+        }
+
+        /// <summary>
+        /// True if a value of type <see cref="P:sourceType"/> can be assigned to any types in <see cref="P:targetTypes"/>
+        /// </summary>
+        private static bool AreAssignable(IReadOnlyList<TypeSymbol> targetTypes, Symbol sourceType, Conversion allowedConversion = Conversion.None)
+        {
+            for (int i = 0; i < targetTypes.Count; i++)
+            {
+                if (AreAssignable(targetTypes[i], sourceType, allowedConversion))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// True if a value of type <see cref="P:sourceType"/> can be assigned to of type <see cref="P:targetType"/>
+        /// </summary>
+        private static bool AreAssignable(Symbol targetType, Symbol sourceType, Conversion allowedConversion = Conversion.None)
+        {
+            if (targetType == sourceType)
+                return true;
+
+            if (targetType == null || sourceType == null)
+                return false;
+
+            if (sourceType == ScalarTypes.Unknown && targetType.IsScalar)
+                return true;
+
+            if (targetType == ScalarTypes.Unknown && sourceType.IsScalar)
+                return true;
+
+            // a single column tuple is assignable to a scalar
+            if (sourceType.Kind == SymbolKind.Tuple
+                && targetType.Kind == SymbolKind.Scalar
+                && sourceType is TupleSymbol stt
+                && stt.Columns.Count == 1)
+                return AreAssignable(targetType, stt.Columns[0].Type);
+
+            if (targetType.Kind != sourceType.Kind)
+                return false;
+
+            switch (targetType)
+            {
+                case ColumnSymbol tarCol:
+                    var srcCol = (ColumnSymbol)sourceType;
+                    return tarCol.Name == srcCol.Name && AreAssignable(tarCol.Type, srcCol.Type, allowedConversion);
+
+                case TupleSymbol _:
+                case GroupSymbol _:
+                    return MembersEqual(targetType, sourceType);
+
+                case TableSymbol tarTable:
+                    return TablesAssignable(tarTable, (TableSymbol)sourceType);
+
+                case ScalarSymbol tarScalar:
+                    var srcScalar = (ScalarSymbol)sourceType;
+
+                    switch (allowedConversion)
+                    {
+                        case Conversion.Promotable:
+                            return srcScalar.IsPromotableTo(tarScalar);
+                        case Conversion.Compatible:
+                            return srcScalar.IsPromotableTo(tarScalar) || tarScalar.IsPromotableTo(srcScalar);
+                        case Conversion.Any:
+                            return true;
+                        default:
+                            return false;
+                    }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// True if the members of the source type are assignable to the members of the target type.
+        /// </summary>
+        public static bool MembersEqual(Symbol target, Symbol source)
+        {
+            if (target.Members.Count != source.Members.Count)
+                return false;
+
+            for (int i = 0, n = target.Members.Count; i < n; i++)
+            {
+                if (!AreAssignable(target.Members[i], source.Members[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// True if a table value can be assigned to a parameter of a specific table type.
+        /// </summary>
+        private static bool TablesAssignable(TableSymbol target, TableSymbol source)
+        {
+            // ensure that the value table has at least the columns specified for the parameter table.
+
+            foreach (var tarCol in target.Columns)
+            {
+                if (!source.TryGetColumn(tarCol.Name, out var valueColumn)
+                    || !AreAssignable(tarCol.Type, valueColumn.Type))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

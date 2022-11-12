@@ -191,16 +191,6 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public FunctionSymbol(string name, CustomReturnTypeShort customReturnType, Tabularity tabularity, IReadOnlyList<Parameter> parameters)
-            : this(name, (table, args, signature) => customReturnType(table, args), tabularity, parameters)
-        {
-        }
-
-        public FunctionSymbol(string name, CustomReturnTypeShort customReturnType, Tabularity tabularity, params Parameter[] parameters)
-            : this(name, (table, args, signature) => customReturnType(table, args), tabularity, parameters)
-        {
-        }
-
         public FunctionSymbol(string name, string body, Tabularity tabularity, IReadOnlyList<Parameter> parameters, string description = null)
             : this(name, new[] { new Signature(body, tabularity, parameters) }, description)
         {
