@@ -704,7 +704,7 @@ items:
     href: regexquotefunction.md
   - name: repeat()
     href: repeatfunction.md
-  - name: replace_regex(), replace_string()
+  - name: replace_regex()
     displayName: replace()
     href: replace-regex-function.md
   - name: replace_string()
@@ -869,7 +869,7 @@ items:
   - name: make_bag_if()
     href: make-bag-if-aggfunction.md
   - name: make_list()
-    displayName: makelist
+    displayName: makelist()
     href: makelist-aggfunction.md
   - name: make_list_if()
     href: makelistif-aggfunction.md

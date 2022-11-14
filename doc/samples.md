@@ -3,7 +3,7 @@ title: Samples for Kusto Queries - Azure Data Explorer
 description: This article describes common queries and examples that use the Kusto Query Language.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 11/13/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -493,7 +493,6 @@ Here's the output:
 |iPhone 6 |55
 |iPhone5 |66
 
-
 ## Create and use query-time dimension tables
 
 Often, you'll want to join the results of a query with an ad-hoc dimension table that isn't stored in the database. You can define an expression whose result is a table scoped to a single query.
@@ -675,7 +674,6 @@ Here's the output:
 |2018-10-07 00:00:00.0000000|Apples|8|8|8|
 
 The query "stretches" (duplicates) each record in the input table throughout the seven days after its actual appearance. Each record actually appears seven times. As a result, the daily aggregation includes all records of the preceding seven days.
-
 
 Here's a step-by-step explanation of the preceding query:
 
@@ -946,10 +944,10 @@ let Trace="A=12, B=34, Duration=567, ...";
 print Duration = extract("Duration=([0-9.]+)", 1, Trace, typeof(real));  //result: 567
 print Duration_seconds =  extract("Duration=([0-9.]+)", 1, Trace, typeof(real)) * time(1s);  //result: 00:09:27
 ```
-### *isempty*, *isnotempty*, *notempty*
+### *isempty*, *isnotempty*
 
 - `isempty` returns `true` if the argument is an empty string or null (see `isnull`).
-- `isnotempty` returns `true` if the argument isn't an empty string or null (see `isnotnull`). Alias: `notempty`.
+- `isnotempty` returns `true` if the argument isn't an empty string or null (see `isnotnull`). Alias: `isnotempty`.
 
 ```kusto
 isempty(value)
@@ -981,7 +979,7 @@ parse_url(urlstring)
 #### Example
 
 ```kusto
-print parseurl("http://user:pass@contoso.com/icecream/buy.aspx?a=1&b=2#tag")
+print parse_url("http://user:pass@contoso.com/icecream/buy.aspx?a=1&b=2#tag")
 ```
 
 Here's the output:
@@ -999,7 +997,7 @@ Here's the output:
 }
 ```
 
-### *replace*
+### *replace_regex*
 
 Replaces all regex matches with another string.
 
@@ -1388,7 +1386,7 @@ Here's the output:
 | computer2 | [326,105,302,301,300,102] |
 | ... | ... |
 
-`make_list` generates a list in the order that data was passed into it. To sort events from oldest to newest, use `asc` in the `order` statement instead of `desc`. 
+`make_list` generates a list in the order that data was passed into it. To sort events from oldest to newest, use `asc` in the `order` statement instead of `desc`.
 
 You might find it useful to create a list only of distinct values. This list is called a _set_, and you can generate it by using the `make_set` command:
 
@@ -1658,7 +1656,7 @@ print hosts_object
 | extend status0=hosts_object.hosts[0].status, rate1=hosts_object.hosts[1].rate
 ```
 
-### *arraylength*
+### *array_length*
 
 Use `array_length` to count the number of elements in an array:
 

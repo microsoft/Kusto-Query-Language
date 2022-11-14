@@ -15,6 +15,8 @@ Returns a unique identifier that identifies the data shard ("extent") that the c
 
 Applying this function to calculated data that isn't attached to a data shard returns an empty guid (all zeros).
 
+> **Deprecated aliases:** extentid()
+
 ## Syntax
 
 `extent_id()`

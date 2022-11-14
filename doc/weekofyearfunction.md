@@ -9,7 +9,7 @@ ms.date: 11/07/2022
 
 Returns an integer which represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday, according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Week_dates).
 
- **Deprecated alias:** weekofyear()
+ **Deprecated aliases:** weekofyear()
 
 > [!NOTE]
 > `weekofyear()` wasn't ISO 8601 compliant; the first week of a year was defined as the week with the year's first Wednesday in it.

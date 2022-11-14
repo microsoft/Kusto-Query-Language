@@ -11,6 +11,8 @@ Finds a row in the group that maximizes *ExprToMaximize*.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
+> **Deprecated aliases:** argmax()
+
 ## Syntax
 
 `arg_max` `(`*ExprToMaximize*`,` *\** | *ExprToReturn*  [`,` ...]`)`

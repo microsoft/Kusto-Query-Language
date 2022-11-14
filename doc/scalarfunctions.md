@@ -3,7 +3,7 @@ title: Scalar Functions - Azure Data Explorer
 description: This article describes Scalar Functions in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/18/2021
+ms.date: 11/10/2022
 ---
 # Scalar function types at a glance
 
@@ -38,7 +38,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[ago()](agofunction.md)|Subtracts the given timespan from the current UTC clock time.|
 |[datetime_add()](datetime-addfunction.md)|Calculates a new datetime from a specified datepart multiplied by a specified amount, added to a specified datetime.|
 |[datetime_diff()](datetime-difffunction.md)|Returns the end of the year containing the date, shifted by an offset, if provided.|
-|[datetime_local_to_utc()](datetime-local-to-utc-function.md) |  Converts local datetime to UTC datetime using [a time-zone specification](../query/timezone.md). 
+|[datetime_local_to_utc()](datetime-local-to-utc-function.md) |  Converts local datetime to UTC datetime using [a time-zone specification](../query/timezone.md).
 |[datetime_part()](datetime-partfunction.md)|Extracts the requested date part as an integer value.|
 | [datetime_utc_to_local()](datetime-utc-to-local-function.md) | Converts UTC datetimgoe to local datetime using a [time-zone specification](../query/timezone.md).
 |[dayofmonth()](dayofmonthfunction.md)|Returns the integer number representing the day number of the given month.|

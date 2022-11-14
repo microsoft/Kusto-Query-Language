@@ -3,12 +3,14 @@ title: column_ifexists() - Azure Data Explorer
 description: This article describes column_ifexists() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/09/2022
 ---
 # column_ifexists()
 
 Takes a column name as a string and a default value. Returns a reference to the column if it exists,
 otherwise - returns the default value.
+
+> **Deprecated aliases:** columnifexists()
 
 ## Syntax
 
