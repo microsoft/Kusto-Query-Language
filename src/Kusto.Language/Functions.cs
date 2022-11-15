@@ -705,6 +705,23 @@ namespace Kusto.Language
                 new Parameter("prefix", ScalarTypes.Long, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol Ipv6IsInRange =
+            new FunctionSymbol("ipv6_is_in_range", ScalarTypes.Bool,
+                new Parameter("ip", ScalarTypes.String),
+                new Parameter("ip_range", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable();
+
+        public static readonly FunctionSymbol Ipv6IsInAnyRange =
+            new FunctionSymbol("ipv6_is_in_any_range",
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("ip", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ranges", ScalarTypes.String, maxOccurring: MaxRepeat)),
+                new Signature(ScalarTypes.Bool,
+                    new Parameter("ip", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ranges", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         public static readonly FunctionSymbol ParsePath =
@@ -3207,6 +3224,8 @@ namespace Kusto.Language
             Ipv6Compare,
             Ipv4IsPrivate,
             Ipv6IsMatch,
+            Ipv6IsInRange,
+            Ipv6IsInAnyRange,
             Ipv4IsInRange,
             Ipv4IsInAnyRange,
             Ipv4NetmaskSuffix,

@@ -353,12 +353,11 @@ It is possible to construct all the necessary symbols by using Kusto itself to q
 
 Unfortunately, there are no API's provided in the library to do this for you.
 
-There is, however, another project on Github that includes the necessary code to load the symbols 
-directly from the database into a form you can use.
+There is, however, another library available on nuget that includes the necessary API's to load the symbols:
+https://www.nuget.org/packages/Kusto.Toolkit/
 
-https://github.com/mattwar/Kushy/blob/master/README.md
-
-You can copy/paste the SymbolLoader.cs file from this project into yours.
+The source code to this library is available at:
+https://github.com/mattwar/Kushy
 
 
 &nbsp;
