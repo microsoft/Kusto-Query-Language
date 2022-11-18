@@ -15,7 +15,7 @@ Builds the minimal schema that admits all values of *DynamicExpr*.
 
 `buildschema` `(`*DynamicExpr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
@@ -40,7 +40,7 @@ The following example builds a schema based on:
 * `{"x":"somevalue", "z":[1, 2, 3]}`
 * `{"y":{"w":"zzz"}, "t":["aa", "bb"], "z":["foo"]}`
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2WOQQrCMBBF9z3F8FctBEGLm1ylZDFpIgYSA7ZVm9q7O2p3nVkN/73POB5lbfT1g+PkNbn5xin0DXUVyWxnveAFfVSEGbo9nNdG7WMMOflfDQQs0J0IJ0Wt2eNSs+ApTikFq+Cj4GD+mtbCbAW45AzRK1O9aZhS4nsonuwUohv6q0/8/7v5AOnXbR3IAAAA)**\]**
+[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2WOQQrCMBBF9z3F8FctBEGLm1ylZDFpIgYSA7ZVm9q7O2p3nVkN/73POB5lbfT1g+PkNbn5xin0DXUVyWxnveAFfVSEGbo9nNdG7WMMOflfDQQs0J0IJ0Wt2eNSs+ApTikFq+Cj4GD+mtbCbAW45AzRK1O9aZhS4nsonuwUohv6q0/8/7v5AOnXbR3IAAAA)
 
 ```kusto
 datatable(value: dynamic) [

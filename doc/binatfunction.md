@@ -3,30 +3,30 @@ title: bin_at() - Azure Data Explorer
 description: This article describes bin_at() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 11/10/2022
 ---
 # bin_at()
 
-Rounds values down to a fixed-size "bin", with control over the bin's starting point.
-(See also [`bin function`](./binfunction.md).)
+Rounds values down to a fixed-size bin, with control over the bin's starting point.
 
 ## Syntax
 
-`bin_at` `(`*Expression*`,` *BinSize*`, ` *FixedPoint*`)`
+`bin_at` `(`*value*`,`*bin_size*`,`*fixed_point*`)`
 
-## Arguments
+## Parameters
 
-* *Expression*: A scalar expression of a numeric type (including `datetime` and `timespan`)
-  indicating the value to round.
-* *BinSize*: A scalar constant of a numeric type or `timespan` (for a `datetime` or `timespan` *Expression*) indicating
-  the size of each bin.
-* *FixedPoint*: A scalar constant of the same type as *Expression* indicating
-  one value of *Expression, which is a "fixed point" (that is, a value `fixed_point`
-  for which `bin_at(fixed_point, bin_size, fixed_point) == fixed_point`.)
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *value* | int, long, real, timespan, or datetime | &check; | The value to round. |
+| *bin_size* | int, long, real, or timespan | &check; | The size of each bin. |
+| *fixed_point* | int, long, real, timespan, or datetime | &check; | A constant of the same type as *value* indicating one value of *value*, which is a *fixed point* for which `bin_at(fixed_point, bin_size, fixed_point) == fixed_point`.|
+
+> [!NOTE]
+> If *value* is a timespan or datetime, then the *bin_size* must be a timespan.
 
 ## Returns
 
-The nearest multiple of *BinSize* below *Expression*, shifted so that *FixedPoint*
+The nearest multiple of *bin_size* below *value*, shifted so that *fixed_point*
 will be translated into itself.
 
 ## Examples
@@ -40,9 +40,9 @@ will be translated into itself.
 
 In the following example, notice that the `"fixed point"` arg is returned as one of the bins and the other bins are aligned to it based on the `bin_size`. Also note that each datetime bin represents the starting time of that bin:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```kusto
+[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUDZfEklSrFCBRkpmbqqPgV5prlZlXohnNywUT1DAyMLTQNTDSNTIJMTS1MjTR1DHWwSZtHGJoBpY2wSptBtNtGsvLVaNQXJqbm1iUWZUKYmkA7dVUSKpUSMrMi08sAbtKR8EwRUcBiysUwOZYGRjoGUCApiYAxLxe/tAAAAA=)
 
+```kusto
 datatable(Date:datetime, Num:int)[
 datetime(2018-02-24T15:14),3,
 datetime(2018-02-23T16:14),4,
@@ -55,3 +55,7 @@ datetime(2018-02-26T15:14),5]
 |2018-02-23 15:14:00.0000000|4|
 |2018-02-24 15:14:00.0000000|3|
 |2018-02-26 15:14:00.0000000|5|
+
+## See also
+
+* [`bin()`](./binfunction.md)

@@ -9,18 +9,39 @@ ms.date: 02/13/2020
 
 Returns a result of the bitwise `xor` operation of the two values.
 
-```kusto
-binary_xor(x,y)
-```
-
 ## Syntax
 
-`binary_xor(`*num1*`,` *num2* `)`
+`binary_xor(`*value1*`,`*value2*`)`
 
-## Arguments
+## Parameters
 
-* *num1*, *num2*: long numbers.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *value1* | int | &check; | The left-side value of the XOR operation. |
+| *value2* | int | &check; | The right-side value of the XOR operation. |
 
 ## Returns
 
-Returns logical XOR operation on a pair of numbers: num1 ^ num2.
+Returns logical XOR operation on a pair of numbers: value1 ^ value2.
+
+## Examples
+
+[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswr0UjKzEssqoyvyC/SMNQx1NQEAKWP8zEWAAAA)
+
+```kusto
+binary_xor(1,1)
+```
+
+|Result|
+|------|
+|0 |
+
+[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswr0UjKzEssqoyvyC/SMNQx0tQEAPwxtTMWAAAA)
+
+```kusto
+binary_xor(1,2)
+```
+
+|Result|
+|------|
+|3 |
