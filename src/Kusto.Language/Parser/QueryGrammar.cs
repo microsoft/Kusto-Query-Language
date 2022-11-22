@@ -455,7 +455,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.LongLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.LongLiteralExpression, token))
                 .WithTag("<long-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "long()", "long(", ")", "long"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "long()", "long(", ")", "long", rank: CompletionRank.Function));
 
             var RealLiteral =
                 Rule(
@@ -463,29 +463,29 @@ namespace Kusto.Language.Parsing
                     token => (Expression)new LiteralExpression(SyntaxKind.RealLiteralExpression, token))
                 .WithTag("<real-literal>")
                 .WithCompletion(
-                    new CompletionItem(CompletionKind.ScalarPrefix, "real()", "real(", ")", "real"),
-                    new CompletionItem(CompletionKind.ScalarPrefix, "double()", "double(", ")", "double"));
+                    new CompletionItem(CompletionKind.ScalarPrefix, "real()", "real(", ")", "real", rank: CompletionRank.Function),
+                    new CompletionItem(CompletionKind.ScalarPrefix, "double()", "double(", ")", "double", rank: CompletionRank.Function));
 
             var DecimalLiteral =
                 Rule(
                     Token(SyntaxKind.DecimalLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.DecimalLiteralExpression, token))
                 .WithTag("<decimal-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "decimal()", "decimal(", ")", "decimal"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "decimal()", "decimal(", ")", "decimal", rank: CompletionRank.Function));
 
             var IntLiteral =
                 Rule(
                     Token(SyntaxKind.IntLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.IntLiteralExpression, token))
                 .WithTag("<int-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "int()", "int(", ")", "int"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "int()", "int(", ")", "int", rank: CompletionRank.Function));
 
             var GuidLiteral =
                 Rule(
                     Token(SyntaxKind.GuidLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, token))
                 .WithTag("<guid-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "guid()", "guid(", ")", "guid"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "guid()", "guid(", ")", "guid", rank: CompletionRank.Function));
 
             var RawGuidLiteral =
                 Rule(
@@ -497,13 +497,13 @@ namespace Kusto.Language.Parsing
                 Rule(Token(SyntaxKind.DateTimeLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.DateTimeLiteralExpression, token))
                 .WithTag("<datetime-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "datetime()", "datetime(", ")", "datetime"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "datetime()", "datetime(", ")", "datetime", rank: CompletionRank.Function));
 
             var TimespanLiteral =
                 Rule(Token(SyntaxKind.TimespanLiteralToken),
                     token => (Expression)new LiteralExpression(SyntaxKind.TimespanLiteralExpression, token))
                 .WithTag("<timespan-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "timespan()", "timespan(", ")", "timespan"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "timespan()", "timespan(", ")", "timespan", rank: CompletionRank.Function));
 
             this.StringLiteral =
                 Rule(
@@ -659,7 +659,7 @@ namespace Kusto.Language.Parsing
                     (dynamicKeyword, openParen, value, closeParen) =>
                         (Expression)new DynamicExpression(dynamicKeyword, openParen, value, closeParen))
                 .WithTag("<dynamic-literal>")
-                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "dynamic()", "dynamic(", ")", "dynamic"));
+                .WithCompletion(new CompletionItem(CompletionKind.ScalarPrefix, "dynamic()", "dynamic(", ")", "dynamic", rank: CompletionRank.Function));
 
             var JsonNumber =
                 First(

@@ -297,68 +297,56 @@ namespace Kusto.Language.Editor
                 && (position >= token.TextStart && position <= token.End);
         }
 
-        private enum OrderingRank
-        {
-            Literal = 0,
-            Aggregate = Literal + 1,
-            Column = Aggregate + 1,
-            Table = Column + 1,
-            Variable = Table + 1,
-            Function = Variable + 1,
-            MaterializedView = Function + 1,
-            Keyword = MaterializedView + 1,
-            StringOperator = Keyword + 1,
-            MathOperator = StringOperator + 1,
-            Other = MathOperator + 1
-        }
-
-        private OrderingRank GetOrderingRank(CompletionItem item)
+        private CompletionRank GetOrderingRank(CompletionItem item)
         {
             // allow for cancellation during ordering of completion items
             this.cancellationToken.ThrowIfCancellationRequested();
 
+            if (item.Rank != CompletionRank.Default)
+                return item.Rank;
+
             switch (item.Kind)
             {
                 case CompletionKind.Example:
-                    return OrderingRank.Literal;
+                    return CompletionRank.Literal;
 
                 case CompletionKind.QueryPrefix:
-                    return OrderingRank.Keyword;
+                    return CompletionRank.Keyword;
 
                 case CompletionKind.Keyword:
-                    return OrderingRank.Keyword;
+                    return CompletionRank.Keyword;
 
                 case CompletionKind.AggregateFunction:
-                    return OrderingRank.Aggregate;
+                    return CompletionRank.Aggregate;
 
                 case CompletionKind.Column:
-                    return OrderingRank.Column;
+                    return CompletionRank.Column;
 
                 case CompletionKind.Table:
-                    return OrderingRank.Table;
+                    return CompletionRank.Table;
 
                 case CompletionKind.MaterialiedView:
-                    return OrderingRank.MaterializedView;
+                    return CompletionRank.MaterializedView;
 
                 case CompletionKind.Variable:
                 case CompletionKind.Parameter:
                     if (item.DisplayText == "$left" || item.DisplayText == "$right")
                     {
-                        return OrderingRank.Literal;
+                        return CompletionRank.Literal;
                     }
-                    return OrderingRank.Variable;
+                    return CompletionRank.Variable;
 
                 case CompletionKind.BuiltInFunction:
                 case CompletionKind.LocalFunction:
                 case CompletionKind.DatabaseFunction:
-                    return OrderingRank.Function;
+                    return CompletionRank.Function;
 
                 case CompletionKind.ScalarInfix:
                     if (TextFacts.IsLetterOrDigit(item.DisplayText[0]))
                     {
-                        return OrderingRank.StringOperator;
+                        return CompletionRank.StringOperator;
                     }
-                    return OrderingRank.MathOperator;
+                    return CompletionRank.MathOperator;
 
                 case CompletionKind.ScalarPrefix:
                 case CompletionKind.TabularPrefix:
@@ -371,7 +359,7 @@ namespace Kusto.Language.Editor
                 case CompletionKind.Unknown:
                 case CompletionKind.RenderChart:
                 default:
-                    return OrderingRank.Other;
+                    return CompletionRank.Other;
             }
         }
 

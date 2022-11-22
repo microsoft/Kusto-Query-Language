@@ -37,48 +37,66 @@ namespace Kusto.Language.Editor
         public string AfterText { get; }
 
         /// <summary>
-        /// The priority of the completion item.
+        /// The ranking that controls the ordering of categories of completion items.
         /// </summary>
-        public CompletionPriority Priority { get; }
+        internal CompletionRank Rank { get; }
 
-        public CompletionItem(CompletionKind kind, string displayText, string editText = null, string afterText = null, string matchText = null, CompletionPriority priority = CompletionPriority.Normal)
+        /// <summary>
+        /// The priority of the completion item within its rank.
+        /// </summary>
+        internal CompletionPriority Priority { get; }
+
+        public CompletionItem(
+            CompletionKind kind, 
+            string displayText, 
+            string editText = null, 
+            string afterText = null, 
+            string matchText = null, 
+            CompletionRank rank = CompletionRank.Default, 
+            CompletionPriority priority = CompletionPriority.Normal)
         {
             this.DisplayText = displayText ?? "";
             this.Kind = kind;
             this.EditText = editText ?? this.DisplayText;
             this.AfterText = afterText;
             this.MatchText = matchText ?? displayText;
+            this.Rank = rank;
             this.Priority = priority;
         }
 
         public CompletionItem WithKind(CompletionKind kind)
         {
-            return new CompletionItem(kind, this.DisplayText, this.EditText, this.AfterText, this.MatchText, this.Priority);
+            return new CompletionItem(kind, this.DisplayText, this.EditText, this.AfterText, this.MatchText, this.Rank, this.Priority);
         }
 
         public CompletionItem WithDisplayText(string displayText)
         {
-            return new CompletionItem(this.Kind, displayText, this.EditText, this.AfterText, this.MatchText, this.Priority);
+            return new CompletionItem(this.Kind, displayText, this.EditText, this.AfterText, this.MatchText, this.Rank, this.Priority);
         }
 
         public CompletionItem WithEditText(string editText)
         {
-            return new CompletionItem(this.Kind, this.DisplayText, editText, this.AfterText, this.MatchText, this.Priority);
+            return new CompletionItem(this.Kind, this.DisplayText, editText, this.AfterText, this.MatchText, this.Rank, this.Priority);
         }
 
         public CompletionItem WithAfterText(string afterText)
         {
-            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, afterText, this.MatchText, this.Priority);
+            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, afterText, this.MatchText, this.Rank, this.Priority);
         }
 
         public CompletionItem WithMatchText(string matchText)
         {
-            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, this.AfterText, matchText, this.Priority);
+            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, this.AfterText, matchText, this.Rank, this.Priority);
+        }
+
+        public CompletionItem WithRank(CompletionRank rank)
+        {
+            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, this.AfterText, this.MatchText, rank, this.Priority);
         }
 
         public CompletionItem WithPriority(CompletionPriority priority)
         {
-            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, this.AfterText, this.MatchText, priority);
+            return new CompletionItem(this.Kind, this.DisplayText, this.EditText, this.AfterText, this.MatchText, this.Rank, priority);
         }
     }
 }
