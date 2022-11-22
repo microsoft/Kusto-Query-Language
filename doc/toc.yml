@@ -636,8 +636,6 @@ items:
     href: loggammafunction.md
   - name: make_datetime()
     href: make-datetimefunction.md
-  - name: make_string()
-    href: makestringfunction.md
   - name: make_timespan()
     href: make-timespanfunction.md
   - name: max_of()
@@ -758,8 +756,6 @@ items:
     href: tanfunction.md
   - name: tdigest_merge()
     href: tdigest-mergefunction.md
-  - name: to_utf8()
-    href: toutf8function.md
   - name: tobool()
     href: toboolfunction.md
   - name: todatetime()
@@ -798,6 +794,10 @@ items:
     href: trimendfunction.md
   - name: trim_start()
     href: trimstartfunction.md
+  - name: unicode_codepoints_from_string()
+    href: unicode-codepoints-from-string-function.md
+  - name: unicode_codepoints_to_string()
+    href: unicode-codepoints-to-string-function.md
   - name: unixtime_microseconds_todatetime()
     href: unixtime-microseconds-todatetimefunction.md
   - name: unixtime_milliseconds_todatetime()
