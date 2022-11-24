@@ -1115,6 +1115,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol CreateMaterializedView =
             new CommandSymbol("CreateMaterializedView", _schema18);
 
+        public static readonly CommandSymbol CreateMaterializedViewOverMaterializedView =
+            new CommandSymbol("CreateMaterializedViewOverMaterializedView", _schema18);
+
         public static readonly CommandSymbol RenameMaterializedView =
             new CommandSymbol("RenameMaterializedView", _schema26);
 
@@ -1145,8 +1148,14 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMaterializedView =
             new CommandSymbol("AlterMaterializedView", _schema26);
 
+        public static readonly CommandSymbol AlterMaterializedViewOverMaterializedView =
+            new CommandSymbol("AlterMaterializedViewOverMaterializedView", _schema26);
+
         public static readonly CommandSymbol CreateOrAlterMaterializedView =
             new CommandSymbol("CreateOrAlterMaterializedView", _schema26);
+
+        public static readonly CommandSymbol CreateOrAlterMaterializedViewOverMaterializedView =
+            new CommandSymbol("CreateOrAlterMaterializedViewOverMaterializedView", _schema26);
 
         public static readonly CommandSymbol DropMaterializedView =
             new CommandSymbol("DropMaterializedView", _schema26);
@@ -2092,6 +2101,7 @@ namespace Kusto.Language
             EnableContinuousExport,
             DisableContinuousExport,
             CreateMaterializedView,
+            CreateMaterializedViewOverMaterializedView,
             RenameMaterializedView,
             ShowMaterializedView,
             ShowMaterializedViews,
@@ -2102,7 +2112,9 @@ namespace Kusto.Language
             ShowMaterializedViewPolicyPartitioning,
             ShowMaterializedViewExtents,
             AlterMaterializedView,
+            AlterMaterializedViewOverMaterializedView,
             CreateOrAlterMaterializedView,
+            CreateOrAlterMaterializedViewOverMaterializedView,
             DropMaterializedView,
             EnableDisableMaterializedView,
             ShowMaterializedViewPrincipals,
