@@ -1,13 +1,13 @@
 ---
 title: make_set_if() (aggregation function) - Azure Data Explorer
-description: Learn how to use the make_set_if() aggregation function to create a `dynamic` JSON object (array) of a set of distinct values in Azure Data Explorer.
+description: Learn how to use the make_set_if() function to create a dynamic JSON object of a set of distinct values that an expression takes where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/16/2022
 ---
 # make_set_if() (aggregation function)
 
-Creates a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in the group, for which *Predicate* evaluates to `true`.
+Creates a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in records for which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -25,7 +25,7 @@ Creates a `dynamic` JSON object (array) of the set of distinct values that *Expr
 
 ## Returns
 
-Returns a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in the group, for which *Predicate* evaluates to `true`.
+Returns a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in records for which *Predicate* evaluates to `true`.
 The array's sort order is undefined.
 
 > [!TIP]

@@ -1,9 +1,9 @@
 ---
 title: buildschema() (aggregation function) - Azure Data Explorer
-description: Learn how to use the buildschema() aggregation function to build a table schema from a dynamic expression in Azure Data Explorer.
+description: Learn how to use the buildschema() function to build a table schema from a dynamic expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 11/23/2022
 ---
 # buildschema() (aggregation function)
 

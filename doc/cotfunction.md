@@ -1,9 +1,9 @@
 ---
 title: cot() - Azure Data Explorer
-description: This article describes cot() in Azure Data Explorer.
+description: Learn how to use the cot() function to calculate the trigonometric cotangent of the specified angle in radians.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 11/23/2022
 ---
 # cot()
 

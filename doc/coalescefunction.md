@@ -1,9 +1,9 @@
 ---
 title: coalesce() - Azure Data Explorer
-description: This article describes coalesce() in Azure Data Explorer.
+description: Learn how to use the coalesce() function to evaluate a list of expressions to return the first non-null expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/23/2022
 ---
 # coalesce()
 

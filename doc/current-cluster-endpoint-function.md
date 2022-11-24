@@ -1,9 +1,9 @@
 ---
 title: current_cluster_endpoint() - Azure Data Explorer
-description: This article describes current_cluster_endpoint() in Azure Data Explorer.
+description: Learn how to use the current_cluster_endpoint() function to return the network endpoint of the cluster being queried as a string type value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/23/2022
 ---
 # current_cluster_endpoint()
 

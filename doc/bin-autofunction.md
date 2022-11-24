@@ -1,9 +1,9 @@
 ---
 title: bin_auto() - Azure Data Explorer
-description: This article describes bin_auto() in Azure Data Explorer.
+description: Learn how to use the bin_auto() function to round values down to a fixed-size bin. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/10/2022
+ms.date: 11/20/2022
 ---
 # bin_auto()
 

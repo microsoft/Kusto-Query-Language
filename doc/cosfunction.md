@@ -1,9 +1,9 @@
 ---
 title: cos() - Azure Data Explorer
-description: This article describes cos() in Azure Data Explorer.
+description: Learn how to use the cos() function to return the cosine of the input value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 11/23/2022
 ---
 # cos()
 

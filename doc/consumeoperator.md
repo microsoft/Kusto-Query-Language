@@ -1,9 +1,9 @@
 ---
 title: consume operator - Azure Data Explorer
-description: This article describes consume operator in Azure Data Explorer.
+description: Learn how to use the consume operator to consume the tabular data stream handed to the operator.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/30/2020
+ms.date: 11/23/2022
 ---
 # consume operator
 

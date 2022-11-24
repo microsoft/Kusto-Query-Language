@@ -1,9 +1,9 @@
 ---
 title: binary_and() - Azure Data Explorer
-description: This article describes binary_and() in Azure Data Explorer.
+description: Learn how to use the binary_and() function to compare bits in corresponding operands. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/21/2022
 ---
 # binary_and()
 

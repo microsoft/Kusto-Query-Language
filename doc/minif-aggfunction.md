@@ -1,13 +1,13 @@
 ---
 title: minif() (aggregation function) - Azure Data Explorer
-description: This article describes minif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the minif() function to return the minimum value of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/16/2022
 ---
 # minif() (aggregation function)
 
-Returns the minimum value across the group for which *Predicate* evaluates to `true`.
+Returns the minimum of *Expr* in records for which *Predicate* evaluates to `true`.
 
 * Can be used only in context of aggregation inside [summarize](summarizeoperator.md)
 
@@ -26,7 +26,7 @@ See also - [min()](min-aggfunction.md) function, which returns the minimum value
 
 ## Returns
 
-The minimum value of *Expr* across the group for which *Predicate* evaluates to `true`.
+The minimum value of *Expr* in records for which *Predicate* evaluates to `true`.
 
 ## Example
 

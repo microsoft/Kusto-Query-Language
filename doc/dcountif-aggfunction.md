@@ -1,14 +1,13 @@
 ---
 title: dcountif() (aggregation function) - Azure Data Explorer
-description: This article describes dcountif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the dcountif() function to return an estimate of the number of distinct values of an expression for rows where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/10/2022
+ms.date: 11/16/2022
 ---
 # dcountif() (aggregation function)
 
-Calculates an estimate of the number of distinct values of *Expr* of rows for which *Predicate* evaluates to `true`.
-
+Estimates the number of distinct values of *Expr* for rows in which *Predicate* evaluates to `true`.
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
@@ -25,7 +24,7 @@ Calculates an estimate of the number of distinct values of *Expr* of rows for wh
 
 ## Returns
 
-Returns an estimate of the number of distinct values of *Expr* of rows for which *Predicate* evaluates to `true` in the group.
+Returns an estimate of the number of distinct values of *Expr* for rows in which *Predicate* evaluates to `true`.
 
 > [!TIP]
 > `dcountif()` may return an error in cases where all, or none of the rows pass the `Predicate` expression.

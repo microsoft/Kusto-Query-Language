@@ -1,13 +1,13 @@
 ---
 title: maxif() (aggregation function) - Azure Data Explorer
-description: This article describes maxif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the maxif() function to calculate the maximum value of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/10/2022
+ms.date: 11/16/2022
 ---
 # maxif() (aggregation function)
 
-Calculates the maximum value across the group for which *Predicate* evaluates to `true`.
+Calculates the maximum value of *Expr* in records for which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -26,7 +26,7 @@ See also - [max()](max-aggfunction.md) function, which returns the maximum value
 
 ## Returns
 
-Returns the maximum value of *Expr* across the group for which *Predicate* evaluates to `true`.
+Returns the maximum value of *Expr* in records for which *Predicate* evaluates to `true`.
 
 ## Example
 

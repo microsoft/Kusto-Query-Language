@@ -1,9 +1,9 @@
 ---
 title: current_principal_details() - Azure Data Explorer
-description: This article describes current_principal_details() in Azure Data Explorer.
+description: Learn how to use the current_principal_details() function to return the details of the principal running the query. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/08/2019
+ms.date: 11/23/2022
 ---
 # current_principal_details()
 

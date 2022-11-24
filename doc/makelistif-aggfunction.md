@@ -1,13 +1,13 @@
 ---
 title: make_list_if() (aggregation function) - Azure Data Explorer
-description: Learn how to use the make_list_if() aggregation function to creates a `dynamic` JSON object (array) in Azure Data Explorer.
+description: Learn how to use the make_list_if() aggregation function to create a dynamic JSON object of expression values where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/16/2022
 ---
 # make_list_if() (aggregation function)
 
-Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group, for which *Predicate* evaluates to `true`.
+Creates a `dynamic` JSON object (array) of *Expr* values in the group for which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -25,7 +25,7 @@ Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group
 
 ## Returns
 
-Returns a `dynamic` JSON object (array) of all the values of *Expr* in the group, for which *Predicate* evaluates to `true`.
+Returns a `dynamic` JSON object (array) of *Expr* vlaues in the group for which *Predicate* evaluates to `true`.
 If the input to the `summarize` operator is not sorted, the order of elements in the resulting array is undefined.
 If the input to the `summarize` operator is sorted, the order of elements in the resulting array tracks that of the input.
 

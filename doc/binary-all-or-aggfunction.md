@@ -1,9 +1,9 @@
 ---
 title: binary_all_or() (aggregation function) - Azure Data Explorer
-description: This article describes binary_all_or() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the binary_all_or() function to aggregate values using the binary OR operation.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/05/2022
+ms.date: 11/20/2022
 ---
 # binary_all_or() (aggregation function)
 

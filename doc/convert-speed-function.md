@@ -1,9 +1,9 @@
 ---
 title: convert_speed() - Azure Data Explorer
-description: This article describes convert_speed() in Azure Data Explorer.
+description: Learn how to use the convert_speed() function to convert a speed input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference
-ms.date: 07/03/2022
+ms.date: 11/23/2022
 ---
 # convert_speed
 

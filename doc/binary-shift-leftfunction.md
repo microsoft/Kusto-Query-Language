@@ -1,9 +1,9 @@
 ---
 title: binary_shift_left() - Azure Data Explorer
-description: This article describes binary_shift_left() in Azure Data Explorer.
+description: Learn how to use the binary_shift_left() function to perform a binary shift left operation on a pair of numbers. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/10/2022
+ms.date: 11/21/2022
 ---
 # binary_shift_left()
 
@@ -23,7 +23,7 @@ Returns binary shift left operation on a pair of numbers.
 ## Returns
 
 Returns binary shift left operation on a pair of numbers: value << (shift%64).
-If n is negative a NULL value is returned.
+If n is negative, a NULL value is returned.
 
 ## Example
 

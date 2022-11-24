@@ -1,9 +1,9 @@
 ---
 title: case() - Azure Data Explorer
-description: This article describes case() in Azure Data Explorer.
+description: Learn how to use the case() function to evaluate a list of predicates and return the first expression for which the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/10/2022
+ms.date: 11/23/2022
 ---
 # case()
 

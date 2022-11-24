@@ -1,13 +1,13 @@
 ---
 title: stdevif() (aggregation function) - Azure Data Explorer
-description: Learn how too use the stdevif() aggregation function to calculate the standard deviation ina group in Azure Data Explorer.
+description: Learn how to use the stdevif() function to calculate the standard deviation of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/16/2022
 ---
 # stdevif() (aggregation function)
 
-Calculates the [stdev](stdev-aggfunction.md) of *Expr* across the group for which *Predicate* evaluates to `true`.
+Calculates the [standard deviation](stdev-aggfunction.md) of *Expr* in records for which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -24,7 +24,7 @@ Calculates the [stdev](stdev-aggfunction.md) of *Expr* across the group for whic
 
 ## Returns
 
-Returns the standard deviation value of *Expr* across the group where *Predicate* evaluates to `true`.
+Returns the standard deviation value of *Expr* in records for which *Predicate* evaluates to `true`.
 
 ## Example
 

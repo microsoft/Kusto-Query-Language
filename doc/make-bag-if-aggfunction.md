@@ -1,13 +1,13 @@
 ---
 title: make_bag_if() (aggregation function) - Azure Data Explorer
-description: This article describes make_bag_if() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the make_bag_if() function to create a dynamic JSON property bag of expression values where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/24/2022
+ms.date: 11/16/2022
 ---
 # make_bag_if() (aggregation function)
 
-Creates a `dynamic` JSON property bag (dictionary) of all the values of *'Expr'* in the group, for which *Predicate* evaluates to `true`.
+Creates a `dynamic` JSON property bag (dictionary) of *Expr* values in records for which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -25,7 +25,7 @@ Creates a `dynamic` JSON property bag (dictionary) of all the values of *'Expr'*
 
 ## Returns
 
-Returns a `dynamic` JSON property bag (dictionary) of all the values of *'Expr'* in the group that are property bags (dictionaries), for which *Predicate* evaluates to `true`.
+Returns a `dynamic` JSON property bag (dictionary) of *Expr* values in records for which *Predicate* evaluates to `true`.
 Non-dictionary values will be skipped.
 If a key appears in more than one row, an arbitrary value, out of the possible values for this key, will be selected.
 

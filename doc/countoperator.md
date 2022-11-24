@@ -1,9 +1,9 @@
 ---
 title: count operator - Azure Data Explorer
-description: This article describes count operator in Azure Data Explorer.
+description: Learn how to use the count operator to return the number of records in the input record set.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 04/16/2020
+ms.date: 11/23/2022
 ---
 # count operator
 

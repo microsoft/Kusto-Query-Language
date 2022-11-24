@@ -1,9 +1,9 @@
 ---
 title: column_ifexists() - Azure Data Explorer
-description: This article describes column_ifexists() in Azure Data Explorer.
+description: Learn how to use the column_ifexists() function to return a reference to the column if it exists.  
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 11/23/2022
 ---
 # column_ifexists()
 

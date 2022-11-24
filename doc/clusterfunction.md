@@ -1,9 +1,9 @@
 ---
 title: cluster() (scope function) - Azure Data Explorer
-description: This article describes cluster() (scope function) in Azure Data Explorer.
+description: Learn how to use the cluster() function to change the reference of the query to a remote cluster.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/23/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -25,7 +25,7 @@ cluster('help').database('Sample').SomeTable
 
 * *stringConstant*: Name of the cluster that is referenced. Cluster name can be either
 a fully qualified DNS name, or a string that will be suffixed with `.kusto.windows.net`. Argument has to be _constant_ prior to the query's execution,
-i.e. cannot come from sub-query evaluation.
+i.e. can't come from sub-query evaluation.
 
 **Notes**
 

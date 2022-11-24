@@ -1,9 +1,9 @@
 ---
 title: binary_xor() - Azure Data Explorer
-description: This article describes binary_xor() in Azure Data Explorer.
+description: Learn how to use the binary_xor() function to perform the bitwise xor operation on a pair of values.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/22/2022
 ---
 # binary_xor()
 

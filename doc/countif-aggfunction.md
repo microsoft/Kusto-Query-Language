@@ -1,13 +1,13 @@
 ---
 title: countif() (aggregation function) - Azure Data Explorer
-description: This article describes countif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the countif() function to count the rows where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/10/2022
+ms.date: 11/16/2022
 ---
 # countif() (aggregation function)
 
-Counts the rows for which *Predicate* evaluates to `true`.
+Counts the rows in which *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -23,7 +23,7 @@ Counts the rows for which *Predicate* evaluates to `true`.
 
 ## Returns
 
-Returns a count of rows for which *Predicate* evaluates to `true`.
+Returns a count of rows in which *Predicate* evaluates to `true`.
 
 ## Example of counting storms by state
 
