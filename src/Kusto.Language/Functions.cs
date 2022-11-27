@@ -1171,7 +1171,7 @@ namespace Kusto.Language
                     {
                         if (valueType.IsNumeric)
                         {
-                            return 
+                            return
                                 TypeFacts.GetCommonScalarType(
                                     valueType,
                                     context.GetResultType("query_bin_auto_size"),
@@ -1498,7 +1498,7 @@ namespace Kusto.Language
                 var argument = context.Arguments[i];
                 var argumentExpressionName = context.GetResultName(argument);
                 var resultColumnName = string.IsNullOrEmpty(argumentExpressionName) ? $"array{i}_sorted" : $"{argumentExpressionName}_sorted";
-                var resultColumn = new ColumnSymbol(resultColumnName, argument.ResultType);
+                var resultColumn = new ColumnSymbol(resultColumnName, argument.ResultType, source: argument);
                 result.Add(resultColumn);
             }
             return new TupleSymbol(result);
@@ -1696,15 +1696,19 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesStats =
             new FunctionSymbol("series_stats",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("min", ScalarTypes.Real),
-                        new ColumnSymbol("min_idx", ScalarTypes.Long),
-                        new ColumnSymbol("max", ScalarTypes.Real),
-                        new ColumnSymbol("max_idx", ScalarTypes.Long),
-                        new ColumnSymbol("avg", ScalarTypes.Real),
-                        new ColumnSymbol("stdev", ScalarTypes.Real),
-                        new ColumnSymbol("variance", ScalarTypes.Real))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("min", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("min_idx", ScalarTypes.Long, source: source),
+                            new ColumnSymbol("max", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("max_idx", ScalarTypes.Long, source: source),
+                            new ColumnSymbol("avg", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("stdev", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("variance", ScalarTypes.Real, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, minOccurring: 0));
@@ -1722,33 +1726,45 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFft =
             new FunctionSymbol("series_fft",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("real", ScalarTypes.Dynamic),
-                        new ColumnSymbol("imag", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("real", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("imag", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesIFft =
             new FunctionSymbol("series_ifft",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("real", ScalarTypes.Dynamic),
-                        new ColumnSymbol("imag", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("real", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("imag", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesFitPoly =
             new FunctionSymbol("series_fit_poly",
-                context => MakePrefixedTuple(context, "y_series",
-                    new TupleSymbol(
-                        new ColumnSymbol("rsquare", ScalarTypes.Real),
-                        new ColumnSymbol("coefficients", ScalarTypes.Dynamic),
-                        new ColumnSymbol("variance", ScalarTypes.Real),
-                        new ColumnSymbol("rvariance", ScalarTypes.Real),
-                        new ColumnSymbol("poly_fit", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("y_series");
+                    return MakePrefixedTuple(context, "y_series",
+                        new TupleSymbol(
+                            new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("coefficients", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("variance", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("poly_fit", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("y_series", ScalarTypes.Dynamic),
                 new Parameter("x_series", ScalarTypes.Dynamic, minOccurring: 0),
@@ -1756,14 +1772,18 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFitLine =
             new FunctionSymbol("series_fit_line",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("rsquare", ScalarTypes.Real),
-                        new ColumnSymbol("slope", ScalarTypes.Real),
-                        new ColumnSymbol("variance", ScalarTypes.Real),
-                        new ColumnSymbol("rvariance", ScalarTypes.Real),
-                        new ColumnSymbol("interception", ScalarTypes.Real),
-                        new ColumnSymbol("line_fit", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("slope", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("variance", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("interception", ScalarTypes.Real, source: source),
+                            new ColumnSymbol("line_fit", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic));
 
@@ -1774,23 +1794,27 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesFit2Lines =
             new FunctionSymbol("series_fit_2lines",
-                context => MakePrefixedTuple(context, "array",
+                context =>
+                {
+                    var source = context.GetArgument("array");
+                    return MakePrefixedTuple(context, "array",
                     new TupleSymbol(
-                        new ColumnSymbol("rsquare", ScalarTypes.Real),
-                        new ColumnSymbol("split_idx", ScalarTypes.Long),
-                        new ColumnSymbol("variance", ScalarTypes.Real),
-                        new ColumnSymbol("rvariance", ScalarTypes.Real),
-                        new ColumnSymbol("line_fit", ScalarTypes.Dynamic),
-                        new ColumnSymbol("right_rsquare", ScalarTypes.Real),
-                        new ColumnSymbol("right_slope", ScalarTypes.Real),
-                        new ColumnSymbol("right_interception", ScalarTypes.Real),
-                        new ColumnSymbol("right_variance", ScalarTypes.Real),
-                        new ColumnSymbol("right_rvariance", ScalarTypes.Real),
-                        new ColumnSymbol("left_rsquare", ScalarTypes.Real),
-                        new ColumnSymbol("left_slope", ScalarTypes.Real),
-                        new ColumnSymbol("left_interception", ScalarTypes.Real),
-                        new ColumnSymbol("left_variance", ScalarTypes.Real),
-                        new ColumnSymbol("left_rvariance", ScalarTypes.Real))),
+                        new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("split_idx", ScalarTypes.Long, source: source),
+                        new ColumnSymbol("variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("line_fit", ScalarTypes.Dynamic, source: source),
+                        new ColumnSymbol("right_rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_slope", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_interception", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_rvariance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_slope", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_interception", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_rvariance", ScalarTypes.Real, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("array", ScalarTypes.Dynamic));
 
@@ -1823,10 +1847,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesPeriodsDetect =
             new FunctionSymbol("series_periods_detect",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("periods", ScalarTypes.Dynamic),
-                        new ColumnSymbol("scores", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("periods", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("scores", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("min_period", ParameterTypeKind.Number),
@@ -1835,10 +1863,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesPeriodsValidate =
             new FunctionSymbol("series_periods_validate",
-                context => MakePrefixedTuple(context, "series",
-                    new TupleSymbol(
-                        new ColumnSymbol("periods", ScalarTypes.Dynamic),
-                        new ColumnSymbol("scores", ScalarTypes.Dynamic))),
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return MakePrefixedTuple(context, "series",
+                        new TupleSymbol(
+                            new ColumnSymbol("periods", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("scores", ScalarTypes.Dynamic, source: source)));
+                },
                 Tabularity.Scalar,
                 new Parameter("series", ScalarTypes.Dynamic),
                 new Parameter("period", ParameterTypeKind.Number, maxOccurring: 16));
@@ -1884,7 +1916,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSubtract =
-            new FunctionSymbol("series_subtract", 
+            new FunctionSymbol("series_subtract",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("series1", ScalarTypes.Dynamic),
                     new Parameter("series2", ScalarTypes.Dynamic)),
@@ -1897,7 +1929,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesMultiply =
-            new FunctionSymbol("series_multiply", 
+            new FunctionSymbol("series_multiply",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("series1", ScalarTypes.Dynamic),
                     new Parameter("series2", ScalarTypes.Dynamic)),
@@ -1910,7 +1942,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesDivide =
-            new FunctionSymbol("series_divide", 
+            new FunctionSymbol("series_divide",
                 new Signature(ScalarTypes.Dynamic,
                     new Parameter("series1", ScalarTypes.Dynamic),
                     new Parameter("series2", ScalarTypes.Dynamic)),
@@ -2098,20 +2130,26 @@ namespace Kusto.Language
                     new Parameter("series", ScalarTypes.Dynamic)))
             .WithResultNameKind(ResultNameKind.None);
 
-        private static TypeSymbol SeriesDecomposeResult(CustomReturnTypeContext context) =>
-            MakePrefixedTuple(context, "series",
+        private static TypeSymbol SeriesDecomposeResult(CustomReturnTypeContext context)
+        {
+            var source = context.GetArgument("series");
+            return MakePrefixedTuple(context, "series",
                 new TupleSymbol(
-                    new ColumnSymbol("baseline", ScalarTypes.Dynamic),
-                    new ColumnSymbol("seasonal", ScalarTypes.Dynamic),
-                    new ColumnSymbol("trend", ScalarTypes.Dynamic),
-                    new ColumnSymbol("residual", ScalarTypes.Dynamic)));
+                    new ColumnSymbol("baseline", ScalarTypes.Dynamic, source: source),
+                    new ColumnSymbol("seasonal", ScalarTypes.Dynamic, source: source),
+                    new ColumnSymbol("trend", ScalarTypes.Dynamic, source: source),
+                    new ColumnSymbol("residual", ScalarTypes.Dynamic, source: source)));
+        }
 
-        private static TypeSymbol SeriesDecomposeAnomaliesResult(CustomReturnTypeContext context) =>
-            MakePrefixedTuple(context, "series",
+        private static TypeSymbol SeriesDecomposeAnomaliesResult(CustomReturnTypeContext context)
+        {
+            var source = context.GetArgument("series");
+            return MakePrefixedTuple(context, "series",
                 new TupleSymbol(
-                    new ColumnSymbol("ad_flag", ScalarTypes.Dynamic),
-                    new ColumnSymbol("ad_score", ScalarTypes.Dynamic),
-                    new ColumnSymbol("baseline", ScalarTypes.Dynamic)));
+                    new ColumnSymbol("ad_flag", ScalarTypes.Dynamic, source: source),
+                    new ColumnSymbol("ad_score", ScalarTypes.Dynamic, source: source),
+                    new ColumnSymbol("baseline", ScalarTypes.Dynamic, source: source)));
+        }
 
         public static readonly FunctionSymbol SeriesDecompose =
              new FunctionSymbol("series_decompose",
@@ -2750,7 +2788,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RowRank =
             new FunctionSymbol("row_rank", ScalarTypes.Long,
-                new Parameter("column", ParameterTypeKind.NotDynamic))
+                new Parameter("column", ParameterTypeKind.NotDynamic),
+                new Parameter("dense", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowWindowSession =

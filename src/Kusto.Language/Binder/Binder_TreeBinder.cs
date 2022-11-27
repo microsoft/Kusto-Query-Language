@@ -74,7 +74,7 @@ namespace Kusto.Language.Binding
 
                     // result type of left-side expression is in scope after the dot.
                     var oldPathScope = _binder._pathScope;
-                    _binder._pathScope = _binder.GetResultTypeOrError(node.Expression);
+                    _binder._pathScope = GetResultTypeOrError(node.Expression);
                     try
                     {
                         node.Selector.Accept(this);
@@ -107,7 +107,7 @@ namespace Kusto.Language.Binding
 
                 // result of left-side expression is in scope for right-side query operator
                 var oldRowScope = _binder._rowScope;
-                _binder._rowScope = _binder.GetResultType(node.Expression) as TableSymbol;
+                _binder._rowScope = GetResultType(node.Expression) as TableSymbol;
                 try
                 {
                     node.Operator.Accept(this);
@@ -137,7 +137,7 @@ namespace Kusto.Language.Binding
                 }
 
                 // condition clause should see both left & right row scopes.
-                _binder._rightRowScope = _binder.GetResultType(node.Expression) as TableSymbol;
+                _binder._rightRowScope = GetResultType(node.Expression) as TableSymbol;
 
                 try
                 {
@@ -169,7 +169,7 @@ namespace Kusto.Language.Binding
                 }
 
                 // condition clause should see both left & right row scopes.
-                _binder._rightRowScope = _binder.GetResultType(node.Expression) as TableSymbol;
+                _binder._rightRowScope = GetResultType(node.Expression) as TableSymbol;
                 try
                 {
                     node.ConditionClause?.Accept(this);
@@ -320,7 +320,7 @@ namespace Kusto.Language.Binding
                     try
                     {
                         // put column referenced in by-expression into scope during evaluation of partition expression
-                        var column = _binder.GetReferencedSymbol(node.ByExpression) as ColumnSymbol;
+                        var column = GetReferencedSymbol(node.ByExpression) as ColumnSymbol;
                         if (column != null)
                         {
                             _binder._localScope = new LocalScope(_binder._localScope);
@@ -373,7 +373,7 @@ namespace Kusto.Language.Binding
                 var oldScope = _binder._rowScope;
                 try
                 {
-                    _binder._rowScope = _binder.GetResultType(node.DeltaClause.Expression) as TableSymbol;
+                    _binder._rowScope = GetResultType(node.DeltaClause.Expression) as TableSymbol;
                     node.AggregationsClause.Accept(this);
                 }
                 finally
@@ -412,7 +412,7 @@ namespace Kusto.Language.Binding
                 {
                     var argumentScope = _binder.GetArgumentScope(node, _binder._scopeKind);
 
-                    if (_binder.GetReferencedSymbol(node.Name) is FunctionSymbol fn && fn.Signatures.Count == 1)
+                    if (GetReferencedSymbol(node.Name) is FunctionSymbol fn && fn.Signatures.Count == 1)
                     {
                         // handle arguments from a known signature specially
                         this.VisitArgumentList(node.ArgumentList, fn.Signatures[0], argumentScope);
@@ -545,10 +545,10 @@ namespace Kusto.Language.Binding
 
                 TryGetLiteralValue(node.Expression, out var literalValue);
 
-                var exprType = _binder.GetResultTypeOrError(node.Expression);
+                var exprType = GetResultTypeOrError(node.Expression);
                 Symbol local = (exprType is FunctionSymbol || exprType is EntityGroupSymbol)
                     ? exprType
-                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, _binder.GetIsConstant(node.Expression), literalValue);
+                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, GetIsConstant(node.Expression), literalValue);
 
                 // put local symbol definition on name
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));
@@ -634,7 +634,7 @@ namespace Kusto.Language.Binding
                 base.VisitPatternStatement(node);
 
                 var type = node.Pattern != null
-                    ? _binder.GetResultTypeOrError(node.Pattern)
+                    ? GetResultTypeOrError(node.Pattern)
                     : new PatternSymbol(node.Name.SimpleName);
 
                 var local = new VariableSymbol(node.Name.SimpleName, type);
@@ -683,7 +683,7 @@ namespace Kusto.Language.Binding
 
                 // remember database as aliased name.
                 var name = node.Name.SimpleName;
-                var db = _binder.GetResultTypeOrError(node.Expression) as DatabaseSymbol;
+                var db = GetResultTypeOrError(node.Expression) as DatabaseSymbol;
 
                 if (name != null && db != null)
                 {
@@ -826,7 +826,7 @@ namespace Kusto.Language.Binding
                     var command = commandStatement.GetFirstDescendant<Command>();
                     if (command != null)
                     {
-                        var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
+                        var commandResults = new VariableSymbol("$command_results", GetResultTypeOrError(command));
                         _binder._localScope.AddSymbol(commandResults);
                     }
 

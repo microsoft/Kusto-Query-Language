@@ -226,7 +226,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder.CheckIsTabular(node.Expression, diagnostics);
-                    return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression), diagnostics);
+                    return new SemanticInfo(GetResultTypeOrError(node.Expression), diagnostics);
                 }
                 finally
                 {
@@ -474,7 +474,7 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryOperatorParameter(node.KindParameter, QueryOperatorParameters.ToScalarKindParameter, dx);
                     }
 
-                    var resultType = _binder.GetResultType(node.Expression);
+                    var resultType = GetResultType(node.Expression);
                     if (resultType is TableSymbol table)
                     {
                         if (table.Columns.Count > 0)
@@ -516,7 +516,7 @@ namespace Kusto.Language.Binding
 
                     if (_binder.CheckIsTabular(node.Expression, dx))
                     {
-                        var table = (TableSymbol)_binder.GetResultType(node.Expression);
+                        var table = (TableSymbol)GetResultType(node.Expression);
                         return new SemanticInfo(table, dx);
                     }
 
@@ -697,7 +697,7 @@ namespace Kusto.Language.Binding
                 {
                     // unqualified bracketed expression -- this might happen in a partially typed case
                     // or an incorrectly typed case:  [foo]  when they meant to type ['foo']
-                    var indexerType = _binder.GetResultTypeOrError(node.Expression);
+                    var indexerType = GetResultTypeOrError(node.Expression);
 
                     if (indexerType.IsError)
                     {
@@ -723,7 +723,7 @@ namespace Kusto.Language.Binding
 
             private SemanticInfo GetElementExpressionInfo(Expression collection, BracketedExpression selector)
             {
-                var indexerType = _binder.GetResultTypeOrError(selector.Expression);
+                var indexerType = GetResultTypeOrError(selector.Expression);
                 if (indexerType.IsError)
                 {
                     return ErrorInfo;
@@ -797,13 +797,13 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitPathExpression(PathExpression node)
             {
                 // same as selector (without repeating diagnositcs)
-                return new SemanticInfo(_binder.GetReferencedSymbol(node.Selector), _binder.GetResultTypeOrError(node.Selector));
+                return new SemanticInfo(GetReferencedSymbol(node.Selector), GetResultTypeOrError(node.Selector));
             }
 
             public override SemanticInfo VisitElementExpression(ElementExpression node)
             {
                 // same as selector (without repeating diagnostics)
-                return new SemanticInfo(_binder.GetReferencedSymbol(node.Selector), _binder.GetResultTypeOrError(node.Selector));
+                return new SemanticInfo(GetReferencedSymbol(node.Selector), GetResultTypeOrError(node.Selector));
             }
 #endregion
 
@@ -818,7 +818,7 @@ namespace Kusto.Language.Binding
 #region other nodes
             public override SemanticInfo VisitParenthesizedExpression(ParenthesizedExpression node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitEntityGroup(EntityGroup node)
@@ -857,7 +857,7 @@ namespace Kusto.Language.Binding
 
             private bool CheckEntityGroupElementKind(SymbolKind? kind, Expression expr, List<Diagnostic> diagnostics)
             {
-                var resultType = _binder.GetResultTypeOrError(expr);
+                var resultType = GetResultTypeOrError(expr);
 
                 if (kind is SymbolKind expectedKind)
                 {
@@ -898,22 +898,22 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitOrderedExpression(OrderedExpression node)
             {
-                return new SemanticInfo(_binder.GetReferencedSymbol(node.Expression), _binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(GetReferencedSymbol(node.Expression), GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitSimpleNamedExpression(SimpleNamedExpression node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitCompoundNamedExpression(CompoundNamedExpression node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitPipeExpression(PipeExpression node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Operator));
+                return new SemanticInfo(GetResultTypeOrError(node.Operator));
             }
 
             public override SemanticInfo VisitAtExpression(AtExpression node)
@@ -929,7 +929,7 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckIsTabular(node.Expression, diagnostics);
 
-                    return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression), diagnostics);
+                    return new SemanticInfo(GetResultTypeOrError(node.Expression), diagnostics);
                 }
                 finally
                 {
@@ -950,7 +950,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitForkExpression(ForkExpression node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.Expression);
+                var resultType = GetResultTypeOrError(node.Expression);
 
                 if (node.NameEquals != null)
                 {
@@ -967,7 +967,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitPartitionSubquery(PartitionSubquery node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.Subquery);
+                var resultType = GetResultTypeOrError(node.Subquery);
 
                 if (resultType is TableSymbol table)
                 {
@@ -980,7 +980,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitPartitionQuery(PartitionQuery node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.Query);
+                var resultType = GetResultTypeOrError(node.Query);
 
                 if (resultType is TableSymbol table)
                 {
@@ -1023,7 +1023,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitMakeSeriesExpression(MakeSeriesExpression node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Expression));
+                return new SemanticInfo(GetResultTypeOrError(node.Expression));
             }
 
             public override SemanticInfo VisitNamedParameter(NamedParameter node)
@@ -1129,7 +1129,7 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitTypedColumnReference(TypedColumnReference node)
             {
-                return new SemanticInfo(_binder.GetResultTypeOrError(node.Column));
+                return new SemanticInfo(GetResultTypeOrError(node.Column));
             }
 
             public override SemanticInfo VisitCustom(CustomNode node)
@@ -1139,11 +1139,10 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitMaterializedViewCombineExpression(MaterializedViewCombineExpression node)
             {
-                var resultType = _binder.GetResultTypeOrError(node.AggregationsClause.Expression);
-
-
+                var resultType = GetResultTypeOrError(node.AggregationsClause.Expression);
                 return new SemanticInfo(resultType);
             }
+
             public override SemanticInfo VisitMaterializedViewCombineNameClause(MaterializedViewCombineNameClause node)
             {
                 // verify string literal 
@@ -1266,11 +1265,11 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsInteger(node.Expression, diagnostics);
                     _binder.CheckIsColumn(node.OfExpression, diagnostics);
 
-                    var name = GetExpressionResultName(node.OfExpression, "Column1");
+                    var ofCol = GetOrDeclareColumnForExpression(node.OfExpression, defaultName: "Column1");
 
-                    var result = new TableSymbol(new ColumnSymbol(name, _binder.GetResultTypeOrError(node.OfExpression)))
-                        .WithInheritableProperties(RowScopeOrEmpty)
-                        .WithIsSorted(false);
+                    var result = new TableSymbol(ofCol)
+                            .WithInheritableProperties(RowScopeOrEmpty)
+                            .WithIsSorted(false);
 
                     return new SemanticInfo(result, diagnostics);
                 }
@@ -1287,16 +1286,8 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    // produces a table of one column
-                    if (node.AsIdentifier != null)
-                    {
-                        var name = node.AsIdentifier.Identifier.Text;
-                        return new SemanticInfo(new TableSymbol(new ColumnSymbol(name, ScalarTypes.Long)), diagnostics);
-                    }
-                    else
-                    {
-                        return new SemanticInfo(new TableSymbol(new ColumnSymbol("Count", ScalarTypes.Long)), diagnostics);
-                    }
+                    var name = node.AsIdentifier != null ? node.AsIdentifier.Identifier.ValueText : "Count";
+                    return new SemanticInfo(new TableSymbol(new ColumnSymbol(name, ScalarTypes.Long)), diagnostics);
                 }
                 finally
                 {
@@ -1575,11 +1566,13 @@ namespace Kusto.Language.Binding
                     if (node.ByClause != null)
                     {
                         _binder.CheckIsNumber(node.ByClause.Expression, diagnostics);
-                        builder.Add(new ColumnSymbol("approximate_sum_" + GetExpressionResultName(node.ByClause.Expression), _binder.GetResultTypeOrError(node.ByClause.Expression)));
+                        var approxSumCol = GetOrDeclareColumnForExpression(node.ByClause.Expression, "approximate_sum_" + GetExpressionResultName(node.ByClause.Expression));
+                        builder.Add(approxSumCol);
                     }
                     else
                     {
-                        builder.Add(new ColumnSymbol("approximate_count_" + GetExpressionResultName(node.OfExpression), ScalarTypes.Long));
+                        var approxCountCol = GetOrDeclareColumnForExpression(node.OfExpression, "approximate_count_" + GetExpressionResultName(node.OfExpression), ScalarTypes.Long);
+                        builder.Add(approxCountCol);
                     }
 
                     var resultTable = new TableSymbol(builder.GetProjection())
@@ -1622,15 +1615,13 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsScalar(clause.ByExpression, diagnostics);
 
-                        var ofName = GetExpressionResultName(clause.OfExpression);
-                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(ofName), _binder.GetResultTypeOrError(clause.OfExpression)));
+                        var ofName = uniqueNames.GetOrAddName(GetExpressionResultName(clause.OfExpression));
+                        var ofCol = GetOrDeclareColumnForExpression(clause.OfExpression, ofName);
+                        columns.Add(ofCol);
 
-                        var byName = GetExpressionDeclaredName(clause.ByExpression)
-                            ?? "aggregated_" + ofName;
-
-                        GetExpressionResultName(clause.ByExpression, null);
-
-                        columns.Add(new ColumnSymbol(uniqueNames.GetOrAddName(byName), _binder.GetResultTypeOrError(clause.ByExpression)));
+                        var byName = uniqueNames.GetOrAddName(GetExpressionDeclaredName(clause.ByExpression) ?? "aggregated_" + ofName);
+                        var byCol = GetOrDeclareColumnForExpression(clause.ByExpression, byName);
+                        columns.Add(byCol);
                     }
 
                     var resultTable = new TableSymbol(columns)
@@ -1664,8 +1655,6 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                 }
             }
-
-            private static readonly TableSymbol s_ConsumeStatsSchema = new TableSymbol(new ColumnSymbol("Stats", ScalarTypes.Dynamic));
 
             public override SemanticInfo VisitExecuteAndCacheOperator(ExecuteAndCacheOperator node)
             {
@@ -1842,7 +1831,7 @@ namespace Kusto.Language.Binding
                         _binder.CheckIsTabular(expr, diagnostics);
                         CheckQueryOperators(expr, KustoFacts.ForkOperatorKinds, diagnostics);
 
-                        var tableType = _binder.GetResultType(expr) as TableSymbol;
+                        var tableType = GetResultType(expr) as TableSymbol;
                         if (tableType != null)
                         {
                             var name = tables.Count == 0 ? "Results" : "Results_" + (tables.Count + 1);
@@ -1940,7 +1929,7 @@ namespace Kusto.Language.Binding
                         CheckQueryOperators(ps.Subquery, KustoFacts.PostPipeOperatorKinds, diagnostics);
                     }
 
-                    var tableType = _binder.GetResultType(operand) as TableSymbol;
+                    var tableType = GetResultType(operand) as TableSymbol;
                     if (tableType == null)
                     {
                         // Failed to resolve operand as table operator
@@ -2014,8 +2003,8 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
                 var refColumns = s_columnListPool.AllocateFromPool();
+                var packColumns = s_columnListPool.AllocateFromPool();
                 var refTables = s_tableListPool.AllocateFromPool();
-                var colNameMap = s_stringSetPool.AllocateFromPool();
 
                 try
                 {
@@ -2029,40 +2018,40 @@ namespace Kusto.Language.Binding
                     var resultIsOpen = tables.Any(t => t.IsOpen);
                     var explicitPack = false;
 
-                    if (node.Project == null || node.Project.ProjectKeyword.Kind == SyntaxKind.ProjectSmartKeyword)
+                    // only consider tables that have column references
+                    _binder.GetReferencedColumnsInTree(node.Condition, refColumns);
+
+                    if (tables.Count == 1)
                     {
-                        // project-smart
-
-                        // only consider tables that have column references
-                        _binder.GetReferencedColumnsInTree(node.Condition, refColumns);
-
-                        if (tables.Count == 1)
+                        // only one table
+                        refTables.AddRange(tables);
+                    }
+                    else if (ReferencesAllTablesImplicitly(node))
+                    {
+                        // * references all columns from all tables
+                        refTables.AddRange(tables);
+                    }
+                    else
+                    {
+                        // only include tables that have a column the same name as one
+                        // referenced in the condition
+                        foreach (var t in tables)
                         {
-                            // only one table
-                            refTables.AddRange(tables);
-                        }
-                        else if (ReferencesAllTables(node))
-                        {
-                            // * references all columns from all tables
-                            refTables.AddRange(tables);
-                        }
-                        else
-                        {
-                            // only include tables that have a column the same name as one
-                            // referenced in the condition
-                            foreach (var t in tables)
+                            foreach (var c in refColumns)
                             {
-                                foreach (var c in refColumns)
+                                // if the table has a column of the same name
+                                if (t.IsOpen || t.TryGetColumn(c.Name, out _))
                                 {
-                                    // if the table has a column of the same name
-                                    if (t.IsOpen || t.TryGetColumn(c.Name, out _))
-                                    {
-                                        refTables.Add(t);
-                                        break;
-                                    }
+                                    refTables.Add(t);
+                                    break;
                                 }
                             }
                         }
+                    }
+
+                    if (node.Project == null || node.Project.ProjectKeyword.Kind == SyntaxKind.ProjectSmartKeyword)
+                    {
+                        // project-smart
 
                         // any column that is common to all referenced tables
                         var commonColumnsTable = _binder.GetTableOfCommonColumns(refTables);
@@ -2077,35 +2066,11 @@ namespace Kusto.Language.Binding
                             }
                         }
 
-                        // check to see if there is a table that has extra columns that need to be packed
-                        foreach (var c in columns)
+                        GetPackColumns(refTables, columns, packColumns);
+
+                        if (packColumns.Count > 0)
                         {
-                            colNameMap.Add(c.Name);
-                        }
-
-                        var packExtraColumns = false;
-
-                        foreach (var t in refTables)
-                        {
-                            // if table is open, then we don't know what ends up in projected set at execution time
-                            if (t.IsOpen)
-                                continue;
-
-                            // if the table has more columns than end up in the projected set
-                            // then the rest will appear in a packed_ column
-                            foreach (var c in t.Columns)
-                            {
-                                if (!colNameMap.Contains(c.Name))
-                                {
-                                    packExtraColumns = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (packExtraColumns)
-                        {
-                            columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
+                            columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic, originalColumns: packColumns));
                         }
 
                         UnifyColumnsWithSameNameAndType(columns);
@@ -2126,7 +2091,8 @@ namespace Kusto.Language.Binding
                                     explicitPack = true;
                                     if (i == node.Project.Columns.Count - 1)
                                     {
-                                        columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic));
+                                        GetPackColumns(refTables, columns, packColumns);
+                                        columns.Add(new ColumnSymbol("pack_", ScalarTypes.Dynamic, originalColumns: packColumns));
                                     }
                                     else
                                     {
@@ -2136,16 +2102,16 @@ namespace Kusto.Language.Binding
 
                                 case TypedColumnReference tc:
                                     _binder.CheckIsColumn(tc.Column, diagnostics);
-                                    if (_binder.GetReferencedSymbol(tc.Column) is ColumnSymbol c)
+                                    if (GetReferencedSymbol(tc.Column) is ColumnSymbol c)
                                     {
                                         var type = _binder.GetTypeFromTypeExpression(tc.Type, diagnostics);
-                                        columns.Add(new ColumnSymbol(c.Name, type));
+                                        columns.Add(new ColumnSymbol(c.Name, type, originalColumns: new[] { c } ));
                                     }
                                     break;
 
                                 case NameReference nr:
                                     _binder.CheckIsColumn(nr, diagnostics);
-                                    if (_binder.GetReferencedSymbol(nr) is ColumnSymbol c2)
+                                    if (GetReferencedSymbol(nr) is ColumnSymbol c2)
                                     {
                                         columns.Add(c2);
                                     }
@@ -2169,7 +2135,7 @@ namespace Kusto.Language.Binding
                                 for (int i = 0; i < node.ProjectAway.Columns.Count; i++)
                                 {
                                     var columnExp = node.ProjectAway.Columns[i].Element;
-                                    if (_binder.GetReferencedSymbol(columnExp) is ColumnSymbol col)
+                                    if (GetReferencedSymbol(columnExp) is ColumnSymbol col)
                                     {
                                         columnNamesToRemove.Add(col.Name);
                                     }
@@ -2193,12 +2159,47 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
                     s_columnListPool.ReturnToPool(refColumns);
+                    s_columnListPool.ReturnToPool(packColumns);
                     s_tableListPool.ReturnToPool(refTables);
+                }
+            }
+
+            private static void GetPackColumns(IReadOnlyList<TableSymbol> tables, IReadOnlyList<ColumnSymbol> projectedColumns, List<ColumnSymbol> packColumns)
+            {
+                var colNameMap = s_stringSetPool.AllocateFromPool();
+                try
+                {
+                    // check to see if there is a table that has extra columns that need to be packed
+                    foreach (var c in projectedColumns)
+                    {
+                        colNameMap.Add(c.Name);
+                    }
+
+                    foreach (var t in tables)
+                    {
+                        // if table is open, then we don't know what ends up in projected set at execution time
+                        if (t.IsOpen)
+                            continue;
+
+                        // if the table has more columns than end up in the projected set
+                        // then the rest will appear in a packed_ column
+                        foreach (var c in t.Columns)
+                        {
+                            if (!colNameMap.Contains(c.Name))
+                            {
+                                packColumns.Add(c);
+                                break;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
                     s_stringSetPool.ReturnToPool(colNameMap);
                 }
             }
 
-            private static bool ReferencesAllTables(FindOperator node)
+            private static bool ReferencesAllTablesImplicitly(FindOperator node)
             {
                 if (node.Condition.GetFirstDescendantOrSelf<StarExpression>() != null)
                     return true;
@@ -2234,7 +2235,7 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Element;
                         _binder.CheckIsTabular(expr, diagnostics);
-                        _binder.AddTables(_binder.GetResultType(expr), tables);
+                        _binder.AddTables(GetResultType(expr), tables);
                     }
 
                     var unifiedTable = _binder.GetTableOfColumnsUnifiedByNameAndType(tables);
@@ -2287,7 +2288,7 @@ namespace Kusto.Language.Binding
 
                     var resultIsOpen = RowScopeOrEmpty.IsOpen;
 
-                    var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
+                    var exprTable = GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null)
                     {
                         _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
@@ -2379,7 +2380,7 @@ namespace Kusto.Language.Binding
                         resultIsOpen |= RowScopeOrEmpty.IsOpen;
                     }
 
-                    var exprTable = _binder.GetResultType(node.Expression) as TableSymbol;
+                    var exprTable = GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null && !IsLeftAntiOrSemiJoin(joinKind))
                     {
                         // add right-side columns
@@ -2537,7 +2538,7 @@ namespace Kusto.Language.Binding
                 // look for $left.c or $right.c
                 if (_binder.CheckIsColumn(operand, diagnostics))
                 {
-                    column = _binder.GetReferencedSymbol(operand) as ColumnSymbol;
+                    column = GetReferencedSymbol(operand) as ColumnSymbol;
                     return _binder.CheckIsScalar(operand, diagnostics); // are there non-scalar columns?
                 }
 
@@ -2582,7 +2583,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsSummable(node.To, diagnostics);
                     _binder.CheckIsSummable(node.Step, diagnostics);
 
-                    var commonType = TypeFacts.GetCommonScalarType(_binder.GetResultTypeOrError(node.From), _binder.GetResultTypeOrError(node.To), _binder.GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
+                    var commonType = TypeFacts.GetCommonScalarType(GetResultTypeOrError(node.From), GetResultTypeOrError(node.To), GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
 
                     var name = node.Name.SimpleName;
 
@@ -2614,7 +2615,7 @@ namespace Kusto.Language.Binding
                             case FacetWithOperatorClause c:
                                 _binder.CheckIsTabular(c.Operator, diagnostics);
                                 CheckQueryOperators(c.Operator, KustoFacts.ForkOperatorKinds, diagnostics);
-                                tableType = _binder.GetResultType(c.Operator) as TableSymbol;
+                                tableType = GetResultType(c.Operator) as TableSymbol;
                                 if (tableType != null)
                                 {
                                     tables.Add(tableType);
@@ -2623,7 +2624,7 @@ namespace Kusto.Language.Binding
 
                             case FacetWithExpressionClause c:
                                 _binder.CheckIsTabular(c.Expression, diagnostics);
-                                tableType = _binder.GetResultType(c.Expression) as TableSymbol;
+                                tableType = GetResultType(c.Expression) as TableSymbol;
                                 if (tableType != null)
                                 {
                                     tables.Add(tableType);
@@ -2643,8 +2644,8 @@ namespace Kusto.Language.Binding
 
                         var table = new TableSymbol(
                                 tableName,
-                                new ColumnSymbol(name, _binder.GetResultTypeOrError(expr)),
-                                new ColumnSymbol("count_" + name, ScalarTypes.Long))
+                                GetOrDeclareColumnForExpression(expr, name),
+                                GetOrDeclareColumnForExpression(expr, "count_" + name, ScalarTypes.Long))
                             .WithInheritableProperties(RowScopeOrEmpty)
                             .WithIsSorted(false);
 
@@ -2688,7 +2689,7 @@ namespace Kusto.Language.Binding
                         if (agg.DefaultExpression != null)
                         {
                             _binder.CheckIsLiteral(agg.DefaultExpression, diagnostics);
-                            _binder.CheckIsType(agg.DefaultExpression, _binder.GetResultTypeOrError(agg.Expression), Conversion.Promotable, diagnostics);
+                            _binder.CheckIsType(agg.DefaultExpression, GetResultTypeOrError(agg.Expression), Conversion.Promotable, diagnostics);
                         }
 
                         _binder.CreateProjectionColumns(agg.Expression, builder, diagnostics, style: ProjectionStyle.Summarize, columnType: ScalarTypes.Dynamic);
@@ -2708,23 +2709,23 @@ namespace Kusto.Language.Binding
 
                             if (inRangeClause.Arguments.Expressions.Count == 3)
                             {
-                                _binder.CheckIsType(inRangeClause.Arguments.Expressions[0].Element, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
-                                _binder.CheckIsType(inRangeClause.Arguments.Expressions[1].Element, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
-                                _binder.CheckIsIntervalType(inRangeClause.Arguments.Expressions[2].Element, _binder.GetResultTypeOrError(node.OnClause.Expression), diagnostics);
+                                _binder.CheckIsType(inRangeClause.Arguments.Expressions[0].Element, GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                                _binder.CheckIsType(inRangeClause.Arguments.Expressions[1].Element, GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                                _binder.CheckIsIntervalType(inRangeClause.Arguments.Expressions[2].Element, GetResultTypeOrError(node.OnClause.Expression), diagnostics);
                             }
                         }
                         else if (node.RangeClause is MakeSeriesFromToStepClause fromToClause)
                         {
                             if (fromToClause.MakeSeriesFromClause?.Expression != null)
                             {
-                                _binder.CheckIsType(fromToClause.MakeSeriesFromClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                                _binder.CheckIsType(fromToClause.MakeSeriesFromClause.Expression, GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
                             }
 
                             if (fromToClause.MakeSeriesToClause?.Expression != null)
                             {
-                                _binder.CheckIsType(fromToClause.MakeSeriesToClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
+                                _binder.CheckIsType(fromToClause.MakeSeriesToClause.Expression, GetResultTypeOrError(node.OnClause.Expression), Conversion.Promotable, diagnostics);
                             }
-                            _binder.CheckIsIntervalType(fromToClause.MakeSeriesStepClause.Expression, _binder.GetResultTypeOrError(node.OnClause.Expression), diagnostics);
+                            _binder.CheckIsIntervalType(fromToClause.MakeSeriesStepClause.Expression, GetResultTypeOrError(node.OnClause.Expression), diagnostics);
                         }
                     }
 
@@ -2789,11 +2790,11 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 try
                 {
-                    TypeSymbol colType = _binder.GetResultTypeOrError(node.Expression);
+                    TypeSymbol colType = GetResultTypeOrError(node.Expression);
 
                     if (node.ToTypeOf != null)
                     {
-                        colType = _binder.GetReferencedSymbol(node.ToTypeOf.TypeOf) as TypeSymbol ?? ErrorSymbol.Instance;
+                        colType = GetReferencedSymbol(node.ToTypeOf.TypeOf) as TypeSymbol ?? ErrorSymbol.Instance;
                     }
 
                     return new SemanticInfo(colType, diagnostics);
@@ -2876,7 +2877,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckQueryOperators(node.Expression, KustoFacts.PostPipeOperatorKinds, diagnostics, allowContextualRoot: true);
 
-                    var resultType = _binder.GetResultTypeOrError(node.Expression);
+                    var resultType = GetResultTypeOrError(node.Expression);
                     if (resultType is TableSymbol table)
                     {
                         resultType = new TableSymbol(_binder.GetDeclaredAndInferredColumns(table))
@@ -2920,6 +2921,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitReduceByOperator(ReduceByOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -2938,34 +2940,22 @@ namespace Kusto.Language.Binding
                     var kind = node.Parameters.GetParameterLiteralValue<string>(QueryOperatorParameters.Kind);
                     if (kind == "source")
                     {
-                        var columns = s_columnListPool.AllocateFromPool();
                         _binder.GetDeclaredAndInferredColumns(this.RowScopeOrEmpty, columns);
-                        columns.Add(s_PatternColumn);
-                        resultType = new TableSymbol(columns);
-                        s_columnListPool.ReturnToPool(columns);
                     }
-                    else
-                    {
-                        resultType = new TableSymbol(s_ReduceColumns);
-                    }
+
+                    columns.Add(new ColumnSymbol("Pattern", ScalarTypes.String, source: node.Expression));
+                    columns.Add(new ColumnSymbol("Count", ScalarTypes.Long, source: node.Expression));
+                    columns.Add(new ColumnSymbol("Representative", ScalarTypes.String, source: node.Expression));
+                    resultType = new TableSymbol(columns);
 
                     return new SemanticInfo(resultType, diagnostics);
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
                 }
             }
-
-            private static readonly ColumnSymbol s_PatternColumn =
-                new ColumnSymbol("Pattern", ScalarTypes.String);
-
-            private static readonly IReadOnlyList<ColumnSymbol> s_ReduceColumns = new[]
-            {
-                s_PatternColumn,
-                new ColumnSymbol("Count", ScalarTypes.Long),
-                new ColumnSymbol("Representative", ScalarTypes.String)
-            };
 
             public override SemanticInfo VisitRenderOperator(RenderOperator node)
             {
@@ -3070,7 +3060,7 @@ namespace Kusto.Language.Binding
                             case NameDeclaration nd:
                                 if (DeclareColumnName(declaredNames, nd.SimpleName, diagnostics, nd))
                                 {
-                                    var col = new ColumnSymbol(nd.SimpleName, ScalarTypes.String);
+                                    var col = new ColumnSymbol(nd.SimpleName, ScalarTypes.String, source: expression);
                                     columns.Add(col);
                                     _binder.SetSemanticInfo(nd, GetSemanticInfo(col));
                                 }
@@ -3081,7 +3071,7 @@ namespace Kusto.Language.Binding
                                     && DeclareColumnName(declaredNames, nat.Name.SimpleName, diagnostics, nat.Name))
                                 {
                                     var type = Binder.GetType(pt);
-                                    var col = new ColumnSymbol(nat.Name.SimpleName, type);
+                                    var col = new ColumnSymbol(nat.Name.SimpleName, type, source: expression);
                                     columns.Add(col);
                                     _binder.SetSemanticInfo(nat.Name, GetSemanticInfo(col));
                                 }
@@ -3154,7 +3144,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    return new SemanticInfo(_binder.GetResultTypeOrError(node.Function), diagnostics);
+                    return new SemanticInfo(GetResultTypeOrError(node.Function), diagnostics);
                 }
                 finally
                 {
@@ -3170,7 +3160,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.EvaluateParameters, diagnostics);
-                    return new SemanticInfo(_binder.GetResultTypeOrError(node.FunctionCall), diagnostics);
+                    return new SemanticInfo(GetResultTypeOrError(node.FunctionCall), diagnostics);
                 }
                 finally
                 {
@@ -3229,7 +3219,7 @@ namespace Kusto.Language.Binding
                         foreach (var element in node.DeclareClause.Declarations)
                         {
                             var decl = element.Element;
-                            columns.Add(new ColumnSymbol(decl.NameAndType.Name.SimpleName, GetDeclaredType(decl.NameAndType.Type)));
+                            columns.Add(new ColumnSymbol(decl.NameAndType.Name.SimpleName, GetDeclaredType(decl.NameAndType.Type), source: decl.NameAndType.Name));
                         }
                     }
                     
@@ -3296,7 +3286,7 @@ namespace Kusto.Language.Binding
                         if (node.StatementList[i].Element is ExpressionStatement exprStatement)
                         {
                             _binder.CheckIsTabular(exprStatement.Expression, diagnostics);
-                            tableSymbol = _binder.GetResultType(exprStatement.Expression) as TableSymbol;
+                            tableSymbol = GetResultType(exprStatement.Expression) as TableSymbol;
                             
                             // skipping the loop, we found the required expression.
                             break;
@@ -3470,9 +3460,9 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
-            #endregion
+#endregion
 
-            #region clauses 
+#region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
             // typically handled by the parent node's visit method.
 
@@ -3637,7 +3627,7 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 try
                 {
-                    if (!_binder.GetResultTypeOrError(node.Expression).IsError)
+                    if (!GetResultTypeOrError(node.Expression).IsError)
                     {
                         _binder.CheckIsDatabase(node.Expression, diagnostics);
                     }
@@ -3667,7 +3657,7 @@ namespace Kusto.Language.Binding
                         diagnostics.Add(DiagnosticFacts.GetVariableAlreadyDeclared(name).WithLocation(node.Name));
                     }
 
-                    if (_binder.GetResultType(node.Expression) is TupleSymbol ts)
+                    if (GetResultType(node.Expression) is TupleSymbol ts)
                     {
                         diagnostics.Add(DiagnosticFacts.GetMultiValuedExpressionCannotBeAssignedToVariable().WithLocation(node.Expression));
                     }

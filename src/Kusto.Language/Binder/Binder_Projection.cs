@@ -110,7 +110,8 @@ namespace Kusto.Language.Binding
                             if (n.Expression.RawResultType is TupleSymbol tu)
                             {
                                 // first column has declared name so it uses declared name add/replace rule
-                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? tu.Columns[0].Type);
+                                var firstCol = tu.Columns[0];
+                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? firstCol.Type, originalColumns: new[] { firstCol }, source: firstCol.Source);
                                 builder.Declare(col, diagnostics, n.Name, replace: true);
                                 SetSemanticInfo(n.Name, CreateSemanticInfo(col));
 
@@ -138,7 +139,7 @@ namespace Kusto.Language.Binding
                             }
                             else if (n.Expression.ReferencedSymbol is ColumnSymbol c)
                             {
-                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? c.Type);
+                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? c.Type, source: n.Expression);
                                 builder.Declare(col, diagnostics, n.Name, replace: true);
                                 SetSemanticInfo(n.Name, CreateSemanticInfo(col));
 
@@ -149,7 +150,7 @@ namespace Kusto.Language.Binding
                             }
                             else
                             {
-                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? GetResultTypeOrError(n.Expression));
+                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? GetResultTypeOrError(n.Expression), source: n.Expression);
                                 builder.Declare(col, diagnostics, n.Name, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                 SetSemanticInfo(n.Name, CreateSemanticInfo(col));
                             }
@@ -170,7 +171,7 @@ namespace Kusto.Language.Binding
                                     {
                                         var nameDecl = cn.Names.Names[i].Element;
                                         var name = nameDecl.SimpleName;
-                                        col = new ColumnSymbol(name, type);
+                                        col = new ColumnSymbol(name, type, originalColumns: col.OriginalColumns, source: col.Source);
 
                                         builder.Declare(col, diagnostics, nameDecl, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                         SetSemanticInfo(nameDecl, CreateSemanticInfo(col));
@@ -182,7 +183,7 @@ namespace Kusto.Language.Binding
                                     }
                                     else if (style != ProjectionStyle.Print)
                                     {
-                                        if (GetReferencedSymbol(cn.Expression) is FunctionSymbol fs1)
+                                        if (cn.Expression.ReferencedSymbol is FunctionSymbol fs1)
                                         {
                                             AddFunctionTupleResultColumn(fs1, col, builder, doNotRepeat, style == ProjectionStyle.Summarize);
                                         }
@@ -207,7 +208,7 @@ namespace Kusto.Language.Binding
                                 var name = cn.Names.Names[0].Element;
                                 if (expr.ReferencedSymbol is ColumnSymbol c)
                                 {
-                                    col = new ColumnSymbol(name.SimpleName, columnType ?? c.Type);
+                                    col = new ColumnSymbol(name.SimpleName, columnType ?? c.Type, originalColumns: new[] { c });
                                     builder.Declare(col, diagnostics, name, replace: true);
                                     SetSemanticInfo(name, CreateSemanticInfo(col));
 
@@ -218,7 +219,7 @@ namespace Kusto.Language.Binding
                                 }
                                 else
                                 {
-                                    col = new ColumnSymbol(name.SimpleName, columnType ?? GetResultTypeOrError(cn.Expression));
+                                    col = new ColumnSymbol(name.SimpleName, columnType ?? GetResultTypeOrError(cn.Expression), source: expr);
                                     builder.Declare(col, diagnostics, name, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                                     SetSemanticInfo(name, CreateSemanticInfo(col));
                                 }
@@ -255,7 +256,7 @@ namespace Kusto.Language.Binding
                                 if (ts != null && ts.Columns.Count == 1)
                                     ftype = ts.Columns[0].Type;
 
-                                col = new ColumnSymbol(columnName, columnType ?? ftype);
+                                col = new ColumnSymbol(columnName, columnType ?? ftype, source: f);
                                 builder.Add(col, columnName, replace: false);
                             }
                             else if (ts != null && GetReferencedSymbol(f) is FunctionSymbol fs)
@@ -268,7 +269,7 @@ namespace Kusto.Language.Binding
                             else
                             {
                                 var name = GetFunctionResultName(f, null, _rowScope) ?? columnName ?? GetDefaultColumnName(expression, style == ProjectionStyle.Extend);
-                                col = new ColumnSymbol(name, columnType ?? ftype);
+                                col = new ColumnSymbol(name, columnType ?? ftype, source: f);
                                 builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
@@ -344,13 +345,15 @@ namespace Kusto.Language.Binding
 
                             if (style == ProjectionStyle.Print && columnName != null)
                             {
-                                col = new ColumnSymbol(columnName, columnType ?? type);
+                                //col = new ColumnSymbol(columnName, columnType ?? type, source: expression);
+                                col = GetOrDeclareColumnForExpression(expression, columnName, columnType ?? type);
                                 builder.Add(col, columnName, replace: false);
                             }
                             else
                             {
                                 var name = GetExpressionResultName(expression, null) ?? columnName ?? GetDefaultColumnName(expression, style == ProjectionStyle.Extend);
-                                col = new ColumnSymbol(name, columnType ?? type);
+                                //col = new ColumnSymbol(name, columnType ?? type, source: expression);
+                                col = GetOrDeclareColumnForExpression(expression, name, columnType ?? type);
                                 builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
@@ -358,6 +361,33 @@ namespace Kusto.Language.Binding
                 }
             }
         }
+
+        /// <summary>
+        /// Returns a column symbol representing the result of the expression.
+        /// If the expression just references a column, then it returns that column.
+        /// Otherwise it creates new column symbol.
+        /// </summary>
+        private static ColumnSymbol GetOrDeclareColumnForExpression(Expression expression, string name = null, TypeSymbol type = null, string defaultName = null)
+        {
+            name = name ?? GetExpressionResultName(expression, defaultName);
+            if (GetResultColumn(expression) is ColumnSymbol col)
+            {
+                if (name != null && col.Name != name)
+                {
+                    return new ColumnSymbol(name, type ?? col.Type, originalColumns: new[] { col }, source: expression);
+                }
+                else
+                {
+                    return col;
+                }
+            }
+            else
+            {
+                type = type ?? GetResultTypeOrError(expression);
+                return new ColumnSymbol(name, type, source: expression); 
+            }
+        }
+
 
         private int _defaultColumnNameSuffix = 1;
         private string GetDefaultColumnName(SyntaxNode location, bool includeRowScope)

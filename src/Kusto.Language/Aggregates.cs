@@ -294,7 +294,7 @@ namespace Kusto.Language
                 {
                     var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
                     var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
-                    columns.Add(new ColumnSymbol(name, resultType));
+                    columns.Add(new ColumnSymbol(name, resultType, source: valueArg));
                 }
             }
         }
@@ -313,7 +313,7 @@ namespace Kusto.Language
             if (context.GetArgument("expr") is Expression valueArg
                 && context.GetResultName(valueArg) is string valueArgName)
             {
-                cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic));
+                cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic, source: valueArg));
             }
 
             return new TupleSymbol(cols);
@@ -470,7 +470,7 @@ namespace Kusto.Language
                     if (CanAddAnyResultColumn(vc, doNotRepeat, anyStar))
                     {
                         doNotRepeat.Add(vc);
-                        columns.Add(new ColumnSymbol(snx.Name.SimpleName, vc.Type));
+                        columns.Add(new ColumnSymbol(snx.Name.SimpleName, vc.Type, originalColumns: new[] { vc }));
                     }
                 }
                 else if (GetResultColumn(arg) is ColumnSymbol c)
@@ -482,7 +482,7 @@ namespace Kusto.Language
                         {
                             // change identity of explicitly referenced columns so won't match same columns already in projection list
                             // this will get renamed by project builder
-                            columns.Add(new ColumnSymbol(c.Name, c.Type));
+                            columns.Add(new ColumnSymbol(c.Name, c.Type, originalColumns: new[] { c }));
                         }
                         else
                         {
@@ -499,7 +499,7 @@ namespace Kusto.Language
                         expName = prefix + "arg" + i;
                     }
 
-                    var col = new ColumnSymbol(expName, arg.ResultType);
+                    var col = new ColumnSymbol(expName, arg.ResultType, source: arg);
                     columns.Add(col);
                 }
             }
@@ -566,7 +566,7 @@ namespace Kusto.Language
                         if (CanAddArgMinMaxResultColumn(i, vc, byClauseColumns, doNotRepeat, anyStar))
                         {
                             doNotRepeat.Add(vc);
-                            columns.Add(new ColumnSymbol(snx.Name.SimpleName, vc.Type));
+                            columns.Add(new ColumnSymbol(snx.Name.SimpleName, vc.Type, originalColumns: new[] { vc }));
                         }
                     }
                     else if (GetResultColumn(arg) is ColumnSymbol c)
@@ -579,7 +579,7 @@ namespace Kusto.Language
                             {
                                 // change identity of explicitly referenced columns so won't match same columns already in projection list
                                 // this will get renamed by project builder
-                                columns.Add(new ColumnSymbol(c.Name, c.Type));
+                                columns.Add(new ColumnSymbol(c.Name, c.Type, originalColumns: new[] { c }));
                             }
                             else
                             {
@@ -603,7 +603,7 @@ namespace Kusto.Language
                             }
                         }
 
-                        var col = new ColumnSymbol(expName, arg.ResultType);
+                        var col = new ColumnSymbol(expName, arg.ResultType, source: arg);
                         columns.Add(col);
                     }
                 }
@@ -672,7 +672,7 @@ namespace Kusto.Language
                 else
                 {
                     primaryColName = Binding.Binder.GetExpressionResultName(primaryArg);
-                    var primaryCol = new ColumnSymbol(primaryColName, primaryArg.ResultType);
+                    var primaryCol = new ColumnSymbol(primaryColName, primaryArg.ResultType, source: primaryArg);
                     columns.Add(primaryCol);
                 }
 
@@ -688,7 +688,7 @@ namespace Kusto.Language
                                 && CanAddArgMinMaxResultColumn(i, c, byClauseColumns, doNotRepeat, anyStar))
                             {
                                 doNotRepeat.Add(c);
-                                columns.Add(c.WithName(primaryColName + "_" + c.Name));
+                                columns.Add(c.WithName(primaryColName + "_" + c.Name).WithOriginalColumns(c));
                             }
                         }
                     }
@@ -698,7 +698,7 @@ namespace Kusto.Language
                         if (CanAddArgMinMaxResultColumn(i, vc, byClauseColumns, doNotRepeat, anyStar))
                         {
                             doNotRepeat.Add(vc);
-                            columns.Add(new ColumnSymbol(primaryColName + "_" +snx.Name.SimpleName, vc.Type));
+                            columns.Add(new ColumnSymbol(primaryColName + "_" +snx.Name.SimpleName, vc.Type, originalColumns: new[] { vc }));
                         }
                     }
                     else if (GetResultColumn(arg) is ColumnSymbol c)
@@ -706,7 +706,7 @@ namespace Kusto.Language
                         if (CanAddArgMinMaxResultColumn(i, c, byClauseColumns, doNotRepeat, anyStar))
                         {
                             doNotRepeat.Add(c);
-                            columns.Add(c.WithName(primaryColName + "_" + c.Name));
+                            columns.Add(c.WithName(primaryColName + "_" + c.Name).WithOriginalColumns(c));
                         }
                     }
                     else
@@ -714,7 +714,7 @@ namespace Kusto.Language
                         var expName = Binding.Binder.GetExpressionResultName(arg, null);
                         if (expName == null)
                             expName = "arg" + i;
-                        var col = new ColumnSymbol(primaryColName + "_" + expName, arg.ResultType);
+                        var col = new ColumnSymbol(primaryColName + "_" + expName, arg.ResultType, source: arg);
                         columns.Add(col);
                     }
                 }

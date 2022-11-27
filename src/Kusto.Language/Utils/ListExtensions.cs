@@ -10,20 +10,28 @@ namespace Kusto.Language.Utils
 {
     public static class ListExtensions
     {
+        /// <summary>
+        /// Converts the list to an immutable/readonly list.
+        /// </summary>
         public static IReadOnlyList<T> ToReadOnly<T>(this IEnumerable<T> list)
         {
-            if (list == null)
+            if (list == null 
+                || list == EmptyReadOnlyList<T>.Instance
+                || (list is IReadOnlyList<T> rol && rol.Count == 0))
             {
+                // empty read only list is immutable.
                 return EmptyReadOnlyList<T>.Instance;
             }
-
-            var readOnlyCollection = list as ReadOnlyCollection<T>;
-            if (readOnlyCollection != null)
+            else if (list is SafeList<T> safeList)
             {
-                return readOnlyCollection;
+                // safe-list has functually immutable semantics.
+                return safeList;
             }
-
-            return list.ToList().AsReadOnly();
+            else
+            {
+                // convert to a safe-list to make it immutable.
+                return new SafeList<T>(list);
+            }
         }
 
         /// <summary>

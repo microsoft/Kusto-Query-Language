@@ -249,7 +249,7 @@ namespace Kusto.Language.Binding
                     var command = node.Statements[0].Element.GetFirstDescendant<Command>();
                     if (command != null)
                     {
-                        var commandResults = new VariableSymbol("$command_results", _binder.GetResultTypeOrError(command));
+                        var commandResults = new VariableSymbol("$command_results", GetResultTypeOrError(command));
                         _binder._localScope.AddSymbol(commandResults);
                     }
                 }
@@ -281,7 +281,7 @@ namespace Kusto.Language.Binding
                     }
                     else if (se.Element is PatternStatement ps)
                     {
-                        _binder._localScope.AddSymbol(_binder.GetReferencedSymbol(ps.Name));
+                        _binder._localScope.AddSymbol(GetReferencedSymbol(ps.Name));
                     }
                 }
             }
@@ -472,7 +472,7 @@ namespace Kusto.Language.Binding
 
                 if (_position > node.AggregationsClause.OpenParen.TextStart)
                 {
-                    _binder._rowScope = _binder.GetResultType(node.DeltaClause.Expression) as TableSymbol;
+                    _binder._rowScope = GetResultType(node.DeltaClause.Expression) as TableSymbol;
                 }
             }
 

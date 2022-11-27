@@ -314,8 +314,8 @@ namespace Kusto.Language
                     var stateArg = context.GetArgument("StateColumn");
                     if (stateArg != null)
                     {
-                        cols.Add(new ColumnSymbol("prev", stateArg.ResultType));
-                        cols.Add(new ColumnSymbol("next", stateArg.ResultType));
+                        cols.Add(new ColumnSymbol("prev", stateArg.ResultType, source: stateArg));
+                        cols.Add(new ColumnSymbol("next", stateArg.ResultType, source: stateArg));
                     }
 
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
@@ -342,7 +342,7 @@ namespace Kusto.Language
                     var stateArg = context.GetArgument("StateColumn");
                     if (stateArg != null)
                     {
-                        cols.Add(new ColumnSymbol(context.GetResultName(stateArg), ScalarTypes.String));
+                        cols.Add(new ColumnSymbol(context.GetResultName(stateArg), ScalarTypes.String, source: stateArg));
                     }
 
                     cols.Add(new ColumnSymbol("Period", ScalarTypes.TimeSpan));

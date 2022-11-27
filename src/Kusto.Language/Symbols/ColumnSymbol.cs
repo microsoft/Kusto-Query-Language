@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Kusto.Language.Symbols
 {
+    using Syntax;
     using Utils;
 
     /// <summary>
@@ -28,9 +29,20 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public IReadOnlyList<ColumnSymbol> OriginalColumns { get; }
 
+        /// <summary>
+        /// The expression the column is computed from or
+        /// the location where the column is first introduced.
+        /// </summary>
+        public SyntaxNode Source { get; }
+
         public override SymbolKind Kind => SymbolKind.Column;
 
-        public ColumnSymbol(string name, TypeSymbol type, string description = null, IReadOnlyList<ColumnSymbol> originalColumns = null)
+        public ColumnSymbol(
+            string name, 
+            TypeSymbol type, 
+            string description = null, 
+            IReadOnlyList<ColumnSymbol> originalColumns = null,
+            SyntaxNode source = null)
             : base(name)
         {
             this.Type = type ?? throw new ArgumentNullException(nameof(type));
@@ -38,12 +50,14 @@ namespace Kusto.Language.Symbols
 
             if (originalColumns != null && originalColumns.Count > 0)
             {
-                this.OriginalColumns = GetTrulyOriginalColumns(originalColumns);
+                this.OriginalColumns = GetTrulyOriginalColumns(originalColumns).ToReadOnly();
             }
             else
             {
                 this.OriginalColumns = EmptyReadOnlyList<ColumnSymbol>.Instance;
             }
+
+            this.Source = source;
         }
 
         /// <summary>
@@ -79,7 +93,7 @@ namespace Kusto.Language.Symbols
         {
             if (name != this.Name)
             {
-                return new ColumnSymbol(name, this.Type, this.Description, this.OriginalColumns);
+                return new ColumnSymbol(name, this.Type, this.Description, this.OriginalColumns, this.Source);
             }
             else
             {
@@ -94,7 +108,7 @@ namespace Kusto.Language.Symbols
         {
             if (type != this.Type)
             {
-                return new ColumnSymbol(this.Name, type, this.Description, this.OriginalColumns);
+                return new ColumnSymbol(this.Name, type, this.Description, this.OriginalColumns, this.Source);
             }
             else
             {
@@ -109,7 +123,7 @@ namespace Kusto.Language.Symbols
         {
             if (description != this.Description)
             {
-                return new ColumnSymbol(this.Name, this.Type, description, this.OriginalColumns);
+                return new ColumnSymbol(this.Name, this.Type, description, this.OriginalColumns, this.Source);
             }
             else
             {
@@ -124,7 +138,30 @@ namespace Kusto.Language.Symbols
         {
             if (this.OriginalColumns != originalColumns)
             {
-                return new ColumnSymbol(this.Name, this.Type, this.Description, originalColumns);
+                return new ColumnSymbol(this.Name, this.Type, this.Description, originalColumns, this.Source);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="ColumnSymbol"/> with the specified list of original columns.
+        /// </summary>
+        public ColumnSymbol WithOriginalColumns(params ColumnSymbol[] originalColumns)
+        {
+            return WithOriginalColumns((IReadOnlyList<ColumnSymbol>)originalColumns);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="ColumnSymbol"/> with the specified source expression.
+        /// </summary>
+        public ColumnSymbol WithSource(SyntaxNode source)
+        {
+            if (this.Source != source)
+            {
+                return new ColumnSymbol(this.Name, this.Type, this.Description, this.OriginalColumns, source);
             }
             else
             {

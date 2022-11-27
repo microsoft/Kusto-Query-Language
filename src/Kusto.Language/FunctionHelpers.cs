@@ -22,7 +22,7 @@ namespace Kusto.Language
         {
             var functionPrefix = ((FunctionSymbol)context.Signature.Symbol).ResultNamePrefix ?? context.Signature.Symbol.Name;
             var argumentPrefix = context.GetResultName(context.GetArgument(parameterName));
-            return new TupleSymbol(baseTuple.Columns.Select(c => new ColumnSymbol(MakeColumnName(functionPrefix, argumentPrefix, c.Name), c.Type)));
+            return new TupleSymbol(baseTuple.Columns.Select(c => c.WithName(MakeColumnName(functionPrefix, argumentPrefix, c.Name)).WithOriginalColumns(c)));
         }
 
         /// <summary>

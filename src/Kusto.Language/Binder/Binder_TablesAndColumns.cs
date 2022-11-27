@@ -483,7 +483,7 @@ namespace Kusto.Language.Binding
                             var type = GetType(p); // diagnostics should already have been added
                             if (DeclareColumnName(declaredNames, nat.Name.SimpleName, diagnostics, nat.Name.Name))
                             {
-                                columns.Add(new ColumnSymbol(nat.Name.SimpleName, type));
+                                columns.Add(new ColumnSymbol(nat.Name.SimpleName, type, source: nat.Name));
                             }
                             break;
 

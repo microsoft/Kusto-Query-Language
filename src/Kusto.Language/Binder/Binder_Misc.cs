@@ -19,16 +19,16 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private TypeSymbol GetResultTypeOrError(Expression expression) =>
+        private static TypeSymbol GetResultTypeOrError(Expression expression) =>
             expression?.ResultType ?? ErrorSymbol.Instance;
 
-        private TypeSymbol GetResultType(Expression expression) =>
+        private static TypeSymbol GetResultType(Expression expression) =>
             expression?.ResultType;
 
-        private Symbol GetReferencedSymbol(Expression expression) =>
+        private static Symbol GetReferencedSymbol(Expression expression) =>
             expression?.ReferencedSymbol;
 
-        private bool GetIsConstant(Expression expression) =>
+        private static bool GetIsConstant(Expression expression) =>
             expression?.IsConstant ?? false;
         #endregion
 

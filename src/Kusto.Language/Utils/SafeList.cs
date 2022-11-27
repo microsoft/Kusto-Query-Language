@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Kusto.Language.Utils
 {
     /// <summary>
-    /// A List wrapper that restricts usage to read only semantics
+    /// A list that restricts usage to read only semantics
     /// and constructing copies with additional items using deferred copy semantics.
     /// </summary>
     public class SafeList<T> : IReadOnlyList<T>, IEnumerable<T>, IEnumerable
