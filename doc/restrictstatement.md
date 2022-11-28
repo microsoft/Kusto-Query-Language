@@ -90,7 +90,7 @@ restrict access to (RestrictedData);
 // The rest of the query is something that the user types.
 // This part can only reference RestrictedData; attempting to reference Data
 // will fail.
-RestrictedData | summarize IrsLovesMe=sum(Salary) by Year, Month
+RestrictedData | summarize MonthlySalary=sum(Salary) by Year, Month
 ```
 
 ```kusto

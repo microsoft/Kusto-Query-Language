@@ -33,7 +33,7 @@ T | evaluate ipv4_lookup(LookupTable, SourceIPv4Key, IPv4LookupKey, ExtraKey1, E
 ### IP-prefix notation
  
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the left of the slash (`/`) is the base IP address. The number (1 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
 
 For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 

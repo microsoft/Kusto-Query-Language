@@ -602,6 +602,10 @@ items:
     href: ipv4-netmask-suffix-function.md
   - name: ipv6_compare()
     href: ipv6-comparefunction.md
+  - name: ipv6_is_in_range()
+    href: ipv6-is-in-range-function.md
+  - name: ipv6_is_in_any_range()
+    href: ipv6-is-in-any-range-function.md
   - name: ipv6_is_match()
     href: ipv6-is-matchfunction.md
   - name: isascii()

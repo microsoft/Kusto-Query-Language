@@ -337,4 +337,4 @@ For completeness, here are some commonly requested features for user-defined fun
 
 1. Function overloading: There's currently no way to overload a function (a way to create multiple functions with the same name and different input schema).
 
-1. Default values: The default value for a scalar parameter to a function must be a scalar literal (constant). Furthermore, stored functions can't have a default value of type `dynamic`.
+1. Default values: The default value for a scalar parameter to a function must be a scalar literal (constant).

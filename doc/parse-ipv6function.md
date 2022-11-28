@@ -25,7 +25,7 @@ parse_ipv6(":fe80::85d:e82c:9446:7994") == 'fe80:0000:0000:0000:085d:e82c:9446:7
 ## IP-prefix notation
 
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (1 to 127) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask.
+The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask.
 
 ## Returns
 
