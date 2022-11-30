@@ -152,12 +152,14 @@ When the input of `summarize` operator doesn't have an empty group-by key, the r
 
 ```kusto
 datatable(x:long)[]
-| summarize take_any(x), arg_max(x, x), arg_min(x, x), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
+| summarize any_x=take_any(x), arg_max_x=arg_max(x, *), arg_min_x=arg_min(x, *), avg(x), buildschema(todynamic(tostring(x))), max(x), min(x), percentile(x, 55), hll(x) ,stdev(x), sum(x), sumif(x, x > 0), tdigest(x), variance(x)
 ```
 
-|any_x|max_x|max_x_x|min_x|min_x_x|avg_x|schema_x|max_x1|min_x1|percentile_x_55|hll_x|stdev_x|sum_x|sumif_x|tdigest_x|variance_x|
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-|||||||||||||||||
+|any_x|arg_max_x|arg_min_x|avg_x|schema_x|max_x|min_x|percentile_x_55|hll_x|stdev_x|sum_x|sumif_x|tdigest_x|variance_x|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+||||NaN||||||0|0|0||0|
+
+The result of `avg_x(x)` is `NaN` due to dividing by 0.
 
 ```kusto
 datatable(x:long)[]

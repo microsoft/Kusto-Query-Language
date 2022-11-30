@@ -15,13 +15,13 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 
 *T* `|` `as` [`hint.materialized` `=` `true`] *Name*
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*T*| tabular | &check; |  A tabular expression.|
-| *Name*| string| &check; | A temporary name for the tabular expression|
-| * `hint.materialized`| bool |  | If set to `true`, the value of the tabular expression will be  materialized as if it was wrapped by a [materialize()](./materializefunction.md) function call.|
+|*T*| string | &check; | The tabular expression to rename.|
+| *Name*| string| &check; | The temporary name for the tabular expression.|
+| *`hint.materialized`*| bool |  | If set to `true`, the value of the tabular expression will be as if it was wrapped by a [materialize()](./materializefunction.md) function call.|
 
 > [!NOTE]
 >
@@ -32,7 +32,7 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 
 In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzA0UCguSS0AcrhqFBKLFULAjNK8zPw8hfLMkozi/NKi5FTbkMSknFS/xNxUBY0iPGZAjDDSBAAgKK6faAAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzA0UCguSS0AcrhqFBKLFULAjNK8zPw8hfLMkozi/NKi5FTbkMSknFS/xNxUBY0iPGZAjDDSBAAgKK6faAAAAA==)
 
 ```kusto
 range x from 1 to 10 step 1 
@@ -42,7 +42,7 @@ range x from 1 to 10 step 1
 
 Alternatively, you can write the same example, as follows:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAyvNy8zPUyjPLMkozi8tSk61DUlMykn1S8xNVdAoSsxLT1WoUEgrys9VMFQoyVcwNFAoLkktAHJqFBKLFUIMNXWIUWakCQB5tG07ZwAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAyvNy8zPUyjPLMkozi8tSk61DUlMykn1S8xNVdAoSsxLT1WoUEgrys9VMFQoyVcwNFAoLkktAHJqFBKLFUIMNXWIUWakCQB5tG07ZwAAAA==)
 
 ```kusto
 union withsource=TableName (range x from 1 to 10 step 1 | as T1), (range x from 1 to 10 step 1 | as T2)

@@ -17,12 +17,12 @@ Receives one or more arrays. Sorts the first array in ascending order. Orders th
 
 If *nulls_last* isn't provided, a default value of `true` is used.
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*array1...arrayN*|  | &check; | Input arrays.|
-| *nulls_last* |bool |  | Indicating whether `null`s should be last.|
+|*array1...arrayN*| dynamic | &check; | The array or list of arrays to sort.|
+| *nulls_last* | bool |  | Determines whether `null`s should be last.|
 
 ## Returns
 
@@ -39,7 +39,7 @@ If an array contains elements of different types, it will be sorted in the follo
 
 ## Example 1 - Sorting two arrays
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFILCpKrDRUsFVIqcxLzM1M1og21DHWMdEx1TGK1bTmyoEpMUJWopSopKOUBMTJQJwCxKlKIMUFRZl5UOXxxflFJfGJxckaEAt0IIZoAgAts93scwAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFILCpKrDRUsFVIqcxLzM1M1og21DHWMdEx1TGK1bTmyoEpMUJWopSopKOUBMTJQJwCxKlKIMUFRZl5UOXxxflFJfGJxckaEAt0IIZoAgAts93scwAAAA==)
 
 ```kusto
 let array1 = dynamic([1,3,4,5,2]);
@@ -47,9 +47,7 @@ let array2 = dynamic(["a","b","c","d","e"]);
 print array_sort_asc(array1,array2)
 ```
 
-**Results**
-
-|`array1_sorted`|`array2_sorted`|
+|array1_sorted|array2_sorted|
 |---|---|
 |[1,2,3,4,5]|["a","e","b","c","d"]|
 
@@ -58,7 +56,7 @@ print array_sort_asc(array1,array2)
 
 ## Example 2 - Sorting substrings
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVHwS8xNLVawVVDyys/I0wlILM3RcU/NL0pP1QnKzEvPV7LmygGqCs4vKklNgaktLilKTiyJTywqSqzUAJPxxUAF8YnFyRrFBTmZJRpglToKSjpKmpoQypqroCgzr0ShKLW4NKcEaAiSkQD+ChdoiAAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVHwS8xNLVawVVDyys/I0wlILM3RcU/NL0pP1QnKzEvPV7LmygGqCs4vKklNgaktLilKTiyJTywqSqzUAJPxxUAF8YnFyRrFBTmZJRpglToKSjpKmpoQypqroCgzr0ShKLW4NKcEaAiSkQD+ChdoiAAAAA==)
 
 ```kusto
 let Names = "John,Paul,George,Ringo";
@@ -66,15 +64,13 @@ let SortedNames = strcat_array(array_sort_asc(split(Names, ",")), ",");
 print result = SortedNames
 ```
 
-**Results**
-
-|`result`|
+|result|
 |---|
 |George,John,Paul,Ringo|
 
 ## Example 3 - Combining summarize and array_sort_asc
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WR0WoDIRBF3/crJC9ZYQO7tiU00C8JQSYqiY2uy4yhpPTjq23sFmIK1ZdxOPdy5WqI6e6daVXwHka9oYh2PHTs+pbRerPREE0eOnYmg9IWjDfbhqWzVEcf9LJLY0Fb0Q/Pq369Gp543i+yclh037yjL7jG96LCa4tXwQ0varw/FcVtnscKj/5uHrGu8NObvpun9t+//B9mXvzTP/O75oPROZWF9t2wjFIEPxF7YR5ORjpLsf3dJv8pt8pwtr+UmpP1hOHVqFg2s1baUaojhjG4cLAKnAyoDSZLQISLpIBRAql2jjSL+XbYfQJov9dSfAIAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WR0WoDIRBF3/crJC9ZYQO7tiU00C8JQSYqiY2uy4yhpPTjq23sFmIK1ZdxOPdy5WqI6e6daVXwHka9oYh2PHTs+pbRerPREE0eOnYmg9IWjDfbhqWzVEcf9LJLY0Fb0Q/Pq369Gp543i+yclh037yjL7jG96LCa4tXwQ0varw/FcVtnscKj/5uHrGu8NObvpun9t+//B9mXvzTP/O75oPROZWF9t2wjFIEPxF7YR5ORjpLsf3dJv8pt8pwtr+UmpP1hOHVqFg2s1baUaojhjG4cLAKnAyoDSZLQISLpIBRAql2jjSL+XbYfQJov9dSfAIAAA==)
 
 ```kusto
 datatable(command:string, command_time:datetime, user_id:string)
@@ -92,9 +88,7 @@ datatable(command:string, command_time:datetime, user_id:string)
 | project user_id, commands_in_chronological_order = array_sort_asc(timestamps, commands)[1]
 ```
 
-**Results**
-
-|`user_id`|`commands_in_chronological_order`|
+|user_id|commands_in_chronological_order|
 |---|---|
 |user1|[<br>  "ls",<br>  "mkdir",<br>  "chmod",<br>  "dir",<br>  "pwd",<br>  "rm"<br>]|
 |user2|[<br>  "rm",<br>  "pwd"<br>]|
@@ -108,27 +102,23 @@ By default, `null` values are put last in the sorted array. However, you can con
 
 Example with default behavior:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjC/OLyqJTyxO1kipzEvMzUzWiM4rzcnRUUrKKU1V0lGqTM3JyS8HMtKLUlPzlHRAkrGamgDOvUliQgAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjC/OLyqJTyxO1kipzEvMzUzWiM4rzcnRUUrKKU1V0lGqTM3JyS8HMtKLUlPzlHRAkrGamgDOvUliQgAAAA==)
 
 ```kusto
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]))
 ```
 
-**Results**
-
-|`print_0`|
+|print_0|
 |---|
 |["blue","green","yellow",null,null]|
 
 Example with non-default behavior:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXJUQqAIAwA0KvIvhR2owhZtkJYMzYlvH319+DdVrUHMqOZvVnP5CXuU+mqJS46RBA2GQwIk0Xa8+E0ZgX8c00YDhLn9ALNIgvjSQAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXJUQqAIAwA0KvIvhR2owhZtkJYMzYlvH319+DdVrUHMqOZvVnP5CXuU+mqJS46RBA2GQwIk0Xa8+E0ZgX8c00YDhLn9ALNIgvjSQAAAA==)
 
 ```kusto
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]), false)
 ```
-
-**Results**
 
 |`print_0`|
 |---|

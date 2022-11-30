@@ -3,7 +3,7 @@ title: assert() - Azure Data Explorer
 description: Learn how to use the assert() function to check for a condition and output an error message when false.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 11/03/2022
 ---
 # assert()
 
@@ -11,13 +11,13 @@ Checks for a condition. If the condition is false, outputs error messages and fa
 
 ## Syntax
 
-`assert(`*condition*`, `*message*`)`
+`assert(`*condition*`,`*message*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *condition* | expression | &check; |Conditional expression to evaluate. If the condition is `false`, the specified message is used to report an error. If the condition is `true`, it returns `true` as an evaluation result. Condition must be evaluated to constant during the query analysis phase.|
+| *condition* | bool | &check; | The conditional expression to evaluate. The condition must be evaluated to constant during the query analysis phase.|
 | *message* | string | &check; | The message used if assertion is evaluated to `false`.|
 
 > [!NOTE]
@@ -25,14 +25,14 @@ Checks for a condition. If the condition is false, outputs error messages and fa
 
 ## Returns
 
-Returns `true` if the condition is `true`. 
+Returns `true` if the condition is `true`.
 Raises a semantic error if the condition is evaluated to `false`.
 
 ## Examples
 
 The following query defines a function `checkLength()` that checks input string length, and uses `assert` to validate input length parameter (checks that it's greater than zero).
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAA02OywrCMBBF9/mKoZsmEMH6hEr9Av9AXKTtkBTjVJIpgo9/N60izmzuYs6d45GhcdicD0iWHVQgPVLpe7IaYhk5dGSVeAhIY2LEwOMB7GGuIftClyEy1Ag2oGEMwM4Q3DH0mQJD7cSmpsTJqBKagnjtRGs4be1RdnQd+PfsOAF5sVjm+hNX6802FyfxhJvDgP/Go0016spZoTRMTeoNUTSJPdYAAAA=)**\]**
+[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAA02OywrCMBBF9/mKoZsmEMH6hEr9Av9AXKTtkBTjVJIpgo9/N60izmzuYs6d45GhcdicD0iWHVQgPVLpe7IaYhk5dGSVeAhIY2LEwOMB7GGuIftClyEy1Ag2oGEMwM4Q3DH0mQJD7cSmpsTJqBKagnjtRGs4be1RdnQd+PfsOAF5sVjm+hNX6802FyfxhJvDgP/Go0016spZoTRMTeoNUTSJPdYAAAA=)
 
 ```kusto
 let checkLength = (len:long, s:string)
@@ -53,7 +53,7 @@ Running this query yields an error:
 
 Example of running with valid `len` input:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAA02OzQrCMBCE73mKoZc2kINaf6BSn8A3EA9pXZJiTCXZIvjz7qZVxN3LHOabGUeM1lJ73pM3bFGjcOQr13ujEKvIofNGiodAOh0jBR4N2GGmkH2hyxAZDcEE0kwBbLXHnUKfSWh/QkpJTBFlwpIQr604aU7fOCo6fx34V3SYivL5oszVRy5X600ujuKJm6VA/2vHJXWpMEXIN3+iHkjLAAAA)**\]**
+[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAA02OzQrCMBCE73mKoZc2kINaf6BSn8A3EA9pXZJiTCXZIvjz7qZVxN3LHOabGUeM1lJ73pM3bFGjcOQr13ujEKvIofNGiodAOh0jBR4N2GGmkH2hyxAZDcEE0kwBbLXHnUKfSWh/QkpJTBFlwpIQr604aU7fOCo6fx34V3SYivL5oszVRy5X600ujuKJm6VA/2vHJXWpMEXIN3+iHkjLAAAA)
 
 ```kusto
 let checkLength = (len:long, s:string)
@@ -67,8 +67,6 @@ datatable(input:string)
 ]
 | where checkLength(len=3, input)
 ```
-
-**Results**
 
 |input|
 |---|
