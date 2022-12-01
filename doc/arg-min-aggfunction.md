@@ -3,7 +3,7 @@ title: arg_min() (aggregation function) - Azure Data Explorer
 description: Learn how to use the arg_min() aggregation function to find a row in a group that minimizes the input expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 11/20/2022
 ---
 # arg_min() (aggregation function)
 
@@ -21,8 +21,8 @@ Finds a row in the group that minimizes *ExprToMinimize*.
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *ExprToMinimize*| string | &check; | Expression used for aggregation calculation. |
-| *ExprToReturn* | string | &check; | Expression used for returning the value when *ExprToMinimize* is minimum. Use a wildcard (*) to return all columns of the input table. |
+| *ExprToMinimize*| string | &check; | The expression used for aggregation calculation. |
+| *ExprToReturn* | string | &check; | The expression used for returning the value when *ExprToMinimize* is minimum. Use a wildcard (*) to return all columns of the input table. |
   
 ## Null handling
 
@@ -34,20 +34,14 @@ Returns a row in the group that minimizes *ExprToMinimize*, and the value of *Ex
 
 ## Examples
 
-The following examples demonstrate how to use this function.
-
-**Example 1**
-
 Find the minimum latitude of a storm event in each state.
 
-[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuCqUSguzc1NLMqsSlVILEqPz83M03BKTc/M80ks0VGAsPKTE0sy8/M0FZIqFYJLEktSASw9sGhCAAAA)
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuCqUSguzc1NLMqsSlVILEqPz83M03BKTc/M80ks0VGAsPKTE0sy8/M0FZIqFYJLEktSASw9sGhCAAAA)
 
 ```kusto
 StormEvents 
 | summarize arg_min(BeginLat, BeginLocation) by State
 ```
-
-**Results**
 
 The results table shown includes only the first 10 rows.
 
@@ -65,19 +59,15 @@ The results table shown includes only the first 10 rows.
 | OHIO           | 38.42    | SOUTH PT      |
 | ... | ... | ... |
 
-**Example 2**
-
 Find the first time an event with a direct death happened in each state showing all of the columns.
 
-[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVcElNLMkodsksSk0uUbBTMABKFJfm5iYWZValKiQWpcfnZuZpBJckFpWEZOam6ihoaSokVSoABUpSAdlWy7VPAAAA)
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVcElNLMkodsksSk0uUbBTMABKFJfm5iYWZValKiQWpcfnZuZpBJckFpWEZOam6ihoaSokVSoABUpSAdlWy7VPAAAA)
 
 ```kusto
 StormEvents
 | where DeathsDirect > 0
 | summarize arg_min(StartTime, *) by State
 ```
-
-**Results**
 
 The results table shown includes only the first 10 rows and first 3 columns.
 
@@ -95,11 +85,9 @@ The results table shown includes only the first 10 rows and first 3 columns.
 | ARKANSAS   | 2007-01-14T03:00:00Z | 2007-01-14T03:00:00Z | ... |
 | ... | ... | ... | ... |
 
-**Example 3**
-
 The following example demonstrates null handling.
 
-[**Click to run query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/new-free-database?query=H4sIAAAAAAAAA31PwQrCMAy97ytCT530osfdnKBX8SCIiHQsjEKWjrRjKH68nWwoguYdkry8l5DaxoSKUG+ld7GAEMVxY2Djycu7PaIE57kAxzGHcwYp1LrrCJUBdcA6paX5oneCyKlIHs09UT4JSssJo+KERH74K/m1ZI9WxnkpfuCP6zM/+1Ymu2QPCH3bWnF3BCvNtXWsp5cMLHKobvD6/wlU5dHuDwEAAA==)
+[**Run the query**](https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/new-free-database?query=H4sIAAAAAAAAA31PwQrCMAy97ytCT530osfdnKBX8SCIiHQsjEKWjrRjKH68nWwoguYdkry8l5DaxoSKUG+ld7GAEMVxY2Djycu7PaIE57kAxzGHcwYp1LrrCJUBdcA6paX5oneCyKlIHs09UT4JSssJo+KERH74K/m1ZI9WxnkpfuCP6zM/+1Ymu2QPCH3bWnF3BCvNtXWsp5cMLHKobvD6/wlU5dHuDwEAAA==)
 
 ```kusto
 datatable(Fruit: string, Color: string, Version: int) [
@@ -112,8 +100,6 @@ datatable(Fruit: string, Color: string, Version: int) [
 ]
 | summarize arg_min(Version, *) by Fruit
 ```
-
-**Results**
 
 | Fruit | Version | Color |
 |--|--|--|

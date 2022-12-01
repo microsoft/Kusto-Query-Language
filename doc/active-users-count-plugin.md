@@ -3,17 +3,13 @@ title: active_users_count plugin - Azure Data Explorer
 description: Learn how to use the active_users_count plugin to calculate the distinct count of values that appeared in a minimum number of periods in a lookback period.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/20/2022
 ---
 # active_users_count plugin
 
 Calculates distinct count of values, where each value has appeared in at least a minimum number of periods in a lookback period.
 
 Useful for calculating distinct counts of "fans" only, while not including appearances of "non-fans". A user is counted as a "fan" only if it was active during the lookback period. The lookback period is only used to determine whether a user is considered `active` ("fan") or not. The aggregation itself doesn't include users from the lookback window. In comparison, the [sliding_window_counts](sliding-window-counts-plugin.md) aggregation is performed over a sliding window of the lookback period.
-
-```kusto
-T | evaluate active_users_count(id, datetime_column, startofday(ago(30d)), startofday(now()), 7d, 1d, 2, 7d, dim1, dim2, dim3)
-```
 
 ## Syntax
 
@@ -23,16 +19,16 @@ T | evaluate active_users_count(id, datetime_column, startofday(ago(30d)), start
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |
-| *T* | tabular expression | &check; | The input tabular expression.|
+| *T* | string | &check; | The tabular input used to count active users.|
 | *IdColumn* | string | &check; | The name of the column with ID values that represent user activity. |
 | *TimelineColumn* | string | &check; | The name of the column that represents timeline. |
-| *Start* | datetime |  &check;  | Scalar with value of the analysis start period. |
-| *End* | datetime | &check; | Scalar with value of the analysis end period. |
-| *LookbackWindow* | timespan | &check; | A sliding time window defining a period where user appearance is checked. Lookback period starts at ([current appearance] - [lookback window]) and ends on ([current appearance]). |
-| *Period* | timespan | &check; | Scalar constant timespan to count as single appearance (a user will be counted as active if it appears in at least distinct ActivePeriodsCount of this timespan. |
-| *ActivePeriodsCount* | decimal | &check; | Minimal number of distinct active periods to decide if user is active. Active users are those users who appeared in at least (equal or greater than) active periods count. |
-| *Bin* | decimal/datetime/timespan | &check; | Scalar constant value of the analysis step period. Can be a numeric/datetime/timestamp value, or a string that is `week`/`month`/`year`. All periods will be the corresponding [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md)/[startofyear](startofyearfunction.md) functions. |
-| *dim1*, *dim2*, ... | dynamic |   | List of the dimensions columns that slice the activity metrics calculation. |
+| *Start* | datetime |  &check;  | The analysis start period. |
+| *End* | datetime | &check; | The analysis end period. |
+| *LookbackWindow* | timespan | &check; | The time window defining a period where user appearance is checked. The lookback period starts at ([current appearance] - [lookback window]) and ends on ([current appearance]). |
+| *Period* | timespan | &check; | A constant to count as single appearance (a user will be counted as active if it appears in at least distinct ActivePeriodsCount of this timespan. |
+| *ActivePeriodsCount* | decimal | &check; | The minimal number of distinct active periods to decide if user is active. Active users are those users who appeared in at least (equal or greater than) active periods count. |
+| *Bin* | decimal, datetime, or timespan | &check; | A constant value of the analysis step period. May also be a string of `week`, `month`, or `year`. All periods will be the corresponding [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), or[startofyear](startofyearfunction.md) functions. |
+| *dim1*, *dim2*, ... | dynamic |   | An array of the dimensions columns that slice the activity metrics calculation. |
 
 ## Returns
 
@@ -47,6 +43,8 @@ Output table schema is:
 ## Examples
 
 Calculate weekly number of distinct users that appeared in at least three different days over a period of prior eight days. Period of analysis: July 2018.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42SwWvCMBTG74X+Dw9PFlJI0rJWhweF3XYYWNlhDIltGMGaSJO6y/74vdZWNlFMcnrv/ZJ85Ptq6WDtRONgAZVw0qmDnHLK8phmMWXRcxjUiLzo6haQXIBXY/Y7Ue7fla7MN7J5NUzeZKNMd5qNnWXp1Eme+xYHydBfKY1VNmIFFt2TuHe1nG6sbObWNUp/EShQhXXicJyPmqIw+AgDwDVZTQj060rvU8xnEXkIJfQCLe9A+DX84U0IpT5Q7vEc89HEUh8o84A49RDOU/zzTzSrgB+QJ1G3SIDozd226JbdlqbVrnfuj2XkHDjShYpcBYcMcSH/Q0K6bES/nOHnRKwCAAA=)
 
 ```kusto
 let Start = datetime(2018-07-01);
@@ -71,7 +69,7 @@ let T =  datatable(User:string, Timestamp:datetime)
 T | evaluate active_users_count(User, Timestamp, Start, End, LookbackWindow, Period, ActivePeriods, Bin)
 ```
 
-|Timestamp|`dcount`|
+|Timestamp|dcount|
 |---|---|
 |2018-07-01 00:00:00.0000000|1|
 |2018-07-15 00:00:00.0000000|1|

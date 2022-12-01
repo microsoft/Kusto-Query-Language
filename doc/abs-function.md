@@ -3,7 +3,7 @@ title: abs() - Azure Data Explorer
 description: Learn how to use the function abs() to calculate the absolute value of an input.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/20/2022
 ---
 # abs()
 
@@ -21,4 +21,16 @@ Calculates the absolute value of the input.
 
 ## Returns
 
-* Absolute value of x.
+Absolute value of x.
+
+## Example
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUhMKtbQNdUEADsyYK4NAAAA)
+
+```kusto
+abs(-5)
+```
+
+|Result|
+|------|
+|5|

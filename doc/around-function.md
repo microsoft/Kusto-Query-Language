@@ -3,7 +3,7 @@ title: around() function - Azure Data Explorer
 description: Learn how to use the around() function to indicate if the first argument is within a range around the center value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 11/20/2022
 ---
 # around()
 
@@ -17,9 +17,9 @@ Creates a `bool` value indicating if the first argument is within a range around
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*value*| scalar | &check; | A number, date, or [timespan](scalar-data-types/timespan.md) that is evaluated.|
-| *center* | scalar | &check; | A number, date, or [timespan](scalar-data-types/timespan.md) representing the center of the range defined as [(`center`-`delta`) .. (`center` + `delta`)]. |
-| *delta* | scalar| &check; | A number, or [timespan](scalar-data-types/timespan.md) representing the delta value of the range defined as [(`center`-`delta`) .. (`center` + `delta`)].|
+|*value*| int, long, real, datetime, or timespan | &check; | The value to compare to the *center*.|
+| *center* | int, long, real, datetime, or timespan | &check; | The center of the range defined as [(`center`-`delta`) .. (`center` + `delta`)]. |
+| *delta* | int, long, real, datetime, or timespan | &check; | The delta value of the range defined as [(`center`-`delta`) .. (`center` + `delta`)].|
 
 ## Returns
 
@@ -30,7 +30,7 @@ Returns `null` if any of the arguments is `null`.
 
 The following example filters rows around specific timestamp.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAytKzEtPVUgpUeBSAIK0ovxchZTEktSSzNxUDSMDI0NdAxBSMDC0MjDQhCgqyceuxAihpLgktUDBMDczj6tGoTwjtShVIbEovzQvRSOlRAeX+cYGmjpgPZoA56xhi5QAAAA=)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAytKzEtPVUgpUeBSAIK0ovxchZTEktSSzNxUDSMDI0NdAxBSMDC0MjDQhCgqyceuxAihpLgktUDBMDczj6tGoTwjtShVIbEovzQvRSOlRAeX+cYGmjpgPZoA56xhi5QAAAA=)
 
 ```kusto
 range dt 
@@ -39,8 +39,6 @@ range dt
     step 1min
 | where around(dt, datetime(2021-01-01 01:30), 1min)
 ```
-
-**Results**
 
 |dt|
 |---|

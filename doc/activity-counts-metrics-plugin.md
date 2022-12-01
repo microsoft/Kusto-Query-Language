@@ -3,7 +3,7 @@ title: activity_counts_metrics plugin - Azure Data Explorer
 description: Learn how to use the activity_counts_metrics plugin to compare activity metrics in different time windows.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/20/2022
 ---
 # activity_counts_metrics plugin
 
@@ -21,13 +21,13 @@ T | evaluate activity_counts_metrics(id, datetime_column, startofday(ago(30d)), 
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |
-| *T* | tabular expression | &check; | The input tabular expression. |
+| *T* | string | &check; | The tabular input used to count activities. |
 | *IdColumn* | string | &check; | The name of the column with ID values that represent user activity. |
 | *TimelineColumn* | string | &check; | The name of the column that represents the timeline. |
-| *Start* | datetime | &check; | Scalar with value of the analysis start period. |
-| *End* | datetime | &check; | Scalar with value of the analysis end period. |
-| *Window* | decimal/datetime/timespan | &check; | Scalar with value of the analysis window period. Can be either a numeric/datetime/timestamp value, or a string that is one of `week`/`month`/`year`, in which case all periods will be [startofweek](startofweekfunction.md)/[startofmonth](startofmonthfunction.md) or [startofyear](startofyearfunction.md). |
-|  *dim1*, *dim2*, ... | dynamic |   | list of the dimensions columns that slice the activity metrics calculation. |
+| *Start* | datetime | &check; | The analysis start period. |
+| *End* | datetime | &check; | The analysis end period. |
+| *LoockbackWindow* | decimal, datetime, or timespan | &check; | The analysis window period. The value may also be a string of `week`, `month`, or `year`, in which case all periods would be [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), or [startofyear](startofyearfunction.md). |
+|  *dim1*, *dim2*, ... | dynamic |   | An array of the dimensions columns that slice the activity metrics calculation. |
 
 ## Returns
 
@@ -49,9 +49,10 @@ Output table schema is:
 
 ### Daily activity counts
 
-The next query calculates daily activity counts for the provided input table
+The next query calculates daily activity counts for the provided input table.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5XSzwuCMBQH8Lvg/7CbCQs0g6Lw0I9DdW2dImS5EYOp4V5J0B/fKxU6jEUMD+PzeG/yfVoCMcBrSAUHCaqQg1EUT4bRdBjF4dz3NBbIUlh43HOjSlE1aSy6OyMpwXI8Zy0HByPrrZgZqFV5oYRhDxxYXGd9x9D3jr4XLAJKbG+gaGuH7Ry2dNjKaqOPMYfZ57W2sVri6Pnb7PMSx/+1tv/bxm87YYiE4fck8s71DasIz0HdFTyyvLqVYLJCYpi56aL9ypS2u0TfG0O7vQhfyOSsfmMCAAA=)
+
 ```kusto
 let start=datetime(2017-08-01);
 let end=datetime(2017-08-04);

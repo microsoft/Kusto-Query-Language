@@ -3,15 +3,11 @@ title: activity_metrics plugin - Azure Data Explorer
 description: Learn how to use the activity_metrics plugin to calculate activity metrics using the current time window compared to the previous window.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 11/20/2022
 ---
 # activity_metrics plugin
 
 Calculates useful metrics that include distinct count values, distinct count of new values, retention rate, and churn rate. This plugin is different from [activity_counts_metrics plugin](activity-counts-metrics-plugin.md) in which every time window is compared to *all* previous time windows.
-
-```kusto
-T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startofday(now()), 1d, dim1, dim2, dim3)
-```
 
 ## Syntax
 
@@ -21,13 +17,13 @@ T | evaluate activity_metrics(id, datetime_column, startofday(ago(30d)), startof
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *T* | tabular expression | &check; | The input tabular expression. |
+| *T* | string | &check; | The input used to calculate activity metrics. |
 | *IdCoumn* | string | &check; | The name of the column with ID values that represent user activity. |
 | *TimelineColumn* | string | &check; | The name of the column that represents timeline. |
-| *Start* | datetime |  | Value of the analysis start period. |
-| *End* | datetime |  | Value of the analysis end period. |
-| *Window* | decimal/datetime/timespan | &check; | Value of the analysis window period. Can be either a numeric, datetime, timestamp, or string value. Strings are either `week`, `month`, or `year`, in which case all periods will be [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), or [startofyear](startofyearfunction.md) respectively. |
-| *dim1*, *dim2*, ... | table array |  | List of the dimensions columns that slice the activity metrics calculation. |
+| *Start* | datetime | &check; | The analysis start period. |
+| *End* | datetime | &check; | The analysis end period. |
+| *Step* | decimal, datetime, or timespan | &check; | The analysis window period. This value may also be a string of `week`, `month`, or `year`, in which case all periods will be [startofweek](startofweekfunction.md), [startofmonth](startofmonthfunction.md), or [startofyear](startofyearfunction.md) respectively. |
+| *dim1*, *dim2*, ... | dynamic |  | An array of the dimensions columns that slice the activity metrics calculation. |
 
 ## Returns
 
@@ -86,7 +82,8 @@ The churn vs. retention Rate is derived from the definition of `Churn Rate` and 
 
 The next query calculates retention and churn rate for week-over-week window.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRy26EIBTdm/gPdzc4g1FsJrNoXPcjmsYQuc7QqBi4mjHpxxeQxTRlQeDmPDiHqoIPnNFKQrByVmYCJUmCGWB1aEH2pDdNGl2ejUjQOZKWoA0oJD0ha2pxK2tR1k3xnjA4q/+Ia/kmAsK73BE6JXcYrLdLimQOHjjCBYTKsx/AJ4VRECMzmvnOWOSViVRUQhUvQOuBIQQrLuJl3IUkro3GLAmp87U+24LDn/ulqf1eCj8XUXjaSnwuXhK0ag+d8FLaFzQDC8wCRj1pAlHHlWdVFa03Oa6h1FTg3k1IVveOfZ60On3x2ABPQXjMzuF2xFms+caeEsSiT0HazF34JQ79Y7XHOWCtJ/p/CkX3Dy/1C38j6lLRAQAA)
+
 ```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
@@ -133,7 +130,8 @@ range _day from _start to _end  step 1d
 
 The next query calculates distinct values and 'new' values (IDs that didn't appear in previous time window) for week-over-week window.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRTWuEMBC9C/6HuW3cVTSWZQ/Fc39EKRLM7DaLJpKMdoX++CYxlC3NITCP95E3qWt4Q41WEIIVWpoJpCAB5gqLQwtiILUqUujybESC3pGwBF1gIakJWdvwS9XwqmmL18RBLf8zztULDwyfckPopdjgan1cciSz68ARzsBlnn0DPihAwYzMaPSNsairkqiouSyeiNYTQwlWnPgT3IcmrovBLBnJ47k52qKEP/OpbfxdcY/zaDytFT5mbwlKdrtPeCltM5orC8oCRjUpAt7Ek2d1HaNXMS5hqWmBWz8hWTU49n5Q8vBRxg2UqUgZu5dw2evM1txxoESRg1k09cEQ3e+o8WtHgsB6tf+ssO3h0/v9ADoJzJ7WAQAA)
+
 ```kusto
 // Generate random data of user activities
 let _start = datetime(2017-01-02);
