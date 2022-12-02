@@ -1,13 +1,13 @@
 ---
 title: count_distinctif() (aggregation function) - Azure Data Explorer - (preview)
-description: This article describes count_distinctif() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the count_distinctif() function to count unique values of a scalar expression in records for which the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/03/2022
+ms.date: 11/20/2022
 ---
 # count_distinctif() (aggregation function) - (preview)
 
-Conditionally counts unique values specified by the scalar expression per summary group, or the total number of unique values if the summary group is omitted. Only records for which *Predicate* evaluates to `true` are counted.
+Conditionally counts unique values specified by a scalar expression per summary group in records for which the *Predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -29,7 +29,7 @@ If you only need an estimation of unique values count, we recommend using the le
 
 ## Returns
 
-Long integer value indicating the number of unique values of *`Expr`* per summary group, for all records for which the *Predicate* evaluates to `true`.
+Long integer value indicating the number of unique values of *`Expr`* per summary group in records for which the *Predicate* evaluates to `true`.
 
 ## Example
 

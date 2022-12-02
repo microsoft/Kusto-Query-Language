@@ -3,13 +3,12 @@ title: iif() - Azure Data Explorer
 description: This article describes iif() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/27/2022
 ---
 # iif()
 
-Evaluates the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to `true` (second) or `false` (third).
-
-The second and third arguments must be of the same type.
+Returns the value of *ifTrue* if *predicate* evaluates to `true`,
+or the value of *ifFalse* otherwise.
 
 ## Syntax
 
