@@ -933,8 +933,212 @@ namespace Kusto.Language.Editor
                 return mode;
 
             mode = GetSetOptionCompletions(position, contextNode, childIndex, builder);
+            if (mode == CompletionMode.Isolated)
+                return mode;
+
+            mode = GetColumnExampleCompletions(position, contextNode, childIndex, builder);
 
             return mode;
+        }
+
+        private CompletionMode GetColumnExampleCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
+        {
+            if (contextNode is BinaryExpression be 
+                && IsEqualityExpression(contextNode.Kind)
+                && childIndex == 2
+                && be.Left.ReferencedSymbol is ColumnSymbol col
+                && col.Examples.Count > 0)
+            {
+                AddColumnExamples(builder, col);
+            }
+            else
+            {
+                if (contextNode is SyntaxList<SeparatedElement<Expression>> list)
+                {
+                    contextNode = list.Parent;
+                }
+
+                if (contextNode is ExpressionList exprList
+                    && exprList.Parent is InExpression inOp
+                    && inOp.Left.ReferencedSymbol is ColumnSymbol inCol
+                    && inCol.Examples.Count > 0)
+                {
+                    AddColumnExamples(builder, inCol);
+                }
+            }
+
+            // TODO: check for in operator too
+
+            return CompletionMode.Combined;
+        }
+
+        private static bool IsEqualityExpression(SyntaxKind kind) =>
+            kind == SyntaxKind.EqualExpression
+            || kind == SyntaxKind.EqualTildeExpression
+            || kind == SyntaxKind.NotEqualExpression;
+
+        private static void AddColumnExamples(CompletionBuilder builder, ColumnSymbol column)
+        {
+            foreach (var example in column.Examples)
+            {
+                builder.Add(CreateColumnExampleCompletion(example, column.Type));
+            }
+        }
+
+        private static CompletionItem CreateColumnExampleCompletion(string example, TypeSymbol type)
+        {
+            var displayText = example;
+            var editText = example;
+            var matchText = example;
+
+            // fix example is it was not supplied as a quoted string literal
+            if (type == ScalarTypes.String)
+            {
+                if (TokenParser.ScanStringLiteral(example) == example.Length)
+                {
+                    displayText = matchText = KustoFacts.GetStringLiteralValue(example);
+                }
+                else
+                {
+                    editText = KustoFacts.GetStringLiteral(example);
+                }
+            }
+            else if (type == ScalarTypes.Bool)
+            {
+                if (example.StartsWith("bool("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+
+                    if (TokenParser.ScanBooleanLiteral(displayText) == displayText.Length)
+                    {
+                        editText = displayText;
+                    }
+                }
+                else if (TokenParser.ScanBooleanLiteral(example) != example.Length)
+                {
+                    editText = "bool(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Int)
+            {
+                if (example.StartsWith("int("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+                }
+                else
+                {
+                    editText = "int(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Long)
+            {
+                if (example.StartsWith("long("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+
+                    if (TokenParser.ScanLongLiteral(displayText) == displayText.Length)
+                    {
+                        editText = displayText;
+                    }
+                }
+                else if (TokenParser.ScanLongLiteral(example) != example.Length)
+                {
+                    editText = "long(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Real)
+            {
+                if (example.StartsWith("real(") || example.StartsWith("double("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+
+                    if (TokenParser.ScanRealLiteral(displayText) == displayText.Length)
+                    {
+                        editText = displayText;
+                    }
+                }
+                else if (TokenParser.ScanRealLiteral(example) != example.Length)
+                {
+                    editText = "real(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Decimal)
+            {
+                if (example.StartsWith("decimal("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+                }
+                else
+                {
+                    editText = "decimal(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.TimeSpan)
+            {
+                if (example.StartsWith("timespan(") || example.StartsWith("time("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+
+                    if (TokenParser.ScanTimespanLiteral(displayText) == displayText.Length)
+                    {
+                        editText = displayText;
+                    }
+                }
+                else if (TokenParser.ScanTimespanLiteral(example) != example.Length)
+                {
+                    editText = "timespan(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.DateTime)
+            {
+                if (example.StartsWith("datetime(") || example.StartsWith("date("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+                }
+                else
+                {
+                    editText = "datetime(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Guid)
+            {
+                if (example.StartsWith("guid("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+                }
+                else
+                {
+                    editText = "guid(" + example + ")";
+                }
+            }
+            else if (type == ScalarTypes.Dynamic)
+            {
+                if (example.StartsWith("dynamic("))
+                {
+                    displayText = matchText = GetGooLiteralContent(example);
+                }
+                else
+                {
+                    editText = "dynamic(" + example + ")";
+                }
+            }
+
+            return new CompletionItem(CompletionKind.Example, displayText, editText, matchText: matchText);
+        }
+
+        private static string GetGooLiteralContent(string literal)
+        {
+            var openParenIndex = literal.IndexOf('(');
+            var closeParenIndex = literal.LastIndexOf(')');
+
+            if (openParenIndex >= 0 && closeParenIndex >= 0)
+            {
+                return literal.Substring(openParenIndex + 1, closeParenIndex - openParenIndex - 1);
+            }
+            else
+            {
+                return literal;
+            }
         }
 
         private CompletionMode GetSetOptionCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)

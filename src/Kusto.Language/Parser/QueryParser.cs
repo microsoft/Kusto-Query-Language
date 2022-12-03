@@ -2152,12 +2152,10 @@ namespace Kusto.Language.Parsing
             }
 
             var expr = ParseUnaryPlusOrMinusExpression();
-            if (expr != null)
+            if (expr != null 
+                && GetStringOperationKind(PeekToken().Kind) is SyntaxKind opKind && opKind != SyntaxKind.None)
             {
-                while (GetStringOperationKind(PeekToken().Kind) is SyntaxKind opKind && opKind != SyntaxKind.None)
-                {
-                    expr = new BinaryExpression(opKind, expr, ParseToken(), ParseUnaryPlusOrMinusExpression() ?? CreateMissingExpression());
-                }
+                expr = new BinaryExpression(opKind, expr, ParseToken(), ParseUnaryPlusOrMinusExpression() ?? CreateMissingExpression());
             }
 
             return expr;

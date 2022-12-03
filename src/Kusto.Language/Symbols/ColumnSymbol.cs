@@ -35,6 +35,11 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public SyntaxNode Source { get; }
 
+        /// <summary>
+        /// Example values used in intellisense completion lists.
+        /// </summary>
+        public IReadOnlyList<string> Examples { get; }
+
         public override SymbolKind Kind => SymbolKind.Column;
 
         public ColumnSymbol(
@@ -42,7 +47,8 @@ namespace Kusto.Language.Symbols
             TypeSymbol type, 
             string description = null, 
             IReadOnlyList<ColumnSymbol> originalColumns = null,
-            SyntaxNode source = null)
+            SyntaxNode source = null,
+            IReadOnlyList<string> examples = null)
             : base(name)
         {
             this.Type = type ?? throw new ArgumentNullException(nameof(type));
@@ -58,6 +64,8 @@ namespace Kusto.Language.Symbols
             }
 
             this.Source = source;
+
+            this.Examples = examples.ToReadOnly();
         }
 
         /// <summary>
@@ -87,18 +95,43 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => Tabularity.Scalar;
 
         /// <summary>
+        /// Create a new instance of <see cref="ColumnSymbol"/> if any of the specified values
+        /// differs from current values.
+        /// </summary>
+        private ColumnSymbol With(
+            Optional<string> name = default,
+            Optional<TypeSymbol> type = default,
+            Optional<string> description = default,
+            Optional<IReadOnlyList<ColumnSymbol>> originalColumns = default,
+            Optional<SyntaxNode> source = default,
+            Optional<IReadOnlyList<string>> examples = default)
+        {
+            var newName = name.HasValue ? name.Value : this.Name;
+            var newType = type.HasValue ? type.Value : this.Type;
+            var newDesc = description.HasValue ? description.Value : this.Description;
+            var newOC = originalColumns.HasValue ? originalColumns.Value : this.OriginalColumns;
+            var newSource = source.HasValue ? source.Value : this.Source;
+            var newExamples = examples.HasValue ? examples.Value : this.Examples;
+
+            if (newName != this.Name
+                || newType != this.Type
+                || newDesc != this.Description
+                || newOC != this.OriginalColumns
+                || newSource != this.Source
+                || newExamples != this.Examples)
+            {
+                return new ColumnSymbol(newName, newType, newDesc, newOC, newSource, newExamples);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Returns a <see cref="ColumnSymbol"/> with the name specified.
         /// </summary>
         public ColumnSymbol WithName(string name)
         {
-            if (name != this.Name)
-            {
-                return new ColumnSymbol(name, this.Type, this.Description, this.OriginalColumns, this.Source);
-            }
-            else
-            {
-                return this;
-            }
+            return With(name: name);
         }
 
         /// <summary>
@@ -106,14 +139,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ColumnSymbol WithType(TypeSymbol type)
         {
-            if (type != this.Type)
-            {
-                return new ColumnSymbol(this.Name, type, this.Description, this.OriginalColumns, this.Source);
-            }
-            else
-            {
-                return this;
-            }
+            return With(type: type);
         }
 
         /// <summary>
@@ -121,14 +147,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ColumnSymbol WithDescription(string description)
         {
-            if (description != this.Description)
-            {
-                return new ColumnSymbol(this.Name, this.Type, description, this.OriginalColumns, this.Source);
-            }
-            else
-            {
-                return this;
-            }
+            return With(description: description);
         }
 
         /// <summary>
@@ -136,14 +155,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ColumnSymbol WithOriginalColumns(IReadOnlyList<ColumnSymbol> originalColumns)
         {
-            if (this.OriginalColumns != originalColumns)
-            {
-                return new ColumnSymbol(this.Name, this.Type, this.Description, originalColumns, this.Source);
-            }
-            else
-            {
-                return this;
-            }
+            return With(originalColumns: new Optional<IReadOnlyList<ColumnSymbol>>(originalColumns));
         }
 
         /// <summary>
@@ -159,14 +171,15 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ColumnSymbol WithSource(SyntaxNode source)
         {
-            if (this.Source != source)
-            {
-                return new ColumnSymbol(this.Name, this.Type, this.Description, this.OriginalColumns, source);
-            }
-            else
-            {
-                return this;
-            }
+            return With(source: source);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="ColumnSymbol"/> with the specified examples.
+        /// </summary>
+        public ColumnSymbol WithExamples(IReadOnlyList<string> examples)
+        {
+            return With(examples: new Optional<IReadOnlyList<string>>( examples ));
         }
 
         protected override string GetDisplay() =>

@@ -375,6 +375,10 @@ namespace Kusto.Language.Parsing
         private static readonly SubstringMap<SyntaxKind> s_literalValueMap =
             new SubstringMap<SyntaxKind>(s_booleanValues.Select(v => new KeyValuePair<string, SyntaxKind>(v, SyntaxKind.BooleanLiteralToken)));
 
+        /// <summary>
+        /// Scans raw boolean literals: true or false.
+        /// Does not scan bool(xxx).
+        /// </summary>
         public static int ScanBooleanLiteral(string text, int start = 0)
         {
             var literalMatch = s_literalValueMap.GetLongestMatch(text, start);
@@ -663,7 +667,11 @@ namespace Kusto.Language.Parsing
             return pos > start ? pos - start : -1;
         }
 
-        private static int ScanLongLiteral(string text, int start)
+        /// <summary>
+        /// Scans raw long literal values. 
+        /// Does not scan long(xxx).
+        /// </summary>
+        public static int ScanLongLiteral(string text, int start = 0)
         {
             var hexLen = ScanHexIntegerLiteral(text, start);
             if (hexLen > 0)
@@ -693,7 +701,11 @@ namespace Kusto.Language.Parsing
             return pos > start ? pos - start : -1;
         }
 
-        private static int ScanRealLiteral(string text, int start)
+        /// <summary>
+        /// Scans raw real literals: 1.0, etc.
+        /// Does not scan real(xxx).
+        /// </summary>
+        public static int ScanRealLiteral(string text, int start = 0)
         {
             var digitLen = ScanDigits(text, start);
             if (digitLen <= 0)
@@ -724,6 +736,10 @@ namespace Kusto.Language.Parsing
             return pos > start ? pos - start : -1;
         }
 
+        /// <summary>
+        /// Scans raw timespan literals, 1day, etc.
+        /// Does not scan timespan(xxx).
+        /// </summary>
         public static int ScanTimespanLiteral(string text, int start = 0)
         {
             var numberLen = ScanDigits(text, start);
@@ -1052,7 +1068,11 @@ namespace Kusto.Language.Parsing
             return pos > start ? pos - start : -1;
         }
 
-        private int ScanRawGuidLiteral(string text, int start)
+        /// <summary>
+        /// Scans raw guid literals only.
+        /// Does not scan guid(xxx) literals.
+        /// </summary>
+        public int ScanRawGuidLiteral(string text, int start)
         {
             if (start + 35 < text.Length
                 && ScanEightHexDigits(text, start) == 8
