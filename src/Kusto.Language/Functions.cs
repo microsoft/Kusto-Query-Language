@@ -2792,6 +2792,20 @@ namespace Kusto.Language
                 new Parameter("dense", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol RowRankMin =
+            new FunctionSymbol("row_rank_min", ScalarTypes.Long,
+                new Parameter("term", ParameterTypeKind.NotDynamic),
+                new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
+        public static readonly FunctionSymbol RowRankDense =
+            new FunctionSymbol("row_rank_dense", ScalarTypes.Long,
+                new Parameter("term", ParameterTypeKind.NotDynamic),
+                new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
+
         public static readonly FunctionSymbol RowWindowSession =
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
                 new Parameter("expr", ScalarTypes.DateTime),
@@ -3311,6 +3325,8 @@ namespace Kusto.Language
             RowNumber,
             RowCumSum,
             RowRank,
+            RowRankDense,
+            RowRankMin,
             RowWindowSession,
             Prev,
             Next,
