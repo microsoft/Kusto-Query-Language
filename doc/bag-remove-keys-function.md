@@ -3,11 +3,11 @@ title: bag_remove_keys() - Azure Data Explorer
 description: Learn how to use the bag_remove_keys() function to remove keys and associated values from property bags. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/03/2022
+ms.date: 11/23/2022
 ---
 # bag_remove_keys()
 
-Removes keys and associated values from a `dynamic` property-bag.
+Removes keys and associated values from a `dynamic` property bag.
 
 ## Syntax
 
@@ -17,16 +17,17 @@ Removes keys and associated values from a `dynamic` property-bag.
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |
-| *bag* | dynamic | &check; | Property-bag input. |
-| *keys* | string | &check; | Array includes keys to be removed from the input. Keys refer to the first level of the property bag. You can specify keys on the nested levels using [JSONPath](jsonpath.md) notation. Array indexing isn't supported. |
+| *bag* | dynamic | &check; | The property bag from which to remove keys. |
+| *keys* | string | &check; | The array keys to be removed from the input. The keys are the first level of the property bag. You can specify keys on the nested levels using [JSONPath](jsonpath.md) notation. Array indexing isn't supported. |
 
 ## Returns
 
-Returns a `dynamic` property-bag without specified keys and their values.
+Returns a `dynamic` property bag without specified keys and their values.
 
-## Example
+## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjcy8gtISq5TKvMTczGRNrmguBSCAcjWq1bNTKw3VFawUDI2MdUAyCiARI3UrBfXEpGT1Wk0dHOrVyxJzSlPVdcDqjYHqTYz0DEDKY7lqFFIrSlLzUhSKUotLc0pskxLT44tSc/PLUuOBaoshLtKBmxkNsRFikol6rKYmAD1YmXe9AAAA)
+
 ```kusto
 datatable(input:dynamic)
 [
@@ -43,7 +44,8 @@ datatable(input:dynamic)
 
 ### Remove inner properties of dynamic values using JSONPath notation
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAz2O3QqDMAyF7/sUuRjEQpFW74Q9iRSpNgyZf2gVnfPd19JtydWXk5wTa5zvuqOkHabVFfYYTN82nJUMfH0xOfFJh8ICVJYLCJB5OHGax0khFICmbtArYRAk3I8XXnE191wqKQVkUuqLC6bZG2h3NFiYaVk7d6/No5qpHzeq/MUSvxH//BJvaQhNY+DPV3P+AU1I1W7BAAAA)
+
 ```kusto
 datatable(input:dynamic)
 [

@@ -12,13 +12,13 @@ Accumulates values using the binary `AND` operation for each summarization group
 
 ## Syntax
 
-`binary_all_and` `(`*Expr*`)`
+`binary_all_and` `(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | long | &check; | A long number used for the binary `AND`  calculation. |
+| *expr* | long | &check; | The value used for the binary `AND`  calculation. |
 
 ## Returns
 
@@ -28,7 +28,7 @@ Returns an aggregated value using the binary `AND` operation over records for ea
 
 The following example produces `CAFEF00D` using binary `AND` operations:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwo3KNBRQHANDNx0wDxniJwLhOfm6OYKVsoVy1WjUFyam5tYlFmVqlCUWlyaU6Jgq1CSX1pQkFqkUZKfkVqhkZSZl1hUGZ+YkxOfmJcCslhTUxMAwZHTS4kAAAA=)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwo3KNBRQHANDNx0wDxniJwLhOfm6OYKVsoVy1WjUFyam5tYlFmVqlCUWlyaU6Jgq1CSX1pQkFqkUZKfkVqhkZSZl1hUGZ+YkxOfmJcCslhTUxMAwZHTS4kAAAA=)
 
 ```kusto
 datatable(num:long)
@@ -40,8 +40,6 @@ datatable(num:long)
 ]
 | summarize result = toupper(tohex(binary_all_and(num)))
 ```
-
-**Results**
 
 |result|
 |---|

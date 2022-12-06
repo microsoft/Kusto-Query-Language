@@ -9,18 +9,17 @@ ms.date: 11/21/2022
 
 Returns a result of the bitwise `or` operation of the two values.
 
-```kusto
-binary_or(x,y)
-```
-
 ## Syntax
 
-`binary_or(`*num1*`,` *num2* `)`
+`binary_or(`*value1*`,` *value2* `)`
 
-## Arguments
+## Parameters
 
-* *num1*, *num2*: long numbers.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *value1* | long | &check; | The left-hand value of the bitwise `OR` operation. |
+| *value2* | long | &check; | The right-hand value of the bitwise `OR` operation. |
 
 ## Returns
 
-Returns logical OR operation on a pair of numbers: num1 | num2.
+Returns logical OR operation on a pair of numbers: value1 | value2.

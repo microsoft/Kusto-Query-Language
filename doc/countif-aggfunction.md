@@ -3,40 +3,40 @@ title: countif() (aggregation function) - Azure Data Explorer
 description: Learn how to use the countif() function to count the rows where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 11/27/2022
 ---
 # countif() (aggregation function)
 
-Counts the rows in which *Predicate* evaluates to `true`.
+Counts the rows in which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`countif` `(`*Predicate*`)`
+`countif` `(`*predicate*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Predicate*|  string | &check; | Expression used for aggregation calculation. *Predicate* can be any scalar expression with a return type of bool (evaluating to true/false).
+| *predicate*|  string | &check; | The expression used for aggregation calculation. The value can be any scalar expression with a return type of bool.
 
 ## Returns
 
-Returns a count of rows in which *Predicate* evaluates to `true`.
+Returns a count of rows in which *predicate* evaluates to `true`.
 
-## Example of counting storms by state
+## Examples
+
+### Count storms by state
 
 This example shows the number of storms with damage to crops by state.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjJL0nMcc4vzSuxTQaRGpo6YKHwzJIMl8TcxPRUiHhmmgaE61yUX1CsYGegqZBUqRBckliSCgAAARcgWwAAAA==)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjJL0nMcc4vzSuxTQaRGpo6YKHwzJIMl8TcxPRUiHhmmgaE61yUX1CsYGegqZBUqRBckliSCgAAARcgWwAAAA==)
 
 ```kusto
 StormEvents
 | summarize TotalCount=count(),TotalWithDamage=countif(DamageCrops >0) by State
 ```
-
-**Results**
 
 The results table shown includes only the first 10 rows.
 
@@ -54,9 +54,11 @@ The results table shown includes only the first 10 rows.
 | NEW YORK             | 1750       | 1               |
 | ... | ... | ... |
 
-## Example of counting based on string length
+### Count based on string length
 
 This example shows the number of names with more than 4 letters.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWNMQvCMBBG9/yKo1MDWRRFregqOIl0EympXtNAcgdpMij+eI+Wb3pv+F7ADC2c4G2zrA9Yk43YTDl5ckb0p+Oh633KYxOYnFYPBQDVlUeqDBzMTDdbgtBqv+AFOTkUsd4u4i5nLLxTz6Nq1Q+mEqNN/ovw4kLZD7UUA9Jc13CGjf4DYumr9poAAAA=)
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)
@@ -69,8 +71,6 @@ let T = datatable(name:string, day_of_birth:long)
 T
 | summarize countif(strlen(name) > 4)
 ```
-
-**Results**
 
 |countif_|
 |----|

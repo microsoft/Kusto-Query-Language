@@ -3,7 +3,7 @@ title: count() (aggregation function) - Azure Data Explorer
 description: Learn how to use the count() function to count the number of records in a group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # count() (aggregation function)
 
@@ -15,7 +15,7 @@ Use the [countif](countif-aggfunction.md) aggregation function to count only rec
 
 ## Syntax
 
-`count` `(` `)`
+`count()`
 
 ## Returns
 
@@ -25,9 +25,8 @@ Returns a count of the records per summarization group (or in total, if summariz
 
 This example returns a count of events in states starting with letter `W`:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVKC5JLCopLs8syVBQClcCShaX5uYmFmVWpSo455fmldgmg0gNTYWkSogOAJStyvpLAAAA)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVKC5JLCopLs8syVBQClcCShaX5uYmFmVWpSo455fmldgmg0gNTYWkSogOAJStyvpLAAAA)**\]**
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | where State startswith "W"

@@ -13,13 +13,13 @@ Accumulates values using the binary `OR` operation for each summarization group,
 
 ## Syntax
 
-`binary_all_or` `(`*Expr*`)`
+`binary_all_or` `(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | long | &check; | A long number used for the binary `AND`  calculation. |
+| *expr* | long | &check; | The value used for the binary `OR`  calculation. |
 
 ## Returns
 
@@ -29,7 +29,7 @@ Returns an aggregated value using the binary `OR` operation over records for eac
 
 The following example produces `CAFEF00D` using binary `OR` operations:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwoLEDAwsNAB80yMDMAAwjMwMDczR+KBgamOAlcsV41CcWlubmJRZlWqQlFqcWlOiYKtQkl+aUFBapFGSX5GaoVGUmZeYlFlfGJOTnx+EcheTU1NAEGLHNSIAAAA)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwoLEDAwsNAB80yMDMAAwjMwMDczR+KBgamOAlcsV41CcWlubmJRZlWqQlFqcWlOiYKtQkl+aUFBapFGSX5GaoVGUmZeYlFlfGJOTnx+EcheTU1NAEGLHNSIAAAA)
 
 ```kusto
 datatable(num:long)
@@ -41,8 +41,6 @@ datatable(num:long)
 ]
 | summarize result = toupper(tohex(binary_all_or(num)))
 ```
-
-**Results**
 
 |result|
 |---|

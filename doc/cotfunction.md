@@ -3,7 +3,7 @@ title: cot() - Azure Data Explorer
 description: Learn how to use the cot() function to calculate the trigonometric cotangent of the specified angle in radians.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # cot()
 
@@ -11,12 +11,26 @@ Calculates the trigonometric cotangent of the specified angle, in radians.
 
 ## Syntax
 
-`cot(`*x*`)`
+`cot(`*number*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A real number.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *number* | real | &check; | The value for which to calculate the cotangent. |
 
 ## Returns
 
-* The cotangent function value for `x`
+The cotangent function value for *number*.
+
+## Example
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUjOL9Ew1AQA9l3LZAwAAAA=)
+
+```kusto
+print cot(1)
+```
+
+|result|
+|--|
+|0.64209261593433065|

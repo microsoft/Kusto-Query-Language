@@ -3,7 +3,7 @@ title: count_distinct() (aggregation function) - Azure Data Explorer - (preview)
 description: Learn how to use the count_distinct() (aggregation function) to count unique values specified by a scalar expression per summary group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/18/2022
+ms.date: 11/27/2022
 ---
 # count_distinct() (aggregation function) - (preview)
 
@@ -20,29 +20,29 @@ To count only records for which a predicate returns `true`, use the [count_disti
 
 ## Syntax
 
-`count_distinct` `(`*Expr*`)`
+`count_distinct` `(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr*| scalar | &check; | A scalar expression whose unique values are to be counted. |
+| *expr*| scalar | &check; | The expression whose unique values are to be counted. |
 
 ## Returns
 
-Long integer value indicating the number of unique values of *Expr* per summary group.
+Long integer value indicating the number of unique values of *expr* per summary group.
 
 ## Example
 
 This example shows how many types of storm events happened in each state.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjNyywsTYVI2Cbnl+aVxKdkFpdk5iWXaIBFQyoLUjUVkioVgksSS1KBekvyCxRMQQLIWgE/wdUFXwAAAA==)
 
 ```kusto
 StormEvents
 | summarize UniqueEvents=count_distinct(EventType) by State
 | top 5 by UniqueEvents
 ```
-
-**Results**
 
 | State                | UniqueEvents  |
 | -------------------- | ------------- |

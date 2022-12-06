@@ -3,7 +3,7 @@ title: cosmosdb_sql_request plugin - Azure Data Explorer
 description: Learn how to use the cosmosdb_sql_request plugin to send a SQL query to an Azure Cosmos DB SQL network endpoint to query small datasets.
 ms.reviewer: miwalia
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -17,19 +17,23 @@ The `cosmosdb_sql_request` plugin sends a SQL query to an Azure Cosmos DB SQL ne
 
 `evaluate` `cosmosdb_sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)` [`:` *OutputSchema*]
 
-## Arguments
+## Parameters
 
-|Argument name | Description | Required/optional |
-|---|---|---|
-| *ConnectionString* | A `string` literal indicating the connection string that points to the Azure Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'`| Required |
-| *SqlQuery*| A `string` literal indicating the query to execute. | Required |
-| *SqlParameters* | A constant value of type `dynamic` that holds key-value pairs to pass as parameters along with the query. Parameter names must begin with `@`. | Optional |
-| *OutputSchema* | The names and types of the expected columns of the `cosmosdb_sql_request` plugin output. Use the following syntax: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)` <br><br> Specifying this argument enables multiple query optimizations. | Optional; recommended. |
-| *Options* | A constant value of type `dynamic` that holds more advanced settings as key-value pairs. | Optional |
-|| ----*Supported Options settings include:*-----
-|      `armResourceId` | Retrieve the API key from the Azure Resource Manager <br> **Example:** `/subscriptions/a0cd6542-7eaf-43d2-bbdd-b678a869aad1/resourceGroups/ cosmoddbresourcegrouput/providers/Microsoft.DocumentDb/databaseAccounts/cosmosdbacc`|
-|  `token` | Provide the Azure AD access token used to authenticate with the Azure Resource Manager.
-| `preferredLocations` | Control which region the data is queried from. <br> **Example:** `['East US']` | |
+| Name | Type | Required | Description |
+|---|---|---|---|
+| *ConnectionString* | string | &check; | The connection string that points to the Azure Cosmos DB collection to query. It must include *AccountEndpoint*, *Database*, and *Collection*. It may include *AccountKey* if a master key is used for authentication. <br> **Example:** `'AccountEndpoint=https://cosmosdbacc.documents.azure.com/ ;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;'` |
+| *SqlQuery*| string | &check; | The query to execute. |
+| *SqlParameters* | dynamic | | The property bag object to pass as parameters along with the query. Parameter names must begin with `@`. |
+| *OutputSchema* | | | The names and types of the expected columns of the `cosmosdb_sql_request` plugin output. Use the following syntax: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`. Specifying this parameter enables multiple query optimizations. |
+| *Options* | dynamic | | A property bag object that holds more advanced settings. |
+
+Supported *Options* settings include:
+
+|Name|Description|
+|--|--|
+| `armResourceId` | API key from the Azure Resource Manager. </br>**Example:** `/subscriptions/a0cd6542-7eaf-43d2-bbdd-b678a869aad1/resourceGroups/ cosmoddbresourcegrouput/providers/Microsoft.DocumentDb/databaseAccounts/cosmosdbacc` |
+| `token` | Azure AD access token used to authenticate with the Azure Resource Manager.|
+| `preferredLocations` | Which region the data is queried from. </br>**Example:**`['East US']` |
 
 ## Set callout policy
 

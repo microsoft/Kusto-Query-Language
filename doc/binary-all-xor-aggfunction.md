@@ -13,13 +13,13 @@ Accumulates values using the binary `XOR` operation for each summarization group
 
 ## Syntax
 
-`binary_all_xor` `(`*Expr*`)`
+`binary_all_xor` `(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | long | &check; | A long number used for the binary `AND`  calculation. |
+| *expr* | long | &check; | The value used for the binary `XOR`  calculation. |
 
 ## Returns
 
@@ -29,7 +29,7 @@ Returns a value that is aggregated using the binary `XOR` operation over records
 
 The following example produces `CAFEF00D` using binary `XOR` operations:
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwoTExMDENYB8wxdIRDCszRwdHJyNLCE8AwMDJwMDUwddbhiuWoUiktzcxOLMqtSFYpSi0tzShRsFUrySwsKUos0SvIzUis0kjLzEosq4xNzcuIr8otA9mpqagIAuXol8IgAAAA=)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjbzSXKuc/Lx0Ta5oLgUFgwoTExMDENYB8wxdIRDCszRwdHJyNLCE8AwMDJwMDUwddbhiuWoUiktzcxOLMqtSFYpSi0tzShRsFUrySwsKUos0SvIzUis0kjLzEosq4xNzcuIr8otA9mpqagIAuXol8IgAAAA=)
 
 ```kusto
 datatable(num:long)
@@ -41,8 +41,6 @@ datatable(num:long)
 ]
 | summarize result = toupper(tohex(binary_all_xor(num)))
 ```
-
-**Results**
 
 |results|
 |--|

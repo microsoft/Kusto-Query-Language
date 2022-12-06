@@ -3,7 +3,7 @@ title: bag_unpack plugin - Azure Data Explorer
 description: Learn how to use the bag_unpack plugin to unpack a dynamic column.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/03/2022
+ms.date: 11/23/2022
 ---
 # bag_unpack plugin
 
@@ -17,11 +17,11 @@ The `bag_unpack` plugin unpacks a single column of type `dynamic`, by treating e
 
 | Name | Type | Required| Description |
 |---|---|---|---|
-| *T* |  | &check; | The tabular input whose column *Column* is to be unpacked. |
+| *T* | string | &check; | The tabular input whose column *Column* is to be unpacked. |
 | *Column* | dynamic | &check; | The column of *T* to unpack. |
 | *OutputColumnPrefix* | string | | A common prefix to add to all columns produced by the plugin. |
-| *columnsConflict* | string | | A direction for column conflict resolution. Valid values: <br />`error` - Query produces an error (default)<br />`replace_source` - Source column is replaced<br />`keep_source` - Source column is kept
-| *ignoredProperties* | dynamic | Optional set of bag properties to be ignored.
+| *columnsConflict* | string | | The direction for column conflict resolution. Valid values: <br />`error` - Query produces an error (default)<br />`replace_source` - Source column is replaced<br />`keep_source` - Source column is kept
+| *ignoredProperties* | dynamic | An optional set of bag properties to be ignored.
 | *OutputSchema* | | | The names and types for the expected columns of the `bag_unpack` plugin output.<br /><br />**Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`<br /><br />Specifying the expected schema optimizes query execution by not having to first run the actual query to explore the schema. An error is raised if the run-time schema doesn't match the *OutputSchema* schema. |
 
 ## Returns
@@ -36,7 +36,7 @@ The `bag_unpack` plugin returns a table with as many records as its tabular inpu
   same type, or `dynamic`, if the values differ in type.
 
 > [!NOTE]
-> If the OutputSchema is not specified, the plugin's output schema varies according to the input data values. Therefore, multiple executions of the plugin using different data inputs, may produce different output schema.
+> If the *OutputSchema* is not specified, the plugin's output schema varies according to the input data values. Therefore, multiple executions of the plugin using different data inputs, may produce different output schema.
 
 > [!NOTE]
 > The input data to the plugin must be such that the output schema follows all the rules for a tabular schema. In particular:
@@ -51,7 +51,8 @@ The `bag_unpack` plugin returns a table with as many records as its tabular inpu
 
 ### Expand a bag
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0QQABlsx468AAAA=)
+
 ```kusto
 datatable(d:dynamic)
 [
@@ -72,7 +73,8 @@ datatable(d:dynamic)
 
 Expand a bag and use the `OutputColumnPrefix` option to produce column names that begin with the prefix 'Property_'.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VFQDyjKL0gtKqmMV9cEAG0gI1O8AAAA)
+
 ```kusto
 datatable(d:dynamic)
 [
@@ -93,7 +95,8 @@ datatable(d:dynamic)
 
 Expand a bag and use the `columnsConflict` option to resolve conflicts between existing columns and columns produced by the `bag_unpack()` operator.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NsQrCMBAG4L1PcWRJC4WKOhUcRKcOOjmJlGty1mKalCapiPrupgq69m66/+fjJLqwlaJ4hy3l1vWNrlOQubxrbBuRRMcIwvC9kmVIiIfyW8UPNhqWAyvMRbMU2LoO53z2StIJaIsD/dByIirQto3+u8XHnaIn0IDKoyOosC697lBcY5mCMMq32m6MPqtGuBXvqVMoqLTG94J4AlkGB0ug6Qbj2zdNIgveEgEAAA==)
+
 ```kusto
 datatable(Name:string, d:dynamic)
 [
@@ -109,7 +112,9 @@ datatable(Name:string, d:dynamic)
 |20 |John   |
 |40 |Dave   |
 |30 |Jasmine|
-<!-- csl: https://help.kusto.windows.net/Samples -->
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NzwqCQBAG8LtPMexlFQSjOgkdok4G9QARMu5OJu4fcV0hqndvLairM6f5Pn6MxCFspSg+oqbcDX1j6hRkLu8GdSOS6BxBGH5SsgwJ8VB+q/jBJsNyYIW9GZYC29bhXC5eSToD7XGkH1rPRAU63Zi/W33cJXoCjag8DgQV1qU3HYo2likIq7w2bmfNVTVi2PCWqCud9b0gnkCWwSEEYJWE6ekb9wh0nRABAAA=)
+
 ```kusto
 datatable(Name:string, d:dynamic)
 [
@@ -130,7 +135,8 @@ datatable(Name:string, d:dynamic)
 
 Expand a bag and use the `ignoredProperties` option to ignore certain properties in the property bag.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XOPQ+CMBAG4J1fcekCJDUoOJE4mLjIYNwJMQe9IBEKaYHEqP/d8iFOtMt76dsnJ7A1Ny3JEaF4SqyKzLViC8yZR+fFLlgRC4FF9V0yDuyYm9HfDkkIRVoPj3Pc7Bh8XL4inLCnRdivCD5bByLUVSH/RrBiBKORWJ4H51zWisA2fRtQCpOmkg2NqhtSbUHaegP1WHbYEqSY3zrZYPZwBIdi/C6uS/Xw2ypeID7piet+AWW2HHFQAQAA)
+
 ```kusto
 datatable(d:dynamic)
 [
@@ -151,6 +157,8 @@ datatable(d:dynamic)
 ### Expand a bag with a query-defined OutputSchema
 
 Expand a bag and use the `OutputSchema` option to allow various optimizations to be evaluated before running the actual query.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VSwUtAA6bUqLinKzEvXUQDqssrJz0vXBADtklvGyQAAAA==)
 
 ```kusto
 datatable(d:dynamic)

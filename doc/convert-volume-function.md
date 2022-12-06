@@ -13,13 +13,13 @@ Convert a volume value from one unit to another.
 
 `convert_volume(`*value*`,`*from*`,`*to*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| `value` | real | &check; | The value to be converted. |
-| `from` | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
-| `to` | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
+| *value* | real | &check; | The value to be converted. |
+| *from* | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
+| *to* | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
 
 ### Conversion units
 
@@ -80,9 +80,9 @@ Convert a volume value from one unit to another.
 
 Returns the input value converted from one volume unit to another.
 
-## Examples
+## Example
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJL8vPKc1N1TDUM9JRUHcuTcpM9k0tSS1SB/Ick4tS3fLzS9Q1Abo7scQ8AAAA)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJL8vPKc1N1TDUM9JRUHcuTcpM9k0tSS1SB/Ick4tS3fLzS9Q1Abo7scQ8AAAA)
 
 ```kusto
 print result = convert_volume(1.2, 'CubicMeter', 'AcreFoot')
