@@ -1614,6 +1614,15 @@ namespace Kusto.Language
                 new Parameter("key", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol BagSetKey =
+            new FunctionSymbol("bag_set_key", ScalarTypes.Dynamic,
+                new Parameter("bag", ScalarTypes.Dynamic),
+                new Parameter("key", ScalarTypes.String, ArgumentKind.Constant),
+                new Parameter("value", ParameterTypeKind.Scalar))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // TODO: Aviv (t-afridman) to unhide after 18/December/2022
+            .ConstantFoldable();
         #endregion
 
         #region digest / series functions
@@ -3127,6 +3136,7 @@ namespace Kusto.Language
             BagRemoveKeys,
             BagHasKey,
             JaccardIndex,
+            BagSetKey,
 #endregion
 
 #region digest / series functions
