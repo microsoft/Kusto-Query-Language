@@ -1655,7 +1655,7 @@ namespace Kusto.Language.Binding
                             : argType;
 
                         var isLiteral = Binding.Binder.TryGetLiteralValue(arg, out var literalValue);
-                        locals.Add(new VariableSymbol(p.Name, localType, isLiteral, literalValue));
+                        locals.Add(new VariableSymbol(p.Name, localType, isLiteral, literalValue, source: arg));
                     }
                     else
                     {

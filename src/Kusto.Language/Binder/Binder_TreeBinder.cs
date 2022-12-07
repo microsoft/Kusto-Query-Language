@@ -548,7 +548,7 @@ namespace Kusto.Language.Binding
                 var exprType = GetResultTypeOrError(node.Expression);
                 Symbol local = (exprType is FunctionSymbol || exprType is EntityGroupSymbol)
                     ? exprType
-                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, GetIsConstant(node.Expression), literalValue);
+                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, GetIsConstant(node.Expression), literalValue, node.Expression);
 
                 // put local symbol definition on name
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));

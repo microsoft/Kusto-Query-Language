@@ -29,14 +29,20 @@ namespace Kusto.Language.Symbols
         public object ConstantValue { get; }
 
         /// <summary>
+        /// The expression that the variable is computed from.
+        /// </summary>
+        public Expression Source { get; }
+
+        /// <summary>
         /// Creates a new instance of a <see cref="VariableSymbol"/>
         /// </summary>
-        public VariableSymbol(string name, TypeSymbol type, bool isConstant = false, object constantValue = null)
+        public VariableSymbol(string name, TypeSymbol type, bool isConstant = false, object constantValue = null, Expression source = null)
             : base(name)
         {
             this.Type = type;
             this.IsConstant = isConstant;
             this.ConstantValue = constantValue;
+            this.Source = source;
         }
 
         public override SymbolKind Kind => SymbolKind.Variable;
