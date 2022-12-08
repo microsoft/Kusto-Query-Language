@@ -211,7 +211,7 @@ TransformedSensorsData
 
 ## Nearest-rank percentile
 
-*P*-th percentile (0 < *P* <= 100) of a list of ordered values, sorted from least to greatest, is the smallest value in the list. The *P* percent of the data is less or equal to *P*-th percentile value ([from Wikipedia article on percentiles](https://en.wikipedia.org/wiki/Percentile#The_Nearest_Rank_method)).
+*P*-th percentile (0 < *P* <= 100) of a list of ordered values, sorted in ascending order, is the smallest value in the list. The *P* percent of the data is less or equal to *P*-th percentile value ([from Wikipedia article on percentiles](https://en.wikipedia.org/wiki/Percentile#The_Nearest_Rank_method)).
 
 Define *0*-th percentiles to be the smallest member of the population.
 
