@@ -63,6 +63,11 @@ namespace Kusto.Language.Binding
         private TableSymbol _rightRowScope;
 
         /// <summary>
+        /// True if column must match both left and right
+        /// </summary>
+        private bool _commonColumnsOnly;
+
+        /// <summary>
         /// Members accessible from left side of path/element expression
         /// </summary>
         private Symbol _pathScope;

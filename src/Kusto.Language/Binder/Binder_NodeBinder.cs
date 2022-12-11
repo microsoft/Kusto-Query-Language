@@ -2263,12 +2263,16 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            private static readonly ObjectPool<List<JoinColumnPair>> s_joinColumnsPool =
+                new ObjectPool<List<JoinColumnPair>>(() => new List<JoinColumnPair>(), list => list.Clear());
+
             public override SemanticInfo VisitLookupOperator(LookupOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
                 var exprColumns = s_columnListPool.AllocateFromPool();
-                var rightJoinColumns = s_columnListPool.AllocateFromPool();
+                var joinColumns = s_joinColumnsPool.AllocateFromPool();
+                
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -2280,20 +2284,39 @@ namespace Kusto.Language.Binding
                     // check the lookup clause(s)
                     if (node.LookupClause is JoinOnClause joc)
                     {
-                        CheckJoinOnClause(joc, diagnostics, null, rightJoinColumns);
+                        CheckJoinOnClause(joc, diagnostics, joinColumns);
                     }
 
-                    // figure out the result type
-                    columns.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty));
+                    // figure out the result columns
+                    _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, exprColumns);
+
+                    // substitute common column for any left-side column used in join condition
+                    foreach (var col in exprColumns)
+                    {
+                        var index = joinColumns.FirstIndex(jc => jc.Left == col);
+                        if (index >= 0 && index < joinColumns.Count)
+                        {
+                            var jc = joinColumns[index];
+                            columns.Add(new ColumnSymbol(jc.Left.Name, jc.Left.Type, jc.Left.Description, originalColumns: new[] { jc.Left, jc.Right }));
+                        }
+                        else
+                        {
+                            columns.Add(col);
+                        }
+                    }
 
                     var resultIsOpen = RowScopeOrEmpty.IsOpen;
 
                     var exprTable = GetResultType(node.Expression) as TableSymbol;
                     if (exprTable != null)
                     {
+                        exprColumns.Clear();
                         _binder.GetDeclaredAndInferredColumns(exprTable, exprColumns);
-                        // only add expr columns that were not equated to a source column via the join-on expression
-                        exprColumns.RemoveAll(c => rightJoinColumns.Contains(c));
+
+                        // do not include any right-side columns that were used in join condition
+                        // since they are already represented by the common column
+                        exprColumns.RemoveAll(c => joinColumns.Any(jc => jc.Right == c));
+
                         columns.AddRange(exprColumns);
                         resultIsOpen |= exprTable.IsOpen;
                     }
@@ -2309,7 +2332,7 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
                     s_columnListPool.ReturnToPool(exprColumns);
-                    s_columnListPool.ReturnToPool(rightJoinColumns);
+                    s_joinColumnsPool.ReturnToPool(joinColumns);
                 }
             }
 
@@ -2401,24 +2424,29 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            private class JoinColumnPair
+            {
+                public ColumnSymbol Left { get; }
+                public ColumnSymbol Right { get; }
+                public JoinColumnPair(ColumnSymbol left, ColumnSymbol right) { this.Left = left; this.Right = right; }
+            }
+
             private void CheckJoinOnClause(
                 JoinOnClause clause,
                 List<Diagnostic> diagnostics,
-                List<ColumnSymbol> leftColumns = null,
-                List<ColumnSymbol> rightColumns = null)
+                List<JoinColumnPair> joinColumns = null)
             {
                 for (int i = 0, n = clause.Expressions.Count; i < n; i++)
                 {
                     var expr = clause.Expressions[i].Element;
-                    CheckJoinOnExpression(expr, diagnostics, leftColumns, rightColumns);
+                    CheckJoinOnExpression(expr, diagnostics, joinColumns);
                 }
             }
 
             private void CheckJoinOnExpression(
                 Expression condition, 
                 List<Diagnostic> diagnostics,
-                List<ColumnSymbol> leftColumns = null,
-                List<ColumnSymbol> rightColumns = null)
+                List<JoinColumnPair> joinColumns = null)
             {
                 condition = RemoveParenthesis(condition);
 
@@ -2428,17 +2456,16 @@ namespace Kusto.Language.Binding
                     {
                         if (CheckJoinEquality(be, diagnostics, out var leftMatchingColumn, out var rightMatchingColumn))
                         {
-                            if (leftMatchingColumn != null && rightMatchingColumn != null)
+                            if (leftMatchingColumn != null && rightMatchingColumn != null && joinColumns != null)
                             {
-                                leftColumns?.Add(leftMatchingColumn);
-                                rightColumns?.Add(rightMatchingColumn);
+                                joinColumns.Add(new JoinColumnPair(leftMatchingColumn, rightMatchingColumn));
                             }
                         }
                     }
                     else if (be.Kind == SyntaxKind.AndExpression)
                     {
-                        CheckJoinOnExpression(be.Left, diagnostics, leftColumns, rightColumns);
-                        CheckJoinOnExpression(be.Right, diagnostics, leftColumns, rightColumns);
+                        CheckJoinOnExpression(be.Left, diagnostics, joinColumns);
+                        CheckJoinOnExpression(be.Right, diagnostics, joinColumns);
                     }
                     else
                     {
@@ -2451,10 +2478,9 @@ namespace Kusto.Language.Binding
                     {
                         if (CheckCommonColumn(nr, diagnostics, out var leftColumn, out var rightColumn))
                         {
-                            if (leftColumn != null && rightColumn != null)
+                            if (leftColumn != null && rightColumn != null && joinColumns != null)
                             {
-                                leftColumns?.Add(leftColumn);
-                                rightColumns?.Add(rightColumn);
+                                joinColumns.Add(new JoinColumnPair(leftColumn, rightColumn));
                             }
                         }
 

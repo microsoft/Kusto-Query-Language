@@ -347,6 +347,21 @@ namespace Kusto.Language.Binding
                 if (list.Count == 0 && _rowScope != null && includeRowScope)
                 {
                     _rowScope.GetMembers(name, match, list);
+
+                    if (list.Count == 1 && _rightRowScope != null && _commonColumnsOnly)
+                    {
+                        _rightRowScope.GetMembers(name, match, list);
+
+                        if (list.Count == 2)
+                        {
+                            // combine these matching columns into a common column
+                            var left = (ColumnSymbol)list[0];
+                            var right = (ColumnSymbol)list[1];
+                            var commonColumn = new ColumnSymbol(left.Name, left.Type, left.Description, originalColumns: new[] { left, right });
+                            list.Clear();
+                            list.Add(commonColumn);
+                        }
+                    }
                 }
 
                 // try secondary right-side row scope (used in join operator)

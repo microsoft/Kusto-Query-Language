@@ -201,7 +201,9 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
+                    _binder._commonColumnsOnly = true;
                     expr.Accept(this);
+                    _binder._commonColumnsOnly = false;
                 }
             }
 
