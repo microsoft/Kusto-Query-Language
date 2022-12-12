@@ -1,9 +1,9 @@
 ---
 title: current_principal() - Azure Data Explorer
-description: This article describes current_principal() in Azure Data Explorer.
+description: Learn how to use the current_principal() function to return the name of the principal running the query.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/10/2019
+ms.date: 11/23/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---

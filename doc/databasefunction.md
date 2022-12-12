@@ -1,9 +1,9 @@
 ---
 title: database() (scope function) - Azure Data Explorer
-description: This article describes database() (scope function) in Azure Data Explorer.
+description: Learn how to use the database() function to change the reference of the query to a specific database within the cluster scope.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/24/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---

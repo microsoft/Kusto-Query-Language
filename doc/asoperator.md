@@ -32,7 +32,7 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 
 In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'
 
-[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzA0UCguSS0AcrhqFBKLFULAjNK8zPw8hfLMkozi/NKi5FTbkMSknFS/xNxUBY0iPGZAjDDSBAAgKK6faAAAAA==)
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzA0UCguSS0Acni5ahQSixVCIKzSvMz8PIXyzJKM4vzSouRU25DEpJxUv8TcVAWNIjymQMww0gQAVf7ABmoAAAA=)
 
 ```kusto
 range x from 1 to 10 step 1 
@@ -42,7 +42,7 @@ range x from 1 to 10 step 1
 
 Alternatively, you can write the same example, as follows:
 
-[**Run the query**](https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAyvNy8zPUyjPLMkozi8tSk61DUlMykn1S8xNVdAoSsxLT1WoUEgrys9VMFQoyVcwNFAoLkktAHJqFBKLFUIMNXWIUWakCQB5tG07ZwAAAA==)
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyvNy8zPUyjPLMkozi8tSk61DUlMykn1S8xNVdAoSsxLT1WoUEgrys9VMFQoyVcwNFAoLkktAHJqFBKLFUIMNXWIUWakCQB5tG07ZwAAAA==)
 
 ```kusto
 union withsource=TableName (range x from 1 to 10 step 1 | as T1), (range x from 1 to 10 step 1 | as T2)

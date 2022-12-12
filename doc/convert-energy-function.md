@@ -3,7 +3,7 @@ title: convert_energy() - Azure Data Explorer
 description: Learn how to use the convert_energy() function to convert an energy input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # convert_energy
 
@@ -13,13 +13,13 @@ Convert an energy value from one unit to another.
 
 `convert_energy(`*value*`,`*from*`,`*to*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| `value` | real | &check; | The value to be converted. |
-| `from` | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
-| `to` | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
+| *value* | real | &check; | The value to be converted. |
+| *from* | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
+| *to* | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
 
 ### Conversion units
 
@@ -64,9 +64,9 @@ Convert an energy value from one unit to another.
 
  Returns the input value converted from one energy unit to another.
 
-## Examples
+## Example
 
-**\[**[**Click to run query**]( https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJT81LLUqv1DDUM9JRUPfKL81JVQcynIoySzKLM0IyUotyE3NC8zJL1DUBDSFj0EEAAAA=)**\]**
+[**Run the query**]( https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJT81LLUqv1DDUM9JRUPfKL81JVQcynIoySzKLM0IyUotyE3NC8zJL1DUBDSFj0EEAAAA=)
 
 ```kusto
 print result = convert_energy(1.2, 'Joule', 'BritishThermalUnit')

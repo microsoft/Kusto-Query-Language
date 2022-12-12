@@ -1,13 +1,13 @@
 ---
 title: datetime_local_to_utc() - Azure Data Explorer
-description: This article describes the datetime_local_to_utc function in Azure Data Explorer.
+description: Learn how to use the datetime_local_to_utc() function to convert local datetime to UTC datetime.
 ms.reviewer: elgevork
 ms.topic: reference
 ms.date: 07/12/2022
 ---
 # datetime_local_to_utc()
 
-Converts local datetime to UTC datetime using [a time-zone specification](timezone.md). 
+Converts local datetime to UTC datetime using [a time-zone specification](timezone.md).
 
 ## Syntax
 
@@ -39,6 +39,28 @@ datatable(local_dt: datetime, tz: string)
 |2020-02-02 20:02:20.0000000|Europe/Paris|2020-02-02 19:02:20.0000000|
 |2020-02-02 20:02:20.0000000|America/Chicago|2020-02-03 02:02:20.0000000|
 |2020-02-02 20:02:20.0000000|US/Pacific|2020-02-03 04:02:20.0000000|
+
+
+> [!NOTE] 
+> Normally there is a 1:1 mapping between UTC and local time, however there is a time ambiguity near the DST transition.
+> Translating from local to UTC and then back to local may produce an hour offset between two local datetime values if the clocks were advanced due to DST.
+
+
+```kusto
+range Local from datetime(2022-03-27 01:00:00.0000000) to datetime(2022-03-27 04:00:00.0000000) step 1h
+| extend UTC=datetime_local_to_utc(Local, 'Europe/Brussels')
+| extend BackToLocal=datetime_utc_to_local(UTC, 'Europe/Brussels')
+| extend diff=Local-BackToLocal
+```
+ 
+|Local|UTC|BackToLocal|diff|
+|---|---|---|---|
+|2022-03-27 02:00:00.0000000|2022-03-27 00:00:00.0000000|2022-03-27 01:00:00.0000000|01:00:00|
+|2022-03-27 01:00:00.0000000|2022-03-27 00:00:00.0000000|2022-03-27 01:00:00.0000000|00:00:00|
+|2022-03-27 03:00:00.0000000|2022-03-27 01:00:00.0000000|2022-03-27 03:00:00.0000000|00:00:00|
+|2022-03-27 04:00:00.0000000|2022-03-27 02:00:00.0000000|2022-03-27 04:00:00.0000000|00:00:00|
+ 
+
 
 ## See also
 

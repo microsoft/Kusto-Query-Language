@@ -3,7 +3,7 @@ title: cluster() (scope function) - Azure Data Explorer
 description: Learn how to use the cluster() function to change the reference of the query to a remote cluster.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -11,32 +11,25 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-Changes the reference of the query to a remote cluster.
-
-```kusto
-cluster('help').database('Sample').SomeTable
-```
+Changes the reference of the query to a remote cluster. To access a database within the same cluster, use the [database()](databasefunction.md) function. For more information, see [cross-database and cross-cluster queries](cross-cluster-or-database-queries.md).
 
 ## Syntax
 
-`cluster(`*stringConstant*`)`
+`cluster(`*name*`)`
 
-## Arguments
+## Parameters
 
-* *stringConstant*: Name of the cluster that is referenced. Cluster name can be either
-a fully qualified DNS name, or a string that will be suffixed with `.kusto.windows.net`. Argument has to be _constant_ prior to the query's execution,
-i.e. can't come from sub-query evaluation.
-
-**Notes**
-
-* For accessing database within the same cluster - use [database()](databasefunction.md) function.
-* More information about cross-cluster and cross-database queries available [here](cross-cluster-or-database-queries.md)
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *name* | string | &check; | The name of the cluster to reference. The value can be specified as a fully qualified domain name, or the name of the cluster without the `.kusto.windows.net` suffix. The value can't be the result of subquery evaluation. |
 
 ## Examples
 
 ### Use cluster() to access remote cluster
 
-The next query can be run on any of the Kusto clusters.
+The following query can be run on any cluster.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA0vOKS0uSS3SUM9IzSlQ19RLSSxJTEosTtVQD07MLchJLQaKBZfkF+W6lqXmlRQr1Cgk55fmlQAAayjLjjcAAAA=)
 
 ```kusto
 cluster('help').database('Samples').StormEvents | count
@@ -50,8 +43,9 @@ cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 
 ### Use cluster() inside let statements
 
-The same query as above can be rewritten to use inline function (let statement) that
-receives a parameter `clusterName` - which is passed into the cluster() function.
+The previous query can be rewritten to use an inline function (`let` statement) that takes a parameter called `clusterName` and passes it to the `cluster()` function.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA8tJLVFIy89XsFXQSM4pLS5JLfJLzE21Ki4pysxL1+Sq5lIAAqgMsgpNvZTEksSkxOJUDfXgxNyCnNRidU294JL8olzXstS8kmKFGoXk/NK8Eq5aay6gBRrqGak5BeqaADuaG9BwAAAA)
 
 ```kusto
 let foo = (clusterName:string)
@@ -77,7 +71,8 @@ receives a parameter `clusterName` - which is passed into the cluster() function
 };
 ```
 
-**Note:** such functions can be used only locally and not in the cross-cluster query.
+> [!NOTE]
+> Stored functions using the `cluster()` function can't be used in cross-cluster queries.
 
 ::: zone-end
 

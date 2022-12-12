@@ -4,7 +4,7 @@ description: Learn how to use the array_sum() function to calculate the sum of e
 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 11/20/2022
 ---
 # array_sum()
 
@@ -14,11 +14,11 @@ Calculates the sum of elements in a dynamic array.
 
 `array_sum`(*array*)
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *array*| | &check;| Array used for input.|
+| *array*| dynamic | &check;| The array to sum.|
 
 ## Returns
 
@@ -31,15 +31,13 @@ Returns a double type value with the sum of the elements of the array.
 
 This following example shows the sum of an array.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYxidVU4OWqUUitKEnNSwGpiC8uzbUF0omVIJYGkKUJANbCqMA+AAAA)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1og21DHSMdYxidVU4OWqUUitKEnNSwGpiC8uzbUF0omVIJYGkKUJANbCqMA+AAAA)
 
 ```kusto
 print arr=dynamic([1,2,3,4]) 
 | extend arr_sum=array_sum(arr)
 ```
 
-**Results**
-
-|`arr`|`arr_sum`|
+|arr|arr_sum|
 |---|---|
 |[1,2,3,4]|10|

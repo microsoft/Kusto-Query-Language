@@ -3,7 +3,7 @@ title: The case-sensitive contains_cs string operator - Azure Data Explorer
 description: Learn how to use the contains_cs operator to filter a record set for data containing a case-sensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # contains_cs operator
 
@@ -38,29 +38,29 @@ For best practices, see [Query best practices](best-practices.md).
 
 ## Syntax
 
-*T* `|` `where` *col* `contains_cs` `(`*expression*`)`
+*T* `|` `where` *col* `contains_cs` `(`*string*`)`
 
-## Arguments
+## Parameters
 
-* *T* - The tabular input whose records are to be filtered.
-* *col* - The column to filter.
-* *expression* - Scalar or literal expression.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check; | The tabular input whose records are to be filtered. |
+| *col* | string | &check; | The name of the column to check for *string*. |
+| *string* | string | &check; | The case-sensitive string by which to filter the data. |
 
 ## Returns
 
-Rows in *T* for which the predicate is `true`.
+Rows in *T* for which *string* is in *col*.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5lIAghqF4tLc3MSizKpUhVSQcHxyfmleiS2Y1NBUSKpUCC5JLEmFKi7PSC1KhYgoJOfnlSRm5hXHJxcrKDkGKwEAd3al+FsAAAA=)
+
 ```kusto
 StormEvents
     | summarize event_count=count() by State
     | where State contains_cs "AS"
-    | count
 ```
-
-**Output**
 
 |Count|
 |-----|

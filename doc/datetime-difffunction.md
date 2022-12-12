@@ -1,9 +1,9 @@
 ---
 title: datetime_diff() - Azure Data Explorer
-description: This article describes datetime_diff() in Azure Data Explorer.
+description: Learn how to use the datetime_diff() function to calculate the period between two datetime values. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/24/2022
 ---
 # datetime_diff()
 

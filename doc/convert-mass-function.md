@@ -3,7 +3,7 @@ title: convert_mass() - Azure Data Explorer
 description: Learn how to use the convert_mass() function to convert a mass input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # convert_mass
 
@@ -13,13 +13,13 @@ Convert a mass value from one unit to another.
 
 `convert_mass(`*value*`,`*from*`,`*to*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| `value` | real | &check; | The value to be converted. |
-| `from` | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
-| `to` | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
+| *value* | real | &check; | The value to be converted. |
+| *from* | string | &check; | The unit to convert from. For possible values, see [Conversion units](#conversion-units). |
+| *to* | string | &check; | The unit to convert to. For possible values, see [Conversion units](#conversion-units). |
 
 ### Conversion units
 
@@ -53,9 +53,9 @@ Convert a mass value from one unit to another.
 
  Returns the input value converted from one mass unit to another.
 
-## Examples
+## Example
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJz00sLtYw1DPSUVD3zszJTy9KzFUHsgPyS/NS1DUBemVMijUAAAA=)**\]**
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJz00sLtYw1DPSUVD3zszJTy9KzFUHsgPyS/NS1DUBemVMijUAAAA=)
 
 ```kusto
 print result = convert_mass(1.2, 'Kilogram', 'Pound')

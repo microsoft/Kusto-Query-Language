@@ -1,9 +1,9 @@
 ---
 title: datatable operator - Azure Data Explorer
-description: This article describes datatable operator in Azure Data Explorer.
+description: Learn how to use the datatable operator to define a table with given schema and data.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/23/2022
+ms.date: 11/24/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---

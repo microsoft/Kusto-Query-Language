@@ -1,9 +1,9 @@
 ---
 title: String operators - Azure Data Explorer
-description: This article describes String operators in Azure Data Explorer.
+description: Learn about query operators for searching string data types.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/05/2021
+ms.date: 11/24/2022
 ---
 # String operators
 

@@ -3,39 +3,34 @@ title: column_ifexists() - Azure Data Explorer
 description: Learn how to use the column_ifexists() function to return a reference to the column if it exists.  
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # column_ifexists()
 
-Takes a column name as a string and a default value. Returns a reference to the column if it exists,
-otherwise - returns the default value.
+Takes a column name as a string and a default value. Returns a reference to the column if it exists, otherwise - returns the default value.
 
 > **Deprecated aliases:** columnifexists()
 
 ## Syntax
 
-`column_ifexists(`*columnName*`, `*defaultValue*)
+`column_ifexists(`*columnName*`,`*defaultValue*)
 
-## Arguments
+## Parameters
 
-* *columnName*: The name of the column
-* *defaultValue*: The value to use if the column doesn't exist in the context that the function was used in.
-                  This value can be any scalar expression (for example, a reference to another column).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *columnName* | string | &check; | The name of the column to check if exists.|
+| *defaultValue* | scalar | &check; | The value to use if the column doesn't exist. This value can be any scalar expression. For example, a reference to another column.|
 
 ## Returns
 
-If *columnName* exists, then the column it refers to. Otherwise - *defaultValue*.
+If *columnName* exists, then the column it refers to. Otherwise *defaultValue*.
 
-## Examples
+## Example
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03NSwrCQBAE0L2nKGajQiCHEE8Q9zImFWyZTIfpTnTh4Y1f3HVBveq6xuHMwrUhK1pN05ARdnEUjylAltC4lmE/M7uFCv5s91r4OtF4dH7dVVLCiZiM3ULNGbvVH8cdY9ELW/+Io/S8ibltfi+r9+T2AZ+ufQiZAAAA)
 
 ```kusto
-.create function with (docstring = "Wraps a table query that allows querying the table even if columnName doesn't exist ", folder="My Functions")
-ColumnOrDefault(tableName:string, columnName:string)
-{
-    // There's no column "Capital" in "StormEvents", therefore, the State column will be used instead
-    table(tableName) | project column_ifexists(columnName, State)
-}
-
-
-ColumnOrDefault("StormEvents", "Capital");
+// There's no column "Capital" in "StormEvents", therefore, the State column will be used instead
+StormEvents | project column_ifexists("Capital", State)
 ```
