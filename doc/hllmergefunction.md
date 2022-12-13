@@ -29,7 +29,8 @@ Returns one `hll` value which is the result of merging the columns `*Exrp1*`, `*
 
 This example shows the value of the merged columns.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WMQQ6DMAwE75X4wx6J6KE8gLdEiLi0iCTIGCmp+vg6gUtP1uzsmscwExKeHD16SET/wC60KTS3LygJBYeMQUudyhLuh/cjvz+E17rapE5vm8y9cr44m9LdOC40CTzxTO5UtkJbx9fmr+umeASx5ck5Mz9Hg5B+pwAAAA==)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WMQQ6DMAwE75X4wx6J6KE8gLdEiLi0iCTIGCmp+vg6gUtP1uzsmscwExKeHD16SET/wC60KTS3LygJBYeMQUudyhLuh/cjvz+E17rapE5vm8y9cr44m9LdOC40CTzxTO5UtkJbx9fmr+umeASx5ck5Mz9Hg5B+pwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 range x from 1 to 10 step 1 

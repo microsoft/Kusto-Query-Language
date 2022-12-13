@@ -3,7 +3,7 @@ title: cursor_before_or_at() - Azure Data Explorer
 description: Learn how to use the cursor_before_or_at() function to compare the ingestion time of the records of a table against the database cursor time.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 11/27/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -13,26 +13,29 @@ zone_pivot_groups: kql-flavors
 
 A predicate function run over the records of a table to compare their ingestion time against the database cursor time.
 
+> [!NOTE]
+> This function can only be invoked on records of a table that has the
+[IngestionTime policy](../management/ingestiontimepolicy.md) enabled.
+
 ## Syntax
 
-`cursor_before_or_at` `(` *RHS* `)`
+`cursor_before_or_at(`*RHS*`)`
 
-## Arguments
+## Parameters
 
-* *RHS*: Either an empty string literal, or a valid database cursor value.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *RHS* | string | &check; | Either an empty string literal or a valid database cursor value.|
 
 ## Returns
 
 A scalar value of type `bool` that indicates whether the record was ingested
 before or at the database cursor *RHS* (`true`) or not (`false`).
 
-**Notes**
+## See also
 
 See [database cursors](../management/databasecursor.md) for additional
 details on database cursors.
-
-This function can only be invoked on records of a table which has the
-[IngestionTime policy](../management/ingestiontimepolicy.md) enabled.
 
 ::: zone-end
 

@@ -66,7 +66,8 @@ Convert an energy value from one unit to another.
 
 ## Example
 
-[**Run the query**]( https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJT81LLUqv1DDUM9JRUPfKL81JVQcynIoySzKLM0IyUotyE3NC8zJL1DUBDSFj0EEAAAA=)
+> [!div class="nextstepaction"]
+> <a href=" https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKVGwVUjOzytLLSqJT81LLUqv1DDUM9JRUPfKL81JVQcynIoySzKLM0IyUotyE3NC8zJL1DUBDSFj0EEAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print result = convert_energy(1.2, 'Joule', 'BritishThermalUnit')

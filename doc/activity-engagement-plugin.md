@@ -44,7 +44,8 @@ Output table schema is:
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA21RQWrDMBC8B/KHvUVKbGy1hByKD6GBviDkUIoR1sZVsS0jr0MCfXxXiigp1NgCrWdmZ3aLAt5wQK8JwevBuB6MJg3uDPOEHnRD9mLJ4rRcdEhQT6Q9QRVQSLZH8VSqXV4qfuVLwuBg/kM8RwR3aRFqo29w9twuKZK782AiHEGZ5eIb8EqhFMTIdW5ohYi8PJFkoYx8AHoGhhBCbtRDuQ5Jpio2FknIrLfl2ssM/tw3quQzV1xXEoJEf8nxOrImWFPdhYJVuo3oziJQJXS2twRMDc9yURTwqrtm7sJMD/tjcdof2RZZFz1ddDeHP2myN07d6hZ7HEi8r6xZfWRxOlkKmcW5sCH+dve4o3df2FCCHfRcn/Rc/QrGXmv2ExN4ZvMiwyaaT9b7AZnMt5byAQAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA21RQWrDMBC8B/KHvUVKbGy1hByKD6GBviDkUIoR1sZVsS0jr0MCfXxXiigp1NgCrWdmZ3aLAt5wQK8JwevBuB6MJg3uDPOEHnRD9mLJ4rRcdEhQT6Q9QRVQSLZH8VSqXV4qfuVLwuBg/kM8RwR3aRFqo29w9twuKZK782AiHEGZ5eIb8EqhFMTIdW5ohYi8PJFkoYx8AHoGhhBCbtRDuQ5Jpio2FknIrLfl2ssM/tw3quQzV1xXEoJEf8nxOrImWFPdhYJVuo3oziJQJXS2twRMDc9yURTwqrtm7sJMD/tjcdof2RZZFz1ddDeHP2myN07d6hZ7HEi8r6xZfWRxOlkKmcW5sCH+dve4o3df2FCCHfRcn/Rc/QrGXmv2ExN4ZvMiwyaaT9b7AZnMt5byAQAA" target="_blank">Run the query</a>
 
 ```kusto
 // Generate random data of user activities
@@ -67,7 +68,8 @@ range _day from _start to _end  step 1d
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRwWrDMAy9F/oPutVuExKvlB1GDmWFnXrsaYxgYjXzSOLgKKWFffxk14yOhcRg5b2n96SigDcc0GtC8HowrgejSYM7wzyhB92QvViyOC0XHRLUE2lPUAUUku1RPJXqOS8Vv/IlYXAw/xG7fBsR3KVFqI2+wdlzu6RI7s6DiXAEZZaLb8ArhVIQI9e5oRUi8vJEkoUy8gHoGRhCCLlRD+U6JJmq2FgkIbPelWsvM/hz36iSz1xxXUkIEv0lx+vImmBNdRcKVuk2ojuLQJXQ2d4SMDU8y0VRwKvumrkLMz3sT8Vxf2JbZF30dNHdHP6kyd44datb7HEg8b6yZvWRxelkKWQW58KG+NuW97yjd1/YUMId9Fwf9Vz9KsZmazYUI3im8ybDKppPFvwB0tS5hPMBAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRwWrDMAy9F/oPutVuExKvlB1GDmWFnXrsaYxgYjXzSOLgKKWFffxk14yOhcRg5b2n96SigDcc0GtC8HowrgejSYM7wzyhB92QvViyOC0XHRLUE2lPUAUUku1RPJXqOS8Vv/IlYXAw/xG7fBsR3KVFqI2+wdlzu6RI7s6DiXAEZZaLb8ArhVIQI9e5oRUi8vJEkoUy8gHoGRhCCLlRD+U6JJmq2FgkIbPelWsvM/hz36iSz1xxXUkIEv0lx+vImmBNdRcKVuk2ojuLQJXQ2d4SMDU8y0VRwKvumrkLMz3sT8Vxf2JbZF30dNHdHP6kyd44datb7HEg8b6yZvWRxelkKWQW58KG+NuW97yjd1/YUMId9Fwf9Vz9KsZmazYUI3im8ybDKppPFvwB0tS5hPMBAAA=" target="_blank">Run the query</a>
 
 ```kusto
 // Generate random data of user activities
@@ -90,7 +92,8 @@ range _day from _start to _end  step 1d
 
 The following example calculates DAU/WAU (Daily Active Users / Weekly Active Users ratio) over a randomly generated data with additional dimension (`mod3`).
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRwWrDMAy9D/oPojBqtwmJF8oOI4eywk499jRGMLGaeSRxcJTSwj5+shtGx0JisPL03tNTlsEb9ug1IXjdG9eB0aTBnWAa0YOuyZ4tWRwXDy0SVCNpT1AGFJLtUDzl6jnNFb/yZcZgb/4jtmkREazSIFRGX+HkWW5mJHfrg5FwAGUWD9+AFwqlQEaudX0jROxL5yaZKSPvgJ6BYQghN+quXIVJxjIKi5nIrLf52ssE/tw3KuczVVxXEgJFd07xMjAnWFPeiIJVug7oTiK0SmhtZwm4NTx3up0zBTsaydeaxDJcy2XCRPAIBfvOMnjVbT21Ifz97pgddkf2T9ZFkrNup/BnXsGV42l0gx32JN5X1qw+khhjMqeRxADZOX9FzkcQjPEM3n1hTTN6r6fqoKfylzdKrtn/rSXO7ZmK1x/2V38y+Q8r5V3jKAIAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRwWrDMAy9D/oPojBqtwmJF8oOI4eywk499jRGMLGaeSRxcJTSwj5+shtGx0JisPL03tNTlsEb9ug1IXjdG9eB0aTBnWAa0YOuyZ4tWRwXDy0SVCNpT1AGFJLtUDzl6jnNFb/yZcZgb/4jtmkREazSIFRGX+HkWW5mJHfrg5FwAGUWD9+AFwqlQEaudX0jROxL5yaZKSPvgJ6BYQghN+quXIVJxjIKi5nIrLf52ssE/tw3KuczVVxXEgJFd07xMjAnWFPeiIJVug7oTiK0SmhtZwm4NTx3up0zBTsaydeaxDJcy2XCRPAIBfvOMnjVbT21Ifz97pgddkf2T9ZFkrNup/BnXsGV42l0gx32JN5X1qw+khhjMqeRxADZOX9FzkcQjPEM3n1hTTN6r6fqoKfylzdKrtn/rSXO7ZmK1x/2V38y+Q8r5V3jKAIAAA==" target="_blank">Run the query</a>
 
 ```kusto
 // Generate random data of user activities

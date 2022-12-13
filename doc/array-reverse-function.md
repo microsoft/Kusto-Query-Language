@@ -27,7 +27,8 @@ Returns an array that contains the same elements as the input array in reverse o
 
 This example shows an array of words reversed.
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1ohWKsnILFbSUVCCkIl5IDK1IjG3ICdVKVZTgZerRqGgKD8rNblEISi1uDSnxBaoP7Eyvii1LLWoOFUDyNMEAKks9PlYAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1ohWKsnILFbSUVCCkIl5IDK1IjG3ICdVKVZTgZerRqGgKD8rNblEISi1uDSnxBaoP7Eyvii1LLWoOFUDyNMEAKks9PlYAAAA" target="_blank">Run the query</a>
 
 ```kusto
 print arr=dynamic(["this", "is", "an", "example"]) 

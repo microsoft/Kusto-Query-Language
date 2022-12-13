@@ -16,26 +16,25 @@ Returns a table whose schema and values are defined in the query itself.
 
 ## Syntax
 
-`datatable` `(` *ColumnName* `:` *ColumnType* [`,` ...] `)` `[` *ScalarValue* [`,` *ScalarValue* ...] `]`
+`datatable(` *ColumnName* `:` *ColumnType* [`,` ...] `[` *ScalarValue* [`,` *ScalarValue* ...] `])`
 
-## Arguments
+## Parameters
 
 ::: zone pivot="azuredataexplorer"
 
-* *ColumnName*, *ColumnType*: These arguments define the schema of the table. The arguments use the same syntax as used when defining a table.
-  For more information, see [.create table](../management/create-table-command.md)).
-* *ScalarValue*: A constant scalar value to insert into the table. The number of values
-  must be an integer multiple of the columns in the table. The *n*'th value
-  must have a type that corresponds to column *n* % *NumColumns*.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ColumnName*:*ColumnType* | string | &check; | The name of column and type of data in that column. These arguments define the schema of the table.|
+| *ScalarValue* | scalar | &check; | The value to insert into the table. The number of values must be an integer multiple of the columns in the table. The *n*'th value must have a type that corresponds to column *n* % *NumColumns*. |
 
 ::: zone-end
 
 ::: zone pivot="azuremonitor"
 
-* *ColumnName*, *ColumnType*: These arguments define the schema of the table.
-* *ScalarValue*: A constant scalar value to insert into the table. The number of values
-  must be an integer multiple of the columns in the table. The *n*'th value
-  must have a type that corresponds to column *n* % *NumColumns*.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ColumnName*: *ColumnType* | string | &check; | The name of column and type of data in that column. These arguments define the schema of the table.|
+| *ScalarValue* | scalar | &check; | The value to insert into the table. The number of values must be an integer multiple of the columns in the table. The *n*'th value must have a type that corresponds to column *n* % *NumColumns*. |
 
 ::: zone-end
 
@@ -44,6 +43,8 @@ Returns a table whose schema and values are defined in the query itself.
 This operator returns a data table of the given schema and data.
 
 ## Example
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XRS4vCMBAA4Lu/YsiphbiY1upa0IPYo8velz2kZtRgTCCNL1z/uxNZd6HYJAQyj++QUTLQrg0mCxmwVHQFvUcO1RFtKJvgtd1wWDqPVCBLdbFyr1cpfPWA1rM+ERMx6A9GfSFSDmzuvGUcfouTK9vhRbCSHaU5oKBMDGTPQMZuKW9zOXGCTuQqG9A3UK2cQfiQ1ISdet7Wh6/0Iv/XPw+10c0WFay1bwLUzu06+aLNj17xk3H8i6yI/EKj6uTGbe79wX33fuC0RY9AAzBok8c0UpjBkDJ4DmgVxDaY/o3mLb7vp72pd88BAAA=)
 
 ```kusto
 datatable(Date:datetime, Event:string, MoreData:dynamic) [
@@ -55,8 +56,6 @@ datatable(Date:datetime, Event:string, MoreData:dynamic) [
 | where strlen(Event) > 4
 | extend key2 = MoreData.key2
 ```
-
-Result:
 
 |Date|Event|MoreData|key2|
 |---|---|---|---|

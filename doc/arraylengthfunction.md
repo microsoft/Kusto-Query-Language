@@ -29,7 +29,8 @@ Returns the number of elements in *array*, or `null` if *array* isn't an array.
 
 The following example shows the number of elements in the array.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjM9JzUsvydBIqcxLzM1M1og21FEw0lEw1lFQSssvLVKK1dQEAI1OgS0uAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKkqsjM9JzUsvydAoSCwqTo3PKs7P01CPNtRRMNJRMNZRUErLLy1SilXX1AQAe4KK2TMAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print array_length(dynamic([1, 2, 3, "four"]))

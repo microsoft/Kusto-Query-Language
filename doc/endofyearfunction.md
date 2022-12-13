@@ -1,9 +1,9 @@
 ---
 title: endofyear() - Azure Data Explorer
-description: This article describes endofyear() in Azure Data Explorer.
+description: Learn how to use the endofyear() function to return a datetime representing the end of the year for the given date value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/11/2022
 ---
 # endofyear()
 

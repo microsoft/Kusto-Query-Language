@@ -32,7 +32,8 @@ Returns the maximum value of *Expr* in records for which *Predicate* evaluates t
 
 This example shows the maximum damage for events with no casualties.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWMMQ7CQAwEe17hkigp+ICrHAUFCCkvMImBk7g7ZDvRBfF4IlztjFa7gxVJx4Wz6e4LXI3zBIESPRg9eilvbZ2vG7PY2kFgsqeiR4jCo7Uupzz9dbvTOSWS+GE4U/WHS+lJZ3pZZMVENd73XnS+BsRDA7cVBiPjH/V0dHmeAAAA)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWMMQ7CQAwEe17hkigp+ICrHAUFCCkvMImBk7g7ZDvRBfF4IlztjFa7gxVJx4Wz6e4LXI3zBIESPRg9eilvbZ2vG7PY2kFgsqeiR4jCo7Uupzz9dbvTOSWS+GE4U/WHS+lJZ3pZZMVENd73XnS+BsRDA7cVBiPjH/V0dHmeAAAA" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

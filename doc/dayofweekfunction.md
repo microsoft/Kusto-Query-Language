@@ -9,17 +9,15 @@ ms.date: 11/24/2022
 
 Returns the integer number of days since the preceding Sunday, as a `timespan`.
 
-```kusto
-dayofweek(datetime(2015-12-14)) == 1d  // Monday
-```
-
 ## Syntax
 
-`dayofweek(`*a_date*`)`
+`dayofweek(`*date*`)`
 
-## Arguments
+## Parameters
 
-* `a_date`: A `datetime`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check; | The datetime for which to determine the day of week.|
 
 ## Returns
 

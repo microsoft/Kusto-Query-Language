@@ -3,30 +3,27 @@ title: countof() - Azure Data Explorer
 description: Learn how to use the countof() function to count the occurrences of a substring in a string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 11/27/2022
 ---
 # countof()
 
 Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches don't.
 
-```kusto
-countof("The cat sat on the mat", "at") == 3
-countof("The cat sat on the mat", @"\b.at\b", "regex") == 3
-```
-
 ## Syntax
 
 `countof(`*source*`,` *search* [`,` *kind*]`)`
 
-## Arguments
+## Parameters
 
-* *source*: A string.
-* *search*: The plain string or [regular expression](./re2.md) to match inside *source*.
-* *kind*: `"normal"|"regex"` Default `normal`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *source* | string | &check; | The value to search. |
+| *search* | string | &check; | The value or [regular expression](./re2.md) to match inside *source*. |
+| *kind* | string | | The value `normal` or `regex`. The default is `normal`. |
 
 ## Returns
 
-The number of times that the search string can be matched in the container. Plain string matches may overlap; regex matches don't.
+The number of times that the *search* value can be matched in the *source* string. Plain string matches may overlap; regex matches don't.
 
 ## Examples
 

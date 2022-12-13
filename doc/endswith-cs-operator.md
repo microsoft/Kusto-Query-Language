@@ -1,9 +1,9 @@
 ---
 title: The case-sensitive endswith_cs string operator - Azure Data Explorer
-description: This article describes the case-sensitive endswith_cs string operator in Azure Data Explorer.
+description: Learn how to use the endswith_cs operator to filter a record set for data with a case-sensitive ending string. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/30/2021
+ms.date: 12/11/2022
 ---
 # endswith_cs operator
 
@@ -24,7 +24,7 @@ The following table provides a comparison of the `endswith` operators:
 > * RHS = right hand side of the expression
 > * LHS = left hand side of the expression
 
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
 ## Performance tips
 

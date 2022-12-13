@@ -36,9 +36,8 @@ Returns a dynamic array of the values taken either from the *when_true* or *when
 
 ## Examples
 
-### Boolean condition values
-
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUjOz0vJLMnMz7NNqcxLzM1M1oguKSpN1UlLzClO1QExYzV1FDLT4kFMhBpDHSMdY6gMWClCykTHVMcsVlOBq0YhtaIkNS9FoSi12DaxqCixMj4zM00DbiPcWIQpmgBu0sBflQAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUjOz0vJLMnMz7NNqcxLzM1M1oguKSpN1UlLzClO1QExYzV1FHIQsoY6RjrGILEihJiJjqmOWaymAi9XjUJqRUlqXopCUWqxbWJRUWJlfGZmmgbcFqBRQJ2aACda2uZ8AAAA" target="_blank">Run the query</a>
 
 ```kusto
 print condition=dynamic([true,false,true]), if_true=dynamic([1,2,3]), if_false=dynamic([4,5,6]) 

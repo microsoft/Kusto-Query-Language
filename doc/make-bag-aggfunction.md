@@ -35,7 +35,8 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 
 The following example shows a packed JSON property bag.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEIUbBVSEksAcKknFSNgqL8AqvikqLMvHQdhbLEnNJUKE+TK5pLAQiUQCoMDJV0FJSA0vGJSjpIwkYw4SQUYWOYcDJQONaaK4SrRiG1oiQ1L0WhAGh7QWJyNthiqI2aQOni0tzcxKLMqlSFlMzkEtvcxOzU+KTEdI0CTQBPpqLVtAAAAA==)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEIUbBVSEksAcKknFSNgqL8AqvikqLMvHQdhbLEnNJUKE+TK5pLAQiUQCoMDJV0FJSA0vGJSjpIwkYw4SQUYWOYcDJQONaaK4SrRiG1oiQ1L0WhAGh7QWJyNthiqI2aQOni0tzcxKLMqlSFlMzkEtvcxOzU+KTEdI0CTQBPpqLVtAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string)
@@ -57,7 +58,8 @@ T
 
 Use the [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag() output into columns.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WNvQrDMAyEdz+F8BSDh/5sLXmLbKUYOREhxHZNYpdS+vCVTQKttJy+O3GOEnTQwoCJ1zpq4vKIlzUtUxg1PNFl2i4lbgJ4ZEkcjlKDZNug1D/4tGP7h8877hnfr6ITH6BXojBA5PaI/VyLt0bF9pq9x2V6E1gcW48zGRZNLB6VFKZqmRzqO0v1BTGl9vXOAAAA)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WNvQrDMAyEdz+F8BSDh/5sLXmLbKUYOREhxHZNYpdS+vCVTQKttJy+O3GOEnTQwoCJ1zpq4vKIlzUtUxg1PNFl2i4lbgJ4ZEkcjlKDZNug1D/4tGP7h8877hnfr6ITH6BXojBA5PaI/VyLt0bF9pq9x2V6E1gcW48zGRZNLB6VFKZqmRzqO0v1BTGl9vXOAAAA" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string)

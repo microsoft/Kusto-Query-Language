@@ -25,7 +25,8 @@ Returns the base64 string encoded from the bytes array.
 
 ## Examples
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFIqixJLY5PLCpKrFSwVSjJL05OzEks0igoyswDSiYWp5qZxKekJuenpMaX5IOVaSgFG4dVpbhb2CppalpzQVRClKTEQ3UUlwBF04EGQvmpeWAT0orycyFmIFmrCQCPOEFEhwAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFIqixJLY5PLCpKrFSwVSjJL05OzEks0igoyswDSiYWp5qZxKekJuenpMaX5IOVaSgFG4dVpbhb2CppalpzQVRClKTEQ3UUlwBF04EGQvmpeWAT0orycyFmIFmrCQCPOEFEhwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 let bytes_array = toscalar(print base64_decode_toarray("S3VzdG8="));
@@ -38,7 +39,8 @@ print decoded_base64_string = base64_encode_fromarray(bytes_array)
 
 Trying to encode a base64 string from an invalid bytes array that was generated from invalid UTF-8 encoded string will return null:
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFIzS0oqYxPqixJLY5PLCpKrFSwVSjJL05OzEks0igoyswrUUhKLE41M4lPSU3OT0mNL8kHK9NQCjUOqkwMN80z8PYIMihxdzTwMQ/KsHQ2M/BxVNLUtOaCaIaYX1wC5KQDjYaalZoHNiutKD8XYhqGMzQBTXW2Jp0AAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFIzS0oqYxPqixJLY5PLCpKrFSwVSjJL05OzEks0igoyswrUUhKLE41M4lPSU3OT0mNL8kHK9NQCjUOqkwMN80z8PYIMihxdzTwMQ/KsHQ2M/BxVNLUtOaCaIaYX1wC5KQDjYaalZoHNiutKD8XYhqGMzQBTXW2Jp0AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let empty_bytes_array = toscalar(print base64_decode_toarray("U3RyaW5n0KHR0tGA0L7Rh9C60LA"));

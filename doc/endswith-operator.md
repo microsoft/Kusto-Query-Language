@@ -1,9 +1,9 @@
 ---
 title: The case-insensitive endswith string operator - Azure Data Explorer
-description: This article describes the case-insensitive endswith string operator in Azure Data Explorer.
+description: Learn how to use the endswith operator to filter a record set for data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/30/2021
+ms.date: 12/11/2022
 ---
 # endswith operator
 
@@ -24,7 +24,7 @@ The following table provides a comparison of the `endswith` operators:
 > * RHS = right hand side of the expression
 > * LHS = left hand side of the expression
 
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
 Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
 
@@ -37,7 +37,7 @@ For faster results, use the case-sensitive version of an operator, for example, 
 
 ## Syntax
 
-*T* `|` `where` *col* `endswith` `(`*expression*`)`   
+*T* `|` `where` *col* `endswith` `(`*expression*`)`
 
 ## Arguments
 

@@ -1,9 +1,9 @@
 ---
 title: The case-insensitive =~ (equals) string operator - Azure Data Explorer
-description: This article describes the case-insensitive =~ (equals) string operator in Azure Data Explorer.
+description: Learn how to use the =~ (equals) operator to filter a record set for data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/30/2021
+ms.date: 12/11/2022
 ---
 # =~ (equals) operator
 
@@ -18,7 +18,7 @@ The following table provides a comparison of the `==` (equals) operators:
 |[`=~`](equals-operator.md) |Equals |No |`"abc" =~ "ABC"`|
 |[`!~`](not-equals-operator.md) |Not equals |No |`"aBc" !~ "xyz"`|
 
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
 Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
 
@@ -29,7 +29,7 @@ Case-insensitive operators are currently supported only for ASCII-text. For non-
 
 For faster results, use the case-sensitive version of an operator, for example, `==`, not `=~`. For best practices, see [Query best practices](best-practices.md).
 
-## Syntax 
+## Syntax
 
 *T* `|` `where` *col* `=~` `(`*expression*`)`
 

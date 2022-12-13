@@ -39,7 +39,8 @@ The array's sort order is undefined.
 
 The following example shows a list of names with more than 4 letters.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyXNPQvCMBSF4T2/4tDJQBZFUSt1FZxEuomEFG/bYD4gSQfFH++l5U7PO9zjqKBFg5cpfJ2jVTCe6lySDYPi/NGx151NZaxdDIMUDwGgusYxVApHNetmJsdaHxZeKKaBOGx2S7jzs8jei+dJtOKHPHlvkv0SvHmTzlS07edpBd52FGZInLGVf+88QMOkAAAA)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyXNPQvCMBSF4T2/4tDJQBZFUSt1FZxEuomEFG/bYD4gSQfFH++l5U7PO9zjqKBFg5cpfJ2jVTCe6lySDYPi/NGx151NZaxdDIMUDwGgusYxVApHNetmJsdaHxZeKKaBOGx2S7jzs8jei+dJtOKHPHlvkv0SvHmTzlS07edpBd52FGZInLGVf+88QMOkAAAA" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)

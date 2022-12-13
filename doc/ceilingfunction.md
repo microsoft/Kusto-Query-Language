@@ -25,7 +25,8 @@ The smallest integer greater than, or equal to, the specified numeric expression
 
 ## Examples
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUg2VLBVSE7NzMnMS9fQNdQz1NRRSDZCEjMACRgjC+hZagIAMiJDFDwAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUg2VLBVSE7NzMnMS9fQNdQz1NRRSDZCEjMACRgjC+hZagIAMiJDFDwAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print c1 = ceiling(-1.1), c2 = ceiling(0), c3 = ceiling(0.9)

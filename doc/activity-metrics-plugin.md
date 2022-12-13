@@ -82,7 +82,8 @@ The churn vs. retention Rate is derived from the definition of `Churn Rate` and 
 
 The next query calculates retention and churn rate for week-over-week window.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRy26EIBTdm/gPdzc4g1FsJrNoXPcjmsYQuc7QqBi4mjHpxxeQxTRlQeDmPDiHqoIPnNFKQrByVmYCJUmCGWB1aEH2pDdNGl2ejUjQOZKWoA0oJD0ha2pxK2tR1k3xnjA4q/+Ia/kmAsK73BE6JXcYrLdLimQOHjjCBYTKsx/AJ4VRECMzmvnOWOSViVRUQhUvQOuBIQQrLuJl3IUkro3GLAmp87U+24LDn/ulqf1eCj8XUXjaSnwuXhK0ag+d8FLaFzQDC8wCRj1pAlHHlWdVFa03Oa6h1FTg3k1IVveOfZ60On3x2ABPQXjMzuF2xFms+caeEsSiT0HazF34JQ79Y7XHOWCtJ/p/CkX3Dy/1C38j6lLRAQAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRy26EIBTdm/gPdzc4g1FsJrNoXPcjmsYQuc7QqBi4mjHpxxeQxTRlQeDmPDiHqoIPnNFKQrByVmYCJUmCGWB1aEH2pDdNGl2ejUjQOZKWoA0oJD0ha2pxK2tR1k3xnjA4q/+Ia/kmAsK73BE6JXcYrLdLimQOHjjCBYTKsx/AJ4VRECMzmvnOWOSViVRUQhUvQOuBIQQrLuJl3IUkro3GLAmp87U+24LDn/ulqf1eCj8XUXjaSnwuXhK0ag+d8FLaFzQDC8wCRj1pAlHHlWdVFa03Oa6h1FTg3k1IVveOfZ60On3x2ABPQXjMzuF2xFms+caeEsSiT0HazF34JQ79Y7XHOWCtJ/p/CkX3Dy/1C38j6lLRAQAA" target="_blank">Run the query</a>
 
 ```kusto
 // Generate random data of user activities
@@ -130,7 +131,8 @@ range _day from _start to _end  step 1d
 
 The next query calculates distinct values and 'new' values (IDs that didn't appear in previous time window) for week-over-week window.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRTWuEMBC9C/6HuW3cVTSWZQ/Fc39EKRLM7DaLJpKMdoX++CYxlC3NITCP95E3qWt4Q41WEIIVWpoJpCAB5gqLQwtiILUqUujybESC3pGwBF1gIakJWdvwS9XwqmmL18RBLf8zztULDwyfckPopdjgan1cciSz68ARzsBlnn0DPihAwYzMaPSNsairkqiouSyeiNYTQwlWnPgT3IcmrovBLBnJ47k52qKEP/OpbfxdcY/zaDytFT5mbwlKdrtPeCltM5orC8oCRjUpAt7Ek2d1HaNXMS5hqWmBWz8hWTU49n5Q8vBRxg2UqUgZu5dw2evM1txxoESRg1k09cEQ3e+o8WtHgsB6tf+ssO3h0/v9ADoJzJ7WAQAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VRTWuEMBC9C/6HuW3cVTSWZQ/Fc39EKRLM7DaLJpKMdoX++CYxlC3NITCP95E3qWt4Q41WEIIVWpoJpCAB5gqLQwtiILUqUujybESC3pGwBF1gIakJWdvwS9XwqmmL18RBLf8zztULDwyfckPopdjgan1cciSz68ARzsBlnn0DPihAwYzMaPSNsairkqiouSyeiNYTQwlWnPgT3IcmrovBLBnJ47k52qKEP/OpbfxdcY/zaDytFT5mbwlKdrtPeCltM5orC8oCRjUpAt7Ek2d1HaNXMS5hqWmBWz8hWTU49n5Q8vBRxg2UqUgZu5dw2evM1txxoESRg1k09cEQ3e+o8WtHgsB6tf+ssO3h0/v9ADoJzJ7WAQAA" target="_blank">Run the query</a>
 
 ```kusto
 // Generate random data of user activities

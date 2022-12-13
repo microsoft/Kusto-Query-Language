@@ -27,7 +27,8 @@ If n is negative, a NULL value is returned.
 
 ## Example
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswr0UjKzEssqowvzshMK4nPSU0r0TDUMdLUBADck7ZgHQAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswr0UjKzEssqowvzshMK4nPSU0r0TDUMdLUBADck7ZgHQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 binary_shift_left(1,2)

@@ -51,7 +51,8 @@ The `bag_unpack` plugin returns a table with as many records as its tabular inpu
 
 ### Expand a bag
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0QQABlsx468AAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0QQABlsx468AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 datatable(d:dynamic)
@@ -73,7 +74,8 @@ datatable(d:dynamic)
 
 Expand a bag and use the `OutputColumnPrefix` option to produce column names that begin with the prefix 'Property_'.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VFQDyjKL0gtKqmMV9cEAG0gI1O8AAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VFQDyjKL0gtKqmMV9cEAG0gI1O8AAAA" target="_blank">Run the query</a>
 
 ```kusto
 datatable(d:dynamic)
@@ -95,7 +97,8 @@ datatable(d:dynamic)
 
 Expand a bag and use the `columnsConflict` option to resolve conflicts between existing columns and columns produced by the `bag_unpack()` operator.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NsQrCMBAG4L1PcWRJC4WKOhUcRKcOOjmJlGty1mKalCapiPrupgq69m66/+fjJLqwlaJ4hy3l1vWNrlOQubxrbBuRRMcIwvC9kmVIiIfyW8UPNhqWAyvMRbMU2LoO53z2StIJaIsD/dByIirQto3+u8XHnaIn0IDKoyOosC697lBcY5mCMMq32m6MPqtGuBXvqVMoqLTG94J4AlkGB0ug6Qbj2zdNIgveEgEAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NsQrCMBAG4L1PcWRJC4WKOhUcRKcOOjmJlGty1mKalCapiPrupgq69m66/+fjJLqwlaJ4hy3l1vWNrlOQubxrbBuRRMcIwvC9kmVIiIfyW8UPNhqWAyvMRbMU2LoO53z2StIJaIsD/dByIirQto3+u8XHnaIn0IDKoyOosC697lBcY5mCMMq32m6MPqtGuBXvqVMoqLTG94J4AlkGB0ug6Qbj2zdNIgveEgEAAA==" target="_blank">Run the query</a>
 
 ```kusto
 datatable(Name:string, d:dynamic)
@@ -113,7 +116,8 @@ datatable(Name:string, d:dynamic)
 |40 |Dave   |
 |30 |Jasmine|
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NzwqCQBAG8LtPMexlFQSjOgkdok4G9QARMu5OJu4fcV0hqndvLairM6f5Pn6MxCFspSg+oqbcDX1j6hRkLu8GdSOS6BxBGH5SsgwJ8VB+q/jBJsNyYIW9GZYC29bhXC5eSToD7XGkH1rPRAU63Zi/W33cJXoCjag8DgQV1qU3HYo2likIq7w2bmfNVTVi2PCWqCud9b0gnkCWwSEEYJWE6ekb9wh0nRABAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43NzwqCQBAG8LtPMexlFQSjOgkdok4G9QARMu5OJu4fcV0hqndvLairM6f5Pn6MxCFspSg+oqbcDX1j6hRkLu8GdSOS6BxBGH5SsgwJ8VB+q/jBJsNyYIW9GZYC29bhXC5eSToD7XGkH1rPRAU63Zi/W33cJXoCjag8DgQV1qU3HYo2likIq7w2bmfNVTVi2PCWqCud9b0gnkCWwSEEYJWE6ekb9wh0nRABAAA=" target="_blank">Run the query</a>
 
 ```kusto
 datatable(Name:string, d:dynamic)
@@ -135,7 +139,8 @@ datatable(Name:string, d:dynamic)
 
 Expand a bag and use the `ignoredProperties` option to ignore certain properties in the property bag.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XOPQ+CMBAG4J1fcekCJDUoOJE4mLjIYNwJMQe9IBEKaYHEqP/d8iFOtMt76dsnJ7A1Ny3JEaF4SqyKzLViC8yZR+fFLlgRC4FF9V0yDuyYm9HfDkkIRVoPj3Pc7Bh8XL4inLCnRdivCD5bByLUVSH/RrBiBKORWJ4H51zWisA2fRtQCpOmkg2NqhtSbUHaegP1WHbYEqSY3zrZYPZwBIdi/C6uS/Xw2ypeID7piet+AWW2HHFQAQAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XOPQ+CMBAG4J1fcekCJDUoOJE4mLjIYNwJMQe9IBEKaYHEqP/d8iFOtMt76dsnJ7A1Ny3JEaF4SqyKzLViC8yZR+fFLlgRC4FF9V0yDuyYm9HfDkkIRVoPj3Pc7Bh8XL4inLCnRdivCD5bByLUVSH/RrBiBKORWJ4H51zWisA2fRtQCpOmkg2NqhtSbUHaegP1WHbYEqSY3zrZYPZwBIdi/C6uS/Xw2ypeID7piet+AWW2HHFQAQAA" target="_blank">Run the query</a>
 
 ```kusto
 datatable(d:dynamic)
@@ -158,7 +163,8 @@ datatable(d:dynamic)
 
 Expand a bag and use the `OutputSchema` option to allow various optimizations to be evaluated before running the actual query.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VSwUtAA6bUqLinKzEvXUQDqssrJz0vXBADtklvGyQAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjRSrlMq8xNzMZE2uaC4FIIByNaqV/BJzU5WsFJS88jPylHQUlBzTgVwjg1pNHRwKXRLLUuEKTfAo9Eoszs3MQ6g1BquN5apRSC1LzClNLElVSEpMjy/NK0hMztZI0VSwUtAA6bUqLinKzEvXUQDqssrJz0vXBADtklvGyQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 datatable(d:dynamic)

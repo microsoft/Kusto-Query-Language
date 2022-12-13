@@ -51,7 +51,8 @@ Output table schema is:
 
 The next query calculates daily activity counts for the provided input table.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5XSzwuCMBQH8Lvg/7CbCQs0g6Lw0I9DdW2dImS5EYOp4V5J0B/fKxU6jEUMD+PzeG/yfVoCMcBrSAUHCaqQg1EUT4bRdBjF4dz3NBbIUlh43HOjSlE1aSy6OyMpwXI8Zy0HByPrrZgZqFV5oYRhDxxYXGd9x9D3jr4XLAJKbG+gaGuH7Ry2dNjKaqOPMYfZ57W2sVri6Pnb7PMSx/+1tv/bxm87YYiE4fck8s71DasIz0HdFTyyvLqVYLJCYpi56aL9ypS2u0TfG0O7vQhfyOSsfmMCAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5XSzwuCMBQH8Lvg/7CbCQs0g6Lw0I9DdW2dImS5EYOp4V5J0B/fKxU6jEUMD+PzeG/yfVoCMcBrSAUHCaqQg1EUT4bRdBjF4dz3NBbIUlh43HOjSlE1aSy6OyMpwXI8Zy0HByPrrZgZqFV5oYRhDxxYXGd9x9D3jr4XLAJKbG+gaGuH7Ry2dNjKaqOPMYfZ57W2sVri6Pnb7PMSx/+1tv/bxm87YYiE4fck8s71DasIz0HdFTyyvLqVYLJCYpi56aL9ypS2u0TfG0O7vQhfyOSsfmMCAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let start=datetime(2017-08-01);

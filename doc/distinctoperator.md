@@ -1,35 +1,51 @@
 ---
 title: distinct operator - Azure Data Explorer
-description: This article describes distinct operator in Azure Data Explorer.
+description: Learn how to use the distinct operator to create a table with the distinct combination of the columns of the input table.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/24/2022
 ---
 # distinct operator
 
-Produces a table with the distinct combination of the provided columns of the input table. 
+Produces a table with the distinct combination of the provided columns of the input table.
 
-```kusto
-T | distinct Column1, Column2
-```
+## Syntax
 
-Produces a table with the distinct combination of all columns in the input table.
+*T* `| distinct` *ColumnName*`[,`*ColumnName2*`, ...]`
 
-```kusto
-T | distinct *
-```
+## Parameters
+
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ColumnName*| string | &check;| The column name to search for distinct values. |
+
+> [!NOTE]
+> The `distinct` operator supports providing an asterisk `*` as the group key to denote all columns, which is helpful for wide tables.
 
 ## Example
 
-Shows the distinct combination of fruit and price.
+Shows distinct combination of states and type of events that led to over 45 direct injuries.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVfDMyyotykwtdsksSk0uUbBTMDEFSaZkFpdk5gEFgksSS1J1FMDaQioLUgH0ldkdRQAAAA==)
 
 ```kusto
-Table | distinct fruit, price
+StormEvents
+| where InjuriesDirect > 45
+| distinct State, EventType
 ```
 
-:::image type="content" source="images/distinctoperator/distinct.PNG" alt-text="Two tables. One has suppliers, fruit types, and prices, with some fruit-price combinations repeated. The second table lists only unique combinations.":::
+|State|EventType|
+|--|--|
+|TEXAS|Winter Weather|
+|KANSAS|Tornado|
+|MISSOURI|Excessive Heat|
+|OKLAHOMA|Thunderstorm Wind|
+|OKLAHOMA|Excessive Heat|
+|ALABAMA|Tornado|
+|ALABAMA|Heat|
+|TENNESSEE|Heat|
+|CALIFORNIA|Wildfire|
 
-**Notes**
+## See also
 
-* Unlike `summarize by ...`, the `distinct` operator supports providing an asterisk (`*`) as the group key, making it easier to use for wide tables.
-* If the group by keys are of high cardinalities, using `summarize by ...` with the [shuffle strategy](shufflequery.md) could be useful.
+If the group by keys are of high cardinalities, try `summarize by ...` with the [shuffle strategy](shufflequery.md).

@@ -32,7 +32,8 @@ Returns the sum of *Expr* for which *Predicate* evaluates to `true`.
 
 This example shows the sum total damage for storms without casualties.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVXBJzE1MT/XLd04sLk3MKclMLbYFSmamaWhAZJyL8guKtSHsACA7taikUlNHwyU1sSSj2CWzKDW5RBvC8cxLAXM1bW0NNBWSKhWCSxJLUgF0hdWZeAAAAA==)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVXBJzE1MT/XLd04sLk3MKclMLbYFSmamaWhAZJyL8guKtSHsACA7taikUlNHwyU1sSSj2CWzKDW5RBvC8cxLAXM1bW0NNBWSKhWCSxJLUgF0hdWZeAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

@@ -36,7 +36,8 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 
 The following example shows a packed JSON property bag.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOTQuDMAyG7/0VwZNCD/u4OfwX3saQtEYpVi1tHGPsxy8bOlxyecOTFx5PDDVU0CLLGk95iHMoE0c39Rru6Bf6XSFS6ywylWaefaGuCmSyT+NwzDRk8t6gBI4L6R08bdBI6NCnP3reqF2r6nZRtXoBPZimFoL4BbTDV211KgSnZRwxuieBWHE14kCNwb5xXR52ssUbsXCntuQAAAA=)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOTQuDMAyG7/0VwZNCD/u4OfwX3saQtEYpVi1tHGPsxy8bOlxyecOTFx5PDDVU0CLLGk95iHMoE0c39Rru6Bf6XSFS6ywylWaefaGuCmSyT+NwzDRk8t6gBI4L6R08bdBI6NCnP3reqF2r6nZRtXoBPZimFoL4BbTDV211KgSnZRwxuieBWHE14kCNwb5xXR52ssUbsXCntuQAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)
@@ -58,7 +59,8 @@ T
 
 Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag_if() output into columns.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOywqDMBBF9/mKwZWCiz52Fv/CXSlhoqMEo4Y8Sin9+E5Ei002J5x7wzUUoIEaOgx8laHcusVWPjg9DyU80UT6vayjTrcYqFLLYgpxF8AnS43TOSsh47hEhuAilQd52aVi6NH4P3vdbbtVxeMmGvEBegWaO7C8z2I7rtO2TQVrH6cJnX4TKBzqCUeSDFL3uT1sTUlKHeYUlHFeP2MsvmCOilb+AAAA)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOywqDMBBF9/mKwZWCiz52Fv/CXSlhoqMEo4Y8Sin9+E5Ei002J5x7wzUUoIEaOgx8laHcusVWPjg9DyU80UT6vayjTrcYqFLLYgpxF8AnS43TOSsh47hEhuAilQd52aVi6NH4P3vdbbtVxeMmGvEBegWaO7C8z2I7rtO2TQVrH6cJnX4TKBzqCUeSDFL3uT1sTUlKHeYUlHFeP2MsvmCOilb+AAAA" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)

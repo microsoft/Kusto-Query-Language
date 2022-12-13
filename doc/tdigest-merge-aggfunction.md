@@ -45,7 +45,8 @@ Returns the merged tdigest values of *Expr* across the group.
 
 ## Example
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQgoSnVMT3dJzE1MTw0oyi9ILSqptC1JyUxPLS7RQBXWVEiqVAguSSxJRTEhN7UoPTUeqqVYA5uBmgCTdTq/fgAAAA==)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQgoSnVMT3dJzE1MTw0oyi9ILSqptC1JyUxPLS7RQBXWVEiqVAguSSxJRTEhN7UoPTUeqqVYA5uBmgCTdTq/fgAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

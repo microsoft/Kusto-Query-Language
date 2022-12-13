@@ -16,32 +16,31 @@ Calculates an estimate of the number of distinct values that are taken by a scal
 
 ## Syntax
 
-`dcount` `(`*Expr*[`,` *Accuracy*]`)`
+`dcount` `(`*expr*[`,` *accuracy*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr*| scalar | &check; | A scalar expression whose distinct values are to be counted. |
-| *Accuracy* | int |   | Defines the requested estimation accuracy. If unspecified, the default value is `1`. See [Estimation accuracy](#estimation-accuracy) for supported values. |
+| *expr*| string | &check; | The input whose distinct values are to be counted. |
+| *accuracy* | int |   | The value that defines the requested estimation accuracy. The default value is `1`. See [Estimation accuracy](#estimation-accuracy) for supported values. |
 
 ## Returns
 
-Returns an estimate of the number of distinct values of *`Expr`* in the group.
+Returns an estimate of the number of distinct values of *expr* in the group.
 
 ## Example
 
 This example shows how many types of storm events happened in each state.
 
-**\[**[**Click to run query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVXDJTEtLLQIKQ+RsU5LzS/NKNMC8kMqCVE2FpEqF4JLEklSgtvyilNQikACaLgBDbD8AXQAAAA==)**\]**
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVXDJTEtLLQIKQ+RsU5LzS/NKNMC8kMqCVE2FpEqF4JLEklSgtvyilNQikACaLgBDbD8AXQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
 | summarize DifferentEvents=dcount(EventType) by State
 | order by DifferentEvents
 ```
-
-**Results**
 
 The results table shown includes only the first 10 rows.
 

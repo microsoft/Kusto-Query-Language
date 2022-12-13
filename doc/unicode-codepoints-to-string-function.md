@@ -30,7 +30,8 @@ If any argument isn't a valid Unicode codepoint, the function returns `null`.
 
 ## Examples
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeuoa5qY6CoaE5iACzzECEoSYA+KAQ+EAAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeuoa5qY6CoaE5iACzzECEoSYA+KAQ+EAAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print str = unicode_codepoints_to_string(75, 117, 115, 116, 111)
@@ -40,7 +41,8 @@ print str = unicode_codepoints_to_string(75, 117, 115, 116, 111)
 |---|
 |Kusto|
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZKZV5ibmayRrS5qY6CoaE5iACzzECEYaymJgBfBO+kSwAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZKZV5ibmayRrS5qY6CoaE5iACzzECEYaymJgBfBO+kSwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print str = unicode_codepoints_to_string(dynamic([75, 117, 115, 116, 111]))
@@ -50,7 +52,8 @@ print str = unicode_codepoints_to_string(dynamic([75, 117, 115, 116, 111]))
 |---|
 |Kusto|
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZKZV5ibmayRrS5qY6CoaE5iDCN1QRRZiDCUBMAeB3lVUsAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZKZV5ibmayRrS5qY6CoaE5iDCN1QRRZiDCUBMAeB3lVUsAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print str = unicode_codepoints_to_string(dynamic([75, 117, 115]), 116, 111)
@@ -60,7 +63,8 @@ print str = unicode_codepoints_to_string(dynamic([75, 117, 115]), 116, 111)
 |---|
 |Kusto|
 
-[**Run the Query**](https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeuoa5qY6CoQEQG5rDGHARMxjDUBMACrIR/1AAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeuoa5qY6CoQEQG5rDGHARMxjDUBMACrIR/1AAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print str = unicode_codepoints_to_string(75, 10, 117, 10, 115, 10, 116, 10, 111)
@@ -70,8 +74,8 @@ print str = unicode_codepoints_to_string(75, 10, 117, 10, 115, 10, 116, 10, 111)
 |---|
 |K<br>u<br>s<br>t<br>o|
 
-
-[**Run the Query**](https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZRYl56qoaJhY6puaaOAoRnZqpjaQDnWZrrGBoZaWoCAIEH/7dTAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvce69202ceceed490b88d.northeurope/databases/Other?query=H4sIAAAAAAAAAysoyswrUSguKVKwVSjNy0zOT0mNBxEF+UDx4viS/HigXGZeukZRYl56qoaJhY6puaaOAoRnZqpjaQDnWZrrGBoZaWoCAIEH/7dTAAAA" target="_blank">Run the query</a>
 
 ```kusto
 print str = unicode_codepoints_to_string(range(48,57), range(65,90), range(97,122))

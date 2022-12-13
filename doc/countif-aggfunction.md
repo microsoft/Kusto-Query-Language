@@ -31,7 +31,8 @@ Returns a count of rows in which *predicate* evaluates to `true`.
 
 This example shows the number of storms with damage to crops by state.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjJL0nMcc4vzSuxTQaRGpo6YKHwzJIMl8TcxPRUiHhmmgaE61yUX1CsYGegqZBUqRBckliSCgAAARcgWwAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjJL0nMcc4vzSuxTQaRGpo6YKHwzJIMl8TcxPRUiHhmmgaE61yUX1CsYGegqZBUqRBckliSCgAAARcgWwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
@@ -58,7 +59,8 @@ The results table shown includes only the first 10 rows.
 
 This example shows the number of names with more than 4 letters.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWNMQvCMBBG9/yKo1MDWRRFregqOIl0EympXtNAcgdpMij+eI+Wb3pv+F7ADC2c4G2zrA9Yk43YTDl5ckb0p+Oh633KYxOYnFYPBQDVlUeqDBzMTDdbgtBqv+AFOTkUsd4u4i5nLLxTz6Nq1Q+mEqNN/ovw4kLZD7UUA9Jc13CGjf4DYumr9poAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWNMQvCMBBG9/yKo1MDWRRFregqOIl0EympXtNAcgdpMij+eI+Wb3pv+F7ADC2c4G2zrA9Yk43YTDl5ckb0p+Oh633KYxOYnFYPBQDVlUeqDBzMTDdbgtBqv+AFOTkUsd4u4i5nLLxTz6Nq1Q+mEqNN/ovw4kLZD7UUA9Jc13CGjf4DYumr9poAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)

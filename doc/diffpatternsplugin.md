@@ -1,24 +1,24 @@
 ---
 title: diffpatterns plugin - Azure Data Explorer
-description: This article describes diffpatterns plugin in Azure Data Explorer.
+description: Learn how to use the diffpatterns plugin to compare two data sets of the same structure to find the differences between the two data sets. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/24/2022
+ms.date: 12/11/2022
 ---
-# diff patterns plugin
+# diffpatterns plugin
 
 Compares two data sets of the same structure and finds patterns of discrete attributes (dimensions) that characterize differences between the two data sets. The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
-`Diffpatterns` was developed to help analyze failures (for example, by comparing failures to non-failures in a given time frame), but can potentially find differences between any two data sets of the same structure. 
+`Diffpatterns` was developed to help analyze failures (for example, by comparing failures to non-failures in a given time frame), but can potentially find differences between any two data sets of the same structure.
 
 > [!NOTE]
 > `diffpatterns` aims to find significant patterns (that capture portions of the data difference between the sets) and isn't meant for row-by-row differences.
 
 ## Syntax
 
-`T | evaluate diffpatterns(SplitColumn, SplitValueA, SplitValueB [, WeightColumn, Threshold, MaxDimensions, CustomWildcard, ...])` 
+`T | evaluate diffpatterns(SplitColumn, SplitValueA, SplitValueB [, WeightColumn, Threshold, MaxDimensions, CustomWildcard, ...])`
 
-## Arguments 
+## Arguments
 
 ### Required arguments
 
@@ -34,7 +34,7 @@ Compares two data sets of the same structure and finds patterns of discrete attr
 
     A string representation of one of the values in the SplitColumn that was specified. All the rows that have this value in their SplitColumn considered as data set  “B”.
 
-    Example: `T | extend splitColumn=iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure") `
+    Example: `T | extend splitColumn=iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure")`
 
 ### Optional arguments
 
@@ -44,8 +44,8 @@ All other arguments are optional, but they must be ordered as below. To indicate
 
     Considers each row in the input according to the specified weight (by default each row has a weight of '1'). The argument must be a name of a numeric column (for example, `int`, `long`, `real`).
     A common usage of a weight column is to take into account sampling or bucketing/aggregation of the data that is already embedded into each row.
-    
-    Example: `T | extend splitColumn=iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", sample_Count) `
+
+    Example: `T | extend splitColumn= iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", sample_Count)`
 
 * Threshold - 0.015 < *double* < 1 [default: 0.05]
 
@@ -73,7 +73,7 @@ All other arguments are optional, but they must be ordered as below. To indicate
 
 The result of `diffpatterns` returns the following columns:
 
-* SegmentId: the identity assigned to the pattern in the current query (note: IDs are not guaranteed to be the same in repeating queries).
+* SegmentId: the identity assigned to the pattern in the current query (note: IDs aren't guaranteed to be the same in repeating queries).
 
 * CountA: the number of rows captured by the pattern in Set A (Set A is the equivalent of `where tostring(splitColumn) == SplitValueA`).
 
@@ -87,11 +87,12 @@ The result of `diffpatterns` returns the following columns:
 
 * Rest of the columns: are the original schema of the input and describe the pattern, each row (pattern) reresents the intersection of the non-wildcard values of the columns (equivalent of `where col1==val1 and col2==val2 and ... colN=valN` for each non-wildcard value in the row).
 
-For each pattern, columns that are not set in the pattern (that is, without restriction on a specific value) will contain a wildcard value, which is null by default. See in the Arguments section below how wildcards can be manually changed.
+For each pattern, columns that aren't set in the pattern (that is, without restriction on a specific value) will contain a wildcard value, which is null by default. See in the Arguments section below how wildcards can be manually changed.
 
-* Note: the patterns are often not distinct. They may be overlapping, and usually do not cover all the original rows. Some rows may not fall under any pattern.
+* Note: the patterns are often not distinct. They may be overlapping, and usually don't cover all the original rows. Some rows may not fall under any pattern.
 
 > [!TIP]
+>
 > * Use [where](./whereoperator.md) and [project](./projectoperator.md) in the input pipe to reduce the data to just what you're interested in.
 > * When you find an interesting row, you might want to drill into it further by adding its specific values to your `where` filter.
 

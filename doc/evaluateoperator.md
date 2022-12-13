@@ -1,26 +1,23 @@
 ---
 title: evaluate plugin operator - Azure Data Explorer
-description: This article describes evaluate plugin operator in Azure Data Explorer.
+description: Learn how to use the evaluate plugin operator to invoke plugins.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/09/2022
+ms.date: 12/11/2022
 ---
-# evaluate operator plugins
+# evaluate plugin operator
 
 Invokes a service-side query extension (plugin).
 
-The `evaluate` operator is a tabular operator that provides the ability to
-invoke query language extensions known as **plugins**. Plugins can be enabled
-or disabled (unlike other language constructs, which are always available),
-and aren't "bound" by the relational nature of the language (for example, they may
-not have a predefined, statically determined, output schema).
+The `evaluate` operator is a tabular operator that allows you to invoke query language extensions known as **plugins**. Unlike other language constructs, plugins can be enabled or disabled. Plugins aren't "bound" by the relational nature of the language. In other words, they may not have a predefined, statically determined, output schema.
 
 > [!NOTE]
+>
 > * Syntactically, `evaluate` behaves similarly to the [invoke operator](./invokeoperator.md), which invokes tabular functions.
 > * Plugins provided through the evaluate operator aren't bound by the regular rules of query execution or argument evaluation.
 > * Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data (for example, [bag_unpack plugin](./bag-unpackplugin.md) and [pivot plugin](./pivotplugin.md)) can't be used when performing cross-cluster queries.
 
-## Syntax 
+## Syntax
 
 [*T* `|`] `evaluate` [ *evaluateParameters* ] *PluginName* `(` [*PluginArg1* [`,` *PluginArg2*]... `)`
 
@@ -35,7 +32,7 @@ not have a predefined, statically determined, output schema).
 
 ## Parameters
 
-The following parameters are supported: 
+The following parameters are supported:
 
   |Name                |Values                           |Description                                |
   |--------------------|---------------------------------|-------------------------------------------|
@@ -47,26 +44,26 @@ The following parameters are supported:
 
 The following plugins are supported:
 
-- [autocluster plugin](autoclusterplugin.md)
-- [azure-digital-twins-query-request plugin](azure-digital-twins-query-request-plugin.md)
-- [bag-unpack plugin](bag-unpackplugin.md)
-- [basket plugin](basketplugin.md)
-- [cosmosdb-sql-request plugin](cosmosdb-plugin.md)
-- [dcount-intersect plugin](dcount-intersect-plugin.md)
-- [diffpatterns plugin](diffpatternsplugin.md)
-- [diffpatterns-text plugin](diffpatterns-textplugin.md)
-- [infer-storage-schema plugin](inferstorageschemaplugin.md)
-- [ipv4-lookup plugin](ipv4-lookup-plugin.md)
-- [mysql-request-plugin](mysqlrequest-plugin.md)
-- [narrow plugin](narrowplugin.md)
-- [pivot plugin](pivotplugin.md)
-- [preview plugin](previewplugin.md)
-- [R plugin](rplugin.md)
-- [rolling-percentile plugin](rolling-percentile-plugin.md)
-- [rows-near plugin](rows-near-plugin.md)
-- [schema-merge plugin](schemamergeplugin.md)
-- [sql-request plugin](mysqlrequest-plugin.md)
-- [sequence-detect plugin](sequence-detect-plugin.md)
+* [autocluster plugin](autoclusterplugin.md)
+* [azure-digital-twins-query-request plugin](azure-digital-twins-query-request-plugin.md)
+* [bag-unpack plugin](bag-unpackplugin.md)
+* [basket plugin](basketplugin.md)
+* [cosmosdb-sql-request plugin](cosmosdb-plugin.md)
+* [dcount-intersect plugin](dcount-intersect-plugin.md)
+* [diffpatterns plugin](diffpatternsplugin.md)
+* [diffpatterns-text plugin](diffpatterns-textplugin.md)
+* [infer-storage-schema plugin](inferstorageschemaplugin.md)
+* [ipv4-lookup plugin](ipv4-lookup-plugin.md)
+* [mysql-request-plugin](mysqlrequest-plugin.md)
+* [narrow plugin](narrowplugin.md)
+* [pivot plugin](pivotplugin.md)
+* [preview plugin](previewplugin.md)
+* [R plugin](rplugin.md)
+* [rolling-percentile plugin](rolling-percentile-plugin.md)
+* [rows-near plugin](rows-near-plugin.md)
+* [schema-merge plugin](schemamergeplugin.md)
+* [sql-request plugin](mysqlrequest-plugin.md)
+* [sequence-detect plugin](sequence-detect-plugin.md)
 
 ## Distribution hints
 

@@ -3,36 +3,54 @@ title: parse_csv() - Azure Data Explorer
 description: This article describes parse_csv() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 11/24/2022
 ---
 # parse_csv()
 
 Splits a given string representing a single record of comma-separated values and returns a string array with these values.
 
-```kusto
-parse_csv("aaa,bbb,ccc") == ["aaa","bbb","ccc"]
-```
-
 ## Syntax
 
-`parse_csv(`*source*`)`
+`parse_csv(`*csv_text*`)`
 
-## Arguments
+## Parameters
 
-* *source*: The source string representing a single record of comma-separated values.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *csv_text* | string | &check; | A single record of comma-separated values. |
+
+> [!NOTE]
+>
+> * Embedded line feeds, commas, and quotes may be escaped using the double quotation mark ('"').
+> * This function doesn't support multiple records per row (only the first record is taken).
 
 ## Returns
 
 A string array that contains the split values.
 
-**Notes**
-
-Embedded line feeds, commas, and quotes may be escaped using the double quotation mark ('"'). 
-This function doesn't support multiple records per row (only the first record is taken).
-
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+### Filter by count of values in record
+
+Count ADX conference sessions with more than three participants.
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3POz0tLLUrNS04NTi0uzszPK+aqUSjPAAopJBYVJVbG56TmpZdkaBQkFhWnxicXl4FYJZnJmQWJeSXFmpoKdgrGQB0pmcUlmXnJJQpaAB0oOCtRAAAA)
+
+```kusto
+ConferenceSessions
+| where array_length(parse_csv(participants)) > 3
+| distinct *
+```
+
+|sessionid|...|participants|
+|--|--|--|
+|CON-PRT157|...|Guy Reginiano, Guy Yehudy, Pankaj Suri, Saeed Copty|
+|BRK3099|...|Yoni Leibowitz, Eric Fleischman, Robert Pack, Avner Aharoni|
+
+### Use escaping quotes
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXFMQqAMAwF0KuUv1Qhi46CozdwFCSWIIVSa5N6fpU3vFJjNldFW7K5cFXZgz6dZyYc9AGFQFg0cIn5dHe7THRywBotCQBCilmGLf+N8P0LWIqWMVMAAAA=)
+
 ```kusto
 print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2"')
 ```
@@ -41,9 +59,12 @@ print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2
 |---|
 |[<br>  "aa",<br>  "b,b,b",<br>  "cc",<br>  "Escaping quotes: \"Title\"",<br>  "line1\nline2"<br>]|
 
-CSV payload with multiple records:
+### CSV with multiple records
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+Only the first record is taken since this function does not support multiple records. 
+
+[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKYnPBRKZ8UWpyflFKbYFiUXFqfHJxWUa6hARQ51EnSSd5Jg8CNdIp0KnUqdKXRMAyO6RzEMAAAA=)
+
 ```kusto
 print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z')
 ```

@@ -44,7 +44,8 @@ Output table schema is:
 
 Calculate weekly number of distinct users that appeared in at least three different days over a period of prior eight days. Period of analysis: July 2018.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42SwWvCMBTG74X+Dw9PFlJI0rJWhweF3XYYWNlhDIltGMGaSJO6y/74vdZWNlFMcnrv/ZJ85Ptq6WDtRONgAZVw0qmDnHLK8phmMWXRcxjUiLzo6haQXIBXY/Y7Ue7fla7MN7J5NUzeZKNMd5qNnWXp1Eme+xYHydBfKY1VNmIFFt2TuHe1nG6sbObWNUp/EShQhXXicJyPmqIw+AgDwDVZTQj060rvU8xnEXkIJfQCLe9A+DX84U0IpT5Q7vEc89HEUh8o84A49RDOU/zzTzSrgB+QJ1G3SIDozd226JbdlqbVrnfuj2XkHDjShYpcBYcMcSH/Q0K6bES/nOHnRKwCAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42SwWvCMBTG74X+Dw9PFlJI0rJWhweF3XYYWNlhDIltGMGaSJO6y/74vdZWNlFMcnrv/ZJ85Ptq6WDtRONgAZVw0qmDnHLK8phmMWXRcxjUiLzo6haQXIBXY/Y7Ue7fla7MN7J5NUzeZKNMd5qNnWXp1Eme+xYHydBfKY1VNmIFFt2TuHe1nG6sbObWNUp/EShQhXXicJyPmqIw+AgDwDVZTQj060rvU8xnEXkIJfQCLe9A+DX84U0IpT5Q7vEc89HEUh8o84A49RDOU/zzTzSrgB+QJ1G3SIDozd226JbdlqbVrnfuj2XkHDjShYpcBYcMcSH/Q0K6bES/nOHnRKwCAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let Start = datetime(2018-07-01);

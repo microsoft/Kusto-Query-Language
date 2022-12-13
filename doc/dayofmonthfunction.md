@@ -7,20 +7,31 @@ ms.date: 11/24/2022
 ---
 # dayofmonth()
 
-Returns the integer number representing the day number of the given month
-
-```kusto
-dayofmonth(datetime(2015-12-14)) == 14
-```
+Returns an integer representing the day number of the given datetime.
 
 ## Syntax
 
-`dayofmonth(`*a_date*`)`
+`dayofmonth(`*date*`)`
 
-## Arguments
+## Parameters
 
-* `a_date`: A `datetime`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check; | The datetime used to extract the day number.|
 
 ## Returns
 
-`day number` of the given month.
+An integer representing the day number of the given datetime.
+
+## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/kvc9rf7q4d68qcw5sk2d6f.northeurope/databases/MyDatabase?query=H4sIAAAAAAAAAysoyswrUUhJrMxPy83PK8nQSEksSS3JzE3VMDIwNNU1NNI1NNHUBAAj3TtIJgAAAA==" target="_blank">Run the query</a>
+
+```kusto
+dayofmonth(datetime(2015-12-14))
+```
+
+|result|
+|--|
+|14|

@@ -1,9 +1,9 @@
 ---
 title: The case-sensitive == (equals) string operator - Azure Data Explorer
-description: This article describes the case-sensitive == (equals) string operator in Azure Data Explorer.
+description: Learn how to use the == (equals) operator to filter a record set for data matching a case-sensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/30/2021
+ms.date: 12/11/2022
 ---
 # == (equals) operator
 
@@ -18,7 +18,7 @@ The following table provides a comparison of the `==` operators:
 |[`=~`](equals-operator.md) |Equals |No |`"abc" =~ "ABC"`|
 |[`!~`](not-equals-operator.md) |Not equals |No |`"aBc" !~ "xyz"`|
 
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
 ## Performance tips
 

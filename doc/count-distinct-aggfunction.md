@@ -36,7 +36,8 @@ Long integer value indicating the number of unique values of *expr* per summary 
 
 This example shows how many types of storm events happened in each state.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjNyywsTYVI2Cbnl+aVxKdkFpdk5iWXaIBFQyoLUjUVkioVgksSS1KBekvyCxRMQQLIWgE/wdUFXwAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVQjNyywsTYVI2Cbnl+aVxKdkFpdk5iWXaIBFQyoLUjUVkioVgksSS1KBekvyCxRMQQLIWgE/wdUFXwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

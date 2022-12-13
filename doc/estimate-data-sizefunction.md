@@ -1,9 +1,9 @@
 ---
 title: estimate_data_size() - Azure Data Explorer
-description: This article describes estimate_data_size() in Azure Data Explorer.
+description: Learn how to use the estimate_data_size() function to return an estimated data size in bytes of the selected columns of the tabular expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/11/2022
 ---
 # estimate_data_size()
 
@@ -26,7 +26,7 @@ estimate_data_size(Col1, Col2, Col3)
 
 ## Returns
 
-* The estimated data size  in bytes of the record size. Estimation is based on data types and values lengths.
+* The estimated data size in bytes of the record size. Estimation is based on data types and values lengths.
 
 ## Examples
 

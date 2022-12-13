@@ -1,9 +1,9 @@
 ---
 title: dynamic_to_json() - Azure Data Explorer 
-description: This article describes dynamic_to_json() in Azure Data Explorer.
+description: Learn how to use the dynamic_to_json() function to convert a scalar value of type `dynamic` to a canonical string representation.
 ms.reviewer: elgevork
 ms.topic: reference
-ms.date: 07/05/2021
+ms.date: 12/11/2022
 ---
 # dynamic_to_json()
 
@@ -25,7 +25,7 @@ according to the following rules:
 * If the input is a scalar value of type other than `dynamic`,
    the output is the application of `tostring()` to that value.
 
-* If the input in an array of values, the output is composed of the
+* If the input is an array of values, the output is composed of the
    characters `[`, `,`, and `]` interspersed with the canonical representation
    described here of each array element.
 
