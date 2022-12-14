@@ -1,9 +1,9 @@
 ---
 title: external_table() - Azure Data Explorer
-description: This article describes external_table() in Azure Data Explorer.
+description: Learn how to use the external_table() function to reference an external table by name.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/21/2019
+ms.date: 12/12/2022
 ---
 # external_table()
 
@@ -14,8 +14,9 @@ external_table('StormEvent')
 ```
 
 > [!NOTE]
-> * The `external_table` function has similar restrictions as the [table](tablefunction.md) function.
-> * Standard [query limits](../concepts/querylimits.md) apply to external table queries as well.
+>
+> The `external_table` function has similar restrictions as the [table](tablefunction.md) function.
+> Standard [query limits](../concepts/querylimits.md) apply to external table queries as well.
 
 ## Syntax
 
@@ -35,4 +36,4 @@ external_table('StormEvent')
 
 * [External tables overview](schema-entities/externaltables.md)
 * [Create and alter Azure Storage external tables](../management/external-tables-azurestorage-azuredatalake.md)
-* [Create and alter SQL Server external tables](../management/external-sql-tables.md)
+* [Create and alter SQL Server external tables](../management/external-sql-tables.md).

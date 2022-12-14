@@ -1,16 +1,15 @@
 ---
 title: externaldata operator - Azure Data Explorer
-description: This article describes the external data operator in Azure Data Explorer.
+description: Learn how to use the externaldata operator to return a data table of the given schema whose data was parsed from the specified storage artifact.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/24/2020
+ms.date: 12/12/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
 # externaldata operator
 
-The `externaldata` operator returns a table whose schema is defined in the query itself, and whose data is read from an external storage artifact, such as a blob in 
-Azure Blob Storage or a file in Azure Data Lake Storage.
+The `externaldata` operator returns a table whose schema is defined in the query itself, and whose data is read from an external storage artifact, such as a blob in Azure Blob Storage or a file in Azure Data Lake Storage.
 
 ::: zone pivot="azuredataexplorer"
 
@@ -24,11 +23,10 @@ Azure Blob Storage or a file in Azure Data Lake Storage.
 
 ::: zone-end
 
-
 ## Syntax
 
-`externaldata` `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`   
-`[` *StorageConnectionString* [`,` ...] `]`   
+`externaldata` `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`
+`[` *StorageConnectionString* [`,` ...] `]`
 [`with` `(` *PropertyName* `=` *PropertyValue* [`,` ...] `)`]
 
 ## Arguments
@@ -52,10 +50,11 @@ Currently supported properties are:
 | `ignoreFirstRecord` | `bool` | If set to true, indicates that the first record in every file is ignored. This property is useful when querying CSV files with headers. |
 | `ingestionMapping` | `string` | A string value that indicates how to map data from the source file to the actual columns in the operator result set. See [data mappings](../management/mappings.md). |
 
-
 > [!NOTE]
-> * This operator doesn't accept any pipeline input.
-> * Standard [query limits](../concepts/querylimits.md) apply to external data queries as well.
+>
+> This operator doesn't accept any pipeline input.
+>
+> Standard [query limits](../concepts/querylimits.md) apply to external data queries as well.
 
 ## Returns
 
@@ -98,7 +97,7 @@ The above example can be thought of as a quick way to query multiple data files 
 
 **Query hierarchical data formats**
 
-To query hierarchical data format, such as `JSON`, `Parquet`, `Avro`, or `ORC`, `ingestionMapping` must be specified in the operator properties. 
+To query hierarchical data format, such as `JSON`, `Parquet`, `Avro`, or `ORC`, `ingestionMapping` must be specified in the operator properties.
 In this example, there's a JSON file stored in Azure Blob Storage with the following contents:
 
 ```JSON

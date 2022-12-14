@@ -1,9 +1,9 @@
 ---
 title: extract_all() - Azure Data Explorer
-description: This article describes extract_all() in Azure Data Explorer.
+description: Lean how to use the extract_all() to extract all matches for a regular expression from a source string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/03/2022
+ms.date: 12/12/2022
 ---
 # extract_all()
 
@@ -50,7 +50,7 @@ print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 |---|---|
 |82b8be2d-dfa7-4bd1-8f63-24ad26d31449|["82","b8","be","2d","df","a7","4b","d1","8f","63","24","ad","26","d3","14","49"]|
 
-### Extract several capture groups 
+### Extract several capture groups
 
 Uses a regular expression with three capturing groups to split each GUID part into first letter, last letter, and whatever is in the middle.
 
@@ -65,8 +65,8 @@ print Id="82b8be2d-dfa7-4bd1-8f63-24ad26d31449"
 
 ### Extract a subset of capture groups
 
-Shows how to select a subset of capturing groups. 
-The regular expression matches the first letter, last letter, and all the rest. 
+Shows how to select a subset of capturing groups.
+The regular expression matches the first letter, last letter, and all the rest.
 The *captureGroups* parameter is used to select only the first and the last parts.
 
 ```kusto

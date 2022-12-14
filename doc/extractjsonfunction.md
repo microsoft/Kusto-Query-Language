@@ -1,9 +1,9 @@
 ---
 title: extract_json() and extractjson() - Azure Data Explorer
-description: This article describes extract_json() and extractjson() in Azure Data Explorer.
+description: Learn how to use the extract_json() and extractjson() functions to get a specified element out of a JSON text using a path expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2022
+ms.date: 12/12/2022
 ---
 # extract_json(), extractjson()
 
@@ -20,9 +20,9 @@ extract_json("$.hosts[1].AvailableMB", EventText, typeof(int))
 
 ## Syntax
 
-`extract_json(`*jsonPath*`,` *dataSource*`, ` *type*`)` 
- 
-`extractjson(`*jsonPath*`,` *dataSource*`, ` *type*`)`
+`extract_json(`*jsonPath*`,`*dataSource*`, `*type*`)`
+
+`extractjson(`*jsonPath*`,`*dataSource*`, `*type*`)`
 
 ## Arguments
 

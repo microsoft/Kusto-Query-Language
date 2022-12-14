@@ -1,9 +1,9 @@
 ---
 title: facet operator - Azure Data Explorer
-description: This article describes facet operator in Azure Data Explorer.
+description: Learn how to use the facet operator to return a table for each specified column.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/12/2022
 ---
 # facet operator
 
@@ -13,7 +13,7 @@ An additional table can be created by using the `with` clause.
 
 ## Syntax
 
-*T* `| facet by` *ColumnName* [`, ` ...] [`with (` *filterPipe* `)`
+*T* `| facet by` *ColumnName* [`,` ...] [`with (` *filterPipe* `)`
 
 ## Arguments
 

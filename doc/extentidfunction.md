@@ -1,9 +1,9 @@
 ---
 title: extent_id() - Azure Data Explorer
-description: This article describes extent_id() in Azure Data Explorer.
+description: Learn how to use the extent_id() function to return an identifier of the current record's data shard
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/11/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---

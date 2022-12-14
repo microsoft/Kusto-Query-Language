@@ -1,9 +1,9 @@
 ---
 title: extent_tags() - Azure Data Explorer
-description: This article describes extent_tags() in Azure Data Explorer.
+description: Learn how to use the extent_tags() function to return a dynamic array of the data shard that the current record is in.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/11/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -11,9 +11,9 @@ zone_pivot_groups: kql-flavors
 
 ::: zone pivot="azuredataexplorer"
 
-Returns a dynamic array with the [tags](../management/extents-overview.md#extent-tagging) of the data shard ("extent") that the current record is in. 
+Returns a dynamic array with the [tags](../management/extents-overview.md#extent-tagging) of the data shard ("extent") that the current record is in.
 
-Applying this function to calculated data, which isn't attached to a data shard, returns an empty value.
+If you apply this function to calculated data, which isn't attached to a data shard, returns an empty value.
 
 ## Syntax
 
@@ -30,8 +30,7 @@ Some query operators preserve the information about the data shard hosting the r
 These operators include `where`, `extend`, and `project`.
 The following example shows how to get a list the tags of all the data shards
 that have records from an hour ago, with a specific value for the
-column `ActivityId`. 
-
+column `ActivityId`.
 
 ```kusto
 T
@@ -41,9 +40,7 @@ T
 | summarize by tostring(tags)
 ```
 
-The following example shows how to obtain a count of all records from the 
-last hour, which are stored in extents tagged with the tag `MyTag`
-(and potentially other tags), but not tagged with the tag `drop-by:MyOtherTag`.
+The following example shows how to obtain a count of all records from the last hour, which are stored in extents tagged with the tag `MyTag`(and potentially other tags), but not tagged with the tag `drop-by:MyOtherTag`.
 
 ```kusto
 T

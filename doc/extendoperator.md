@@ -1,9 +1,9 @@
 ---
 title: extend operator - Azure Data Explorer
-description: This article describes extend operator in Azure Data Explorer.
+description: Learn how to use the extend operator to create calculated columns and append them to the result set.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 12/11/2022
 ---
 # extend operator
 
