@@ -28,7 +28,8 @@ If *columnName* exists, then the column it refers to. Otherwise *defaultValue*.
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03NSwrCQBAE0L2nKGajQiCHEE8Q9zImFWyZTIfpTnTh4Y1f3HVBveq6xuHMwrUhK1pN05ARdnEUjylAltC4lmE/M7uFCv5s91r4OtF4dH7dVVLCiZiM3ULNGbvVH8cdY9ELW/+Io/S8ibltfi+r9+T2AZ+ufQiZAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03NSwrCQBAE0L2nKGajQiCHEE8Q9zImFWyZTIfpTnTh4Y1f3HVBveq6xuHMwrUhK1pN05ARdnEUjylAltC4lmE/M7uFCv5s91r4OtF4dH7dVVLCiZiM3ULNGbvVH8cdY9ELW/+Io/S8ibltfi+r9+T2AZ+ufQiZAAAA" target="_blank">Run the query</a>
 
 ```kusto
 // There's no column "Capital" in "StormEvents", therefore, the State column will be used instead

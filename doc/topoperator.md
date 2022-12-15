@@ -30,7 +30,8 @@ Returns the first *N* records sorted by the specified columns.
 
 Show top 3 storms with most direct injuries.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjJL1AwVkiqVPDMyyotykwtdsksSk0uAQCehD//JgAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjJL1AwVkiqVPDMyyotykwtdsksSk0uAQCehD//JgAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

@@ -42,14 +42,29 @@ A copy of the input tabular result set, such that:
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUUitKEnNS+HlUgACl9KixJLM/DwFWwXXvJSQzNxUBV2F4JLEohIQWweqKLU4uSizAKouGGRacGlubmJRpZ5LakliZk6xHpISAKfNOhtuAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKCjKz0pNLlFwzUsJycxN1VEILkksKgExgZKpFSWpeSkKLqVFiSWZ+XkKtjBlCroIdQCqSrMYUAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
-| extend
-    Duration = EndTime - StartTime,
-    Description = StormSummary.Details.Description
+| project EndTime, StartTime
+| extend Duration = EndTime - StartTime
 ```
+
+The following table shows only the first 10 results. To see the full output, run the query.
+
+|EndTime|StartTime|Duration|
+|--|--|--|
+|2007-01-01T00:00:00Z| 2007-01-01T00:00:00Z |00:00:00|
+|2007-01-01T00:25:00Z| 2007-01-01T00:25:00Z |00:00:00|
+|2007-01-01T02:24:00Z| 2007-01-01T02:24:00Z |00:00:00|
+|2007-01-01T03:45:00Z| 2007-01-01T03:45:00Z |00:00:00|
+|2007-01-01T04:35:00Z| 2007-01-01T04:35:00Z |00:00:00|
+|2007-01-01T04:37:00Z| 2007-01-01T03:37:00Z |01:00:00|
+|2007-01-01T05:00:00Z| 2007-01-01T00:00:00Z |05:00:00|
+|2007-01-01T05:00:00Z| 2007-01-01T00:00:00Z |05:00:00|
+|2007-01-01T06:00:00Z| 2007-01-01T00:00:00Z |06:00:00|
+|2007-01-01T06:00:00Z| 2007-01-01T00:00:00Z |06:00:00|
 
 ## See also
 

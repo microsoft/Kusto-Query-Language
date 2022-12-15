@@ -43,23 +43,60 @@ A table with columns that were named as arguments. Contains same number of rows 
 
 ### Only show specific columns
 
-Only show the `EventId`, `State`, `EventType`, and `EpisodeNarrative` of the `StormEvents` table.
+Only show the `EventId`, `State`, `EventType` of the `StormEvents` table.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSgoys9KTS5RAIt4pugoBJcklqTqQPghlQUgZkFmcX5Kql9iUVFiSWZZKgC3v2vmQgAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKCjKz0pNLlEAC3im6CgElySWpOpA+CGVBakAzXMiTy8AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
-| project EventId, State, EventType, EpisodeNarrative
+| project EventId, State, EventType
 ```
+
+The results table shows only the top 10 results.
+
+|EventId|State|EventType|
+|--|--|--|
+|61032| ATLANTIC SOUTH| Waterspout|
+|60904| FLORIDA| Heavy Rain|
+|60913| FLORIDA| Tornado|
+|64588| GEORGIA| Thunderstorm Wind|
+|68796| MISSISSIPPI| Thunderstorm Wind|
+|68814| MISSISSIPPI| Tornado|
+|68834| MISSISSIPPI| Thunderstorm Wind|
+|68846| MISSISSIPPI| Hail|
+|73241| AMERICAN SAMOA| Flash Flood|
+|64725| KENTUCKY| Flood|
+|...|...|...|
 
 ### Potential manipulations using project
 
+The following query renames the `BeginLocation` column and creates a new column called `TotalInjuries` from a calculation over two existing columns.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwvJL0nM8czLKi3KTC1WsFWAMV0yi1KTSxS04QKeeSlgIQBwTr1bMQAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
-| project
-    StartLocation = BeginLocation,                    // Rename column
-    TotalDeaths = DeathsDirect + DeathsIndirect,      // Calculate a new column from two existing columns
+| project StartLocation = BeginLocation, TotalInjuries = InjuriesDirect + InjuriesIndirect
+| where TotalInjuries > 5
 ```
+
+The following table shows only the first 10 results.
+
+|StartLocation| TotalInjuries|
+|--|--|
+|LYDIA| 15|
+|ROYAL| 15|
+|GOTHENBURG| 9|
+|PLAINS| 8|
+|KNOXVILLE| 9|
+|CAROL STREAM| 11|
+|HOLLY| 9|
+|RUFFIN| 9|
+|ENTERPRISE MUNI ARPT| 50|
+|COLLIERVILLE| 6|
+|...|...|
 
 ## See also
 

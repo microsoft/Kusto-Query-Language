@@ -30,7 +30,8 @@ The value of the first *arg* whose value isn't null (or not-empty for string exp
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbFNzk/MSS1OTtUoyc/Jz0vXUMrLL1FIVMgrzU1KLVLS1FGAiZsYgXjGxpoA2oxMXz8AAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbFNzk/MSS1OTtUoyc/Jz0vXUMrLL1FIVMgrzU1KLVLS1FGAiZsYgXjGxpoA2oxMXz8AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print result=coalesce(tolong("not a number"), tolong("42"), 33)

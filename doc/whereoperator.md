@@ -48,24 +48,42 @@ For more information, see the summary of [available String operators](./datatype
 
 ### Order comparisons by complexity
 
-Retrieve storm records that report damaged property, are floods, and start and end in different places.
+The following query returns storm records that report damaged property, are floods, and start and end in different places.
 
 Notice that we put the comparison between two columns last, as the where operator can't use the index and forces a scan.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVXBJzE1MTw0oyi9ILSqpVLBTMODlUgCCxLwUBbDakMqCVAVbWwUlt5z8/BQlhKxTanpmnk9+cmJJZn6egqKtgmteCowLAAhN4ulrAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKCjKz0pNLlFwScxNTE8NKMovSC0qqdRRACsIqSxI1VFwSk3PzPPJT04syczPA8rkpcA4QP3lGalFqWi6FewUDLgUgCAxLwVhkIKtrYKSW05+fooSXBLFaAVFW2TDAe7+E2GoAAAA" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
+| project DamageProperty, EventType, BeginLocation, EndLocation
 | where DamageProperty > 0
     and EventType == "Flood"
     and BeginLocation != EndLocation 
 ```
 
+The following table only shows the top 10 results. To see the full output, run the query.
+
+|DamageProperty|EventType|BeginLocation|EndLocation|
+|--|--|--|--|
+|5000 |Flood|FAYETTE CITY LOWBER|
+|5000 |Flood|MORRISVILLE WEST WAYNESBURG|
+|10000|Flood|COPELAND HARRIS GROVE|
+|5000 |Flood|GLENFORD MT PERRY|
+|25000|Flood|EAST SENECA BUFFALO AIRPARK ARPT|
+|20000|Flood|EBENEZER SLOAN|
+|10000|Flood|BUEL CALHOUN|
+|10000|Flood|GOODHOPE WEST MILFORD|
+|5000 |Flood|DUNKIRK FOREST|
+|20000|Flood|FARMINGTON MANNINGTON|
+
 ### Check if column contains string
 
 The following query returns the rows in which the word "cow" appears in any column.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVdBSyEgsVlBKzi9XAgC3DyzDIAAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVdBSyEgsVlBKzi9XAgC3DyzDIAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

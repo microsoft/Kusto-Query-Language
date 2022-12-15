@@ -44,7 +44,8 @@ This operator returns a data table of the given schema and data.
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XRS4vCMBAA4Lu/YsiphbiY1upa0IPYo8velz2kZtRgTCCNL1z/uxNZd6HYJAQyj++QUTLQrg0mCxmwVHQFvUcO1RFtKJvgtd1wWDqPVCBLdbFyr1cpfPWA1rM+ERMx6A9GfSFSDmzuvGUcfouTK9vhRbCSHaU5oKBMDGTPQMZuKW9zOXGCTuQqG9A3UK2cQfiQ1ISdet7Wh6/0Iv/XPw+10c0WFay1bwLUzu06+aLNj17xk3H8i6yI/EKj6uTGbe79wX33fuC0RY9AAzBok8c0UpjBkDJ4DmgVxDaY/o3mLb7vp72pd88BAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3XRS4vCMBAA4Lu/YsiphbiY1upa0IPYo8velz2kZtRgTCCNL1z/uxNZd6HYJAQyj++QUTLQrg0mCxmwVHQFvUcO1RFtKJvgtd1wWDqPVCBLdbFyr1cpfPWA1rM+ERMx6A9GfSFSDmzuvGUcfouTK9vhRbCSHaU5oKBMDGTPQMZuKW9zOXGCTuQqG9A3UK2cQfiQ1ISdet7Wh6/0Iv/XPw+10c0WFay1bwLUzu06+aLNj17xk3H8i6yI/EKj6uTGbe79wX33fuC0RY9AAzBok8c0UpjBkDJ4DmgVxDaY/o3mLb7vp72pd88BAAA=" target="_blank">Run the query</a>
 
 ```kusto
 datatable(Date:datetime, Event:string, MoreData:dynamic) [

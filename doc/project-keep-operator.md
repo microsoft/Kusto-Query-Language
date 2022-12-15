@@ -32,20 +32,31 @@ A table with columns that were named as arguments. Contains same number of rows 
 
 ## Example
 
-Only show columns from the `ConferenceSessions` table that contain the word "session".
+The following query returns columns from the `ConferenceSessions` table that contain the word "session".
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3POz0tLLUrNS04NTi0uzszPK+blqlEoKMrPSk0u0c1OTS1QKIZIaAEAWs65FysAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3POz0tLLUrNS04NTi0uzszPK+blqlEoKMrPSk0u0c1OTS1QKIZIaAEAWs65FysAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 ConferenceSessions
 | project-keep session*
 ```
 
-The following table displays only the output columns. To see the full content of the output run the above query.
+The following table shows only the first 10 results.
 
-|sessionid| session_title| session_type| session_location|
+|sessionid|session_title|session_type|session_location|
 |--|--|--|--|
-||||
+|COM64| Focus Group: Azure Data Explorer |Focus Group|Online|
+|COM65| Focus Group: Azure Data Explorer |Focus Group|Online|
+|COM08| Ask the Team: Azure Data Explorer|Ask the Team|Online|
+|COM137| Focus Group: Built-In Dashboard and Smart Auto Scaling Capabilities in Azure Data Explorer|Focus Group| Online|
+|CON-PRT157| Roundtable: Monitoring and managing your Azure Data Explorer deployments|Roundtable|Online|
+|CON-PRT103| Roundtable: Advanced Kusto query language topics|Roundtable| Online|
+|CON-PRT157| Roundtable: Monitoring and managing your Azure Data Explorer deployments|Roundtable|Online|
+|CON-PRT103| Roundtable: Advanced Kusto query language topics|Roundtable|Online|
+|CON-PRT130| Roundtable: Data exploration and visualization with Azure Data Explorer |Roundtable |Online|
+|CON-PRT130| Roundtable: Data exploration and visualization with Azure Data Explorer |Roundtable |Online|
+|...|...|...|...|
 
 ## See also
 

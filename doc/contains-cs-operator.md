@@ -54,7 +54,8 @@ Rows in *T* for which *string* is in *col*.
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5lIAghqF4tLc3MSizKpUhVSQcHxyfmleiS2Y1NBUSKpUCC5JLEmFKi7PSC1KhYgoJOfnlSRm5hXHJxcrKDkGKwEAd3al+FsAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5lIAghqF4tLc3MSizKpUhVSQcHxyfmleiS2Y1NBUSKpUCC5JLEmFKi7PSC1KhYgoJOfnlSRm5hXHJxcrKDkGKwEAd3al+FsAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

@@ -26,7 +26,8 @@ Produces a table with the distinct combination of the provided columns of the in
 
 Shows distinct combination of states and type of events that led to over 45 direct injuries.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVfDMyyotykwtdsksSk0uUbBTMDEFSaZkFpdk5gEFgksSS1J1FMDaQioLUgH0ldkdRQAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVfDMyyotykwtdsksSk0uUbBTMDEFSaZkFpdk5gEFgksSS1J1FMDaQioLUgH0ldkdRQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

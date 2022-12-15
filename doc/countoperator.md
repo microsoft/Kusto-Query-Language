@@ -26,7 +26,8 @@ This function returns a table with a single record and column of type
 
 ## Example
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVqhRSM4vzSsBALU2eHsTAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVqhRSM4vzSsBALU2eHsTAAAA" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents | count

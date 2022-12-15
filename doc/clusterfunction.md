@@ -29,7 +29,8 @@ Changes the reference of the query to a remote cluster. To access a database wit
 
 The following query can be run on any cluster.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA0vOKS0uSS3SUM9IzSlQ19RLSSxJTEosTtVQD07MLchJLQaKBZfkF+W6lqXmlRQr1Cgk55fmlQAAayjLjjcAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA0vOKS0uSS3SUM9IzSlQ19RLSSxJTEosTtVQD07MLchJLQaKBZfkF+W6lqXmlRQr1Cgk55fmlQAAayjLjjcAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 cluster('help').database('Samples').StormEvents | count
@@ -45,7 +46,8 @@ cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 
 The previous query can be rewritten to use an inline function (`let` statement) that takes a parameter called `clusterName` and passes it to the `cluster()` function.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA8tJLVFIy89XsFXQSM4pLS5JLfJLzE21Ki4pysxL1+Sq5lIAAqgMsgpNvZTEksSkxOJUDfXgxNyCnNRidU294JL8olzXstS8kmKFGoXk/NK8Eq5aay6gBRrqGak5BeqaADuaG9BwAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAA8tJLVFIy89XsFXQSM4pLS5JLfJLzE21Ki4pysxL1+Sq5lIAAqgMsgpNvZTEksSkxOJUDfXgxNyCnNRidU294JL8olzXstS8kmKFGoXk/NK8Eq5aay6gBRrqGak5BeqaADuaG9BwAAAA" target="_blank">Run the query</a>
 
 ```kusto
 let foo = (clusterName:string)

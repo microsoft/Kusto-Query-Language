@@ -28,10 +28,27 @@ Sort the rows of the input table into order by one or more columns.
 
 All rows in table Traces that have a specific `ClientRequestId`, sorted by their timestamp.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAAwspSkxO9clPL+aqUSjPSC1KVXDOyUzNKwlKLSxNLS7xTFGwtVVQMk20MLFIMzfQtbS0NNNNTTI01zU0TU3RNTJMskhNsjRJSjNIVQKaUJxfVKKQVKkQkpkL1JyYW6CQWJwMAFAUnRtjAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleLogs?query=H4sIAAAAAAAAAwspSkxO9clPL+aqUSgoys9KTS5RcM7JTM0rCUotLE0tLvFM0VEIycwFshJzC4CKyjNSi1LRlSjY2ioomSZamFikmRvoWlpamummJhma6xqapqboGhkmWaQmWZokpRmkKgFNKM4vKlFIqkSYqpBYnAwAl8Rv8YgAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 TraceLogs
+| project ClientRequestId, Timestamp
 | where ClientRequestId == "5a848f70-9996-eb17-15ed-21b8eb94bf0e"
 | sort by Timestamp asc
 ```
+
+The following table only shows the top 10 results. To see the full output, run the query.
+
+|ClientRequestId|Timestamp|
+|--|--|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:24:55.5464757Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:24:56.0929514Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:25:40.3574831Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:25:40.9039588Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:26:25.1684905Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:26:25.7149662Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:27:09.9794979Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:27:10.5259736Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:27:54.7905053Z|
+|5a848f70-9996-eb17-15ed-21b8eb94bf0e| 2014-03-08T12:27:55.336981Z|

@@ -32,7 +32,8 @@ The function returns:
 
 ## Examples
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywqDMBQF9/0Kd7bQFPMgMZRA/yTcvEqo0XA1/1/rwkXPYhaHYSrmeeswrm3ajG+Icd5s3U+fK0w2r7bE4iLaJV0v3b4eILQ1ovmBvhI4zB8oD7+U/t6dyhuXVs3Bf+l0oFYjJQTKOSMctCACpCY6ASNUKc7SoLmU4qlY0uPoEhllokRQSERTcIQF5cNAaXBC9Uf29gUBrFgb0AAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywqDMBQF9/0Kd7bQFPMgMZRA/yTcvEqo0XA1/1/rwkXPYhaHYSrmeeswrm3ajG+Icd5s3U+fK0w2r7bE4iLaJV0v3b4eILQ1ovmBvhI4zB8oD7+U/t6dyhuXVs3Bf+l0oFYjJQTKOSMctCACpCY6ASNUKc7SoLmU4qlY0uPoEhllokRQSERTcIQF5cNAaXBC9Uf29gUBrFgb0AAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print result=current_principal_is_member_of(
@@ -48,7 +49,8 @@ print result=current_principal_is_member_of(
 
 Using dynamic array instead of multiple arguments:
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywrCMBRE935Fd23BSPMgaZCA/yESbl4SbNqQNgv/3tqFC2dxYIbD5BLnrSl+rdOmbC3Fz5vO+2hjhknHVSefjC96Cd2p2ePeM6Rou/vRWgBXV1/UF/gWwJT4gnSxS2rPzU95lqVmdfBf+jmQs+IcHKaUIAqSIQZcIhmAICwEJWGQlHN2FSTIcTQBjTxgxDAEJDEYRJywbsDYGSba4/bR9x8D/i004AAAAA==)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywrCMBRE935Fd23BSPMgaZCA/yESbl4SbNqQNgv/3tqFC2dxYIbD5BLnrSl+rdOmbC3Fz5vO+2hjhknHVSefjC96Cd2p2ePeM6Rou/vRWgBXV1/UF/gWwJT4gnSxS2rPzU95lqVmdfBf+jmQs+IcHKaUIAqSIQZcIhmAICwEJWGQlHN2FSTIcTQBjTxgxDAEJDEYRJywbsDYGSba4/bR9x8D/i004AAAAA==)
 
 ```kusto
 print result=current_principal_is_member_of(

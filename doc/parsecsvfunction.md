@@ -34,7 +34,8 @@ A string array that contains the split values.
 
 Count ADX conference sessions with more than three participants.
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3POz0tLLUrNS04NTi0uzszPK+aqUSjPAAopJBYVJVbG56TmpZdkaBQkFhWnxicXl4FYJZnJmQWJeSXFmpoKdgrGQB0pmcUlmXnJJQpaAB0oOCtRAAAA)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3POz0tLLUrNS04NTi0uzszPK+aqUSjPAAopJBYVJVbG56TmpZdkaBQkFhWnxicXl4FYJZnJmQWJeSXFmpoKdgrGQB0pmcUlmXnJJQpaAB0oOCtRAAAA" target="_blank">Run the query</a>
 
 ```kusto
 ConferenceSessions
@@ -49,7 +50,8 @@ ConferenceSessions
 
 ### Use escaping quotes
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXFMQqAMAwF0KuUv1Qhi46CozdwFCSWIIVSa5N6fpU3vFJjNldFW7K5cFXZgz6dZyYc9AGFQFg0cIn5dHe7THRywBotCQBCilmGLf+N8P0LWIqWMVMAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAxXFMQqAMAwF0KuUv1Qhi46CozdwFCSWIIVSa5N6fpU3vFJjNldFW7K5cFXZgz6dZyYc9AGFQFg0cIn5dHe7THRywBotCQBCilmGLf+N8P0LWIqWMVMAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2"')
@@ -63,7 +65,8 @@ print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2
 
 Only the first record is taken since this function does not support multiple records. 
 
-[**Run the query**](https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKYnPBRKZ8UWpyflFKbYFiUXFqfHJxWUa6hARQ51EnSSd5Jg8CNdIp0KnUqdKXRMAyO6RzEMAAAA=)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKYnPBRKZ8UWpyflFKbYFiUXFqfHJxWUa6hARQ51EnSSd5Jg8CNdIp0KnUqdKXRMAyO6RzEMAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z')
