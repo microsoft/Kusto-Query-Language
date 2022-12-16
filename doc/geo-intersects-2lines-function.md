@@ -1,17 +1,17 @@
 ---
 title: geo_intersects_2lines() - Azure Data Explorer
-description: This article describes geo_intersects_2lines() in Azure Data Explorer.
+description: Learn how to use the geo_intersects_2lines() function to check if two line strings or multiline strings intersect.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 01/20/2022
+ms.date: 12/14/2022
 ---
 # geo_intersects_2lines()
 
-Calculates whether the two lines or multilines intersects.
+Calculates whether two lines or multilines intersect.
 
 ## Syntax
 
-`geo_intersects_2lines(`*lineString1*`, `*lineString2*`)`
+`geo_intersects_2lines(`*lineString1*`,`*lineString2*`)`
 
 ## Arguments
 
@@ -20,25 +20,27 @@ Calculates whether the two lines or multilines intersects.
 
 ## Returns
 
-Indicates whether the two lines or multilines intersects. If lineString or a multiLineString are invalid, the query will produce a null result.
+Indicates whether two lines or multilines intersect. If lineString or a multiLineString are invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) in order to convert planar edges to geodesics.
 
 **LineString definition and constraints**
 
-dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
+dynamic({"type": "LineString","coordinates": [[lng_1,lat_1], [lng_2,lat_2], ..., [lng_N,lat_N]]})
 
-dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_N ] ]})
+dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]]})
 
 * LineString coordinates array must contain at least two entries.
-* Coordinates [longitude,latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
 * Edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
 > [!TIP]
-> * Using literal LineString or a MultiLineString may result in better performance.
+>
+> Use literal LineString or MultiLineString for better performance.
 
 ## Examples
 
@@ -55,7 +57,7 @@ print intersects = geo_intersects_2lines(lineString1, lineString2)
 |---|
 |True|
 
-The following example finds all roads in NYC GeoJSON roads table which intersects with some line of interest.
+The following example finds all roads in the NYC GeoJSON roads table that intersects with some lines of interest.
 
 ```kusto
 let my_road = dynamic({"type":"LineString","coordinates":[[-73.97892951965332,40.78515573551921],[-73.98090362548828,40.78262115769851]]});

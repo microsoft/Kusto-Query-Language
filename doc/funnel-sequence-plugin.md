@@ -1,9 +1,9 @@
 ---
 title: funnel_sequence plugin - Azure Data Explorer
-description: This article describes funnel_sequence plugin in Azure Data Explorer.
+description: Learn how to use the funnel_sequence plugin to learn how to calculate the distinct count of users who have taken a sequence of states, and the distribution of previous/next states that have led to/were followed by the sequence.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/24/2022
+ms.date: 12/13/2022
 ---
 # funnel_sequence plugin
 
@@ -34,28 +34,27 @@ T | evaluate funnel_sequence(id, datetime_column, startofday(ago(30d)), startofd
 Returns three output tables, which are useful for constructing a sankey diagram for the analyzed sequence:
 
 * Table #1 - prev-sequence-next `dcount`
-    - TimelineColumn: the analyzed time window
-    - prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
-    - next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
-    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
-    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
+  * TimelineColumn: the analyzed time window
+  * prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it).
+  * next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it).
+  * `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
+  * samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned).
 
 * Table #2 - prev-sequence `dcount`
-    - TimelineColumn: the analyzed time window
-    - prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it). 
-    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`. 
-    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
+  * TimelineColumn: the analyzed time window
+  * prev: the prev state (may be empty if there were any users that only had events for the searched sequence, but not any events prior to it).
+  * `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
+  * samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned).
 
 * Table #3 - sequence-next `dcount`
-    - TimelineColumn: the analyzed time window
-    - next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it). 
-    - `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
-    - samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned). 
-
+  * TimelineColumn: the analyzed time window
+  * next: the next state (may be empty if there were any users that only had events for the searched sequence, but not any events that followed it).
+  * `dcount`: distinct count of `IdColumn` in time window that transitioned `prev` --> `Sequence` --> `next`.
+  * samples: an array of IDs (from `IdColumn`) corresponding to the row's sequence (a maximum of 128 IDs are returned).
 
 ## Examples
 
-### Exploring Storm Events 
+### Exploring Storm Events
 
 The following query looks at the table StormEvents (weather statistics for 2007) and shows which events happened before/after all Tornado events occurred in 2007.
 
@@ -71,7 +70,6 @@ StormEvents
 Result includes three tables:
 
 * Table #1: All possible variants of what happened before and after the sequence. For example, the second line means that there were 87 different events that had following sequence: `Hail` -> `Tornado` -> `Hail`
-
 
 |`StartTime`|`prev`|`next`|`dcount`|
 |---|---|---|---|

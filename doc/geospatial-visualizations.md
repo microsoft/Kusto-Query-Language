@@ -1,9 +1,9 @@
 ---
 title: Geospatial data visualizations in Azure Data Explorer
-description: Learn about how to visualize geospatial data with Azure Data Explorer.
+description: Learn how to visualize geospatial data.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 06/22/2022
+ms.date: 12/14/2022
 ---
 
 # Geospatial visualizations
@@ -14,7 +14,7 @@ For more information about visualization options, see [Data visualization with A
 
 ## Visualize points on a map
 
-It's possible to visualize points either using [Longitude, Latitude] columns, or GeoJSON column. The use of a series column is optional. Each point is defined by [Longitude, Latitude] pair, in that order. 
+It's possible to visualize points either using [Longitude, Latitude] columns, or GeoJSON column. The use of a series column is optional. Each point is defined by [Longitude, Latitude] pair, in that order.
 
 ### Example: Visualize points on a map
 

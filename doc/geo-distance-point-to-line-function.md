@@ -1,9 +1,9 @@
 ---
 title: geo_distance_point_to_line() - Azure Data Explorer
-description: This article describes geo_distance_point_to_line() in Azure Data Explorer.
+description: Learn how to use the geo_distance_point_to_line() function to calculate the shortest distance between a coordinate and a line or multiline on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 03/11/2020
+ms.date: 12/14/2022
 ---
 # geo_distance_point_to_line()
 
@@ -11,7 +11,7 @@ Calculates the shortest distance between a coordinate and a line or multiline on
 
 ## Syntax
 
-`geo_distance_point_to_line(`*longitude*`, `*latitude*`, `*lineString*`)`
+`geo_distance_point_to_line(`*longitude*`,`*latitude*`,`*lineString*`)`
 
 ## Arguments
 
@@ -24,23 +24,25 @@ Calculates the shortest distance between a coordinate and a line or multiline on
 The shortest distance, in meters, between a coordinate and a line or multiline on Earth. If the coordinate or lineString are invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) in order to convert planar edges to geodesics.
 
 **LineString definition and constraints**
 
-dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
+dynamic({"type": "LineString","coordinates": [[lng_1,lat_1], [lng_2,lat_2],..., [lng_N,lat_N]]})
 
-dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_N ] ]})
+dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]]})
 
 * LineString coordinates array must contain at least two entries.
-* Coordinates [longitude,latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
 * Edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
 > [!TIP]
+>
 > * Using literal LineString or a MultiLineString may result in better performance.
-> * If you want to know the shortest distance between one or more points to many lines, consider folding these lines into one multiline. See the [example](#examples) below.
+> * If you want to know the shortest distance between one or more points to many lines, consider folding these lines into one multiline. See the following [example](#examples).
 
 ## Examples
 
@@ -84,7 +86,7 @@ nyc_taxi
 | render scatterchart with (kind=map)
 ```
 
-The following example folds many lines into one multiline and queries this multiline. The query finds all taxi pickups that happened 10km away from all roads in Manhattan.
+The following example folds many lines into one multiline and queries this multiline. The query finds all taxi pickups that happened 10 km away from all roads in Manhattan.
 
 :::image type="content" source="images/geo-distance-point-to-line-function/lines-folding.png" alt-text="Lines folding.":::
 

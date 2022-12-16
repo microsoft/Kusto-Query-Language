@@ -1,17 +1,17 @@
 ---
 title: geo_line_simplify() - Azure Data Explorer
-description: This article describes geo_line_simplify() in Azure Data Explorer.
+description: Learn how to use the geo_line_simplify() function to simplify a line string or a multiline string.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 02/13/2022
+ms.date: 12/14/2022
 ---
 # geo_line_simplify()
 
-Simplifies line or a multiline by replacing nearly straight chains of short edges with a single long edge on Earth.
+Simplifies a line or a multiline by replacing nearly straight chains of short edges with a single long edge on Earth.
 
 ## Syntax
 
-`geo_line_simplify(`*lineString*`, `*tolerance*`)`
+`geo_line_simplify(`*lineString*`,`*tolerance*`)`
 
 ## Arguments
 
@@ -23,6 +23,7 @@ Simplifies line or a multiline by replacing nearly straight chains of short edge
 Simplified line or a multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type, with no two vertices with distance less than tolerance. If either the line or tolerance is invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) in order to convert planar edges to geodesics.
@@ -31,17 +32,17 @@ Simplified line or a multiline in the [GeoJSON format](https://tools.ietf.org/ht
 
 **LineString definition and constraints**
 
-dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
+dynamic({"type": "LineString","coordinates": [[lng_1,lat_1], [lng_2,lat_2], ..., [lng_N,lat_N]]})
 
-dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_N ] ]})
+dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]]})
 
 * LineString coordinates array must contain at least two entries.
-* Coordinates [longitude,latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
 * Edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
 ## Examples
 
-The following example simplifies line by removing vertices that are within 10 meters distance from each other.
+The following example simplifies the line by removing vertices that are within a 10-meter distance from each other.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

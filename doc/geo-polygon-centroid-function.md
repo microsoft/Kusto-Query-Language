@@ -1,13 +1,13 @@
 ---
 title: geo_polygon_centroid() - Azure Data Explorer
-description: This article describes geo_polygon_centroid() in Azure Data Explorer.
+description: Learn how to use the geo_polygon_centroid() function to calculate the centroid of a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 01/20/2022
+ms.date: 12/14/2022
 ---
 # geo_polygon_centroid()
 
-Calculates the centroid of polygon or a multipolygon on Earth.
+Calculates the centroid of a polygon or a multipolygon on Earth.
 
 ## Syntax
 
@@ -22,6 +22,7 @@ Calculates the centroid of polygon or a multipolygon on Earth.
 The centroid coordinate values in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If polygon or multipolygon are invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used for measurements on Earth is a sphere. Polygon edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input polygon edges are straight cartesian lines, consider using [geo_polygon_densify()](geo-polygon-densify-function.md) to convert planar edges to geodesics.
@@ -29,14 +30,14 @@ The centroid coordinate values in [GeoJSON Format](https://tools.ietf.org/html/r
 
 **Polygon definition and constraints**
 
-dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ]})
+dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N ]})
 
-dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ] ,..., [LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_M]]})
+dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N], ..., [LinearRingShell, LinearRingHole_1, ..., LinearRingHole_M]]})
 
 * LinearRingShell is required and defined as a `counterclockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be only one shell.
 * LinearRingHole is optional and defined as a `clockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be any number of interior rings and holes.
 * LinearRing vertices must be distinct with at least three coordinates. The first coordinate must be equal to the last. At least four entries are required.
-* Coordinates [longitude,latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
 * LinearRingShell encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
 * LinearRing edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 * LinearRings must not cross and must not share edges. LinearRings may share vertices.
@@ -103,4 +104,3 @@ print isnull(geo_polygon_centroid(dynamic({"type": "Polygon","coordinates": [[[0
 |print_0|
 |---|
 |True|
-

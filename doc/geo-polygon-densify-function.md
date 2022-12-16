@@ -1,9 +1,9 @@
 ---
 title: geo_polygon_densify() - Azure Data Explorer
-description: This article describes geo_polygon_densify() in Azure Data Explorer.
+description: Learn how to use the geo_polygon_densify() function to convert polygon or multipolygon planar edges to geodesics.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 07/01/2020
+ms.date: 12/14/2022
 ---
 # geo_polygon_densify()
 
@@ -11,9 +11,9 @@ Converts polygon or multipolygon planar edges to geodesics by adding intermediat
 
 ## Syntax
 
-`geo_polygon_densify(`*polygon*`, `*tolerance*`)`
+`geo_polygon_densify(`*polygon*`,`*tolerance*`)`
 
-`geo_polygon_densify(`*polygon*`, `*tolerance*`, `*preserve_crossing*`)`
+`geo_polygon_densify(`*polygon*`,`*tolerance*`,`*preserve_crossing*`)`
 
 ## Arguments
 
@@ -23,14 +23,14 @@ Converts polygon or multipolygon planar edges to geodesics by adding intermediat
 
 ### Polygon definition
 
-dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ]})
+dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N ]})
 
-dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ] ,..., [LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_M]]})
+dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N ], ..., [LinearRingShell, LinearRingHole_1, ..., LinearRingHole_M]]})
 
 * `LinearRingShell` is required and defined as a `counterclockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be only one shell.
 * `LinearRingHole` is optional and defined as a `clockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be any number of interior rings and holes.
 * `LinearRing` vertices must be distinct with at least three coordinates. The first coordinate must be equal to the last. At least four entries are required.
-* Coordinates [longitude,latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
 * `LinearRingShell` encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
 * `LinearRing` edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
@@ -50,7 +50,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 Densified polygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If either the polygon or tolerance is invalid, the query will produce a null result.
 
 > [!NOTE]
-> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 
 ## Examples
 

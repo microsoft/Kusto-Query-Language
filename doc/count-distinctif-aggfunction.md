@@ -14,7 +14,8 @@ Conditionally counts unique values specified by the scalar expression per summar
 If you only need an estimation of unique values count, we recommend using the less resource-consuming [dcountif](dcountif-aggfunction.md) aggregation function.
 
 > [!NOTE]
-> This function is limited to 100M unique values. An attempt to apply the function on an expression returning too many values will produce a runtime error (HRESULT: 0x80DA0012).
+> * This function is limited to 100M unique values. An attempt to apply the function on an expression returning too many values will produce a runtime error (HRESULT: 0x80DA0012).
+> * Function performance can be degraded when operating on multiple data sources from different clusters.
 
 ## Syntax
 

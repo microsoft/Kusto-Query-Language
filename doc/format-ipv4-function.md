@@ -1,13 +1,13 @@
 ---
 title: format_ipv4() - Azure Data Explorer
-description: This article describes format_ipv4() in Azure Data Explorer.
+description: Learn how to use the format_ipv4() function to parse the input with a netmask and return a string representing the IPv4 address.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/09/2020
+ms.date: 12/12/2022
 ---
 # format_ipv4()
 
-Parses input with a netmask and returns string representing IPv4 address.
+Parses the input with a netmask and returns a string representing the IPv4 address.
 
 ```kusto
 print format_ipv4('192.168.1.255', 24) == '192.168.1.0'
@@ -30,8 +30,8 @@ If conversion isn't successful, the result will be an empty string.
 
 ## See also
 
-- [format_ipv4_mask()](format-ipv4-mask-function.md): For IPv4 address formatting including CIDR notation.
-- [IPv4 and IPv6 functions](scalarfunctions.md#ipv4ipv6-functions)
+* [format_ipv4_mask()](format-ipv4-mask-function.md): For IPv4 address formatting including CIDR notation.
+* [IPv4 and IPv6 functions](scalarfunctions.md#ipv4ipv6-functions)
 
 ## Examples
 

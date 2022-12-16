@@ -1,13 +1,13 @@
 ---
 title: geo_geohash_neighbors() - Azure Data Explorer
-description: This article describes geo_geohash_neighbors() in Azure Data Explorer.
+description: Learn how to use the geo_geohash_neighbors() function to calculate geohash neighbors.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 05/10/2022
+ms.date: 12/14/2022
 ---
 # geo_geohash_neighbors()
 
-Calculates the Geohash neighbors.
+Calculates Geohash neighbors.
 
 Read more about [`geohash`](https://en.wikipedia.org/wiki/Geohash).  
 
@@ -64,7 +64,7 @@ print cells = array_concat(pack_array(geohash), geo_geohash_neighbors(geohash))
 |---|
 |{"type": "Feature","geometry": {"type": "GeometryCollection","geometries": [<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.6865234375],[42.4951171875,23.6865234375],[42.4951171875,23.73046875],[42.451171875,23.73046875],[42.451171875,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.642578125],[42.451171875,23.642578125],[42.451171875,23.6865234375],[42.4072265625,23.6865234375],[42.4072265625,23.642578125]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.73046875],[42.451171875,23.73046875],[42.451171875,23.7744140625],[42.4072265625,23.7744140625],[42.4072265625,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.642578125],[42.5390625,23.642578125],[42.5390625,23.6865234375],[42.4951171875,23.6865234375],[42.4951171875,23.642578125]]]},<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.73046875],[42.4951171875,23.73046875],[42.4951171875,23.7744140625],[42.451171875,23.7744140625],[42.451171875,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.6865234375],[42.451171875,23.6865234375],[42.451171875,23.73046875],[42.4072265625,23.73046875],[42.4072265625,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.73046875],[42.5390625,23.73046875],[42.5390625,23.7744140625],[42.4951171875,23.7744140625],[42.4951171875,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.6865234375],[42.5390625,23.6865234375],[42.5390625,23.73046875],[42.4951171875,23.73046875],[42.4951171875,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.642578125],[42.4951171875,23.642578125],[42.4951171875,23.6865234375],[42.451171875,23.6865234375],[42.451171875,23.642578125]]]}]},<br>  "properties": {"name": "polygons"}}|
 
-The following example calculates polygons union that represent Geohash and its neighbors.
+The following example calculates polygon unions that represent Geohash and its neighbors.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

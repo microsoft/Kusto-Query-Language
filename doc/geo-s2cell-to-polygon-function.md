@@ -1,9 +1,9 @@
 ---
 title: geo_s2cell_to_polygon() - Azure Data Explorer
-description: This article describes geo_s2cell_to_polygon() in Azure Data Explorer.
+description: Learn how to use the geo_s2cell_to_polygon() function to calculate the polygon that represents the S2 Cell rectangular area.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 06/03/2021
+ms.date: 12/14/2022
 ---
 # geo_s2cell_to_polygon()
 

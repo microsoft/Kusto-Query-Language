@@ -1,9 +1,9 @@
 ---
 title: geo_distance_2points() - Azure Data Explorer
-description: This article describes geo_distance_2points() in Azure Data Explorer.
+description: Learn how to use the geo_distance_2points() function to calculate the shortest distance between two geospatial coordinates on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 03/11/2020
+ms.date: 12/13/2022
 ---
 # geo_distance_2points()
 
@@ -11,7 +11,7 @@ Calculates the shortest distance between two geospatial coordinates on Earth.
 
 ## Syntax
 
-`geo_distance_2points(`*p1_longitude*`, `*p1_latitude*`, `*p2_longitude*`, `*p2_latitude*`)`
+`geo_distance_2points(`*p1_longitude*`,`*p1_latitude*`,`*p2_longitude*`,`*p2_latitude*`)`
 
 ## Arguments
 
@@ -25,6 +25,7 @@ Calculates the shortest distance between two geospatial coordinates on Earth.
 The shortest distance, in meters, between two geographic locations on Earth. If the coordinates are invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere.
 
@@ -43,7 +44,7 @@ print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275
 |--------------------|
 | 1546754.35197381   |
 
-Here is an approximation of shortest path from Seattle to London. The line consists of coordinates along the LineString and within 500 meters from it.
+Here's an approximation of shortest path from Seattle to London. The line consists of coordinates along the LineString and within 500 meters from it.
 
 :::image type="content" source="images/geo-distance-2points-function/line_seattle_london.png" alt-text="Seattle to London LineString.":::
 
@@ -56,7 +57,7 @@ range i from 1 to 1000000 step 1
 | render scatterchart with (kind=map)
 ```
 
-The following example finds all rows in which the shortest distance between two coordinates is between 1 and 11 meters.
+The following example finds all rows in which the shortest distance between two coordinates is between 1 meter and 11 meters.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

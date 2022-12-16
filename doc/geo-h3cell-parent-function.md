@@ -1,9 +1,9 @@
 ---
 title: geo_h3cell_parent() - Azure Data Explorer
-description: This article describes geo_h3cell_parent() in Azure Data Explorer.
+description: Learn how to use the geo_h3cell_parent() function to calculate the H3 cell parent.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 10/10/2021
+ms.date: 12/14/2022
 ---
 # geo_h3cell_parent()
 
@@ -13,7 +13,7 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 
 ## Syntax
 
-`geo_h3cell_parent(`*h3cell*`, `*resolution*`)`
+`geo_h3cell_parent(`*h3cell*`,`*resolution*`)`
 
 ## Arguments
 
@@ -35,7 +35,7 @@ print parent_cell = geo_h3cell_parent('862a1072fffffff')
 |---|
 |852a1073fffffff|
 
-The following calculates cell parent at level 1.
+The following example calculates cell parent at level 1.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

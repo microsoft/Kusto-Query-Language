@@ -1,9 +1,9 @@
 ---
 title: geo_point_in_circle() - Azure Data Explorer
-description: This article describes geo_point_in_circle() in Azure Data Explorer.
+description: Learn how to use the geo_point_in_circle() function to check if the geospatial coordinates are inside a circle on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 02/03/2020
+ms.date: 12/14/2022
 ---
 # geo_point_in_circle()
 
@@ -11,7 +11,7 @@ Calculates whether the geospatial coordinates are inside a circle on Earth.
 
 ## Syntax
 
-`geo_point_in_circle(`*p_longitude*`, `*p_latitude*`, `*pc_longitude*`, `*pc_latitude*`, `*c_radius*`)`
+`geo_point_in_circle(`*p_longitude*`,`*p_latitude*`,`*pc_longitude*`,`*pc_latitude*`,`*c_radius*`)`
 
 ## Arguments
 
@@ -26,6 +26,7 @@ Calculates whether the geospatial coordinates are inside a circle on Earth.
 Indicates whether the geospatial coordinates are inside a circle. If the coordinates or circle is invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 >* The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 >* The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere.
 >* A circle is a spherical cap on Earth. The radius of the cap is measured along the surface of the sphere.

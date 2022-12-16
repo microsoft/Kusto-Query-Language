@@ -1,9 +1,9 @@
 ---
 title: geo_h3cell_children() - Azure Data Explorer
-description: This article describes geo_h3cell_children() in Azure Data Explorer.
+description: Learn how to use the geo_h3cell_children() function to calculate the H3 cell children.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 10/10/2021
+ms.date: 12/14/2022
 ---
 # geo_h3cell_children()
 
@@ -13,12 +13,12 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 
 ## Syntax
 
-`geo_h3cell_children(`*h3cell*`, `*resolution*`)`
+`geo_h3cell_children(`*h3cell*`,`*resolution*`)`
 
 ## Arguments
 
 * *h3cell*: H3 Cell token string value as it was calculated by [geo_point_to_h3cell()](geo-point-to-h3cell-function.md).
-* *resolution*: An optional `int` that defines the requested children cells resolution. Supported values are in the range [1, 15]. If unspecified, an immediate children tokens will be calculated.
+* *resolution*: An optional `int` that defines the requested children cells resolution. Supported values are in the range [1, 15]. If unspecified, an immediate children token will be calculated.
 
 ## Returns
 

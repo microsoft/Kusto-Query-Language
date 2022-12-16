@@ -1,9 +1,9 @@
 ---
 title: geo_polygon_to_s2cells() - Azure Data Explorer
-description: This article describes geo_polygon_to_s2cells() in Azure Data Explorer.
+description: Learn how to use the geo_polygon_to_s2cells() function to calculate S2 cell tokens that cover a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 11/08/2022
+ms.date: 12/14/2022
 ---
 # geo_polygon_to_s2cells()
 
@@ -13,16 +13,16 @@ Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierar
 
 ## Syntax
 
-`geo_polygon_to_s2cells(`*polygon*`, `*level*`)`
+`geo_polygon_to_s2cells(`*polygon*`,`*level*`)`
 
 ## Arguments
 
-* *polygon*: Polygon or multiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. 
+* *polygon*: Polygon or multiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
 * *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
 
 ## Returns
 
-Array of S2 cell token strings that cover a polygon or multipolygon. If either the polygon or level is invalid, or the cell count exceeds the limit, the query will produce a null result.
+Array of S2 cell token strings that cover a polygon or a multipolygon. If either the polygon or level is invalid, or the cell count exceeds the limit, the query will produce a null result.
 
 > [!NOTE]
 >
@@ -34,7 +34,7 @@ Array of S2 cell token strings that cover a polygon or multipolygon. If either t
 
 **Motivation for covering polygons with S2 cell tokens**
 
-Without this function, here is one approach we could take in order to classify coordinates into polygons containing these coordinates.
+Without this function, here's one approach we could take in order to classify coordinates into polygons containing these coordinates.
 
 ```kusto
 let Polygons = 
@@ -63,12 +63,13 @@ Polygons | extend dummy=1
 |-122.3|47.6|Seattle|
 |-115.18|36.16|Las Vegas|
 
-While this method works in some cases, it is inefficient. This method does a cross-join, meaning that it tries to match every polygon to every point. This process consumes a large amount of memory and compute resources.
+While this method works in some cases, it's inefficient. This method does a cross-join, meaning that it tries to match every polygon to every point. This process consumes a large amount of memory and compute resources.
 Instead, we would like to match every polygon to a point with a high probability of containment success, and filter out other points.
 
 This match can be achieved by the following process:
+
 1. Converting polygons to S2 cells of level k,
-1. Converting points to the same S2 cells level k, 
+1. Converting points to the same S2 cells level k,
 1. Joining on S2 cells,
 1. Filtering by [geo_point_in_polygon()](geo-point-in-polygon-function.md).
 
@@ -77,11 +78,11 @@ This match can be achieved by the following process:
 * Ideally we would want to cover every polygon with one or just a few unique cells such that no two polygons share the same cell.
 * If the polygons are close to each other, choose the [S2 cell level](geo-point-to-s2cell-function.md) such that its cell edge will be smaller (4, 8, 12 times smaller) than the edge of the average polygon.
 * If the polygons are far from each other, choose the [S2 cell level](geo-point-to-s2cell-function.md) such that its cell edge will be similar to the edge of the average polygon.
-* In practice, covering a polygon with more than 10000 cells might not yield good performance.
+* In practice, covering a polygon with more than 10,000 cells might not yield good performance.
 * Sample use cases:
-   - S2 cell level 5 might prove to be good for covering countries/regions.
-   - S2 cell level 16 can cover dense and relatively small Manhattan (New York) neighborhoods.
-   - S2 cell level 11 can be used for covering suburbs of Australia.
+* S2 cell level 5 might prove to be good for covering countries/regions.
+* S2 cell level 16 can cover dense and relatively small Manhattan (New York) neighborhoods.
+* S2 cell level 11 can be used for covering suburbs of Australia.
 * Query run time and memory consumption might differ because of different S2 cell level values.
 
 > [!WARNING]

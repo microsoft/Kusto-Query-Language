@@ -1,9 +1,9 @@
 ---
 title: geo_intersection_2polygons() - Azure Data Explorer
-description: This article describes geo_intersection_2polygons() in Azure Data Explorer.
+description: Learn how to use the geo_intersection_2polygons() function to calculate the intersection of two polygons or multipolygons.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 05/10/2022
+ms.date: 12/14/2022
 ---
 # geo_intersection_2polygons()
 
@@ -11,7 +11,7 @@ Calculates the intersection of two polygons or multipolygons.
 
 ## Syntax
 
-`geo_intersection_2polygons(`*polygon1*`, `*polygon1*`)`
+`geo_intersection_2polygons(`*polygon1*`,`*polygon1*`)`
 
 ## Arguments
 
@@ -23,26 +23,28 @@ Calculates the intersection of two polygons or multipolygons.
 Intersection in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type. If Polygon or a MultiPolygon are invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used for measurements on Earth is a sphere. Polygon edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input polygon edges are straight cartesian lines, consider using [geo_polygon_densify()](geo-polygon-densify-function.md) to convert planar edges to geodesics.
 
 **Polygon definition and constraints**
 
-dynamic({"type": "Polygon","coordinates": [ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ]})
+dynamic({"type": "Polygon","coordinates": [LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N ]})
 
-dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_N ] ,..., [LinearRingShell, LinearRingHole_1 ,..., LinearRingHole_M]]})
+dynamic({"type": "MultiPolygon","coordinates": [[LinearRingShell, LinearRingHole_1, ..., LinearRingHole_N ],..., [LinearRingShell, LinearRingHole_1, ..., LinearRingHole_M]]})
 
 * LinearRingShell is required and defined as a `counterclockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be only one shell.
 * LinearRingHole is optional and defined as a `clockwise` ordered array of coordinates [[lng_1,lat_1],...,[lng_i,lat_i],...,[lng_j,lat_j],...,[lng_1,lat_1]]. There can be any number of interior rings and holes.
 * LinearRing vertices must be distinct with at least three coordinates. The first coordinate must be equal to the last. At least four entries are required.
-* Coordinates [longitude,latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid. Longitude must be a real number in the range [-180, +180] and latitude must be a real number in the range [-90, +90].
 * LinearRingShell encloses at most half of the sphere. LinearRing divides the sphere into two regions. The smaller of the two regions will be chosen.
 * LinearRing edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 * LinearRings must not cross and must not share edges. LinearRings may share vertices.
 * Polygon contains its vertices.
 
 > [!TIP]
+>
 > * Using literal Polygon or a MultiPolygon may result in better performance.
 
 ## Examples
@@ -58,7 +60,7 @@ print intersection = geo_intersection_2polygons(polygon1, polygon2)
 
 |intersection|
 |---|
-|{"type": "Polygon",  "coordinates": [[[-73.962105776437156,40.774591360999679],[-73.962642403166868,40.774807020251778],[-73.9631313085556,40.774578106920352],[-73.962079882621765,40.774167803982927],[-73.962105776437156,40.774591360999679]    ]  ]}|
+|{"type": "Polygon",  "coordinates": [[[-73.962105776437156,40.774591360999679],[-73.962642403166868,40.774807020251778],[-73.9631313085556,40.774578106920352],[-73.962079882621765,40.774167803982927],[-73.962105776437156,40.774591360999679]]]}|
 
 The following example calculates intersection between two polygons. In this case, the result is a point.
 
@@ -86,7 +88,7 @@ print intersection = geo_intersection_2polygons(polygon1, polygon2)
 |---|
 |{"type": "GeometryCollection","geometries": [<br>{ "type": "Point", "coordinates": [2, 45]},<br>{ "type": "Polygon", "coordinates": [[[1.3227075526410679,45.003909145068739],[1.0404565374899824,45.004356403066552],[1.005,44.943],[1.356,44.937],[1.3227075526410679,45.003909145068739]]]}]}|
 
-The following two polygons do not intersect.
+The following two polygons don't intersect.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -99,7 +101,7 @@ print intersection = geo_intersection_2polygons(polygon1, polygon2)
 |---|
 |{"type": "GeometryCollection", "geometries": []}|
 
-The following example finds all counties in USA which intersect with area of interest polygon.
+The following example finds all counties in USA that intersect with area of interest polygon.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

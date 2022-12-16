@@ -1,13 +1,13 @@
 ---
 title: geo_line_length() - Azure Data Explorer
-description: This article describes geo_line_length() in Azure Data Explorer.
+description: Learn how to use the geo_line_length() function to calculate the total length of a line string or a multiline string on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 02/08/2022
+ms.date: 12/14/2022
 ---
 # geo_line_length()
 
-Calculates the total length of line or a multiline on Earth.
+Calculates the total length of a line or a multiline on Earth.
 
 ## Syntax
 
@@ -19,9 +19,10 @@ Calculates the total length of line or a multiline on Earth.
 
 ## Returns
 
-The total length of a line or a multiline, in meters, on Earth. If line or multiline are invalid, the query will produce a null result.
+The total length of a line or a multiline, in meters, on Earth. If the line or multiline is invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) in order to convert planar edges to geodesics.
@@ -29,17 +30,17 @@ The total length of a line or a multiline, in meters, on Earth. If line or multi
 
 **LineString definition and constraints**
 
-dynamic({"type": "LineString","coordinates": [ [lng_1,lat_1], [lng_2,lat_2] ,..., [lng_N,lat_N] ]})
+dynamic({"type": "LineString","coordinates": [[lng_1,lat_1], [lng_2,lat_2], ..., [lng_N,lat_N]]})
 
-dynamic({"type": "MultiLineString","coordinates": [ [ line_1, line_2 ,..., line_N ] ]})
+dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]]})
 
 * LineString coordinates array must contain at least two entries.
-* Coordinates [longitude,latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
+* Coordinates [longitude, latitude] must be valid where longitude is a real number in the range [-180, +180] and latitude is a real number in the range [-90, +90].
 * Edge length must be less than 180 degrees. The shortest edge between the two vertices will be chosen.
 
 ## Examples
 
-The following example calculates total line length, in meters.
+The following example calculates the total line length, in meters.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

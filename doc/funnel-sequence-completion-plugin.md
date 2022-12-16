@@ -1,9 +1,9 @@
 ---
 title: funnel_sequence_completion plugin - Azure Data Explorer
-description: This article describes funnel_sequence_completion plugin in Azure Data Explorer.
+description: Learn how to use the funnel_sequence_completion plugin to calculate a funnel of completed sequence steps while comparing different time periods.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/24/2022
+ms.date: 12/12/2022
 ---
 # funnel_sequence_completion plugin
 
@@ -35,7 +35,7 @@ Returns a single table useful for constructing a funnel diagram for the analyzed
 
 * `TimelineColumn`: the analyzed time window (bin), each bin in the analysis timeframe (*Start* to *End*) generates a funnel analysis separately.
 * `StateColumn`: the state of the sequence.
-* `Period`: the maximal period allowed for completing steps in the funnel sequence measured from the first step in the sequence. Each value in *MaxSequenceStepPeriods* generates a funnel analysis with a separate period. 
+* `Period`: the maximal period allowed for completing steps in the funnel sequence measured from the first step in the sequence. Each value in *MaxSequenceStepPeriods* generates a funnel analysis with a separate period.
 * `dcount`: distinct count of `IdColumn` in time window that transitioned from first sequence state to the value of `StateColumn`.
 
 ## See also
@@ -44,10 +44,10 @@ Returns a single table useful for constructing a funnel diagram for the analyzed
 
 ## Examples
 
-### Exploring Storm Events 
+### Exploring Storm Events
 
 The following query checks the completion funnel of the sequence: `Hail` -> `Tornado` -> `Thunderstorm Wind`
-in "overall" time of 1hour, 4hours, 1day. 
+in "overall" time of 1hour, 4hours, 1day.
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
@@ -73,5 +73,4 @@ StormEvents
 |2007-01-01 00:00:00.0000000|Thunderstorm Wind|1.00:00:00|155|
 
 Understanding the results:  
-The outcome is three funnels (for periods: One hour, 4 hours, and one day). For each funnel step, a number 
-of distinct counts of  are shown. You can see that the more time is given to complete the whole sequence of `Hail` -> `Tornado` -> `Thunderstorm Wind`, the higher `dcount` value is obtained. In other words, there were more occurrences of the sequence reaching the funnel step.
+The outcome is three funnels (for periods: One hour, 4 hours, and one day). For each funnel step, a number of distinct counts of  are shown. You can see that the more time is given to complete the whole sequence of `Hail` -> `Tornado` -> `Thunderstorm Wind`, the higher `dcount` value is obtained. In other words, there were more occurrences of the sequence reaching the funnel step.

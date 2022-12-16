@@ -1,9 +1,9 @@
 ---
 title: geo_h3cell_rings() - Azure Data Explorer
-description: This article describes geo_h3cell_rings() in Azure Data Explorer.
+description: Learn how to use the geo_h3cell_rings() function to calculate the H3 cell rings.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 10/10/2021
+ms.date: 12/14/2022
 ---
 # geo_h3cell_rings()
 
@@ -13,7 +13,7 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 
 ## Syntax
 
-`geo_h3cell_rings(`*h3cell*`, `*distance*`)`
+`geo_h3cell_rings(`*h3cell*`,`*distance*`)`
 
 ## Arguments
 
@@ -25,6 +25,7 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 An ordered array of ring arrays where 1st ring contains the original cell, 2nd ring contains neighboring cells, and so on. If either the H3 Cell or distance is invalid, the query will produce a null result.
 
 > [!NOTE]
+>
 > * For H3 Cell immidiate neighbors only, please see [geo_h3cell_neighbors()](geo-h3cell-neighbors-function.md).
 > * A cell might be not present in the ring if pentagonal distortion was encountered.
 
@@ -88,7 +89,6 @@ print rings = geo_h3cell_rings('861f8894fffffff', 1)
 |geojson|
 |---|
 |{ "type": "Feature", "geometry": { "type": "GeometryCollection", "geometries": [ ... ... ... ]}, "properties": { "name": "H3 polygons collection" }}|
-
 
 The following example returns true because of the invalid cell.
 
