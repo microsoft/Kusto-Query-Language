@@ -13,23 +13,27 @@ Last day of the week is considered to be a Saturday.
 
 ## Syntax
 
-`endofweek(`*date* [`,`*offset*]`)`
+`endofweek(`*date* [, *offset*]`)`
 
-## Arguments
+## Parameters
 
-* `date`: The input date.
-* `offset`: An optional number of offset weeks from the input date (integer, default - 0).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check;| The date used to find the end of the week. |
+| *offset* | int | | The number of offset weeks from *date*. Default is 0. |
 
 ## Returns
 
-A datetime representing the end of the week for the given *date* value, with the offset, if specified.
+A datetime representing the end of the week for the given *date* value, with the *offset*, if specified.
 
 ## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3MMQqAMBBE0d5TTKmgkLURBEsPImYiKmYlLth4eA0Ir/nNT1NcCA3hoiEkPdAITCG4jCekwIMz6cbZcJP7GD0GMHoNOUs/GW09WLZOusbJB+L6rKvqf1y9enVBc2YAAAA=" target="_blank">Run the query</a>
 
 ```kusto
   range offset from -1 to 1 step 1
  | project weekEnd = endofweek(datetime(2017-01-01 10:10:17), offset)  
-
 ```
 
 |weekEnd|

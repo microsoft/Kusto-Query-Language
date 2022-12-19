@@ -11,18 +11,23 @@ Returns the end of the day containing the date, shifted by an offset, if provide
 
 ## Syntax
 
-`endofday(`*date* [`,`*offset*]`)`
+`endofday(`*date* [, *offset*]`)`
 
-## Arguments
+## Parameters
 
-* `date`: The input date.
-* `offset`: An optional number of offset days from the input date (integer, default - 0).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check;| The date to find the end of. |
+| *offset* | int | | The number of offset days from *date*. Default is 0. |
 
 ## Returns
 
-A datetime representing the end of the day for the given *date* value, with the offset, if specified.
+A datetime representing the end of the day for the given *date* value, with the *offset*, if specified.
 
 ## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3MMQqAMAxG4d1T/GMLCo2LIDh6kGITUbCRmkXw8FYQvuUtr8S8MlTkYoMUPdARTEG4jE9Qgwdn0Z0XQ4r3nBMmcE4qtVyKxrYd7PpAQxeoAoXxM/j23/oXglVNRWQAAAA=" target="_blank">Run the query</a>
 
 ```kusto
   range offset from -1 to 1 step 1

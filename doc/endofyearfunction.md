@@ -11,18 +11,23 @@ Returns the end of the year containing the date, shifted by an offset, if provid
 
 ## Syntax
 
-`endofyear(`*date* [`,`*offset*]`)`
+`endofyear(`*date* [, *offset*]`)`
 
-## Arguments
+## Parameters
 
-* `date`: The input date.
-* `offset`: An optional number of offset years from the input date (integer, default - 0).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check;| The date used to find the end of the year. |
+| *offset* | int | | The number of offset years from *date*. Default is 0. |
 
 ## Returns
 
-A datetime representing the end of the year for the given *date* value, with the offset, if specified.
+A datetime representing the end of the year for the given *date* value, with the &*offset*, if specified.
 
 ## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3MMQqAMAxG4d1T/GMLFhoXQXD0IMUmomAjNYvg4VUQvuUtr6ayMFTkZINU3REIpiCcxgeowY2j6saz4eJUp5IxgktW+dLlZGzrzq6L1IdIL1AcPr1v/7F/AESu49RmAAAA" target="_blank">Run the query</a>
 
 ```kusto
   range offset from -1 to 1 step 1

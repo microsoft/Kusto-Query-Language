@@ -11,18 +11,23 @@ Returns the end of the month containing the date, shifted by an offset, if provi
 
 ## Syntax
 
-`endofmonth(`*date* [`,`*offset*]`)`
+`endofmonth(`*date* [, *offset*]`)`
 
-## Arguments
+## Parameters
 
-* `date`: The input date.
-* `offset`: An optional number of offset months from the input date (integer, default - 0).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check;| The date used to find the end of the month. |
+| *offset* | int | | The number of offset months from *date*. Default is 0. |
 
 ## Returns
 
-A datetime representing the end of the month for the given *date* value, with the offset, if specified.
+A datetime representing the end of the month for the given *date* value, with the *offset*, if specified.
 
 ## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3MOwqAMBBF0d5VvFJBIWMjCJYuJJgZP5CMJFO6eD8Ip7nNzT6tDBUpbJCsER3BFIRifIIqXDizHrwYoibb5hQwgVNQ+boO3tj2yHXvaOgcPUBufA1N+6+bGwOSY4VoAAAA" target="_blank">Run the query</a>
 
 ```kusto
   range offset from -1 to 1 step 1

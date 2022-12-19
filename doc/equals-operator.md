@@ -33,11 +33,13 @@ For faster results, use the case-sensitive version of an operator, for example, 
 
 *T* `|` `where` *col* `=~` `(`*expression*`)`
 
-## Arguments
+## Parameters
 
-* *T* - The tabular input whose records are to be filtered.
-* *col* - The column to filter.
-* *expression* - Scalar or literal expression.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check;| The tabular input whose records are to be filtered. |
+| *col* | string | &check; | The column to filter. |
+| *expression* | string | &check; | The expression used to filter. |
 
 ## Returns
 
@@ -45,15 +47,29 @@ Rows in *T* for which the predicate is `true`.
 
 ## Example  
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+The `State` values in the `StormEvents` table are capitalized. The following query matches
+columns with the value "KANSAS".
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVsK1TUMpOzCtOLFYCyhQU5WelJpcogJV6puhAFAEAU9ecID4AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
-    | where State =~ "kansas"
-    | count 
+| where State =~ "kansas"
+| project EventId, State
 ```
 
-**Output**
+The following table only shows the first 10 results. To see the full output, run the query.
 
-|Count|
-|---|
-|3,166|  
+|EventId|State|
+|--|--|
+|70787 |KANSAS|
+|43450 |KANSAS|
+|43451 |KANSAS|
+|38844 |KANSAS|
+|18463 |KANSAS|
+|18464 |KANSAS|
+|18495 |KANSAS|
+|43466 |KANSAS|
+|43467 |KANSAS|
+|43470 |KANSAS|
