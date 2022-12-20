@@ -1,9 +1,9 @@
 ---
 title: has_any_ipv4_prefix() - Azure Data Explorer
-description: This article describes has_any_ipv4_prefix() in Azure Data Explorer.
+description: Learn how to use the has_any_ipv4_prefix() function to check if any IPv4 address prefixes appear in the text.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/31/2021
+ms.date: 12/18/2022
 ---
 # has_any_ipv4_prefix()
 
@@ -13,12 +13,12 @@ A valid IP address prefix is either a complete IPv4 address (`192.168.1.11`) or 
 
 IP address entrances in a text must be properly delimited with non-alphanumeric characters. For example, properly delimited IP addresses are:
 
- * "These requests came from: 192.168.1.1, 10.1.1.115 and 10.1.1.201"
- * "05:04:54 127.0.0.1 GET /favicon.ico 404"
+* "These requests came from: 192.168.1.1, 10.1.1.115 and 10.1.1.201"
+* "05:04:54 127.0.0.1 GET /favicon.ico 404"
 
 ## Syntax
 
-`has_any_ipv4_prefix(`*text* `,` *ip_address_prefix* [`,` *ip_address_prefix* ...] `)`     
+`has_any_ipv4_prefix(`*text* `,` *ip_address_prefix* [`,` *ip_address_prefix* ...] `)`
 
 `has_any_ipv4_prefix(`*text* `,` *ip_address_prefixes* `)`
 

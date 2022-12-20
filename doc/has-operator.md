@@ -1,9 +1,9 @@
 ---
 title: The case-insensitive has string operator - Azure Data Explorer
-description: This article describes the case-insensitive has string operator in Azure Data Explorer.
+description: Learn how to use the has operator to filter data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2021
+ms.date: 12/18/2022
 ---
 # has operator
 
@@ -19,12 +19,12 @@ The following table provides a comparison of the `has` operators:
 |[`!has_cs`](not-has-cs-operator.md) |RHS isn't a full term in LHS |Yes |`"North America" !has_cs "amer"`|
 
 > [!NOTE]
-> The following abbreviations are used in the table above:
+> The following abbreviations are used in the previous table:
 >
 > * RHS = right hand side of the expression
 > * LHS = left hand side of the expression
 
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
 Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
 
@@ -49,7 +49,7 @@ For faster results, use the case-sensitive version of an operator, for example, 
 
 Rows in *T* for which the predicate is `true`.
 
-## Example 
+## Example
 
 <!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto

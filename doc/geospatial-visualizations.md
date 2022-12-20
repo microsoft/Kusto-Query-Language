@@ -3,7 +3,7 @@ title: Geospatial data visualizations in Azure Data Explorer
 description: Learn how to visualize geospatial data.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 12/18/2022
 ---
 
 # Geospatial visualizations

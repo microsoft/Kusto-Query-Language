@@ -1,9 +1,9 @@
 ---
 title: hash_xxhash64() - Azure Data Explorer
-description: This article describes hash_xxhash64() in Azure Data Explorer.
+description: Learn how to use the hash_xxhash64() function to return the xxhash64 value of the input.
 ms.reviewer: slneimer
 ms.topic: reference
-ms.date: 02/07/2022
+ms.date: 12/18/2022
 ---
 # hash_xxhash64()
 

@@ -1,9 +1,9 @@
 ---
 title: Geospatial grid systems in Azure Data Explorer
-description: Learn how to cluster geospatial data.
+description: Learn how to use geospatial grid systems to cluster geospatial data.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 12/18/2022
 ---
 
 # Geospatial clustering
@@ -20,7 +20,7 @@ The core functionalities of these methods are:
 
 * Calculate hash\index\cell token of geospatial coordinate. Different geospatial coordinates that belong to same cell will have same cell token value.
 * Calculate center point of hash\index\cell token. This point is useful because it may represent all the values in the cell.
-* Calculate cell polygon. This is useful in cell visualization or other calculations, for example, distance, or point in polygon checks.
+* Calculate cell polygon. Calculating cell polygons is useful in cell visualization or other calculations, for example, distance, or point in polygon checks.
 
 ## Compare methods
 
