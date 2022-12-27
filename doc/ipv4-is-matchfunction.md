@@ -1,9 +1,9 @@
 ---
 title: ipv4_is_match() - Azure Data Explorer
-description: This article describes ipv4_is_match() in Azure Data Explorer.
+description: Learn how to use the ipv4_is_match() function to match two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/24/2020
+ms.date: 12/21/2022
 ---
 # ipv4_is_match()
 
@@ -18,7 +18,7 @@ ipv4_is_match('192.168.1.1', '192.168.1.255', 24) == true
 
 ## Syntax
 
-`ipv4_is_match(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
+`ipv4_is_match(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
 
 ## Arguments
 
@@ -27,14 +27,14 @@ ipv4_is_match('192.168.1.1', '192.168.1.255', 24) == true
 
 ## IP-prefix notation
 
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
 ## Returns
 
 * `true`: If the long representation of the first IPv4 string argument is equal to the second IPv4 string argument.
-*  `false`: Otherwise.
+* `false`: Otherwise.
 * `null`: If conversion for one of the two IPv4 strings wasn't successful.
 
 >[!NOTE]

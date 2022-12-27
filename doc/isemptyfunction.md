@@ -1,14 +1,14 @@
 ---
 title: isempty() - Azure Data Explorer
-description: This article describes isempty() in Azure Data Explorer.
+description: Learn how to use the isempty() function to check if the argument is an empty string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/21/2022
 ---
 # isempty()
 
 Returns `true` if the argument is an empty string or is null.
-    
+
 ```kusto
 isempty("") == true
 ```
@@ -19,7 +19,7 @@ isempty("") == true
 
 ## Returns
 
-Indicates whether the argument is an empty string or isnull.
+Indicates whether the argument is an empty string or is null.
 
 |x|isempty(x)
 |---|---

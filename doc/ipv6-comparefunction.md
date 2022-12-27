@@ -1,9 +1,9 @@
 ---
 title: ipv6_compare() - Azure Data Explorer
-description: This article describes ipv6_compare() function in Azure Data Explorer.
+description: Learn how to use the ipv6_compare() function to compare two IPv6 or IPv4 network address strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/27/2020
+ms.date: 12/21/2022
 ---
 # ipv6_compare()
 
@@ -17,12 +17,12 @@ ipv6_compare('fe80::85d:e82c:9446:7994/127', 'fe80::85d:e82c:9446:7995/127') == 
 ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
 ```
 
-> [!Note]
+>[!Note]
 > The function can accept and compare arguments representing both IPv6 and IPv4 network addresses. However, if the caller knows that arguments are in IPv4 format, use [ipv4_is_compare()](./ipv4-comparefunction.md) function. This function will result in better runtime performance.
 
 ## Syntax
 
-`ipv6_compare(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
+`ipv6_compare(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
 
 ## Arguments
 
@@ -32,7 +32,7 @@ ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
 ## IP-prefix notation
 
 It's common practice to define IP addresses with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address, and the number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask. 
+The IP address to the LEFT of the slash (`/`) is the base IP address, and the number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask.
 
 For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 
@@ -118,4 +118,3 @@ datatable(ip1_string:string, ip2_string:string, prefix:long)
 |192.168.1.1/24|::ffff:c0a8:01ff|127|0|
 |::ffff:c0a8:0101|192.168.1.255|120|0|
 |::192.168.1.1/30|192.168.1.255/24|127|0|
-

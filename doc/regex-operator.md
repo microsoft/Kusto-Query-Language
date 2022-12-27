@@ -11,12 +11,7 @@ Filters a record set based on a case-sensitive regex value.
 
 For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
-## Performance tips
-
-> [!NOTE]
-> Performance depends on the type of search and the structure of the data.
-
-For best practices, see [Query best practices](best-practices.md).
+[!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
 ## Syntax
 

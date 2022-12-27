@@ -1,9 +1,9 @@
 ---
 title: JSONPath syntax - Azure Data Explorer
-description: This article describes JSONPath expressions in Azure Data Explorer.
+description: Learn how to use JSONPath expressions to specify data mappings and KQL functions that process dynamic objects.
 ms.reviewer: igborodi
 ms.topic: reference
-ms.date: 12/20/2021
+ms.date: 12/22/2022
 ---
 
 # JSONPath expressions

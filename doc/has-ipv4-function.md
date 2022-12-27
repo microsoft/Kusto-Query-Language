@@ -18,14 +18,16 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 `has_ipv4(`*source* `,` *ip_address* `)`
 
-## Arguments
+## Parameters
 
-* *source*: The value containing the text to search in.
-* *ip_address*: String value containing the IP address to look for.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *source* | string | &check; | The text to search.|
+| *ip_address* | string | &check; | The value containing the IP address for which to search.|
 
 ## Returns
 
-`true`  if the *ip_address* is a valid IPv4 address, and it was found in *source*. Otherwise, the function returns `false`.
+`true` if the *ip_address* is a valid IPv4 address, and it was found in *source*. Otherwise, the function returns `false`.
 
 > [!TIP]
 >
@@ -34,10 +36,41 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 ## Examples
 
+### Properly formatted IP address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM9FQNzC1MjCxMjVRMDQy1zMAQkMFd9cQBf20xLLM5Pw8PSChYGJgoq6joA5Xoa4JAIl8hqBNAAAA" target="_blank">Run the query</a>
+
 ```kusto
-has_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1') // true
-
-has_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.0.256') // false, invalid IPv4 address
-
-has_ipv4('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.0.1') // false, improperly delimited IP address
+print result=has_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1')
 ```
+
+|result|
+|--|
+|true|
+
+### Invalid IP address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM9FQNzC1MjCxMjVRMDQy1zMAQiNTMwV31xAF/bTEsszk/Dw9IKFgYmCirqOgjqRGXRMAk108LFEAAAA=" target="_blank">Run the query</a>
+
+```kusto
+print result=has_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.0.256')
+```
+
+|result|
+|--|
+|false|
+
+### Improperly delimited IP
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM9FQNzC1MjCxMjUxNDLXMwBCQwV31xAF/bTEsszk/Dw9IKFgYmCirqOgDlehrgkAPqxiHkwAAAA=" target="_blank">Run the query</a>
+
+```kusto
+print result=has_ipv4('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.0.1')
+```
+
+|result|
+|--|
+|false|

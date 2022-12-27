@@ -1,9 +1,9 @@
 ---
 title: isnull() - Azure Data Explorer
-description: This article describes isnull() in Azure Data Explorer.
+description: Learn how to use the isnull() function to check if the argument value is null.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/21/2022
 ---
 # isnull()
 
@@ -23,7 +23,7 @@ True or false, depending on whether or not the value is null.
 
 **Notes**
 
-* `string` values cannot be null. Use [isempty](./isemptyfunction.md)
+* `string` values can't be null. Use [isempty](./isemptyfunction.md)
   to determine if a value of type `string` is empty or not.
 
 |x                |`isnull(x)`|

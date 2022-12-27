@@ -1,9 +1,9 @@
 ---
 title: hll_merge() - Azure Data Explorer
-description: This article describes hll_merge() in Azure Data Explorer.
+description: Learn how to use the hll_merge() function toe merge HLL results.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/18/2022
+ms.date: 12/19/2022
 ---
 # hll_merge()
 
@@ -23,7 +23,7 @@ Read about the [underlying algorithm (*H*yper*L*og*L*og) and estimation accuracy
 
 ## Returns
 
-Returns one `hll` value which is the result of merging the columns `*Exrp1*`, `*Expr2*`, ... `*ExprN*`.
+Returns one `hll` value. The value is the result of merging the columns `*Exrp1*`, `*Expr2*`, ... `*ExprN*`.
 
 ## Examples
 

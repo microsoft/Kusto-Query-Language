@@ -1,13 +1,13 @@
 ---
 title: hll() (aggregation function) - Azure Data Explorer
-description: Learn how to use the hll() aggregation function to calculate the results of the dcount() function in Azure Data Explorer.
+description: Learn how to use the hll() function to calculate the results of the dcount() function.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 12/19/2022
 ---
 # hll() (aggregation function)
 
-Calculates the Intermediate results of [`dcount`](dcount-aggfunction.md) across the group only in context of aggregation inside [summarize](summarizeoperator.md).
+Calculates the intermediate results of [`dcount`](dcount-aggfunction.md) across the group only in context of aggregation inside [summarize](summarizeoperator.md).
 
 Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accuracy](#estimation-accuracy).
 

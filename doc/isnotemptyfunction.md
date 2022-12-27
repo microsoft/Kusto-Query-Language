@@ -1,9 +1,9 @@
 ---
 title: isnotempty() - Azure Data Explorer
-description: This article describes isnotempty() in Azure Data Explorer.
+description: Learn how to use the isnotempty() function to check if the argument isn't an empty string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/13/2022
+ms.date: 12/21/2022
 ---
 # isnotempty()
 

@@ -1,9 +1,9 @@
 ---
 title: join operator - Azure Data Explorer
-description: This article describes join operator in Azure Data Explorer.
+description: Learn how to use the join operator to merge the rows of two tables. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/03/2022
+ms.date: 12/22/2022
 ms.localizationpriority: high 
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
@@ -246,11 +246,12 @@ X | join kind=inner Y on Key
 |c|4|c|30|
 
 > [!NOTE]
+>
 > * (b,10) from the right side, was joined twice: with both (b,2) and (b,3) on the left.
 > * (c,4) on the left side, was joined twice: with both (c,20) and (c,30) on the right.
 
 ### Innerunique-join flavor
- 
+
 Use **innerunique-join flavor** to deduplicate keys from the left side. The result will be a row in the output from every combination of deduplicated left keys and right keys.
 
 > [!NOTE]
@@ -305,7 +306,7 @@ on key
 * Kusto is optimized to push filters that come after the `join`, towards the appropriate join side, left or right, when possible.
 
 * Sometimes, the flavor used is **innerunique** and the filter is propagated to the left side of the join. The flavor will be automatically propagated and the keys that apply to that filter will always appear in the output.
-    
+
 * Use the example above and add a filter `where value == "val1.2" `. It will always give the second result and will never give the first result for the datasets:
 
 ```kusto

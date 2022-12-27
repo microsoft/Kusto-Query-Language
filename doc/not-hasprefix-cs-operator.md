@@ -26,10 +26,9 @@ For further information about other operators and to determine which operator is
 
 ## Performance tips
 
-> [!NOTE]
-> Performance depends on the type of search and the structure of the data.
+[!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator, for example, `hasprefix_cs`, not `hasprefix`. For best practices, see [Query best practices](best-practices.md).
+For faster results, use the case-sensitive version of an operator. For example, use `hasprefix_cs` instead of `hasprefix`.
 
 ## Syntax
 

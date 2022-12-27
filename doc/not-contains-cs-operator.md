@@ -29,14 +29,11 @@ For further information about other operators and to determine which operator is
 
 ## Performance tips
 
-> [!NOTE]
-> Performance depends on the type of search and the structure of the data.
+[!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator, for example, `contains_cs`, not `contains`.
+For faster results, use the case-sensitive version of an operator. For example, use `contains_cs` instead of `contains`.
 
 If you're testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters at the start or end of a field, for faster results use `has` or `in`. Also, `has` works faster than `contains`, `startswith`, or `endswith`, however it is not as precise and could provide unwanted records.
-
-For best practices, see [Query best practices](best-practices.md).
 
 ## Syntax
 

@@ -1,9 +1,9 @@
 ---
 title: ipv6_is_match() - Azure Data Explorer
-description: This article describes ipv6_is_match() function in Azure Data Explorer.
+description: Learn how to use the ipv6_is_match() function to match two IPv6 or IPv4 network address strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/27/2020
+ms.date: 12/21/2022
 ---
 # ipv6_is_match()
 
@@ -22,7 +22,7 @@ ipv6_is_match('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == tr
 
 ## Syntax
 
-`ipv6_is_match(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
+`ipv6_is_match(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
 
 ## Arguments
 
@@ -30,9 +30,9 @@ ipv6_is_match('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == tr
 * *PrefixMask*: An integer from 0 to 128 representing the number of most-significant bits that are taken into account.
 
 ## IP-prefix notation
- 
+
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 
@@ -83,7 +83,6 @@ datatable(ip1_string:string, ip2_string:string)
 |192.168.1.1/24|::ffff:c0a8:01ff|1|
 |::ffff:c0a8:0101|192.168.1.255/24|1|
 |::192.168.1.1/30|192.168.1.255/24|1|
-
 
 ### IPv6/IPv4 comparison equality case- IP-prefix notation specified inside the IPv6/IPv4 strings and as additional argument of the `ipv6_is_match()` function
 

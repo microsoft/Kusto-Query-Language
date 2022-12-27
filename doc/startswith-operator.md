@@ -30,10 +30,9 @@ Case-insensitive operators are currently supported only for ASCII-text. For non-
 
 ## Performance tips
 
-> [!NOTE]
-> Performance depends on the type of search and the structure of the data.
+[!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator, for example, `hassuffix_cs`, not `hassuffix`. For best practices, see [Query best practices](best-practices.md).
+For faster results, use the case-sensitive version of an operator. For example, use `hassuffix_cs` instead of `hassuffix`.
 
 ## Syntax
 

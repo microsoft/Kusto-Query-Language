@@ -1,15 +1,15 @@
 ---
 title: ipv4_is_private() - Azure Data Explorer
-description: This article describes the ipv4_is_private() function in Azure Data Explorer.
+description: Learn how to use the ipv4_is_private() function to check if the IPv4 string address belongs to a set of private network IPs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/20/2020
+ms.date: 12/21/2022
 ---
 # ipv4_is_private()
 
-Checks if IPv4 string address belongs to a set of private network IPs.
+Checks if the IPv4 string address belongs to a set of private network IPs.
 
-[Private network addresses](https://en.wikipedia.org/wiki/Private_network) were originally defined to assist in delaying IPv4 address exhaustion. IP packets originating from or addressed to a private IP address cannot be routed through the public internet.
+[Private network addresses](https://en.wikipedia.org/wiki/Private_network) were originally defined to assist in delaying IPv4 address exhaustion. IP packets originating from or addressed to a private IP address can't be routed through the public internet.
 
 ## Private IPv4 addresses
 
@@ -20,7 +20,6 @@ The Internet Engineering Task Force (IETF) has directed the Internet Assigned Nu
 |10.0.0.0 – 10.255.255.255|16777216|10.0.0.0/8 (255.0.0.0)|
 |172.16.0.0 – 172.31.255.255|1048576|172.16.0.0/12 (255.240.0.0)|
 |192.168.0.0 – 192.168.255.255|65536|192.168.0.0/16 (255.255.0.0)|
-
 
 ```kusto
 ipv4_is_private('192.168.1.1/24') == true
@@ -39,7 +38,7 @@ ipv4_is_private("127.0.0.1") == false
 
 ### IP-prefix notation
 
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 

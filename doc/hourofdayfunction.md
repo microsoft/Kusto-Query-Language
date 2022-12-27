@@ -1,9 +1,9 @@
 ---
 title: hourofday() - Azure Data Explorer
-description: This article describes hourofday() in Azure Data Explorer.
+description: Learn how to use the hourofday() function to return an integer representing the hour of the given date.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/19/2022
 ---
 # hourofday()
 

@@ -13,44 +13,43 @@ For more information about other operators and to determine which operator is mo
 
 ## Performance tips
 
-> [!NOTE]
-> Performance depends on the type of search and the structure of the data.
+[!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator, for example, `has_cs`, not `has`. For best practices, see [Query best practices](best-practices.md).
+For faster results, use the case-sensitive version of an operator. For example, use `has_cs` instead of `has`.
 
 ## Syntax
 
-*T* `|` `where` *Column* `has_any` `(`*list of scalar expressions*`)`
-*T* `|` `where` *Column* `has_any` `(`*tabular expression*`)`
+*T* `|` `where` *Column* `has_any` `(`*Expression*`,` [*Expression_2*, ...]`)`
 
-## Arguments
+## Parameters
 
-* *T* - Tabular input whose records are to be filtered.
-* *Column* - Column to filter.
-* *list of expressions* - Comma separated list of scalar or literal expressions
-* *tabular expression* - Tabular expression that has a set of values (if expression has multiple columns, the first column is used)
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check; | The tabular input whose records are to be filtered.|
+| *Column* | string | &check; | The column to filter.|
+| *Expression* | scalar or tabular | &check; | An expression or list of expressions for which to search.|
 
 ## Returns
 
 Rows in *T* for which the predicate is `true`
 
-## Notes
-
-* The expression list can produce up to `10,000` values.
-* For tabular expressions, the first column of the result set is selected.
+> [!NOTE]
+>
+> * The expression list can produce up to 10,000 values.
+> * For tabular expressions, the first column of the result set is selected.
 
 ## Examples
 
 ### Use has_any operator with a list
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoz0gtSlUILkksSVXISCyOT8yrVNBQcnYM8vfx9HNU0lFQcnH09g8Bs/xcw5U0wbqKS3NzE4syq1IVkvNL80o0NBWSKiGGAACHltT/YAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents 
 | where State has_any ("CAROLINA", "DAKOTA", "NEW") 
 | summarize count() by State
 ```
-
-**Output**
 
 |State|count_|
 |---|---|
@@ -65,15 +64,15 @@ StormEvents
 
 ### Use has_any operator with a dynamic array
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEoLkksSS1WsFVIqcxLzM1M1ohWL84vLclQ11FQz8svAjJiNa15uYJL8otyXctS80qKFXi5ahTKM1KLUhWCQZoVMhKL4xPzKhU0IGZpguSLS3NzE4syq1IVkvNL80o0NBWSKiHKAZ3v1Dd1AAAA" target="_blank">Run the query</a>
+
 ```kusto
 let states = dynamic(['south', 'north']);
 StormEvents 
 | where State has_any (states)
 | summarize count() by State
 ```
-
-**Output**
 
 |State|count_|
 |---|---|

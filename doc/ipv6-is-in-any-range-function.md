@@ -1,9 +1,9 @@
 ---
 title: ipv6_is_in_any_range() - Azure Data Explorer
-description: This article describes how to use the ipv6_is_in_any_range function in Azure Data Explorer.
+description: Learn how to use the ipv6_is_in_any_range function to check if an IPv6 string address is in any of the IPv6 address ranges.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/15/2022
+ms.date: 12/21/2022
 ---
 # ipv6_is_in_any_range()
 
@@ -32,7 +32,7 @@ ipv6_is_in_any_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:14
 ## IP-prefix notation
 
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 

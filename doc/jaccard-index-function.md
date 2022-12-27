@@ -1,13 +1,13 @@
 ---
 title: jaccard_index() - Azure Data Explorer
-description: This article describes jaccard_index() in Azure Data Explorer.
+description: Learn how to use the jaccard_index() function to calculate the Jaccard index of two input sets.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/20/2022
+ms.date: 12/21/2022
 ---
 # jaccard_index()
 
-Calculates the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of two sets
+Calculates the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of two input sets.
 
 ## Syntax
 

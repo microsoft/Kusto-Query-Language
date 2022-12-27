@@ -1,13 +1,13 @@
 ---
 title: ipv4_netmask_suffix() - Azure Data Explorer
-description: This article describes the ipv4_netmask_suffix() function in Azure Data Explorer.
+description: Learn how to use the ipv4_netmask_suffix() function to return the value of the IPv4 netmask suffix from an IPv4 string address.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/12/2021
+ms.date: 12/21/2022
 ---
 # ipv4_netmask_suffix()
 
-Returns the value of the IPv4 netmask suffix from IPv4 string address.
+Returns the value of the IPv4 netmask suffix from an IPv4 string address.
 
 ```kusto
 ipv4_netmask_suffix('192.168.1.1/24') == 24
@@ -24,14 +24,14 @@ ipv4_netmask_suffix('192.168.1.1') == 32
 
 ### IP-prefix notation
 
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
 ## Returns
 
-* The value of the netmask suffix the IPv4 address. If suffix is not present in the input, a value of `32` (full netmask suffix) is returned.
-* `null`: If parsing of the input as IPv4 address string wasn't successful.
+* The value of the netmask suffix the IPv4 address. If the suffix isn't present in the input, a value of `32` (full netmask suffix) is returned.
+* `null`: If parsing the input as an IPv4 address string wasn't successful.
 
 ## Example: Resolve IPv4 mask suffix
 

@@ -1,13 +1,13 @@
 ---
 title: ipv6_is_in_range() - Azure Data Explorer
-description: This article describes ipv6_is_in_range() in Azure Data Explorer.
+description: Learn how to use the ipv6_is_in_range() function to check if an IPv6 string address is in the Ipv6-prefix notation range.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/12/2021
+ms.date: 12/21/2022
 ---
 # ipv6_is_in_range()
 
-Checks if an IPv6 string address is in IPv6-prefix notation range.
+Checks if an IPv6 string address is in the IPv6-prefix notation range.
 
 ```kusto
 ipv6_is_in_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd/112") == true
@@ -16,19 +16,19 @@ ipv6_is_in_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:146d:e
 
 ## Syntax
 
-`ipv6_is_in_range(`*Ipv6Address*`, `*Ipv6Range*`)`
+`ipv6_is_in_range(`*Ipv6Address*`,`*Ipv6Range*`)`
 
 ## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Ipv6Address* | string | &check; | An expression representing an IPv6 address. 
+| *Ipv6Address* | string | &check; | An expression representing an IPv6 address.
 | *Ipv6Range*| string | &check; | An expression representing an IPv6 range using [IP-prefix notation](#ip-prefix-notation).
 
 ## IP-prefix notation
 
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
 
