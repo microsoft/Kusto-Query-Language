@@ -7,19 +7,21 @@ ms.date: 12/13/2022
 ---
 # gamma()
 
-Computes [gamma function](https://en.wikipedia.org/wiki/Gamma_function)
+Computes the gamma function for the provided *number*.
 
 ## Syntax
 
-`gamma(`*x*`)`
+`gamma(`*number*`)`
 
-## Arguments
+## Parameters
 
-* *x*: Parameter for the gamma function
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *number* | real | &check; | The number used to calculate the gamma function. |
 
 ## Returns
 
-* Gamma function of x.
+Gamma function of *number*.
 
 ## See also
 

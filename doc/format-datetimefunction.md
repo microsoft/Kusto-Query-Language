@@ -3,33 +3,29 @@ title: format_datetime() - Azure Data Explorer
 description: Learn how to use the format_datetime() function to format a datetime according to the provided format.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/12/2022
+ms.date: 12/18/2022
 ---
 # format_datetime()
 
 Formats a datetime according to the provided format.
 
-```kusto
-format_datetime(datetime(2015-12-14 02:03:04.12345), 'y-M-d h:m:s.fffffff') == "15-12-14 2:3:4.1234500"
-```
-
 ## Syntax
 
-`format_datetime(`*datetime* `,` *format*`)`
+`format_datetime(`*date* `,` *format*`)`
 
-## Arguments
+## Parameters
 
-* `datetime`: value of a type `datetime`.
-* `format`: format specifier string, consisting of one or more [format elements](#supported-formats).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check; | The value to format.|
+| *format* | string | &check;| The output format comprised of one or more of the [supported format elements](#supported-format-elements).
 
-## Returns
+### Supported format elements
 
-The string with the format result.
+The *format* parameter should include one or more of the following elements:
 
-## Supported formats
-
-|Format specifier| Description| Examples
-|---|---|---
+|Format specifier| Description| Examples|
+|--|--|--|
 |`d`| The day of the month, from 1 through 31.| 2009-06-01T13:45:30 -> 1, 2009-06-15T13:45:30 -> 15
 |`dd`| The day of the month, from 01 through 31.| 2009-06-01T13:45:30 -> 01, 2009-06-15T13:45:30 -> 15
 |`f`| The tenths of a second in a date and time value.| 2009-06-15T13:45:30.6170000 -> 6, 2009-06-15T13:45:30.05 -> 0
@@ -61,11 +57,11 @@ The string with the format result.
 |`yyyy`| The year as a four-digit number.| 0001-01-01T00:00:00 -> 0001, 0900-01-01T00:00:00 -> 0900, 1900-01-01T00:00:00 -> 1900, 2009-06-15T13:45:30 -> 2009
 |`tt`| AM / PM hours| 2009-06-15T13:45:09 -> PM
 
-**Supported delimeters**
+### Supported delimiters
 
-Format specifier can include following delimeters characters:
+The format specifier can include the following delimiters:
 
-|Delimeter|Comment|
+|Delimiter|Comment|
 |---------|-------|
 |`' '`| Space|
 |`'/'`||
@@ -77,9 +73,15 @@ Format specifier can include following delimeters characters:
 |`'['`||
 |`']'`||
 
+## Returns
+
+A string with *date* formatted as specified by *format*.
+
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVFIKVGwVUhJLEktycxN1TAyMDTXNTDUNbJUMLC0MjCwMjDVtOYqKMrMK1HgKjO0Tcsvyk0siYerTynRUa+s1PX11U1JUYj28LDKzbUqLo5V19QBKjfCplwBqB6kA6IBoZ6rzBiXcpjxGRkQ5QolJUAdAJCyrq29AAAA" target="_blank">Run the query</a>
+
 ```kusto
 let dt = datetime(2017-01-29 09:00:05);
 print 
@@ -89,5 +91,5 @@ v3=format_datetime(dt, 'yy-MM-dd [hh:mm:ss tt]')
 ```
 
 |v1|v2|v3|
-|---|---|---|
+|--|--|--|
 |17-01-29 [09:00:05]|2017-1-29 [9:00:05]|17-01-29 [09:00:05 AM]|

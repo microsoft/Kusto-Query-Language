@@ -3,7 +3,7 @@ title: The dynamic data type - Azure Data Explorer
 description: This article describes The dynamic data type in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/09/2020
+ms.date: 11/13/2022
 ---
 # The dynamic data type
 
@@ -152,7 +152,7 @@ Cast functions are:
 * `totimespan()`
 * `tostring()`
 * `toguid()`
-* `todynamic()`
+* `parse_json()`
 
 ## Building dynamic objects
 
@@ -182,8 +182,8 @@ For a complete list of scalar dynamic/array functions, see [dynamic/array functi
 
 |Operator or function|Usage with dynamic data types|
 |---|---|
-| *value* `in` *array*| True if there is an element of *array* that == *value*<br/>`where City in ('London', 'Paris', 'Rome')`
-| *value* `!in` *array*| True if there is no element of *array* that == *value*
+| *value* `in` *array*| True if there's an element of *array* that == *value*<br/>`where City in ('London', 'Paris', 'Rome')`
+| *value* `!in` *array*| True if there's no element of *array* that == *value*
 |[`array_length(`array`)`](../arraylengthfunction.md)| Null if it isn't an array
 |[`bag_has_key(`bag`,`key`)`](../bag-has-key-function.md)| Checks whether a dynamic bag column contains a given key.
 |[`bag_keys(`bag`)`](../bagkeysfunction.md)| Enumerates all the root keys in a dynamic property-bag object.

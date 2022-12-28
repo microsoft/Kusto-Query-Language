@@ -3,33 +3,33 @@ title: format_bytes() - Azure Data Explorer
 description: Learn how to use the format_bytes() function to format a number as a string representing the data size in bytes.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/12/2022
+ms.date: 12/18/2022
 ---
 # format_bytes()
 
 Formats a number as a string representing data size in bytes.
 
-```kusto
-format_bytes(1024) == '1 KB'"
-```
-
 ## Syntax
 
-`format_bytes(`*value* [`,` *precision* [`,` *units*]]`)`
+`format_bytes(`*size* [`,` *precision* [`,` *units*]]`)`
 
-## Arguments
+## Parameters
 
-* `value`: a number to be formatted as data size in bytes.
-* `precision`: (optional) Number of digits the value will be rounded to. (default value is 0).
-* `units`: (optional) Units of the target data size the string formatting will use (`Bytes`, `KB`, `MB`, `GB`, `TB`, `PB`). If parameter is empty - the units will be auto-selected based on input value.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *size* | real | &check; | The value to be formatted as data size in bytes.|
+| *precision* | int | | The number of digits the value will be rounded to after the decimal point. The default is 0.|
+| *units* | string | | The units of the target data size: `Bytes`, `KB`, `MB`, `GB`, `TB`, or `PB`. If this parameter is empty, the units will be auto-selected based on input value.|
 
 ## Returns
 
-The string with the format result.
+A string of *size* formatted as data size in bytes.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUeAqM1SwVUjLL8pNLIlPqixJLdYwNTPR1OEqM0IXNzQwNjbSUTAESRqjSxoZGIDlQZImuCR1FMDyprjlDXQUlLydlDQBI/ZQzZ0AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print 
 v1 = format_bytes(564),

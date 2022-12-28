@@ -1,9 +1,9 @@
 ---
 title: infer_storage_schema plugin - Azure Data Explorer
-description: This article describes infer_storage_schema plugin in Azure Data Explorer.
+description: Learn how to use the infer_storage_schema plugin to infer the schema of external data. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/24/2022
+ms.date: 12/20/2022
 ---
 # infer_storage_schema plugin
 
@@ -31,6 +31,7 @@ a property bag specifying properties of the request:
 The `infer_storage_schema` plugin returns a single result table containing a single row/column holding CSL schema string.
 
 > [!NOTE]
+>
 > * Storage container URI secret keys must have the permissions for *List* in addition to *Read*.
 > * Schema inference strategy 'all' is a very "expensive" operation, as it implies reading from *all* artifacts found and merging their schema.
 > * Some returned types may not be the actual ones as a result of wrong type guess (or, as a result of schema merge process). This is why you should review the result carefully before creating an external table.

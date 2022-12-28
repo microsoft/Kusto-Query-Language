@@ -126,11 +126,11 @@ let Locations = datatable(longitude:real, latitude:real)
     ];
 Polygons
 | project polygonPartition = tostring(pack("description", description, "polygon", polygon))
-| partition hint.materialized=true by polygonPartition
+| partition hint.materialized=true hint.strategy=native by polygonPartition
 {   
      Locations
-     | extend description = todynamic(toscalar(polygonPartition)).description
-     | extend polygon = todynamic(toscalar(polygonPartition)).polygon
+     | extend description = parse_json(toscalar(polygonPartition)).description
+     | extend polygon = parse_json(toscalar(polygonPartition)).polygon
      | where geo_point_in_polygon(longitude, latitude, polygon)
      | project-away polygon
 }

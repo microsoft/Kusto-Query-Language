@@ -1,9 +1,9 @@
 ---
 title: ipv4_compare() - Azure Data Explorer
-description: This article describes ipv4_compare() in Azure Data Explorer.
+description: Learn how to use the ipv4_compare() function to compare two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/24/2020
+ms.date: 12/20/2022
 ---
 # ipv4_compare()
 
@@ -18,7 +18,7 @@ ipv4_compare('192.168.1.1', '192.168.1.255', 24) == 0
 
 ## Syntax
 
-`ipv4_compare(`*Expr1*`, `*Expr2*`[ ,`*PrefixMask*`])`
+`ipv4_compare(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
 
 ## Arguments
 
@@ -26,9 +26,9 @@ ipv4_compare('192.168.1.1', '192.168.1.255', 24) == 0
 * *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
 
 ## IP-prefix notation
- 
+
 IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask. 
+The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
 
 For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
 
@@ -80,4 +80,3 @@ datatable(ip1_string:string, ip2_string:string, prefix:long)
 |192.168.1.1|192.168.1.0|31|0|
 |192.168.1.1/24|192.168.1.255|31|0|
 |192.168.1.1|192.168.1.255|24|0|
-

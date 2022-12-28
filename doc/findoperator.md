@@ -38,9 +38,9 @@ find in (Table1, Table2, Table3) where Fruit=="apple"
 
 ## Syntax
 
-* `find` [`withsource`=*ColumnName*] [`in` `(`*Table* [`,` *Table*, ...]`)`] `where` *Predicate* [`project-smart` | `project` *ColumnName* [`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...] [`,` `pack(*)`]]
+* `find` [`withsource`=*ColumnName*] [`in` `(`*Table* [`,` *Table*, ...]`)`] `where` *Predicate* [`project-smart` | `project` *ColumnName* [`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...][`,` `pack_all()`]] 
 
-* `find` *Predicate* [`project-smart` | `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...] [`, pack(*)`]]
+* `find` *Predicate* [`project-smart` | `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...] [`, pack_all()`]]
 
 ## Arguments
 
@@ -93,15 +93,10 @@ When you use `project-smart`, the columns that will appear in the output will be
 The rest of the columns will be packed into a property bag and will appear in an additional `pack_` column.
 A column that is referenced explicitly by the predicate and appears in multiple tables with multiple types, will have a different column in the result schema for each such type. Each of the column names will be constructed from the original column name and type, separated by an underscore.
 
-When using `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...] [`,` `pack(*)`]:
-
+When using `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...][`,` `pack_all()`]:
 * The result table will include the columns specified in the list. If a source table doesn't contain a certain column, the values in the corresponding rows will be null.
 * When specifying a *ColumnType* with a *ColumnName*, this column in the "result" will have the given type, and the values will be cast to that type if needed. The casting won't have an effect on the column type when evaluating the *Predicate*.
-* When `pack(*)` is used, the rest of the columns will be packed into a property bag, and will appear in an additional `pack_` column.
-
-**pack_ column**
-
-This column will contain a property bag with the data from all the columns that doesn't appear in the output schema. The source column name will serve as the property name and the column value will serve as the property value.
+* When `pack_all()` is used, all the columns, including the projected columns, are packed into a property bag and appear in an additional column, by default 'column1'. In the property bag, the source column name serves as the property name and the column's value serves as the property value.
 
 ## Predicate syntax
 
@@ -220,7 +215,7 @@ Assume we have the next content of these two tables:
 ```kusto
 find in (EventsTable1, EventsTable2) 
      where Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' and Level == 'Error' 
-     project EventText, Version, EventName, pack(*)
+     project EventText, Version, EventName, pack_all()
 ```
 
 |source_|EventText|Version|EventName|pack_
@@ -258,7 +253,7 @@ find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
 ### Return the results from each row as a property bag
 
 ```kusto
-find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' project pack(*)
+find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' project pack_all()
 ```
 
 |source_|pack_|

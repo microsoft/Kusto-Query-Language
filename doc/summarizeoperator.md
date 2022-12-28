@@ -3,7 +3,7 @@ title: summarize operator - Azure Data Explorer
 description: This article describes summarize operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 12/27/2022
 ms.localizationpriority: high 
 ---
 # summarize operator

@@ -1,14 +1,14 @@
 ---
 title: Kusto Query Language (KQL) overview- Azure Data Explorer
-description: This article is a general overview of the Kusto Query Language in Azure Data Explorer.
+description: Learn about how to use Kusto Query Language to explore data.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/12/2021
+ms.date: 12/19/2022
 adobe-target: true
 ---
 # Kusto Query Language (KQL) overview
 
-Kusto Query Language is a powerful tool to explore your data and discover patterns, identify anomalies and outliers, create statistical modeling, and more. The query uses schema entities that are organized in a hierarchy similar to SQL's: databases, tables, and columns.
+Kusto Query Language is a powerful tool to explore your data and discover patterns, identify anomalies and outliers, create statistical modeling, and more. The query uses schema entities that are organized in a hierarchy similar to SQLs: databases, tables, and columns.
 
 ## What is a Kusto query?
 
@@ -19,7 +19,7 @@ A Kusto query is a read-only request to process data and return results. The req
 There are three kinds of user [query statements](statements.md):
 
 * A [tabular expression statement](tabularexpressionstatements.md)
-* A [let statement](letstatement.md) 
+* A [let statement](letstatement.md)
 * A [set statement](setstatement.md)
 
 All query statements are separated by a `;` (semicolon), and only affect the query at hand.
@@ -27,9 +27,9 @@ All query statements are separated by a `;` (semicolon), and only affect the que
 >[!NOTE]
 > For information about application query statements, see [Application query statements](statements.md#application-query-statements).
 
-The most common kind of query statement is a tabular expression **statement**, which means both its input and output consist of tables or tabular datasets. Tabular statements contain zero or more **operators**, each of which starts with a tabular input and returns a tabular output. Operators are sequenced by a `|` (pipe). Data flows, or is piped, from one operator to the next. The data is filtered or manipulated at each step and then fed into the following step. 
+The most common kind of query statement is a tabular expression **statement**, which means both its input and output consist of tables or tabular datasets. Tabular statements contain zero or more **operators**, each of which starts with a tabular input and returns a tabular output. Operators are sequenced by a `|` (pipe). Data flows, or is piped, from one operator to the next. The data is filtered or manipulated at each step and then fed into the following step.
 
-It's like a funnel, where you start out with an entire data table. Each time the data passes through another operator, it is filtered, rearranged, or summarized. Because the piping of information from one operator to another is sequential, the query operator order is important and can affect both results and performance. At the end of the funnel, you're left with a refined output.
+It's like a funnel, where you start out with an entire data table. Each time the data passes through another operator, it's filtered, rearranged, or summarized. Because the piping of information from one operator to another is sequential, the query operator order is important, and can affect both results and performance. At the end of the funnel, you're left with a refined output.
 
 Let's look at an example query.
 

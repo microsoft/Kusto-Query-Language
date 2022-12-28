@@ -768,8 +768,8 @@ items:
     href: todecimalfunction.md
   - name: todouble(), toreal()
     href: todoublefunction.md
-  - name: todynamic(), parse_json()
-    displayName: toobject(), parsejson()
+  - name: parse_json()
+    displayName: toobject(), parsejson(), todynamic()
     href: parsejsonfunction.md
   - name: toguid()
     href: toguidfunction.md

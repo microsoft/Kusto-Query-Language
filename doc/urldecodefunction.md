@@ -3,13 +3,13 @@ title: url_decode() - Azure Data Explorer
 description: This article describes url_decode() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 12/27/2022
 ---
 # url_decode()
 
-The function converts encoded URL into a to regular URL representation. 
+The function converts encoded URL into a regular URL representation.
 
-Detailed information about URL decoding and encoding can be found [here](https://en.wikipedia.org/wiki/Percent-encoding).
+For more details information about URL encoding and decoding, see [Percent-encoding](https://en.wikipedia.org/wiki/Percent-encoding).
 
 ## Syntax
 
@@ -17,7 +17,7 @@ Detailed information about URL decoding and encoding can be found [here](https:/
 
 ## Arguments
 
-* *encoded url*: encoded URL (string).  
+* *encoded url*: encoded URL (string).
 
 ## Returns
 
@@ -33,7 +33,3 @@ print original = url, decoded = url_decode(url)
 |original|decoded|
 |---|---|
 |https%3a%2f%2fwww.bing.com%2f|https://www.bing.com/|
-
-
-
- 
