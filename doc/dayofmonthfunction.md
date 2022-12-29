@@ -32,6 +32,8 @@ An integer representing the day number of the given datetime.
 dayofmonth(datetime(2015-12-14))
 ```
 
+**Output**
+
 |result|
 |--|
 |14|

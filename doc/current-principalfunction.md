@@ -30,6 +30,8 @@ The string format is:
 print fqn=current_principal()
 ```
 
+**Output**
+
 |fqn|
 |---|
 |aaduser=346e950e-4a62-42bf-96f5-4cf4eac3f11e;72f988bf-86f1-41af-91ab-2d7cd011db47|

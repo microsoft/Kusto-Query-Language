@@ -58,6 +58,8 @@ let polygon2 = dynamic({"type":"Polygon","coordinates":[[[-73.96213352680206,40.
 print geo_intersects_2polygons(polygon1, polygon2)
 ```
 
+**Output**
+
 |print_0|
 |---|
 |True|
@@ -73,6 +75,8 @@ US_Counties
 | project name
 ```
 
+**Output**
+
 |name|
 |---|
 |New York|
@@ -85,6 +89,8 @@ let central_park_polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9495,4
 let invalid_polygon = dynamic({"type":"Polygon"});
 print isnull(geo_intersects_2polygons(invalid_polygon, central_park_polygon))
 ```
+
+**Output**
 
 |print_0|
 |---|

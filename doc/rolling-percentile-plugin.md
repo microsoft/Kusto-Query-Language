@@ -51,6 +51,8 @@ range idx from 0 to 24*10-1 step 1
  | evaluate rolling_percentile(val, 50, Timestamp, 1d, 3)
 ```
 
+**Output**
+
 |Timestamp|rolling_3_percentile_val_50|
 |---|---|
 |2018-01-01 00:00:00.0000000|	12|
@@ -77,6 +79,8 @@ range idx from 0 to 24*10-1 step 1
  T  
  | evaluate rolling_percentile(val, 50, Timestamp, 1d, 3, EvenOrOdd)
 ```
+
+**Output**
 
 |Timestamp|	EvenOrOdd|	rolling_3_percentile_val_50|
 |---|---|---|

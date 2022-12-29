@@ -33,6 +33,8 @@ Returns logical XOR operation on a pair of numbers: value1 ^ value2.
 binary_xor(1,1)
 ```
 
+**Output**
+
 |Result|
 |------|
 |0 |
@@ -43,6 +45,8 @@ binary_xor(1,1)
 ```kusto
 binary_xor(1,2)
 ```
+
+**Output**
 
 |Result|
 |------|

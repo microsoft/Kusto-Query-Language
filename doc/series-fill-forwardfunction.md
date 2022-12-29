@@ -48,6 +48,8 @@ data
 
 ```
 
+**Output**
+
 |`arr`|`fill_forward`|
 |---|---|
 |[null,null,36,41,null,null,16,61,33,null,null]|[null,null,36,41,41,41,16,61,33,33,33]|

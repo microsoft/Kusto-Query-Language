@@ -57,6 +57,8 @@ Polygons | extend dummy=1
 | project longitude, latitude, description
 ```
 
+**Output**
+
 |longitude|latitude|description|
 |---|---|---|
 |-73.95|40.75|New York city|
@@ -120,6 +122,8 @@ Polygons
 | project longitude, latitude, description
 ```
 
+**Output**
+
 |longitude|latitude|description|
 |---|---|---|
 |-73.9741|40.7914|Upper West Side|
@@ -143,6 +147,8 @@ EarthAtNight
 | count
 ```
 
+**Output**
+
 |Count|
 |---|
 |83|
@@ -153,6 +159,8 @@ Count of cells that will be needed in order to cover some polygon with S2 cells 
 let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0,0]]]});
 print s2_cell_token_count = array_length(geo_polygon_to_s2cells(polygon, 5));
 ```
+
+**Output**
 
 |s2_cell_token_count|
 |---|
@@ -165,6 +173,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0
 print geo_polygon_to_s2cells(polygon, 30);
 ```
 
+**Output**
+
 |print_0|
 |---|
 ||
@@ -175,6 +185,8 @@ Covering a large-area polygon with small-area cells returns null.
 let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0,0]]]});
 print isnull(geo_polygon_to_s2cells(polygon, 30));
 ```
+
+**Output**
 
 |print_0|
 |---|

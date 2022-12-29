@@ -32,6 +32,8 @@ The following example calculates Geohash neighbors.
 print neighbors = geo_geohash_neighbors('sunny')
 ```
 
+**Output**
+
 |neighbors|
 |---|
 |["sunnt","sunpj","sunnx","sunpn","sunnv","sunpp","sunnz","sunnw"]|
@@ -43,6 +45,8 @@ The following example calculates an array of input Geohash with its neighbors.
 let geohash = 'sunny';
 print cells = array_concat(pack_array(geohash), geo_geohash_neighbors(geohash))
 ```
+
+**Output**
 
 |cells|
 |---|
@@ -60,6 +64,8 @@ print cells = array_concat(pack_array(geohash), geo_geohash_neighbors(geohash))
 | project geojson = pack("type", "Feature","geometry", pack("type", "GeometryCollection", "geometries", arr), "properties", pack("name", "polygons"))
 ```
 
+**Output**
+
 |geojson|
 |---|
 |{"type": "Feature","geometry": {"type": "GeometryCollection","geometries": [<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.6865234375],[42.4951171875,23.6865234375],[42.4951171875,23.73046875],[42.451171875,23.73046875],[42.451171875,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.642578125],[42.451171875,23.642578125],[42.451171875,23.6865234375],[42.4072265625,23.6865234375],[42.4072265625,23.642578125]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.73046875],[42.451171875,23.73046875],[42.451171875,23.7744140625],[42.4072265625,23.7744140625],[42.4072265625,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.642578125],[42.5390625,23.642578125],[42.5390625,23.6865234375],[42.4951171875,23.6865234375],[42.4951171875,23.642578125]]]},<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.73046875],[42.4951171875,23.73046875],[42.4951171875,23.7744140625],[42.451171875,23.7744140625],[42.451171875,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4072265625,23.6865234375],[42.451171875,23.6865234375],[42.451171875,23.73046875],[42.4072265625,23.73046875],[42.4072265625,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.73046875],[42.5390625,23.73046875],[42.5390625,23.7744140625],[42.4951171875,23.7744140625],[42.4951171875,23.73046875]]]},<br>  {"type":"Polygon","coordinates":[[[42.4951171875,23.6865234375],[42.5390625,23.6865234375],[42.5390625,23.73046875],[42.4951171875,23.73046875],[42.4951171875,23.6865234375]]]},<br>  {"type":"Polygon","coordinates":[[[42.451171875,23.642578125],[42.4951171875,23.642578125],[42.4951171875,23.6865234375],[42.451171875,23.6865234375],[42.451171875,23.642578125]]]}]},<br>  "properties": {"name": "polygons"}}|
@@ -76,6 +82,8 @@ print cells = array_concat(pack_array(h3cell), geo_geohash_neighbors(h3cell))
 | project polygon = geo_union_polygons_array(arr)
 ```
 
+**Output**
+
 |polygon|
 |---|
 |{"type":"Polygon","coordinates":[[[42.4072265625,23.642578125],[42.451171875,23.642578125],[42.4951171875,23.642578125],[42.5390625,23.642578125],[42.5390625,23.686523437500004],[42.5390625,23.730468750000004],[42.5390625,23.7744140625],[42.4951171875,23.7744140625],[42.451171875,23.7744140625],[42.407226562499993,23.7744140625],[42.4072265625,23.73046875],[42.4072265625,23.6865234375],[42.4072265625,23.642578125]]]}|
@@ -86,6 +94,8 @@ The following example returns true because of the invalid Geohash token input.
 ```kusto
 print invalid = isnull(geo_geohash_neighbors('a'))
 ```
+
+**Output**
 
 |invalid|
 |---|

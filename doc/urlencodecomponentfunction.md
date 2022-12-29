@@ -30,6 +30,8 @@ let url = @'https://www.bing.com/hello world/';
 print original = url, encoded = url_encode_component(url)
 ```
 
+**Output**
+
 |original|encoded|
 |---|---|
 |https://www.bing.com/hello world/|https%3a%2f%2fwww.bing.com%2fhello%20world|

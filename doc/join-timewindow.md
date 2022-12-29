@@ -38,6 +38,8 @@ let T = datatable(SessionId:string, EventType:string, Timestamp:datetime)
 T
 ```
 
+**Output**
+
 |SessionId|EventType|Timestamp|
 |---|---|---|
 |0|A|2017-10-01 00:00:00.0000000|
@@ -75,6 +77,8 @@ T
 
 ```
 
+**Output**
+
 |SessionId|Start|End|
 |---|---|---|
 |0|2017-10-01 00:00:00.0000000|2017-10-01 00:01:00.0000000|
@@ -110,6 +114,8 @@ T
 | where (End - Start) between (0min .. lookupWindow)
 | project SessionId, Start, End 
 ```
+
+**Output**
 
 |SessionId|Start|End|
 |---|---|---|
@@ -147,6 +153,8 @@ T
 | project SessionId, Start, End 
 ```
 
+**Output**
+
 |SessionId|Start|End|
 |---|---|---|
 |0|2017-10-01 00:00:00.0000000|2017-10-01 00:01:00.0000000|
@@ -182,6 +190,8 @@ T
 | project SessionId, Start, End 
 | count 
 ```
+
+**Output**
 
 |Count|
 |---|

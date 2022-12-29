@@ -32,6 +32,8 @@ Returns a [GUID](./scalar-data-types/guid.md) decoded from a base64 string.
 print Quine = base64_decode_toguid("JpbpECu8dUy7Pv5gbeJXAA==")  
 ```
 
+**Output**
+
 |Quine|
 |-----|
 |10e99626-bc2b-754c-bb3e-fe606de25700|

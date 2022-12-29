@@ -13,16 +13,17 @@ The base-e exponential function of x, which is e raised to the power x: e^x.
 
 `exp(`*x*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A real number, value of the exponent.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *x* | real | &check;| The value of the exponent. |
 
 ## Returns
 
-* Exponential value of x.
+The exponential value of x.
 
 ## See also
 
-For natural (base-e) logarithms, see [log()](log-function.md).
-
-For exponential functions of base-2 and base-10 logarithms, see [exp2()](exp2-function.md), [exp10()](exp10-function.md).
+* For natural (base-e) logarithms, see [log()](log-function.md).
+* For exponential functions of base-2 and base-10 logarithms, see [exp2()](exp2-function.md), [exp10()](exp10-function.md).

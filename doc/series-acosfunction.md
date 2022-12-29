@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_acos = series_acos(arr)
 ```
 
+**Output**
+
 |arr|arr_acos|
 |---|---|
 |[-6.5,0,8.2]|[3.1415926535897931,1.5707963267948966,0.0]|

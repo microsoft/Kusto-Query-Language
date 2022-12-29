@@ -9,10 +9,6 @@ ms.date: 12/12/2022
 
 References an [external table](schema-entities/externaltables.md) by name.
 
-```kusto
-external_table('StormEvent')
-```
-
 > [!NOTE]
 >
 > The `external_table` function has similar restrictions as the [table](tablefunction.md) function.
@@ -22,15 +18,12 @@ external_table('StormEvent')
 
 `external_table` `(` *TableName* [`,` *MappingName* ] `)`
 
-## Arguments
+## Parameters
 
-* *TableName*: The name of the external table being queried.
-  Must be a string literal referencing an external table of kind
-  `blob`, `adl` or `sql`.
-
-* *MappingName*: An optional name of the mapping object that maps the
-  fields in the actual (external) data shards to the columns output
-  by this function.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *TableName* | string| &check; | The name of the external table being queried. Must reference an external table of kind `blob`, `adl`, or `sql`.|
+| *MappingName* | string | | A name of a mapping object that maps fields in the external data shards to columns output.|
 
 ## Next steps
 

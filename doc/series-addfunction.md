@@ -32,6 +32,8 @@ range x from 1 to 3 step 1
 | extend s1_add_s2 = series_add(s1, s2)
 ```
 
+**Output**
+
 |s1|s2|s1_add_s2|
 |---|---|---|
 |[1,2,4]|[4,2,1]|[5,4,5]|

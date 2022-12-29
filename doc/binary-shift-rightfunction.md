@@ -34,6 +34,8 @@ If n is negative, a NULL value is returned.
 binary_shift_right(1,2)
 ```
 
+**Output**
+
 |Result|
 |------|
 |0 |

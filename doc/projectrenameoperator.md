@@ -35,6 +35,8 @@ print a='a', b='b', c='c'
 |  project-rename new_b=b, new_a=a
 ```
 
+**Output**
+
 |new_a|new_b|c|
 |---|---|---|
 |a|b|c|

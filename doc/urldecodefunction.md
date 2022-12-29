@@ -30,6 +30,8 @@ let url = @'https%3a%2f%2fwww.bing.com%2f';
 print original = url, decoded = url_decode(url)
 ```
 
+**Output**
+
 |original|decoded|
 |---|---|
 |https%3a%2f%2fwww.bing.com%2f|https://www.bing.com/|

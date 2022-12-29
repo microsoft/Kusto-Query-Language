@@ -29,6 +29,8 @@ print str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 | extend rstr = reverse(str)
 ```
 
+**Output**
+
 |str|rstr|
 |---|---|
 |ABCDEFGHIJKLMNOPQRSTUVWXYZ|ZYXWVUTSRQPONMLKJIHGFEDCBA|
@@ -40,6 +42,8 @@ print ['int'] = 12345, ['double'] = 123.45,
 | project rint = reverse(['int']), rdouble = reverse(['double']), 
 rdatetime = reverse(['datetime']), rtimespan = reverse(['timespan'])
 ```
+
+**Output**
 
 |rint|rdouble|rdatetime|rtimespan|
 |---|---|---|---|

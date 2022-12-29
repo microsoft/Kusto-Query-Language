@@ -45,6 +45,8 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 print result=has_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1')
 ```
 
+**Output**
+
 |result|
 |--|
 |true|
@@ -58,6 +60,8 @@ print result=has_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1')
 print result=has_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.0.256')
 ```
 
+**Output**
+
 |result|
 |--|
 |false|
@@ -70,6 +74,8 @@ print result=has_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.0.256'
 ```kusto
 print result=has_ipv4('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.0.1')
 ```
+
+**Output**
 
 |result|
 |--|

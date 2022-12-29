@@ -68,6 +68,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9712905883789,40.78
 print intersects = geo_intersects_line_with_polygon(lineString, polygon)
 ```
 
+**Output**
+
 |intersects|
 |---|
 |True|
@@ -81,6 +83,8 @@ NY_Manhattan_Roads
 | where geo_intersects_line_with_polygon(road, area_of_interest)
 | project name
 ```
+
+**Output**
 
 |name|
 |---|
@@ -100,6 +104,8 @@ US_Counties
 | project name
 ```
 
+**Output**
+
 |name|
 |---|
 |New York|
@@ -113,6 +119,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.95768642425537,40.8
 print isnull(geo_intersects_2lines(lineString, polygon))
 ```
 
+**Output**
+
 |print_0|
 |---|
 |True|
@@ -125,6 +133,8 @@ let lineString = dynamic({"type":"LineString","coordinates":[[-73.97159099578857
 let polygon = dynamic({"type":"Polygon","coordinates":[]});
 print isnull(geo_intersects_2lines(lineString, polygon))
 ```
+
+**Output**
 
 |print_0|
 |---|

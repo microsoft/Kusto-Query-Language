@@ -69,6 +69,8 @@ datatable(ip1_string:string, ip2_string:string)
 | extend result = ipv6_is_match(ip1_string, ip2_string)
 ```
 
+**Output**
+
 |ip1_string|ip2_string|result|
 |---|---|---|
 |192.168.1.1|192.168.1.1|1|
@@ -105,6 +107,8 @@ datatable(ip1_string:string, ip2_string:string, prefix:long)
 ]
 | extend result = ipv6_is_match(ip1_string, ip2_string, prefix)
 ```
+
+**Output**
 
 |ip1_string|ip2_string|prefix|result|
 |---|---|---|---|

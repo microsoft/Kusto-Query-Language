@@ -33,6 +33,8 @@ let _sample = _data | sample 1;
 union (_sample), (_sample)
 ```
 
+**Output**
+
 | x   |
 | --- |
 | 83  |
@@ -45,6 +47,8 @@ let _data = range x from 1 to 100 step 1;
 let _sample = materialize(_data | sample 1);
 union (_sample), (_sample)
 ```
+
+**Output**
 
 | x   |
 | --- |

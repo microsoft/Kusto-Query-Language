@@ -52,6 +52,8 @@ let central_park = dynamic({"type":"Polygon","coordinates":[[[-73.9495,40.7969],
 print perimeter = geo_polygon_perimeter(central_park)
 ```
 
+**Output**
+
 |perimeter|
 |---|
 |9930.30149604938|
@@ -64,6 +66,8 @@ let polygons = dynamic({"type":"MultiPolygon","coordinates":[[[[-73.9495,40.7969
 print perimeter = geo_polygon_perimeter(polygons)
 ```
 
+**Output**
+
 |perimeter|
 |---|
 |15943.5384578745|
@@ -74,6 +78,8 @@ The following example returns True because of the invalid polygon.
 ```kusto
 print is_invalid = isnull(geo_polygon_perimeter(dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,10],[0,0]]]})))
 ```
+
+**Output**
 
 |is_invalid|
 |---|

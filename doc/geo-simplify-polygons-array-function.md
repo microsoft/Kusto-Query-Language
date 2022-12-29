@@ -57,6 +57,8 @@ US_States
 | project polygons = geo_simplify_polygons_array(lst, 100)
 ```
 
+**Output**
+
 |polygons|
 |---|
 |{ "type": "MultiPolygon", "coordinates": [ ... ]]}|
@@ -76,6 +78,8 @@ datatable(polygons:dynamic)
 | project is_invalid_polygon = isnull(geo_simplify_polygons_array(arr))
 ```
 
+**Output**
+
 |is_invalid_polygon|
 |---|
 |1|
@@ -94,6 +98,8 @@ datatable(polygons:dynamic)
 | project is_null = isnull(geo_simplify_polygons_array(arr, -1))
 ```
 
+**Output**
+
 |is_null|
 |---|
 |1|
@@ -111,6 +117,8 @@ datatable(polygons:dynamic)
 | summarize arr = make_list(polygons)
 | project is_null = isnull(geo_simplify_polygons_array(arr, 10000))
 ```
+
+**Output**
 
 |is_null|
 |---|

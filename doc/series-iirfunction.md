@@ -51,6 +51,8 @@ print x=x, y = series_iir(x, dynamic([1]), dynamic([1,-1]))
 | mv-expand x, y
 ```
 
+**Output**
+
 | x | y |
 |:--|:--|
 |1.0|1.0|
@@ -70,6 +72,8 @@ let vector_sum=(x:dynamic)
 print d=dynamic([0, 1, 2, 3, 4])
 | extend dd=vector_sum(d)
 ```
+
+**Output**
 
 |d            |dd  |
 |-------------|----|

@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_cos = series_cos(arr)
 ```
 
+**Output**
+
 |arr|arr_cos|
 |---|---|
 |[-6.5,0,8.2]|[0.54030230586813976,1.0,0.54030230586813976]|

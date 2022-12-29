@@ -38,6 +38,8 @@ h1=hash_sha256("World"),
 h2=hash_sha256(datetime(2020-01-01))
 ```
 
+**Output**
+
 |h1|h2|
 |---|---|
 |78ae647dc5544d227130a0682a51e30bc7777fbb6d8a8f17007463a3ecd1d524|ba666752dc1a20eb750b0eb64e780cc4c968bc9fb8813461c1d7e750f302d71d|
@@ -50,6 +52,8 @@ StormEvents
 | summarize StormCount = count() by State, StateHash=hash_sha256(State)
 | top 5 by StormCount desc
 ```
+
+**Output**
 
 |State|StateHash|StormCount|
 |---|---|---|

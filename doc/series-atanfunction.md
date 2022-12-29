@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_atan = series_atan(arr)
 ```
 
+**Output**
+
 |arr|arr_atan|
 |---|---|
 |[-6.5,0,8.2]|[-0.78539816339744828,0.0,0.78539816339744828]|

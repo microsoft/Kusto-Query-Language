@@ -26,6 +26,8 @@ range x from 1 to 1000000 step 1
 | project sizeInMb = estimate_data_size(hll_x) / pow(1024,2)
 ```
 
+**Output**
+
 |sizeInMb|
 |---|
 |1.0000524520874|
@@ -41,6 +43,8 @@ Ingesting this object into a table before applying this kind of policy will inge
 MyTable
 | project isempty(hll_x)
 ```
+
+**Output**
 
 | Column1 |
 |---------|
@@ -66,6 +70,8 @@ MyTable
 | project isempty(hll_x)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |1|
@@ -82,6 +88,8 @@ PageViewsHllTDigest
 | project Timestamp , dcount_hll(merged_hll)
 ```
 
+**Output**
+
 |Timestamp|`dcount_hll_merged_hll`|
 |---|---|
 |2016-05-01 12:00:00.0000000|20056275|
@@ -97,6 +105,8 @@ PageViewsHllTDigest
 | project Timestamp , dcount_hll(merged_hll)
 ```
 
+**Output**
+
 |Timestamp|`dcount_hll_merged_hll`|
 |---|---|
 |2016-05-01 00:00:00.0000000|20056275|
@@ -110,6 +120,8 @@ PageViewsHllTDigest
 | summarize merged_tdigests = merge_tdigests(tdigestBytesDel) by bin(Timestamp, 12h)
 | project Timestamp , percentile_tdigest(merged_tdigests, 95, typeof(long))
 ```
+
+**Output**
 
 |Timestamp|`percentile_tdigest_merged_tdigests`|
 |---|---|
@@ -146,6 +158,8 @@ PageViews
 | summarize percentile(BytesDelivered, 90), dcount(Page,2) by bin(Timestamp, 1d)
 ```
 
+**Output**
+
 |Timestamp|percentile_BytesDelivered_90|dcount_Page|
 |---|---|---|
 |2016-05-01 00:00:00.0000000|83634|20056275|
@@ -160,6 +174,8 @@ If you save the `hll` and `tdigest` values (which are the intermediate results o
 PageViewsHllTDigest
 | summarize  percentile_tdigest(merge_tdigests(tdigestBytesDel), 90), dcount_hll(hll_merge(hllPage)) by bin(Timestamp, 1d)
 ```
+
+**Output**
 
 |Timestamp|`percentile_tdigest_merge_tdigests_tdigestBytesDel`|`dcount_hll_hll_merge_hllPage`|
 |---|---|---|
@@ -203,6 +219,8 @@ on $left.Day1 == $right.Day
 | project Day1, Day2, Percentage = count_*100.0/count_1
 ```
 
+**Output**
+
 |Day1|Day2|Percentage|
 |---|---|---|
 |2016-05-01 00:00:00.0000000|2016-05-02 00:00:00.0000000|34.0645725975255|
@@ -232,6 +250,8 @@ Stats
 | project pages1, day1,day2, intersection_size=(pages1 + pages2 - union_size)
 | project day1, day2, Percentage = intersection_size*100.0 / pages1
 ```
+
+**Output**
 
 |day1|day2|Percentage|
 |---|---|---|

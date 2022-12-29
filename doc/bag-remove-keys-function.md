@@ -38,6 +38,8 @@ datatable(input:dynamic)
 | extend result=bag_remove_keys(input, dynamic(['key2', 'key4']))
 ```
 
+**Output**
+
 |input|result|
 |---|---|
 |{<br>  "key1": 123,<br>  "key2": "abc"<br>}|{<br>  "key1": 123<br>}|
@@ -55,6 +57,8 @@ datatable(input:dynamic)
 ]
 | extend result=bag_remove_keys(input, dynamic(['$.key2.prop1', 'key3']))
 ```
+
+**Output**
 
 |input|result|
 |---|---|

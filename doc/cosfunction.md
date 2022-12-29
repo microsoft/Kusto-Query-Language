@@ -32,6 +32,8 @@ The cosine of *number*.
 print cos(1)
 ```
 
+**Output**
+
 |result|
 |--|
 |0.54030230586813977|

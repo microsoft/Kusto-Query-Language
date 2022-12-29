@@ -48,6 +48,8 @@ let array2 = dynamic(["a","b","c","d","e"]);
 print array_sort_asc(array1,array2)
 ```
 
+**Output**
+
 |array1_sorted|array2_sorted|
 |---|---|
 |[1,2,3,4,5]|["a","e","b","c","d"]|
@@ -65,6 +67,8 @@ let Names = "John,Paul,George,Ringo";
 let SortedNames = strcat_array(array_sort_asc(split(Names, ",")), ",");
 print result = SortedNames
 ```
+
+**Output**
 
 |result|
 |---|
@@ -91,6 +95,8 @@ datatable(command:string, command_time:datetime, user_id:string)
 | project user_id, commands_in_chronological_order = array_sort_asc(timestamps, commands)[1]
 ```
 
+**Output**
+
 |user_id|commands_in_chronological_order|
 |---|---|
 |user1|[<br>  "ls",<br>  "mkdir",<br>  "chmod",<br>  "dir",<br>  "pwd",<br>  "rm"<br>]|
@@ -112,6 +118,8 @@ Example with default behavior:
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]))
 ```
 
+**Output**
+
 |print_0|
 |---|
 |["blue","green","yellow",null,null]|
@@ -124,6 +132,8 @@ Example with non-default behavior:
 ```kusto
 print array_sort_asc(dynamic([null,"blue","yellow","green",null]), false)
 ```
+
+**Output**
 
 |`print_0`|
 |---|

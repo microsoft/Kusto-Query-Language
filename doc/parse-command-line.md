@@ -29,6 +29,8 @@ A dynamic array of the command-line arguments.
 print parse_command_line("echo \"hello world!\"", "windows")
 ```
 
+**Output**
+
 |Result|
 |---|
 |["echo","hello world!"]|

@@ -58,6 +58,8 @@ datatable(Date:datetime, Event:string, MoreData:dynamic) [
 | extend key2 = MoreData.key2
 ```
 
+**Output**
+
 |Date|Event|MoreData|key2|
 |---|---|---|---|
 |1930-01-01 00:00:00.0000000|Enters Ecole Navale|{<br>  "key1": "value3",<br>  "key2": "value4"<br>}|value4|

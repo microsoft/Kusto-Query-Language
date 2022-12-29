@@ -29,6 +29,8 @@ print x = dynamic([1,2,3,4]), y=dynamic([1,2,3,0.5])
 | extend x_pow_y = series_pow(x,y) 
 ```
 
+**Output**
+
 |x|y|x_pow_y|
 |---|---|---|
 |[1,2,3,4]|[1,2,3,0.5]|[1.0,4.0,27.0,2.0]|

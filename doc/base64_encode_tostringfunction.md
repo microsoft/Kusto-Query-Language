@@ -34,6 +34,8 @@ Returns *string* encoded as a base64 string.
 print Quine=base64_encode_tostring("Kusto")
 ```
 
+**Output**
+
 |Quine   |
 |--------|
 |S3VzdG8=|

@@ -48,6 +48,8 @@ print
  , idx9 = indexof("abcdefgabcdefg", "cde", 1, -1, 3)   // the third occurrence of lookup is not in researched range
 ```
 
+**Output**
+
 |idx1|idx2|idx3|idx4|idx5|idx6|idx7|idx8|idx9|
 |----|----|----|----|----|----|----|----|----|
 |2   |2   |-1  |-1  | 2  |4   |2   |9   |-1  |

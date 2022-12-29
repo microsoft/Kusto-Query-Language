@@ -32,6 +32,8 @@ The value of the arc tangent of `x`.
 atan(0.5)
 ```
 
+**Output**
+
 |result|
 |---|
 |0.46364760900080609|

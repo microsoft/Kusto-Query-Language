@@ -37,6 +37,8 @@ If any argument isn't a valid Unicode codepoint, the function returns `null`.
 print str = unicode_codepoints_to_string(75, 117, 115, 116, 111)
 ```
 
+**Output**
+
 |str|
 |---|
 |Kusto|
@@ -47,6 +49,8 @@ print str = unicode_codepoints_to_string(75, 117, 115, 116, 111)
 ```kusto
 print str = unicode_codepoints_to_string(dynamic([75, 117, 115, 116, 111]))
 ```
+
+**Output**
 
 |str|
 |---|
@@ -59,6 +63,8 @@ print str = unicode_codepoints_to_string(dynamic([75, 117, 115, 116, 111]))
 print str = unicode_codepoints_to_string(dynamic([75, 117, 115]), 116, 111)
 ```
 
+**Output**
+
 |str|
 |---|
 |Kusto|
@@ -70,6 +76,8 @@ print str = unicode_codepoints_to_string(dynamic([75, 117, 115]), 116, 111)
 print str = unicode_codepoints_to_string(75, 10, 117, 10, 115, 10, 116, 10, 111)
 ```
 
+**Output**
+
 |str|
 |---|
 |K<br>u<br>s<br>t<br>o|
@@ -80,6 +88,8 @@ print str = unicode_codepoints_to_string(75, 10, 117, 10, 115, 10, 116, 10, 111)
 ```kusto
 print str = unicode_codepoints_to_string(range(48,57), range(65,90), range(97,122))
 ```
+
+**Output**
 
 |str|
 |---|

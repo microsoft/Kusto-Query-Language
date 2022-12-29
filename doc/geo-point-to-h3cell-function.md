@@ -72,6 +72,8 @@ For comparison with other available grid systems. see [geospatial clustering wit
 print h3cell = geo_point_to_h3cell(-74.04450446039874, 40.689250859314974, 6)
 ```
 
+**Output**
+
 |h3cell|
 |---|
 |862a1072fffffff|
@@ -91,6 +93,8 @@ datatable(location_id:string, longitude:real, latitude:real)
             by h3cell = geo_point_to_h3cell(longitude, latitude, 5)  // H3 Cell of the group
 ```
 
+**Output**
+
 |h3cell|count|locations|
 |---|---|---|
 |852a100bfffffff|2|[<br>  "A",<br>  "B"<br>]|
@@ -103,6 +107,8 @@ The following example produces an empty result because of the invalid coordinate
 print h3cell = geo_point_to_h3cell(300,1,8)
 ```
 
+**Output**
+
 |h3cell|
 |---|
 ||
@@ -114,6 +120,8 @@ The following example produces an empty result because of the invalid level inpu
 print h3cell = geo_point_to_h3cell(1,1,16)
 ```
 
+**Output**
+
 |h3cell|
 |---|
 ||
@@ -124,6 +132,8 @@ The following example produces an empty result because of the invalid level inpu
 ```kusto
 print h3cell = geo_point_to_h3cell(1,1,int(null))
 ```
+
+**Output**
 
 |h3cell|
 |---|

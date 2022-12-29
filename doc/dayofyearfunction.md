@@ -32,6 +32,8 @@ The day number of the given year.
 dayofyear(datetime(2015-12-14))
 ```
 
+**Output**
+
 |result|
 |--|
 |348|

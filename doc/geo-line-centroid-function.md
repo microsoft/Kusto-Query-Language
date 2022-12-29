@@ -48,6 +48,8 @@ let line = dynamic({"type":"LineString","coordinates":[[-73.95796, 40.80042], [-
 print centroid = geo_line_centroid(line);
 ```
 
+**Output**
+
 |centroid|
 |---|
 |{"type": "Point", "coordinates": [-73.965567057230942, 40.782453249627416]}|
@@ -60,6 +62,8 @@ let line = dynamic({"type":"LineString","coordinates":[[-73.95807266235352,40.80
 print centroid = geo_line_centroid(line)
 | project lng = centroid.coordinates[0]
 ```
+
+**Output**
 
 |lng|
 |---|
@@ -82,6 +86,8 @@ The following example returns True because of the invalid line.
 ```kusto
 print is_bad_line = isnull(geo_line_centroid(dynamic({"type":"LineString","coordinates":[[1, 1]]})))
 ```
+
+**Output**
 
 |is_bad_line|
 |---|

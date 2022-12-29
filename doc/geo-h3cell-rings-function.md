@@ -38,6 +38,8 @@ The following example produces rings up to distance 2.
 print rings = geo_h3cell_rings('861f8894fffffff', 2)
 ```
 
+**Output**
+
 |rings|
 |---|
 |[<br> ["861f8894fffffff"],<br> ["861f88947ffffff","861f8895fffffff","861f88867ffffff","861f8d497ffffff","861f8d4b7ffffff","861f8896fffffff"],<br> ["861f88967ffffff","861f88977ffffff","861f88957ffffff","861f8882fffffff","861f88877ffffff","861f88847ffffff","861f8886fffffff","861f8d49fffffff","861f8d487ffffff","861f8d4a7ffffff","861f8d59fffffff","861f8d597ffffff"]<br> ]|
@@ -48,6 +50,8 @@ The following example produces all cells at level 1 (all neighbors).
 ```kusto
 print neighbors = geo_h3cell_rings('861f8894fffffff', 1)[1]
 ```
+
+**Output**
 
 |neighbors|
 |---|
@@ -63,6 +67,8 @@ print rings = geo_h3cell_rings('861f8894fffffff', 1)
   summarize cells = make_list(rings)
 )
 ```
+
+**Output**
 
 |cells|
 |---|
@@ -86,6 +92,8 @@ print rings = geo_h3cell_rings('861f8894fffffff', 1)
     "properties", pack("name", "H3 polygons collection"))
 ```
 
+**Output**
+
 |geojson|
 |---|
 |{ "type": "Feature", "geometry": { "type": "GeometryCollection", "geometries": [ ... ... ... ]}, "properties": { "name": "H3 polygons collection" }}|
@@ -97,6 +105,8 @@ The following example returns true because of the invalid cell.
 print is_null = isnull(geo_h3cell_rings('abc', 3))
 ```
 
+**Output**
+
 |is_null|
 |---|
 |1|
@@ -107,6 +117,8 @@ The following example returns true because of the invalid distance.
 ```kusto
 print is_null = isnull(geo_h3cell_rings('861f8894fffffff', 150))
 ```
+
+**Output**
 
 |is_null|
 |---|

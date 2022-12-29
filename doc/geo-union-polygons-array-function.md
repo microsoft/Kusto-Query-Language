@@ -57,6 +57,8 @@ datatable(polygons:dynamic)
 | project polygons_union = geo_union_polygons_array(polygons_arr)
 ```
 
+**Output**
+
 |polygons_union|
 |---|
 |{"type":"Polygon","coordinates":[[[-73.972599326729608,40.765330371902991],[-73.960302383706178,40.782140794645024],[-73.9577,40.7789],[-73.94622,40.79249],[-73.9526593223173,40.792584227716468],[-73.9495,40.7969],[-73.95807,40.80068],[-73.9639277517478,40.792748258673875],[-73.96888,40.792819999999992],[-73.9662719791645,40.7895734224338],[-73.9803360309571,40.770518810606404],[-73.9936,40.7663],[-73.97171,40.756550000000004],[-73.972599326729608,40.765330371902991]]]}|
@@ -72,6 +74,8 @@ datatable(polygon1:dynamic, polygon2:dynamic)
 | project polygons_arr = pack_array(polygon1, polygon2)
 | project polygons_union = geo_union_polygons_array(polygons_arr)
 ```
+
+**Output**
 
 |polygons_union|
 |---|
@@ -89,6 +93,8 @@ datatable(polygons:dynamic)
 | summarize polygons_arr = make_list(polygons)
 | project invalid_union = isnull(geo_union_polygons_array(polygons_arr))
 ```
+
+**Output**
 
 |invalid_union|
 |---|

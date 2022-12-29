@@ -43,6 +43,8 @@ ConferenceSessions
 | distinct *
 ```
 
+**Output**
+
 |sessionid|...|participants|
 |--|--|--|
 |CON-PRT157|...|Guy Reginiano, Guy Yehudy, Pankaj Suri, Saeed Copty|
@@ -56,6 +58,8 @@ ConferenceSessions
 ```kusto
 print result=parse_csv('aa,"b,b,b",cc,"Escaping quotes: ""Title""","line1\nline2"')
 ```
+
+**Output**
 
 |result|
 |---|
@@ -71,6 +75,8 @@ Only the first record is taken since this function does not support multiple rec
 ```kusto
 print result_multi_record=parse_csv('record1,a,b,c\nrecord2,x,y,z')
 ```
+
+**Output**
 
 |result_multi_record|
 |---|

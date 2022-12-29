@@ -41,6 +41,8 @@ StormEvents
 
 ```
 
+**Output**
+
 |Column1|
 |---|
 |85.0015237192293|
@@ -55,6 +57,8 @@ StormEvents
 | project percentile_tdigest(tdigestRes, 85, typeof(long))
 
 ```
+
+**Output**
 
 |percentile_tdigest_tdigestRes|
 |---|

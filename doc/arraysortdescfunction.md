@@ -48,6 +48,8 @@ let array2 = dynamic(["a","b","c","d","e"]);
 print array_sort_desc(array1,array2)
 ```
 
+**Output**
+
 |array1_sorted|array2_sorted|
 |---|---|
 |[5,4,3,2,1]|["d","c","b","e","a"]|
@@ -65,6 +67,8 @@ let Names = "John,Paul,George,Ringo";
 let SortedNames = strcat_array(array_sort_desc(split(Names, ",")), ",");
 print result = SortedNames
 ```
+
+**Output**
 
 |result|
 |---|
@@ -91,6 +95,8 @@ datatable(command:string, command_time:datetime, user_id:string)
 | project user_id, commands_in_chronological_order = array_sort_desc(timestamps, commands)[1]
 ```
 
+**Output**
+
 |user_id|commands_in_chronological_order|
 |---|---|
 |user1|[<br>  "rm",<br>  "pwd",<br>  "dir",<br>  "chmod",<br>  "mkdir",<br>  "ls"<br>]|
@@ -112,6 +118,8 @@ Example with default behavior:
 print array_sort_desc(dynamic([null,"blue","yellow","green",null]))
 ```
 
+**Output**
+
 |`print_0`|
 |---|
 |["yellow","green","blue",null,null]|
@@ -124,6 +132,8 @@ Example with non-default behavior:
 ```kusto
 print array_sort_desc(dynamic([null,"blue","yellow","green",null]), false)
 ```
+
+**Output**
 
 |`print_0`|
 |---|

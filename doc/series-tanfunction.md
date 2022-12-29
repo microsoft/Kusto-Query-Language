@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_tan = series_tan(arr)
 ```
 
+**Output**
+
 |arr|arr_tan|
 |---|---|
 |[-6.5,0,8.2]|[-1.5574077246549023,0.0,1.5574077246549023]|

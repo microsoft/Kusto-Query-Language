@@ -37,6 +37,8 @@ print arr=dynamic([1,2,3,4,5])
 | extend arr_shift=array_shift_left(arr, 2)
 ```
 
+**Output**
+
 |`arr`|`arr_shift`|
 |---|---|
 |[1,2,3,4,5]|[3,4,5,null,null]|
@@ -51,6 +53,8 @@ print arr=dynamic([1,2,3,4,5])
 | extend arr_shift=array_shift_left(arr, 2, -1)
 ```
 
+**Output**
+
 |`arr`|`arr_shift`|
 |---|---|
 |[1,2,3,4,5]|[3,4,5,-1,-1]|
@@ -64,6 +68,8 @@ Shifting to the right by two positions by using negative *shift_count* value:
 print arr=dynamic([1,2,3,4,5])
 | extend arr_shift=array_shift_left(arr, -2, -1)
 ```
+
+**Output**
 
 |arr|arr_shift|
 |---|---|

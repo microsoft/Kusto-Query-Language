@@ -60,6 +60,8 @@ StormEvents
 | summarize take_any(State)
 ```
 
+**Output**
+
 |State|
 |---|
 |ATLANTIC SOUTH|
@@ -74,6 +76,8 @@ StormEvents
 | project StartTime, EpisodeId, State, EventType
 | summarize take_any(*)
 ```
+
+**Output**
 
 |StartTime|EpisodeId|State|EventType|
 |---|---|---|---|
@@ -90,6 +94,8 @@ StormEvents
 | project StartTime, EpisodeId, State, EventType
 | summarize take_any(*) by State
 ```
+
+**Output**
 
 |State|StartTime|EpisodeId|EventType|
 |---|---|---|---|

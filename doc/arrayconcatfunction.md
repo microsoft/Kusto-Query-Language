@@ -38,6 +38,8 @@ range x from 1 to 3 step 1
 | project array_concat(a1, a2)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |[1,2,4,1,2]|

@@ -30,6 +30,8 @@ range x from -1 to 1 step 1
 | extend isnan=isnan(div)
 ```
 
+**Output**
+
 |x|y|div|isnan|
 |---|---|---|---|
 |-1|1|-1|0|

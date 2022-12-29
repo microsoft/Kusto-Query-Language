@@ -34,6 +34,8 @@ StormEvents
 | summarize Count=count() by State
 ```
 
+**Output**
+
 |State|Count|
 |---|---|
 |WEST VIRGINIA|757|

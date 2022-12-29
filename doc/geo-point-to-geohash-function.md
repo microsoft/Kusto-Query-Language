@@ -81,6 +81,8 @@ StormEvents
 print geohash = geo_point_to_geohash(139.806115, 35.554128, 12)  
 ```
 
+**Output**
+
 | geohash      |
 |--------------|
 | xn76m27ty9g4 |
@@ -89,6 +91,8 @@ print geohash = geo_point_to_geohash(139.806115, 35.554128, 12)
 ```kusto
 print geohash = geo_point_to_geohash(-80.195829, 25.802215, 8)
 ```
+
+**Output**
 
 |geohash|
 |---|
@@ -109,6 +113,8 @@ datatable(location_id:string, longitude:real, latitude:real)
             by geohash = geo_point_to_geohash(longitude, latitude)    // geohash of the group
 ```
 
+**Output**
+
 | geohash | count | locations  |
 |---------|-------|------------|
 | c23n8   | 2     | ["A", "B"] |
@@ -121,6 +127,8 @@ The following example produces an empty result because of the invalid coordinate
 print geohash = geo_point_to_geohash(200,1,8)
 ```
 
+**Output**
+
 | geohash |
 |---------|
 |         |
@@ -131,6 +139,8 @@ The following example produces an empty result because of the invalid accuracy i
 ```kusto
 print geohash = geo_point_to_geohash(1,1,int(null))
 ```
+
+**Output**
 
 | geohash |
 |---------|

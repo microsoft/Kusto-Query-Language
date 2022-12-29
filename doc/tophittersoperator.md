@@ -66,6 +66,8 @@ PageViews
 | top-hitters 5 of Language 
 ```
 
+**Output**
+
 |Language|approximate_count_Language|
 |---|---|
 |en|1539954127|
@@ -86,6 +88,8 @@ PageViews
 | where Page !has 'Special'
 | top-hitters 10 of Page by Views
 ```
+
+**Output**
 
 |Page|approximate_sum_Views|
 |---|---|

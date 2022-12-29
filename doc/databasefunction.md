@@ -39,6 +39,8 @@ cluster('help').database('Sample').StormEvents
 database('Samples').StormEvents | count
 ```
 
+**Output**
+
 |Count|
 |---|
 |59066|
@@ -55,6 +57,8 @@ let foo = (dbName:string)
 };
 foo('help')
 ```
+
+**Output**
 
 |Count|
 |---|

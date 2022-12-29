@@ -37,6 +37,8 @@ datatable(local_dt: datetime, tz: string)
 | extend utc_dt = datetime_local_to_utc(local_dt, tz)
 ```
 
+**Output**
+
 |local_dt|tz|utc_dt|
 |---|---|---|
 |2020-02-02 20:02:20.0000000|Europe/Paris|2020-02-02 19:02:20.0000000|

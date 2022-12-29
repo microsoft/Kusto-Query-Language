@@ -73,6 +73,8 @@ table('StormEvent')
 table('StormEvent') | count
 ```
 
+**Output**
+
 |Count|
 |---|
 |59066|
@@ -89,6 +91,8 @@ let foo = (tableName:string)
 };
 foo('help')
 ```
+
+**Output**
 
 |Count|
 |---|
@@ -130,6 +134,8 @@ let _choose = (_selector:string)
 _choose('T2')
 
 ```
+
+**Output**
 
 |x|
 |---|

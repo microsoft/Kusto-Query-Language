@@ -56,6 +56,8 @@ StormEvents
 | evaluate funnel_sequence_completion(EpisodeId, StartTime, _start, _end, _windowSize, EventType, _sequence, _periods) 
 ```
 
+**Output**
+
 |`StartTime`|`EventType`|`Period`|`dcount`|
 |---|---|---|---|
 |2007-01-01 00:00:00.0000000|Hail|01:00:00|2877|

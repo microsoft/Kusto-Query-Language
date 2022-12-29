@@ -39,6 +39,8 @@ StormEvents
 | project dcount_hll(hllMerged)
 ```
 
+**Output**
+
 |dcount_hll_hllMerged|
 |---|
 |315|

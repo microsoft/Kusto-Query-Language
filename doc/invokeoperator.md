@@ -50,6 +50,8 @@ range x from 1 to 100 step 1
 | invoke clipped_average(5, 99)
 ```
 
+**Output**
+
 |avg_x|
 |---|
 |52|

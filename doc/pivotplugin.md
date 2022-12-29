@@ -48,6 +48,8 @@ StormEvents
 | evaluate pivot(State)
 ```
 
+**Output**
+
 |EventType|ALABAMA|ALASKA|
 |---|---|---|
 |Thunderstorm Wind|352|1|
@@ -67,6 +69,8 @@ StormEvents
 | where DeathsDirect > 0
 | evaluate pivot(State, sum(DeathsDirect))
 ```
+
+**Output**
 
 |EventType|ARKANSAS|ARIZONA|
 |---|---|---|
@@ -90,6 +94,8 @@ StormEvents
 | evaluate pivot(State, sum(DeathsDirect), EventType)
 ```
 
+**Output**
+
 |EventType|ARKANSAS|ARIZONA|
 |---|---|---|
 |Heavy Rain|1|0|
@@ -110,6 +116,8 @@ StormEvents
 | where DeathsDirect > 0
 | evaluate pivot(State, sum(DeathsDirect), EventType, Source)
 ```
+
+**Output**
 
 |EventType|Source|ARKANSAS|ARIZONA|
 |---|---|---|---|
@@ -133,6 +141,8 @@ StormEvents
 | where EventType has "Wind"
 | evaluate pivot(State): (EventType:string, ALABAMA:long, ALASKA:long)
 ```
+
+**Output**
 
 |EventType|ALABAMA|ALASKA|
 |---|---|---|

@@ -29,6 +29,8 @@ A datetime representing the start of the month for the given *date* value, with 
  | project monthStart = startofmonth(datetime(2017-01-01 10:10:17), offset) 
 ```
 
+**Output**
+
 |monthStart|
 |---|
 |2016-12-01 00:00:00.0000000|

@@ -50,6 +50,8 @@ datatable(ip_address:string, ip_range:string)
 | extend result = ipv4_is_in_range(ip_address, ip_range)
 ```
 
+**Output**
+
 |ip_address|ip_range|result|
 |---|---|---|
 |192.168.1.1|192.168.1.1|1|

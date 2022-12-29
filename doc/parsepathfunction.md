@@ -50,6 +50,8 @@ datatable(p:string)
 
 ```
 
+**Output**
+
 |p|path_parts
 |---|---
 |C:\temp\file.txt|{"Scheme":"","RootPath":"C:","DirectoryPath":"C:\\temp","DirectoryName":"temp","Filename":"file.txt","Extension":"txt","AlternateDataStreamName":""}

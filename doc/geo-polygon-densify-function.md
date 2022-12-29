@@ -60,6 +60,8 @@ The following example densifies Manhattan Central Park polygon. The edges are sh
 print densified_polygon = tostring(geo_polygon_densify(dynamic({"type":"Polygon","coordinates":[[[-73.958244,40.800719],[-73.949146,40.79695],[-73.973093,40.764226],[-73.982062,40.768159],[-73.958244,40.800719]]]})))
 ```
 
+**Output**
+
 |densified_polygon|
 |---|
 |{"type":"Polygon","coordinates":[[[-73.958244,40.800719],[-73.949146,40.79695],[-73.973093,40.764226],[-73.982062,40.768159],[-73.958244,40.800719]]]}|
@@ -69,6 +71,8 @@ The following example densifies two edges of the polygon. Densified edges length
 ```kusto
 print densified_polygon = tostring(geo_polygon_densify(dynamic({"type":"Polygon","coordinates":[[[10,10],[11,10],[11,11],[10,11],[10,10]]]})))
 ```
+
+**Output**
 
 |densified_polygon|
 |---|
@@ -80,6 +84,8 @@ The following example returns a null result because of the invalid coordinate in
 print densified_polygon = geo_polygon_densify(dynamic({"type":"Polygon","coordinates":[[[10,900],[11,10],[11,11],[10,11],[10,10]]]}))
 ```
 
+**Output**
+
 |densified_polygon|
 |---|
 ||
@@ -89,6 +95,8 @@ The following example returns a null result because of the invalid tolerance inp
 ```kusto
 print densified_polygon = geo_polygon_densify(dynamic({"type":"Polygon","coordinates":[[[10,10],[11,10],[11,11],[10,11],[10,10]]]}), 0)
 ```
+
+**Output**
 
 |densified_polygon|
 |---|

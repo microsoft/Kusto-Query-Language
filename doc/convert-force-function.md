@@ -52,6 +52,8 @@ Returns the input value converted from one force unit to another.
 print result = convert_force(1.2, 'Newton', 'Decanewton')
 ```
 
+**Output**
+
 |result|
 |---|
 |0.12|

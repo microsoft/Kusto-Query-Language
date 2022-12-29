@@ -28,6 +28,8 @@ print radians0 = radians(90), radians1 = radians(180), radians2 = radians(360)
 
 ```
 
+**Output**
+
 |radians0|radians1|radians2|
 |---|---|---|
 |1.5707963267949|3.14159265358979|6.28318530717959|

@@ -34,6 +34,8 @@ A datetime representing the end of the day for the given *date* value, with the 
  | project dayEnd = endofday(datetime(2017-01-01 10:10:17), offset) 
 ```
 
+**Output**
+
 |dayEnd|
 |---|
 |2016-12-31 23:59:59.9999999|

@@ -33,6 +33,8 @@ range x from 1 to 3 step 1
 | project set_difference(a1, a2, a3)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |[4]|
@@ -43,6 +45,8 @@ range x from 1 to 3 step 1
 ```kusto
 print arr = set_difference(dynamic([1,2,3]), dynamic([1,2,3]))
 ```
+
+**Output**
 
 |arr|
 |---|

@@ -53,6 +53,8 @@ Convert an angle value from one unit to another.
 print result = convert_angle(1.2, 'Degree', 'Arcminute')
 ```
 
+**Output**
+
 |result|
 |---|
 |72|

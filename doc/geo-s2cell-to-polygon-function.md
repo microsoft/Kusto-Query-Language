@@ -33,6 +33,8 @@ Polygon in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynam
 print s2cellPolygon = geo_s2cell_to_polygon("89c259")
 ```
 
+**Output**
+
 |s2cellPolygon|
 |---|
 |{<br>"type": "Polygon",<br>"coordinates": [[[-74.030012249838478, 40.8012684339439], [-74.030012249838478, 40.7222262918358], [-73.935982114337421, 40.708880489804564], [-73.935982114337421, 40.787917134506841], [-74.030012249838478, 40.8012684339439]]]<br>}|
@@ -56,6 +58,8 @@ datatable(lng:real, lat:real)
     "properties", pack("name", "S2 Cell polygons collection"))
 ```
 
+**Output**
+
 |Column1|
 |---|
 |{<br>"type": "Feature",<br>"geometry": {"type": "GeometryCollection", "geometries": [<br>{"type": "Polygon", "coordinates": [[[-74.030012249838478, 40.880202851376716], [-74.030012249838478, 40.8012684339439], [-73.935982114337421, 40.787917134506841], [-73.935982114337421, 40.866846163445771], [-74.030012249838478, 40.880202851376716]]]},<br>{"type": "Polygon", "coordinates": [[[-73.935982114337421, 40.866846163445771], [-73.935982114337421, 40.787917134506841], [-73.841906340776248, 40.774477568182071], [-73.841906340776248, 40.853401155678846], [-73.935982114337421, 40.866846163445771]]]},<br>{"type": "Polygon", "coordinates": [[[-74.030012249838478, 40.8012684339439], [-74.030012249838478, 40.7222262918358], [-73.935982114337421, 40.708880489804564], [-73.935982114337421, 40.787917134506841], [-74.030012249838478, 40.8012684339439]]]}]<br>},<br> "properties": {"name": "S2 Cell polygons collection"}<br>}|
@@ -66,6 +70,8 @@ The following example returns a null result because of the invalid s2cell token 
 ```kusto
 print s2cellPolygon = geo_s2cell_to_polygon("a")
 ```
+
+**Output**
 
 |s2cellPolygon|
 |---|

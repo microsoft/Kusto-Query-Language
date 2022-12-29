@@ -38,6 +38,8 @@ Find the maximum value in an array:
 print result = max_of(10, 1, -3, 17) 
 ```
 
+**Output**
+
 |result|
 |---|
 |17|
@@ -54,6 +56,8 @@ int(null), 2,
 int(null), int(null)]
 | project max_of(A, B)
 ```
+
+**Output**
 
 |result|
 |---|

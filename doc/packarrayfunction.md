@@ -34,6 +34,8 @@ range x from 1 to 3 step 1
 | project pack_array(x,y,z)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |[1,2,4]|
@@ -47,6 +49,8 @@ range x from 1 to 3 step 1
 | extend z = (x * 2) * 1s
 | project pack_array(x,y,z)
 ```
+
+**Output**
 
 |Column1|
 |---|

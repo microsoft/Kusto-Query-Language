@@ -53,6 +53,8 @@ datatable(p:double, alpha:double, beta:double, comment:string)
 | extend b = beta_inv(p, alpha, beta)
 ```
 
+**Output**
+
 |p|alpha|beta|comment|b|
 |---|---|---|---|---|
 |0.1|10|20|Valid input|0.226415022388749|

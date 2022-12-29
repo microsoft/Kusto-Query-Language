@@ -58,6 +58,8 @@ print y=dynamic([80,139,87,110,68,54,50,51,53,133,86,141,97,156,94,149,95,140,77
 | project series_periods_detect(y, 0.0, 50.0, 2)
 ```
 
+**Output**
+
 | series\_periods\_detect\_y\_periods  | series\_periods\_detect\_y\_periods\_scores |
 |-------------|-------------------|
 | [14.0, 0.0] | [0.84, 0.0]  |

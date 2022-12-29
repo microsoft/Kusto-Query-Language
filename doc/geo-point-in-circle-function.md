@@ -51,6 +51,8 @@ datatable(longitude:real, latitude:real, place:string)
 | project place
 ```
 
+**Output**
+
 |place|
 |---|
 |Seattle|
@@ -92,6 +94,8 @@ The following example will return true.
 print in_circle = geo_point_in_circle(-122.143564, 47.535677, -122.100896, 47.527351, 3500)
 ```
 
+**Output**
+
 |in_circle|
 |---|
 |1|
@@ -102,6 +106,8 @@ The following example will return false.
 ```kusto
 print in_circle = geo_point_in_circle(-122.137575, 47.630683, -122.100896, 47.527351, 3500)
 ```
+
+**Output**
 
 |in_circle|
 |---|
@@ -114,6 +120,8 @@ The following example will return a null result because of the invalid coordinat
 print in_circle = geo_point_in_circle(200, 1, 1, 1, 1)
 ```
 
+**Output**
+
 |in_circle|
 |---|
 ||
@@ -123,6 +131,8 @@ The following example will return a  null result because of the invalid circle r
 ```kusto
 print in_circle = geo_point_in_circle(1, 1, 1, 1, -1)
 ```
+
+**Output**
 
 |in_circle|
 |---|

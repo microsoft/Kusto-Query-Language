@@ -124,6 +124,8 @@ _data
 )
 ```
 
+**Output**
+
 |`xMod2`|l           |element|
 |-----|------------|-------|
 |1    |[1, 3, 5, 7]|7      |
@@ -143,6 +145,8 @@ _data
    | summarize SumOfTop2=sum(l)
 )
 ```
+
+**Output**
 
 |`xMod2`|l        |SumOfTop2|
 |-----|---------|---------|
@@ -164,6 +168,8 @@ _data
 )
 | project index, element
 ```
+
+**Output**
 
 |index|element|
 |---|---|
@@ -194,6 +200,8 @@ datatable(SourceNumber:string,TargetNumber:string,CharsCount:long)
 | extend values = bag_remove_keys(values, propsToRemove)
 | project-away propsToRemove
 ```
+
+**Output**
 
 |SourceNumber|TargetNumber|CharsCount|values
 |---|---|---|---|

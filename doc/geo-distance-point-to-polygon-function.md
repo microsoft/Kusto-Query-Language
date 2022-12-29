@@ -59,6 +59,8 @@ let central_park = dynamic({"type":"Polygon","coordinates":[[[-73.9495,40.7969],
 print geo_distance_point_to_polygon(-73.9839, 40.7705, central_park)
 ```
 
+**Output**
+
 |print_0|
 |---|
 |259.940756070596|
@@ -79,6 +81,8 @@ coordinates
 | extend distance = geo_distance_point_to_polygon(longitude, latitude, multipolygon)
 ```
 
+**Output**
+
 |longitude|latitude|description|distance|
 |---|---|---|---|
 |-73.9741|40.7914|Upper West Side|0|
@@ -95,6 +99,8 @@ US_States
 | where distance < 200 and distance > 0
 ```
 
+**Output**
+
 |name|distance|
 |---|---|
 |Idaho|152|
@@ -107,6 +113,8 @@ The following example will return a null result because of the invalid coordinat
 print distance = geo_distance_point_to_polygon(500,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,1],[0,0]]]}))
 ```
 
+**Output**
+
 | distance |
 |------------|
 |            |
@@ -116,6 +124,8 @@ The following example will return a null result because of the invalid polygon i
 ```kusto
 print distance = geo_distance_point_to_polygon(1,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,10],[0,0]]]}))
 ```
+
+**Output**
 
 | distance |
 |------------|

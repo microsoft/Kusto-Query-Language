@@ -54,6 +54,8 @@ _detailed_data
 | top 10 by EventPercentage
 ```
 
+**Output**
+
 |State|EventType|EventPercentage|Events|
 |---|---|---|---|
 |HAWAII WATERS|Waterspout|100|2|

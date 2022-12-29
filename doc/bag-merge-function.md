@@ -34,6 +34,8 @@ print result = bag_merge(
    dynamic({'A2':81, 'B2':82, 'A1':1}))
 ```
 
+**Output**
+
 |result|
 |---|
 |{<br>  "A1": 12,<br>  "B1": 2,<br>  "C1": 3,<br>  "A2": 81,<br>  "B2": 82<br>}|

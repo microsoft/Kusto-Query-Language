@@ -42,6 +42,8 @@ datatable(num:long)
 | summarize result = toupper(tohex(binary_all_and(num)))
 ```
 
+**Output**
+
 |result|
 |---|
 |CAFEF00D|

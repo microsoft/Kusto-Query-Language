@@ -31,6 +31,8 @@ This function counts Unicode [code points](https://en.wikipedia.org/wiki/Code_po
 print length = strlen("hello")
 ```
 
+**Output**
+
 |length|
 |---|
 |5|
@@ -38,6 +40,8 @@ print length = strlen("hello")
 ```kusto
 print length = strlen("⒦⒰⒮⒯⒪")
 ```
+
+**Output**
 
 |length|
 |---|
@@ -47,6 +51,8 @@ print length = strlen("⒦⒰⒮⒯⒪")
 print strlen('Çedilla') // the first character is a grapheme cluster
                         // that requires 2 code points to represent
 ```
+
+**Output**
 
 |length|
 |---|

@@ -36,6 +36,8 @@ A datetime representing the end of the week for the given *date* value, with the
  | project weekEnd = endofweek(datetime(2017-01-01 10:10:17), offset)  
 ```
 
+**Output**
+
 |weekEnd|
 |---|
 |2016-12-31 23:59:59.9999999|

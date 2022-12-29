@@ -76,6 +76,8 @@ v1=format_timespan(t, 'dd.hh:mm:ss:FF'),
 v2=format_timespan(t, 'ddd.h:mm:ss [fffffff]')
 ```
 
+**Output**
+
 |v1|v2|
 |---|---|
 |29.09:00:05:12|029.9:00:05 [1234500]|

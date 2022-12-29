@@ -76,6 +76,8 @@ IPs
 | evaluate ipv4_lookup(IP_Data, ip, network)
 ```
 
+**Output**
+
 |ip|network|continent_code|continent_name|country_iso_code|country_name|
 |---|---|---|---|---|---|
 |2.20.183.12|2.20.183.0/24|EU|Europe|GB|United Kingdom|
@@ -106,6 +108,8 @@ IPs
 | evaluate ipv4_lookup(IP_Data, ip, network, return_unmatched = true)
 ```
 
+**Output**
+
 |ip|network|continent_code|continent_name|country_iso_code|country_name|
 |---|---|---|---|---|---|
 |2.20.183.12|2.20.183.0/24|EU|Europe|GB|United Kingdom|
@@ -128,6 +132,8 @@ IPs
 | evaluate ipv4_lookup(IP_Data, ip, network, return_unmatched = true)
 ```
 
+**Output**
+
 |ip|network|geoname_id|continent_code|continent_name|country_iso_code|country_name|is_anonymous_proxy|is_satellite_provider|
 |---|---|---|---|---|---|---|---|---|
 |2.20.183.12|2.20.183.0/24|2635167|EU|Europe|GB|United Kingdom|0|0|
@@ -149,6 +155,8 @@ let IPs = datatable(ip:string, continent_name:string, country_iso_code:string)
 IPs
 | evaluate ipv4_lookup(IP_Data, ip, network, continent_name, country_iso_code)
 ```
+
+**Output**
 
 |ip|continent_name|country_iso_code|network|geoname_id|continent_code|country_name|is_anonymous_proxy|is_satellite_provider|
 |---|---|---|---|---|---|---|---|---|

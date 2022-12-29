@@ -11,6 +11,9 @@ zone_pivot_groups: kql-flavors
 
 The `externaldata` operator returns a table whose schema is defined in the query itself, and whose data is read from an external storage artifact, such as a blob in Azure Blob Storage or a file in Azure Data Lake Storage.
 
+> [!NOTE]
+> The `externaldata` operator supports Shared Access Signature (SAS) key, Access key, and Azure AD Token authentication methods. For more information, see [Storage authentication methods](../api/connection-strings/storage-authentication-methods.md).
+
 ::: zone pivot="azuredataexplorer"
 
 ::: zone-end
@@ -29,26 +32,21 @@ The `externaldata` operator returns a table whose schema is defined in the query
 `[` *StorageConnectionString* [`,` ...] `]`
 [`with` `(` *PropertyName* `=` *PropertyValue* [`,` ...] `)`]
 
-## Arguments
+## Parameters
 
-* *ColumnName*, *ColumnType*: The arguments define the schema of the table.
-  The syntax is the same as the syntax used when defining a table in [`.create table`](../management/create-table-command.md).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ColumnName*, *ColumnType* | string | &check;| A list of column names and their types. This list defines the schema of the table. |
+| *StorageConnectionString* | string | &check;| A [storage connection string](../api/connection-strings/storage-connection-strings.md) of the storage artifact to query. |
+| *PropertyName*, *PropertyValue* | string | | A list of optional [properties](#properties) that determines how to interpret the data retrieved from storage.
 
-* *StorageConnectionString*: [Storage connection strings](../api/connection-strings/storage-connection-strings.md) that describe the storage artifacts holding the data to return.
-
-> [!NOTE]
-> The `externaldata` operator supports Shared Access (SAS) key, Access key, and Azure AD Token authentication methods. For more information, see [Storage authentication methods](../api/connection-strings/storage-authentication-methods.md).
-
-* *PropertyName*, *PropertyValue*, ...: Additional properties that describe how to interpret
-  the data retrieved from storage, as listed under [ingestion properties](../../ingestion-properties.md).
-
-Currently supported properties are:
+### Properties
 
 | Property         | Type     | Description       |
 |------------------|----------|-------------------|
-| `format`         | `string` | Data format. If not specified, an attempt is made to detect the data format from file extension (defaults to `CSV`). Any of the [ingestion data formats](../../ingestion-supported-formats.md) are supported. |
-| `ignoreFirstRecord` | `bool` | If set to true, indicates that the first record in every file is ignored. This property is useful when querying CSV files with headers. |
-| `ingestionMapping` | `string` | A string value that indicates how to map data from the source file to the actual columns in the operator result set. See [data mappings](../management/mappings.md). |
+| format         | string | The data format. If unspecified, an attempt is made to detect the data format from file extension. The default is `CSV`. All [ingestion data formats](../../ingestion-supported-formats.md) are supported. |
+| ignoreFirstRecord | bool | If set to `true`, the first record in every file is ignored. This property is useful when querying CSV files with headers. |
+| ingestionMapping | string | Indicates how to map data from the source file to the actual columns in the operator result set. See [data mappings](../management/mappings.md). |
 
 > [!NOTE]
 >
@@ -62,7 +60,7 @@ The `externaldata` operator returns a data table of the given schema whose data 
 
 ## Examples
 
-**Fetch a list of user IDs stored in Azure Blob Storage**
+### Fetch a list of user IDs stored in Azure Blob Storage
 
 The following example shows how to find all records in a table whose `UserID` column falls into a known set of IDs, held (one per line) in an external storage file. Since the data format isn't specified, the detected data format is `TXT`.
 
@@ -75,7 +73,7 @@ Users
 | ...
 ```
 
-**Query multiple data files**
+### Query multiple data files
 
 The following example queries multiple data files stored in external storage.
 
@@ -95,7 +93,7 @@ The above example can be thought of as a quick way to query multiple data files 
 > [!NOTE]
 > Data partitioning isn't recognized by the `externaldata` operator.
 
-**Query hierarchical data formats**
+### Query hierarchical data formats
 
 To query hierarchical data format, such as `JSON`, `Parquet`, `Avro`, or `ORC`, `ingestionMapping` must be specified in the operator properties.
 In this example, there's a JSON file stored in Azure Blob Storage with the following contents:

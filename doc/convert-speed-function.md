@@ -69,6 +69,8 @@ Returns the input value converted from one speed unit to another.
 print result = convert_speed(1.2, 'MeterPerSecond', 'CentimeterPerHour')
 ```
 
+**Output**
+
 |result|
 |---|
 |432000|

@@ -32,6 +32,8 @@ The corresponding angle in degrees for an angle specified in radians.
 print degrees0 = degrees(pi()/4), degrees1 = degrees(pi()*1.5), degrees2 = degrees(0)
 ```
 
+**Output**
+
 |degrees0|degrees1|degrees2|
 |---|---|---|
 |45|270|0|

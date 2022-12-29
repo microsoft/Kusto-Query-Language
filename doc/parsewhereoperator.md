@@ -101,6 +101,8 @@ Traces
 | project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previousLockTime
 ```
 
+**Output**
+
 |resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|
 |||||||
@@ -127,6 +129,8 @@ Traces
 | parse-where EventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previousLockTime:date ")" *  
 | project resourceName ,totalSlices , sliceNumber , lockTime , releaseTime , previousLockTime
 ```
+
+**Output**
 
 |resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|
@@ -175,6 +179,8 @@ Traces
 | parse-where kind = regex flags=i EventText with * "RESOURCENAME=" resourceName "," * "totalSlices=" totalSlices:long "," *
 | project resourceName, totalSlices
 ```
+
+**Output**
 
 |resourceName|totalSlices|
 |---|---|

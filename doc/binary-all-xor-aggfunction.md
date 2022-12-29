@@ -43,6 +43,8 @@ datatable(num:long)
 | summarize result = toupper(tohex(binary_all_xor(num)))
 ```
 
+**Output**
+
 |results|
 |--|
 |CAFEF00D|

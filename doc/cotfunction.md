@@ -32,6 +32,8 @@ The cotangent function value for *number*.
 print cot(1)
 ```
 
+**Output**
+
 |result|
 |--|
 |0.64209261593433065|

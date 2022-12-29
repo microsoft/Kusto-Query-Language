@@ -53,6 +53,8 @@ datatable(lines:dynamic)
 | project lines_union = geo_union_lines_array(lines_arr)
 ```
 
+**Output**
+
 |lines_union|
 |---|
 |{"type": "LineString", "coordinates": [[-73.956838846206651, 40.805028914808844], [-73.95633727312088, 40.8057171711177], [ -73.954891562461853, 40.80510200431312], [-73.955374360084534, 40.804413741624522]]}|
@@ -68,6 +70,8 @@ datatable(line1:dynamic, line2:dynamic)
 | project lines_arr = pack_array(line1, line2)
 | project lines_union = geo_union_lines_array(lines_arr)
 ```
+
+**Output**
 
 |lines_union|
 |---|
@@ -85,6 +89,8 @@ datatable(lines:dynamic)
 | summarize lines_arr = make_list(lines)
 | project invalid_union = isnull(geo_union_lines_array(lines_arr))
 ```
+
+**Output**
 
 |invalid_union|
 |---|

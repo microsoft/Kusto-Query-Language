@@ -60,6 +60,8 @@ IPs
 | extend IsLocal=ipv4_is_in_any_range(IP, LocalNetworks)
 ```
 
+**Output**
+
 |IP|IsLocal|
 |---|---|
 |10.1.2.3|1|

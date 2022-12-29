@@ -43,6 +43,8 @@ range Size from 1 to 15 step 2
                        "Large")
 ```
 
+**Output**
+
 |Size|bucket|
 |---|---|
 |1|Small|

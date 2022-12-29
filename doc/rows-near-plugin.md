@@ -53,6 +53,8 @@ datatable (Timestamp:datetime, Value:long, State:string )
 | evaluate rows_near(State == "Error", 2)
 ```
 
+**Output**
+
 |Timestamp|Value|State|
 |---|---|---|
 |2021-06-05 00:00:00.0000000|15|Success|

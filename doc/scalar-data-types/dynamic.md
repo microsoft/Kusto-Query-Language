@@ -99,6 +99,8 @@ can encode JSON strings in CSV files:
   [2015-01-01,"{""EventType"":""Demo"", ""EventValue"":""Double-quote love!""}"]
 ```
 
+**Output**
+
 |Timestamp                   | Trace                                                 |
 |----------------------------|-------------------------------------------------------|
 |2015-01-01 00:00:00.0000000 | {"EventType":"Demo","EventValue":"Double-quote love!"}|

@@ -56,6 +56,8 @@ StormEvents
 | project State, Events
 ```
 
+**Output**
+
 |State|Events|
 |--|--|
 |KANSAS|3166|

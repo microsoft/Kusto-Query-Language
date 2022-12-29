@@ -57,6 +57,8 @@ The following example densifies a road in Manhattan island. The edge is short an
 print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","coordinates":[[-73.949247, 40.796860],[-73.973017, 40.764323]]})))
 ```
 
+**Output**
+
 |densified_line|
 |---|
 |{"type":"LineString","coordinates":[[-73.949247, 40.796860], [-73.973017, 40.764323]]}|
@@ -66,6 +68,8 @@ The following example densifies an edge of ~130-km length
 ```kusto
 print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","coordinates":[[50, 50], [51, 51]]})))
 ```
+
+**Output**
 
 |densified_line|
 |---|
@@ -77,6 +81,8 @@ The following example returns a null result because of the invalid coordinate in
 print densified_line = geo_line_densify(dynamic({"type":"LineString","coordinates":[[300,1],[1,1]]}))
 ```
 
+**Output**
+
 |densified_line|
 |---|
 ||
@@ -86,6 +92,8 @@ The following example returns a null result because of the invalid tolerance inp
 ```kusto
 print densified_line = geo_line_densify(dynamic({"type":"LineString","coordinates":[[1,1],[2,2]]}), 0)
 ```
+
+**Output**
 
 |densified_line|
 |---|

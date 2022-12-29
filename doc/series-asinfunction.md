@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_asin = series_asin(arr)
 ```
 
+**Output**
+
 |arr|arr_asin|
 |---|---|
 |[-6.5,0,8.2]|[1.5707963267948966,0.0,1.5707963267948966]|

@@ -48,6 +48,8 @@ let line = dynamic({"type":"LineString","coordinates":[[-73.95807266235352,40.80
 print length = geo_line_length(line)
 ```
 
+**Output**
+
 |length|
 |---|
 |4922.48016992081|
@@ -60,6 +62,8 @@ let line = dynamic({"type":"MultiLineString","coordinates":[[[-73.95798683166502
 print length = geo_line_length(line)
 ```
 
+**Output**
+
 |length|
 |---|
 |8262.24339753741|
@@ -70,6 +74,8 @@ The following example returns True because of the invalid line.
 ```kusto
 print is_bad_line = isnull(geo_line_length(dynamic({"type":"LineString","coordinates":[[1, 1]]})))
 ```
+
+**Output**
 
 |is_bad_line|
 |---|

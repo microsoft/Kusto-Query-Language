@@ -70,6 +70,8 @@ let T =  datatable(User:string, Timestamp:datetime)
 T | evaluate active_users_count(User, Timestamp, Start, End, LookbackWindow, Period, ActivePeriods, Bin)
 ```
 
+**Output**
+
 |Timestamp|dcount|
 |---|---|
 |2018-07-01 00:00:00.0000000|1|

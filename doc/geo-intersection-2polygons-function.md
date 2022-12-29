@@ -58,6 +58,8 @@ let polygon2 = dynamic({"type":"Polygon","coordinates":[[[-73.96213352680206,40.
 print intersection = geo_intersection_2polygons(polygon1, polygon2)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "Polygon",  "coordinates": [[[-73.962105776437156,40.774591360999679],[-73.962642403166868,40.774807020251778],[-73.9631313085556,40.774578106920352],[-73.962079882621765,40.774167803982927],[-73.962105776437156,40.774591360999679]]]}|
@@ -70,6 +72,8 @@ let polygon1 = dynamic({"type":"Polygon","coordinates":[[[2,45],[0,45],[1,44],[2
 let polygon2 = dynamic({"type":"Polygon","coordinates":[[[3,44],[2,45],[2,43],[3,44]]]});
 print intersection = geo_intersection_2polygons(polygon1, polygon2)
 ```
+
+**Output**
 
 |intersection|
 |---|
@@ -84,6 +88,8 @@ let polygon2 = dynamic({"type":"MultiPolygon","coordinates":[[[[3,44],[2,45],[2,
 print intersection = geo_intersection_2polygons(polygon1, polygon2)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "GeometryCollection","geometries": [<br>{ "type": "Point", "coordinates": [2, 45]},<br>{ "type": "Polygon", "coordinates": [[[1.3227075526410679,45.003909145068739],[1.0404565374899824,45.004356403066552],[1.005,44.943],[1.356,44.937],[1.3227075526410679,45.003909145068739]]]}]}|
@@ -96,6 +102,8 @@ let polygon1 = dynamic({"type":"Polygon","coordinates":[[[2,45],[0,45],[1,44],[2
 let polygon2 = dynamic({"type":"Polygon","coordinates":[[[3,44],[3,45],[2,43],[3,44]]]});
 print intersection = geo_intersection_2polygons(polygon1, polygon2)
 ```
+
+**Output**
 
 |intersection|
 |---|
@@ -112,6 +120,8 @@ US_Counties
 | where array_length(intersection.geometries) != 0
 ```
 
+**Output**
+
 |name|intersection|
 |---|---|
 |New York|{"type": "Polygon","coordinates": [[[-73.96213352680206, 40.775045280447145], [-73.9631313085556, 40.774578106920345], [-73.96207988262177,40.77416780398293],[-73.96213352680206, 40.775045280447145]]]}|
@@ -124,6 +134,8 @@ let central_park_polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9495,4
 let invalid_polygon = dynamic({"type":"Polygon"});
 print isnull(geo_intersection_2polygons(invalid_polygon, central_park_polygon))
 ```
+
+**Output**
 
 |print_0|
 |---|

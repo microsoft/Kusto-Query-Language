@@ -226,6 +226,8 @@ Instead of keeping those arrays, expand them by using [mv-expand](./mvexpandoper
 X | mv-expand samples = range(bin(StartTime, 1m), StopTime , 1m)
 ```
 
+**Output**
+
 |SessionId | StartTime | StopTime  | samples|
 |---|---|---|---|
 | a | 10:01:33 | 10:06:31 | 10:01:00|
@@ -332,6 +334,8 @@ Logs
 | project count_, Message
 ```
 
+**Output**
+
 |count_|Message
 |---|---
 |7125|ExecuteAlgorithmMethod for method 'RunCycleFromInterimData' has failed...
@@ -354,6 +358,8 @@ Logs
 | reduce by Message with threshold=0.35
 | project Count, Pattern
 ```
+
+**Output**
 
 |Count|Pattern
 |---|---
@@ -381,6 +387,8 @@ Logs
 | where Level == "e" and Service == "Inferences.UnusualEvents_Main"
 | evaluate autocluster()
 ```
+
+**Output**
 
 |Count |Percentage (%)|Component|Cluster|Message
 |---|---|---|---|---
@@ -438,6 +446,8 @@ let phone_mapping = dynamic(
 Source
 | project FriendlyName = phone_mapping[DeviceModel], Count
 ```
+
+**Output**
 
 |FriendlyName|Count|
 |---|---|
@@ -711,6 +721,8 @@ let B = datatable(Timestamp:datetime, ID:string, EventB:string)
 A; B
 ```
 
+**Output**
+
 |Timestamp|ID|EventB|
 |---|---|---|
 |2019-01-01 00:00:00.0000000|x|Ax1|
@@ -790,6 +802,8 @@ B_events
 | summarize arg_min(diff, *) by ID
 | project ID, B_Timestamp, A_Timestamp, EventB, EventA
 ```
+
+**Output**
 
 |ID|B_Timestamp|A_Timestamp|EventB|EventA|
 |---|---|---|---|---|
@@ -1307,6 +1321,8 @@ Heartbeat
 | where TimeGenerated > ago(1h)
 | summarize distinct_computers=dcountif(Computer, OSType=="Linux") by RemoteIPCountry
 ```
+
+**Output**
 
 |RemoteIPCountry  | distinct_computers  |
 ------------------|---------------------|

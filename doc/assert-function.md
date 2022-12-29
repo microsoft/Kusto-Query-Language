@@ -70,6 +70,8 @@ datatable(input:string)
 | where checkLength(len=3, input)
 ```
 
+**Output**
+
 |input|
 |---|
 |4567|

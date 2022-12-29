@@ -30,6 +30,8 @@ range x from -1 to 1 step 1
 | extend isinf=isinf(div)
 ```
 
+**Output**
+
 |x|y|div|isinf|
 |---|---|---|---|
 |-1|0|-∞|1|

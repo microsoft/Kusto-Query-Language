@@ -50,6 +50,8 @@ let line = dynamic({"type":"LineString","coordinates":[[-73.97033169865608,40.78
 print simplified = geo_line_simplify(line, 10)
 ```
 
+**Output**
+
 |simplified|
 |---|
 |{"type": "LineString", "coordinates": [[-73.97033169865608, 40.789063020152824], [-73.97079303860664, 40.788434498977836]]}|
@@ -64,6 +66,8 @@ NY_Manhattan_Roads
 | summarize roads_lst = make_list(road_simplified)
 | project geojson = pack("type", "Feature","geometry", pack("type", "GeometryCollection", "geometries", roads_lst), "properties", pack("name", "roads"))
 ```
+
+**Output**
 
 |geojson|
 |---|
@@ -80,6 +84,8 @@ NY_Manhattan_Roads
 | project roads = geo_union_lines_array(roads_lst)
 ```
 
+**Output**
+
 |roads|
 |---|
 |{"type": "MultiLineString", "coordinates": [ ... ]}|
@@ -90,6 +96,8 @@ The following example returns True because of the invalid line.
 ```kusto
 print is_invalid_line = isnull(geo_line_simplify(dynamic({"type":"LineString","coordinates":[[1, 1]]})))
 ```
+
+**Output**
 
 |is_invalid_line|
 |---|
@@ -102,6 +110,8 @@ The following example returns True because of the invalid tolerance.
 print is_invalid_line = isnull(geo_line_simplify(dynamic({"type":"LineString","coordinates":[[1, 1],[2,2]]}), -1))
 ```
 
+**Output**
+
 |is_invalid_line|
 |---|
 |True|
@@ -112,6 +122,8 @@ The following example returns True because high tolerance causes small line to d
 ```kusto
 print is_invalid_line = isnull(geo_line_simplify(dynamic({"type":"LineString","coordinates":[[1.1, 1.1],[1.2,1.2]]}), 100000))
 ```
+
+**Output**
 
 |is_invalid_line|
 |---|

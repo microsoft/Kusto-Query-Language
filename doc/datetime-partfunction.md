@@ -66,6 +66,8 @@ microsecond = datetime_part("microsecond", dt),
 nanosecond = datetime_part("nanosecond", dt)
 ```
 
+**Output**
+
 |year|quarter|month|weekOfYear|day|dayOfYear|hour|minute|second|millisecond|microsecond|nanosecond|
 |---|---|---|---|---|---|---|---|---|---|---|---|
 |2017|4|10|44|30|303|1|2|3|765|765432|765432100|

@@ -38,6 +38,8 @@ cluster('help').database('Samples').StormEvents | count
 cluster('help.kusto.windows.net').database('Samples').StormEvents | count
 ```
 
+**Output**
+
 |Count|
 |---|
 |59066|
@@ -56,6 +58,8 @@ let foo = (clusterName:string)
 };
 foo('help')
 ```
+
+**Output**
 
 |Count|
 |---|

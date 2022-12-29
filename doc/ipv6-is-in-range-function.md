@@ -51,6 +51,8 @@ datatable(ip_address:string, ip_range:string)
 | extend result = ipv6_is_in_range(ip_address, ip_range)
 ```
 
+**Output**
+
 |ip_address|ip_range|result|
 |---|---|---|
 |a5e:f127:8a9d:146d:e102:b5d3:c755:abcd|a5e:f127:8a9d:146d:e102:b5d3:c755:0000/112|True|

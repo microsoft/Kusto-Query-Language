@@ -64,6 +64,8 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d)
 ```
 
+**Output**
+
 |Age|Name   |
 |---|-------|
 |20 |John   |
@@ -86,6 +88,8 @@ datatable(d:dynamic)
 ]
 | evaluate bag_unpack(d, 'Property_')
 ```
+
+**Output**
 
 |Property_Age|Property_Name|
 |------------|-------------|
@@ -110,6 +114,8 @@ datatable(Name:string, d:dynamic)
 | evaluate bag_unpack(d, columnsConflict='replace_source') // Use new name
 ```
 
+**Output**
+
 |Age|Name   |
 |---|-------|
 |20 |John   |
@@ -128,6 +134,8 @@ datatable(Name:string, d:dynamic)
 ]
 | evaluate bag_unpack(d, columnsConflict='keep_source') // Keep old name
 ```
+
+**Output**
 
 |Age|Name     |
 |---|---------|
@@ -153,6 +161,8 @@ datatable(d:dynamic)
 | evaluate bag_unpack(d, ignoredProperties=dynamic(['Address', 'Age']))
 ```
 
+**Output**
+
 |Name|
 |---|
 |John|
@@ -175,6 +185,8 @@ datatable(d:dynamic)
 ]
 | evaluate bag_unpack(d) : (Name:string, Age:long)
 ```
+
+**Output**
 
 |Name  |Age  |
 |---------|---------|

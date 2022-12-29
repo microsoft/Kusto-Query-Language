@@ -45,6 +45,8 @@ range x from 1 to 10 step 1
 | where x !between (5 .. 9)
 ```
 
+**Output**
+
 |x|
 |---|
 |1|
@@ -62,6 +64,8 @@ StormEvents
 | count 
 ```
 
+**Output**
+
 |Count|
 |---|
 |58590|
@@ -72,6 +76,8 @@ StormEvents
 | where StartTime !between (datetime(2007-07-27) .. 3d)
 | count 
 ```
+
+**Output**
 
 |Count|
 |---|

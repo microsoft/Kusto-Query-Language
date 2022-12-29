@@ -43,6 +43,8 @@ print result=current_principal_is_member_of(
     )
 ```
 
+**Output**
+
 | result |
 |--------|
 | false  |
@@ -60,6 +62,8 @@ print result=current_principal_is_member_of(
     'aadapp=66ad1332-3a94-4a69-9fa2-17732f093664;72f988bf-86f1-41af-91ab-2d7cd011db47'
     ]))
 ```
+
+**Output**
 
 | result |
 |--------|

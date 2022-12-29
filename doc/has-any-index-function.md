@@ -34,6 +34,8 @@ print
  , idx5 = has_any_index("this is an example", dynamic([]))  // Empty lookup array
 ```
 
+**Output**
+
 |idx1|idx2|idx3|idx4|idx5|
 |----|----|----|----|----|
 | 0  | 1 | -1 |1 | -1 |

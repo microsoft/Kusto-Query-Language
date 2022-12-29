@@ -52,6 +52,8 @@ StormEvents
 | where State endswith_cs "NA"
 ```
 
+**Output**
+
 |State|Events|
 |--|--|
 |NORTH CAROLINA |1721|

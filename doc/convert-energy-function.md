@@ -73,6 +73,8 @@ Convert an energy value from one unit to another.
 print result = convert_energy(1.2, 'Joule', 'BritishThermalUnit')
 ```
 
+**Output**
+
 |result|
 |---|
 |0.00113738054437598|

@@ -37,6 +37,8 @@ print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29])
 | project stats=series_stats_dynamic(x)
 ```
 
+**Output**
+
 |stats|
 |---|
 |{"min": 2.0, "min_idx": 8, "max": 87.0, "max_idx": 3, "avg": 32.8, "stdev": 28.503633853548269, "variance": 812.45714285714291, "sum": 492.0, "len": 15}|

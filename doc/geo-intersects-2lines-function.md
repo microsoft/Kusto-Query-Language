@@ -53,6 +53,8 @@ let lineString2 = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788
 print intersects = geo_intersects_2lines(lineString1, lineString2)
 ```
 
+**Output**
+
 |intersects|
 |---|
 |True|
@@ -66,6 +68,8 @@ NY_Manhattan_Roads
 | where geo_intersects_2lines(road, my_road)
 | project name
 ```
+
+**Output**
 
 |name|
 |---|
@@ -83,6 +87,8 @@ let lineString1 = dynamic({"type":"LineString","coordinates":[[-73.978929,40.785
 let lineString2 = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788275]]});
 print isnull(geo_intersects_2lines(lineString1, lineString2))
 ```
+
+**Output**
 
 |print_0|
 |---|

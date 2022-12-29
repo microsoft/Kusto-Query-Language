@@ -107,6 +107,8 @@ evaluate http_request(Uri)
 | evaluate bag_unpack(ResponseBody_Items)
 ```
 
+**Output**
+
 | armRegionName |                   armSkuName                   | currencyCode |  effectiveStartDate  | isPrimaryMeterRegion | location |               meterId                |                      meterName                       |  productId   |                     productName                     | retailPrice | serviceFamily |  serviceId   |  serviceName  |       skuId       |                 skuName                  | tierMinimumUnits |    type     | unitOfMeasure | unitPrice |
 |---------------|------------------------------------------------|--------------|----------------------|----------------------|----------|--------------------------------------|------------------------------------------------------|--------------|-----------------------------------------------------|-------------|---------------|--------------|---------------|-------------------|------------------------------------------|------------------|-------------|---------------|-----------|
 | westeurope    | Data Insights                                  | USD          | 2022-06-01T00:00:00Z | false                | EU West  | 8ce915f7-20db-564d-8cc3-5702a7c952ab | Data Insights Insights Report Consumption            | DZH318Z08M22 | Azure Purview Data Map                              |        0.21 | Analytics     | DZH318Q66D0F | Azure Purview | DZH318Z08M22/006C | Catalog Insights                         |                0 | Consumption | 1 API Calls   |      0.21 |

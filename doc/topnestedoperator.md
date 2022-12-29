@@ -108,6 +108,8 @@ StormEvents
   top-nested 1 of EndLocation by sum(BeginLat)
 ```
 
+**Output**
+
 |State|aggregated_State|Source|aggregated_Source|EndLocation|aggregated_EndLocation|
 |---|---|---|---|---|---|
 |KANSAS|87771.2355000001|Law Enforcement|18744.823|FT SCOTT|264.858|
@@ -126,6 +128,8 @@ StormEvents
   top-nested 3 of Source by sum(BeginLat),
   top-nested 1 of EndLocation with others = "All Other End Locations" by sum(BeginLat)
 ```
+
+**Output**
 
 |State|aggregated_State|Source|aggregated_Source|EndLocation|aggregated_EndLocation|
 |---|---|---|---|---|---|
@@ -154,6 +158,8 @@ The following query shows the same results for the first level used in the examp
  | summarize sum(BeginLat)
 ```
 
+**Output**
+
 |sum_BeginLat|
 |---|
 |1149279.5923|
@@ -169,6 +175,8 @@ StormEvents
   top-nested   of EventType   by tmp = max(1)
 | project-away tmp
 ```
+
+**Output**
 
 |State|aggregated_State|Source|aggregated_Source|EndLocation|aggregated_EndLocation|EventType|
 |---|---|---|---|---|---|---|
@@ -194,6 +202,8 @@ StormEvents
 | extend indicies = range(0, array_length(EndLocations) - 1, 1)
 | mv-expand EndLocations, endLocationSums, indicies
 ```
+
+**Output**
 
 |State|Source|EndLocations|endLocationSums|indices|
 |---|---|---|---|---|

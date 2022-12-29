@@ -33,6 +33,8 @@ range x from 1 to 3 step 1
 | project set_intersect(a1, a2, a3)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |[1]|
@@ -43,6 +45,8 @@ range x from 1 to 3 step 1
 ```kusto
 print arr = set_intersect(dynamic([1, 2, 3]), dynamic([4,5]))
 ```
+
+**Output**
 
 |arr|
 |---|

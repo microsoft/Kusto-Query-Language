@@ -45,6 +45,8 @@ StormEvents
 | summarize take_anyif(EventType, EventNarrative has 'strong wind')
 ```
 
+**Output**
+
 |EventType|
 |---|
 |Strong Wind|

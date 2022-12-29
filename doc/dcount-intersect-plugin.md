@@ -52,6 +52,8 @@ range x from 1 to 100 step 1
           even_and_mod3_and_mod5 = s2 - 1   // gcd(2,3,5) is 30, therefore: 100 / 30 = 3 
 ```
 
+**Output**
+
 |evenNumbers|even_and_mod3|even_and_mod3_and_mod5|
 |---|---|---|
 |50|16|3|

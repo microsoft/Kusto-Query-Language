@@ -65,6 +65,8 @@ The following sample data set shows which users seen on which days. The table wa
 Users | summarize tostring(make_set(user)) by bin(Timestamp, 1d) | order by Timestamp asc;
 ```
 
+**Output**
+
 |Timestamp|set_user|
 |---|---|
 |2019-11-01 00:00:00.0000000|[0,2,3,4]|
@@ -82,6 +84,8 @@ Users
 | evaluate new_activity_metrics(user, Timestamp, StartDate, EndDate-1tick, 1d) 
 | where from_Timestamp < datetime(2019-11-03 00:00:00.0000000)
 ```
+
+**Output**
 
 |R|from_Timestamp|to_Timestamp|dcount_new_values|dcount_retained_values|dcount_churn_values|retention_rate|churn_rate|
 |---|---|---|---|---|---|---|---|
@@ -130,6 +134,8 @@ range Day from _start to _end  step 1d
 | project from_Day, to_Day, retention_rate, churn_rate
 ```
 
+**Output**
+
 |from_Day|to_Day|retention_rate|churn_rate|
 |---|---|---|---|
 |2017-05-01 00:00:00.0000000|2017-05-01 00:00:00.0000000|1|0|
@@ -157,6 +163,8 @@ range Day from _start to _end  step 1d
 | evaluate new_activity_metrics(['id'], Day, _start, _end, 7d)
 | project from_Day, to_Day, retention_rate, churn_rate
 ```
+
+**Output**
 
 |from_Day|to_Day|retention_rate|churn_rate|
 |---|---|---|---|
@@ -201,6 +209,8 @@ _data
 | evaluate new_activity_metrics(id, Day, _start, _end, 7d, _start, lookback_data)
 | project from_Day, to_Day, retention_rate
 ```
+
+**Output**
 
 |from_Day|to_Day|retention_rate|
 |---|---|---|

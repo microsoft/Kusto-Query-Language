@@ -32,6 +32,8 @@ Returns the value of the arc sine of `x`. Returns `null` if `x` < -1 or `x` > 1.
 asin(0.5)
 ```
 
+**Output**
+
 |result|
 |---|
 |1.2532358975033751|

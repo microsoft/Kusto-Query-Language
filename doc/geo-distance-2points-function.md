@@ -44,6 +44,8 @@ The following example finds the shortest distance between Seattle and Los Angele
 print distance_in_meters = geo_distance_2points(-122.407628, 47.578557, -118.275287, 34.019056)
 ```
 
+**Output**
+
 | distance_in_meters |
 |--------------------|
 | 1546754.35197381   |
@@ -75,6 +77,8 @@ StormEvents
 | project distance_1_to_11m
 ```
 
+**Output**
+
 | distance_1_to_11m |
 |-------------------|
 | 10.5723100154958  |
@@ -88,6 +92,8 @@ The following example returns a null result because of the invalid coordinate in
 ```kusto
 print distance = geo_distance_2points(300,1,1,1)
 ```
+
+**Output**
 
 | distance |
 |----------|

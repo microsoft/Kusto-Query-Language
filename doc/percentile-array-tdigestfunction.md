@@ -44,6 +44,8 @@ StormEvents
 | project percentiles_array_tdigest(tdigestRes, range(0, 100, 50), typeof(int))
 ```
 
+**Output**
+
 |percentile_tdigest_tdigestRes|
 |---|
 |[0,0,0]|

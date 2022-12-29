@@ -207,6 +207,8 @@ let Y = datatable(Key:string, Value2:long)
 X | join Y on Key
 ```
 
+**Output**
+
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
 |b|2|b|10|
@@ -237,6 +239,8 @@ let Y = datatable(Key:string, Value2:long)
 ];
 X | join kind=inner Y on Key
 ```
+
+**Output**
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
@@ -276,6 +280,8 @@ t1
 on key
 ```
 
+**Output**
+
 |key|value|key1|value1|
 |---|---|---|---|
 |1|val1.1|1|val1.3|
@@ -297,6 +303,8 @@ t1
     t2
 on key
 ```
+
+**Output**
 
 |key|value|key1|value1|
 |---|---|---|---|
@@ -327,6 +335,8 @@ on key
 | where value == "val1.2"
 ```
 
+**Output**
+
 |key|value|key1|value1|
 |---|---|---|---|
 |1|val1.2|1|val1.3|
@@ -353,6 +363,8 @@ let Y = datatable(Key:string, Value2:long)
 ];
 X | join kind=leftouter Y on Key
 ```
+
+**Output**
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
@@ -384,6 +396,8 @@ let Y = datatable(Key:string, Value2:long)
 X | join kind=rightouter Y on Key
 ```
 
+**Output**
+
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
 |b|2|b|10|
@@ -413,6 +427,8 @@ let Y = datatable(Key:string, Value2:long)
 ];
 X | join kind=fullouter Y on Key
 ```
+
+**Output**
 
 |Key|Value1|Key1|Value2|
 |---|---|---|---|
@@ -445,6 +461,8 @@ let Y = datatable(Key:string, Value2:long)
 X | join kind=leftanti Y on Key
 ```
 
+**Output**
+
 |Key|Value1|
 |---|---|
 |a|1|
@@ -473,6 +491,8 @@ let Y = datatable(Key:string, Value2:long)
 ];
 X | join kind=rightanti Y on Key
 ```
+
+**Output**
 
 |Key|Value2|
 |---|---|
@@ -503,6 +523,8 @@ let Y = datatable(Key:string, Value2:long)
 X | join kind=leftsemi Y on Key
 ```
 
+**Output**
+
 |Key|Value1|
 |---|---|
 |b|2|
@@ -530,6 +552,8 @@ let Y = datatable(Key:string, Value2:long)
 ];
 X | join kind=rightsemi Y on Key
 ```
+
+**Output**
 
 |Key|Value2|
 |---|---|

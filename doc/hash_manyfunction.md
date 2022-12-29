@@ -34,6 +34,8 @@ print value1 = "Hello", value2 = "World"
 | extend combined = hash_many(value1, value2)
 ```
 
+**Output**
+
 |value1|value2|combined|
 |---|---|---|
 |Hello|World|-1440138333540407281|

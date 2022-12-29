@@ -44,6 +44,8 @@ print condition=dynamic([true,false,true]), if_true=dynamic([1,2,3]), if_false=d
 | extend res=array_iif(condition, if_true, if_false)
 ```
 
+**Output**
+
 |condition|if_true|if_false|res|
 |---|---|---|---|
 |[true, false, true]|[1, 2, 3]|[4, 5, 6]|[1, 5, 3]|
@@ -57,6 +59,8 @@ print condition=dynamic([true,false,true]), if_true=dynamic([1,2,3]), if_false=d
 print condition=dynamic([1,0,50]), if_true="yes", if_false="no" 
 | extend res=array_iif(condition, if_true, if_false)
 ```
+
+**Output**
 
 |condition|if_true|if_false|res|
 |---|---|---|---|
@@ -72,6 +76,8 @@ print condition=dynamic(["some string value", datetime("01-01-2022"), null]), if
 | extend res=array_iif(condition, if_true, if_false)
 ```
 
+**Output**
+
 |condition|if_true|if_false|res|
 |---|---|---|---|
 |[true, false, true]|1|0|[null, null, null]|
@@ -85,6 +91,8 @@ print condition=dynamic(["some string value", datetime("01-01-2022"), null]), if
 print condition=dynamic([true,true,true]), if_true=dynamic([1,2]), if_false=dynamic([3,4]) 
 | extend res=array_iif(condition, if_true, if_false)
 ```
+
+**Output**
 
 |condition|if_true|if_false|res|
 |---|---|---|---|

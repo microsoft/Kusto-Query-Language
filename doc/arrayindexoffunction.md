@@ -50,6 +50,8 @@ print
  , idx9 = array_index_of(arr, "is", -4)   // negative start index will look at last 3 elements
 ```
 
+**Output**
+
 |idx1|idx2|idx3|idx4|idx5|idx6|idx7|idx8|idx9|
 |----|----|----|----|----|----|----|----|----|
 |2   |3   |-1  |-1   |3   |4   |-1  |4  |-1  |

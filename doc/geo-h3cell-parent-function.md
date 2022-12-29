@@ -31,6 +31,8 @@ H3 Cell parent token `string`. If the H3 Cell is invalid or parent resolution is
 print parent_cell = geo_h3cell_parent('862a1072fffffff')
 ```
 
+**Output**
+
 |parent_cell|
 |---|
 |852a1073fffffff|
@@ -42,6 +44,8 @@ The following example calculates cell parent at level 1.
 print parent_cell = geo_h3cell_parent('862a1072fffffff', 1)
 ```
 
+**Output**
+
 |parent_cell|
 |---|
 |812a3ffffffffff|
@@ -51,6 +55,8 @@ print parent_cell = geo_h3cell_parent('862a1072fffffff', 1)
 print parent_res = geo_h3cell_level(geo_h3cell_parent((geo_point_to_h3cell(1,1,10))))
 ```
 
+**Output**
+
 |parent_res|
 |---|
 |9|
@@ -59,6 +65,8 @@ print parent_res = geo_h3cell_level(geo_h3cell_parent((geo_point_to_h3cell(1,1,1
 ```kusto
 print parent_res = geo_h3cell_level(geo_h3cell_parent(geo_point_to_h3cell(1,1,10), 3))
 ```
+
+**Output**
 
 |parent_res|
 |---|
@@ -71,6 +79,8 @@ The following example produces an empty result because of the invalid cell input
 print invalid = isempty(geo_h3cell_parent('123'))
 ```
 
+**Output**
+
 |invalid|
 |---|
 |1|
@@ -82,6 +92,8 @@ The following example produces an empty result because of the invalid parent res
 print invalid = isempty(geo_h3cell_parent('862a1072fffffff', 100))
 ```
 
+**Output**
+
 |invalid|
 |---|
 |1|
@@ -92,6 +104,8 @@ The following example produces an empty result because parent can't be of a high
 ```kusto
 print invalid = isempty(geo_h3cell_parent('862a1072fffffff', 15))
 ```
+
+**Output**
 
 |invalid|
 |---|

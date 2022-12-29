@@ -30,6 +30,8 @@ An Integer that represents H3 Cell level. Valid level is in range [0, 15]. If th
 print cell_res = geo_h3cell_level('862a1072fffffff')
 ```
 
+**Output**
+
 |cell_res|
 |---|
 |6|
@@ -38,6 +40,8 @@ print cell_res = geo_h3cell_level('862a1072fffffff')
 ```kusto
 print cell_res = geo_h3cell_level(geo_point_to_h3cell(1,1,10))
 ```
+
+**Output**
 
 |cell_res|
 |---|
@@ -49,6 +53,8 @@ The following example returns true because of the invalid H3 Cell token input.
 ```kusto
 print invalid_res = isnull(geo_h3cell_level('abc'))
 ```
+
+**Output**
 
 |invalid_res|
 |---|

@@ -55,6 +55,8 @@ datatable(ip1_string:string, ip2_string:string)
 | extend result = ipv4_compare(ip1_string, ip2_string)
 ```
 
+**Output**
+
 |ip1_string|ip2_string|result|
 |---|---|---|
 |192.168.1.0|192.168.1.0|0|
@@ -74,6 +76,8 @@ datatable(ip1_string:string, ip2_string:string, prefix:long)
 ]
 | extend result = ipv4_compare(ip1_string, ip2_string, prefix)
 ```
+
+**Output**
 
 |ip1_string|ip2_string|prefix|result|
 |---|---|---|---|

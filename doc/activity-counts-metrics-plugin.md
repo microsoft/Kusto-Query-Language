@@ -79,6 +79,8 @@ let T = datatable(UserId:string, Timestamp:datetime)
  | evaluate activity_counts_metrics(UserId, Timestamp, start, end, window)
 ```
 
+**Output**
+
 |`Timestamp`|`count`|`dcount`|`new_dcount`|`aggregated_dcount`|
 |---|---|---|---|---|
 |2017-08-01 00:00:00.0000000|4|4|4|4|

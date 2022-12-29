@@ -39,6 +39,8 @@ A table of midnight at the past seven days. The bin (floor) function reduces eac
 range LastWeek from ago(7d) to now() step 1d
 ```
 
+**Output**
+
 |LastWeek|
 |---|
 |2015-12-05 09:10:04.627|

@@ -44,6 +44,8 @@ StormEvents
 | where State has_cs "FLORIDA"
 ```
 
+**Output**
+
 |State|event_count|
 |--|--|
 |FLORIDA|1042|
@@ -58,6 +60,8 @@ StormEvents
 | summarize event_count=count() by State
 | where State has_cs "florida"
 ```
+
+**Output**
 
 |State|event_count|
 |--|--|

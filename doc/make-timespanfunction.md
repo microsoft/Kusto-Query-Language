@@ -39,6 +39,8 @@ print ['timespan'] = make_timespan(1,12,30,55.123)
 
 ```
 
+**Output**
+
 |timespan|
 |---|
 |1.12:30:55.1230000|

@@ -40,6 +40,8 @@ range Timestamp from datetime(2017-01-01 00:05) to datetime(2017-01-01 02:00) st
 | summarize count() by bin_auto(Timestamp)
 ```
 
+**Output**
+
 |Timestamp                    | count_|
 |-----------------------------|-------|
 |2017-01-01 00:05:00.0000000  | 60    |

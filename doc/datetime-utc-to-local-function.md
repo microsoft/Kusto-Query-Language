@@ -35,6 +35,8 @@ print dt=now()
 | extend diff = pacific_dt - canberra_dt
 ```
 
+**Output**
+
 |dt|pacific_dt|canberra_dt|diff|
 |---|---|---|---|
 |2022-07-11 22:18:48.4678620|2022-07-11 15:18:48.4678620|2022-07-12 08:18:48.4678620|-17:00:00|

@@ -100,6 +100,8 @@ let MyFilter = (T:(x:long), v:long) {
 MyFilter((range x from 1 to 10 step 1), 9)
 ```
 
+**Output**
+
 |x|
 |---|
 |9|
@@ -114,6 +116,8 @@ let MyDistinct = (T:(*)) {
 };
 MyDistinct((range x from 1 to 3 step 1))
 ```
+
+**Output**
 
 |x|
 |---|
@@ -264,6 +268,8 @@ union
   (print x=f(c=7, a=12)), // "12-b.default-7"
   (print x=f(12, c=7))    // "12-b.default-7"
 ```
+
+**Output**
 
 |x|
 |---|

@@ -32,6 +32,8 @@ let substring = ".com";
 print string_to_trim = string_to_trim,trimmed_string = trim_end(substring,string_to_trim)
 ```
 
+**Output**
+
 |string_to_trim|trimmed_string|
 |--------------|--------------|
 |bing.com      |bing          |
@@ -42,6 +44,8 @@ Next statement trims all non-word characters from the end of the string:
 print str = strcat("-  ","Te st",x,@"// $")
 | extend trimmed_str = trim_end(@"[^\w]+",str)
 ```
+
+**Output**
 
 |str          |trimmed_str|
 |-------------|-----------|

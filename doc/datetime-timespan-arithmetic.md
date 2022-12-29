@@ -50,6 +50,8 @@ let fromUnixTime = (t:long)
 print result = fromUnixTime(1546897531)
 ```
 
+**Output**
+
 |result                     |
 |---------------------------|
 |2019-01-07 21:45:31.0000000|
@@ -61,6 +63,8 @@ let toUnixTime = (dt:datetime)
 };
 print result = toUnixTime(datetime(2019-01-07 21:45:31.0000000))
 ```
+
+**Output**
 
 |result                     |
 |---------------------------|

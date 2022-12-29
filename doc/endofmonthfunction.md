@@ -34,6 +34,8 @@ A datetime representing the end of the month for the given *date* value, with th
  | project monthEnd = endofmonth(datetime(2017-01-01 10:10:17), offset) 
 ```
 
+**Output**
+
 |monthEnd|
 |---|
 |2016-12-31 23:59:59.9999999|

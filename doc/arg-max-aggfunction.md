@@ -102,6 +102,8 @@ datatable(Fruit: string, Color: string, Version: int) [
 | summarize arg_max(Version, *) by Fruit
 ```
 
+**Output**
+
 | Fruit | Version | Color |
 |--|--|--|
 | Apple | 1 | Red |

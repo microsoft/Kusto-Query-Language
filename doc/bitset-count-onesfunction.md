@@ -33,6 +33,8 @@ Returns the number of set bits in the binary representation of a number.
 print ones = bitset_count_ones(42) 
 ```
 
+**Output**
+
 |ones|
 |---|
 |3|

@@ -29,6 +29,8 @@ Arguments, concatenated to a single string.
 print str = strcat("hello", " ", "world")
 ```
 
+**Output**
+
 |str|
 |---|
 |hello world|

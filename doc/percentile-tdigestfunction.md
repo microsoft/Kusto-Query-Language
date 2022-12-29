@@ -38,6 +38,8 @@ StormEvents
 | project percentile_tdigest(tdigestRes, 100, typeof(int))
 ```
 
+**Output**
+
 |percentile_tdigest_tdigestRes|
 |---|
 |0|
@@ -53,6 +55,8 @@ StormEvents
 | union (StormEvents | summarize tdigestRes = tdigest(EndTime) by State)
 | project percentile_tdigest(tdigestRes, 100)
 ```
+
+**Output**
 
 |percentile_tdigest_tdigestRes|
 |---|

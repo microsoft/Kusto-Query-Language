@@ -53,6 +53,8 @@ datatable(ip_string:string, netmask:long)
 | extend ip6_canonical = parse_ipv6_mask(ip_string, netmask)
 ```
 
+**Output**
+
 |ip_string|netmask|ip6_canonical|
 |---|---|---|
 |192.168.255.255|120|0000:0000:0000:0000:0000:ffff:c0a8:ff00|

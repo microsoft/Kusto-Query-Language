@@ -53,6 +53,8 @@ let lineString2 = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788
 print intersection = geo_intersection_2lines(lineString1, lineString2)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "Point","coordinates": [-73.979837116670978,40.783989289772165]}|
@@ -64,6 +66,8 @@ The following example calculates intersection between two lines. In this case, t
 let line = dynamic({"type":"LineString","coordinates":[[-73.978929,40.785155],[-73.980903,40.782621]]});
 print intersection = geo_intersection_2lines(line, line)
 ```
+
+**Output**
 
 |intersection|
 |---|
@@ -78,6 +82,8 @@ let lineString2 = dynamic({"type":"LineString","coordinates":[[3, 3],[4, 4]]});
 print intersection = geo_intersection_2lines(lineString1, lineString2)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "GeometryCollection", "geometries": []}|
@@ -90,6 +96,8 @@ let lineString1 = dynamic({"type":"LineString","coordinates":[[1, 1],[2, 2]]});
 let lineString2 = dynamic({"type":"LineString","coordinates":[[3, 3]]});
 print invalid = isnull(geo_intersection_2lines(lineString1, lineString2))
 ```
+
+**Output**
 
 |invalid|
 |---|

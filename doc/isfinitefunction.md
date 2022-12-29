@@ -30,6 +30,8 @@ range x from -1 to 1 step 1
 | extend isfinite=isfinite(div)
 ```
 
+**Output**
+
 |x|y|div|isfinite|
 |---|---|---|---|
 |-1|0|-∞|0|

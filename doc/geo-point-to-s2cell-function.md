@@ -92,6 +92,8 @@ StormEvents
 print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 ```
 
+**Output**
+
 | s2cell |
 |--------|
 | 88d9b  |
@@ -113,6 +115,8 @@ datatable(location_id:string, longitude:real, latitude:real)
             by s2cell = geo_point_to_s2cell(longitude, latitude, 8) // s2 cell of the group
 ```
 
+**Output**
+
 | s2cell | count | locations |
 |--------|-------|-----------|
 | 47b1d  | 2     | ["A","B"] |
@@ -127,6 +131,8 @@ The following example produces an empty result because of the invalid coordinate
 print s2cell = geo_point_to_s2cell(300,1,8)
 ```
 
+**Output**
+
 | s2cell |
 |--------|
 |        |
@@ -138,6 +144,8 @@ The following example produces an empty result because of the invalid level inpu
 print s2cell = geo_point_to_s2cell(1,1,35)
 ```
 
+**Output**
+
 | s2cell |
 |--------|
 |        |
@@ -148,6 +156,8 @@ The following example produces an empty result because of the invalid level inpu
 ```kusto
 print s2cell = geo_point_to_s2cell(1,1,int(null))
 ```
+
+**Output**
 
 | s2cell |
 |--------|

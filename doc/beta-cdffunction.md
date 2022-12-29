@@ -54,6 +54,8 @@ datatable(x:double, alpha:double, beta:double, comment:string)
 | extend b = beta_cdf(x, alpha, beta)
 ```
 
+**Output**
+
 |x|alpha|beta|comment|b|
 |---|---|---|---|---|
 |0.9|10|20|Valid input|0.999999999999959|

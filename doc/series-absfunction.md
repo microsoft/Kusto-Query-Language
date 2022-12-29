@@ -29,6 +29,8 @@ print arr = dynamic([-6.5,0,8.2])
 | extend arr_abs = series_abs(arr)
 ```
 
+**Output**
+
 |arr|arr_abs|
 |---|---|
 |[-6.5,0,8.2]|[6.5,0,8.2]|

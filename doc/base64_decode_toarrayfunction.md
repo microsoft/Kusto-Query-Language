@@ -33,6 +33,8 @@ print Quine=base64_decode_toarray("S3VzdG8=")
 // 'K', 'u', 's', 't', 'o'
 ```
 
+**Output**
+
 |Quine|
 |-----|
 |[75,117,115,116,111]|

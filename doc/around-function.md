@@ -41,6 +41,8 @@ range dt
 | where around(dt, datetime(2021-01-01 01:30), 1min)
 ```
 
+**Output**
+
 |dt|
 |---|
 |2021-01-01 01:29:00.0000000|

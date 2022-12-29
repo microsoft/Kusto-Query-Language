@@ -11,21 +11,18 @@ Get a match for a [regular expression](./re2.md) from a source string.
 
 Optionally, convert the extracted substring to the indicated type.
 
-```kusto
-extract("x=([0-9.]+)", 1, "hello x=45.6|wo") == "45.6"
-```
-
 ## Syntax
 
 `extract(`*regex*`,` *captureGroup*`,` *source* [`,` *typeLiteral*]`)`
 
-## Arguments
+## Parameters
 
-* *regex*: A [regular expression](./re2.md).
-* *captureGroup*: A positive `int` constant indicating the
-capture group to extract. 0 stands for the entire match, 1 for the value matched by the first '('parenthesis')' in the regular expression, 2 or more for subsequent parentheses.
-* *source*: A `string` to search.
-* *typeLiteral*: An optional type literal (for example, `typeof(long)`). If provided, the extracted substring is converted to this type.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *regex* | string | &check; | A [regular expression](./re2.md).|
+| *captureGroup* | int | &check; | The capture group to extract. 0 stands for the entire match, 1 for the value matched by the first '('parenthesis')' in the regular expression, and 2 or more for subsequent parentheses.|
+| *source* | string | &check;| The string to search.|
+| *typeLiteral* | string | | If provided, the extracted substring is converted to this type. For example, `typeof(long)`.
 
 ## Returns
 

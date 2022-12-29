@@ -32,6 +32,8 @@ Absolute value of x.
 abs(-5)
 ```
 
+**Output**
+
 |Result|
 |------|
 |5|

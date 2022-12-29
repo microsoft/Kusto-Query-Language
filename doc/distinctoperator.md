@@ -35,6 +35,8 @@ StormEvents
 | distinct State, EventType
 ```
 
+**Output**
+
 |State|EventType|
 |--|--|
 |TEXAS|Winter Weather|

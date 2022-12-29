@@ -218,6 +218,8 @@ find in (EventsTable1, EventsTable2)
      project EventText, Version, EventName, pack_all()
 ```
 
+**Output**
+
 |source_|EventText|Version|EventName|pack_
 |---|---|---|---|---|
 |EventsTable1|Some Text2|v1.0.0||{"Session_Id":"acbd207d-51aa-4df7-bfa7-be70eb68f04e", "Level":"Error"}
@@ -228,6 +230,8 @@ find in (EventsTable1, EventsTable2)
 ```kusto
 find Version == 'v1.0.0' or EventName == 'Event1' project Session_Id, EventText, Version, EventName
 ```
+
+**Output**
 
 |source_|Session_Id|EventText|Version|EventName|
 |---|---|---|---|---|
@@ -243,6 +247,8 @@ Note: in practice, *EventsTable1* rows will be filtered with ```Version == 'v1.0
 find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
 ```
 
+**Output**
+
 |source_|Session_Id|Level|EventText|pack_|
 |---|---|---|---|---|
 |EventsTable1|acbd207d-51aa-4df7-bfa7-be70eb68f04e|Information|Some Text1|{"Version":"v1.0.0"}
@@ -255,6 +261,8 @@ find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e'
 ```kusto
 find Session_Id == 'acbd207d-51aa-4df7-bfa7-be70eb68f04e' project pack_all()
 ```
+
+**Output**
 
 |source_|pack_|
 |---|---|

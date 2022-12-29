@@ -46,6 +46,8 @@ StormEvents
 | top 5 by UniqueFatalEvents
 ```
 
+**Output**
+
 | State           | UniqueFatalEvents |
 | --------------- | ----------------- |
 | TEXAS           | 12                |

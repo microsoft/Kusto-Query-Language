@@ -36,6 +36,8 @@ print arr=dynamic([1,2,3,4,5])
 | extend arr_rotated=array_rotate_right(arr, 2)
 ```
 
+**Output**
+
 |arr|arr_rotated|
 |---|---|
 |[1,2,3,4,5]|[4,5,1,2,3]|
@@ -51,6 +53,8 @@ Rotating to the left by two positions by using negative rotate_count value:
 print arr=dynamic([1,2,3,4,5])
 | extend arr_rotated=array_rotate_right(arr, -2)
 ```
+
+**Output**
 
 |arr|arr_rotated|
 |---|---|

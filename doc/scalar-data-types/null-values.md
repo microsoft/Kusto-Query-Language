@@ -135,6 +135,8 @@ For example:
 [a,1]
 ```
 
+**Output**
+
 |a     |b     |isnull(a)|isempty(a)|strlen(a)|isnull(b)|
 |------|------|---------|----------|---------|---------|
 |&nbsp;|&nbsp;|false    |true      |0        |true     |

@@ -38,6 +38,8 @@ datatable(input: dynamic)
 | extend result = bag_has_key(input, 'key2')
 ```
 
+**Output**
+
 |input|result|
 |---|---|
 |{<br>  "key1": 123,<br>  "key2": "abc"<br>}|true<br>|
@@ -55,6 +57,8 @@ datatable(input: dynamic)
 ]
 | extend result = bag_has_key(input, '$.key2.prop1')
 ```
+
+**Output**
 
 |input|result|
 |---|---|

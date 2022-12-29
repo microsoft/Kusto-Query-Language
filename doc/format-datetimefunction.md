@@ -90,6 +90,8 @@ v2=format_datetime(dt, 'yyyy-M-dd [H:mm:ss]'),
 v3=format_datetime(dt, 'yy-MM-dd [hh:mm:ss tt]')
 ```
 
+**Output**
+
 |v1|v2|v3|
 |--|--|--|
 |17-01-29 [09:00:05]|2017-1-29 [9:00:05]|17-01-29 [09:00:05 AM]|

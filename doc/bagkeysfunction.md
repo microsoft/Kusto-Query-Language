@@ -41,6 +41,8 @@ datatable(index:long, d:dynamic) [
 | extend keys = bag_keys(d)
 ```
 
+**Output**
+
 |index|d|keys|
 |---|---|---|
 |1|{<br>  "a": "b",<br>  "c": 123<br>}|[<br>  "a",<br>  "c"<br>]|

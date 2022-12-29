@@ -32,6 +32,8 @@ Returns logical NOT operation on a number: value.
 binary_not(100)
 ```
 
+**Output**
+
 |result|
 |------|
 |-101|

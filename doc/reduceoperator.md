@@ -59,6 +59,8 @@ range x from 1 to 1000 step 1
 | reduce by MyText  with threshold=0.001 , characters = "X" 
 ```
 
+**Output**
+
 |Pattern         |Count|Representative   |
 |----------------|-----|-----------------|
 |MachineLearning*|1000 |MachineLearningX4|

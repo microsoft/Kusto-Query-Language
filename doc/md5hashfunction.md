@@ -38,6 +38,8 @@ h1=hash_md5("World"),
 h2=hash_md5(datetime(2020-01-01))
 ```
 
+**Output**
+
 |h1|h2|
 |---|---|
 |f5a7924e621e84c9280a9a27e1bcb7f6|786c530672d1f8db31fee25ea8a9390b|
@@ -51,6 +53,8 @@ StormEvents
 | summarize StormCount = count() by State, StateHash=hash_md5(State)
 | top 5 by StormCount
 ```
+
+**Output**
 
 |State|StateHash|StormCount|
 |---|---|---|

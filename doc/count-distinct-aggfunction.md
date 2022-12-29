@@ -46,6 +46,8 @@ StormEvents
 | top 5 by UniqueEvents
 ```
 
+**Output**
+
 | State                | UniqueEvents  |
 | -------------------- | ------------- |
 | TEXAS                | 27            |

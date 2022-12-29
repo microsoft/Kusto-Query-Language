@@ -35,6 +35,8 @@ print point = geo_geohash_to_central_point("sunny")
 | extend longitude = coordinates[0], latitude = coordinates[1]
 ```
 
+**Output**
+
 |point|coordinates|longitude|latitude|
 |---|---|---|---|
 |{<br>  "type": "Point",<br>  "coordinates": [<br>    42.47314453125,<br>    23.70849609375<br>  ]<br>}|[<br>  42.47314453125,<br>  23.70849609375<br>]|42.47314453125|23.70849609375|
@@ -45,6 +47,8 @@ The following example returns a null result because of the invalid geohash input
 ```kusto
 print geohash = geo_geohash_to_central_point("a")
 ```
+
+**Output**
 
 |geohash|
 |---|
@@ -69,6 +73,8 @@ let geohash_to_map_url = (_geohash:string, _title:string)
 print geohash = 'sv8wzvy7'
 | extend url = geohash_to_map_url(geohash, "You are here")
 ```
+
+**Output**
 
 |geohash|url|
 |---|---|

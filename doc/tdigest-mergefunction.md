@@ -44,6 +44,8 @@ range x from 1 to 10 step 1
 | project percentile_tdigest(merged, 100, typeof(long))
 ```
 
+**Output**
+
 |percentile_tdigest_merged|
 |---|
 |20|

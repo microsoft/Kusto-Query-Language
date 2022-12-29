@@ -46,6 +46,8 @@ datatable(ip_string:string)
 | extend cidr_suffix = ipv4_netmask_suffix(ip_string)
 ```
 
+**Output**
+
 |ip_string|cidr_suffix|
 |---|---|
 |10.1.2.3|32|

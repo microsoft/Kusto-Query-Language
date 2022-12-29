@@ -56,6 +56,8 @@ StormEvents
 | project State, Events
 ```
 
+**Output**
+
 |State|Events|
 |--|--|
 |TEXAS|4701|

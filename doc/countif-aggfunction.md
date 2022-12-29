@@ -74,6 +74,8 @@ T
 | summarize countif(strlen(name) > 4)
 ```
 
+**Output**
+
 |countif_|
 |----|
 |2|

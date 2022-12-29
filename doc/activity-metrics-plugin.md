@@ -100,6 +100,8 @@ range _day from _start to _end  step 1d
 | render timechart
 ```
 
+**Output**
+
 |_day|retention_rate|churn_rate|
 |---|---|---|
 |2017-01-02 00:00:00.0000000|NaN|NaN|
@@ -148,6 +150,8 @@ range _day from _start to _end  step 1d
 | project _day, dcount_values, dcount_newvalues
 | render timechart
 ```
+
+**Output**
 
 | _day | dcount_values | dcount_newvalues |
 |--|--|--|

@@ -64,6 +64,8 @@ range x from 1 to 5 step 1
 )
 ```
 
+**Output**
+
 |x|cumulative_x|
 |---|---|
 |1|1|
@@ -85,6 +87,8 @@ range x from 1 to 5 step 1
                      cumulative_y = iff(s1.cumulative_y >= 10, y, y + s1.cumulative_y);
 )
 ```
+
+**Output**
 
 |x|y|cumulative_x|cumulative_y|
 |---|---|---|---|
@@ -118,6 +122,8 @@ Events
     step s1: true => Event_filled = iff(isempty(Event), s1.Event_filled, Event);
 )
 ```
+
+**Output**
 
 |Ts|Event|Event_filled|
 |---|---|---|
@@ -155,6 +161,8 @@ Events
     step endSession output=none: Ts - inSession.sessionStart > 30m;
 )
 ```
+
+**Output**
 
 |Ts|Event|sessionStart|session_id|
 |---|---|---|---|
@@ -194,6 +202,8 @@ Events
 )
 ```
 
+**Output**
+
 |Ts|Event|m_id|
 |---|---|---|
 |00:01:00|Start|0|
@@ -222,6 +232,8 @@ StormEvents
 )
 | summarize dcount(State) by EventType
 ```
+
+**Output**
 
 |EventType|dcount_State|
 |---|---|

@@ -50,6 +50,8 @@ datatable(x:double, alpha:double, beta:double, comment:string)
 | extend r = beta_pdf(x, alpha, beta)
 ```
 
+**Output**
+
 |x|alpha|beta|comment|r|
 |---|---|---|---|---|
 |0.5|10|20|Valid input|0.746176019310951|

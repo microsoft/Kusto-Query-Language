@@ -33,6 +33,8 @@ let bytes_array = toscalar(print base64_decode_toarray("S3VzdG8="));
 print decoded_base64_string = base64_encode_fromarray(bytes_array)
 ```
 
+**Output**
+
 |decoded_base64_string|
 |---|
 |S3VzdG8=|
@@ -46,6 +48,8 @@ Trying to encode a base64 string from an invalid bytes array that was generated 
 let empty_bytes_array = toscalar(print base64_decode_toarray("U3RyaW5n0KHR0tGA0L7Rh9C60LA"));
 print empty_string = base64_encode_fromarray(empty_bytes_array)
 ```
+
+**Output**
 
 |empty_string|
 |---|

@@ -27,6 +27,8 @@ Returns the length, in bytes, of the input string.
 print size = string_size("hello")
 ```
 
+**Output**
+
 |size|
 |---|
 |5|
@@ -34,6 +36,8 @@ print size = string_size("hello")
 ```kusto
 print size = string_size("⒦⒰⒮⒯⒪")
 ```
+
+**Output**
 
 |size|
 |---|

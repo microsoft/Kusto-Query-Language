@@ -193,6 +193,8 @@ data
 | count 
 ```
 
+**Output**
+
 |Count|
 |---|
 |0|
@@ -225,6 +227,8 @@ data
 | limit 0
 | make-series kind=nonempty avg(metric) default=1.0 on timestamp from stime to etime step interval 
 ```
+
+**Output**
 
 |avg_metric|timestamp|
 |---|---|

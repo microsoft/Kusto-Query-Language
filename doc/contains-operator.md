@@ -66,6 +66,8 @@ StormEvents
     | render table
 ```
 
+**Output**
+
 |State|event_count|
 |-----|-----------|
 |PENNSYLVANIA|1687|

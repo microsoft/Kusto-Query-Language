@@ -48,6 +48,8 @@ datatable(ip_string:string)
 | extend ip_long = parse_ipv4(ip_string)
 ```
 
+**Output**
+
 |ip_string|ip_long|
 |---|---|
 |192.168.1.1|3232235777|

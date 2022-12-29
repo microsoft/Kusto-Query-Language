@@ -66,6 +66,8 @@ datatable(longitude:real, latitude:real, description:string)
 | where geo_point_in_polygon(longitude, latitude, dynamic({"type":"Polygon","coordinates":[[[-73.92597198486328,40.87821814104651],[-73.94691467285156,40.85069618625578],[-73.94691467285156,40.841865966890786],[-74.01008605957031,40.7519385984599],[-74.01866912841797,40.704586878965245],[-74.01214599609375,40.699901911003046],[-73.99772644042969,40.70875101828792],[-73.97747039794922,40.71083299030839],[-73.97026062011719,40.7290474687069],[-73.97506713867186,40.734510840309376],[-73.970947265625,40.74543623770158],[-73.94210815429688,40.77586181063573],[-73.9434814453125,40.78080140115127],[-73.92974853515625,40.79691751000055],[-73.93077850341797,40.804454347291006],[-73.93489837646484,40.80965166748853],[-73.93524169921875,40.837190668541105],[-73.92288208007812,40.85770758108904],[-73.9101791381836,40.871728144624974],[-73.92597198486328,40.87821814104651]],[[-73.95824432373047,40.80071852197889],[-73.98206233978271,40.76815921628347],[-73.97309303283691,40.76422632379533],[-73.94914627075195,40.796949998204596],[-73.95824432373047,40.80071852197889]]]}))
 ```
 
+**Output**
+
 |longitude|latitude|description|
 |---|---|---|
 |-73.985654|40.748487|Empire State Building|
@@ -87,6 +89,8 @@ let coordinates =
 coordinates
 | where geo_point_in_polygon(longitude, latitude, multipolygon)
 ```
+
+**Output**
 
 |longitude|latitude|description|
 |---|---|---|
@@ -136,6 +140,8 @@ Polygons
 }
 ```
 
+**Output**
+
 |longitude|latitude|description|
 |---|---|---|
 |-73.95|40.75|New York city area|
@@ -171,6 +177,8 @@ Coordinates
 | where geo_point_in_polygon(longitude, latitude, multipolygon)
 ```
 
+**Output**
+
 |longitude|latitude|description|
 |---|---|---|
 |-73.9741|40.7914|Upper West Side|
@@ -182,6 +190,8 @@ The following example will return a null result because of the invalid coordinat
 print in_polygon = geo_point_in_polygon(200,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,1],[0,0]]]}))
 ```
 
+**Output**
+
 | in_polygon |
 |------------|
 |            |
@@ -191,6 +201,8 @@ The following example will return a null result because of the invalid polygon i
 ```kusto
 print in_polygon = geo_point_in_polygon(1,1,dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,10],[0,0]]]}))
 ```
+
+**Output**
 
 | in_polygon |
 |------------|

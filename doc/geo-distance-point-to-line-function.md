@@ -61,6 +61,8 @@ The following example finds the shortest distance between North Las Vegas Airpor
 print distance_in_meters = geo_distance_point_to_line(-115.199625, 36.210419, dynamic({ "type":"LineString","coordinates":[[-115.115385,36.229195],[-115.136995,36.200366],[-115.140252,36.192470],[-115.143558,36.188523],[-115.144076,36.181954],[-115.154662,36.174483],[-115.166431,36.176388],[-115.183289,36.175007],[-115.192612,36.176736],[-115.202485,36.173439],[-115.225355,36.174365]]}))
 ```
 
+**Output**
+
 | distance_in_meters |
 |--------------------|
 | 3797.88887253334   |
@@ -134,6 +136,8 @@ The following example will return a null result because of the invalid LineStrin
 print distance_in_meters = geo_distance_point_to_line(1,1, dynamic({ "type":"LineString"}))
 ```
 
+**Output**
+
 | distance_in_meters |
 |--------------------|
 |                    |
@@ -148,6 +152,8 @@ The following example will return a null result because of the invalid coordinat
 ```kusto
 print distance_in_meters = geo_distance_point_to_line(300, 3, dynamic({ "type":"LineString","coordinates":[[1,1],[2,2]]}))
 ```
+
+**Output**
 
 | distance_in_meters |
 |--------------------|

@@ -33,6 +33,8 @@ range x from 1 to 3 step 1
 | project set_union(a1, a2, a3)
 ```
 
+**Output**
+
 |Column1|
 |---|
 |[1,2,4,8]|

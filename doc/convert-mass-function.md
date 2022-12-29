@@ -62,6 +62,8 @@ Convert a mass value from one unit to another.
 print result = convert_mass(1.2, 'Kilogram', 'Pound')
 ```
 
+**Output**
+
 |result|
 |---|
 |2.64554714621853|

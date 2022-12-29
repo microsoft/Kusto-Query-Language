@@ -61,6 +61,8 @@ StormEvents
     | where State contains_cs "AS"
 ```
 
+**Output**
+
 |Count|
 |-----|
 |8|

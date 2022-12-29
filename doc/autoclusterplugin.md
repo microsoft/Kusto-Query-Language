@@ -62,6 +62,8 @@ StormEvents
 | evaluate autocluster(0.6)
 ```
 
+**Output**
+
 |SegmentId|Count|Percent|State|EventType|Damage|
 |---|---|---|---|---|---|---|---|---|
 |0|2278|38.7||Hail|NO
@@ -78,6 +80,8 @@ StormEvents
 | project State , EventType , Damage
 | evaluate autocluster(0.2, '~', '~', '*')
 ```
+
+**Output**
 
 |SegmentId|Count|Percent|State|EventType|Damage|
 |---|---|---|---|---|---|---|---|---|

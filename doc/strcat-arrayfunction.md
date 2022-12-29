@@ -28,6 +28,8 @@ Array values, concatenated to a single string.
 print str = strcat_array(dynamic([1, 2, 3]), "->")
 ```
 
+**Output**
+
 |str|
 |---|
 |1->2->3|

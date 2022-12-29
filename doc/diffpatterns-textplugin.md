@@ -52,6 +52,8 @@ StormEvents
 | evaluate diffpatterns_text(EpisodeNarrative, EventType == "Extreme Cold/Wind Chill", 2)
 ```
 
+**Output**
+
 |Count_of_True|Count_of_False|Percent_of_True|Percent_of_False|Pattern|
 |---|---|---|---|---|
 |11|0|6.29|0|Winds shifting northwest in * wake * a surface trough brought heavy lake effect snowfall downwind * Lake Superior from|

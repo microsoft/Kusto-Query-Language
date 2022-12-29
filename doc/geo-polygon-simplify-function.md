@@ -55,6 +55,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.94885122776031,40.7
 print simplified = geo_polygon_simplify(polygon)
 ```
 
+**Output**
+
 |simplified|
 |---|
 |{"type": "Polygon", "coordinates": [[[-73.948851227760315, 40.796734763556572],[-73.949063122272477, 40.797107362717881],[-73.949236124753952, 40.7968708081794],[-73.948851227760315, 40.796734763556572]]]}|
@@ -69,6 +71,8 @@ Polygons
 | summarize lst = make_list(simplified)
 | project geojson = pack("type", "Feature","geometry", pack("type", "GeometryCollection", "geometries", lst), "properties", pack("name", "polygons"))
 ```
+
+**Output**
 
 |geojson|
 |---|
@@ -85,6 +89,8 @@ US_States
 | project polygons = geo_union_polygons_array(lst)
 ```
 
+**Output**
+
 |polygons|
 |---|
 |{"type": "MultiPolygon", "coordinates": [ ... ]}|
@@ -96,6 +102,8 @@ The following example returns True because of the invalid polygon.
 let polygon = dynamic({"type":"Polygon","coordinates":[[[5,48],[5,48]]]});
 print is_invalid_polygon = isnull(geo_polygon_simplify(polygon))
 ```
+
+**Output**
 
 |is_invalid_polygon|
 |---|
@@ -109,6 +117,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[5,48],[0,50],[0,47],[4,
 print is_invalid_polygon = isnull(geo_polygon_simplify(polygon, -0.1))
 ```
 
+**Output**
+
 |is_invalid_polygon|
 |---|
 |1|
@@ -120,6 +130,8 @@ The following example returns True because high tolerance causes polygon to disa
 let polygon = dynamic({"type":"Polygon","coordinates":[[[5,48],[0,50],[0,47],[4,47],[5,48]]]});
 print is_invalid_polygon = isnull(geo_polygon_simplify(polygon, 1000000))
 ```
+
+**Output**
 
 |is_invalid_polygon|
 |---|

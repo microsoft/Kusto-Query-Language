@@ -33,6 +33,8 @@ In case if *multiplier* is more than maximal allowed value (1024), input string 
 print from_str = strrep('ABC', 2), from_int = strrep(123,3,'.'), from_time = strrep(3s,2,' ')
 ```
 
+**Output**
+
 |from_str|from_int|from_time|
 |---|---|---|
 |ABCABC|123.123.123|00:00:03 00:00:03|

@@ -51,6 +51,8 @@ StormEvents
 | summarize count() by State
 ```
 
+**Output**
+
 |State|count_|
 |---|---|
 |NEW YORK|1750|
@@ -73,6 +75,8 @@ StormEvents
 | where State has_any (states)
 | summarize count() by State
 ```
+
+**Output**
 
 |State|count_|
 |---|---|

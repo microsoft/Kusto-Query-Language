@@ -35,6 +35,8 @@ See [`unicode_codepoints_to_string()`](unicode-codepoints-to-string-function.md)
 print arr = unicode_codepoints_from_string("⒦⒰⒮⒯⒪")
 ```
 
+**Output**
+
 |arr|
 |---|
 |[9382, 9392, 9390, 9391, 9386]|
@@ -46,6 +48,8 @@ print arr = unicode_codepoints_from_string("⒦⒰⒮⒯⒪")
 print arr = unicode_codepoints_from_string("קוסטו - Kusto")
 ```
 
+**Output**
+
 |arr|
 |---|
 |[1511, 1493, 1505, 1496, 1493, 32, 45, 32, 75, 117, 115, 116, 111]|
@@ -56,6 +60,8 @@ print arr = unicode_codepoints_from_string("קוסטו - Kusto")
 ```kusto
 print str = unicode_codepoints_to_string(unicode_codepoints_from_string("Kusto"))
 ```
+
+**Output**
 
 |str|
 |---|

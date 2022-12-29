@@ -39,6 +39,8 @@ range x from 1 to 10 step 1                    // x (long) is 8
 | summarize Total=sum(estimate_data_size(*))   // (8+10)x10 = 180
 ```
 
+**Output**
+
 |Total|
 |---|
 |180|

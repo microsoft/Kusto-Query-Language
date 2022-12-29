@@ -60,6 +60,8 @@ IPs
 | extend IsLocal=ipv6_is_in_any_range(IP, LocalNetworks)
 ```
 
+**Output**
+
 |IP|IsLocal|
 |---|---|
 |a5e:f127:8a9d:146d:e102:b5d3:c755:abcd|	True|

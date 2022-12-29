@@ -39,6 +39,8 @@ datatable(string1:string, string2:string) [
 | extend result = strcmp(string1,string2)
 ```
 
+**Output**
+
 |string1|string2|result|
 |---|---|---|
 |ABC|ABC|0|

@@ -33,6 +33,8 @@ let substring = "--";
 print string_to_trim = string_to_trim, trimmed_string = trim(substring,string_to_trim)
 ```
 
+**Output**
+
 |string_to_trim|trimmed_string|
 |---|---|
 |--https://bing.com--|https://bing.com|
@@ -44,6 +46,8 @@ range x from 1 to 5 step 1
 | project str = strcat("-  ","Te st",x,@"// $")
 | extend trimmed_str = trim(@"[^\w]+",str)
 ```
+
+**Output**
 
 |str|trimmed_str|
 |---|---|

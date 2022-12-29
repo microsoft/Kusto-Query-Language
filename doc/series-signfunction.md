@@ -29,6 +29,8 @@ print arr = dynamic([-6,0,8])
 | extend arr_sign = series_sign(arr)
 ```
 
+**Output**
+
 |arr|arr_sign|
 |---|---|
 |[-6,0,8]|[-1,0,1]|

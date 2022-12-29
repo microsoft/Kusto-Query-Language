@@ -57,6 +57,8 @@ evaluate azure_digital_twins_query_request(
 | project TemperatureInC = Temperature, Humidity
 ```
 
+**Output**
+
 |TemperatureInC|Humidity|
 |---|---|
 |21|48|

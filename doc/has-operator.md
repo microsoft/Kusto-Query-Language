@@ -46,6 +46,8 @@ StormEvents
 | project State, event_count
 ```
 
+**Output**
+
 |State|event_count|
 |-----|-----------|
 |NEW YORK|1,750|

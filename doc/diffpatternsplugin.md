@@ -107,6 +107,8 @@ StormEvents
 | evaluate diffpatterns(Damage, "0", "1" )
 ```
 
+**Output**
+
 |SegmentId|CountA|CountB|PercentA|PercentB|PercentDiffAB|State|EventType|Source|DamageCrops|
 |---|---|---|---|---|---|---|---|---|---|
 |0|2278|93|49.8|7.1|42.7||Hail||0|

@@ -61,6 +61,8 @@ print str="ThreadId:458745723, Machine:Node001, Text: The service is up, Level: 
 | project-away str
 ```
 
+**Output**
+
 |Text|	ThreadId|	Machine|
 |--|--|--|
 |The service is up| 458745723|	Node001
@@ -75,6 +77,8 @@ print str='src=10.1.1.123 dst=10.1.1.124 bytes=125 failure="connection aborted" 
 | project-away str
 ```
 
+**Output**
+
 |event time|	src|	dst|	bytes|	failure|
 |--|--|--|--|--|
 |2021-01-01 10:00:54.0000000|	10.1.1.123|	10.1.1.124|	125|	connection aborted|
@@ -87,6 +91,8 @@ print str='src=10.1.1.123 dst=10.1.1.124 bytes=125 failure=(connection aborted) 
 | project-away str
 ```
 
+**Output**
+
 |event time|	src|	dst|	bytes|	failure|
 |--|--|--|--|--|
 |2021-01-01 10:00:54.0000000|	10.1.1.123|	10.1.1.124|	125|	connection aborted|
@@ -98,6 +104,8 @@ print str='src=10.1.1.123 dst=10.1.1.124 bytes=125 failure="the remote host sent
 | parse-kv str as (['time']:datetime, src:string, dst:string, bytes:long, failure:string) with (pair_delimiter=' ', kv_delimiter='=', quote='"', escape='\\')
 | project-away str
 ```
+
+**Output**
 
 |time|	src|	dst|	bytes|	failure|
 |--|--|--|--|--|
@@ -115,6 +123,8 @@ print str='name=John Doe phone=555 5555 city=New York'
 | project-away str
 ```
 
+**Output**
+
 |name|	phone|	city|
 |--|--|--|
 |John|	555|	New
@@ -125,6 +135,8 @@ print str='name=John Doe phone=555 5555 city=New York'
 | parse-kv str as (name:string, phone:string, city:string) with (pair_delimiter=' ', kv_delimiter='=', greedy=true)
 | project-away str
 ```
+
+**Output**
 
 |name|	phone|	city|
 |--|--|--|
@@ -140,6 +152,8 @@ print str="2021-01-01T10:00:34 [INFO] ThreadId:458745723, Machine:Node001, Text:
 | project-away str
 ```
 
+**Output**
+
 |Text|	ThreadId|	Machine|
 |--|--|--|
 |Started|	458745723|	Node001|
@@ -151,6 +165,8 @@ print str="2021-01-01T10:00:34 [INFO] ThreadId:458745723, Machine:Node001, Text:
 | parse-kv str as (Text: string, ThreadId:long, Machine: string) with (quote="'", escape='\\')
 | project-away str
 ```
+
+**Output**
 
 |Text|	ThreadId|	Machine|
 |--|--|--|
@@ -165,6 +181,8 @@ print str=@'["referer url: https://hostname.com/redirect?dest=/?h=1234", "reques
 | parse-kv str as (['referer url']:string, ['request url']:string, ['advertiser id']: guid) with (regex=@'"([\w ]+)\s*:\s*([^"]*)"')
 | project-away str
 ```
+
+**Output**
 
 |referer url|	request url|	advertiser id|
 |--|--|--|

@@ -80,6 +80,8 @@ datatable (a:int, b:dynamic)
 | mv-expand b
 ```
 
+**Output**
+
 |a|b|
 |---|---|
 |1|10|
@@ -98,6 +100,8 @@ datatable (a:int, b:dynamic)
  2,dynamic({"prop1":"a2", "prop2":"b2"})]
 | mv-expand b
 ```
+
+**Output**
 
 |a|b|
 |---|---|
@@ -120,6 +124,8 @@ datatable (a:int, b:dynamic)
 | extend key = b[0], val=b[1]
 ```
 
+**Output**
+
 |a|b|key|val|
 |---|---|---|---|
 |1|["prop1","a1"]|prop1|a1|
@@ -136,6 +142,8 @@ Expanding two columns will first 'zip' the applicable columns and then expand th
 datatable (a:int, b:dynamic, c:dynamic)[1,dynamic({"prop1":"a", "prop2":"b"}), dynamic([5, 4, 3])]
 | mv-expand b, c
 ```
+
+**Output**
 
 |a|b|c|
 |---|---|---|
@@ -158,6 +166,8 @@ datatable (a:int, b:dynamic, c:dynamic)
 | mv-expand b
 | mv-expand c
 ```
+
+**Output**
 
 |a|b|c|
 |---|---|---|
@@ -195,6 +205,8 @@ range x from 1 to 4 step 1
 | summarize x = make_list(x)
 | mv-expand with_itemindex=Index x
 ```
+
+**Output**
 
 |x|Index|
 |---|---|

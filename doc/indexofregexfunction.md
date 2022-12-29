@@ -48,6 +48,8 @@ print
  idx1 = indexof_regex("abcabc", @"a.c") // lookup found in input string, idx2 = indexof_regex("abcabcdefg", @"a.c", 0, 9, 2)  // lookup found in input string, idx3 = indexof_regex("abcabc", @"a.c", 1, -1, 2)  // there's no second occurrence in the search range, idx4 = indexof_regex("ababaa", @"a.a", 0, -1, 2)  // Matches don't overlap so full lookup can't be found, idx5 = indexof_regex("abcabc", @"a|ab", -1)  // invalid start_index argument
 ```
 
+**Output**
+
 |idx1|idx2|idx3|idx4|idx5|
 |----|----|----|----|----|
 |0   |3   |-1  |-1  |    |

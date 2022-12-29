@@ -31,6 +31,8 @@ A datetime representing the start of the week for the given *date* value, with t
  | project weekStart = startofweek(datetime(2017-01-01 10:10:17), offset) 
 ```
 
+**Output**
+
 |weekStart|
 |---|
 |2016-12-25 00:00:00.0000000|

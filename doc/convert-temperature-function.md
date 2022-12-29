@@ -47,6 +47,8 @@ Convert a temperature value from one unit to another.
 print result = convert_temperature(1.2, 'Kelvin', 'DegreeCelsius')
 ```
 
+**Output**
+
 |result|
 |---|
 |-271.95|

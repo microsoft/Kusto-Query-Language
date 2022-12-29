@@ -30,6 +30,8 @@ print arr=dynamic(["this", "is", "an", "example"])
 | project Result=set_has_element(arr, "example")
 ```
 
+**Output**
+
 |Result|
 |---|
 |1|

@@ -34,6 +34,8 @@ Returns UTF-8 string decoded from base64 string.
 print Quine=base64_decode_tostring("S3VzdG8=")
 ```
 
+**Output**
+
 |Quine|
 |-----|
 |Kusto|
@@ -46,6 +48,8 @@ Trying to decode a base64 string that was generated from invalid UTF-8 encoding 
 ```kusto
 print Empty=base64_decode_tostring("U3RyaW5n0KHR0tGA0L7Rh9C60LA=")
 ```
+
+**Output**
 
 |Empty|
 |-----|

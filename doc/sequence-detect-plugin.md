@@ -54,6 +54,8 @@ StormEvents
         State)
 ```
 
+**Output**
+
 |State|heat_StartTime|wildfire_StartTime|Duration|
 |---|---|---|---|
 |CALIFORNIA|2007-05-08 00:00:00.0000000|2007-05-08 16:02:00.0000000|16:02:00|

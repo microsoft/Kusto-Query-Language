@@ -68,6 +68,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9712905883789,40.78
 print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "LineString","coordinates": [[-73.975611956578192,40.78060906714618],[-73.974552,40.779761]]}|
@@ -81,6 +83,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-90.263,36.738],[-102.0
 print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 ```
 
+**Output**
+
 |intersection|
 |---|
 |{"type": "MultiLineString","coordinates": [[[  -106.89353655881905,  39.769226209776306],[  -101.74448553679453,  40.373506008712525]],[[-99.136499431328858,  40.589336512699994],[-95.284527737311791,  40.799060242246348]]]}|
@@ -93,6 +97,8 @@ let lineString = dynamic({"type":"LineString","coordinates":[[1, 1],[2, 2]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9712905883789,40.78580561168767],[-73.98004531860352,40.775276834803655],[-73.97000312805176,40.77852663535664],[-73.9712905883789,40.78580561168767]]]});
 print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 ```
+
+**Output**
 
 |intersection|
 |---|
@@ -108,6 +114,8 @@ NY_Manhattan_Roads
 | project name, intersection = geo_intersection_line_with_polygon(road, area_of_interest)
 | where array_length(intersection.geometries) != 0
 ```
+
+**Output**
 
 |name|intersection|
 |---|---|
@@ -127,6 +135,8 @@ US_Counties
 | where array_length(intersection.geometries) != 0
 ```
 
+**Output**
+
 |name|intersection|
 |---|---|
 |New York|{"type": "LineString","coordinates": [[-73.971590995788574, 40.794513338780895], [-73.967385292053223, 40.792758888618756],[-73.969788551330566, 40.789769718601512]]}|
@@ -140,6 +150,8 @@ let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.95768642425537,40.8
 print is_invalid = isnull(geo_intersection_2lines(lineString, polygon))
 ```
 
+**Output**
+
 |is_invalid|
 |---|
 |1|
@@ -152,6 +164,8 @@ let lineString = dynamic({"type":"LineString","coordinates":[[-73.97159099578857
 let polygon = dynamic({"type":"Polygon","coordinates":[]});
 print is_invalid = isnull(geo_intersection_2lines(lineString, polygon))
 ```
+
+**Output**
 
 |is_invalid|
 |---|

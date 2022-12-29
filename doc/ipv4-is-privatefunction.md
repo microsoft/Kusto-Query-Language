@@ -61,6 +61,8 @@ datatable(ip_string:string)
 | extend result = ipv4_is_private(ip_string)
 ```
 
+**Output**
+
 |ip_string|result|
 |---|---|
 |10.1.2.3|1|

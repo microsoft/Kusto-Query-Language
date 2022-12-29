@@ -52,6 +52,8 @@ data
           fill_const2 = series_fill_const(arr, -1)  
 ```
 
+**Output**
+
 |`arr`|`fill_const1`|`fill_const2`|
 |---|---|---|
 |[111,null,36,41,23,null,16,61,33,null,null]|[111,0.0,36,41,23,0.0,16,61,33,0.0,0.0]|[111,-1,36,41,23,-1,16,61,33,-1,-1]|

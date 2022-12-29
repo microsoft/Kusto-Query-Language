@@ -32,6 +32,8 @@ print value1 = "Hello", value2 = "World"
 | extend combined = hash_combine(h1, h2)
 ```
 
+**Output**
+
 |value1|value2|h1|h2|combined|
 |---|---|---|---|---|
 |Hello|World|753694413698530628|1846988464401551951|-1440138333540407281|

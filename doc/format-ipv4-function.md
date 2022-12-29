@@ -42,6 +42,8 @@ datatable(address:string, mask:long)
          result_mask = format_ipv4_mask(address, mask)
 ```
 
+**Output**
+
 |address|mask|result|result_mask|
 |---|---|---|---|
 |192.168.1.1|24|192.168.1.0|192.168.1.0/24|

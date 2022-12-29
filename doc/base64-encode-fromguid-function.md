@@ -32,6 +32,8 @@ Returns a base64 string encoded from a GUID.
 print Quine = base64_encode_fromguid(toguid("ae3133f2-6e22-49ae-b06a-16e6a9b212eb"))  
 ```
 
+**Output**
+
 |Quine|
 |-----|
 |8jMxriJurkmwahbmqbIS6w==|

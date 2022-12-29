@@ -74,6 +74,8 @@ T | evaluate sliding_window_counts(UserId, Timestamp, start, end, lookbackWindow
 
 ```
 
+**Output**
+
 |Timestamp|Count|`dcount`|
 |---|---|---|
 |2017-08-01 00:00:00.0000000|5|3|

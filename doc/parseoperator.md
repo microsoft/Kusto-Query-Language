@@ -94,6 +94,8 @@ Traces
 | project resourceName, totalSlices, sliceNumber, lockTime, releaseTime, previousLockTime
 ```
 
+**Output**
+
 |resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|
 |PipelineScheduler|27|15|02/17/2016 08:40:00|2016-02-17 08:40:00.0000000|2016-02-17 08:39:00.0000000|
@@ -118,6 +120,8 @@ Traces
 | parse kind = regex EventText with "(.*?)[a-zA-Z]*=" resourceName @", totalSlices=\s*\d+\s*.*?sliceNumber=" sliceNumber:long  ".*?(previous)?lockTime=" lockTime ".*?releaseTime=" releaseTime ".*?previousLockTime=" previousLockTime:date "\\)"  
 | project resourceName, sliceNumber, lockTime, releaseTime, previousLockTime
 ```
+
+**Output**
 
 |resourceName|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|
@@ -145,6 +149,8 @@ Traces
 | parse kind = regex  EventText with * "resourceName=" resourceName ',' *
 | project resourceName
 ```
+
+**Output**
 
 |resourceName|
 |---|
@@ -174,6 +180,8 @@ Traces
 | project resourceName
 ```
 
+**Output**
+
 |resourceName|
 |---|
 |PipelineScheduler|
@@ -198,6 +206,8 @@ Traces
 | parse kind=regex flags=s EventText with * "resourceName=" resourceName:string "(.*?)totalSlices=" totalSlices:long "(.*?)lockTime=" lockTime:datetime "(.*?)releaseTime=" releaseTime:datetime "(.*?)previousLockTime=" previousLockTime:datetime "\\)" 
 | project-away EventText
 ```
+
+**Output**
 
 |resourceName|totalSlices|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|
@@ -232,6 +242,8 @@ Traces
 | parse kind=relaxed EventText with * "resourceName=" resourceName ", totalSlices=" totalSlices:long * "sliceNumber=" sliceNumber:long * "lockTime=" lockTime ", releaseTime=" releaseTime:date "," * "previousLockTime=" previousLockTime:date ")" *
 | project-away EventText
 ```
+
+**Output**
 
 |resourceName|totalSlices|sliceNumber|lockTime|releaseTime|previousLockTime|
 |---|---|---|---|---|---|

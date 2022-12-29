@@ -52,6 +52,8 @@ let central_park = dynamic({"type":"Polygon","coordinates":[[[-73.9495,40.7969],
 print centroid = geo_polygon_centroid(central_park)
 ```
 
+**Output**
+
 |centroid|
 |---|
 |{"type": "Point", "coordinates": [-73.965735689907618, 40.782550538057812]}|
@@ -66,6 +68,8 @@ centroid = geo_polygon_centroid(central_park)
 | project lng = centroid.coordinates[0]
 ```
 
+**Output**
+
 |lng|
 |---|
 |-73.9657356899076|
@@ -77,6 +81,8 @@ The following example performs union of polygons in multipolygon and calculates 
 let polygons = dynamic({"type":"MultiPolygon","coordinates":[[[[-73.9495,40.7969],[-73.95807266235352,40.80068603561921],[-73.98201942443848,40.76825672305777],[-73.97317886352539,40.76455136505513],[-73.9495,40.7969]]],[[[-73.94262313842773,40.775991804565585],[-73.98107528686523,40.791849155467695],[-73.99600982666016,40.77092185281977],[-73.96150588989258,40.75609977566361],[-73.94262313842773,40.775991804565585]]]]});
 print polygons_union_centroid = geo_polygon_centroid(polygons)
 ```
+
+**Output**
 
 |polygons_union_centroid|
 |---|
@@ -100,6 +106,8 @@ The following example returns True because of the invalid polygon.
 ```kusto
 print isnull(geo_polygon_centroid(dynamic({"type": "Polygon","coordinates": [[[0,0],[10,10],[10,10],[0,0]]]})))
 ```
+
+**Output**
 
 |print_0|
 |---|

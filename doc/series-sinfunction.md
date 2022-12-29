@@ -29,6 +29,8 @@ print arr = dynamic([-1,0,1])
 | extend arr_sin = series_sin(arr)
 ```
 
+**Output**
+
 |arr|arr_sin|
 |---|---|
 |[-6.5,0,8.2]|[-0.8414709848078965,0.0,0.8414709848078965]|

@@ -47,6 +47,8 @@ print a='a', b='b', c='c'
 |  project-reorder b
 ```
 
+**Output**
+
 |b|a|c|
 |---|---|---|
 |b|a|c|
@@ -58,6 +60,8 @@ Reorder columns of a table so that columns starting with `a` will appear before 
 print b = 'b', a2='a2', a3='a3', a1='a1'
 |  project-reorder a* asc
 ```
+
+**Output**
 
 |a1|a2|a3|b|
 |---|---|---|---|

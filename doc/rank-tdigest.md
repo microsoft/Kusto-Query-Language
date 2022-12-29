@@ -38,6 +38,8 @@ range x from 1 to 1000 step 1
 | project rank_of_685=rank_tdigest(t_x, 685)
 ```
 
+**Output**
+
 |`rank_of_685`|
 |-------------|
 |`685`        |
@@ -51,6 +53,8 @@ StormEvents
 | project rank_of_4490=rank_tdigest(tdigestRes, 4490) 
 
 ```
+
+**Output**
 
 |`rank_of_4490`|
 |--------------|
@@ -66,6 +70,8 @@ StormEvents
 
 ```
 
+**Output**
+
 |`Column1`         |
 |------------------|
 |`85.0015237192293`|
@@ -80,6 +86,8 @@ StormEvents
 | project percentile_tdigest(tdigestRes, 85, typeof(long))
 
 ```
+
+**Output**
 
 |`percentile_tdigest_tdigestRes`|
 |-------------------------------|

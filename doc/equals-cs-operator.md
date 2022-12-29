@@ -28,13 +28,15 @@ For faster results, use the case-sensitive version of an operator. For example, 
 
 ## Syntax
 
-*T* `|` `where` *col* `==` `(`*expressions`)`
+*T* `|` `where` *col* `==` `(`*expressions*`)`
 
-## Arguments
+## Parameters
 
-* *T* - The tabular input whose records are to be filtered.
-* *col* - The column to filter.
-* *expression* - Scalar or literal expression.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check;| The tabular input whose records are to be filtered. |
+| *col* | string | &check; | The column to filter. |
+| *expression* | string | &check; | The expression used to filter. |
 
 ## Returns
 
@@ -42,15 +44,28 @@ Rows in *T* for which the predicate is `true`.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5lIAghqF8ozUolSF4JLEklQFW1sFpezEvOLEYiWobHJ+aV4JACj9bS01AAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
-    | where State == "kansas"
-    | count 
+| where State == "kansas"
+| count 
 ```
-
-**Output**
 
 |Count|
 |---|
 |0|  
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVsLVVUPJ29At2DFYCyiTnl+aVAABkHSoPLQAAAA==" target="_blank">Run the query</a>
+
+```kusto
+StormEvents
+| where State == "KANSAS"
+| count 
+```
+
+|Count|
+|---|
+|3,166|

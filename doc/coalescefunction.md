@@ -37,6 +37,8 @@ The value of the first *arg* whose value isn't null (or not-empty for string exp
 print result=coalesce(tolong("not a number"), tolong("42"), 33)
 ```
 
+**Output**
+
 |result|
 |---|
 |42|
