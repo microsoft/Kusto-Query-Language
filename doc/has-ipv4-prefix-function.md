@@ -3,7 +3,7 @@ title: has_ipv4_prefix() - Azure Data Explorer
 description: Learn how to use the has_ipv4_prefix() function to check if a specified IPv4 address prefix appears in the text.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/18/2022
+ms.date: 12/25/2022
 ---
 # has_ipv4_prefix()
 
@@ -20,10 +20,12 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 `has_ipv4_prefix(`*source* `,` *ip_address_prefix* `)`
 
-## Arguments
+## Parameters
 
-* *source*: The value containing the text to search in.
-* *ip_address_prefix*: String value containing the IP address prefix to look for.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *source*| string| &check;| The text to search.|
+| *ip_address_prefix*| string| &check;| The IP address prefix for which to search.|
 
 ## Returns
 
@@ -34,12 +36,54 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 ## Examples
 
+### Properly formatted IPv4 prefix
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM4kvKEpNy6zQUDcwtTIwsTI1UTA0MtczAEJDBXfXEAX9tMSyzOT8PD0goWBiYKKuo6AOUaGuCQBk8fTRUQAAAA==" target="_blank">Run the query</a>
+
 ```kusto
-has_ipv4_prefix('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.') // true
-
-has_ipv4_prefix('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0') // false, invalid IPv4 prefix
-
-has_ipv4_prefix('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.') // false, invalid IPv4 address
-
-has_ipv4_prefix('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.') // false, improperly delimited IP address
+print result=has_ipv4_prefix('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.')
 ```
+
+|result|
+|--|
+|true|
+
+### Invalid IPv4 prefix
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM4kvKEpNy6zQUDcwtTIwsTI1UTA0MtczAEJDBXfXEAX9tMSyzOT8PD0goWBiYKKuo6AOVqGuCQDlc4Z2UAAAAA==" target="_blank">Run the query</a>
+
+```kusto
+print result=has_ipv4_prefix('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0')
+```
+
+|result|
+|--|
+|false|
+
+### Invalid IPv4 address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM4kvKEpNy6zQUDcwtTIwsTI1UTA0MtczAEIjUzMFd9cQBf20xLLM5Pw8PSChYGJgoq6joA5Ro64JAMAcwIpTAAAA" target="_blank">Run the query</a>
+
+```kusto
+print result=has_ipv4_prefix('05:04:54 127.0.0.256 GET /favicon.ico 404', '127.0.')
+```
+
+|result|
+|--|
+|false|
+
+### Improperly delimited IPv4 address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOzywoM4kvKEpNy6zQUDcwtTIwsTI1MTQy1zMAQkMFd9cQBf20xLLM5Pw8PSChYGJgoq6joA5Roa4JAD4FydVQAAAA" target="_blank">Run the query</a>
+
+```kusto
+print result=has_ipv4_prefix('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.')
+```
+
+|result|
+|--|
+|false|

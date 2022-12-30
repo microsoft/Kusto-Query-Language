@@ -37,7 +37,7 @@ Returns a row in the group that minimizes *ExprToMinimize*, and the value of *Ex
 Find the minimum latitude of a storm event in each state.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuCqUSguzc1NLMqsSlVILEqPz83M03BKTc/M80ks0VGAsPKTE0sy8/M0FZIqFYJLEktSASw9sGhCAAAA)" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoLs3NTSzKrEpVSCxKj8/NzNNwSk3PzPNJLNFRgLDykxNLMvPzNBWSKhWCSxJLUgG8tM4mQwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents 
@@ -63,7 +63,7 @@ The results table shown includes only the first 10 rows.
 Find the first time an event with a direct death happened in each state showing all of the columns.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVcElNLMkodsksSk0uUbBTMABKFJfm5iYWZValKiQWpcfnZuZpBJckFpWEZOam6ihoaSokVSoABUpSAdlWy7VPAAAA)" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVXBJTSzJKHbJLEpNLlGwUzAAyRSX5uYmFmVWpSokFqXH52bmaQSXJBaVhGTmpuooaGkqJFUqAAVKUgHnoTY6UQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
@@ -90,7 +90,7 @@ The results table shown includes only the first 10 rows and first 3 columns.
 The following example demonstrates null handling.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/new-free-database?query=H4sIAAAAAAAAA31PwQrCMAy97ytCT530osfdnKBX8SCIiHQsjEKWjrRjKH68nWwoguYdkry8l5DaxoSKUG+ld7GAEMVxY2Djycu7PaIE57kAxzGHcwYp1LrrCJUBdcA6paX5oneCyKlIHs09UT4JSssJo+KERH74K/m1ZI9WxnkpfuCP6zM/+1Ymu2QPCH3bWnF3BCvNtXWsp5cMLHKobvD6/wlU5dHuDwEAAA==)" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA31QPQvCQAzdC/0PoVMrt+jYzQp2FQdBRORKQzlIcyW9UhR/vKlYFEHzhny9F5LUNigqwnQrgws59EEcNwY2nry80wNK7zzn4DhkcIojUEvWXUeYGEj2WKtbmu96KYisgapSHoiymVFYVkyUIxL58T/n55gdWpkIhfiRPzeYG7NypY1zHN2hH9rWirshWGkureP0dZqBRQbVFZ5/eADFBqWOFwEAAA==" target="_blank">Run the query</a>
 
 ```kusto
 datatable(Fruit: string, Color: string, Version: int) [

@@ -3,37 +3,45 @@ title: indexof() - Azure Data Explorer
 description: Learn how to use the indexof() function to report the zero-based index position of the input string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/19/2022
+ms.date: 12/28/2022
 ---
 # indexof()
 
 Reports the zero-based index of the first occurrence of a specified string within the input string.
 
-If lookup or input string isn't of *string* type, the function forcibly casts the value to *string*.
-
 For more information, see [`indexof_regex()`](indexofregexfunction.md).
 
 ## Syntax
 
-`indexof(`*source*`,`*lookup*`[,`*start_index*`[,`*length*`[,`*occurrence*`]]])`
+`indexof(`*string*`,`*match*`[,`*start*`[,`*length*`[,`*occurrence*`]]])`
 
-## Arguments
+## Parameters
 
-* *source*: Input string.  
-* *lookup*: String to look up.
-* *start_index*: Search start position. A negative value will offset the starting search position from the end of the *source* by this many steps: abs(*start_index*). Optional.
-* *length*: Number of character positions to examine. A value of -1 means unlimited length. Optional.
-* *occurrence*: The number of the occurrence. Default 1. Optional.
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*string*| string | &check; | The source string to search.|  
+|*match*| string | &check; | The string for which to search.|
+|*start*| int | | The search start position. A negative value will offset the starting search position from the end of the *string* by this many steps: `abs(`*start*`)`. |
+|*length*| int | | The number of character positions to examine. A value of -1 means unlimited length.|
+|*occurrence*| int | | The number of the occurrence. The default is 1.|
+
+> [!NOTE]
+> If *string* or *match* isn't of type `string`, the function forcibly casts their value to `string`.
 
 ## Returns
 
-Zero-based index position of *lookup*.
+The zero-based index position of *match*.
 
-Returns -1 if the string isn't found in the input.
-
-For irrelevant inputs (*occurrence* < 0 or  *length* < -1) - returns *null*.
+* Returns -1 if *match* isn't found in *string*.
+* Returns `null` if:
+  * *start* is less than 0.
+  * *occurrence* is less than 0.
+  * *length* is less than -1.
 
 ## Examples
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42STW6DMBCF9znFyJsWyVEKhCRd9DDGjIlVYqOxadLbd4LdqpUoioXFxu97b35Gsi5uwHa3Et7Aug5v3jwL1eoOTS+k4L8ogM9uB4P379MIxk+u47f8jVOEEJnRb0DeKdX/FFnKfbGEIQyoSJ+xA1KuR8isepVVzayk5AyKYgBD/pIkUEpo53B+DKBMRIIK9FlRkBA8mGkYvoNo5Z4itJgSZfP9inmdC/lrnky81hMROo3gTXbIyGYFuW2KucUOexXtByZoep7lh1/ysqr3zeEom9TUdFger1yapRBhVKQuyIkCXJHutZG27fDJ1YbInY4+Dy6AmGkCFI9DNCLbHVfSVnJbFo+uxGkB9MODBLyPq3yRUBVrmzZvR6a+Pkjd8q0zNZ6Rr6VucUpgAzgflzbyC/vZ0L4mAwAA" target="_blank">Run the query</a>
 
 ```kusto
 print

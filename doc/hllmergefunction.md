@@ -3,27 +3,27 @@ title: hll_merge() - Azure Data Explorer
 description: Learn how to use the hll_merge() function toe merge HLL results.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/19/2022
+ms.date: 12/28/2022
 ---
 # hll_merge()
 
-Merges `hll` results (scalar version of the aggregate version [`hll_merge()`](hll-merge-aggfunction.md)).
+Merges HLL results. This is the scalar version of the aggregate version [`hll_merge()`](hll-merge-aggfunction.md).
 
 Read about the [underlying algorithm (*H*yper*L*og*L*og) and estimation accuracy](#estimation-accuracy).
 
 ## Syntax
 
-`hll_merge(` *Expr1*`,` *Expr2*`, ...)`
+`hll_merge(` *hll*`,` *hll2*`,` [ *hll3*`,` ... ]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*Expr*|string|&check;|Columns that have `hll` values to be merged.|
+|*hll*, *hll2*, ... |string|&check;|The column names containing HLL values to merge. The function expects between 2-64 arguments.|
 
 ## Returns
 
-Returns one `hll` value. The value is the result of merging the columns `*Exrp1*`, `*Expr2*`, ... `*ExprN*`.
+Returns one HLL value. The value is the result of merging the columns *hll*, *hll2*, ... *hllN*.
 
 ## Examples
 

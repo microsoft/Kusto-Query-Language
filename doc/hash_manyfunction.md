@@ -3,7 +3,7 @@ title: hash_many() - Azure Data Explorer
 description: Learn how to use the hash_many() function to return a combined hash value of multiple values.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/18/2022
+ms.date: 12/25/2022
 ---
 # hash_many()
 
@@ -13,9 +13,11 @@ Returns a combined hash value of multiple values.
 
 `hash_many(`*s1* `,` *s2* [`,` *s3* ...]`)`
 
-## Arguments
+## Parameters
 
-* *s1*, *s2*, ..., *sN*: input values that will be hashed together.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *s1*, *s2*, ..., *sN* | scalar | &check; | The values to hash together.|
 
 ## Returns
 
@@ -28,7 +30,9 @@ The [hash()](hashfunction.md) function is applied to each of the specified scala
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShLzClNNVSwVVDySM3JyVfSgYgYgUTC84tyUpS4ahRSK0pS81IUkvNzkzLzUlOAchmJxRnxuYl5lRoQA2DaNAGiXIb7VgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print value1 = "Hello", value2 = "World"
 | extend combined = hash_many(value1, value2)

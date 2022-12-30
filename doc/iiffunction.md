@@ -3,33 +3,52 @@ title: iif() - Azure Data Explorer
 description: This article describes iif() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/27/2022
+ms.date: 12/28/2022
 ---
 # iif()
 
-Returns the value of *ifTrue* if *predicate* evaluates to `true`,
-or the value of *ifFalse* otherwise.
+Returns the value of *then* if *if* evaluates to `true`,
+or the value of *else* otherwise.
+
+An alias for [`iff()`](ifffunction.md).
 
 ## Syntax
 
-`iif(`*predicate*`,` *ifTrue*`,` *ifFalse*`)`
+`iif(`*if*`,` *then*`,` *else*`)`
 
-## Arguments
+## Parameters
 
-* *predicate*: An expression that evaluates to a `boolean` value.
-* *ifTrue*: An expression that gets evaluated and its value returned from the function if *predicate* evaluates to `true`.
-* *ifFalse*: An expression that gets evaluated and its value returned from the function if *predicate* evaluates to `false`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*if*| string | &check; | An expression that evaluates to a boolean value.|
+|*then*| scalar | &check; | An expression that gets evaluated and its value returned from the function if *if* evaluates to `true`.|
+|*else*| scalar | &check; | An expression that gets evaluated and its value returned from the function if *if* evaluates to `false`.|
 
 ## Returns
 
-This function returns the value of *ifTrue* if *predicate* evaluates to `true`,
-or the value of *ifFalse* otherwise.
+This function returns the value of *then* if *if* evaluates to `true`,
+or the value of *else* otherwise.
 
 ## Example
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRSK0oSc1LUQhKzMxTsFXIzEzT0ADLhVQWpCoAxTSUPFITyyrBCpR0FJTcchKLMxTccvLzUyBcEENTE8gEG5EK0guS8MsvUShCiGgCrSooys9KTS5RCC5JLEnVUQBb45kCZYDs0wHbAgAWszsUoAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
-T 
-| extend day = iif(floor(Timestamp, 1d)==floor(now(), 1d), "today", "anotherday")
+StormEvents
+| extend Rain = iif((EventType in ("Heavy Rain", "Flash Flood", "Flood")), "Rain event", "Not rain event")
+| project State, EventId, EventType, Rain
 ```
 
-An alias for [`iff()`](ifffunction.md).
+**Output**
+
+The following table shows only the first 5 rows.
+
+|State|EventId|EventType|Rain|
+|--|--|--|--|
+|ATLANTIC SOUTH| 61032 |Waterspout |Not rain event
+|FLORIDA| 60904 |Heavy Rain |Rain event
+|FLORIDA| 60913 |Tornado |Not rain event
+|GEORGIA| 64588 |Thunderstorm Wind |Not rain event
+|MISSISSIPPI| 68796 |Thunderstorm Wind |Not rain event
+|...|...|...|...|

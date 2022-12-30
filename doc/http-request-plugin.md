@@ -4,7 +4,7 @@ description: Learn how to use the http_request plugin to send an HTTP request an
 services: data-explorer
 ms.reviewer: zivc
 ms.topic: reference
-ms.date: 12/19/2022
+ms.date: 12/28/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -27,7 +27,7 @@ The `http_request` (GET) and `http_request_post` (POST) plugins send an HTTP req
 
 `evaluate` `http_request_post` `(` *Uri* [`,` *RequestHeaders* [`,` *Options* [`,` *Content*]]] `)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|

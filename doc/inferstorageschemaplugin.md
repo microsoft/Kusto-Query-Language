@@ -3,28 +3,31 @@ title: infer_storage_schema plugin - Azure Data Explorer
 description: Learn how to use the infer_storage_schema plugin to infer the schema of external data. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/20/2022
+ms.date: 12/28/2022
 ---
 # infer_storage_schema plugin
 
-This plug-in infers schema of external data, and returns it as CSL schema string. The string can be used when [creating external tables](../management/external-tables-azurestorage-azuredatalake.md#create-or-alter-external-table). The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
+This plugin infers schema of external data, and returns it as CSL schema string. The string can be used when [creating external tables](../management/external-tables-azurestorage-azuredatalake.md#create-or-alter-external-table). The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
 `evaluate` `infer_storage_schema(` *Options* `)`
 
-## Arguments
+## Parameters
 
-A single *Options* argument is a constant value of type `dynamic` that holds
-a property bag specifying properties of the request:
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Options* | dynamic | &check; |A property bag specifying the [properties of the request](#properties-of-the-request).|
 
-|Name                    |Required|Description|
-|------------------------|--------|-----------|
-|`StorageContainers`|Yes|List of [storage connection strings](../api/connection-strings/storage-connection-strings.md) that represent prefix URI for stored data artifacts|
-|`DataFormat`|Yes|One of supported [data formats](../../ingestion-supported-formats.md).|
-|`FileExtension`|No|Only scan files ending with this file extension. It's not required, but specifying it may speed up the process (or eliminate data reading issues)|
-|`FileNamePrefix`|No|Only scan files starting with this prefix. It's not required, but specifying it may speed up the process|
-|`Mode`|No|Schema inference strategy, one of: `any`, `last`, `all`. Infer data schema from any (first found) file, from last written file, or from all files respectively. The default value is `last`.|
+### Properties of the request
+
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*StorageContainers*| dynamic |&check;|An array of [storage connection strings](../api/connection-strings/storage-connection-strings.md) that represent prefix URI for stored data artifacts.|
+|*DataFormat*|string|&check;|One of the supported [data formats](../../ingestion-supported-formats.md).|
+|*FileExtension*|string||If specified, the function will only scan files ending with this file extension. Specifying the extension may speed up the process or eliminate data reading issues.|
+|*FileNamePrefix*|bool||If specified, the function will only scan files starting with this prefix. Specifying the prefix may speed up the process.|
+|*Mode*|string||The schema inference strategy. A value of: `any`, `last`, `all`. The function will infer data schema from the first found file, from the last written file, or from all files respectively. The default value is `last`.|
 
 ## Returns
 
@@ -50,7 +53,7 @@ let options = dynamic({
 evaluate infer_storage_schema(options)
 ```
 
-*Result*
+**Output**
 
 |CslSchema|
 |---|

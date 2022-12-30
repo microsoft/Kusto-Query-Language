@@ -3,39 +3,39 @@ title: hll() (aggregation function) - Azure Data Explorer
 description: Learn how to use the hll() function to calculate the results of the dcount() function.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/19/2022
+ms.date: 12/26/2022
 ---
 # hll() (aggregation function)
 
-Calculates the intermediate results of [`dcount`](dcount-aggfunction.md) across the group only in context of aggregation inside [summarize](summarizeoperator.md).
+The `hll()` function is a way to estimate the number of unique values in a set of values. It does this by calculating intermediate results for aggregation within the [summarize](summarizeoperator.md) operator for a group of data using the [`dcount`](dcount-aggfunction.md) function.
 
 Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accuracy](#estimation-accuracy).
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
+> [!TIP]
+>
+>- Use the [hll_merge](hllmergefunction.md) function to merge the results of multiple `hll()` functions.
+>- Use the [dcount_hll](dcount-hllfunction.md) function to calculate the number of distinct values from the output of the `hll()` or `hll_merge` functions.
+
 ## Syntax
 
-`hll` `(`*Expr* [`,` *Accuracy*]`)`
+`hll` `(`*expr* [`,` *accuracy*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* |  string | &check; | Expression used for the aggregation calculation. |
-| *Accuracy* |   |   | Controls the balance between speed and accuracy. If unspecified, the default value is `1`. For supported values, see [Estimation accuracy](#estimation-accuracy). |
+| *expr* |  string | &check; | The expression used for the aggregation calculation. |
+| *accuracy* | int |   | The value that controls the balance between speed and accuracy. If unspecified, the default value is `1`. For supported values, see [Estimation accuracy](#estimation-accuracy). |
 
 ## Returns
 
-Returns the intermediate results of distinct count of *`Expr`* across the group.
-
-> [!TIP]
->
->- You may use the aggregation function [`hll_merge`](hll-merge-aggfunction.md) to merge more than one `hll` intermediate results (it works on `hll` output only).
->- You may use the function [`dcount_hll`](dcount-hllfunction.md), which will calculate the `dcount` from `hll` / `hll_merge` aggregation functions.
+Returns the intermediate results of distinct count of *expr* across the group.
 
 ## Example
 
-The following example returns the hll results of property damage based on the start time.
+In the following example, the `hll()` function is used to estimate the number of unique values of the `DamageProperty` column within each 10-minute time bin of the `StartTime` column.
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVcjIydFwScxNTE8NKMovSC0qqdRUSKpUSMrM0wguSSwqCcnMTdUxNMjVBACCSG7CQQAAAA==" target="_blank">Run the query</a>
