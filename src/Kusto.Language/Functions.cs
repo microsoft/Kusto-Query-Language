@@ -2194,6 +2194,20 @@ namespace Kusto.Language
                 new Parameter("series1", ScalarTypes.Dynamic),
                 new Parameter("series2", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol SeriesDotProduct =
+            new FunctionSymbol("series_dot_product",
+                new Signature(ScalarTypes.Real,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.Real,
+                    new Parameter("series1", ScalarTypes.Dynamic),
+                    new Parameter("series2", ParameterTypeKind.Number)),
+                new Signature(ScalarTypes.Real,
+                    new Parameter("series1", ParameterTypeKind.Number),
+                    new Parameter("series2", ScalarTypes.Dynamic)))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO: unhide once the function will be approved [t-knosenko]
         #endregion
 
         #region math functions
@@ -3197,6 +3211,7 @@ namespace Kusto.Language
             SeriesDecomposeForecast,
             SeriesDecomposeAnomalies,
             SeriesPearsonCorrelation,
+            SeriesDotProduct,
 #endregion
 
 #region math functions
