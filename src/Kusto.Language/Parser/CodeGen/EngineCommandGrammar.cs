@@ -6421,7 +6421,10 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 If(Not(Token("details")), rules.NameDeclaration),
                                 shape11)),
-                        missing84)));
+                        missing84),
+                    Optional(
+                        fragment41),
+                    shape137));
 
             var ShowExternalTables = Command("ShowExternalTables", 
                 Custom(
