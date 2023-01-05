@@ -6,10 +6,16 @@ namespace Kusto.Language.Editor
     using Utils;
 
     /// <summary>
-    /// A <see cref="CodeActor"/> that operates on a <see cref="KustoCode"/> instance.
+    /// A <see cref="KustoActor"/> implements code fixes or refactorings.
     /// </summary>
-    public abstract class KustoActor : CodeActor
+    internal abstract class KustoActor
     {
+        /// <summary>
+        /// The name of this actor.
+        /// This is used find the actor that created the <see cref="CodeAction"/> when the action is applied.
+        /// </summary>
+        public virtual string Name => this.GetType().Name;
+
         /// <summary>
         /// Gets the set of actions that this actor offers for the code at the given position.
         /// </summary>

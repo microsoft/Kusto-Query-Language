@@ -9,7 +9,7 @@ namespace Kusto.Language.Editor
     using Utils;
     using static ActorUtilities;
 
-    public class InlineDatabaseFunctionActor : KustoActor
+    internal class InlineDatabaseFunctionActor : KustoActor
     {
         public const string InlineOnceKind = "InlineOnce";
         public const string InlineRecursiveKind = "InlineRecursive";

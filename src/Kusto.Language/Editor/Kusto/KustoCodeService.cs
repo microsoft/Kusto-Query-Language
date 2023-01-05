@@ -35,11 +35,8 @@ namespace Kusto.Language.Editor
             IReadOnlyList<KustoActor> actors)
             : base(text)
         {
-            if (globals == null)
-                throw new ArgumentNullException(nameof(globals));
-
             this.kind = KustoCode.GetKind(text);
-            this.globals = globals;
+            this.globals = globals ?? code?.Globals ?? GlobalState.Default;
             this.lazyBoundCode = code;
             this.analyzers = analyzers ?? KustoAnalyzers.All;
             this.actors = actors ?? KustoActors.All;
@@ -47,19 +44,25 @@ namespace Kusto.Language.Editor
 
         public KustoCodeService(
             string text, 
-            GlobalState globals = null,
-            IReadOnlyList<KustoAnalyzer> analyzers = null,
-            IReadOnlyList<KustoActor> actors = null)
-            : this(text, globals ?? GlobalState.Default, null, analyzers, actors)
+            GlobalState globals = null)
+            : this(text, globals ?? GlobalState.Default, null, null, null)
         {
         }
 
         public KustoCodeService(
-            KustoCode code,
-            IReadOnlyList<KustoAnalyzer> analyzers = null,
-            IReadOnlyList<KustoActor> actors = null)
-            : this(code.Text, code.Globals, code, analyzers, actors)
+            KustoCode code)
+            : this(code.Text, code.Globals, code, null, null)
         {
+        }
+
+        internal KustoCodeService WithActors(IReadOnlyList<KustoActor> actors)
+        {
+            return new KustoCodeService(this.Text, this.globals, this.lazyBoundCode, this.analyzers, actors);
+        }
+
+        internal KustoCodeService WithAnalyzers(IReadOnlyList<KustoAnalyzer> analyzers)
+        {
+            return new KustoCodeService(this.Text, this.globals, this.lazyBoundCode, analyzers, this.actors);
         }
 
         public override string Kind => this.kind;

@@ -10,7 +10,7 @@ namespace Kusto.Language.Editor
     /// This is kusto actor that produces code actions for analyzer diagnostics.
     /// It does this via requesting the actions directly from the analyzers that created the diagnostics.
     /// </summary>
-    public class AnalyzerFixActor : KustoActor
+    internal class AnalyzerFixActor : KustoActor
     {
         private readonly Dictionary<string, KustoAnalyzer> _codeToAnalyzerMap;
         private readonly Dictionary<string, KustoAnalyzer> _nameToAnalyzerMap;

@@ -11,7 +11,7 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// The known kusto analyzers
     /// </summary>
-    public static class KustoAnalyzers
+    internal static class KustoAnalyzers
     {
         public static readonly KustoAnalyzer AvoidUsingContains =
             new AvoidUsingContainsAnalyzer();

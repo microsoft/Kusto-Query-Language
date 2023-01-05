@@ -10,8 +10,8 @@ namespace Kusto.Language.Editor
     public abstract class CodeAction
     {
         /// <summary>
-        /// The kind of <see cref="CodeAction"/> for use by the <see cref="CodeActor"/>
-        /// and to group actions together into a fix-all action.
+        /// The kind of <see cref="CodeAction"/> used to common kinds of actions
+        /// so they may be grouped together into a fix-all action.
         /// </summary>
         public string Kind { get; }
 
@@ -74,7 +74,7 @@ namespace Kusto.Language.Editor
     public abstract class ApplyAction : CodeAction
     {
         /// <summary>
-        /// Additional data for the action used by the <see cref="CodeActor"/>
+        /// Additional data used by <see cref="CodeService"/> when action is applied.
         /// </summary>
         public IReadOnlyList<string> Data { get; }
 

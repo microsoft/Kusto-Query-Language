@@ -11,7 +11,7 @@ namespace Kusto.Language.Editor
     using Utils;
     using static ActorUtilities;
 
-    public class ExtractExpressionActor : KustoActor
+    internal class ExtractExpressionActor : KustoActor
     {
         public const string ExtractValueKind = "Extract Value";
         public const string ExtractExpressionKind = "Extract Expression";

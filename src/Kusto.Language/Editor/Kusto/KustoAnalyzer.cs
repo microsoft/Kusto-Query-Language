@@ -7,10 +7,18 @@ namespace Kusto.Language.Editor
     using Utils;
 
     /// <summary>
-    /// The base class for any <see cref="KustoCode"/> analyzer.
+    /// A <see cref="KustoAnalyzer"/> implements additional semantic analysis beyond that done by <see cref="KustoCode"/>.
+    /// Analyzers are invoked via <see cref="CodeService.GetAnalyzerDiagnostics"/>.
+    /// The analyzer may also provide fix actions for the diagnostics they report.
     /// </summary>
-    public abstract class KustoAnalyzer : CodeAnalyzer
+    internal abstract class KustoAnalyzer
     {
+        /// <summary>
+        /// The name of this analyzer.
+        /// This is used to find the analyzer that created the <see cref="CodeAction"/> when the action is being applied.
+        /// </summary>
+        public virtual string Name => this.GetType().Name;
+
         /// <summary>
         /// Override this method to suppy the example set of diagnostics that the analyzer produces.
         /// </summary>
@@ -24,7 +32,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The diagnostics produced by this analyzer.
         /// </summary>
-        public override IReadOnlyList<Diagnostic> Diagnostics
+        public IReadOnlyList<Diagnostic> Diagnostics
         {
             get
             {

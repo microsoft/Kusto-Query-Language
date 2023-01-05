@@ -80,7 +80,7 @@ namespace Kusto.Language.Editor
         /// <param name="selectionLength">The length of the selection range (or zero if no selection).</param>
         /// <param name="options">An optional set of options.</param>
         /// <param name="waitForAnalysis">If false only cached diagnostics will be considered.</param>
-        /// <param name="actorName">An optional actor's name get actions from. If null, actions are obtains from all known actors.</param>
+        /// <param name="actorName">An optional actor's name to get actions from. If null, actions are obtains from all known actors.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
         public abstract CodeActionInfo GetCodeActions(
             int position,
