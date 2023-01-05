@@ -660,6 +660,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMergeTablePolicyMerge =
             new CommandSymbol("AlterMergeTablePolicyMerge", _schema20);
 
+        public static readonly CommandSymbol AlterMergeMaterializedViewPolicyMerge =
+            new CommandSymbol("AlterMergeMaterializedViewPolicyMerge", _schema20);
+
         public static readonly CommandSymbol DeleteDatabasePolicyMerge =
             new CommandSymbol("DeleteDatabasePolicyMerge", _schema20);
 
@@ -1952,6 +1955,7 @@ namespace Kusto.Language
             AlterTablesPolicyMerge,
             AlterMergeDatabasePolicyMerge,
             AlterMergeTablePolicyMerge,
+            AlterMergeMaterializedViewPolicyMerge,
             DeleteDatabasePolicyMerge,
             DeleteTablePolicyMerge,
             AlterTablePolicyMirroring,

@@ -1423,6 +1423,16 @@ namespace Kusto.Language.Parsing
                         missing6),
                     shape37));
 
+            var AlterMergeMaterializedViewPolicyMerge = Command("AlterMergeMaterializedViewPolicyMerge", 
+                Custom(
+                    Token("alter-merge", CompletionKind.CommandPrefix),
+                    Token("materialized-view"),
+                    rules.MaterializedViewNameReference,
+                    Token("policy"),
+                    Token("merge"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(), CD("MergePolicy", CompletionHint.Literal)}));
+
             var AlterMergeMaterializedViewPolicyPartitioning = Command("AlterMergeMaterializedViewPolicyPartitioning", 
                 Custom(
                     Token("alter-merge", CompletionKind.CommandPrefix),
@@ -7679,6 +7689,7 @@ namespace Kusto.Language.Parsing
                 AlterMergeDatabasePolicyStreamingIngestion,
                 AlterMergeEntityGroup,
                 AlterMergeExtentTagsFromQuery,
+                AlterMergeMaterializedViewPolicyMerge,
                 AlterMergeMaterializedViewPolicyPartitioning,
                 AlterMergeMaterializedViewPolicyRetention,
                 AlterMergeTablePolicyEncoding,
