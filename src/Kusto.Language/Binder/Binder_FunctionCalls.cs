@@ -401,6 +401,11 @@ namespace Kusto.Language.Binding
                     {
                         return GetDatabaseFunctionResult(databaseName, arguments[iArg], diagnostics);
                     }
+                    else if (arguments.Count == 0)
+                    {
+                        // database() refers to current database
+                        return _currentDatabase;
+                    }
                     else
                     {
                         return new DatabaseSymbol("", null, isOpen: true);

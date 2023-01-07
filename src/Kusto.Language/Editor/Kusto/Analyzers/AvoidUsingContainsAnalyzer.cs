@@ -62,7 +62,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        protected override FixResult GetFixEdits(
+        protected override FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
             int caretPosition,
@@ -74,13 +74,13 @@ namespace Kusto.Language.Editor
             {
                 var opToken = code.Syntax.GetTokenAt(opTokenStart);
                 var newOpName = action.Data[1];
-                return new FixResult(
+                return new FixEdits(
                     opToken.TextStart,
                     StringEdit.Replacement(opToken.TextStart, opToken.Width, newOpName));
             }
             else
             {
-                return new FixResult(caretPosition);
+                return new FixEdits(caretPosition);
             }
         }
 

@@ -21,7 +21,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Database =
             new FunctionSymbol("database",
                 ReturnTypeKind.Parameter0Database,
-                new Parameter("name", ScalarTypes.String));
+                new Parameter("name", ScalarTypes.String, minOccurring: 0));
 
         public static readonly FunctionSymbol Table = new FunctionSymbol("table",
                 ReturnTypeKind.Parameter0Table,

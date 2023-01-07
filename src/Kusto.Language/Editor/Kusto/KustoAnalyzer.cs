@@ -51,50 +51,58 @@ namespace Kusto.Language.Editor
         public abstract void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the fix actions for the diagnostic
+        /// Creates a <see cref="KustoFixer"/> for this <see cref="KustoAnalyzer"/>
         /// </summary>
-        public virtual void GetFixActions(
-            KustoCode code,
-            Diagnostic cursorDiagnostic,
-            IReadOnlyList<Diagnostic> selectionDiagnostics,
-            CodeActionOptions options,
-            List<CodeAction> actions,
-            CancellationToken cancellationToken)
+        protected virtual KustoFixer CreateFixer()
         {
-            var originalCount = actions.Count;
-            GetFixAction(code, cursorDiagnostic, options, actions, cancellationToken);
+            return new AnalyzerFixer(this);
+        }
 
-            if (actions.Count == originalCount + 1
-                && selectionDiagnostics.Count > 1)
+        /// <summary>
+        /// The cached <see cref="KustoFixer"/>
+        /// </summary>
+        private KustoFixer _fixer;
+
+        /// <summary>
+        /// The <see cref="KustoFixer"/> associated with this <see cref="KustoAnalyzer"/>
+        /// </summary>
+        public KustoFixer Fixer
+        {
+            get
             {
-                var primaryAction = actions[originalCount];
-                var relatedActions = new List<ApplyAction>();
-                var tmpActions = new List<CodeAction>();
+                if (_fixer == null)
+                    _fixer = CreateFixer();
+                return _fixer;
+            }
+        }
 
-                foreach (var dx in selectionDiagnostics)
-                {
-                    tmpActions.Clear();
-                    GetFixAction(code, dx, options, tmpActions, cancellationToken);
-                    relatedActions.AddRange(tmpActions.OfType<ApplyAction>().Where(a => a.Kind == primaryAction.Kind));
-                }
+        /// <summary>
+        /// A <see cref="KustoFixer"/> implementation that defers back to the analyzer itself.
+        /// </summary>
+        private class AnalyzerFixer : KustoFixer
+        {
+            private readonly KustoAnalyzer _analyzer;
 
-                // if there are multiple related actions then change action to a menu
-                // with the original action and a fix all action.
-                if (relatedActions.Count > 1)
-                {
-                    // replace action with menu of choices
-                    var newAction =
-                        CodeAction.CreateMenu(
-                            primaryAction.Title,
-                            primaryAction.Description,
-                            new []
-                            {
-                                primaryAction.WithTitle("Apply"),
-                                CodeAction.CreateFixAll("Fix All", "Apply to all occurences in query or selection.", relatedActions)
-                            });
+            public AnalyzerFixer(KustoAnalyzer analyzer)
+            {
+                _analyzer = analyzer;
+            }
 
-                    actions[originalCount] = newAction;
-                }
+            public override string Name => _analyzer.Name;
+
+            protected override IEnumerable<Diagnostic> GetDiagnostics()
+            {
+                return _analyzer.GetDiagnostics();
+            }
+
+            protected override void GetFixAction(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
+            {
+                _analyzer.GetFixAction(code, dx, options, actions, cancellationToken);
+            }
+
+            protected override FixEdits GetFixEdits(KustoCode code, ApplyAction action, int cursorPosition, CodeActionOptions options, CancellationToken cancellationToken)
+            {
+                return _analyzer.GetFixEdits(code, action, cursorPosition, options, cancellationToken);
             }
         }
 
@@ -111,151 +119,16 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Applies the fix action
+        /// Gets the <see cref="FixEdits"/> for the <see cref="ApplyAction"/>.
         /// </summary>
-        public virtual CodeActionResult ApplyFixAction(
-            KustoCode code,
-            ApplyAction action,
-            int caretPosition,
-            CodeActionOptions options,
-            CancellationToken cancellationToken)
-        {
-            if (action is MultiAction ma)
-            {
-                // apply the step actions
-                return ApplyFixActions(code, ma.Actions, caretPosition, options, cancellationToken);
-            }
-            else
-            {
-                return ApplyFixActions(code, new[] { action }, caretPosition, options, cancellationToken);
-            }
-        }
-
-        protected virtual CodeActionResult ApplyFixActions(
-            KustoCode code,
-            IReadOnlyList<ApplyAction> actions,
-            int caretPosition,
-            CodeActionOptions options,
-            CancellationToken cancellationToken)
-        {
-            var suggestedCaretPosition = caretPosition;
-            var suggestedCaretBias = PositionBias.Left;
-
-            var edits = new List<StringEdit>();
-            foreach (var action in actions)
-            {
-                var result = GetFixEdits(code, action, caretPosition, options, cancellationToken);
-                edits.AddRange(result.Edits);
-
-                if (EditContainsPosition(result.Edits, caretPosition))
-                {
-                    suggestedCaretPosition = result.NewCaretPosition;
-                    suggestedCaretBias = result.Bias;
-                }
-            }
-
-            // put in sorted order
-            edits.Sort((a, b) => a.Start - b.Start);
-
-            if (edits.Count > 0
-                && AreNonOverlapping(edits))
-            {
-                var newText = new EditString(code.Text).ApplyAll(edits);
-                var newCursorPosition = newText.GetCurrentPosition(suggestedCaretPosition, suggestedCaretBias);
-                return new CodeActionResult(newText, newCursorPosition);
-            }
-
-            return CodeActionResult.Nothing;
-        }
-
-        private static bool EditContainsPosition(IReadOnlyList<StringEdit> edits, int position)
-        {
-            if (edits.Count > 0)
-            {
-                var min = edits.Min(a => a.Start);
-                var max = edits.Max(a => a.Start + a.DeleteLength);
-
-                return position >= min && position < max;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool AreNonOverlapping(IReadOnlyList<StringEdit> edits)
-        {
-            for (int i = 1; i < edits.Count; i++)
-            {
-                if (edits[i].Start < edits[i - 1].Start + edits[i - 1].DeleteLength)
-                    return false;
-            }
-
-            return true;
-        }
-
-        protected virtual FixResult GetFixEdits(
+        protected virtual FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
             int cursorPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            return new FixResult(cursorPosition, null);
-        }
-
-        /// <summary>
-        /// Represents the result from a call to GetFixEdits
-        /// </summary>
-        protected class FixResult
-        {
-            public IReadOnlyList<StringEdit> Edits { get; }
-            public int NewCaretPosition { get; }
-            public PositionBias Bias { get; }
-
-            /// <summary>
-            /// Construct a new <see cref="FixResult"/>
-            /// </summary>
-            /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
-            /// <param name="bias">The bias to use when computing the new cursor position in post-edit units.</param>
-            /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-            public FixResult(int newCaretPosition, PositionBias bias, IReadOnlyList<StringEdit> edits)
-            {
-                this.NewCaretPosition = newCaretPosition;
-                this.Bias = bias;
-                this.Edits = edits ?? EmptyReadOnlyList<StringEdit>.Instance;
-            }
-
-            /// <summary>
-            /// Construct a new <see cref="FixResult"/>
-            /// </summary>
-            /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
-            /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-            public FixResult(int newCaretPosition, IReadOnlyList<StringEdit> edits)
-                : this(newCaretPosition, PositionBias.Left, edits)
-            {
-            }
-
-            /// <summary>
-            /// Construct a new <see cref="FixResult"/>
-            /// </summary>
-            /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
-            /// <param name="bias">The bias to use when computing the new cursor position in post-edit units.</param>
-            /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-            public FixResult(int newCaretPosition, PositionBias bias, params StringEdit[] edits)
-                : this(newCaretPosition, bias, (IReadOnlyList<StringEdit>)edits)
-            {
-            }
-
-            /// <summary>
-            /// Construct a new <see cref="FixResult"/>
-            /// </summary>
-            /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
-            /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-            public FixResult(int newCaretPosition, params StringEdit[] edits)
-                : this(newCaretPosition, PositionBias.Left, (IReadOnlyList<StringEdit>)edits)
-            {
-            }
+            return new FixEdits(cursorPosition, null);
         }
     }
 }

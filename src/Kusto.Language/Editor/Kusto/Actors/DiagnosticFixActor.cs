@@ -7,27 +7,27 @@ namespace Kusto.Language.Editor
     using Utils;
 
     /// <summary>
-    /// This is kusto actor that produces code actions for analyzer diagnostics.
-    /// It does this via requesting the actions directly from the analyzers that created the diagnostics.
+    /// This is <see cref="KustoActor"/> that produces code actions for diagnostics that can be fixed.
     /// </summary>
-    internal class AnalyzerFixActor : KustoActor
+    internal class DiagnosticFixActor : KustoActor
     {
-        private readonly Dictionary<string, KustoAnalyzer> _codeToAnalyzerMap;
-        private readonly Dictionary<string, KustoAnalyzer> _nameToAnalyzerMap;
+        private readonly Dictionary<string, KustoFixer> _codeToFixerMap;
+        private readonly Dictionary<string, KustoFixer> _nameToFixerMap;
 
-        public AnalyzerFixActor(IReadOnlyList<KustoAnalyzer> analyzers = null)
+        public DiagnosticFixActor(
+            IReadOnlyList<KustoFixer> fixers = null)
         {
-            analyzers = analyzers ?? KustoAnalyzers.All;
+            fixers = fixers ?? KustoFixers.All;
 
-            _nameToAnalyzerMap = analyzers.ToDictionary(a => a.Name);
+            _nameToFixerMap = fixers.ToDictionary(a => a.Name);
 
-            // build code to analyzer map
-            _codeToAnalyzerMap = new Dictionary<string, KustoAnalyzer>();
-            foreach (var analyzer in analyzers)
+            // build code to fixer map
+            _codeToFixerMap = new Dictionary<string, KustoFixer>();
+            foreach (var fixer in fixers)
             {
-                foreach (var dx in analyzer.Diagnostics)
+                foreach (var dx in fixer.Diagnostics)
                 {
-                    _codeToAnalyzerMap[dx.Code] = analyzer;
+                    _codeToFixerMap[dx.Code] = fixer;
                 }
             }
         }
@@ -89,30 +89,30 @@ namespace Kusto.Language.Editor
                 // now get the actions for each diagnostic
                 foreach (var dx in diagnosticsAtPosition)
                 {
-                    // look for the associated kusto analyzer and get its fix actions
-                    if (_codeToAnalyzerMap.TryGetValue(dx.Code, out var analyzer))
+                    // look for the associated kusto fixer and get its fix actions
+                    if (_codeToFixerMap.TryGetValue(dx.Code, out var fixer))
                     {
                         // get all diagnostics in selection range that have this same code
-                        // so the analzyer may choose to create fix all actions.
+                        // so the fixer may choose to create fix all actions.
                         List<Diagnostic> selectionDiagnostics = null;
                         diagnosticsInSelectionMap?.TryGetValue(dx.Code, out selectionDiagnostics);
 
                         fixActions.Clear();
-                        analyzer.GetFixActions(code, dx, selectionDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance, options, fixActions, cancellationToken);
+                        fixer.GetFixActions(code, dx, selectionDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance, options, fixActions, cancellationToken);
 
                         if (fixActions.Count > 0)
                         {
-                            // add analyzer name to action data so we can route this action back to the same analyzer later when applied
-                            actions.AddRange(fixActions.Select(a => EncodeAnalyzerName(a, analyzer.Name)));
+                            // add fixer name to action data so we can route this action back to the same fixer when applied later
+                            actions.AddRange(fixActions.Select(a => EncodeFixerName(a, fixer.Name)));
                         }
                     }
                 }
             }
         }
 
-        private CodeAction EncodeAnalyzerName(CodeAction action, string analyzerName)
+        private CodeAction EncodeFixerName(CodeAction action, string fixerName)
         {
-            return ActorUtilities.AddData(action, analyzerName);
+            return ActorUtilities.AddData(action, fixerName);
         }
 
         private static Dictionary<string, List<Diagnostic>> GetCodeToDiagnosticMap(IEnumerable<Diagnostic> diagnostics)
@@ -141,16 +141,16 @@ namespace Kusto.Language.Editor
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            var analyzerName = action.Data.LastOrDefault();          
-            if (!string.IsNullOrEmpty(analyzerName)
-                && _nameToAnalyzerMap.TryGetValue(analyzerName, out var analyzer))
+            var fixerName = action.Data.LastOrDefault();          
+            if (!string.IsNullOrEmpty(fixerName)
+                && _nameToFixerMap.TryGetValue(fixerName, out var fixer))
             {
-                // return action to original state (before analyzer name was added)
+                // return action to original state (before fixer name was added)
                 action = action.RemoveData(1);
-                return analyzer.ApplyFixAction(code, action, caretPosition, options, cancellationToken);
+                return fixer.ApplyFixAction(code, action, caretPosition, options, cancellationToken);
             }
 
-            return CodeActionResult.Failure("Unknown analyzer");
+            return CodeActionResult.Failure("Unknown fixer");
         }
     }
 }

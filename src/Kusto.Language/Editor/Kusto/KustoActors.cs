@@ -7,13 +7,13 @@ namespace Kusto.Language.Editor
     {
         public static KustoActor FunctionInliner = new InlineDatabaseFunctionActor();
         public static KustoActor ExtractExpression = new ExtractExpressionActor();
-        public static KustoActor AnalyzerFixer = new AnalyzerFixActor();
+        public static KustoActor DiagnosticFixer = new DiagnosticFixActor();
 
         public static IReadOnlyList<KustoActor> All = new KustoActor[]
         {
             FunctionInliner,
             ExtractExpression,
-            AnalyzerFixer,
+            DiagnosticFixer,
         };
     }
 
@@ -21,6 +21,6 @@ namespace Kusto.Language.Editor
     {
         public static string FunctionInliner = KustoActors.FunctionInliner.Name;
         public static string ExtractExpression = KustoActors.ExtractExpression.Name;
-        public static string AnalyzerFixer = KustoActors.AnalyzerFixer.Name;
+        public static string DiagnosticFixer = KustoActors.DiagnosticFixer.Name;
     }
 }

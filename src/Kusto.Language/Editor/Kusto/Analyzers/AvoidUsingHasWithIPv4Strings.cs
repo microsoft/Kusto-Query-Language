@@ -128,7 +128,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        protected override FixResult GetFixEdits(
+        protected override FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
             int caretPosition,
@@ -148,7 +148,7 @@ namespace Kusto.Language.Editor
                     // convert operator into a function call
                     if (node is HasAnyExpression hax)
                     {
-                        return new FixResult(
+                        return new FixEdits(
                             hax.TextStart,
                             StringEdit.Replacement(hax.Operator.TriviaStart, hax.Right.OpenParen.End - hax.Operator.TriviaStart, ", "),
                             StringEdit.Insertion(hax.TextStart, newName + "(")
@@ -156,7 +156,7 @@ namespace Kusto.Language.Editor
                     }
                     else if (node is BinaryExpression bx)
                     {
-                        return new FixResult(
+                        return new FixEdits(
                             node.TextStart,
                             StringEdit.Insertion(bx.End, ")"),
                             StringEdit.Replacement(bx.Operator.TriviaStart, bx.Right.TextStart - bx.Operator.TriviaStart, ", "),
@@ -166,7 +166,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            return new FixResult(caretPosition);
+            return new FixEdits(caretPosition);
         }
 
         private static string GetIPv4FunctionName(SyntaxKind kind)

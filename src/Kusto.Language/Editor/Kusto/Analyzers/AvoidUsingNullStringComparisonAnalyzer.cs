@@ -79,7 +79,7 @@ namespace Kusto.Language.Editor
             }
         }
 
-        protected override FixResult GetFixEdits(
+        protected override FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
             int caretPosition,
@@ -91,12 +91,12 @@ namespace Kusto.Language.Editor
                 && Int32.TryParse(action.Data[1], out var fnNameLength))
             {
                 var newFnName = action.Data[2];
-                return new FixResult(
+                return new FixEdits(
                     fnNameStart,
                     StringEdit.Replacement(fnNameStart, fnNameLength, newFnName));
             }
 
-            return new FixResult(caretPosition);
+            return new FixEdits(caretPosition);
         }
     }
 }
