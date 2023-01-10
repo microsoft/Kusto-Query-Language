@@ -1712,6 +1712,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTableRecords =
             new CommandSymbol("DeleteTableRecords", _schema18);
 
+        public static readonly CommandSymbol DeleteMaterializedViewRecords =
+            new CommandSymbol("DeleteMaterializedViewRecords", _schema18);
+
         public static readonly CommandSymbol ShowTableColumnsClassification =
             new CommandSymbol("ShowTableColumnsClassification", _schema18);
 
@@ -2289,6 +2292,7 @@ namespace Kusto.Language
             ShowTableColumnStatitics,
             ShowTableDimensions,
             DeleteTableRecords,
+            DeleteMaterializedViewRecords,
             ShowTableColumnsClassification,
             ShowTableRowStores,
             ShowTableRowStoreSealInfo,

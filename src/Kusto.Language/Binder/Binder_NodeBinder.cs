@@ -3182,15 +3182,26 @@ namespace Kusto.Language.Binding
             {
                 var call = node.FunctionCall;
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
 
                 try
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.EvaluateParameters, diagnostics);
-                    return new SemanticInfo(GetResultTypeOrError(node.FunctionCall), diagnostics);
+
+                    if (node.Schema != null)
+                    {
+                        CreateColumnsFromRowSchema(node.Schema.Schema, columns);
+                        return new SemanticInfo(new TableSymbol(columns), diagnostics);
+                    }
+                    else
+                    {
+                        return new SemanticInfo(GetResultTypeOrError(node.FunctionCall), diagnostics);
+                    }
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
                 }
             }
 
