@@ -3,13 +3,13 @@
     <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
   <PropertyGroup>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
     <DefineConstants>$(DefineConstants);BRIDGE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(KustoProps)' != 'true'">
     <Configuration Condition=" '$(Configuration)' == ''">Release</Configuration>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
