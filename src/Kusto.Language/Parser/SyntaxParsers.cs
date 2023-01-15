@@ -198,7 +198,31 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Create a <see cref="SyntaxToken"/> from one or more <see cref="LexicalToken"/>.
+        /// Create a <see cref="SyntaxToken"/> from one or more adjacent <see cref="LexicalToken"/>.
+        /// </summary>
+        public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, SyntaxKind? asKind = null)
+        {
+            var token = source.Peek(start);
+            if (token != null)
+            {
+                string text = token.Text;
+
+                for (int i = 1; i < length; i++)
+                {
+                    token = source.Peek(start + i);
+                    if (token == null || token.Trivia.Length > 0)
+                        return null;
+                    text += token.Text;
+                }
+
+                return ProduceSyntaxToken(source, start, length, text, asKind);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Create a <see cref="SyntaxToken"/> from one or more adjacent <see cref="LexicalToken"/>.
         /// </summary>
         public static SyntaxToken ProduceSyntaxToken(Source<LexicalToken> source, int start, int length, string text, SyntaxKind? asKind = null)
         {
@@ -421,30 +445,13 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<TElement>> List<TElement>(
             Parser<LexicalToken, TElement> elementParser,
-            TElement missingElement = null,
+            Func<Source<LexicalToken>, int, TElement> fnMissingElement = null,
             bool oneOrMore = false)
             where TElement : SyntaxElement
         {
             return Parsers<LexicalToken>.List(
                 elementParser,
-                missingElement != null ? (Func<TElement>)(() => (TElement)missingElement.Clone()) : null,
-                oneOrMore,
-                elements => 
-                    new SyntaxList<TElement>(elements.ToArray()));
-        }
-
-        /// <summary>
-        /// A parser that parses a <see cref="SyntaxList"/> of elements.
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxList<TElement>> List<TElement>(
-            Parser<LexicalToken, TElement> elementParser,
-            Func<TElement> missingElement,
-            bool oneOrMore = false)
-            where TElement : SyntaxElement
-        {
-            return Parsers<LexicalToken>.List(
-                elementParser,
-                missingElement,
+                fnMissingElement,
                 oneOrMore,
                 elements =>
                     new SyntaxList<TElement>(elements.ToArray()));
@@ -456,7 +463,7 @@ namespace Kusto.Language.Parsing
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
             Parser<LexicalToken, TElement> primaryElementParser,
             SyntaxKind separatorKind,
-            TElement missingElement,
+            Func<Source<LexicalToken>, int, TElement> fnMissingElement,
             Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
@@ -466,29 +473,7 @@ namespace Kusto.Language.Parsing
                 primaryElementParser,
                 separatorKind,
                 primaryElementParser.WithTag("..."),
-                missingElement,
-                endOfList,
-                oneOrMore,
-                allowTrailingSeparator);
-        }
-
-        /// <summary>
-        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement{TElement}"/>'s
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
-            Parser<LexicalToken, TElement> primaryElementParser,
-            SyntaxKind separatorKind,
-            Func<TElement> missingElement,
-            Parser<LexicalToken> endOfList = null,
-            bool oneOrMore = false,
-            bool allowTrailingSeparator = false)
-            where TElement : SyntaxElement
-        {
-            return SeparatedList(
-                primaryElementParser,
-                separatorKind,
-                primaryElementParser.WithTag("..."),
-                missingElement,
+                fnMissingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator);
@@ -501,7 +486,7 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, TElement> primaryElementParser,
             SyntaxKind separatorKind,
             Parser<LexicalToken, TElement> secondaryElementParser,
-            TElement missingElement,
+            Func<Source<LexicalToken>, int, TElement> fnMissingElement,
             Parser<LexicalToken> endOfList = null,
             bool oneOrMore = false,
             bool allowTrailingSeparator = false)
@@ -511,35 +496,9 @@ namespace Kusto.Language.Parsing
                 primaryElementParser,
                 Token(separatorKind),
                 secondaryElementParser,
-                () => (TElement)missingElement.Clone(),
-                () => CreateMissingToken(separatorKind),
-                () => (TElement)missingElement.Clone(),
-                endOfList,
-                oneOrMore,
-                allowTrailingSeparator,
-                MakeSeparatedList<TElement>);
-        }
-
-        /// <summary>
-        /// A parser that parses a <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> SeparatedList<TElement>(
-            Parser<LexicalToken, TElement> primaryElementParser,
-            SyntaxKind separatorKind,
-            Parser<LexicalToken, TElement> secondaryElementParser,
-            Func<TElement> missingElement,
-            Parser<LexicalToken> endOfList = null,
-            bool oneOrMore = false,
-            bool allowTrailingSeparator = false)
-            where TElement : SyntaxElement
-        {
-            return OList(
-                primaryElementParser,
-                Token(separatorKind),
-                secondaryElementParser,
-                missingElement,
-                () => CreateMissingToken(separatorKind),
-                missingElement,
+                fnMissingElement,
+                (source, start) => CreateMissingToken(separatorKind),
+                fnMissingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -562,7 +521,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> CommaList<TElement>(
             Parser<LexicalToken, TElement> elementParser,
-            TElement missingElement,
+            Func<Source<LexicalToken>, int, TElement> fnMissingElement,
             bool oneOrMore = false,
             bool allowTrailingComma = false,
             IEnumerable<SyntaxKind> endKinds = null)
@@ -576,29 +535,7 @@ namespace Kusto.Language.Parsing
                 endOfList = First(EndOfCommaList, Match(t => hash.Contains(t.Kind)));
             }
 
-            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
-        }
-
-        /// <summary>
-        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> CommaList<TElement>(
-            Parser<LexicalToken, TElement> elementParser,
-            Func<TElement> missingElement = null,
-            bool oneOrMore = false,
-            bool allowTrailingComma = false,
-            IEnumerable<SyntaxKind> endKinds = null)
-            where TElement : SyntaxElement
-        {
-            Parser<LexicalToken> endOfList = EndOfCommaList;
-
-            if (endKinds != null)
-            {
-                var hash = new HashSet<SyntaxKind>(endKinds);
-                endOfList = First(EndOfCommaList, Match(t => hash.Contains(t.Kind)));
-            }
-
-            return SeparatedList(elementParser, SyntaxKind.CommaToken, missingElement, endOfList, oneOrMore, allowTrailingComma);
+            return SeparatedList(elementParser, SyntaxKind.CommaToken, fnMissingElement, endOfList, oneOrMore, allowTrailingComma);
         }
 
         /// <summary>
@@ -606,30 +543,12 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(
             Parser<LexicalToken, TElement> elementParser,
-            TElement missingElement)
+            Func<Source<LexicalToken>, int, TElement> fnMissingElement)
             where TElement : SyntaxElement
         {
             return Produce(
                 Sequence(
-                    Required(elementParser.Cast<SyntaxElement>(), () => (SyntaxElement)missingElement.Clone()),
-                    ZeroOrMore(
-                        Sequence(
-                            Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),
-                            Rule(elementParser, l => (SyntaxElement)l)))),
-                elements => MakeSeparatedList<TElement>(elements));
-        }
-
-        /// <summary>
-        /// A parser that parses a typical comma separated <see cref="SyntaxList"/> of <see cref="SeparatedElement"/>'s.
-        /// </summary>
-        public static Parser<LexicalToken, SyntaxList<SeparatedElement<TElement>>> OneOrMoreCommaList<TElement>(
-            Parser<LexicalToken, TElement> elementParser,
-            Func<TElement> missingElement = null) 
-            where TElement : SyntaxElement
-        {
-            return Produce(
-                Sequence(
-                    Required(elementParser.Cast<SyntaxElement>(), () => (SyntaxElement)missingElement()),
+                    Required(elementParser.Cast<SyntaxElement>(), (source, start) => (SyntaxElement)fnMissingElement(source, start)),
                     ZeroOrMore(
                         Sequence(
                             Rule(Token(SyntaxKind.CommaToken), t => (SyntaxElement)t),

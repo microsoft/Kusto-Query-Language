@@ -75,6 +75,11 @@ namespace Kusto.Language
             return GetMissingElement("name");
         }
 
+        public static Diagnostic GetMissingNameWithKeyword(string keyword)
+        {
+            return new Diagnostic("KS006", $"Missing name: If the keyword '{keyword}' is intended be used as the name, it needs to be bracketted as {KustoFacts.GetBracketedName(keyword)}.");
+        }
+
         public static Diagnostic GetMissingValue()
         {
             return GetMissingElement("value");
@@ -83,6 +88,11 @@ namespace Kusto.Language
         public static Diagnostic GetMissingExpression()
         {
             return GetMissingElement("expression");
+        }
+
+        public static Diagnostic GetMissingExpressionWithKeyword(string keyword)
+        {
+            return new Diagnostic("KS006", $"Missing expression: If the keyword '{keyword}' is intended to be part of an expression it needs to be bracketted as {KustoFacts.GetBracketedName(keyword)}.");
         }
 
         public static Diagnostic GetMissingNumber()
@@ -824,6 +834,11 @@ namespace Kusto.Language
         public static Diagnostic GetCommonJoinColumnsMustHaveSameType(string name)
         {
             return new Diagnostic("KS227", $"The common column '{name}' must have the same type on both sides of the join.");
+        }
+
+        public static Diagnostic GetNameRequiresBrackets(string name)
+        {
+            return new Diagnostic("KS228", $"The name '{name}' needs to be bracketed as {KustoFacts.GetBracketedName(name)} to be used in this context.");
         }
 
         #region command diagnostics

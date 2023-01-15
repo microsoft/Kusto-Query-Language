@@ -190,7 +190,7 @@ namespace Kusto.Language.Parsing
         {
             return List(
                 elementParser,
-                missingElement: null,
+                fnMissingElement: null,
                 oneOrMore: oneOrMore,
                 producer: producer);
         }
@@ -199,20 +199,20 @@ namespace Kusto.Language.Parsing
         /// Creates a parser that parses a list of elements.
         /// </summary>
         /// <param name="elementParser">The parser for each element.</param>
-        /// <param name="missingElement">An optional function that constructs a new element to be used when an expected element is missing.</param>
+        /// <param name="fnMissingElement">An optional function that constructs a new element to be used when an expected element is missing.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="producer">A function that converts the series of elements into the produced value.</param>
         public static Parser<TInput, TProducer> List<TElement, TProducer>(
             Parser<TInput, TElement> elementParser,
-            Func<TElement> missingElement,
+            Func<Source<TInput>, int, TElement> fnMissingElement,
             bool oneOrMore,
             Func<IReadOnlyList<TElement>, TProducer> producer)
         {
             if (oneOrMore)
             {
-                if (missingElement != null)
+                if (fnMissingElement != null)
                 {
-                    var requiredElement = Required(elementParser, missingElement);
+                    var requiredElement = Required(elementParser, fnMissingElement);
 
                     return Produce(
                         Sequence(
@@ -236,8 +236,8 @@ namespace Kusto.Language.Parsing
         /// </summary>
         /// <param name="elementParser">The parser for each element.</param>
         /// <param name="separatorParser">The parser for each separator.</param>
-        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
-        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="fnMissingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="fnMissingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are no more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
@@ -245,8 +245,8 @@ namespace Kusto.Language.Parsing
         public static Parser<TInput, TProducer> OList<TElement, TSeparator, TProducer>(
             Parser<TInput, TElement> elementParser,
             Parser<TInput, TSeparator> separatorParser,
-            Func<TElement> missingElement,
-            Func<TSeparator> missingSeparator,
+            Func<Source<TInput>, int, TElement> fnMissingElement,
+            Func<Source<TInput>, int, TSeparator> fnMissingSeparator,
             Parser<TInput> endOfList,
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -256,9 +256,9 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 separatorParser,
                 elementParser,
-                missingElement,
-                missingSeparator,
-                missingElement,
+                fnMissingElement,
+                fnMissingSeparator,
+                fnMissingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -271,9 +271,9 @@ namespace Kusto.Language.Parsing
         /// <param name="primaryElementParser">The parser for the primary element.</param>
         /// <param name="separatorParser">The parser for each separator.</param>
         /// <param name="secondaryElementParser">The parser for any element after the first separator.</param>
-        /// <param name="missingPrimaryElement">An optional function that constructs a new element to be used when the primary element is missing (between two separators).</param>
-        /// <param name="missingSecondaryElement">An optional function that constructs a new element to be used when the secondary element is missing (between two separators).</param>
-        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="fnMissingPrimaryElement">An optional function that constructs a new element to be used when the primary element is missing (between two separators).</param>
+        /// <param name="fnMissingSecondaryElement">An optional function that constructs a new element to be used when the secondary element is missing (between two separators).</param>
+        /// <param name="fnMissingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
@@ -282,9 +282,9 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TElement> primaryElementParser,
             Parser<TInput, TSeparator> separatorParser,
             Parser<TInput, TElement> secondaryElementParser,
-            Func<TElement> missingPrimaryElement, // optional
-            Func<TSeparator> missingSeparator, // optional
-            Func<TElement> missingSecondaryElement, // optional
+            Func<Source<TInput>, int, TElement> fnMissingPrimaryElement, // optional
+            Func<Source<TInput>, int, TSeparator> fnMissingSeparator, // optional
+            Func<Source<TInput>, int, TElement> fnMissingSecondaryElement, // optional
             Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -296,9 +296,9 @@ namespace Kusto.Language.Parsing
             if (secondaryElementParser == null)
                 secondaryElementParser = primaryElementParser;
 
-            var requiredPrimaryElementParser = missingPrimaryElement != null ? Required(primaryElementParser, missingPrimaryElement) : primaryElementParser;
-            var requiredSecondaryElementParser = missingSecondaryElement != null ? Required(secondaryElementParser, missingSecondaryElement) : secondaryElementParser;
-            var requiredSeparatorParser = missingSeparator != null ? Required(separatorParser, missingSeparator) : separatorParser;
+            var requiredPrimaryElementParser = fnMissingPrimaryElement != null ? Required(primaryElementParser, fnMissingPrimaryElement) : primaryElementParser;
+            var requiredSecondaryElementParser = fnMissingSecondaryElement != null ? Required(secondaryElementParser, fnMissingSecondaryElement) : secondaryElementParser;
+            var requiredSeparatorParser = fnMissingSeparator != null ? Required(separatorParser, fnMissingSeparator) : separatorParser;
             Func<TProducer> emptyList = () => producer(new object[] { });
 
             if (oneOrMore)
@@ -307,7 +307,7 @@ namespace Kusto.Language.Parsing
                 {
                     var secondaryParser = Sequence(separatorParser, secondaryElementParser);
 
-                    if (missingSeparator != null && endOfList != null)
+                    if (fnMissingSeparator != null && endOfList != null)
                     {
                         secondaryParser = First(
                             secondaryParser,
@@ -326,7 +326,7 @@ namespace Kusto.Language.Parsing
                 {
                     var secondaryParser = Sequence(separatorParser, requiredSecondaryElementParser);
 
-                    if (missingSeparator != null && endOfList != null)
+                    if (fnMissingSeparator != null && endOfList != null)
                     {
                         secondaryParser = First(
                             secondaryParser,
@@ -347,7 +347,7 @@ namespace Kusto.Language.Parsing
                 {
                     var secondaryParser = Sequence(separatorParser, secondaryElementParser);
 
-                    if (missingSeparator != null && endOfList != null)
+                    if (fnMissingSeparator != null && endOfList != null)
                     {
                         secondaryParser = First(
                             secondaryParser,
@@ -370,7 +370,7 @@ namespace Kusto.Language.Parsing
                 {
                     var secondaryParser = Sequence(separatorParser, requiredSecondaryElementParser);
 
-                    if (missingSeparator != null && endOfList != null)
+                    if (fnMissingSeparator != null && endOfList != null)
                     {
                         secondaryParser = First(
                             secondaryParser,
@@ -397,9 +397,9 @@ namespace Kusto.Language.Parsing
         /// <param name="elementParser">The parser for the primary element.</param>
         /// <param name="separatorParser">The parser for each separator.</param>
         /// <param name="secondaryElementParser">The parser for any elements after the first separator.</param>
-        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
-        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
-        /// <param name="missingSecondaryElement">An optional function that constructs a new element to be used when a second element is missing (between two separators).</param>
+        /// <param name="fnMissingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="fnMissingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="fnMissingSecondaryElement">An optional function that constructs a new element to be used when a second element is missing (between two separators).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
@@ -408,9 +408,9 @@ namespace Kusto.Language.Parsing
             Parser<TInput, TElement> elementParser,
             Parser<TInput, TSeparator> separatorParser,
             Parser<TInput, TElement> secondaryElementParser,
-            Func<TElement> missingElement, // optional
-            Func<TSeparator> missingSeparator, // optional
-            Func<TElement> missingSecondaryElement, // optional
+            Func<Source<TInput>, int, TElement> fnMissingElement, // optional
+            Func<Source<TInput>, int, TSeparator> fnMissingSeparator, // optional
+            Func<Source<TInput>, int, TElement> fnMissingSecondaryElement, // optional
             Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -420,9 +420,9 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 separatorParser,
                 secondaryElementParser,
-                missingElement,
-                missingSeparator,
-                missingSecondaryElement,
+                fnMissingElement,
+                fnMissingSeparator,
+                fnMissingSecondaryElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -435,8 +435,8 @@ namespace Kusto.Language.Parsing
         /// </summary>
         /// <param name="elementParser">The parser for the primary element.</param>
         /// <param name="separatorParser">The parser for the separator.</param>
-        /// <param name="missingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
-        /// <param name="missingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
+        /// <param name="fnMissingElement">An optional function that constructs a new element to be used when the element is missing (between two separators).</param>
+        /// <param name="fnMissingSeparator">An optional function that constructs a new separator instance to be used when the separator is missing (between two elements).</param>
         /// <param name="endOfList">An optional parser that quickly determines if there are not more elements.</param>
         /// <param name="oneOrMore">If true, the generated parser expects at least one element to exist.</param>
         /// <param name="allowTrailingSeparator">If true, it is legal for a final separator to occur without a following element.</param>
@@ -444,8 +444,8 @@ namespace Kusto.Language.Parsing
         public static Parser<TInput, TProducer> List<TElement, TSeparator, TProducer>(
             Parser<TInput, TElement> elementParser,
             Parser<TInput, TSeparator> separatorParser,
-            Func<TElement> missingElement, // optional
-            Func<TSeparator> missingSeparator, // optional
+            Func<Source<TInput>, int, TElement> fnMissingElement, // optional
+            Func<Source<TInput>, int, TSeparator> fnMissingSeparator, // optional
             Parser<TInput> endOfList, // optional
             bool oneOrMore,
             bool allowTrailingSeparator,
@@ -455,9 +455,9 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 separatorParser,
                 elementParser,
-                missingElement,
-                missingSeparator,
-                missingElement,
+                fnMissingElement,
+                fnMissingSeparator,
+                fnMissingElement,
                 endOfList,
                 oneOrMore,
                 allowTrailingSeparator,
@@ -483,9 +483,9 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 separatorParser,
                 secondaryElementParser,
-                missingElement: null,
-                missingSeparator: null,
-                missingSecondaryElement: null,
+                fnMissingElement: null,
+                fnMissingSeparator: null,
+                fnMissingSecondaryElement: null,
                 endOfList: null,
                 oneOrMore: oneOrMore,
                 allowTrailingSeparator: false,
@@ -509,9 +509,9 @@ namespace Kusto.Language.Parsing
                 elementParser,
                 separatorParser,
                 elementParser,
-                missingElement: null,
-                missingSeparator: null,
-                missingSecondaryElement: null,
+                fnMissingElement: null,
+                fnMissingSeparator: null,
+                fnMissingSecondaryElement: null,
                 endOfList: null,
                 oneOrMore: oneOrMore,
                 allowTrailingSeparator: false,
@@ -779,12 +779,6 @@ namespace Kusto.Language.Parsing
             return (list, start) => ElementProducer<TElement, TOutput>.Produce(list, start, producer);
         }
 
-        /// <summary>
-        /// A parser that combines one or more values produced by a single parser into a new value.
-        /// </summary>
-        private static Parser<TInput, TOutput> Produce<TElement, TOutput>(Parser<TInput> parser, Func<List<object>, int, TOutput> producer) =>
-            new ProduceParser<TInput, TOutput>(parser, producer);
-
         private class ElementProducer<TElement, TProducer>
         {
             private static readonly ObjectPool<List<TElement>> listPool =
@@ -814,6 +808,13 @@ namespace Kusto.Language.Parsing
         /// This parser behaves like optional, except that a producer must be specified and has UI behavior differences.
         /// </summary>
         public static Parser<TInput, TOutput> Required<TOutput>(Parser<TInput, TOutput> parser, Func<TOutput> producer) =>
+            new RequiredParser<TInput, TOutput>(parser, (source, start) => producer());
+
+        /// <summary>
+        /// A parser that produces the specified parsers result or the value of the producer.
+        /// This parser behaves like optional, except that a producer must be specified and has UI behavior differences.
+        /// </summary>
+        public static Parser<TInput, TOutput> Required<TOutput>(Parser<TInput, TOutput> parser, Func<Source<TInput>, int, TOutput> producer) =>
             new RequiredParser<TInput, TOutput>(parser, producer);
 
         /// <summary>
@@ -1449,6 +1450,12 @@ namespace Kusto.Language.Parsing
             Parsers<char>.Convert(pattern, (source, start, length) => new OffsetValue<string>(start, ((TextSource)source).PeekText(start, length)));
 
         /// <summary>
+        /// A parser that consumes no input but always generates the specified output.
+        /// </summary>
+        public static Parser<TInput, TOutput> Value<TOutput>(Func<TOutput> fnValue) =>
+            Match((source, start) => 0, (source, start, length) => fnValue());
+
+        /// <summary>
         /// A parser that combines zero or more parsed values into a single value.
         /// </summary>
         public static Parser<TInput, TProducer> ZeroOrMore<TParser, TProducer>(
@@ -2054,9 +2061,9 @@ namespace Kusto.Language.Parsing
     public sealed class RequiredParser<TInput, TOutput> : Parser<TInput, TOutput>
     {
         public Parser<TInput, TOutput> Parser { get; }
-        public Func<TOutput> Producer { get; }
+        public Func<Source<TInput>, int, TOutput> Producer { get; }
 
-        public RequiredParser(Parser<TInput, TOutput> parser, Func<TOutput> producer)
+        public RequiredParser(Parser<TInput, TOutput> parser, Func<Source<TInput>, int, TOutput> producer)
         {
             Ensure.ArgumentNotNull(parser, nameof(parser));
             Ensure.ArgumentNotNull(producer, nameof(producer));
@@ -2089,7 +2096,7 @@ namespace Kusto.Language.Parsing
             var result = Parser.Parse(source, start);
             if (result.Length < 0)
             {
-                return new ParseResult<TOutput>(0, Producer());
+                return new ParseResult<TOutput>(0, this.Producer(source, start));
             }
             else
             {
@@ -2105,7 +2112,7 @@ namespace Kusto.Language.Parsing
             if (length < 0 || output.Count == originalOutputCount)
             {
                 output.SetCount(originalOutputCount);
-                output.Add(Producer());
+                output.Add(this.Producer(source, inputStart));
                 return 0;
             }
 

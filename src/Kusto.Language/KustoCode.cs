@@ -41,6 +41,11 @@ namespace Kusto.Language
         internal Parser<LexicalToken> Grammar { get; }
 
         /// <summary>
+        /// The parser that was used to parser the syntax tree.
+        /// </summary>
+        internal ParserKind ParserUsed { get; }
+
+        /// <summary>
         /// True if semantic analysis has been performed.
         /// </summary>
         public bool HasSemantics { get; }
@@ -83,6 +88,7 @@ namespace Kusto.Language
             string kind, 
             GlobalState globals, 
             Parser<LexicalToken> grammar, 
+            ParserKind parserUsed,
             SyntaxTree tree, 
             bool hasSemantics, 
             TypeSymbol resultType,
@@ -94,6 +100,7 @@ namespace Kusto.Language
             this.Kind = kind;
             this.Globals = globals;
             this.Grammar = grammar;
+            this.ParserUsed = parserUsed;
             this.Tree = tree;
             this.HasSemantics = hasSemantics;
             this.ResultType = resultType;
@@ -111,10 +118,17 @@ namespace Kusto.Language
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
+            return Parse(text, globals, ParserKind.Parser);
+        }
+
+        internal static KustoCode Parse(string text, GlobalState globals, ParserKind parserKind)
+        {
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
 
             var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
             var starts = GetTokenStarts(tokens);
-            return Create(text, globals, tokens, starts, analyze: false, cancellationToken: default(CancellationToken));
+            return Create(text, globals, tokens, starts, analyze: false, parserKind: parserKind, cancellationToken: default(CancellationToken));
         }
 
         /// <summary>
@@ -127,10 +141,14 @@ namespace Kusto.Language
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
+            return ParseAndAnalyze(text, globals, parserKind: ParserKind.Parser, cancellationToken: cancellationToken);
+        }
 
+        internal static KustoCode ParseAndAnalyze(string text, GlobalState globals, ParserKind parserKind, CancellationToken cancellationToken = default(CancellationToken))
+        {
             var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
             var starts = GetTokenStarts(tokens);
-            return Create(text, globals, tokens, starts, analyze: true, cancellationToken: cancellationToken);
+            return Create(text, globals, tokens, starts, analyze: true, parserKind: parserKind, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -158,7 +176,7 @@ namespace Kusto.Language
         /// <summary>
         /// Creates a new <see cref="KustoCode"/> form the already parsed lexical tokens.
         /// </summary>
-        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, List<int> tokenStarts, bool analyze, CancellationToken cancellationToken)
+        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, List<int> tokenStarts, bool analyze, ParserKind parserKind, CancellationToken cancellationToken)
         {
             Parser<LexicalToken> grammar;
             SyntaxNode syntax;
@@ -181,8 +199,16 @@ namespace Kusto.Language
                 default:
                     var queryBlock = QueryGrammar.From(globals).QueryBlock;
                     grammar = queryBlock;
-                    // use special query parser for performance
-                    syntax = QueryParser.ParseQuery(tokens);
+                    switch (parserKind)
+                    {
+                        case ParserKind.Parser:
+                        default:
+                            syntax = QueryParser.ParseQuery(tokens);
+                            break;
+                        case ParserKind.Grammar:
+                            syntax = queryBlock.ParseFirst(tokens);
+                            break;
+                    }
                     break;
             }
 
@@ -204,7 +230,7 @@ namespace Kusto.Language
                 }
             }
 
-            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, tokenStarts, localCache);
+            return new KustoCode(text, kind, globals, grammar, parserKind, tree, analyzed, resultType, tokens, tokenStarts, localCache);
         }
 
         /// <summary>
@@ -257,7 +283,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, parserKind: this.ParserUsed, cancellationToken);
             }
         }
 
@@ -272,7 +298,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, parserKind: this.ParserUsed, cancellationToken);
             }
         }
 
@@ -439,5 +465,11 @@ namespace Kusto.Language
 
         None = 0,
         All = BuiltInFunctions | DatabaseFunctions | LocalFunctions
+    }
+
+    internal enum ParserKind
+    {
+        Grammar,
+        Parser
     }
 }

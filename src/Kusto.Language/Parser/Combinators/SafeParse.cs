@@ -613,7 +613,7 @@ namespace Kusto.Language.Parsing
             else if (state.LastResult < 0)
             {
                 output.SetCount(state.OriginalOutputCount);
-                output.Add(parser.Producer());
+                output.Add(parser.Producer(this.source, state.InputStart));
                 state.InputLength = 0;
                 return null;
             }

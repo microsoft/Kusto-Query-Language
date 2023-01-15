@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Kusto.Language.Symbols;
 using Kusto.Language.Syntax;
 using Kusto.Language.Utils;
 
@@ -259,6 +258,22 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        /// <summary>
+        /// Converts the next count adjacent tokens into a single token
+        /// or returns null.
+        /// </summary>
+        private SyntaxToken ParseToken(int count, SyntaxKind? asKind = null)
+        {
+            var token = SyntaxParsers.ProduceSyntaxToken(_source, _pos, count, asKind);
+            
+            if (token != null)
+            {
+                _pos += count;
+            }
+
+            return token;
+        }
+
         private SyntaxToken ParseToken(IReadOnlyList<string> texts)
         {
             for (int i = 0; i < texts.Count; i++)
@@ -291,7 +306,6 @@ namespace Kusto.Language.Parsing
             return token.Kind == SyntaxKind.IdentifierToken
                 || (token.Kind.IsKeyword() && token.Kind.CanBeIdentifier());
         }
-
 
         private static readonly HashSet<SyntaxKind> s_extendedKeyordsAsIdentifiers =
             KustoFacts.ExtendedKeywordsAsIdentifiers.ToHashSetEx();
@@ -331,17 +345,45 @@ namespace Kusto.Language.Parsing
 
         #region Missing Nodes
 
-        // CreateXXX functions are specified as Func<T> so they can be passed to ParseCommaList & ParseList
-        // without causing possible delegate allocations in translation to JavaScript
+        private NameDeclaration CreateMissingNameDeclaration()
+        {
+            var dx = this.PeekToken() is LexicalToken token && token.Kind.IsKeyword()
+                        ? DiagnosticFacts.GetMissingNameWithKeyword(token.Text)
+                        : DiagnosticFacts.GetMissingName();
+            return new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { dx });
+        }
 
-        private static readonly Func<NameDeclaration> CreateMissingNameDeclaration = () =>
-            new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
+        private NameReference CreateMissingNameReference()
+        {
+            var dx = this.PeekToken() is LexicalToken token && token.Kind.IsKeyword()
+                        ? DiagnosticFacts.GetMissingNameWithKeyword(token.Text)
+                        : DiagnosticFacts.GetMissingName();
 
-        private static readonly Func<NameReference> CreateMissingNameReference = () =>
-            new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
+            return new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { dx });
+        }
 
-        private static readonly Func<Expression> CreateMissingNameReferenceExpression = () =>
-            CreateMissingNameReference();
+        private Func<NameReference> _fnCreateMissingNameReference;
+        private Func<NameReference> FnCreateMissingNameReference
+        {
+            get
+            {
+                if (_fnCreateMissingNameReference == null)
+                    _fnCreateMissingNameReference = this.CreateMissingNameReference;
+                return _fnCreateMissingNameReference;
+            }
+        }
+
+
+        private Func<Expression> _fnCreateMissingNameReferenceAsExpression;
+        private Func<Expression> FnCreateMissingNameReferenceAsExpression
+        {
+            get
+            {
+                if (_fnCreateMissingNameReferenceAsExpression == null)
+                    _fnCreateMissingNameReferenceAsExpression = () => (Expression)this.CreateMissingNameReference();
+                return _fnCreateMissingNameReferenceAsExpression;
+            }
+        }
 
         private static SyntaxToken CreateMissingNameToken(IReadOnlyList<string> texts) =>
             SyntaxToken.Missing(SyntaxKind.IdentifierToken, DiagnosticFacts.GetTokenExpected(texts));
@@ -415,8 +457,15 @@ namespace Kusto.Language.Parsing
         private static readonly Func<Expression> CreateMissingValue = () =>
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingValue() });
 
-        private static readonly Func<Expression> CreateMissingExpression = () =>
-            new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
+        private Expression CreateMissingExpression()
+        {
+            // check to see if following token was a keyword and if so report enhanced diagnostic
+            var dx = this.PeekToken() is LexicalToken token && token.Kind.IsKeyword()
+                ? DiagnosticFacts.GetMissingExpressionWithKeyword(token.Text)
+                : DiagnosticFacts.GetMissingExpression();
+
+            return new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { dx });
+        }
 
         private static readonly Func<Name> CreateMissingIdentifierName = () =>
             new TokenName(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
@@ -906,6 +955,111 @@ namespace Kusto.Language.Parsing
         {
             var name = ParseClientParameterName();
             return name != null ? new NameReference(name) : null;
+        }
+
+        internal static bool IsKeywordInNamePosition(Source<LexicalToken> source, int start)
+        {
+            if (source.Peek(start) is LexicalToken token && token.Kind.IsKeyword()
+                && source.Peek(start + 1) is LexicalToken nextToken)
+            {
+                // look for token following keyword that only happens after names in expressions
+                // like infix binary operators, etc.
+                switch (nextToken.Kind)
+                {
+                    // infix binary operators
+                    case SyntaxKind.AndKeyword:
+                    case SyntaxKind.OrKeyword:
+                    case SyntaxKind.EqualEqualToken:
+                    case SyntaxKind.BangEqualToken:
+                    case SyntaxKind.EqualTildeToken:
+                    case SyntaxKind.BangTildeToken:
+                    case SyntaxKind.GreaterThanToken:
+                    case SyntaxKind.GreaterThanOrEqualToken:
+                    case SyntaxKind.LessThanToken:
+                    case SyntaxKind.LessThanOrEqualToken:
+                    case SyntaxKind.AsteriskToken:
+                    case SyntaxKind.SlashToken:
+                    case SyntaxKind.PercentToken:
+                    case SyntaxKind.HasKeyword:
+                    case SyntaxKind.NotHasKeyword:
+                    case SyntaxKind.HasCsKeyword:
+                    case SyntaxKind.NotHasCsKeyword:
+                    case SyntaxKind.HasPrefixKeyword:
+                    case SyntaxKind.NotHasPrefixKeyword:
+                    case SyntaxKind.HasPrefixCsKeyword:
+                    case SyntaxKind.NotHasPrefixCsKeyword:
+                    case SyntaxKind.HasSuffixKeyword:
+                    case SyntaxKind.NotHasSuffixKeyword:
+                    case SyntaxKind.HasSuffixCsKeyword:
+                    case SyntaxKind.NotHasSuffixCsKeyword:
+                    case SyntaxKind.LikeKeyword:
+                    case SyntaxKind.NotLikeKeyword:
+                    case SyntaxKind.LikeCsKeyword:
+                    case SyntaxKind.NotLikeCsKeyword:
+                    case SyntaxKind.ContainsKeyword:
+                    case SyntaxKind.NotContainsKeyword:
+                    case SyntaxKind.NotBangContainsKeyword:
+                    case SyntaxKind.ContainsCsKeyword:
+                    case SyntaxKind.Contains_CsKeyword:
+                    case SyntaxKind.NotContainsCsKeyword:
+                    case SyntaxKind.NotBangContainsCsKeyword:
+                    case SyntaxKind.StartsWithKeyword:
+                    case SyntaxKind.NotStartsWithKeyword:
+                    case SyntaxKind.StartsWithCsKeyword:
+                    case SyntaxKind.NotStartsWithCsKeyword:
+                    case SyntaxKind.EndsWithKeyword:
+                    case SyntaxKind.NotEndsWithKeyword:
+                    case SyntaxKind.EndsWithCsKeyword:
+                    case SyntaxKind.NotEndsWithCsKeyword:
+                    case SyntaxKind.MatchesRegexKeyword:
+                    case SyntaxKind.InKeyword:
+                    case SyntaxKind.InCsKeyword:
+                    case SyntaxKind.NotInKeyword:
+                    case SyntaxKind.NotInCsKeyword:
+                    case SyntaxKind.HasAnyKeyword:
+                    case SyntaxKind.HasAllKeyword:
+                    case SyntaxKind.BetweenKeyword:
+                    case SyntaxKind.NotBetweenKeyword:
+
+                    // these could be prefix unary starting an expression after a keyword starting a clause
+                    //case SyntaxKind.MinusToken:  
+                    //case SyntaxKind.PlusToken:
+
+                    // tokens that would only occur at after names in expressions
+                    case SyntaxKind.CloseParenToken:
+                    case SyntaxKind.CloseBracketToken:
+                    case SyntaxKind.CloseBraceToken:
+                    case SyntaxKind.DotToken:
+                    case SyntaxKind.OpenBracketToken:
+                    case SyntaxKind.CommaToken:
+
+                    // this could be start of parenthesized expression after a keyword starting a clause
+                    //case SyntaxKind.OpenParentToken:
+
+                    // not really related to expressions but do indicate preceeding keyword was likely meant as a name
+                    case SyntaxKind.ColonToken:
+                    case SyntaxKind.BarToken:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsKeywordInNamePosition()
+        {
+            return IsKeywordInNamePosition(_source, _pos);
+        }
+
+        private NameReference ParseInvalidKeywordAsNameReference()
+        {
+            if (IsKeywordInNamePosition())
+            {
+                var token = ParseToken();
+                return new NameReference(new TokenName(token), new[] { DiagnosticFacts.GetNameRequiresBrackets(token.Text) });
+            }
+
+            return null;
         }
 
         #endregion
@@ -1542,9 +1696,9 @@ namespace Kusto.Language.Parsing
                     if (ScanTypeOfLiteral()) // typeof can be an identifier so need to scan further than just the typeof keyword
                         return ParseTypeOfLiteral();
                     if (ScanFunctionCallStart())
-                        //return ParseDotCompositeFunctionCall();
                         return ParseFunctionCallExpression();
-                    return ParsePrimaryPathSelector();
+                    return ParsePrimaryPathSelector()
+                        ?? ParseInvalidKeywordAsNameReference();
             }
         }
 
@@ -1740,7 +1894,6 @@ namespace Kusto.Language.Parsing
             {
                 return ParsePathElementSelector();
             }
-
         }
 
         private Expression ParseBarePathElementSelector()
@@ -1899,6 +2052,52 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, NameDeclaration> FnParseRenameNameDeclaration =
             qp => qp.ParseRenameNameDeclaration();
 
+        internal static int ScanDashedName(Source<LexicalToken> source, int start)
+        {
+            int position = start;
+
+            var token = source.Peek(position);
+            if (token != null
+                && (token.Kind == SyntaxKind.IdentifierToken
+                    || token.Kind.IsKeyword()))
+            {
+                position++;
+
+                while (true)
+                {
+                    token = source.Peek(position);
+
+                    if (token == null
+                        || token.Trivia.Length > 0
+                        || (token.Kind != SyntaxKind.IdentifierToken
+                            && !token.Kind.IsKeyword()
+                            && token.Kind != SyntaxKind.MinusToken))
+                    {
+                        break;
+                    }
+
+                    position++;
+                }
+            }
+
+            return position - start;
+        }
+
+        private int ScanDashedName() =>
+            ScanDashedName(_source, _pos);
+
+        private TokenName ParseDashedName()
+        {
+            var len = ScanDashedName();
+
+            if (len > 0 && ParseToken(len) is SyntaxToken token)
+            {
+                return new TokenName(token);
+            }
+
+            return null;
+        }
+
         private Expression ParseNamedExpression()
         {
             if (ScanRenameName() is int nameLen
@@ -1909,6 +2108,17 @@ namespace Kusto.Language.Parsing
                 var equal = ParseToken(SyntaxKind.EqualToken);
                 var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
                 return new SimpleNamedExpression(name, equal, expr);
+            }
+            else if (ScanDashedName() is int dashNameLen
+                && dashNameLen > 0
+                && PeekToken(dashNameLen).Kind == SyntaxKind.EqualToken)
+            {
+                // special case of illegal name being used as named-expression name.
+                var name = ParseDashedName();
+                var nameDecl = new NameDeclaration(name, new[] { DiagnosticFacts.GetNameRequiresBrackets(name.Name.Text) });
+                var equal = ParseToken(SyntaxKind.EqualToken);
+                var expr = ParseUnnamedExpression() ?? CreateMissingExpression();
+                return new SimpleNamedExpression(nameDecl, equal, expr);
             }
             else if (ScanRenameList() is int nameListLen
                 && nameListLen > 0
@@ -2874,7 +3084,7 @@ namespace Kusto.Language.Parsing
 
         private NameReferenceList ParseNameReferenceList(Func<QueryParser, bool> fnEndList)
         {
-            var names = ParseCommaList(FnParseNameReferenceListName, CreateMissingNameReference, fnEndList, oneOrMore: true);
+            var names = ParseCommaList(FnParseNameReferenceListName, FnCreateMissingNameReference, fnEndList, oneOrMore: true);
             return new NameReferenceList(names);
         }
 
@@ -3124,13 +3334,14 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, bool> FnScanFacetExpressionListEnd =
             qp => qp.ScanCustomListEnd(SyntaxKind.WithKeyword);
 
+
         private FacetOperator ParseFacetOperator()
         {
             var keyword = ParseToken(SyntaxKind.FacetKeyword);
             if (keyword != null)
             {
                 var byKeyword = ParseRequiredToken(SyntaxKind.ByKeyword);
-                var expressions = ParseCommaList(FnParseEntityReferenceExpression, CreateMissingNameReferenceExpression, FnScanFacetExpressionListEnd, oneOrMore: true);
+                var expressions = ParseCommaList(FnParseEntityReferenceExpression, FnCreateMissingNameReferenceAsExpression, FnScanFacetExpressionListEnd, oneOrMore: true);
                 var withClause = ParseFacetWithClause();
                 return new FacetOperator(keyword, byKeyword, expressions, withClause);
             }
@@ -3379,7 +3590,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, ForkExpression> FnParseForkExpression =
             qp => qp.ParseForkExpression();
 
-        private static readonly Func<ForkExpression> CreateMissingForkExpression = () =>
+        private ForkExpression CreateMissingForkExpression() =>
             new ForkExpression(
                 null,
                 CreateMissingToken(SyntaxKind.OpenParenToken),
@@ -3459,7 +3670,7 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private static PartitionOperand CreateMissingPartitionOperand() =>
+        private PartitionOperand CreateMissingPartitionOperand() =>
             new PartitionSubquery(
                 CreateMissingToken(SyntaxKind.OpenParenToken),
                 CreateMissingExpression(),
@@ -3602,7 +3813,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, MakeSeriesExpression> FnParseMakeSeriesExpression =
             qp => qp.ParseMakeSeriesExpression();
 
-        private static readonly Func<MakeSeriesExpression> CreateMissingMakeSeriesExpression = () =>
+        private MakeSeriesExpression CreateMissingMakeSeriesExpression() =>
             new MakeSeriesExpression(CreateMissingExpression(), null);
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_makeSeriesOperatorParameterMap =
@@ -3721,7 +3932,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, MvExpandExpression> FnParseMvExpandExpression =
             qp => qp.ParseMvExpandExpression();
 
-        private static readonly Func<MvExpandExpression> CreateMissingMvExpandExpression = () =>
+        private MvExpandExpression CreateMissingMvExpandExpression() =>
             new MvExpandExpression(CreateMissingExpression(), null);
 
         private static readonly IReadOnlyList<SyntaxKind> s_mvExpandExpressionListEnd =
@@ -3740,8 +3951,10 @@ namespace Kusto.Language.Parsing
                 var clause = ParseToTypeOfClause();
                 if (PeekToken().Kind != SyntaxKind.CommaToken)
                 {
-                    return new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] {
-                    new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause))});
+                    return new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] 
+                    {
+                        new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause))
+                    });
                 }
                 else
                 {
@@ -3806,7 +4019,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<QueryParser, MvApplyExpression> FnParseMvApplyExpression =
             qp => qp.ParseMvApplyExpression();
 
-        private static readonly Func<MvApplyExpression> CreateMissingMvApplyExpression = () =>
+        private MvApplyExpression CreateMissingMvApplyExpression() =>
             new MvApplyExpression(CreateMissingExpression(), null);
 
         private static readonly IReadOnlyList<SyntaxKind> s_mvApplyExpressionListEnd =
@@ -3877,7 +4090,7 @@ namespace Kusto.Language.Parsing
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_mvApplyOperatorParmeterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.MvApplyParameters);
 
-        private static MvApplySubqueryExpression CreateMissingMvApplySubqueryExpression() =>
+        private MvApplySubqueryExpression CreateMissingMvApplySubqueryExpression() =>
             new MvApplySubqueryExpression(
                 CreateMissingToken(SyntaxKind.OpenParenToken),
                 CreateMissingExpression(),
@@ -3980,9 +4193,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region parse-kv
+#region parse-kv
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_parseKvOperatorWithParametersMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.ParseKvWithProperties);
 
@@ -4014,9 +4227,9 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-        #endregion
+#endregion
 
-        #region project / project-rename / project-away / project-keep / project-reorder
+#region project / project-rename / project-away / project-keep / project-reorder
 
         private ProjectOperator ParseProjectOperator()
         {
@@ -4544,9 +4757,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region top / top-nested / top-hitters
+#region top / top-nested / top-hitters
 
         private TopHittersByClause ParseTopHittersByClause()
         {
@@ -5771,315 +5984,6 @@ namespace Kusto.Language.Parsing
                 ParseQueryBlockStatementList(),
                 ParseSkippedTokens(),
                 ParseToken(SyntaxKind.EndOfTextToken));
-
-#endregion
-
-#region Experimental
-#if false
-        private readonly Stack<Expression> operandStack = new Stack<Expression>();
-        private readonly Stack<SyntaxToken> operatorStack = new Stack<SyntaxToken>();
-
-        private Expression ParsePrimaryExpression2()
-        {
-            if (PeekToken().Kind == SyntaxKind.AsteriskToken)
-            {
-                var kind = PeekToken(1).Kind;
-                if (kind == SyntaxKind.EqualEqualToken
-                    || GetStringOperationKind(kind) != SyntaxKind.None)
-                {
-                    return ParseStarExpression();
-                }
-            }
-
-            return ParseUnaryPlusOrMinusExpression();
-        }
-
-        private Expression ParseUnnamedExpression2()
-        {
-            var opStackStart = operatorStack.Count;
-
-            var expr = ParsePrimaryExpression2();
-            if (expr == null)
-                return null;
-
-            operandStack.Push(expr);
-
-            while (true)
-            {
-                var opKind = PeekToken().Kind;
-
-                var precidence = GetPrecedenceLevel();
-
-                // complete any pending expressions with tighter precedence
-                while (operatorStack.Count > opStackStart
-                    && GetPrecedenceLevel(operatorStack.Peek().Kind) <= precidence)
-                {
-                    var op = operatorStack.Pop();
-                    var right = operandStack.Pop();
-                    var left = operandStack.Pop();
-                    var exprKind = GetInfixOperationKind(op.Kind);
-                    operandStack.Push(new BinaryExpression(exprKind, left, op, right));
-                }
-
-                if (precidence == InfixPrecidence.None)
-                    break;
-
-                var opToken = ParseToken();
-
-                switch (opKind)
-                {
-                    case SyntaxKind.InKeyword:
-                    case SyntaxKind.InCsKeyword:
-                    case SyntaxKind.NotInKeyword:
-                    case SyntaxKind.NotInCsKeyword:
-                        var left = operandStack.Pop();
-                        operandStack.Push(new InExpression(GetInfixOperationKind(opKind), left, opToken, ParseRequiredInOperatorExpressionList()));
-                        break;
-                    case SyntaxKind.HasAnyKeyword:
-                        left = operandStack.Pop();
-                        operandStack.Push(new HasAnyExpression(SyntaxKind.HasAnyExpression, left, opToken, ParseRequiredInOperatorExpressionList()));
-                        break;
-                    case SyntaxKind.HasAllKeyword:
-                        left = operandStack.Pop();
-                        operandStack.Push(new HasAllExpression(SyntaxKind.HasAllExpression, left, opToken, ParseRequiredInOperatorExpressionList()));
-                        break;
-                    case SyntaxKind.BetweenKeyword:
-                    case SyntaxKind.NotBetweenKeyword:
-                        left = operandStack.Pop();
-                        operandStack.Push(new BetweenExpression(GetInfixOperationKind(opKind), left, opToken, ParseRequiredExpressionCouple()));
-                        break;
-                    default:
-                        operatorStack.Push(opToken);
-                        operandStack.Push(ParsePrimaryExpression2() ?? CreateMissingExpression());
-                        break;
-                }
-            }
-
-            return operandStack.Pop();
-        }
-
-        private enum InfixPrecidence
-        {
-            String,
-            Multiplicative,
-            Additive,
-            Relational,
-            Equality,
-            And,
-            Or,
-            None
-        }
-
-        private InfixPrecidence GetPrecedenceLevel()
-        {
-            var token = PeekToken();
-            if (token.Kind == SyntaxKind.InKeyword && PeekToken(1).Kind == SyntaxKind.RangeKeyword)
-                return InfixPrecidence.None;
-            return GetPrecedenceLevel(token.Kind);
-        }
-
-        private static InfixPrecidence GetPrecedenceLevel(SyntaxKind opTokenKind)
-        {
-            switch (opTokenKind)
-            {
-                case SyntaxKind.EqualTildeToken:
-                case SyntaxKind.BangTildeToken:
-                case SyntaxKind.HasKeyword:
-                case SyntaxKind.ColonToken:
-                case SyntaxKind.NotHasKeyword:
-                case SyntaxKind.HasCsKeyword:
-                case SyntaxKind.NotHasCsKeyword:
-                case SyntaxKind.HasPrefixKeyword:
-                case SyntaxKind.NotHasPrefixKeyword:
-                case SyntaxKind.HasPrefixCsKeyword:
-                case SyntaxKind.NotHasPrefixCsKeyword:
-                case SyntaxKind.HasSuffixKeyword:
-                case SyntaxKind.NotHasSuffixKeyword:
-                case SyntaxKind.HasSuffixCsKeyword:
-                case SyntaxKind.NotHasSuffixCsKeyword:
-                case SyntaxKind.LikeKeyword:
-                case SyntaxKind.NotLikeKeyword:
-                case SyntaxKind.LikeCsKeyword:
-                case SyntaxKind.NotLikeCsKeyword:
-                case SyntaxKind.ContainsKeyword:
-                case SyntaxKind.NotContainsKeyword:
-                case SyntaxKind.NotBangContainsKeyword:
-                case SyntaxKind.ContainsCsKeyword:
-                case SyntaxKind.Contains_CsKeyword:
-                case SyntaxKind.NotContainsCsKeyword:
-                case SyntaxKind.NotBangContainsCsKeyword:
-                case SyntaxKind.StartsWithKeyword:
-                case SyntaxKind.NotStartsWithKeyword:
-                case SyntaxKind.StartsWithCsKeyword:
-                case SyntaxKind.NotStartsWithCsKeyword:
-                case SyntaxKind.EndsWithKeyword:
-                case SyntaxKind.NotEndsWithKeyword:
-                case SyntaxKind.EndsWithCsKeyword:
-                case SyntaxKind.NotEndsWithCsKeyword:
-                case SyntaxKind.MatchesRegexKeyword:
-                    return InfixPrecidence.String;
-                case SyntaxKind.AsteriskToken:
-                case SyntaxKind.SlashToken:
-                case SyntaxKind.PercentToken:
-                    return InfixPrecidence.Multiplicative;
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return InfixPrecidence.Additive;
-                case SyntaxKind.LessThanToken:
-                case SyntaxKind.LessThanOrEqualToken:
-                case SyntaxKind.GreaterThanToken:
-                case SyntaxKind.GreaterThanOrEqualToken:
-                    return InfixPrecidence.Relational;
-                case SyntaxKind.EqualEqualToken:
-                case SyntaxKind.BangEqualToken:
-                case SyntaxKind.LessThanGreaterThanToken:
-                case SyntaxKind.InKeyword:
-                case SyntaxKind.InCsKeyword:
-                case SyntaxKind.NotInKeyword:
-                case SyntaxKind.NotInCsKeyword:
-                case SyntaxKind.HasAnyKeyword:
-                case SyntaxKind.HasAllKeyword:
-                case SyntaxKind.BetweenKeyword:
-                case SyntaxKind.NotBetweenKeyword:
-                    return InfixPrecidence.Equality;
-                case SyntaxKind.AndKeyword:
-                    return InfixPrecidence.And;
-                case SyntaxKind.OrKeyword:
-                    return InfixPrecidence.Or;
-                default:
-                    return InfixPrecidence.None;
-            }
-        }
-
-        private static SyntaxKind GetInfixOperationKind(SyntaxKind tokenKind)
-        {
-            switch (tokenKind)
-            {
-                case SyntaxKind.EqualTildeToken:
-                    return SyntaxKind.EqualTildeExpression;
-                case SyntaxKind.BangTildeToken:
-                    return SyntaxKind.BangTildeExpression;
-                case SyntaxKind.HasKeyword:
-                    return SyntaxKind.HasExpression;
-                case SyntaxKind.ColonToken:
-                    return SyntaxKind.SearchExpression;
-                case SyntaxKind.NotHasKeyword:
-                    return SyntaxKind.NotHasExpression;
-                case SyntaxKind.HasCsKeyword:
-                    return SyntaxKind.HasCsExpression;
-                case SyntaxKind.NotHasCsKeyword:
-                    return SyntaxKind.NotHasCsExpression;
-                case SyntaxKind.HasPrefixKeyword:
-                    return SyntaxKind.HasPrefixExpression;
-                case SyntaxKind.NotHasPrefixKeyword:
-                    return SyntaxKind.NotHasPrefixExpression;
-                case SyntaxKind.HasPrefixCsKeyword:
-                    return SyntaxKind.HasPrefixCsExpression;
-                case SyntaxKind.NotHasPrefixCsKeyword:
-                    return SyntaxKind.NotHasPrefixCsExpression;
-                case SyntaxKind.HasSuffixKeyword:
-                    return SyntaxKind.HasSuffixExpression;
-                case SyntaxKind.NotHasSuffixKeyword:
-                    return SyntaxKind.NotHasSuffixExpression;
-                case SyntaxKind.HasSuffixCsKeyword:
-                    return SyntaxKind.HasSuffixCsExpression;
-                case SyntaxKind.NotHasSuffixCsKeyword:
-                    return SyntaxKind.NotHasSuffixCsExpression;
-                case SyntaxKind.LikeKeyword:
-                    return SyntaxKind.LikeExpression;
-                case SyntaxKind.NotLikeKeyword:
-                    return SyntaxKind.NotLikeExpression;
-                case SyntaxKind.LikeCsKeyword:
-                    return SyntaxKind.LikeCsExpression;
-                case SyntaxKind.NotLikeCsKeyword:
-                    return SyntaxKind.NotLikeCsExpression;
-                case SyntaxKind.ContainsKeyword:
-                    return SyntaxKind.ContainsExpression;
-                case SyntaxKind.NotContainsKeyword:
-                    return SyntaxKind.NotContainsExpression;
-                case SyntaxKind.NotBangContainsKeyword:
-                    return SyntaxKind.NotContainsExpression;
-                case SyntaxKind.ContainsCsKeyword:
-                    return SyntaxKind.ContainsCsExpression;
-                case SyntaxKind.Contains_CsKeyword:
-                    return SyntaxKind.ContainsCsExpression;
-                case SyntaxKind.NotContainsCsKeyword:
-                    return SyntaxKind.NotContainsCsExpression;
-                case SyntaxKind.NotBangContainsCsKeyword:
-                    return SyntaxKind.NotContainsCsExpression;
-                case SyntaxKind.StartsWithKeyword:
-                    return SyntaxKind.StartsWithExpression;
-                case SyntaxKind.NotStartsWithKeyword:
-                    return SyntaxKind.NotStartsWithExpression;
-                case SyntaxKind.StartsWithCsKeyword:
-                    return SyntaxKind.StartsWithCsExpression;
-                case SyntaxKind.NotStartsWithCsKeyword:
-                    return SyntaxKind.NotStartsWithCsExpression;
-                case SyntaxKind.EndsWithKeyword:
-                    return SyntaxKind.EndsWithExpression;
-                case SyntaxKind.NotEndsWithKeyword:
-                    return SyntaxKind.NotEndsWithExpression;
-                case SyntaxKind.EndsWithCsKeyword:
-                    return SyntaxKind.EndsWithCsExpression;
-                case SyntaxKind.NotEndsWithCsKeyword:
-                    return SyntaxKind.NotEndsWithCsExpression;
-                case SyntaxKind.MatchesRegexKeyword:
-                    return SyntaxKind.MatchesRegexExpression;
-
-                case SyntaxKind.AsteriskToken:
-                    return SyntaxKind.MultiplyExpression;
-                case SyntaxKind.SlashToken:
-                    return SyntaxKind.DivideExpression;
-                case SyntaxKind.PercentToken:
-                    return SyntaxKind.ModuloExpression;
-
-                case SyntaxKind.PlusToken:
-                    return SyntaxKind.AddExpression;
-                case SyntaxKind.MinusToken:
-                    return SyntaxKind.SubtractExpression;
-
-                case SyntaxKind.LessThanToken:
-                    return SyntaxKind.LessThanExpression;
-                case SyntaxKind.LessThanOrEqualToken:
-                    return SyntaxKind.LessThanOrEqualExpression;
-                case SyntaxKind.GreaterThanToken:
-                    return SyntaxKind.GreaterThanExpression;
-                case SyntaxKind.GreaterThanOrEqualToken:
-                    return SyntaxKind.GreaterThanOrEqualExpression;
-
-                case SyntaxKind.EqualEqualToken:
-                    return SyntaxKind.EqualExpression;
-                case SyntaxKind.BangEqualToken:
-                    return SyntaxKind.NotEqualExpression;
-                case SyntaxKind.LessThanGreaterThanToken:
-                    return SyntaxKind.NotEqualExpression;
-                case SyntaxKind.InKeyword:
-                    return SyntaxKind.InExpression;
-                case SyntaxKind.InCsKeyword:
-                    return SyntaxKind.InCsExpression;
-                case SyntaxKind.NotInKeyword:
-                    return SyntaxKind.NotInExpression;
-                case SyntaxKind.NotInCsKeyword:
-                    return SyntaxKind.NotInCsExpression;
-                case SyntaxKind.HasAnyKeyword:
-                    return SyntaxKind.HasAnyExpression;
-                case SyntaxKind.HasAllKeyword:
-                    return SyntaxKind.HasAllExpression;
-                case SyntaxKind.BetweenKeyword:
-                    return SyntaxKind.BetweenExpression;
-                case SyntaxKind.NotBetweenKeyword:
-                    return SyntaxKind.NotBetweenExpression;
-
-                case SyntaxKind.AndKeyword:
-                    return SyntaxKind.AndExpression;
-                case SyntaxKind.OrKeyword:
-                    return SyntaxKind.OrExpression;
-
-                default:
-                    return SyntaxKind.None;
-            }
-        }
-#endif
 
 #endregion
     }

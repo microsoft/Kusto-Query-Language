@@ -72,7 +72,7 @@ namespace Kusto.Language.Parsing
                         Rule(
                             _left,
                             SP.Token(SyntaxKind.BarToken),
-                            Required(queryParser.FollowingPipeElementExpression, QueryGrammar.MissingQueryOperator),
+                            Required(queryParser.FollowingPipeElementExpression, QueryGrammar.CreateMissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right))
                             .WithTag("<command-pipe-expression>"));
 
@@ -99,7 +99,7 @@ namespace Kusto.Language.Parsing
                         commandStatement, // first one is a command statement
                         SyntaxKind.SemicolonToken,
                         queryParser.Statement,      // all others elements are query statements
-                        MissingCommandStatementNode,
+                        CreateMissingCommandStatement,
                         endOfList: EndOfText,
                         oneOrMore: true,
                         allowTrailingSeparator: true),
@@ -117,7 +117,7 @@ namespace Kusto.Language.Parsing
             scriptInputCore =
                 OneOrMoreList(
                     Limit(CommandLimiter, scriptElement),  // limit parsing up until next command starts
-                    missingElement: MissingCommandStatement);
+                    fnMissingElement: CreateMissingCommandStatement);
         }
 
         /// <summary>
@@ -318,10 +318,7 @@ namespace Kusto.Language.Parsing
                 dot => (Command)new BadCommand(dot, new Diagnostic[] { DiagnosticFacts.GetMissingCommand() }))
                 .WithTag("<bad-command>");
 
-        internal static readonly Func<SyntaxElement> MissingCommandStatement = () =>
-            new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));
-
-        internal static readonly Statement MissingCommandStatementNode =
+        internal static Statement CreateMissingCommandStatement(Source<LexicalToken> source, int start) =>
             new ExpressionStatement(new BadCommand(SyntaxToken.Missing(SyntaxKind.DotToken), new[] { DiagnosticFacts.GetMissingCommand() }));
 
         /// <summary>
@@ -539,7 +536,7 @@ namespace Kusto.Language.Parsing
         public static Parser<LexicalToken, SyntaxElement> ZeroOrMoreList(
             Parser<LexicalToken, SyntaxElement> elementParser,
             Parser<LexicalToken, SyntaxElement> separatorParser = null,
-            Func<SyntaxElement> missingElement = null,
+            Func<Source<LexicalToken>, int, SyntaxElement> fnMissingElement = null,
             bool allowTrailingSeparator = false)
         {
             if (separatorParser != null)
@@ -548,9 +545,9 @@ namespace Kusto.Language.Parsing
                     primaryElementParser: elementParser,
                     secondaryElementParser: null,
                     separatorParser: separatorParser,
-                    missingPrimaryElement: null,
-                    missingSecondaryElement: missingElement,
-                    missingSeparator: null,
+                    fnMissingPrimaryElement: null,
+                    fnMissingSecondaryElement: fnMissingElement,
+                    fnMissingSeparator: null,
                     endOfList: null,
                     oneOrMore: false,
                     allowTrailingSeparator: allowTrailingSeparator,
@@ -561,7 +558,7 @@ namespace Kusto.Language.Parsing
             {
                 return List(
                     elementParser: elementParser,
-                    missingElement: null,
+                    fnMissingElement: null,
                     oneOrMore: false,
                     producer: elements => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.OfType<SyntaxElement>().ToArray())
                     );
@@ -570,16 +567,16 @@ namespace Kusto.Language.Parsing
 
         public static Parser<LexicalToken, SyntaxElement> ZeroOrMoreCommaList(
             Parser<LexicalToken, SyntaxElement> elementParser,
-            Func<SyntaxElement> missingElement = null,
+            Func<Source<LexicalToken>, int, SyntaxElement> fnMissingElement = null,
             bool allowTrailingSeparator = false)
         {
-            return ZeroOrMoreList(elementParser, Token(","), missingElement, allowTrailingSeparator);
+            return ZeroOrMoreList(elementParser, Token(","), fnMissingElement, allowTrailingSeparator);
         }
 
         public static Parser<LexicalToken, SyntaxElement> OneOrMoreList(
             Parser<LexicalToken, SyntaxElement> elementParser,
             Parser<LexicalToken, SyntaxElement> separatorParser = null,
-            Func<SyntaxElement> missingElement = null,
+            Func<Source<LexicalToken>, int, SyntaxElement> fnMissingElement = null,
             bool allowTrailingSeparator = false)
         {
             if (separatorParser != null)
@@ -588,9 +585,9 @@ namespace Kusto.Language.Parsing
                     primaryElementParser: elementParser,
                     secondaryElementParser: null,
                     separatorParser: separatorParser,
-                    missingPrimaryElement: null,
-                    missingSecondaryElement: missingElement,
-                    missingSeparator: null,
+                    fnMissingPrimaryElement: null,
+                    fnMissingSecondaryElement: fnMissingElement,
+                    fnMissingSeparator: null,
                     endOfList: null,
                     oneOrMore: true,
                     allowTrailingSeparator: allowTrailingSeparator,
@@ -601,7 +598,7 @@ namespace Kusto.Language.Parsing
             {
                 return List(
                     elementParser: elementParser,
-                    missingElement: null,
+                    fnMissingElement: null,
                     oneOrMore: true,
                     producer: (elements) => (SyntaxElement)new SyntaxList<SyntaxElement>(elements.OfType<SyntaxElement>().ToArray())
                     );
@@ -610,10 +607,10 @@ namespace Kusto.Language.Parsing
 
         public static Parser<LexicalToken, SyntaxElement> OneOrMoreCommaList(
             Parser<LexicalToken, SyntaxElement> elementParser,
-            Func<SyntaxElement> missingElement = null,
+            Func<Source<LexicalToken>, int, SyntaxElement> fnMissingElement = null,
             bool allowTrailingSeparator = false)
         {
-            return OneOrMoreList(elementParser, Token(","), missingElement, allowTrailingSeparator);
+            return OneOrMoreList(elementParser, Token(","), fnMissingElement, allowTrailingSeparator);
         }
     }
 }

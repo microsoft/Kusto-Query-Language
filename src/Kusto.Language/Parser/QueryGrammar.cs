@@ -239,7 +239,7 @@ namespace Kusto.Language.Parsing
             this.BracketedNameDeclaration =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    Required(StringOrCompoundStringLiteral, MissingStringLiteral),
+                    Required(StringOrCompoundStringLiteral, CreateMissingStringLiteral),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, name, closeBracket) =>
                         (NameDeclaration)new NameDeclaration(new BracketedName(openBracket, name, closeBracket)));
@@ -247,7 +247,7 @@ namespace Kusto.Language.Parsing
             var BracketedNameReference =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    Required(StringOrCompoundStringLiteral, MissingStringLiteral),
+                    Required(StringOrCompoundStringLiteral, CreateMissingStringLiteral),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, name, closeBracket) =>
                         (Expression)new NameReference(new BracketedName(openBracket, name, closeBracket)));
@@ -316,6 +316,25 @@ namespace Kusto.Language.Parsing
                     ExtendedKeywordAsIdentifierNameReference,
                     ClientParameterReference)
                 .WithTag("<name>");
+
+            var InvalidKeywordAsNameReference =
+                Match(
+                    (source, start) =>
+                        QueryParser.IsKeywordInNamePosition(source, start) ? 1 : -1,
+                    (source, start, length) =>
+                        (Expression)new NameReference(
+                            new TokenName(SyntaxToken.From(source.Peek(start))),
+                            new[] { DiagnosticFacts.GetNameRequiresBrackets(source.Peek(start).Text) })
+                    );
+
+            var DashedName =
+                Match((source, start) =>
+                    QueryParser.ScanDashedName(source, start),
+                (source, start, length) =>
+                    new TokenName(SyntaxParsers.ProduceSyntaxToken(source, start, length))
+                );
+
+
             #endregion
 
             #region Schema and Types
@@ -405,7 +424,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.OpenParenToken),
                         CommaList<Expression>(
                             Rule(NameAndTypeDeclaration, nat => (Expression)nat),
-                            MissingNameAndTypeDeclarationNode,
+                            CreateMissingNameAndTypeDeclaration,
                             allowTrailingComma: true),
                         RequiredToken(SyntaxKind.CloseParenToken),
 
@@ -421,8 +440,8 @@ namespace Kusto.Language.Parsing
                 First(
                     Rule( // error case: missing name
                         Token(SyntaxKind.ColonToken),
-                        Required(First(ParamType, IdentifierTypeExpression), MissingType),
-                        (colon, type) => new NameAndTypeDeclaration((NameDeclaration)MissingNameDeclarationNode.Clone(), colon, type)),
+                        Required(First(ParamType, IdentifierTypeExpression), CreateMissingType),
+                        (colon, type) => new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type)),
 
                     If(ScanSchemaTypeStart,
                         Rule(
@@ -434,7 +453,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         ExtendedNameDeclaration,
                         RequiredToken(SyntaxKind.ColonToken),
-                        Required(First(ParamType, IdentifierTypeExpression), MissingType),
+                        Required(First(ParamType, IdentifierTypeExpression), CreateMissingType),
                         (name, colon, type) => new NameAndTypeDeclaration(name, colon, type)));
             #endregion
 
@@ -545,7 +564,7 @@ namespace Kusto.Language.Parsing
                         Rule(
                             Token(SyntaxKind.TypeOfKeyword).Hide(),
                             RequiredToken(SyntaxKind.OpenParenToken),
-                            CommaList(TypeofElement, MissingTypeNode, oneOrMore: true),
+                            CommaList(TypeofElement, CreateMissingType, oneOrMore: true),
                             RequiredToken(SyntaxKind.CloseParenToken),
                             (keyword, openParen, list, closeParen) =>
                                 (Expression)new TypeOfLiteralExpression(keyword, openParen, list, closeParen)
@@ -621,10 +640,10 @@ namespace Kusto.Language.Parsing
 
             var JsonPair =
                 First(
-                    Rule(Token(SyntaxKind.StringLiteralToken), RequiredToken(SyntaxKind.ColonToken), Required(JsonValue, MissingJsonValue),
+                    Rule(Token(SyntaxKind.StringLiteralToken), RequiredToken(SyntaxKind.ColonToken), Required(JsonValue, CreateMissingJsonValue),
                         (name, colon, value) =>
                             new JsonPair(name, colon, value)),
-                    Rule(Token(SyntaxKind.ColonToken).Hide(), Required(JsonValue, MissingJsonValue),
+                    Rule(Token(SyntaxKind.ColonToken).Hide(), Required(JsonValue, CreateMissingJsonValue),
                         (colonToken, value) =>
                             new JsonPair(CreateMissingToken(SyntaxKind.StringLiteralToken, DiagnosticFacts.GetMissingString()), colonToken, value)),
                     Rule(JsonValue.Hide(),
@@ -635,7 +654,7 @@ namespace Kusto.Language.Parsing
             var JsonObject =
                 Rule(
                     Token(SyntaxKind.OpenBraceToken),
-                    CommaList(JsonPair, MissingJsonPairNode),
+                    CommaList(JsonPair, CreateMissingJsonPair),
                     RequiredToken(SyntaxKind.CloseBraceToken),
                     (openBrace, list, closeBrace) =>
                         (Expression)new JsonObjectExpression(openBrace, list, closeBrace))
@@ -644,7 +663,7 @@ namespace Kusto.Language.Parsing
             var JsonArray =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    CommaList(JsonValue, MissingJsonValueNode),
+                    CommaList(JsonValue, CreateMissingJsonValue),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, values, closeBracket) =>
                         (Expression)new JsonArrayExpression(openBracket, values, closeBracket))
@@ -654,7 +673,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarPrefix),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(First(NullLiteralExpression, JsonValue), MissingJsonValue),
+                    Required(First(NullLiteralExpression, JsonValue), CreateMissingJsonValue),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (dynamicKeyword, openParen, value, closeParen) =>
                         (Expression)new DynamicExpression(dynamicKeyword, openParen, value, closeParen))
@@ -735,7 +754,7 @@ namespace Kusto.Language.Parsing
                 bool hasEquals,
                 bool equalsNeeded,
                 Parser<LexicalToken, Expression> valueParser,
-                Func<Expression> missingValue = null,
+                Func<Source<LexicalToken>, int, Expression> fnMissingValue = null,
                 CompletionHint expressionHint = CompletionHint.None)
             {
                 if (hasEquals)
@@ -747,7 +766,7 @@ namespace Kusto.Language.Parsing
                                 Rule(
                                     AsIdentifierNameDeclaration(tokenParser),
                                     RequiredToken(SyntaxKind.EqualToken),
-                                    Required(valueParser, missingValue ?? MissingValue),
+                                    Required(valueParser, fnMissingValue ?? CreateMissingValue),
                                     (name, equal, value) =>
                                         new NamedParameter(name, equal, value, expressionHint)));
                     }
@@ -756,7 +775,7 @@ namespace Kusto.Language.Parsing
                         return Rule(
                             AsIdentifierNameDeclaration(tokenParser),
                             RequiredToken(SyntaxKind.EqualToken),
-                            Required(valueParser, missingValue ?? MissingValue),
+                            Required(valueParser, fnMissingValue ?? CreateMissingValue),
                             (name, equal, value) =>
                                 new NamedParameter(name, equal, value, expressionHint));
                     }
@@ -766,7 +785,7 @@ namespace Kusto.Language.Parsing
                     return 
                         Rule(
                             AsIdentifierNameDeclaration(tokenParser),
-                            Required(valueParser, missingValue ?? MissingValue),
+                            Required(valueParser, fnMissingValue ?? CreateMissingValue),
                             (name, value) =>
                                 new NamedParameter(name, SyntaxToken.Missing(SyntaxKind.EqualToken), value, expressionHint));
                 }
@@ -774,7 +793,7 @@ namespace Kusto.Language.Parsing
 
             Parser<LexicalToken, Expression> NameReferenceList(Parser<LexicalToken, NameReference> nameParser) =>
                 Rule(
-                    OneOrMoreCommaList(nameParser, MissingNameReferenceNode),
+                    OneOrMoreCommaList(nameParser, (source, start) => (NameReference)CreateMissingNameReference(source, start)),
                     list => (Expression)new NameReferenceList(list));
 
             var AnyQueryOperatorParameterValue =
@@ -834,33 +853,33 @@ namespace Kusto.Language.Parsing
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded, 
                             AnyQueryOperatorParameterValue,
-                            MissingValue);
+                            CreateMissingValue);
                     case QueryOperatorParameterValueKind.StringLiteral:
                         return QParameter(
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             AnyQueryOperatorParameterValue,
-                            MissingStringLiteral);
+                            CreateMissingStringLiteral);
                     case QueryOperatorParameterValueKind.BoolLiteral:
                         return QParameter(
                             QueryParameterName(parameter), 
                             hasEquals, equalsNeeded,
-                            First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue), 
-                            MissingBooleanLiteral);
+                            First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue),
+                            CreateMissingBooleanLiteral);
                     case QueryOperatorParameterValueKind.IntegerLiteral:
                     case QueryOperatorParameterValueKind.NumericLiteral:
                     case QueryOperatorParameterValueKind.SummableLiteral:
                         return QParameter(
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
-                            AnyQueryOperatorParameterValue, 
-                            MissingLongLiteral);
+                            AnyQueryOperatorParameterValue,
+                            CreateMissingLongLiteral);
                     case QueryOperatorParameterValueKind.ForcedRealLiteral:
                         return QParameter(
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             AnyQueryOperatorParameterForcedRealValue,
-                            MissingRealLiteral);
+                            CreateMissingRealLiteral);
                     case QueryOperatorParameterValueKind.ScalarLiteral:
                         return QParameter(
                             QueryParameterName(parameter),
@@ -878,24 +897,24 @@ namespace Kusto.Language.Parsing
                                 QueryParameterName(parameter), 
                                 hasEquals, equalsNeeded,
                                 First(AsTokenLiteral(Token(parameter.Values)), AnyQueryOperatorParameterValue),
-                                MissingTokenLiteral(parameter.Values))
+                                CreateMissingTokenLiteral(parameter.Values))
                             : QParameter(
                                 QueryParameterName(parameter),
                                 hasEquals, equalsNeeded,
                                 AnyQueryOperatorParameterValue,
-                                MissingTokenLiteral("token"));
+                                CreateMissingTokenLiteral("token"));
                     case QueryOperatorParameterValueKind.NameDeclaration:
                         return QParameter(
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             First(SimpleNameDeclarationExpression, AnyQueryOperatorParameterValue),
-                            MissingNameDeclarationExpression);
+                            CreateMissingNameDeclarationExpression);
                     case QueryOperatorParameterValueKind.Column:
                         return QParameter(
                             QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
-                            First(SimpleNameReference, AnyQueryOperatorParameterValue), 
-                            MissingNameReference,
+                            First(SimpleNameReference, AnyQueryOperatorParameterValue),
+                            CreateMissingNameReference,
                             expressionHint: CompletionHint.Column);
                     case QueryOperatorParameterValueKind.ColumnList:
                         var allParameterNames = allParameters.Select(p => p.Name).ToList();
@@ -940,7 +959,7 @@ namespace Kusto.Language.Parsing
             {
                 var paramParsers = GetQueryOperatorParameterParsers(parameters, allowedNames, equalsNeeded);
                 var first = First(paramParsers.ToArray());
-                return CommaList(first, MissingNamedParameterNode);
+                return CommaList(first, CreateMissingNamedParameter);
             };
 
 #endregion
@@ -949,7 +968,7 @@ namespace Kusto.Language.Parsing
             var ParenthesizedExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression),
+                    Required(Expression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expression, closeParen) =>
                         (Expression)new ParenthesizedExpression(openParen, expression, closeParen));
@@ -977,7 +996,7 @@ namespace Kusto.Language.Parsing
             var RenameList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    CommaList(RenameName, MissingNameDeclarationNode, oneOrMore: true),
+                    CommaList(RenameName, CreateMissingNameDeclaration, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, list, closeParen) =>
                         new RenameList(openParen, list, closeParen));
@@ -985,12 +1004,20 @@ namespace Kusto.Language.Parsing
             this.NamedExpression =
                 First(
                     If(And(RenameName, Token(SyntaxKind.EqualToken)),
-                        Rule(RenameName, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, MissingExpression),
+                        Rule(RenameName, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, CreateMissingExpression),
                             (name, equals, expr) =>
                                 (Expression)new SimpleNamedExpression(name, equals, expr))),
 
+                    // special case for invalid named-expression names
+                    If(And(DashedName, Token(SyntaxKind.EqualToken)),
+                        Rule(DashedName, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, CreateMissingExpression),
+                            (name, equals, expr) =>
+                                (Expression)new SimpleNamedExpression(
+                                    new NameDeclaration(name, new[] {DiagnosticFacts.GetNameRequiresBrackets(name.Name.Text)}), 
+                                    equals, expr))),
+
                     If(And(ScanRenameList, Token(SyntaxKind.EqualToken)),
-                        Rule(RenameList, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, MissingExpression),
+                        Rule(RenameList, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, CreateMissingExpression),
                             (list, equals, expr) =>
                                 (Expression)new CompoundNamedExpression(list, equals, expr))),
 
@@ -1006,7 +1033,7 @@ namespace Kusto.Language.Parsing
             var FunctionArgumentList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    CommaList(Argument, MissingExpressionNode),
+                    CommaList(Argument, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, list, closeParen) => new ExpressionList(openParen, list, closeParen));
 
@@ -1041,8 +1068,8 @@ namespace Kusto.Language.Parsing
                     First(
                         FunctionCall,
                         Rule(FunctionCallNames,
-                            (name) => (Expression)new FunctionCallExpression((NameReference)name, MissingArgumentList()))),
-                    MissingFunctionCallExpression);
+                            (name) => (Expression)new FunctionCallExpression((NameReference)name, CreateMissingArgumentList()))),
+                    CreateMissingFunctionCallExpression);
 
             var DotCompositeFunctionCall =
                 ApplyZeroOrMore(
@@ -1132,7 +1159,7 @@ namespace Kusto.Language.Parsing
             var BracketedExpression =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    Required(UnnamedExpression, MissingNameReference),
+                    Required(UnnamedExpression, CreateMissingNameReference),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, expr, closeBracket) =>
                         (Expression)new BracketedExpression(openBracket, expr, closeBracket));
@@ -1164,7 +1191,7 @@ namespace Kusto.Language.Parsing
                     PathElementSelector,
                     _left =>
                         First(
-                            Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, MissingNameReference),
+                            Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelector, CreateMissingNameReference),
                                 (left, dot, selector) =>
                                     (Expression)new PathExpression(left, dot, selector)),
                             Rule(_left, BracketedPathElementSelector,
@@ -1198,7 +1225,7 @@ namespace Kusto.Language.Parsing
                     _left =>
                         First(
                             If(And(Token(SyntaxKind.DotToken), Not(ScanWildcard)),
-                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, MissingNameReference),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, CreateMissingNameReference),
                                     (left, dot, selector) =>
                                         (Expression)new PathExpression(left, dot, selector))
                             ),
@@ -1215,7 +1242,7 @@ namespace Kusto.Language.Parsing
                             Rule(
                                 _left,
                                 Token(SyntaxKind.DotToken),
-                                Required(WildcardedNameReference, MissingNameReference),
+                                Required(WildcardedNameReference, CreateMissingNameReference),
                                 (path, dot, selector) =>
                                     (Expression)new PathExpression(path, dot, selector))))
                 .WithTag("<wildcarded-entity-reference>");
@@ -1225,7 +1252,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.ToScalarKeyword, CompletionKind.ScalarPrefix),
                     Optional(QueryParameter(QueryOperatorParameters.ToScalarKindParameter, equalsNeeded: false)),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression),
+                    Required(Expression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (name, kind, openParen, expression, closeParen) =>
                         (Expression)new ToScalarExpression(name, kind, openParen, expression, closeParen));
@@ -1235,7 +1262,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.ToTableKeyword, CompletionKind.TabularPrefix).Hide(),
                     Optional(QueryParameter(QueryOperatorParameters.ToTableKindParameter, equalsNeeded: false)),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression),
+                    Required(Expression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (name, kind, openParen, expression, closeParen) =>
                         (Expression)new ToTableExpression(name, kind, openParen, expression, closeParen));
@@ -1255,13 +1282,13 @@ namespace Kusto.Language.Parsing
                                 //If(And(Token(SyntaxKind.DotToken), ScanFunctionCall),
                                 //    Rule(_left, Token(SyntaxKind.DotToken), FunctionCall,
                                 //        (left, dot, fc) => (Expression)new PathExpression(left, dot, fc))),
-                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, MissingNameReference),
+                                Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, CreateMissingNameReference),
                                     (left, dot, selector) => (Expression)new PathExpression(left, dot, selector)),
                                 Rule(_left, BracketedExpression,
                                     (left, right) => (Expression)new ElementExpression(left, right)))));
 
             var RequiredFunctionCallOrPath =
-                Required(FunctionCallOrPath, MissingExpression);
+                Required(FunctionCallOrPath, CreateMissingExpression);
 
             var UnaryPlusOrMinus =
                 First(
@@ -1276,7 +1303,7 @@ namespace Kusto.Language.Parsing
                     FunctionCallOrPath);
 
             var RequiredUnaryPlusOrMinus =
-                Required(UnaryPlusOrMinus, MissingExpression);
+                Required(UnaryPlusOrMinus, CreateMissingExpression);
 
             var StringOperatorTokens =
                 First(StringOperatorMap.Keys.Select(
@@ -1304,7 +1331,7 @@ namespace Kusto.Language.Parsing
                                     (Expression)new BinaryExpression(StringOperatorMap[op.Kind], left, op, right))));
 
             var RequiredStringOperation =
-                Required(StringOperation, MissingExpression);
+                Required(StringOperation, CreateMissingExpression);
 
             var Multiplicative =
                 ApplyZeroOrMore(StringOperation, _left =>
@@ -1320,7 +1347,7 @@ namespace Kusto.Language.Parsing
                         ));
 
             var RequiredMultiplicative =
-                Required(Multiplicative, MissingExpression);
+                Required(Multiplicative, CreateMissingExpression);
 
             var Additive =
                 ApplyZeroOrMore(Multiplicative, _left =>
@@ -1333,7 +1360,7 @@ namespace Kusto.Language.Parsing
                         ));
 
             var RequiredAdditive =
-                Required(Additive, MissingExpression);
+                Required(Additive, CreateMissingExpression);
 
             var Relational =
                 ApplyOptional(Additive, _left =>
@@ -1352,14 +1379,14 @@ namespace Kusto.Language.Parsing
                         ));
 
             var RequiredRelational =
-                Required(Relational, MissingExpression);
+                Required(Relational, CreateMissingExpression);
 
             var ExpressionCouple =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(InvocationExpression, MissingExpression),
+                    Required(InvocationExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.DotDotToken),
-                    Required(InvocationExpression, MissingExpression),
+                    Required(InvocationExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, first, dotDot, second, closeParen) =>
@@ -1371,8 +1398,8 @@ namespace Kusto.Language.Parsing
                     First(
                         // this is a special path meant to influence completion for first argument only
                         If(And(Token(SyntaxKind.OpenParenToken), AnyToken.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
-                            CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)),
-                        CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true)),
+                            CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true)),
+                        CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true)),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, list, closeParen) =>
@@ -1429,18 +1456,18 @@ namespace Kusto.Language.Parsing
 
             var LogicalAnd =
                 ApplyZeroOrMore(Equality, _left =>
-                    Rule(_left, Token(SyntaxKind.AndKeyword, CompletionKind.ScalarInfix), Required(Equality, MissingExpression),
+                    Rule(_left, Token(SyntaxKind.AndKeyword, CompletionKind.ScalarInfix), Required(Equality, CreateMissingExpression),
                         (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.AndExpression, left, op, right)));
 
             var LogicalOr =
                 ApplyZeroOrMore(LogicalAnd, _left =>
-                    Rule(_left, Token(SyntaxKind.OrKeyword, CompletionKind.ScalarInfix), Required(LogicalAnd, MissingExpression),
+                    Rule(_left, Token(SyntaxKind.OrKeyword, CompletionKind.ScalarInfix), Required(LogicalAnd, CreateMissingExpression),
                         (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.OrExpression, left, op, right)));
 #endregion
 
 #region Query Operators
 
-            this.LiteralList = CommaList(Literal, MissingExpressionNode, allowTrailingComma: true);
+            this.LiteralList = CommaList(Literal, CreateMissingExpression, allowTrailingComma: true);
 
             var RowSchema =
                     Rule(
@@ -1448,7 +1475,7 @@ namespace Kusto.Language.Parsing
                         Optional(Token(SyntaxKind.CommaToken)),
                         CommaList<NameAndTypeDeclaration>(
                             NameAndTypeDeclaration,
-                            MissingNameAndTypeDeclarationNode,
+                            CreateMissingNameAndTypeDeclaration,
                             allowTrailingComma: true),
                         RequiredToken(SyntaxKind.CloseParenToken),
                         (openParen, leadingComma, columns, closeParen) =>
@@ -1458,7 +1485,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DataTableParameters),
-                    Required(RowSchema, MissingRowSchema),
+                    Required(RowSchema, CreateMissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
                     Optional(Token(SyntaxKind.CommaToken)),
                     LiteralList,
@@ -1469,8 +1496,8 @@ namespace Kusto.Language.Parsing
             var ContextualDataTableExpression =
                 Rule(
                     Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
-                    Required(UnnamedExpression, MissingExpression), // guid literal expected, though parse any expression
-                    Required(RowSchema, MissingRowSchema),
+                    Required(UnnamedExpression, CreateMissingExpression), // guid literal expected, though parse any expression
+                    Required(RowSchema, CreateMissingRowSchema),
                     (keyword, id, schema) => 
                         (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
@@ -1489,14 +1516,14 @@ namespace Kusto.Language.Parsing
                 Rule(
                     RenameName,
                     Token(SyntaxKind.EqualToken),
-                    Required(ExternalDataWithClausePropertyValue, MissingValue),
+                    Required(ExternalDataWithClausePropertyValue, CreateMissingValue),
                     (name, equals, value) => new NamedParameter(name, equals, value));
 
             var ExternalDataWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(ExternalDataWithClauseProperty, MissingNamedParameterNode),
+                    CommaList(ExternalDataWithClauseProperty, CreateMissingNamedParameter),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, openParen, list, closeParen) =>
                         new ExternalDataWithClause(keyword, openParen, list, closeParen));
@@ -1507,9 +1534,9 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.ExternalDataKeyword, CompletionKind.QueryPrefix),
                         Token(SyntaxKind.External_DataKeyword).Hide()),
                     QueryParameterList(QueryOperatorParameters.ExternalDataWithClauseProperties),
-                    Required(RowSchema, MissingRowSchema),
+                    Required(RowSchema, CreateMissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Literal, missingElement: MissingExpressionNode, allowTrailingComma: true, oneOrMore: true),
+                    CommaList(Literal, fnMissingElement: CreateMissingExpression, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     Optional(ExternalDataWithClause),
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
@@ -1549,18 +1576,18 @@ namespace Kusto.Language.Parsing
             var ExtendOperator =
                 Rule(
                     Token(SyntaxKind.ExtendKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList<Expression>(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(NamedExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, list) =>
                         (QueryOperator)new ExtendOperator(keyword, list))
                 .WithTag("<extend>");
 
             var FacetWithClause =
                 First(
-                    Rule(Token(SyntaxKind.WithKeyword), Token(SyntaxKind.OpenParenToken), Required(ForkPipeExpression, MissingQueryOperatorExpression), RequiredToken(SyntaxKind.CloseParenToken),
+                    Rule(Token(SyntaxKind.WithKeyword), Token(SyntaxKind.OpenParenToken), Required(ForkPipeExpression, CreateMissingQueryOperatorExpression), RequiredToken(SyntaxKind.CloseParenToken),
                         (withKeyword, openParen, expr, closeParen) =>
                             (FacetWithClause)new FacetWithExpressionClause(withKeyword, openParen, expr, closeParen)),
 
-                    Rule(Token(SyntaxKind.WithKeyword), Required(ForkPipeOperator, MissingQueryOperator),
+                    Rule(Token(SyntaxKind.WithKeyword), Required(ForkPipeOperator, CreateMissingQueryOperator),
                         (withKeyword, op) =>
                             (FacetWithClause)new FacetWithOperatorClause(withKeyword, op)));
 
@@ -1568,7 +1595,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.FacetKeyword, CompletionKind.QueryPrefix).Hide(),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    SeparatedList<Expression>(EntityReferenceExpression, SyntaxKind.CommaToken, missingElement: MissingNameReferenceNode, oneOrMore: true),
+                    SeparatedList<Expression>(EntityReferenceExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingNameReference, oneOrMore: true),
                     Optional(FacetWithClause),
                     (facetKeyword, byKeyword, list, withClause) =>
                         (QueryOperator)new FacetOperator(facetKeyword, byKeyword, list, withClause))
@@ -1580,7 +1607,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.WhereKeyword, CompletionKind.QueryPrefix, CompletionPriority.Top),
                         Token(SyntaxKind.FilterKeyword).Hide()),
                     QueryParameterList(QueryOperatorParameters.FilterParameters, equalsNeeded: true),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (keyword, parameters, condition) =>
                         (QueryOperator)new FilterOperator(keyword, parameters, condition))
                 .WithTag("<filter>");
@@ -1610,7 +1637,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.InKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FindOperand, MissingExpressionNode, oneOrMore: true),
+                    CommaList(FindOperand, CreateMissingExpression, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (inKeyword, openParen, exprs, closeParen) =>
                         new FindInClause(inKeyword, openParen, exprs, closeParen));
@@ -1629,7 +1656,7 @@ namespace Kusto.Language.Parsing
                     _left => Rule(
                         _left,
                         Token(SyntaxKind.ColonToken),
-                        Required(First(ParamTypeExtended, IdentifierTypeExpression), MissingType),
+                        Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
                         (name, colon, type) => (Expression)new TypedColumnReference((NameReference)name, colon, type)));
 
             var PackExpression =
@@ -1651,7 +1678,7 @@ namespace Kusto.Language.Parsing
                 First(
                     Rule(
                         Token(SyntaxKind.ProjectKeyword),
-                        CommaList(FindProjectColumn, MissingExpressionNode, oneOrMore: true),
+                        CommaList(FindProjectColumn, CreateMissingExpression, oneOrMore: true),
                         (token, list) => new FindProjectClause(token, list)),
                     Rule(Token(SyntaxKind.ProjectSmartKeyword),
                         (token) => new FindProjectClause(token, SyntaxList<SeparatedElement<Expression>>.Empty())));
@@ -1659,7 +1686,7 @@ namespace Kusto.Language.Parsing
             var FindProjectAwayClause =
                 Rule(
                     Token(SyntaxKind._ProjectAwayKeyword),
-                    CommaList(FindProjectColumn, MissingExpressionNode, oneOrMore: true),
+                    CommaList(FindProjectColumn, CreateMissingExpression, oneOrMore: true),
                     (token, list) => new FindProjectClause(token, list));
 
             var FindOperator =
@@ -1669,7 +1696,7 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.FindParameters, equalsNeeded: true),
                     Optional(FindInClause),
                     Optional(Token(SyntaxKind.WhereKeyword)),
-                    Required(UnnamedExpression, MissingExpression), // condition
+                    Required(UnnamedExpression, CreateMissingExpression), // condition
                     Optional(FindProjectClause),
                     Optional(FindProjectAwayClause).Hide(), // internal use?
                     (findKeyword, dataScope, parameters, inClause, whereKeyword, condition, project, projectAway) =>
@@ -1693,7 +1720,7 @@ namespace Kusto.Language.Parsing
                             Rule(
                                 _left,
                                 Token(SyntaxKind.AndKeyword),
-                                Required(UnnamedExpression, MissingExpression),
+                                Required(UnnamedExpression, CreateMissingExpression),
                                 (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.AndExpression, left, op, right))));
 
             var SearchOperator =
@@ -1702,7 +1729,7 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.SearchParameters, equalsNeeded: true),
                     Optional(DataScopeClause(CompletionKind.Syntax)),
                     Optional(FindInClause),
-                    Required(SearchPredicate, MissingExpression),
+                    Required(SearchPredicate, CreateMissingExpression),
                     (keyword, parameters, dataScope, inClause, predicate) =>
                         (QueryOperator)new SearchOperator(keyword, parameters, dataScope, inClause, predicate))
                 .WithTag("<search>");
@@ -1716,7 +1743,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Optional(NameEqualsClause),
                     Token(SyntaxKind.OpenParenToken),
-                    Required(First(ForkPipeExpression, Expression.Hide()), MissingExpression),
+                    Required(First(ForkPipeExpression, Expression.Hide()), CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (nameClause, openParen, expr, closeParen) =>
                         new ForkExpression(nameClause, openParen, expr, closeParen));
@@ -1724,7 +1751,7 @@ namespace Kusto.Language.Parsing
             var ForkOperator =
                 Rule(
                     Token(SyntaxKind.ForkKeyword, CompletionKind.QueryPrefix).Hide(),
-                    List(ForkExpression, missingElement: MissingForkExpressionNode, oneOrMore: true),
+                    List(ForkExpression, fnMissingElement: CreateMissingForkExpression, oneOrMore: true),
                     (forkKeyword, list) => (QueryOperator)new ForkOperator(forkKeyword, list))
                 .WithTag("<fork>");
 
@@ -1741,7 +1768,7 @@ namespace Kusto.Language.Parsing
                 ApplyZeroOrMore(
                     JoinEqualityExpression,
                     _left =>
-                        Rule(_left, Token(SyntaxKind.AndKeyword, CompletionKind.ScalarInfix), Required(JoinEqualityExpression, MissingExpression),
+                        Rule(_left, Token(SyntaxKind.AndKeyword, CompletionKind.ScalarInfix), Required(JoinEqualityExpression, CreateMissingExpression),
                             (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.AndExpression, left, op, right)));
 
             var JoinOnExpression =
@@ -1752,20 +1779,20 @@ namespace Kusto.Language.Parsing
             var JoinOnClause =
                 Rule(
                     Token(SyntaxKind.OnKeyword),
-                    CommaList(JoinOnExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(JoinOnExpression, CreateMissingExpression, oneOrMore: true),
                     (onKeyword, list) => (JoinConditionClause)new JoinOnClause(onKeyword, list));
 
             var JoinWhereClause =
                 Rule(
                     Token(SyntaxKind.WhereKeyword),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (keyword, predicate) => (JoinConditionClause)new JoinWhereClause(keyword, predicate));
 
             var JoinOperator =
                 Rule(
                     Token(SyntaxKind.JoinKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.JoinParameters, equalsNeeded: true),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     Optional(First(
                         JoinOnClause,
                         JoinWhereClause.Hide())),
@@ -1777,8 +1804,8 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.LookupKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.LookupParameters, equalsNeeded: true),
-                    Required(UnnamedExpression, MissingExpression),
-                    Required(JoinOnClause, MissingJoinOnClause),
+                    Required(UnnamedExpression, CreateMissingExpression),
+                    Required(JoinOnClause, CreateMissingJoinOnClause),
                     (LookupKeyword, parameters, expr, onClause) =>
                         (QueryOperator)new LookupOperator(LookupKeyword, parameters, expr, onClause))
                 .WithTag("<lookup>");
@@ -1786,7 +1813,7 @@ namespace Kusto.Language.Parsing
             var MakeSeriesOnClause =
                 Rule(
                     RequiredToken(SyntaxKind.OnKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (keyword, expr) => new MakeSeriesOnClause(keyword, expr));
 
             var MakeSeriesInRangeClause =
@@ -1795,7 +1822,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.RangeKeyword).Hide(), 
                         //new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(NamedExpression, MissingExpressionNode),
+                    CommaList(NamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (inKeyword, rangeKeyword, openParen, list, closeParen) =>
                         (MakeSeriesRangeClause)new MakeSeriesInRangeClause(inKeyword, rangeKeyword, new ExpressionList(openParen, list, closeParen))); ;
@@ -1803,21 +1830,21 @@ namespace Kusto.Language.Parsing
             var MakeSeriesFromClause =
                 Rule(
                     Token(SyntaxKind.FromKeyword),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (FromToken, fromEx) =>
                         new MakeSeriesFromClause(FromToken, fromEx));
 
             var MakeSeriesToClause =
                Rule(
                    Token(SyntaxKind.ToKeyword),
-                   Required(UnnamedExpression, MissingExpression),
+                   Required(UnnamedExpression, CreateMissingExpression),
                    (ToToken, toEx) =>
                        new MakeSeriesToClause(ToToken, toEx));
 
             var MakeSeriesStepClause =
               Rule(
                   RequiredToken(SyntaxKind.StepKeyword),
-                  Required(UnnamedExpression, MissingExpression),
+                  Required(UnnamedExpression, CreateMissingExpression),
                   (stepToken, stepEx) =>
                       new MakeSeriesStepClause(stepToken, stepEx));
 
@@ -1833,14 +1860,14 @@ namespace Kusto.Language.Parsing
             var MakeSeriesByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, list) => new MakeSeriesByClause(keyword, list));
 
             var DefaultExpressionClause =
                 Rule(
                     Token(SyntaxKind.DefaultKeyword),
                     RequiredToken(SyntaxKind.EqualToken),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (defaultKeyword, equalToken, expr) =>
                         new DefaultExpressionClause(defaultKeyword, equalToken, expr));
 
@@ -1854,7 +1881,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.MakeSeriesKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.MakeSeriesParameters, equalsNeeded: true),
-                    SeparatedList(MakeSeriesExpression, SyntaxKind.CommaToken, MissingMakeSeriesExpressionNode, oneOrMore: true),
+                    SeparatedList(MakeSeriesExpression, SyntaxKind.CommaToken, CreateMissingMakeSeriesExpression, oneOrMore: true),
                     MakeSeriesOnClause,
                     First(MakeSeriesFromToStepClause, MakeSeriesInRangeClause),
                     Optional(MakeSeriesByClause),
@@ -1865,16 +1892,18 @@ namespace Kusto.Language.Parsing
             var ToTypeOfClause =
                 Rule(
                     Token(SyntaxKind.ToKeyword),
-                    Required(TypeofLiteral, MissingTypeOfLiteral),
+                    Required(TypeofLiteral, CreateMissingTypeOfLiteral),
                     (toKeyword, typeOfLiteral) => new ToTypeOfClause(toKeyword, (TypeOfLiteralExpression)typeOfLiteral));
 
             var MvExpandExpression =
                 First(
                     // check for missing initial expression error case
                     If(Token(SyntaxKind.ToKeyword).Hide(),
-                        Rule(ToTypeOfClause,
-                            (clause) =>
-                                new MvExpandExpression((Expression)MissingExpressionNode.Clone(), clause))),
+                        Rule(
+                            Required(NamedExpression, CreateMissingExpression),
+                            ToTypeOfClause,
+                            (expr, toTypeOfClause) =>
+                                new MvExpandExpression(expr, toTypeOfClause))),
                     Rule(NamedExpression, Optional(ToTypeOfClause),
                         (expr, toTypeOfClause) =>
                             new MvExpandExpression(expr, toTypeOfClause)));
@@ -1886,12 +1915,12 @@ namespace Kusto.Language.Parsing
                         Rule(ToTypeOfClause,
                             clause => new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] {
                                 new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause)) }))),
-                    SeparatedList(MvExpandExpression, SyntaxKind.CommaToken, missingElement: MissingMvExpandExpressionNode, oneOrMore: true));
+                    SeparatedList(MvExpandExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvExpandExpression, oneOrMore: true));
 
             var MvExpandRowLimitClause =
                 Rule(
                     Token(SyntaxKind.LimitKeyword),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (keyword, expr) => new MvExpandRowLimitClause(keyword, expr));
 
             var MvExpandOperator =
@@ -1912,7 +1941,7 @@ namespace Kusto.Language.Parsing
                     If(Token(SyntaxKind.ToKeyword).Hide(),
                         Rule(ToTypeOfClause,
                             (clause) =>
-                                new MvApplyExpression((Expression)MissingExpressionNode.Clone(), clause))),
+                                new MvApplyExpression(CreateMissingExpression(), clause))),
                     Rule(NamedExpression, Optional(ToTypeOfClause),
                         (expr, toTypeOfClause) =>
                             new MvApplyExpression(expr, toTypeOfClause)));
@@ -1924,24 +1953,24 @@ namespace Kusto.Language.Parsing
                         Rule(ToTypeOfClause,
                             clause => new SyntaxList<SeparatedElement<MvApplyExpression>>(new[] {
                                 new SeparatedElement<MvApplyExpression>(new MvApplyExpression(null, clause)) }))),
-                    SeparatedList(MvApplyExpression, SyntaxKind.CommaToken, missingElement: MissingMvApplyExpressionNode, oneOrMore: true));
+                    SeparatedList(MvApplyExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvApplyExpression, oneOrMore: true));
 
             var MvApplyRowLimitClause =
                 Rule(
                     Token(SyntaxKind.LimitKeyword),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (keyword, expr) => new MvApplyRowLimitClause(keyword, expr));
 
             var MvApplyContextIdClause =
               Rule(
                   Token(SyntaxKind.IdKeyword),
-                  Required(UnnamedExpression, MissingExpression),
+                  Required(UnnamedExpression, CreateMissingExpression),
                   (keyword, expr) => new MvApplyContextIdClause(keyword, expr));
 
             var MvApplySubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(ContextualSubExpression, MissingExpression),
+                    Required(ContextualSubExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
                         new MvApplySubqueryExpression(openParen, expr, closeParen));
@@ -1956,7 +1985,7 @@ namespace Kusto.Language.Parsing
                     Optional(MvApplyRowLimitClause),
                     Optional(MvApplyContextIdClause).Hide(),
                     RequiredToken(SyntaxKind.OnKeyword),
-                    Required(MvApplySubqueryExpression, MissingMvApplySubqueryExpression),
+                    Required(MvApplySubqueryExpression, CreateMissingMvApplySubqueryExpression),
                     (keyword, parameters, list, rowLimit, contextId, onKeyword, subquery) =>
                         (QueryOperator)new MvApplyOperator(keyword, parameters, list, rowLimit, contextId, onKeyword, subquery))
                 .WithTag("<mvapply>");
@@ -1964,7 +1993,7 @@ namespace Kusto.Language.Parsing
             var EvaluateSchemaClause =
                 Rule(
                     Token(SyntaxKind.ColonToken),
-                    Required(RowSchema, MissingRowSchema),
+                    Required(RowSchema, CreateMissingRowSchema),
                     (keyword, expr) =>
                         new EvaluateSchemaClause(keyword, expr));
 
@@ -1986,14 +2015,14 @@ namespace Kusto.Language.Parsing
                             Rule(
                                 _left,
                                 Token(SyntaxKind.ColonToken),
-                                Required(First(ParamTypeExtended, IdentifierTypeExpression), MissingType),
+                                Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
                                 (name, colon, type) =>
                                     (Expression)new NameAndTypeDeclaration((NameDeclaration)name, colon, type))),
                     Rule(
                         Token(SyntaxKind.ColonToken).Hide(),
-                        Required(First(ParamTypeExtended, IdentifierTypeExpression), MissingType),
+                        Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
                         (colon, type) =>
-                            (Expression)new NameAndTypeDeclaration((NameDeclaration)MissingNameDeclarationNode.Clone(), colon, type)));
+                            (Expression)new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type)));
 
             var ParseWithExpression =
                 First(
@@ -2005,7 +2034,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.ParseKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.ParseParameters, equalsNeeded: true),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.WithKeyword),
                     List(Rule(ParseWithExpression, e => (SyntaxNode)e)),
                     (parseKeyword, parameters, expr, withKeyword, expressions) =>
@@ -2016,7 +2045,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.ParseWhereKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.ParseParameters, equalsNeeded: true),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.WithKeyword),
                     List(Rule(ParseWithExpression, e => (SyntaxNode)e)),
                     (parseKeyword, parameters, expr, withKeyword, expressions) =>
@@ -2035,9 +2064,9 @@ namespace Kusto.Language.Parsing
             var ParseKvOperator =
                 Rule(
                     Token(SyntaxKind.ParseKvKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.AsKeyword),
-                    Required(RowSchema, MissingRowSchema),
+                    Required(RowSchema, CreateMissingRowSchema),
                     Optional(ParseKvWithClause),
                     (parseKvKeyword, expression, asKeyword, keys, withClause) => 
                         (QueryOperator)new ParseKvOperator(parseKvKeyword, expression, asKeyword, keys, withClause))
@@ -2046,13 +2075,13 @@ namespace Kusto.Language.Parsing
             var PartitionScopeClause =
                 Rule(
                     Token(SyntaxKind.InKeyword).Hide(),
-                    Required(First(FunctionCall, DynamicLiteral), MissingExpression),
+                    Required(First(FunctionCall, DynamicLiteral), CreateMissingExpression),
                     (inKeyword, expr) => new PartitionScope(inKeyword, expr));
 
             var PartitionQueryExpression =
                Rule(
                    Token(SyntaxKind.OpenBraceToken),
-                   Required(Expression, MissingExpression),
+                   Required(Expression, CreateMissingExpression),
                    RequiredToken(SyntaxKind.CloseBraceToken),
                    (openBrace, expr, closeBrace) =>
                        (PartitionOperand)new PartitionQuery(openBrace, expr, closeBrace));
@@ -2060,7 +2089,7 @@ namespace Kusto.Language.Parsing
             var PartitionSubqueryExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    Required(First(PipeSubExpression, Expression.Hide()), MissingExpression),
+                    Required(First(PipeSubExpression, Expression.Hide()), CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, expr, closeParen) =>
                         (PartitionOperand)new PartitionSubquery(openParen, expr, closeParen));
@@ -2070,13 +2099,13 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.PartitionKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.PartitionParameters),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    Required(EntityReferenceExpression, MissingNameReference),
+                    Required(EntityReferenceExpression, CreateMissingNameReference),
                     Optional(PartitionScopeClause),
                     Required(
                         First(
                             PartitionSubqueryExpression,
                             PartitionQueryExpression),
-                        MissingPartitionOperand),
+                        CreateMissingPartitionOperand),
                     (partitionKeyword, parameters, byKeyword, byExpression, scope, operand) =>
                         (QueryOperator)new PartitionOperator(partitionKeyword, parameters, byKeyword, byExpression, scope, operand))
                 .WithTag("<partition>");
@@ -2092,10 +2121,10 @@ namespace Kusto.Language.Parsing
                 Rule(
                     HiddenToken(SyntaxKind.PartitionByKeyword),
                     QueryParameterList(QueryOperatorParameters.PartitionByParameters),
-                    Required(EntityReferenceExpression, MissingNameReference),
+                    Required(EntityReferenceExpression, CreateMissingNameReference),
                     Optional(PartitionByIdClause),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(ContextualSubExpression, MissingExpression),
+                    Required(ContextualSubExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, parameters, entity, idClause, openParen, subQuery, closeParen) =>
                         (QueryOperator)new PartitionByOperator(keyword, parameters, entity, idClause, openParen, subQuery, closeParen));
@@ -2103,28 +2132,28 @@ namespace Kusto.Language.Parsing
             var ProjectOperator =
                 Rule(
                     Token(SyntaxKind.ProjectKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(NamedExpression, MissingExpressionNode),
+                    CommaList(NamedExpression, CreateMissingExpression),
                     (keyword, list) => (QueryOperator)new ProjectOperator(keyword, list))
                 .WithTag("<project>");
 
             var ProjectAwayOperator =
                 Rule(
                     Token(SyntaxKind.ProjectAwayKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode),
+                    CommaList(SimpleOrWildcardedEntityReference, CreateMissingExpression),
                     (keyword, list) => (QueryOperator)new ProjectAwayOperator(keyword, list))
                 .WithTag("<project-away>");
 
             var ProjectKeepOperator =
                Rule(
                    Token(SyntaxKind.ProjectKeepKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                   CommaList(SimpleOrWildcardedEntityReference, MissingExpressionNode, oneOrMore: true),
+                   CommaList(SimpleOrWildcardedEntityReference, CreateMissingExpression, oneOrMore: true),
                    (keyword, list) => (QueryOperator)new ProjectKeepOperator(keyword, list))
                .WithTag("<project-keep>");
 
             var ProjectRenameOperator =
                 Rule(
                     Token(SyntaxKind.ProjectRenameKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    CommaList(NamedExpression, MissingExpressionNode),
+                    CommaList(NamedExpression, CreateMissingExpression),
                     (keyword, list) => (QueryOperator)new ProjectRenameOperator(keyword, list))
                 .WithTag("<project-rename>");
 
@@ -2132,7 +2161,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SampleKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.SampleParameters, equalsNeeded: true),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (sampleKeyword, parameters, expression) => (QueryOperator)new SampleOperator(sampleKeyword, parameters, expression))
                 .WithTag("<sample>");
 
@@ -2140,9 +2169,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SampleDistinctKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.SampleDistinctParameters, equalsNeeded: true),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.OfKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (keyword, parameters, expr, ofKeyword, ofExpr) =>
                         (QueryOperator)new SampleDistinctOperator(keyword, parameters, expr, ofKeyword, ofExpr))
                 .WithTag("<sample-distinct>");
@@ -2158,7 +2187,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.ReduceKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.ReduceParameters),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     Optional(ReduceByWithClause),
                     (reduceKeyword, parameters, byKeyword, expr, withClause) =>
                         (QueryOperator)new ReduceByOperator(reduceKeyword, parameters, byKeyword, expr, withClause))
@@ -2169,7 +2198,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         Token(SyntaxKind.BinKeyword),
                         Token(SyntaxKind.EqualToken),
-                        Required(UnnamedExpression, MissingExpression),
+                        Required(UnnamedExpression, CreateMissingExpression),
                         (bin, equal, value) =>
                             new SimpleNamedExpression(new NameDeclaration(new TokenName(bin)), equal, value)));
 
@@ -2179,7 +2208,7 @@ namespace Kusto.Language.Parsing
             var SummarizeByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    CommaList(SummarizeByExpression, missingElement: MissingExpressionNode, oneOrMore: true),
+                    CommaList(SummarizeByExpression, fnMissingElement: CreateMissingExpression, oneOrMore: true),
                     Optional(SummarizeBinClause.Hide()), // legacy syntax
                     (byKeyword, expressions, binClause) =>
                         new SummarizeByClause(byKeyword, expressions, binClause))
@@ -2193,7 +2222,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SummarizeKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.SummarizeParameters, equalsNeeded: true),
-                    SeparatedList(SummarizeExpression, SyntaxKind.CommaToken, missingElement: MissingExpressionNode, oneOrMore: false),
+                    SeparatedList(SummarizeExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingExpression, oneOrMore: false),
                     Optional(SummarizeByClause),
                     (summarizeKeyword, parameters, aggregates, byClause) =>
                         (QueryOperator)new SummarizeOperator(summarizeKeyword, parameters, aggregates, byClause))
@@ -2203,7 +2232,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DistinctKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.DistinctParameters, equalsNeeded: true),
-                    CommaList(First(StarExpression, NamedExpression), MissingExpressionNode, oneOrMore: true),
+                    CommaList(First(StarExpression, NamedExpression), CreateMissingExpression, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new DistinctOperator(keyword, parameters, list))
                 .WithTag("<distinct>");
 
@@ -2213,7 +2242,7 @@ namespace Kusto.Language.Parsing
                         Token(SyntaxKind.LimitKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                         Token(SyntaxKind.TakeKeyword, CompletionKind.QueryPrefix)),
                     QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
-                    Required(NamedExpression.Examples(KustoFacts.LimitExamples), MissingExpression),
+                    Required(NamedExpression.Examples(KustoFacts.LimitExamples), CreateMissingExpression),
                     (keyword, parameters, expression) =>
                         (QueryOperator)new TakeOperator(keyword, parameters, expression))
                 .WithTag("<take>");
@@ -2252,7 +2281,7 @@ namespace Kusto.Language.Parsing
                     // implemenation of sort operator and we don't want to document it.
                     QueryParameterList(QueryOperatorParameters.SortParameters).Hide(),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(SortExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, parameters, byKeyword, list) =>
                         (QueryOperator)new SortOperator(keyword, parameters, byKeyword, list))
                 .WithTag("<sort>");
@@ -2274,12 +2303,12 @@ namespace Kusto.Language.Parsing
             var ProjectReorderOperator =
                 Rule(
                    Token(SyntaxKind.ProjectReorderKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                   CommaList(ReorderExpression, MissingExpressionNode),
+                   CommaList(ReorderExpression, CreateMissingExpression),
                    (keyword, list) => (QueryOperator)new ProjectReorderOperator(keyword, list))
                 .WithTag("<project-reorder>");
 
             var ScanAssignment =
-                Rule(ExtendedNameReference, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, MissingExpression),
+                Rule(ExtendedNameReference, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, CreateMissingExpression),
                     (name, equals, expr) =>
                         new ScanAssignment((NameReference)name, equals, expr))
                 .WithTag("<assignment>");
@@ -2287,7 +2316,7 @@ namespace Kusto.Language.Parsing
             var ScanComputationClause =
                 Rule(
                     Token(SyntaxKind.FatArrowToken),
-                    CommaList(ScanAssignment, MissingScanAssignmentNode, oneOrMore: true),
+                    CommaList(ScanAssignment, CreateMissingScanAssignment, oneOrMore: true),
                     (token, list) => new ScanComputationClause(token, list));            
 
             var ScanStepOutput =
@@ -2300,11 +2329,11 @@ namespace Kusto.Language.Parsing
             var ScanStep =
                 Rule(
                     Token(SyntaxKind.StepKeyword),                    
-                    Required(RenameName, MissingNameDeclaration), // name                    
+                    Required(RenameName, CreateMissingNameDeclaration), // name                    
                     Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported                    
                     Optional(ScanStepOutput.Hide()),
                     RequiredToken(SyntaxKind.ColonToken),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     Optional(ScanComputationClause),
                     RequiredToken(SyntaxKind.SemicolonToken),
                     (step, name, optional, output, colon, predicate, computation, semi) =>
@@ -2314,7 +2343,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     HiddenToken(SyntaxKind.OrderKeyword), // not yet supported
                     RequiredToken(SyntaxKind.ByKeyword),
-                    CommaList(SortExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionKeyword, SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
+                    CommaList(SortExpression, CreateMissingExpression, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionKeyword, SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (order, by, list) =>
                         new ScanOrderByClause(order, by, list));
 
@@ -2322,7 +2351,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     HiddenToken(SyntaxKind.PartitionKeyword), // not yet supported
                     RequiredToken(SyntaxKind.ByKeyword),
-                    CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true, endKinds: new[] { SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
+                    CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true, endKinds: new[] { SyntaxKind.DeclareKeyword, SyntaxKind.WithKeyword }),
                     (partition, by, list) =>
                         new ScanPartitionByClause(partition, by, list));
 
@@ -2330,7 +2359,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DeclareKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FunctionParameter, MissingFunctionParameterNode, endKinds: new[] { SyntaxKind.WithKeyword } ),
+                    CommaList(FunctionParameter, CreateMissingFunctionParameter, endKinds: new[] { SyntaxKind.WithKeyword } ),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (declare, open, declarations, close) => new ScanDeclareClause(declare, open, declarations, close));
 
@@ -2352,15 +2381,15 @@ namespace Kusto.Language.Parsing
             var TopHittersByClause =
                 Rule(
                     Token(SyntaxKind.ByKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     (keyword, expression) => new TopHittersByClause(keyword, expression));
 
             var TopHittersOperator =
                 Rule(
                     Token(SyntaxKind.TopHittersKeyword, CompletionKind.QueryPrefix),
-                    Required(NamedExpression.Examples(KustoFacts.TopExamples), MissingExpression),
+                    Required(NamedExpression.Examples(KustoFacts.TopExamples), CreateMissingExpression),
                     RequiredToken(SyntaxKind.OfKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     Optional(TopHittersByClause),
                     (keyword, expr, ofKeyword, ofExpr, byClause) =>
                         (QueryOperator)new TopHittersOperator(keyword, expr, ofKeyword, ofExpr, byClause))
@@ -2370,9 +2399,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.TopKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.TopParameters, equalsNeeded: true),
-                    Required(NamedExpression.Examples(KustoFacts.TopExamples), MissingExpression),
+                    Required(NamedExpression.Examples(KustoFacts.TopExamples), CreateMissingExpression),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    Required(SortExpression, MissingExpression),
+                    Required(SortExpression, CreateMissingExpression),
                     (keyword, parameters, expr, byKeyword, byExpr) =>
                         (QueryOperator)new TopOperator(keyword, parameters, expr, byKeyword, byExpr))
                 .WithTag("<top>");
@@ -2401,29 +2430,17 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.TopNestedKeyword),
                     Optional(NamedExpression),
                     RequiredToken(SyntaxKind.OfKeyword),
-                    Required(NamedExpression, MissingExpression),
+                    Required(NamedExpression, CreateMissingExpression),
                     Optional(TopNestedWithOthersClause),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    Required(TopNestedByExpression, MissingExpression),
+                    Required(TopNestedByExpression, CreateMissingExpression),
 
                     (keyword, expr, ofKeyword, ofExpr, withOthersClause, byKeyword, byExpr) =>
                         new TopNestedClause(keyword, expr, ofKeyword, ofExpr, withOthersClause, byKeyword, byExpr));
 
-            var MissingTopNestedClauseNode =
-                new TopNestedClause(
-                    SyntaxToken.Missing(SyntaxKind.TopNestedKeyword),
-                    expression: null,
-                    ofKeyword: SyntaxToken.Missing(SyntaxKind.OfKeyword),
-                    ofExpression: new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
-                    withOthersClause: null,
-                    byKeyword: SyntaxToken.Missing(SyntaxKind.ByKeyword),
-                    byExpression: new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
-                    diagnostics: new[] { DiagnosticFacts.GetMissingClause() }
-                    );
-
             var TopNestedOperator =
                 If(Token(SyntaxKind.TopNestedKeyword, CompletionKind.QueryPrefix),
-                    Rule(CommaList(TopNestedClause, MissingTopNestedClauseNode, oneOrMore: true),
+                    Rule(CommaList(TopNestedClause, CreateMissingTopNestedClause, oneOrMore: true),
                         list => (QueryOperator)new TopNestedOperator(list)))
                 .WithTag("<top-nested>");
 
@@ -2438,7 +2455,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.UnionKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.UnionParameters, equalsNeeded: true),
-                    CommaList<Expression>(UnionExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(UnionExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new UnionOperator(keyword, parameters, list))
                 .WithTag("<union>");
 
@@ -2446,7 +2463,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.AsKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.AsParameters, equalsNeeded: true),
-                    Required(SimpleNameDeclaration, MissingNameDeclaration),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                     (keyword, parameters, name) => (QueryOperator)new AsOperator(keyword, parameters, name))
                 .WithTag("<as>");
 
@@ -2454,7 +2471,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.SerializeKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.SerializedParameters, equalsNeeded: true),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: false),
+                    CommaList(NamedExpression, CreateMissingExpression, oneOrMore: false),
                     (keyword, parameters, exprs) =>
                         (QueryOperator)new SerializeOperator(keyword, parameters, exprs))
                 .WithTag("<serialize>");
@@ -2464,13 +2481,13 @@ namespace Kusto.Language.Parsing
                 If(And(Token(SyntaxKind.RangeKeyword, CompletionKind.QueryPrefix), Fails(Token("("))),
                     Rule(
                         Token(SyntaxKind.RangeKeyword, CompletionKind.QueryPrefix),
-                        Required(SimpleNameDeclaration, MissingNameDeclaration),
+                        Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                         RequiredToken(SyntaxKind.FromKeyword),
-                        Required(UnnamedExpression, MissingExpression),
+                        Required(UnnamedExpression, CreateMissingExpression),
                         RequiredToken(SyntaxKind.ToKeyword),
-                        Required(UnnamedExpression, MissingExpression),
+                        Required(UnnamedExpression, CreateMissingExpression),
                         RequiredToken(SyntaxKind.StepKeyword),
-                        Required(UnnamedExpression, MissingExpression),
+                        Required(UnnamedExpression, CreateMissingExpression),
                         (rangeToken, name, FromToken, fromEx, ToToken, toEx, stepToken, stepEx) =>
                             (QueryOperator)new RangeOperator(rangeToken, name, FromToken, fromEx, ToToken, toEx, stepToken, stepEx)))
                 .WithTag("<range>");
@@ -2478,7 +2495,7 @@ namespace Kusto.Language.Parsing
             var InvokeOperator =
                 Rule(
                     Token(SyntaxKind.InvokeKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    Required(DotCompositeFunctionCall, MissingExpression),
+                    Required(DotCompositeFunctionCall, CreateMissingExpression),
                     (keyword, function) => (QueryOperator)new InvokeOperator(keyword, function))
                 .WithTag("<invoke>");
 
@@ -2511,7 +2528,7 @@ namespace Kusto.Language.Parsing
                     QueryParameter(QueryOperatorParameters.RenderTitle.Hide(), equalsNeeded: false),
                     QueryParameter(QueryOperatorParameters.RenderAccumulate.Hide(), equalsNeeded: false),
                     If(And(Token(SyntaxKind.WithKeyword).Hide(), Not(Token(SyntaxKind.OpenParenToken))),
-                        Rule(Token(SyntaxKind.WithKeyword).Hide(), Required(Literal, MissingValue),
+                        Rule(Token(SyntaxKind.WithKeyword).Hide(), Required(Literal, CreateMissingValue),
                             (keyword, value) => new NamedParameter(new NameDeclaration(new TokenName(keyword)), SyntaxToken.Missing(SyntaxKind.EqualToken), value))),
                     Rule(Token(SyntaxKind.ByKeyword).Hide(), NameReferenceList(DeprecatedRenderByPropertyName),
                         (keyword, list) => new NamedParameter(new NameDeclaration(new TokenName(keyword)), SyntaxToken.Missing(SyntaxKind.EqualToken), list)));
@@ -2528,7 +2545,7 @@ namespace Kusto.Language.Parsing
             var PrintOperator =
                 Rule(
                     Token(SyntaxKind.PrintKeyword, CompletionKind.QueryPrefix),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, exprs) => 
                         (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
@@ -2536,14 +2553,14 @@ namespace Kusto.Language.Parsing
             var AssertSchemaOperator =
                 Rule(
                     Token(SyntaxKind.AssertSchemaKeyword, CompletionKind.QueryPrefix),
-                    Required(RowSchema, MissingRowSchema),
+                    Required(RowSchema, CreateMissingRowSchema),
                     (keyword, schema) =>
                         (QueryOperator)new AssertSchemaOperator(keyword, schema)).Hide();
 
             var EntityGroup = Rule(
                 Token(SyntaxKind.EntityGroupKeyword),
                 RequiredToken(SyntaxKind.OpenBracketToken),
-                CommaList(UnnamedExpression, MissingExpressionNode, oneOrMore: true),
+                CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true),
                 RequiredToken(SyntaxKind.CloseBracketToken),
                 (keyword, open, entitiesList, close) =>
                     (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
@@ -2566,7 +2583,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     InvocationExpression,
                     RequiredToken(SyntaxKind.OnKeyword),
-                    Required(SimpleNameReference, MissingNameReference),
+                    Required(SimpleNameReference, CreateMissingNameReference),
                     (table, onKeyword, column) =>
                         new MakeGraphTableAndKeyClause(table, onKeyword, (NameReference)column))
                 .WithTag("<table-and-key-clause>");
@@ -2574,7 +2591,7 @@ namespace Kusto.Language.Parsing
             var MakeGraphWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
-                    CommaList(MakeGraphTableAndKeyClause, MissingMakeGraphTableAndKeyClauseNode, oneOrMore: true),
+                    CommaList(MakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, oneOrMore: true),
                     (withKeyword, tablesAndKeys) =>
                         new MakeGraphWithClause(withKeyword, tablesAndKeys))
                 .WithTag("<make-graph-with-clause>");
@@ -2582,13 +2599,13 @@ namespace Kusto.Language.Parsing
             var MakeGraphOperator =
                 Rule(
                     Token(SyntaxKind.MakeGraphKeyword).Hide(),
-                    Required(SimpleNameReference, MissingNameReference),
+                    Required(SimpleNameReference, CreateMissingNameReference),
                     Required(
                         First(
                             Token("-->", SyntaxKind.DashDashGreaterThanToken),
                             Token("--", SyntaxKind.DashDashToken)),
                         () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
-                    Required(SimpleNameReference, MissingNameReference),
+                    Required(SimpleNameReference, CreateMissingNameReference),
                     Optional(MakeGraphWithClause),
                     (keyword, sourceColumn, direction, targetColumn, withClause) =>
                         (QueryOperator)new MakeGraphOperator(keyword, (NameReference)sourceColumn, direction, (NameReference)targetColumn, withClause)
@@ -2599,7 +2616,7 @@ namespace Kusto.Language.Parsing
             var GraphMergeOperaor =
                 Rule(
                     Token(SyntaxKind.GraphMergeKeyword).Hide(),
-                    Required(InvocationExpression, MissingExpression),
+                    Required(InvocationExpression, CreateMissingExpression),
                     Optional(JoinOnClause),
                     (keyword, graph, onClause) =>
                         (QueryOperator)new GraphMergeOperator(keyword, graph, onClause))
@@ -2608,23 +2625,23 @@ namespace Kusto.Language.Parsing
             var WhereClause =
                 Rule(
                     Token(SyntaxKind.WhereKeyword),
-                    Required(Expression, MissingExpression),
+                    Required(Expression, CreateMissingExpression),
                     (keyword, expression) =>
                         new WhereClause(keyword, expression));
 
             var ProjectClause =
                 Rule(
                     Token(SyntaxKind.ProjectKeyword),
-                    CommaList(NamedExpression, MissingExpressionNode, oneOrMore: true),
+                    CommaList(NamedExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, list) =>
                         new ProjectClause(keyword, list));
 
             var GraphMatchPatternEdgeRange =
                 Rule(
                     Token(SyntaxKind.AsteriskToken),
-                    Required(InvocationExpression, MissingExpression),
+                    Required(InvocationExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.DotDotToken),
-                    Required(InvocationExpression, MissingExpression),
+                    Required(InvocationExpression, CreateMissingExpression),
                     (asterisk, rangeStart, dotDotToken, rangeEnd) =>
                         new GraphMatchPatternEdgeRange(asterisk, rangeStart, dotDotToken, rangeEnd));
 
@@ -2665,7 +2682,7 @@ namespace Kusto.Language.Parsing
             var GraphMatchOperator =
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword).Hide(),
-                    List(GraphMatchPatternNotation, MissingGraphMatchPatternNotation, oneOrMore: true)
+                    List(GraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, oneOrMore: true)
                         .WithCompletion(
                             new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"),
                             new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
@@ -2776,7 +2793,7 @@ namespace Kusto.Language.Parsing
                 ApplyZeroOrMore(
                     Rule(ForkPipeOperator, o => (Expression)o),
                     _left =>
-                        Rule(_left, Token(SyntaxKind.BarToken), Required(ForkPipeOperator, MissingQueryOperator),
+                        Rule(_left, Token(SyntaxKind.BarToken), Required(ForkPipeOperator, CreateMissingQueryOperator),
                             (left, pipeToken, right) => (Expression)new PipeExpression(left, pipeToken, right)));
 
             var InitialPipeElementExpression =
@@ -2796,7 +2813,7 @@ namespace Kusto.Language.Parsing
                 ApplyZeroOrMore(
                     InitialPipeElementExpression,
                     _left =>
-                        Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
+                        Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, CreateMissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right)));
 
             PipeSubExpressionCore =
@@ -2805,7 +2822,7 @@ namespace Kusto.Language.Parsing
                         PostPipeQueryOperator.Cast<Expression>(),
                         InitialPipeElementExpression.Hide()),
                     _left =>
-                        Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
+                        Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, CreateMissingQueryOperator),
                             (left, op, right) => (Expression)new PipeExpression(left, op, right)));
 
             ContextualSubExpressionCore =
@@ -2813,7 +2830,7 @@ namespace Kusto.Language.Parsing
                     ApplyZeroOrMore(
                         ContextualDataTableExpression,
                         _left =>
-                            Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, MissingQueryOperator),
+                            Rule(_left, Token(SyntaxKind.BarToken), Required(FollowingPipeElementExpression, CreateMissingQueryOperator),
                                 (left, op, right) => (Expression)new PipeExpression(left, op, right))),
                     PipeSubExpression);
 
@@ -2829,9 +2846,9 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.AliasKeyword, CompletionKind.QueryPrefix).Hide(),
                     RequiredToken(SyntaxKind.DatabaseKeyword),
-                    Required(SimpleNameDeclaration, MissingNameDeclaration),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                     RequiredToken(SyntaxKind.EqualToken),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (aliasKeyword, databaseKeyword, name, equalToken, expression) =>
                         (Statement)new AliasStatement(aliasKeyword, databaseKeyword, name, equalToken, expression))
                 .WithTag("<alias>");
@@ -2840,7 +2857,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.MaterializeKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(PipeExpression, MissingExpression),
+                    Required(PipeExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, openParen, expr, closeParen) =>
                         (Expression)new MaterializeExpression(keyword, openParen, expr, closeParen));
@@ -2848,7 +2865,7 @@ namespace Kusto.Language.Parsing
             var DefaultValueDeclaration =
                 Rule(
                     Token(SyntaxKind.EqualToken),
-                    Required(First(Literal, NameTokenLiteral), MissingExpression),
+                    Required(First(Literal, NameTokenLiteral), CreateMissingExpression),
                     (equalToken, value) => new DefaultValueDeclaration(equalToken, value));
 
             FunctionParameterCore =
@@ -2860,7 +2877,7 @@ namespace Kusto.Language.Parsing
             this.FunctionParameters =
                 Rule(
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: false),
+                    CommaList(FunctionParameter, CreateMissingFunctionParameter, oneOrMore: false),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openParen, parameters, closeParen) => new FunctionParameters(openParen, parameters, closeParen));
 
@@ -2872,7 +2889,7 @@ namespace Kusto.Language.Parsing
                         (statement, semicolon) => new SeparatedElement<Statement>(statement, semicolon)));
 
             var FunctionBodyStatementList =
-                List(FunctionBodyStatement, missingElement: MissingStatementElementNode, oneOrMore: false)
+                List(FunctionBodyStatement, fnMissingElement: CreateMissingStatementElement, oneOrMore: false)
                 .WithTag("<statement-list>");
 
             this.FunctionBody =
@@ -2919,7 +2936,7 @@ namespace Kusto.Language.Parsing
                             Token(SyntaxKind.MaterializeKeyword)),
                         Rule(
                             Token(SyntaxKind.LetKeyword),
-                            Required(SimpleNameDeclaration, MissingNameDeclaration),
+                            Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                             Token(SyntaxKind.EqualToken),
                             MaterializeExpression,
                             (keyword, name, equal, expr) =>
@@ -2932,7 +2949,7 @@ namespace Kusto.Language.Parsing
                             Token(SyntaxKind.EntityGroupKeyword)),
                         Rule(
                             Token(SyntaxKind.LetKeyword),
-                            Required(SimpleNameDeclaration, MissingNameDeclaration),
+                            Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                             Token(SyntaxKind.EqualToken),
                             EntityGroup,
                             (keyword, name, equal, expr) =>
@@ -2940,22 +2957,22 @@ namespace Kusto.Language.Parsing
                     // otherwise regular let statement
                     Rule(
                         Token(SyntaxKind.LetKeyword, CompletionKind.QueryPrefix),
-                        Required(SimpleNameDeclaration, MissingNameDeclaration),
+                        Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                         RequiredToken(SyntaxKind.EqualToken),
-                        Required(Expression, MissingExpression),
+                        Required(Expression, CreateMissingExpression),
                         (letKeyword, name, equalToken, expression) =>
                             (Statement)new LetStatement(letKeyword, name, equalToken, expression)));
 
             var OptionValueClause =
                 Rule(
                     Token(SyntaxKind.EqualToken),
-                    Required(UnnamedExpression, MissingExpression),
+                    Required(UnnamedExpression, CreateMissingExpression),
                     (equal, expr) => new OptionValueClause(equal, expr));
 
             var SetOptionStatement =
                 Rule(
                     Token(SyntaxKind.SetKeyword, CompletionKind.QueryPrefix),
-                    Required(SimpleNameDeclaration, MissingNameDeclaration),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                     Optional(OptionValueClause),
                     (keyword, name, value) =>
                         (Statement)new SetOptionStatement(keyword, name, value))
@@ -2966,7 +2983,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.DeclareKeyword, CompletionKind.QueryPrefix).Hide(),
                     RequiredToken(SyntaxKind.QueryParametersKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FunctionParameter, MissingFunctionParameterNode, oneOrMore: true),
+                    CommaList(FunctionParameter, CreateMissingFunctionParameter, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (declareKeyword, queryParametersKeyword, open, list, close) =>
                         (Statement)new QueryParametersStatement(declareKeyword, queryParametersKeyword, open, list, close));
@@ -2982,7 +2999,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.AccessKeyword),
                     RequiredToken(SyntaxKind.ToKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList<Expression>(Restriction, MissingExpressionNode, oneOrMore: true),
+                    CommaList<Expression>(Restriction, CreateMissingExpression, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen) =>
                         (Statement)new RestrictStatement(restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen))
@@ -2992,7 +3009,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DotToken),
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    Required(StringLiteral, MissingStringLiteral),
+                    Required(StringLiteral, CreateMissingStringLiteral),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (dot, openBracket, value, closeBracket) =>
                         new PatternPathValue(dot, openBracket, value, closeBracket));
@@ -3007,7 +3024,7 @@ namespace Kusto.Language.Parsing
             var PatternMatchBody =
                 Rule(
                     RequiredToken(SyntaxKind.OpenBraceToken),
-                    List(PatternMatchStatementElement, MissingStatementElementNode, oneOrMore: false),
+                    List(PatternMatchStatementElement, CreateMissingStatementElement, oneOrMore: false),
                     Optional(Expression),
                     Optional(Token(SyntaxKind.SemicolonToken)),
                     RequiredToken(SyntaxKind.CloseBraceToken),
@@ -3022,7 +3039,7 @@ namespace Kusto.Language.Parsing
             var PatternMatch =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    CommaList<Expression>(PatternMatchValue, MissingStringLiteralNode, oneOrMore: true),
+                    CommaList<Expression>(PatternMatchValue, CreateMissingStringLiteral, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     Optional(PatternPathValue),
                     RequiredToken(SyntaxKind.EqualToken),
@@ -3034,37 +3051,20 @@ namespace Kusto.Language.Parsing
             var PatternPathParameter =
                 Rule(
                     Token(SyntaxKind.OpenBracketToken),
-                    Required(NameAndTypeDeclaration, () => (NameAndTypeDeclaration)MissingNameAndTypeDeclarationNode.Clone()),
+                    Required(NameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, parameter, closeBracket) =>
                         new PatternPathParameter(openBracket, parameter, closeBracket));
-
-            var MissingPatternMatch =
-                new PatternMatch(
-                    new ExpressionList(
-                        SyntaxToken.Missing(SyntaxKind.OpenParenToken),
-                        SyntaxList<SeparatedElement<Expression>>.Empty(),
-                        SyntaxToken.Missing(SyntaxKind.CloseParenToken)),
-                    null, // path value okay to be null
-                    SyntaxToken.Missing(SyntaxKind.EqualToken),
-                    new FunctionBody(
-                        SyntaxToken.Missing(SyntaxKind.OpenBraceToken),
-                        SyntaxList<SeparatedElement<Statement>>.Empty(),
-                        null, // expression okay to be null
-                        null, // semicolon okay to be null
-                        SyntaxToken.Missing(SyntaxKind.CloseBraceToken)),
-                    SyntaxToken.Missing(SyntaxKind.SemicolonToken),
-                    new[] { DiagnosticFacts.GetMissingPatternMatch() });
 
             var PatternDeclaration =
                 Rule(
                     Token(SyntaxKind.EqualToken),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(NameAndTypeDeclaration, MissingNameAndTypeDeclarationNode, oneOrMore: false),
+                    CommaList(NameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, oneOrMore: false),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     Optional(PatternPathParameter),
                     RequiredToken(SyntaxKind.OpenBraceToken),
-                    List(PatternMatch, missingElement: MissingPatternMatch, oneOrMore: true),
+                    List(PatternMatch, fnMissingElement: CreateMissingPatternMatch, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBraceToken),
 
                     (equal, openParen, parameters, closeParen, pathParameter, openBrace, patterns, closeBrace) =>
@@ -3074,7 +3074,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DeclareKeyword, CompletionKind.QueryPrefix).Hide(),
                     Token(SyntaxKind.PatternKeyword),
-                    Required(SimpleNameDeclaration, MissingNameDeclaration),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
                     Optional(PatternDeclaration),
                     (declareKeyword, patternKeyword, name, pattern) =>
                         (Statement)new PatternStatement(declareKeyword, patternKeyword, name, pattern))
@@ -3098,7 +3098,7 @@ namespace Kusto.Language.Parsing
             var ParenthesizedSummarizeOperator =
                 Rule(
                     Token("("),
-                    Required(SummarizeOperator, MissingQueryOperator),
+                    Required(SummarizeOperator, CreateMissingQueryOperator),
                     RequiredToken(")"),
                     (openParen, summarize, closeParen) =>
                         (Expression)new ParenthesizedExpression(openParen, summarize, closeParen));
@@ -3106,7 +3106,7 @@ namespace Kusto.Language.Parsing
             var MaterializedViewCombineViewNameClause =
                 Rule(
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Literal),
+                    Required(Expression, CreateMissingExpression).WithCompletionHint(CompletionHint.Literal),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (open, expression, close) =>
                         new MaterializedViewCombineNameClause(open, expression, close));
@@ -3116,7 +3116,7 @@ namespace Kusto.Language.Parsing
                     Token("base")
                         .WithCompletion(new CompletionItem(CompletionKind.Syntax, "base", "base (", ")")),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Table),
+                    Required(Expression, CreateMissingExpression).WithCompletionHint(CompletionHint.Table),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, open, expression, close) =>
                         new MaterializedViewCombineClause(keyword, open, expression, close));
@@ -3126,7 +3126,7 @@ namespace Kusto.Language.Parsing
                     Token("delta")
                         .WithCompletion(new CompletionItem(CompletionKind.Syntax, "delta", "delta (", ")")),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, MissingExpression).WithCompletionHint(CompletionHint.Tabular),
+                    Required(Expression, CreateMissingExpression).WithCompletionHint(CompletionHint.Tabular),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, open, expression, close) =>
                         new MaterializedViewCombineClause(keyword, open, expression, close));
@@ -3136,36 +3136,24 @@ namespace Kusto.Language.Parsing
                     Token("aggregations")
                         .WithCompletion(new CompletionItem(CompletionKind.Syntax, "aggregations", "aggregations (summarize ", ")")),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(SummarizeOperator, MissingQueryOperator).WithCompletionHint(CompletionHint.Query),
+                    Required(SummarizeOperator, CreateMissingQueryOperator).WithCompletionHint(CompletionHint.Query),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, open, summarize, close) =>
                         new MaterializedViewCombineClause(keyword, open, summarize, close));
 
-            Func<MaterializedViewCombineClause> MissingMaterializedViewCombineClause(string name) =>
-                () =>
-                    new MaterializedViewCombineClause(
-                        SyntaxToken.Missing(SyntaxKind.MaterializedViewCombineClause),
-                        SyntaxToken.Missing(SyntaxKind.OpenParenToken),
-                        (Expression)MissingExpressionNode.Clone(),
-                        SyntaxToken.Missing(SyntaxKind.CloseParenToken),
-                        new[] { DiagnosticFacts.GetMissingClause(name) });
-
-            Func<MaterializedViewCombineNameClause> MissingMaterializedViewCombineNameClause() =>
-                () =>
-                    new MaterializedViewCombineNameClause(
-                        SyntaxToken.Missing(SyntaxKind.OpenParenToken),
-                        (Expression)MissingExpressionNode.Clone(),
-                        SyntaxToken.Missing(SyntaxKind.CloseParenToken));
-
             var MaterializedViewCombineExpression =
                 Rule(
                     Token(SyntaxKind.MaterializedViewCombineKeyword, CompletionKind.TabularPrefix).Hide(),
-                    Required(MaterializedViewCombineViewNameClause, MissingMaterializedViewCombineNameClause()),
-                    Required(MaterializedViewCombineBaseClause, MissingMaterializedViewCombineClause("base")),
-                    Required(MaterializedViewCombineDeltaClause, MissingMaterializedViewCombineClause("delta")),
-                    Required(MaterializedViewCombineAggregationsClause, MissingMaterializedViewCombineClause("aggregates")),
+                    Required(MaterializedViewCombineViewNameClause, CreateMissingMaterializedViewCombineNameClause),
+                    Required(MaterializedViewCombineBaseClause, CreateMissingMaterializedViewCombineBaseClause),
+                    Required(MaterializedViewCombineDeltaClause, CreateMissingMaterializedViewCombineDeltaClause),
+                    Required(MaterializedViewCombineAggregationsClause, CreateMissingMaterializedViewCombineAggregatesClause),
                     (keyword, viewname, baseClause, deltaClause, aggregatesClause) =>
                         (Expression)new MaterializedViewCombineExpression(keyword, viewname, baseClause, deltaClause, aggregatesClause));
+
+            var ScanKeywordInNamePosition =
+                Match((source, start) =>
+                    QueryParser.IsKeywordInNamePosition(source, start) ? 1 : -1);
 
             PrimaryExpressionCore =
                 First(
@@ -3175,7 +3163,8 @@ namespace Kusto.Language.Parsing
                     ContextualDataTableExpression,
                     ExternalDataExpression,
                     MaterializedViewCombineExpression,
-                    PrimaryPathSelector);
+                    PrimaryPathSelector,
+                    InvalidKeywordAsNameReference);
 
             this.Statement =
                 First(
@@ -3193,7 +3182,7 @@ namespace Kusto.Language.Parsing
             this.StatementList =
                 SeparatedList(
                     Statement, SyntaxKind.SemicolonToken, 
-                    missingElement: MissingStatementNode, 
+                    fnMissingElement: CreateMissingStatement, 
                     endOfList: EndOfText,
                     allowTrailingSeparator: true);
 
@@ -3219,85 +3208,58 @@ namespace Kusto.Language.Parsing
 #endregion
         }
 
-#region Missing Elements
-        public static readonly NameDeclaration MissingNameDeclarationNode =
+#region Missing Element Factories
+        public static NameDeclaration CreateMissingNameDeclaration(Source<LexicalToken> source = null, int start = 0) =>
             new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
 
-        public static readonly Func<NameDeclaration> MissingNameDeclaration =
-            () => (NameDeclaration)MissingNameDeclarationNode.Clone();
+        public static Expression CreateMissingNameDeclarationExpression(Source<LexicalToken> source, int start) =>
+           new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
 
-        public static readonly Func<Expression> MissingNameDeclarationExpression =
-            () => (NameDeclaration)MissingNameDeclarationNode.Clone();
-
-        public static readonly NameReference MissingNameReferenceNode =
+        public static Expression CreateMissingNameReference(Source<LexicalToken> source, int start) =>
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
 
-        public static readonly Func<Expression> MissingNameReference =
-            () => (NameReference)MissingNameReferenceNode.Clone();
+        public static Expression CreateMissingExpression(Source<LexicalToken> source = null, int start = 0)
+        {
+            // check to see if following token was a keyword and if so report enhanced diagnostic
+            var dx = (source != null && source.Peek(start) is LexicalToken token && token.Kind.IsKeyword())
+                ? DiagnosticFacts.GetMissingExpressionWithKeyword(token.Text)
+                : DiagnosticFacts.GetMissingExpression();
+            return new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { dx });
+        }
 
-        public static readonly Expression MissingExpressionNode =
-            new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingExpression() });
-
-        public static readonly Func<Expression> MissingExpression =
-            () => (Expression)MissingExpressionNode.Clone();
-
-        public static readonly NamedExpression MissingNamedExpressionNode =
+        public static NamedExpression CreateMissingNamedExpression(Source<LexicalToken> source, int start) =>
             new SimpleNamedExpression(
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.EqualToken),
-                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)), 
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 new[] { DiagnosticFacts.GetMissingName() });
 
-        public static readonly Func<NamedExpression> MissingNamedExpression =
-            () => (NamedExpression)MissingNamedExpressionNode.Clone();
-
-        public static readonly ScanAssignment MissingScanAssignmentNode =
+        public static ScanAssignment CreateMissingScanAssignment(Source<LexicalToken> source, int start) =>
             new ScanAssignment(
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.EqualEqualToken),
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 new[] { DiagnosticFacts.GetMissingName() });
 
-        public static readonly Func<ScanAssignment> MissingScanAssignment =
-            () => (ScanAssignment)MissingScanAssignmentNode.Clone();
-
-        public static readonly Expression MissingValueNode =
+        public static Expression CreateMissingValue(Source<LexicalToken> source, int start) =>
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingValue() });
 
-        public static readonly Func<Expression> MissingValue =
-            () => (Expression)MissingValueNode.Clone();
-
-        public static readonly TypeExpression MissingTypeNode =
+        public static TypeExpression CreateMissingType(Source<LexicalToken> source, int start) =>
             new PrimitiveTypeExpression(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingTypeName() });
 
-        public static readonly Func<TypeExpression> MissingType =
-            () => (TypeExpression)MissingTypeNode.Clone();
-
-        public static readonly Expression MissingLongLiteralNode =
+        public static Expression CreateMissingLongLiteral(Source<LexicalToken> source, int start) =>
             new LiteralExpression(SyntaxKind.LongLiteralExpression, SyntaxToken.Missing(SyntaxKind.LongLiteralToken), new[] { DiagnosticFacts.GetMissingNumber() });
 
-        public static readonly Func<Expression> MissingLongLiteral =
-            () => (Expression)MissingLongLiteralNode.Clone();
-
-        public static readonly Expression MissingRealLiteralNode =
+        public static Expression CreateMissingRealLiteral(Source<LexicalToken> source, int start) =>
             new LiteralExpression(SyntaxKind.RealLiteralExpression, SyntaxToken.Missing(SyntaxKind.RealLiteralToken), new[] { DiagnosticFacts.GetMissingNumber() });
 
-        public static readonly Func<Expression> MissingRealLiteral =
-            () => (Expression)MissingRealLiteralNode.Clone();
-
-        public static readonly Expression MissingStringLiteralNode =
+        public static Expression CreateMissingStringLiteral(Source<LexicalToken> source, int start) =>
             new LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxToken.Missing(SyntaxKind.StringLiteralToken), new[] { DiagnosticFacts.GetMissingString() });
 
-        public static readonly Func<Expression> MissingStringLiteral =
-            () => (Expression)MissingStringLiteralNode.Clone();
-
-        public static readonly Expression MissingBooleanLiteralNode =
+        public static Expression CreateMissingBooleanLiteral(Source<LexicalToken> source, int start) =>
             new LiteralExpression(SyntaxKind.BooleanLiteralExpression, SyntaxToken.Missing(SyntaxKind.BooleanLiteralToken), new[] { DiagnosticFacts.GetMissingBoolean() });
 
-        public static readonly Func<Expression> MissingBooleanLiteral =
-            () => (Expression)MissingBooleanLiteralNode.Clone();
-
-        public static readonly TypeOfLiteralExpression MissingTypeofLiteralNode =
+        public static Expression CreateMissingTypeOfLiteral(Source<LexicalToken> source, int start) =>
             new TypeOfLiteralExpression(
                 SyntaxToken.Missing(SyntaxKind.TypeOfKeyword),
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
@@ -3305,47 +3267,32 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingTypeOfLiteral() });
 
-        public static readonly Func<Expression> MissingTypeOfLiteral =
-            () => (Expression)MissingTypeofLiteralNode.Clone();
-
-        public static readonly Expression MissingJsonValueNode =
+        public static Expression CreateMissingJsonValue(Source<LexicalToken> source, int start) =>
             new LiteralExpression(
                 SyntaxKind.StringLiteralExpression,
                 SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
                 new[] { DiagnosticFacts.GetMissingJsonValue() });
 
-        public static readonly Func<Expression> MissingJsonValue =
-            () => (Expression)MissingJsonValueNode.Clone();
-
-        public static readonly JsonPair MissingJsonPairNode =
+        public static JsonPair CreateMissingJsonPair(Source<LexicalToken> source, int start) =>
             new JsonPair(
                 SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
                 SyntaxToken.Missing(SyntaxKind.ColonToken),
                 new LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxToken.Missing(SyntaxKind.StringLiteralToken)),
                 new[] { DiagnosticFacts.GetMissingJsonPair() });
 
-        public static readonly JoinOnClause MissingJoinOnClauseNode =
+        public static JoinConditionClause CreateMissingJoinOnClause(Source<LexicalToken> source, int start) =>
             new JoinOnClause(
                 SyntaxToken.Missing(SyntaxKind.JoinOnClause),
                 SyntaxList<SeparatedElement<Expression>>.Empty(),
                 new[] { DiagnosticFacts.GetMissingJoinOnClause() });
 
-        public static readonly Func<JoinConditionClause> MissingJoinOnClause =
-            () => (JoinOnClause)MissingJoinOnClauseNode.Clone();
-
-        public static readonly Func<JsonPair> MissingJsonPair =
-            () => (JsonPair)MissingJsonPairNode.Clone();
-
-        private static readonly ExpressionList MissingArgumentListNode =
+        private static ExpressionList CreateMissingArgumentList(Source<LexicalToken> source = null, int start = 0) =>
             new ExpressionList(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.OpenParenToken)),
                 SyntaxList<SeparatedElement<Expression>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken, DiagnosticFacts.GetTokenExpected(SyntaxKind.CloseParenToken)));
 
-        private static readonly Func<ExpressionList> MissingArgumentList =
-            () => (ExpressionList)MissingArgumentListNode.Clone();
-
-        public static readonly FunctionCallExpression MissingFunctionCallNode =
+        public static FunctionCallExpression CreateMissingFunctionCall(Source<LexicalToken> source, int start) =>
             new FunctionCallExpression(
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 new ExpressionList(
@@ -3354,23 +3301,23 @@ namespace Kusto.Language.Parsing
                     SyntaxToken.Missing(SyntaxKind.CloseParenToken)),
                 new[] { DiagnosticFacts.GetMissingFunctionCall() });
 
-        public static readonly Func<FunctionCallExpression> MissingFunctionCall =
-            () => (FunctionCallExpression)MissingFunctionCallNode.Clone();
+        public static Expression CreateMissingFunctionCallExpression(Source<LexicalToken> source, int start) =>
+            new FunctionCallExpression(
+                new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                new ExpressionList(
+                    SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                    SyntaxList<SeparatedElement<Expression>>.Empty(),
+                    SyntaxToken.Missing(SyntaxKind.CloseParenToken)),
+                new[] { DiagnosticFacts.GetMissingFunctionCall() });
 
-        public static readonly Func<Expression> MissingFunctionCallExpression =
-            () => (FunctionCallExpression)MissingFunctionCallNode.Clone();
-
-        public static readonly SchemaTypeExpression MissingSchemaTypeNode =
+        public static SchemaTypeExpression CreateMissingSchemaType(Source<LexicalToken> source, int start) =>
             new SchemaTypeExpression(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 SyntaxList<SeparatedElement<Expression>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
-        public static readonly Func<SchemaTypeExpression> MissingSchemaType =
-            () => (SchemaTypeExpression)MissingSchemaTypeNode.Clone();
-
-        public static readonly RowSchema MissingRowSchemaNode =
+        public static RowSchema CreateMissingRowSchema(Source<LexicalToken> source, int start) =>
             new RowSchema(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 null,
@@ -3378,89 +3325,56 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
-        public static readonly Func<RowSchema> MissingRowSchema =
-            () => (RowSchema)MissingRowSchemaNode.Clone();
-
-        public static readonly QueryOperator MissingQueryOperatorNode =
+        public static QueryOperator CreateMissingQueryOperator(Source<LexicalToken> source, int start) =>
             new BadQueryOperator(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetQueryOperatorExpected() });
 
-        public static readonly Func<QueryOperator> MissingQueryOperator =
-            () => (QueryOperator)MissingQueryOperatorNode.Clone();
+        public static Expression CreateMissingQueryOperatorExpression(Source<LexicalToken> source, int start) =>
+            new BadQueryOperator(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetQueryOperatorExpected() });
 
-        public static readonly Func<Expression> MissingQueryOperatorExpression =
-            () => (QueryOperator)MissingQueryOperatorNode.Clone();
+        public static MakeSeriesExpression CreateMissingMakeSeriesExpression(Source<LexicalToken> source, int start) =>
+            new MakeSeriesExpression(CreateMissingExpression(source, start), null);
 
-        public static readonly MakeSeriesExpression MissingMakeSeriesExpressionNode =
-            new MakeSeriesExpression((Expression)MissingExpressionNode.Clone(), null);
+        public static MvExpandExpression CreateMissingMvExpandExpression(Source<LexicalToken> source, int start) =>
+            new MvExpandExpression(CreateMissingExpression(source, start), null);
 
-        public static readonly Func<MakeSeriesExpression> MissingMakeSeriesExpression =
-            () => (MakeSeriesExpression)MissingMakeSeriesExpressionNode.Clone();
+        public static MvApplyExpression CreateMissingMvApplyExpression(Source<LexicalToken> source, int start) =>
+            new MvApplyExpression(CreateMissingExpression(source, start), null);
 
-        public static readonly MvExpandExpression MissingMvExpandExpressionNode =
-            new MvExpandExpression((Expression)MissingExpressionNode.Clone(), null);
-
-        public static readonly Func<MvExpandExpression> MissingMvExpandExpression =
-            () => (MvExpandExpression)MissingMvExpandExpressionNode.Clone();
-
-        public static readonly MvApplyExpression MissingMvApplyExpressionNode =
-           new MvApplyExpression((Expression)MissingExpressionNode.Clone(), null);
-
-        public static readonly Func<MvApplyExpression> MissingMvApplyExpression =
-            () => (MvApplyExpression)MissingMvApplyExpressionNode.Clone();
-
-        public static readonly MvApplySubqueryExpression MissingMvApplySubqueryExpressionNode =
+        public static MvApplySubqueryExpression CreateMissingMvApplySubqueryExpression(Source<LexicalToken> source, int start) =>
             new MvApplySubqueryExpression(
                 CreateMissingToken(SyntaxKind.OpenParenToken),
-                (Expression)MissingExpressionNode.Clone(),
+                CreateMissingExpression(source, start),
                 CreateMissingToken(SyntaxKind.CloseParenToken));
 
-        public static readonly Func<MvApplySubqueryExpression> MissingMvApplySubqueryExpression =
-            () => (MvApplySubqueryExpression)MissingMvApplySubqueryExpressionNode.Clone();
-
-        public static readonly ForkExpression MissingForkExpressionNode =
+        public static ForkExpression CreateMissingForkExpression(Source<LexicalToken> source, int start) =>
             new ForkExpression(
                 null,
                 CreateMissingToken(SyntaxKind.OpenParenToken),
-                (Expression)MissingExpressionNode.Clone(),
+                CreateMissingExpression(source, start),
                 CreateMissingToken(SyntaxKind.CloseParenToken));
 
-        public static readonly Func<ForkExpression> MissingForkExpression =
-            () => (ForkExpression)MissingForkExpressionNode.Clone();
-
-        public static readonly PartitionOperand MissingPartitionOperandNode =
+        public static PartitionOperand CreateMissingPartitionOperand(Source<LexicalToken> source, int start) =>
             new PartitionSubquery(
                 CreateMissingToken(SyntaxKind.OpenParenToken),
-                (Expression)MissingExpressionNode.Clone(),
+                CreateMissingExpression(source, start),
                 CreateMissingToken(SyntaxKind.CloseParenToken));
 
-        public static readonly Func<PartitionOperand> MissingPartitionOperand =
-            () => (PartitionOperand)MissingPartitionOperandNode.Clone();
-
-        public static readonly Statement MissingStatementNode =
+        public static Statement CreateMissingStatement(Source<LexicalToken> source, int start) =>
             new ExpressionStatement(
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 new[] { DiagnosticFacts.GetMissingStatement() });
 
-        public static readonly Func<Statement> MissingStatement =
-            () => (Statement)MissingStatementNode.Clone();
+        public static SeparatedElement<Statement> CreateMissingStatementElement(Source<LexicalToken> source, int start) =>
+            new SeparatedElement<Statement>(CreateMissingStatement(source, start));
 
-        public static readonly SeparatedElement<Statement> MissingStatementElementNode =
-            new SeparatedElement<Statement>((Statement)MissingStatementNode.Clone());
-
-        public static readonly Func<SeparatedElement<Statement>> MissingStatementElement =
-            () => (SeparatedElement<Statement>)MissingStatementElementNode.Clone();
-
-        public static readonly NameAndTypeDeclaration MissingNameAndTypeDeclarationNode =
+        public static NameAndTypeDeclaration CreateMissingNameAndTypeDeclaration(Source<LexicalToken> source, int start) =>
             new NameAndTypeDeclaration(
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.ColonToken),
                 new PrimitiveTypeExpression(SyntaxToken.Missing(SyntaxKind.StringKeyword)),
                 new[] { DiagnosticFacts.GetMissingParameter() });
 
-        public static readonly Func<NameAndTypeDeclaration> MissingNameAndTypeDeclaration =
-            () => (NameAndTypeDeclaration)MissingNameAndTypeDeclarationNode.Clone();
-
-        public static readonly FunctionParameter MissingFunctionParameterNode =
+        public static FunctionParameter CreateMissingFunctionParameter(Source<LexicalToken> source, int start) =>
             new FunctionParameter(
                 new NameAndTypeDeclaration(
                     new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
@@ -3469,10 +3383,7 @@ namespace Kusto.Language.Parsing
                  null,
                  new[] { DiagnosticFacts.GetMissingParameter() });
 
-        public static readonly Func<FunctionParameter> MissingFunctionParameter =
-            () => (FunctionParameter)MissingFunctionParameterNode.Clone();
-
-        public static readonly NamedParameter MissingNamedParameterNode =
+        public static NamedParameter CreateMissingNamedParameter(Source<LexicalToken> source, int start) =>
             new NamedParameter(
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.EqualToken),
@@ -3480,11 +3391,8 @@ namespace Kusto.Language.Parsing
                 CompletionHint.None,
                 new[] { DiagnosticFacts.GetMissingParameter() });
 
-        public static readonly Func<NamedParameter> MissingNamedParameter =
-            () => (NamedParameter)MissingNamedParameterNode.Clone();
-
-        public static FunctionDeclaration MissingFunctionDeclarationNode =
-            new FunctionDeclaration(null,
+        public static FunctionDeclaration CreateMissingFunctionDeclaration(Source<LexicalToken> source, int start) =>
+             new FunctionDeclaration(null,
                 new FunctionParameters(
                     SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                     SyntaxList<SeparatedElement<FunctionParameter>>.Empty(),
@@ -3497,47 +3405,92 @@ namespace Kusto.Language.Parsing
                     SyntaxToken.Missing(SyntaxKind.CloseBraceToken)),
                 new[] { DiagnosticFacts.GetMissingFunctionDeclaration() });
 
-        public static Func<FunctionDeclaration> MissingFunctionDeclaration =
-            () => (FunctionDeclaration)MissingFunctionDeclarationNode.Clone();
-
-        public static Expression MissingTokenLiteralNode(IReadOnlyList<string> tokens) =>
-            new LiteralExpression(SyntaxKind.TokenLiteralExpression,
-                SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetTokenExpected(tokens) });
-
-        public static Func<Expression> MissingTokenLiteral(IReadOnlyList<string> tokens)
+        public static Func<Source<LexicalToken>, int, Expression> CreateMissingTokenLiteral(IReadOnlyList<string> tokens)
         {
             var diagnostic = DiagnosticFacts.GetTokenExpected(tokens);
-            return () => new LiteralExpression(SyntaxKind.TokenLiteralExpression,
+            return (source, start) => new LiteralExpression(SyntaxKind.TokenLiteralExpression,
                 SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { diagnostic });
         }
 
-        public static Func<Expression> MissingTokenLiteral(params string[] tokens) =>
-            MissingTokenLiteral((IReadOnlyList<string>)tokens);
+        public static Func<Source<LexicalToken>, int, Expression> CreateMissingTokenLiteral(params string[] tokens) =>
+            CreateMissingTokenLiteral((IReadOnlyList<string>)tokens);
 
-        private static MakeGraphTableAndKeyClause MissingMakeGraphTableAndKeyClauseNode =
+        private static MakeGraphTableAndKeyClause CreateMissingMakeGraphTableAndKeyClause(Source<LexicalToken> source, int start) =>
             new MakeGraphTableAndKeyClause(
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.OnKeyword),
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 new[] { DiagnosticFacts.GetMissingExpression() });
 
-        private static Func<MakeGraphTableAndKeyClause> MissingMakeGraphTableAndKeyClause =
-            () => (MakeGraphTableAndKeyClause)MissingMakeGraphTableAndKeyClauseNode.Clone();
-
-
-        private static GraphMatchPatternNotation MissingGraphPatternNotationNode =
+        private static GraphMatchPatternNotation CreateMissingGraphMatchPatternNotation(Source<LexicalToken> source, int start) =>
             new GraphMatchPatternNode(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
 
-        private static Func<GraphMatchPatternNotation> MissingGraphMatchPatternNotation =
-            () => (GraphMatchPatternNotation)MissingMakeGraphTableAndKeyClauseNode.Clone();
+        private static TopNestedClause CreateMissingTopNestedClause(Source<LexicalToken> source = null, int start = 0) =>
+            new TopNestedClause(
+                SyntaxToken.Missing(SyntaxKind.TopNestedKeyword),
+                expression: null,
+                ofKeyword: SyntaxToken.Missing(SyntaxKind.OfKeyword),
+                ofExpression: new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                withOthersClause: null,
+                byKeyword: SyntaxToken.Missing(SyntaxKind.ByKeyword),
+                byExpression: new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                diagnostics: new[] { DiagnosticFacts.GetMissingClause() }
+                );
 
-#endregion
+        private static PatternMatch CreateMissingPatternMatch(Source<LexicalToken> source = null, int start = 0) =>
+            new PatternMatch(
+                new ExpressionList(
+                    SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                    SyntaxList<SeparatedElement<Expression>>.Empty(),
+                    SyntaxToken.Missing(SyntaxKind.CloseParenToken)),
+                null, // path value okay to be null
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                new FunctionBody(
+                    SyntaxToken.Missing(SyntaxKind.OpenBraceToken),
+                    SyntaxList<SeparatedElement<Statement>>.Empty(),
+                    null, // expression okay to be null
+                    null, // semicolon okay to be null
+                    SyntaxToken.Missing(SyntaxKind.CloseBraceToken)),
+                SyntaxToken.Missing(SyntaxKind.SemicolonToken),
+                new[] { DiagnosticFacts.GetMissingPatternMatch() });
 
-#region other
+        public static MaterializedViewCombineClause CreateMissingMaterializedViewCombineBaseClause(Source<LexicalToken> source = null, int start = 0) =>
+            new MaterializedViewCombineClause(
+                SyntaxToken.Missing(SyntaxKind.MaterializedViewCombineClause),
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                CreateMissingExpression(source, start),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingClause("base") });
+
+        public static MaterializedViewCombineClause CreateMissingMaterializedViewCombineDeltaClause(Source<LexicalToken> source = null, int start = 0) =>
+            new MaterializedViewCombineClause(
+                SyntaxToken.Missing(SyntaxKind.MaterializedViewCombineClause),
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                CreateMissingExpression(source, start),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingClause("delta") });
+
+        public static MaterializedViewCombineClause CreateMissingMaterializedViewCombineAggregatesClause(Source<LexicalToken> source = null, int start = 0) =>
+            new MaterializedViewCombineClause(
+                SyntaxToken.Missing(SyntaxKind.MaterializedViewCombineClause),
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                CreateMissingExpression(source, start),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingClause("aggregates") });
+
+        public static MaterializedViewCombineNameClause CreateMissingMaterializedViewCombineNameClause(Source<LexicalToken> source = null, int start = 0) =>
+            new MaterializedViewCombineNameClause(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                CreateMissingExpression(source, start),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken));
+
+        #endregion
+
+        #region other
         private static Parser<LexicalToken, NameDeclaration> AsIdentifierNameDeclaration(Parser<LexicalToken, SyntaxToken> tokenParser) =>
             Rule(tokenParser, (keyword) => new NameDeclaration(keyword));
 

@@ -49,16 +49,16 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxElement> InputText { get; }
         public Parser<LexicalToken, SyntaxElement> BracketedInputText { get; }
 
-        public Func<SyntaxElement> MissingStringLiteral { get; }
-        public Func<SyntaxElement> MissingValue { get; }
-        public Func<SyntaxElement> MissingType { get; }
-        public Func<SyntaxElement> MissingNameReference { get; }
-        public Func<SyntaxElement> MissingNameDeclaration { get; }
-        public Func<SyntaxElement> MissingFunctionDeclaration { get; }
-        public Func<SyntaxElement> MissingFunctionBody { get; }
-        public Func<SyntaxElement> MissingExpression { get; }
-        public Func<SyntaxElement> MissingStatement { get; }
-        public Func<SyntaxElement> MissingInputText { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingStringLiteral { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingValue { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingType { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingNameReference { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingNameDeclaration { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingFunctionDeclaration { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingFunctionBody { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingExpression { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingStatement { get; }
+        public Func<Source<LexicalToken>, int, SyntaxElement> MissingInputText { get; }
 
         public PredefinedRuleParsers(
             QueryGrammar queryParser,
@@ -66,15 +66,15 @@ namespace Kusto.Language.Parsing
             Parser<LexicalToken, SyntaxElement> scriptInput)
         {
             // casts are required here, bridge.net has problems with covariant delegates
-            this.MissingStringLiteral = () => (SyntaxElement)Q.MissingStringLiteral();
-            this.MissingValue = () => (SyntaxElement)Q.MissingValue();
-            this.MissingType = () => (SyntaxElement)Q.MissingType();
-            this.MissingNameReference = () => (SyntaxElement)Q.MissingNameReference();
-            this.MissingNameDeclaration = () => (SyntaxElement)Q.MissingNameDeclaration();
-            this.MissingExpression = () => (SyntaxElement)Q.MissingExpression();
-            this.MissingStatement = () => (SyntaxElement)Q.MissingStatement();
+            this.MissingStringLiteral = (source, start) => (SyntaxElement)Q.CreateMissingStringLiteral(source, start);
+            this.MissingValue = (source, start) => (SyntaxElement)Q.CreateMissingValue(source, start);
+            this.MissingType = (source, start) => (SyntaxElement)Q.CreateMissingType(source, start);
+            this.MissingNameReference = (source, start) => (SyntaxElement)Q.CreateMissingNameReference(source, start);
+            this.MissingNameDeclaration = (source, start) => (SyntaxElement)Q.CreateMissingNameDeclaration(source, start);
+            this.MissingExpression = (source, start) => (SyntaxElement)Q.CreateMissingExpression(source, start);
+            this.MissingStatement = (source, start) => (SyntaxElement)Q.CreateMissingStatement(source, start);
 
-            this.MissingFunctionDeclaration = () =>
+            this.MissingFunctionDeclaration = (source, start) =>
                  (SyntaxElement)new FunctionDeclaration(
                      null,
                      new FunctionParameters(
@@ -88,7 +88,7 @@ namespace Kusto.Language.Parsing
                          null,
                          CreateMissingToken(SyntaxKind.CloseBraceToken)));
 
-            this.MissingFunctionBody = () =>
+            this.MissingFunctionBody = (source, start) =>
                 (SyntaxElement)new FunctionBody(
                     CreateMissingToken(SyntaxKind.OpenBraceToken),
                     SyntaxList<SeparatedElement<Statement>>.Empty(),
@@ -96,7 +96,7 @@ namespace Kusto.Language.Parsing
                     null,
                     CreateMissingToken(SyntaxKind.CloseBraceToken));
 
-            this.MissingInputText = () =>
+            this.MissingInputText = (source, start) =>
                     (SyntaxElement)SyntaxToken.Other("", "", SyntaxKind.InputTextToken);
 
             this.RawGuidLiteral =
