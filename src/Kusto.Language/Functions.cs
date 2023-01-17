@@ -2813,21 +2813,21 @@ namespace Kusto.Language
             new FunctionSymbol("row_rank", ScalarTypes.Long,
                 new Parameter("column", ParameterTypeKind.NotDynamic),
                 new Parameter("dense", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.None);
+            .WithResultNameKind(ResultNameKind.None)
+            .Obsolete("row_rank_dense")
+            .Hide();
 
         public static readonly FunctionSymbol RowRankMin =
             new FunctionSymbol("row_rank_min", ScalarTypes.Long,
                 new Parameter("term", ParameterTypeKind.NotDynamic),
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowRankDense =
             new FunctionSymbol("row_rank_dense", ScalarTypes.Long,
                 new Parameter("term", ParameterTypeKind.NotDynamic),
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowWindowSession =
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
