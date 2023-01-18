@@ -1621,7 +1621,6 @@ namespace Kusto.Language
                 new Parameter("key", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // TODO: Aviv (t-afridman) to unhide after 18/December/2022
             .ConstantFoldable();
         #endregion
 
