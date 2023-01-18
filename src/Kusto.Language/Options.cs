@@ -13,6 +13,10 @@ namespace Kusto.Language
     /// </remarks>
     public class Options
     {
+        public static readonly OptionSymbol BestEffort =
+            new OptionSymbol("best_effort", @"If set, allows fuzzy resolution and connectivity issues of union legs. The set of union sources is reduced to the set of table references that exist and are accessible at the time." + "\r\n" +
+                "If at least one such table is found, any failure will yield a warning in the query status results, but will not prevent the query execution.", ScalarTypes.Bool);
+
         public static readonly OptionSymbol DebugPython =
             new OptionSymbol("query_python_debug", "If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
 
@@ -174,6 +178,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
+    BestEffort,
     DebugPython,
     DeferPartialQueryFailures,
     DoNotImpersonate,
