@@ -89,6 +89,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("hll");
 
+        public static readonly FunctionSymbol HllIf =
+            new FunctionSymbol("hll_if", ScalarTypes.Dynamic,
+                new Parameter("expr", ParameterTypeKind.NotRealOrBool),
+                new Parameter("predicate", ScalarTypes.Bool),
+                new Parameter("accuracy", ParameterTypeKind.Integer, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("hll_if");
+
         public static readonly FunctionSymbol HllMerge =
             new FunctionSymbol("hll_merge", ScalarTypes.Dynamic,
                 new Parameter("hll", ScalarTypes.Dynamic))
@@ -736,6 +744,7 @@ namespace Kusto.Language
             TDigestMerge,
             MergeTDigest,
             Hll,
+            HllIf,
             HllMerge,
             Min,
             MinIf,

@@ -6160,6 +6160,16 @@ namespace Kusto.Language.Parsing
                     Token("journal"),
                     shape107));
 
+            var ShowDatabaseMirroringOperationsStatus = Command("ShowDatabaseMirroringOperationsStatus", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("cache", "datastats", "details", "extents", "extent", "identity", "policies", "cslschema", "ingestion", "schema", "shard-groups", "*"))), rules.DatabaseNameReference),
+                    Token("mirroring"),
+                    RequiredToken("operations"),
+                    RequiredToken("status"),
+                    shape22));
+
             var ShowDatabasePolicyCaching = Command("ShowDatabasePolicyCaching", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -7533,6 +7543,16 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("MappingName", CompletionHint.Literal)}));
 
+            var ShowTableMirroringOperationsStatus = Command("ShowTableMirroringOperationsStatus", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("mirroring"),
+                    RequiredToken("operations"),
+                    RequiredToken("status"),
+                    shape65));
+
             var ShowTablePolicyIngestionTime = Command("ShowTablePolicyIngestionTime", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -8074,6 +8094,7 @@ namespace Kusto.Language.Parsing
                 DatabaseShardGroupsStatisticsShow,
                 ShowDatabaseExtentContainersCleanOperations,
                 ShowDatabaseJournal,
+                ShowDatabaseMirroringOperationsStatus,
                 ShowDatabasePolicyCaching,
                 ShowDatabasePolicyDiagnostics,
                 ShowDatabasePolicyEncoding,
@@ -8208,6 +8229,7 @@ namespace Kusto.Language.Parsing
                 ShowTableDimensions,
                 ShowTableIngestionMappings,
                 ShowTableIngestionMapping,
+                ShowTableMirroringOperationsStatus,
                 ShowTablePolicyIngestionTime,
                 ShowTablePolicyRowLevelSecurity,
                 ShowTablePrincipals,
