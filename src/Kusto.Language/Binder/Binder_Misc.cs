@@ -937,7 +937,7 @@ namespace Kusto.Language.Binding
             if (type != null)
                 return type;
 
-            if (diagnostics != null) // diagnostic already handled by lexer
+            if (diagnostics != null && !primitiveType.ContainsSyntaxDiagnostics) // diagnostic already handled by lexer
             {
                 diagnostics.Add(DiagnosticFacts.GetInvalidTypeName(typeName).WithLocation(primitiveType.Type));
             }

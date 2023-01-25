@@ -1542,6 +1542,20 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        private TypeExpression ParseInvalidParamType()
+        {
+            if (PeekToken() is LexicalToken token
+                && token.Kind is SyntaxKind kind
+                && (ScanParamTypeExtended()
+                    || kind == SyntaxKind.IdentifierToken
+                    || (kind.IsKeyword() && kind.CanBeIdentifier())))
+            {
+                return new PrimitiveTypeExpression(ParseToken(), new[] {DiagnosticFacts.GetInvalidTypeName(token.Text)});
+            }
+
+            return null;
+        }
+
         private NameAndTypeDeclaration ParseNameAndTypeDeclaration()
         {
             var name = ParseExtendedNameDeclaration();
@@ -1551,7 +1565,7 @@ namespace Kusto.Language.Parsing
 
                 var type = PeekToken().Kind == SyntaxKind.OpenParenToken
                     ? ParseSchemaType()
-                    : ParseParamType() ?? ParseIdentifierTypeExpression() ?? CreateMissingType();
+                    : ParseParamType() ?? ParseInvalidParamType() ?? CreateMissingType();
 
                 return new NameAndTypeDeclaration(name, colon, type);
             }
@@ -1559,7 +1573,7 @@ namespace Kusto.Language.Parsing
             {
                 // name is missing
                 var colon = ParseToken();
-                var type = ParseParamType() ?? ParseIdentifierTypeExpression() ?? CreateMissingType();
+                var type = ParseParamType() ?? ParseInvalidParamType() ?? CreateMissingType();
                 return new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type);
             }
 
@@ -1571,7 +1585,7 @@ namespace Kusto.Language.Parsing
             if (PeekToken().Kind == SyntaxKind.ColonToken)
             {
                 var colon = ParseToken();
-                var type = ParseParamTypeExtended() ?? ParseIdentifierTypeExpression() ?? CreateMissingType();
+                var type = ParseParamType() ?? ParseInvalidParamType() ?? CreateMissingType();
                 return new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type);
             }
 
@@ -1579,7 +1593,7 @@ namespace Kusto.Language.Parsing
             if (name != null && PeekToken().Kind == SyntaxKind.ColonToken)
             {
                 var colon = ParseToken();
-                var type = ParseParamTypeExtended() ?? ParseIdentifierTypeExpression() ?? CreateMissingType();
+                var type = ParseParamType() ?? ParseInvalidParamType() ?? CreateMissingType();
                 return new NameAndTypeDeclaration(name, colon, type);
             }
 
@@ -3422,7 +3436,7 @@ namespace Kusto.Language.Parsing
             if (name != null && PeekToken().Kind == SyntaxKind.ColonToken)
             {
                 var colon = ParseToken();
-                var type = ParseParamTypeExtended() ?? ParseIdentifierTypeExpression() ?? CreateMissingType();
+                var type = ParseParamTypeExtended() ?? ParseInvalidParamType() ?? CreateMissingType();
                 return new TypedColumnReference(name, colon, type);
             }
 
@@ -4414,7 +4428,10 @@ namespace Kusto.Language.Parsing
 
         private bool ScanSummarizeByClauseExpressionListEnd()
         {
-            if (PeekToken().Kind == SyntaxKind.BinKeyword && PeekToken(1).Kind == SyntaxKind.EqualToken)
+            // don't consume expression if it looks like legacy bin=value syntax
+            if (PeekToken().Kind == SyntaxKind.BinKeyword 
+                && PeekToken(1).Kind == SyntaxKind.EqualToken
+                && PeekToken(2).Kind.IsLiteral())
                 return true;
             return ScanCommonListEnd();
         }

@@ -338,63 +338,76 @@ namespace Kusto.Language.Parsing
             #endregion
 
             #region Schema and Types
-            var IdentifierTypeExpression =
-                AsPrimitiveTypeExpression(Token(SyntaxKind.IdentifierToken));
+            var ParamTypeToken =
+                First(
+                    Token(SyntaxKind.BoolKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.BooleanKeyword).Hide(),
+                    Token(SyntaxKind.DateKeyword).Hide(),
+                    Token(SyntaxKind.DateTimeKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.DoubleKeyword).Hide(),
+                    Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.GuidKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.IntKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.Int64Keyword).Hide(),
+                    Token(SyntaxKind.Int8Keyword).Hide(),
+                    Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.RealKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.TimeKeyword).Hide(),
+                    Token(SyntaxKind.TimespanKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.UniqueIdKeyword).Hide()
+                    );
 
             var ParamType =
-                AsPrimitiveTypeExpression(
-                    First(
-                        Token(SyntaxKind.BoolKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.BooleanKeyword).Hide(),
-                        Token(SyntaxKind.DateKeyword).Hide(),
-                        Token(SyntaxKind.DateTimeKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.DoubleKeyword).Hide(),
-                        Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.GuidKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.IntKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.Int64Keyword).Hide(),
-                        Token(SyntaxKind.Int8Keyword).Hide(),
-                        Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.RealKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.TimeKeyword).Hide(),
-                        Token(SyntaxKind.TimespanKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.UniqueIdKeyword).Hide()
-                        )).WithTag("<param-type>");
+                AsPrimitiveTypeExpression(ParamTypeToken).WithTag("<param-type>");
+
+            var ParamTypeExtendedToken =
+                First(
+                    Token(SyntaxKind.BoolKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.BooleanKeyword).Hide(),
+                    Token(SyntaxKind.DateKeyword).Hide(),
+                    Token(SyntaxKind.DateTimeKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.DoubleKeyword).Hide(),
+                    Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.FloatKeyword).Hide(),
+                    Token(SyntaxKind.GuidKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.IntKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.Int16Keyword).Hide(),
+                    Token(SyntaxKind.Int32Keyword).Hide(),
+                    Token(SyntaxKind.Int64Keyword).Hide(),
+                    Token(SyntaxKind.Int8Keyword).Hide(),
+                    Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.RealKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.SingleKeyword).Hide(),
+                    Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.TimeKeyword).Hide(),
+                    Token(SyntaxKind.TimespanKeyword, CompletionKind.ScalarType),
+                    Token(SyntaxKind.UIntKeyword).Hide(),
+                    Token(SyntaxKind.UInt16Keyword).Hide(),
+                    Token(SyntaxKind.UInt32Keyword).Hide(),
+                    Token(SyntaxKind.UInt64Keyword).Hide(),
+                    Token(SyntaxKind.UInt8Keyword).Hide(),
+                    Token(SyntaxKind.ULongKeyword).Hide(),
+                    Token(SyntaxKind.UniqueIdKeyword).Hide()
+                    );
 
             this.ParamTypeExtended =
+                AsPrimitiveTypeExpression(ParamTypeExtendedToken);
+
+            var IdentifierTypeExpression =
                 AsPrimitiveTypeExpression(
+                    First(Token(SyntaxKind.IdentifierToken), KeywordAsIdentifier));
+
+            var InvalidParamType =
+                Convert(
                     First(
-                        Token(SyntaxKind.BoolKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.BooleanKeyword).Hide(),
-                        Token(SyntaxKind.DateKeyword).Hide(),
-                        Token(SyntaxKind.DateTimeKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.DoubleKeyword).Hide(),
-                        Token(SyntaxKind.DynamicKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.FloatKeyword).Hide(),
-                        Token(SyntaxKind.GuidKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.IntKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.Int16Keyword).Hide(),
-                        Token(SyntaxKind.Int32Keyword).Hide(),
-                        Token(SyntaxKind.Int64Keyword).Hide(),
-                        Token(SyntaxKind.Int8Keyword).Hide(),
-                        Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.RealKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.SingleKeyword).Hide(),
-                        Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.TimeKeyword).Hide(),
-                        Token(SyntaxKind.TimespanKeyword, CompletionKind.ScalarType),
-                        Token(SyntaxKind.UIntKeyword).Hide(),
-                        Token(SyntaxKind.UInt16Keyword).Hide(),
-                        Token(SyntaxKind.UInt32Keyword).Hide(),
-                        Token(SyntaxKind.UInt64Keyword).Hide(),
-                        Token(SyntaxKind.UInt8Keyword).Hide(),
-                        Token(SyntaxKind.ULongKeyword).Hide(),
-                        Token(SyntaxKind.UniqueIdKeyword).Hide()
-                        ));
+                        ParamTypeExtendedToken,
+                        Token(SyntaxKind.IdentifierToken),
+                        Match(tk => tk.Kind.IsKeyword())),
+                    (token) => (TypeExpression)new PrimitiveTypeExpression(SyntaxToken.From(token), new[] { DiagnosticFacts.GetInvalidTypeName(token.Text) }));
 
             var ScanSchemaTypeStart =
                 And(
@@ -440,7 +453,7 @@ namespace Kusto.Language.Parsing
                 First(
                     Rule( // error case: missing name
                         Token(SyntaxKind.ColonToken),
-                        Required(First(ParamType, IdentifierTypeExpression), CreateMissingType),
+                        Required(First(ParamType, InvalidParamType), CreateMissingType),
                         (colon, type) => new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type)),
 
                     If(ScanSchemaTypeStart,
@@ -453,7 +466,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         ExtendedNameDeclaration,
                         RequiredToken(SyntaxKind.ColonToken),
-                        Required(First(ParamType, IdentifierTypeExpression), CreateMissingType),
+                        Required(First(ParamType, InvalidParamType), CreateMissingType),
                         (name, colon, type) => new NameAndTypeDeclaration(name, colon, type)));
             #endregion
 
@@ -714,7 +727,7 @@ namespace Kusto.Language.Parsing
                     IntLiteral,
                     GuidLiteral,
                     Rule(Token(SyntaxKind.RawGuidLiteralToken),
-                        tk => (Expression)new LiteralExpression(SyntaxKind.RawGuidLiteralToken, tk, new[] { DiagnosticFacts.GetRawGuidLiteralNotAllowed() })),
+                        tk => (Expression)new LiteralExpression(SyntaxKind.GuidLiteralExpression, tk, new[] { DiagnosticFacts.GetRawGuidLiteralNotAllowed() })),
                     DateTimeLiteral,
                     TimespanLiteral,
                     SignedNumericLiteral,
@@ -1656,7 +1669,7 @@ namespace Kusto.Language.Parsing
                     _left => Rule(
                         _left,
                         Token(SyntaxKind.ColonToken),
-                        Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
+                        Required(First(ParamTypeExtended, InvalidParamType), CreateMissingType),
                         (name, colon, type) => (Expression)new TypedColumnReference((NameReference)name, colon, type)));
 
             var PackExpression =
@@ -2015,12 +2028,12 @@ namespace Kusto.Language.Parsing
                             Rule(
                                 _left,
                                 Token(SyntaxKind.ColonToken),
-                                Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
+                                Required(First(ParamType, InvalidParamType), CreateMissingType),
                                 (name, colon, type) =>
                                     (Expression)new NameAndTypeDeclaration((NameDeclaration)name, colon, type))),
                     Rule(
                         Token(SyntaxKind.ColonToken).Hide(),
-                        Required(First(ParamTypeExtended, IdentifierTypeExpression), CreateMissingType),
+                        Required(First(ParamType, InvalidParamType), CreateMissingType),
                         (colon, type) =>
                             (Expression)new NameAndTypeDeclaration(CreateMissingNameDeclaration(), colon, type)));
 
@@ -2203,7 +2216,8 @@ namespace Kusto.Language.Parsing
                             new SimpleNamedExpression(new NameDeclaration(new TokenName(bin)), equal, value)));
 
             var SummarizeByExpression =
-                If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken))), NamedExpression);
+                If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken), Match(tk => tk.Kind.IsLiteral()))), 
+                    NamedExpression);
 
             var SummarizeByClause =
                 Rule(

@@ -531,7 +531,7 @@ namespace Kusto.Language
 
         public static Diagnostic GetInvalidTypeName(string name)
         {
-            return new Diagnostic("KS160", $"The name '{name}' is not a valid type name.");
+            return new Diagnostic("KS160", $"The name '{name}' is not a valid type name that can be used here.");
         }
 
         public static Diagnostic GetInvalidColumnDeclaration()
