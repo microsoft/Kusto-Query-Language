@@ -454,6 +454,7 @@ namespace Kusto.Language
             SyntaxKind.ParseOperator,
             SyntaxKind.ParseWhereOperator,
             SyntaxKind.PartitionOperator,
+            SyntaxKind.PartitionByOperator,
             SyntaxKind.ProjectOperator,
             SyntaxKind.SampleOperator,
             SyntaxKind.SampleDistinctOperator,

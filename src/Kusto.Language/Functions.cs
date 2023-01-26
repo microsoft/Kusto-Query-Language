@@ -2205,8 +2205,7 @@ namespace Kusto.Language
                 new Signature(ScalarTypes.Real,
                     new Parameter("series1", ParameterTypeKind.Number),
                     new Parameter("series2", ScalarTypes.Dynamic)))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO: unhide once the function will be approved [t-knosenko]
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region math functions

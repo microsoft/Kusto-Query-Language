@@ -286,11 +286,10 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing81 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape130, rules.MissingNameReference(source, start), (SyntaxElement)new CustomNode(shape129, CreateMissingToken("if_later_than"), rules.MissingStringLiteral(source, start)))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing82 = (source, start) => CreateMissingToken("mappings");
             Func<Source<LexicalToken>, int, SyntaxElement> missing83 = (source, start) => (SyntaxElement)new CustomNode(shape44, CreateMissingToken("operations"), rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing84 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD(CompletionHint.Literal)}, CreateMissingToken("details"), rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing85 = (source, start) => (SyntaxElement)new CustomNode(shape93, CreateMissingToken("databases"), (SyntaxElement)new CustomNode(shape83, CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")")));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing86 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing87 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing88 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD("TableName", CompletionHint.None), CD()}, CreateMissingToken("as"), rules.MissingNameDeclaration(source, start), CreateMissingToken("version"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing84 = (source, start) => (SyntaxElement)new CustomNode(shape93, CreateMissingToken("databases"), (SyntaxElement)new CustomNode(shape83, CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")")));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing85 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing86 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing87 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD("TableName", CompletionHint.None), CD()}, CreateMissingToken("as"), rules.MissingNameDeclaration(source, start), CreateMissingToken("version"));
 
             var fragment0 = Custom(
                     Token("user"),
@@ -6429,46 +6428,6 @@ namespace Kusto.Language.Parsing
                         fragment5),
                     shape94));
 
-            var ShowExtentColumnStorageStats = Command("ShowExtentColumnStorageStats", 
-                Custom(
-                    Token("show", CompletionKind.CommandPrefix),
-                    Token("extent"),
-                    rules.AnyGuidLiteralOrString,
-                    Token("column"),
-                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
-                    RequiredToken("storage"),
-                    RequiredToken("stats"),
-                    new [] {CD(), CD(), CD("extentId", CompletionHint.Literal), CD(), CD("columnName", CompletionHint.None), CD(), CD()}));
-
-            var ShowExtentDetails = Command("ShowExtentDetails", 
-                Custom(
-                    Token("show", CompletionKind.CommandPrefix),
-                    Token("extent"),
-                    Required(
-                        First(
-                            Custom(
-                                Token("details"),
-                                Required(
-                                    First(
-                                        Custom(
-                                            rules.AnyGuidLiteralOrString,
-                                            shape0),
-                                        Custom(
-                                            rules.NameDeclaration,
-                                            shape11)),
-                                    rules.MissingValue),
-                                new [] {CD(), CD(CompletionHint.Literal)}),
-                            Custom(
-                                rules.AnyGuidLiteralOrString,
-                                shape0),
-                            Custom(
-                                If(Not(Token("details")), rules.NameDeclaration),
-                                shape11)),
-                        missing84),
-                    Optional(
-                        fragment41),
-                    shape138));
-
             var ShowExternalTables = Command("ShowExternalTables", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -6600,7 +6559,7 @@ namespace Kusto.Language.Parsing
                                 Token("database"),
                                 Required(rules.DatabaseNameReference, rules.MissingNameReference),
                                 shape149)),
-                        missing85)));
+                        missing84)));
 
             var ShowFreshness = Command("ShowFreshness", 
                 Custom(
@@ -6961,7 +6920,7 @@ namespace Kusto.Language.Parsing
                                             RequiredToken("="),
                                             Required(rules.Value, rules.MissingValue),
                                             shape60)),
-                                    missing86),
+                                    missing85),
                                 RequiredToken(")"),
                                 RequiredToken("<|"))),
                         missing17),
@@ -7154,7 +7113,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             Token("corrupted"),
                             RequiredToken("datetime")),
-                        missing87).Hide()));
+                        missing86).Hide()));
 
             var ShowTableExtentsMetadata = Command("ShowTableExtentsMetadata", 
                 Custom(
@@ -7677,9 +7636,42 @@ namespace Kusto.Language.Parsing
             var ShowWorkloadGroup = Command("ShowWorkloadGroup", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
-                    RequiredToken("workload_group"),
+                    Token("workload_group"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     new [] {CD(), CD(), CD("WorkloadGroup", CompletionHint.None)}));
+
+            var ShowExtentColumnStorageStats = Command("ShowExtentColumnStorageStats", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    If(Not(And(Token("basicauth", "cache", "callstacks", "capacity", "certificates", "cluster", "column", "commands-and-queries", "commands", "commconcurrency", "commpools", "continuous-exports", "continuous-export", "databases", "database", "diagnostics", "entity_groups", "entity_group", "entity", "extentcontainers", "external", "fabriccache", "fabricclocks", "fabriclocks", "fabric", "featureflags", "follower", "freshness", "functions", "function", "ingestion", "journal", "materialized-views", "materialized-view", "memory", "mempools", "operations", "operation", "plugins", "principal", "queries", "queryexecution", "queryplan", "query", "request_support", "rowstores", "rowstore", "running", "schema", "servicepoints", "stored_query_results", "stored_query_result", "streamingingestion", "tables", "extents", "table", "tcpconnections", "tcpports", "threadpools", "version", "workload_groups", "workload_group"))), rules.NameDeclaration),
+                    Token("extent"),
+                    rules.AnyGuidLiteralOrString,
+                    Token("column"),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    RequiredToken("storage"),
+                    RequiredToken("stats"),
+                    new [] {CD(), CD("tableName", CompletionHint.None), CD(), CD("extentId", CompletionHint.Literal), CD(), CD("columnName", CompletionHint.None), CD(), CD()}));
+
+            var ShowExtentDetails = Command("ShowExtentDetails", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Required(If(Not(And(Token("basicauth", "cache", "callstacks", "capacity", "certificates", "cluster", "column", "commands-and-queries", "commands", "commconcurrency", "commpools", "continuous-exports", "continuous-export", "databases", "database", "diagnostics", "entity_groups", "entity_group", "entity", "extentcontainers", "external", "fabriccache", "fabricclocks", "fabriclocks", "fabric", "featureflags", "follower", "freshness", "functions", "function", "ingestion", "journal", "materialized-views", "materialized-view", "memory", "mempools", "operations", "operation", "plugins", "principal", "queries", "queryexecution", "queryplan", "query", "request_support", "rowstores", "rowstore", "running", "schema", "servicepoints", "stored_query_results", "stored_query_result", "streamingingestion", "tables", "extents", "table", "tcpconnections", "tcpports", "threadpools", "version", "workload_groups", "workload_group"))), rules.NameDeclaration), rules.MissingNameDeclaration),
+                    RequiredToken("extent"),
+                    Optional(
+                        First(
+                            Custom(
+                                Token("details"),
+                                Optional(
+                                    Custom(
+                                        rules.AnyGuidLiteralOrString,
+                                        shape0)),
+                                shape44),
+                            Custom(
+                                rules.AnyGuidLiteralOrString,
+                                shape0))),
+                    Optional(
+                        fragment41),
+                    new [] {CD(), CD("tableName", CompletionHint.None), CD(), CD(isOptional: true), CD(isOptional: true)}));
 
             var UndoDropTable = Command("UndoDropTable", 
                 Custom(
@@ -7695,7 +7687,7 @@ namespace Kusto.Language.Parsing
                                 RequiredToken("version"),
                                 new [] {CD(), CD("TableName", CompletionHint.None), CD()}),
                             Token("version")),
-                        missing88),
+                        missing87),
                     RequiredToken("="),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(Token("internal")),
@@ -8119,8 +8111,6 @@ namespace Kusto.Language.Parsing
                 ShowEntityGroup,
                 ShowEntitySchema,
                 ShowExtentContainers,
-                ShowExtentColumnStorageStats,
-                ShowExtentDetails,
                 ShowExternalTables,
                 ShowExternalTableArtifacts,
                 ShowExternalTableCslSchema,
@@ -8246,6 +8236,8 @@ namespace Kusto.Language.Parsing
                 ShowVersion,
                 ShowWorkloadGroups,
                 ShowWorkloadGroup,
+                ShowExtentColumnStorageStats,
+                ShowExtentDetails,
                 UndoDropTable
             };
 

@@ -28,10 +28,7 @@ GOTO :EOF
 :Build
 %CECHO% "{color-10}Building IntelliSense JavaScript...\n"
 PUSHD %ROOT%
-@REM for some reason, build doesn't work for me from the bridge folder. going up one folder works.
-pushd ..
 msbuild /p:Configuration=Release
-popd
 POPD
 GOTO :EOF
 
