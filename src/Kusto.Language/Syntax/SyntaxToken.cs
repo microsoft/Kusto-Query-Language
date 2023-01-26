@@ -162,9 +162,9 @@ namespace Kusto.Language.Syntax
             switch (token.Kind.GetCategory())
             {
                 case SyntaxCategory.Identifier:
-                    return SyntaxToken.Identifier(token.Trivia, token.Text, dx);
+                    return SyntaxToken.Identifier(token.Trivia, token.Text, diagnostics: dx);
                 case SyntaxCategory.Keyword:
-                    return SyntaxToken.Keyword(token.Trivia, token.Kind, dx);
+                    return SyntaxToken.Keyword(token.Trivia, token.Kind, diagnostics: dx);
                 case SyntaxCategory.Literal:
                     return SyntaxToken.Literal(token.Trivia, token.Text, token.Kind, dx);
                 case SyntaxCategory.Punctuation:
@@ -177,15 +177,30 @@ namespace Kusto.Language.Syntax
             }
         }
 
-        public static SyntaxToken Keyword(string trivia, SyntaxKind keyword, IReadOnlyList<Diagnostic> diagnostics = null)
-        {
+        public static SyntaxToken Keyword(string trivia, SyntaxKind keyword, string valueText = null, IReadOnlyList<Diagnostic> diagnostics = null)
+        {           
             CheckCategory(keyword, SyntaxCategory.Keyword);
-            return new KindToken(trivia, keyword, diagnostics);
+
+            if (valueText != null && valueText != keyword.GetText())
+            {
+                return new TextAndKindToken(trivia, keyword.GetText(), valueText, keyword, diagnostics);
+            }
+            else
+            {
+                return new KindToken(trivia, keyword, diagnostics);
+            }
         }
 
-        public static SyntaxToken Identifier(string trivia, string text, IReadOnlyList<Diagnostic> diagnostics = null)
+        public static SyntaxToken Identifier(string trivia, string text, string valueText = null, IReadOnlyList<Diagnostic> diagnostics = null)
         {
-            return new IdentifierToken(trivia, text, diagnostics);
+            if (valueText != null && valueText != text)
+            {
+                return new TextAndKindToken(trivia, text, valueText, SyntaxKind.IdentifierToken, diagnostics);
+            }
+            else
+            {
+                return new IdentifierToken(trivia, text, diagnostics);
+            }
         }
 
         public static SyntaxToken Punctuation(string trivia, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics = null)
@@ -209,7 +224,7 @@ namespace Kusto.Language.Syntax
         public static SyntaxToken Other(string trivia, string text, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics = null)
         {
             CheckCategory(kind, SyntaxCategory.Other);
-            return new TextAndKindToken(trivia, text, kind, diagnostics);
+            return new TextAndKindToken(trivia, text, text, kind, diagnostics);
         }
 
         public static SyntaxToken Missing(string trivia, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
@@ -297,26 +312,30 @@ namespace Kusto.Language.Syntax
         {
             private readonly string trivia;
             private readonly string text;
+            private readonly string valueText;
             private readonly SyntaxKind kind;
             private readonly int fullWidth;
 
             public override string Trivia => this.trivia;
             public override string Text => text;
+            public override string ValueText => valueText;
+            public override object Value => valueText;
             public override SyntaxKind Kind => this.kind;
             public override int FullWidth => this.fullWidth;
 
-            public TextAndKindToken(string trivia, string text, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
+            public TextAndKindToken(string trivia, string text, string valueText, SyntaxKind kind, IReadOnlyList<Diagnostic> diagnostics)
                 : base(diagnostics)
             {
                 this.trivia = trivia ?? "";
                 this.text = text;
+                this.valueText = valueText ?? text;
                 this.kind = kind;
                 this.fullWidth = this.trivia.Length + this.text.Length;
             }
 
             protected override SyntaxElement CloneCore(bool includeDiagnostics)
             {
-                return new TextAndKindToken(this.Trivia, this.Text, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
+                return new TextAndKindToken(this.Trivia, this.Text, this.ValueText, this.Kind, includeDiagnostics ? this.SyntaxDiagnostics : null);
             }
         }
 

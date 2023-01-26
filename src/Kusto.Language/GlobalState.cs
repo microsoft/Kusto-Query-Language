@@ -80,6 +80,11 @@ namespace Kusto.Language
         public KustoCache Cache { get; }
 
         /// <summary>
+        /// Options to determine parsing behavior.
+        /// </summary>
+        public ParseOptions ParseOptions { get; }
+
+        /// <summary>
         /// Name to aggregate lookup map
         /// </summary>
         private Dictionary<string, FunctionSymbol> aggregatesMap;
@@ -146,6 +151,7 @@ namespace Kusto.Language
             IReadOnlyList<OptionSymbol> options,
             IReadOnlyList<PropertyAndValue> properties,
             KustoCache cache,
+            ParseOptions parseOptions,
             Dictionary<Symbol, ClusterSymbol> reverseClusterMap,
             Dictionary<Symbol, DatabaseSymbol> reverseDatabaseMap,
             Dictionary<Symbol, TableSymbol> reverseTableMap,
@@ -170,6 +176,7 @@ namespace Kusto.Language
             this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
             this.Properties = properties ?? EmptyReadOnlyList<PropertyAndValue>.Instance;
             this.Cache = cache != null ? cache.WithGlobals(this) : null;
+            this.ParseOptions = parseOptions ?? ParseOptions.Default;
             this.reverseClusterMap = reverseClusterMap;
             this.reverseDatabaseMap = reverseDatabaseMap;
             this.reverseTableMap = reverseTableMap;
@@ -202,6 +209,7 @@ namespace Kusto.Language
                 this.Options,
                 this.Properties,
                 this.Cache,
+                this.ParseOptions,
                 this.reverseClusterMap,
                 this.reverseDatabaseMap,
                 this.reverseTableMap,
@@ -231,7 +239,8 @@ namespace Kusto.Language
             Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>),
             Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>),
             Optional<IReadOnlyList<PropertyAndValue>> properties = default(Optional<IReadOnlyList<PropertyAndValue>>),
-            Optional<KustoCache> cache = default(Optional<KustoCache>))
+            Optional<KustoCache> cache = default(Optional<KustoCache>),
+            Optional<ParseOptions> parseOptions = default(Optional<ParseOptions>))
         {
             var useDomain = domain.HasValue ? domain.Value : this.Domain;
             var useClusters = clusters.HasValue ? clusters.Value : this.Clusters;
@@ -246,6 +255,7 @@ namespace Kusto.Language
             var useOptions = options.HasValue ? options.Value : this.Options;
             var useProperties = properties.HasValue ? properties.Value : this.Properties;
             var useCache = cache.HasValue ? cache.Value : this.Cache;
+            var useParseOptions = parseOptions.HasValue ? parseOptions.Value : this.ParseOptions;
 
             if (useDomain != this.Domain
                 || useClusters != this.Clusters
@@ -259,7 +269,8 @@ namespace Kusto.Language
                 || useParameters != this.Parameters
                 || useOptions != this.Options
                 || useProperties != this.Properties
-                || useCache != this.Cache)
+                || useCache != this.Cache
+                || useParseOptions != this.ParseOptions)
             {
                 return new GlobalState(
                     useDomain,
@@ -275,6 +286,7 @@ namespace Kusto.Language
                     useOptions,
                     useProperties,
                     useCache,
+                    useParseOptions,
                     useClusters == this.Clusters ? this.reverseClusterMap : null,
                     useClusters == this.Clusters ? this.reverseDatabaseMap : null,
                     useClusters == this.Clusters ? this.reverseTableMap : null,
@@ -304,6 +316,21 @@ namespace Kusto.Language
             else
             {
                 return With(cache: new KustoCache(this));
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified <see cref="ParseOptions"/>.
+        /// </summary>
+        public GlobalState WithParseOptions(ParseOptions parseOptions)
+        {
+            if (this.ParseOptions == parseOptions)
+            {
+                return this;
+            }
+            else
+            {
+                return With(parseOptions: parseOptions);
             }
         }
 
@@ -926,6 +953,7 @@ namespace Kusto.Language
                             Language.Options.All,
                             EmptyReadOnlyList<PropertyAndValue>.Instance,
                             cache: null,
+                            parseOptions: null,
                             reverseClusterMap: null,
                             reverseDatabaseMap: null,
                             reverseTableMap: null,

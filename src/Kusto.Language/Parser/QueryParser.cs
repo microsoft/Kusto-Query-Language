@@ -30,82 +30,84 @@ namespace Kusto.Language.Parsing
     {
         private readonly LexicalToken[] _tokens;
         private readonly Source<LexicalToken> _source;
+        private readonly ParseOptions _options;
         private int _pos;
 
-        private QueryParser(LexicalToken[] tokens, int start = 0)
+        private QueryParser(LexicalToken[] tokens, int start, ParseOptions options)
         {
             _tokens = tokens;
             _source = new ArraySource<LexicalToken>(tokens);
+            _options = options ?? ParseOptions.Default;
             _pos = start;
         }
 
-        public static Expression ParseExpression(LexicalToken[] tokens, int start = 0)
+        public static Expression ParseExpression(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseExpression();
+            return new QueryParser(tokens, start, options).ParseExpression();
         }
        
-        public static Expression ParseExpression(string text)
+        public static Expression ParseExpression(string text, ParseOptions options = null)
         {
-            return ParseExpression(TokenParser.ParseTokens(text));
+            return ParseExpression(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static QueryBlock ParseQuery(LexicalToken[] tokens, int start = 0)
+        public static QueryBlock ParseQuery(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseQuery();
+            return new QueryParser(tokens, start, options).ParseQuery();
         }
 
-        public static QueryBlock ParseQuery(string text)
+        public static QueryBlock ParseQuery(string text, ParseOptions options = null)
         {
-            return ParseQuery(TokenParser.ParseTokens(text));
+            return ParseQuery(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static FunctionParameters ParseFunctionParameters(LexicalToken[] tokens, int start = 0)
+        public static FunctionParameters ParseFunctionParameters(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseFunctionParameters();
+            return new QueryParser(tokens, start, options).ParseFunctionParameters();
         }
 
-        public static FunctionParameters ParseFunctionParameters(string text)
+        public static FunctionParameters ParseFunctionParameters(string text, ParseOptions options = null)
         {
-            return ParseFunctionParameters(TokenParser.ParseTokens(text));
+            return ParseFunctionParameters(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0)
+        public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseFunctionBody();
+            return new QueryParser(tokens, start, options).ParseFunctionBody();
         }
-        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0)
+        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseEntityGroup();
-        }
-
-        public static FunctionBody ParseFunctionBody(string text)
-        {
-            return ParseFunctionBody(TokenParser.ParseTokens(text));
+            return new QueryParser(tokens, start, options).ParseEntityGroup();
         }
 
-        public static EntityGroup ParseEntityGroup(string text)
+        public static FunctionBody ParseFunctionBody(string text, ParseOptions options = null)
         {
-            return ParseEntityGroup(TokenParser.ParseTokens(text));
+            return ParseFunctionBody(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static Expression ParseLiteral(LexicalToken[] tokens, int start = 0)
+        public static EntityGroup ParseEntityGroup(string text, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseLiteral();
+            return ParseEntityGroup(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static Expression ParseLiteral(string text)
+        public static Expression ParseLiteral(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return ParseLiteral(TokenParser.ParseTokens(text));
+            return new QueryParser(tokens, start, options).ParseLiteral();
         }
 
-        public static RowSchema ParseRowSchema(LexicalToken[] tokens, int start = 0)
+        public static Expression ParseLiteral(string text, ParseOptions options = null)
         {
-            return new QueryParser(tokens, start).ParseRowSchema();
+            return ParseLiteral(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static RowSchema ParseRowSchema(string text)
+        public static RowSchema ParseRowSchema(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
-            return ParseRowSchema(TokenParser.ParseTokens(text));
+            return new QueryParser(tokens, start, options).ParseRowSchema();
+        }
+
+        public static RowSchema ParseRowSchema(string text, ParseOptions options = null)
+        {
+            return ParseRowSchema(TokenParser.ParseTokens(text, options), 0, options);
         }
 
         #region Reset Points
@@ -798,12 +800,15 @@ namespace Kusto.Language.Parsing
 
             var token = PeekToken(offset);
 
+            // must start with asterisk or a single name/keyword and then an asterisk
             if (token.Kind == SyntaxKind.AsteriskToken)
             {
                 offset++;
             }
             else if ((token.Kind == SyntaxKind.IdentifierToken || ScanExtendedKeywordAsIdentifier(offset))
-                && PeekToken(offset + 1).Kind == SyntaxKind.AsteriskToken)
+                && PeekToken(offset + 1) is LexicalToken nextToken
+                && nextToken.Kind == SyntaxKind.AsteriskToken
+                && (nextToken.Trivia.Length == 0 || _options.AllowNonAdjacentWildcardParts))
             {
                 offset += 2;
             }
@@ -812,12 +817,13 @@ namespace Kusto.Language.Parsing
                 return -1;
             }
 
+            // then followed by zero or more additional identifiers, keywords or asterisks.
             while (
                 ((token = PeekToken(offset)).Kind == SyntaxKind.IdentifierToken
                     || token.Kind == SyntaxKind.LongLiteralToken
                     || token.Kind == SyntaxKind.AsteriskToken
                     || ScanExtendedKeywordAsIdentifier(offset))
-                && token.Trivia.Length == 0)
+                && (token.Trivia.Length == 0 || _options.AllowNonAdjacentWildcardParts))
             {
                 offset++;
             }
@@ -830,7 +836,12 @@ namespace Kusto.Language.Parsing
             var len = ScanWildcardedName();
             if (len > 0)
             {
-                var lit = SyntaxToken.Identifier(PeekToken().Trivia, GetTokenText(0, len));
+                var trivia = PeekToken().Trivia;
+                var text = GetCombinedTokenText(0, len);
+                var valueText = _options.AllowNonAdjacentWildcardParts
+                    ? GetCombinedTokenText(0, len, includeInnerTrivia: false)
+                    : text;
+                var lit = SyntaxToken.Identifier(trivia, text, valueText);
                 _pos += len;
                 return lit;
             }
@@ -867,7 +878,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private string GetTokenText(int start = 0, int length = 1)
+        private string GetCombinedTokenText(int start = 0, int length = 1, bool includeInnerTrivia = true)
         {
             if (length == 1)
             {
@@ -877,7 +888,10 @@ namespace Kusto.Language.Parsing
             var builder = new StringBuilder();
             for (int i = 0; i < length; i++)
             {
-                builder.Append(PeekToken(start + i).Text);
+                var token = PeekToken(start + i);
+                if (i > 0 && includeInnerTrivia)
+                    builder.Append(token.Trivia);
+                builder.Append(token.Text);
             }
 
             return builder.ToString();

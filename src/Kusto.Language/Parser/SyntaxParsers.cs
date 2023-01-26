@@ -252,6 +252,28 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
+        /// Gets the text of a series of tokens.
+        /// </summary>
+        public static string GetCombinedTokenText(Source<LexicalToken> source, int start, int length, bool includeInnerTrivia = true)
+        {
+            if (length == 1)
+            {
+                return source.Peek(start).Text;
+            }
+
+            var builder = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                var token = source.Peek(start + i);
+                if (i > 0 && includeInnerTrivia)
+                    builder.Append(token.Trivia);
+                builder.Append(token.Text);
+            }
+
+            return builder.ToString();
+        }
+
+        /// <summary>
         /// A parser that consumes the next <see cref="LexicalToken"/> (or series of adjacent tokens) that combined has the specified text, producing a single <see cref="SyntaxToken"/>.
         /// </summary>
         public static Parser<LexicalToken, SyntaxToken> MatchText(string text, SyntaxKind? asKind = null) =>
@@ -591,7 +613,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static IEnumerable<TParser> ParseAll<TParser>(this Parser<LexicalToken, TParser> parser, string text, bool alwaysProduceEndToken = false)
         {
-            return ParseAll(parser, TokenParser.ParseTokens(text, alwaysProduceEndToken));
+            return ParseAll(parser, TokenParser.ParseTokens(text, ParseOptions.Default.WithAlwaysProduceEndTokens(alwaysProduceEndToken)));
         }
 
         /// <summary>
@@ -619,7 +641,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static TParser ParseFirst<TParser>(this Parser<LexicalToken, TParser> parser, string text, bool alwaysProduceEOF = false)
         {
-            return ParseFirst(parser, TokenParser.ParseTokens(text, alwaysProduceEOF));
+            return ParseFirst(parser, TokenParser.ParseTokens(text, ParseOptions.Default.WithAlwaysProduceEndTokens(alwaysProduceEOF)));
         }
 
         /// <summary>
@@ -637,7 +659,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static int ScanFirst(this Parser<LexicalToken> parser, string text, bool alwaysProduceEOF = false)
         {
-            var source = new ArraySource<LexicalToken>(TokenParser.ParseTokens(text, alwaysProduceEOF));
+            var source = new ArraySource<LexicalToken>(TokenParser.ParseTokens(text, ParseOptions.Default.WithAlwaysProduceEndTokens(alwaysProduceEOF)));
             return parser.Scan(source, 0);
         }
 

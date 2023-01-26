@@ -41,11 +41,6 @@ namespace Kusto.Language
         internal Parser<LexicalToken> Grammar { get; }
 
         /// <summary>
-        /// The parser that was used to parser the syntax tree.
-        /// </summary>
-        internal ParserKind ParserUsed { get; }
-
-        /// <summary>
         /// True if semantic analysis has been performed.
         /// </summary>
         public bool HasSemantics { get; }
@@ -88,7 +83,6 @@ namespace Kusto.Language
             string kind, 
             GlobalState globals, 
             Parser<LexicalToken> grammar, 
-            ParserKind parserUsed,
             SyntaxTree tree, 
             bool hasSemantics, 
             TypeSymbol resultType,
@@ -100,7 +94,6 @@ namespace Kusto.Language
             this.Kind = kind;
             this.Globals = globals;
             this.Grammar = grammar;
-            this.ParserUsed = parserUsed;
             this.Tree = tree;
             this.HasSemantics = hasSemantics;
             this.ResultType = resultType;
@@ -118,17 +111,11 @@ namespace Kusto.Language
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
-            return Parse(text, globals, ParserKind.Parser);
-        }
-
-        internal static KustoCode Parse(string text, GlobalState globals, ParserKind parserKind)
-        {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
-
-            var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
+            globals = globals ?? GlobalState.Default;
+            globals = globals.WithParseOptions(globals.ParseOptions.WithAlwaysProduceEndTokens(true));
+            var tokens = TokenParser.ParseTokens(text, globals.ParseOptions);
             var starts = GetTokenStarts(tokens);
-            return Create(text, globals, tokens, starts, analyze: false, parserKind: parserKind, cancellationToken: default(CancellationToken));
+            return Create(text, globals, tokens, starts, analyze: false, cancellationToken: default(CancellationToken));
         }
 
         /// <summary>
@@ -141,14 +128,11 @@ namespace Kusto.Language
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
-            return ParseAndAnalyze(text, globals, parserKind: ParserKind.Parser, cancellationToken: cancellationToken);
-        }
-
-        internal static KustoCode ParseAndAnalyze(string text, GlobalState globals, ParserKind parserKind, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var tokens = TokenParser.ParseTokens(text, alwaysProduceEndToken: true);
+            globals = globals ?? GlobalState.Default;
+            globals = globals.WithParseOptions(globals.ParseOptions.WithAlwaysProduceEndTokens(true));
+            var tokens = TokenParser.ParseTokens(text, globals.ParseOptions);
             var starts = GetTokenStarts(tokens);
-            return Create(text, globals, tokens, starts, analyze: true, parserKind: parserKind, cancellationToken: cancellationToken);
+            return Create(text, globals, tokens, starts, analyze: true, cancellationToken: default(CancellationToken));
         }
 
         /// <summary>
@@ -176,7 +160,7 @@ namespace Kusto.Language
         /// <summary>
         /// Creates a new <see cref="KustoCode"/> form the already parsed lexical tokens.
         /// </summary>
-        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, List<int> tokenStarts, bool analyze, ParserKind parserKind, CancellationToken cancellationToken)
+        private static KustoCode Create(string text, GlobalState globals, LexicalToken[] tokens, List<int> tokenStarts, bool analyze, CancellationToken cancellationToken)
         {
             Parser<LexicalToken> grammar;
             SyntaxNode syntax;
@@ -199,11 +183,11 @@ namespace Kusto.Language
                 default:
                     var queryBlock = QueryGrammar.From(globals).QueryBlock;
                     grammar = queryBlock;
-                    switch (parserKind)
+                    switch (globals.ParseOptions.ParserKind)
                     {
-                        case ParserKind.Parser:
+                        case ParserKind.Default:
                         default:
-                            syntax = QueryParser.ParseQuery(tokens);
+                            syntax = QueryParser.ParseQuery(tokens, options: globals.ParseOptions);
                             break;
                         case ParserKind.Grammar:
                             syntax = queryBlock.ParseFirst(tokens);
@@ -230,7 +214,7 @@ namespace Kusto.Language
                 }
             }
 
-            return new KustoCode(text, kind, globals, grammar, parserKind, tree, analyzed, resultType, tokens, tokenStarts, localCache);
+            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, tokenStarts, localCache);
         }
 
         /// <summary>
@@ -283,7 +267,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, parserKind: this.ParserUsed, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
             }
         }
 
@@ -298,7 +282,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, parserKind: this.ParserUsed, cancellationToken);
+                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, cancellationToken);
             }
         }
 
@@ -467,9 +451,16 @@ namespace Kusto.Language
         All = BuiltInFunctions | DatabaseFunctions | LocalFunctions
     }
 
-    internal enum ParserKind
+    public enum ParserKind
     {
+        /// <summary>
+        /// Use the grammar parser combinators to parse queries.
+        /// </summary>
         Grammar,
-        Parser
+
+        /// <summary>
+        /// Use the faster query parser.
+        /// </summary>
+        Default
     }
 }

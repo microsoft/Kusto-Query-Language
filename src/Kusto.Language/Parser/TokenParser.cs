@@ -32,33 +32,34 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Parses the token at the starting position in the text.
         /// </summary>
-        public static LexicalToken ParseToken(string text, int start = 0, bool alwaysProduceEndToken = false)
+        public static LexicalToken ParseToken(string text, int start = 0, ParseOptions options = null)
         {
-            return Default.Parse(text, start, alwaysProduceEndToken);
+            return Default.Parse(text, start, options ?? ParseOptions.Default);
         }
 
         /// <summary>
         /// Parses all the tokens in the text.
         /// </summary>
-        public static LexicalToken[] ParseTokens(string text, bool alwaysProduceEndToken = false)
+        public static LexicalToken[] ParseTokens(string text, ParseOptions options = null)
         {
             var tokens = new List<LexicalToken>();
-            ParseTokens(text, tokens, alwaysProduceEndToken);
+            ParseTokens(text, tokens, options ?? ParseOptions.Default);
             return tokens.ToArray();
         }
 
         /// <summary>
         /// Parses all the tokens in the text.
         /// </summary>
-        public static void ParseTokens(string text, List<LexicalToken> tokens, bool alwaysProduceEndToken = false)
+        public static void ParseTokens(string text, List<LexicalToken> tokens, ParseOptions options = null)
         {
+            options = options ?? ParseOptions.Default;
             var parser = new TokenParser();
 
             LexicalToken token;
             var pos = 0;
             do
             {
-                token = parser.Parse(text, pos, alwaysProduceEndToken);
+                token = parser.Parse(text, pos, options);
                 if (token == null)
                     break;
                 tokens.Add(token);
@@ -70,10 +71,9 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Parses the token at the starting offset in the text.
         /// </summary>
-        private LexicalToken Parse(string text, int start, bool alwaysProduceEndToken)
+        private LexicalToken Parse(string text, int start, ParseOptions options)
         {
             LexicalToken tok;
-
             var pos = start;
             var trivia = ParseTrivia(text, pos);
             pos += trivia.Length;
@@ -111,7 +111,7 @@ namespace Kusto.Language.Parsing
                     default:
                         if (IsAtEnd(text, pos))
                         {
-                            if (trivia.Length > 0 || alwaysProduceEndToken)
+                            if (trivia.Length > 0 || options.AlwaysProduceEndToken)
                                 return new LexicalToken(SyntaxKind.EndOfTextToken, trivia, "");
                             return null;
                         }
@@ -131,7 +131,7 @@ namespace Kusto.Language.Parsing
                     var gooKind = GetGooLiteralTokenKind(keywordMatch.Value.Kind);
                     if (gooKind != SyntaxKind.None)
                     {
-                        var gooLen = ScanGoo(text, pos + keywordMatch.Key.Length);
+                        var gooLen = ScanGoo(text, pos + keywordMatch.Key.Length, options);
                         if (gooLen > 0)
                         {
                             var gooText = GetSubstring(text, pos, keywordMatch.Key.Length + gooLen);
@@ -1043,7 +1043,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Scans the content of a parenthesized literal
         /// </summary>
-        private static int ScanGoo(string text, int start)
+        private static int ScanGoo(string text, int start, ParseOptions options)
         {
             var pos = start;
 
@@ -1056,7 +1056,7 @@ namespace Kusto.Language.Parsing
                     && (ch = text[pos]) != ')'
                     // better intellisense if we stop the insanity at like break (no literal spans multiple lines since dynamic is now an expression)
                     // probably can do even better for numeric literals too since we know the domain fully.
-                    && !TextFacts.IsLineBreakStart(ch))  
+                    && (options.AllowLiteralsWithLineBreaks || !TextFacts.IsLineBreakStart(ch)))  
                 {
                     pos++;
                 }

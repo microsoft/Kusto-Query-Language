@@ -570,9 +570,9 @@ namespace Kusto.Language.Binding
                     case BracketedName _:
                         return _binder.BindName(node.SimpleName, node.Match, node);
                     case WildcardedName wc:
-                        return VisitWildcardedNameReference(node, wc.Pattern);
+                        return VisitWildcardedNameReference(node, wc.SimpleName);
                     case BracketedWildcardedName bwc:
-                        return VisitWildcardedNameReference(node, bwc.Pattern);
+                        return VisitWildcardedNameReference(node, bwc.SimpleName);
                     case BracedName _:
                         // error if client parameters not supported
                         var dx = _binder._globals.GetProperty(Properties.AllowClientParameters) ? null : DiagnosticFacts.GetClientParametersNotSupported().WithLocation(node);
@@ -583,7 +583,7 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private SemanticInfo VisitWildcardedNameReference(NameReference node, SyntaxToken pattern)
+            private SemanticInfo VisitWildcardedNameReference(NameReference node, string pattern)
             {
                 var list = s_symbolListPool.AllocateFromPool();
                 var filteredList = s_symbolListPool.AllocateFromPool();
@@ -599,7 +599,7 @@ namespace Kusto.Language.Binding
 
                     FilterVisibleSymbols(node, list, filteredList);
 
-                    GetWildcardSymbols(pattern.Text, filteredList, matchingList);
+                    GetWildcardSymbols(pattern, filteredList, matchingList);
 
                     if (matchingList.Count == 1)
                     {
@@ -616,7 +616,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern.Text).WithLocation(node));
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern).WithLocation(node));
                     }
                 }
                 finally

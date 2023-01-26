@@ -16,34 +16,63 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public class QueryGrammar
     {
-        private QueryGrammar()
+        private QueryGrammar(ParseOptions options)
         {
-            this.Initialize();
+            this.Initialize(options);
         }
-
-        private static QueryGrammar s_Instance;
 
         /// <summary>
         /// Gets the <see cref="QueryGrammar"/> associated with the specified <see cref="GlobalState"/>.
         /// </summary>
         public static QueryGrammar From(GlobalState globals)
         {
-#if false // TODO: when grammar is made dependent on globals
-            if (!globals.Cache.TryGetValue<QueryGrammar2>(out var grammar))
+            var cg = s_currentGrammar;
+            if (cg != null && cg.Options.EqualExceptForParseKind(globals.ParseOptions))
             {
-                grammar = globals.Cache.GetOrCreate(() => new QueryGrammar2(globals));
+                return cg.Grammar;
             }
-
-            return grammar;
-#else
-            if (s_Instance == null)
+            else
             {
-                Interlocked.CompareExchange(ref s_Instance, new QueryGrammar(), null);
-            }
+                CachedGrammar newCachedGrammar;
 
-            return s_Instance;
-#endif
+                if (globals.Cache != null)
+                {
+                    // try to access/store grammar from globals cache if there is one
+                    if (!globals.Cache.TryGetValue<CachedGrammar>(out newCachedGrammar))
+                    {
+                        newCachedGrammar = globals.Cache.GetOrCreate(() => 
+                            new CachedGrammar(
+                                new QueryGrammar(globals.ParseOptions),
+                                globals.ParseOptions));
+                    }
+                }
+                else
+                {
+                    // otherwise create a new grammar that corresponds the parse options
+                    newCachedGrammar = new CachedGrammar(
+                        new QueryGrammar(globals.ParseOptions),
+                        globals.ParseOptions);
+                }
+
+                // store recent grammar instance so we it can be used later
+                Interlocked.CompareExchange(ref s_currentGrammar, newCachedGrammar, cg);
+
+                return newCachedGrammar.Grammar;
+            }
         }
+
+        private class CachedGrammar
+        {
+            public readonly QueryGrammar Grammar;
+            public readonly ParseOptions Options;
+            public CachedGrammar(QueryGrammar grammar, ParseOptions options)
+            {
+                this.Grammar = grammar;
+                this.Options = options;
+            }
+        }
+
+        private static CachedGrammar s_currentGrammar;
 
         public Parser<LexicalToken, QueryBlock> QueryBlock { get; private set; }
         public Parser<LexicalToken, Statement> Statement { get; private set; }
@@ -85,7 +114,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Constructs the grammar as a Parser
         /// </summary>
-        private void Initialize()
+        private void Initialize(ParseOptions options)
         {
             #region Forwards
             Parser<LexicalToken, Expression> ExpressionCore = null;
@@ -1118,29 +1147,33 @@ namespace Kusto.Language.Parsing
                     First(
                         And(
                             Match(t => t.Kind == SyntaxKind.IdentifierToken || IsExtendedKeywordAsIdentifier(t)), // can have leading trivia
-                            Match(t => t.Kind == SyntaxKind.AsteriskToken && t.Trivia.Length == 0)),
+                            Match(t => t.Kind == SyntaxKind.AsteriskToken && (t.Trivia.Length == 0) || options.AllowNonAdjacentWildcardParts)),
                         Token(SyntaxKind.AsteriskToken)), // can have leading trivia
                     ZeroOrMore(
                         Match(t => (t.Kind == SyntaxKind.IdentifierToken
                                 || t.Kind == SyntaxKind.LongLiteralToken
                                 || t.Kind == SyntaxKind.AsteriskToken
                                 || IsExtendedKeywordAsIdentifier(t))
-                                && t.Trivia.Length == 0)));
+                                && (t.Trivia.Length == 0 || options.AllowNonAdjacentWildcardParts))));
 
             this.WildcardedIdentifier =
                 Convert(
                     ScanWildcard.Hide(),
-                    (IReadOnlyList<LexicalToken> list) =>
-                        SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))
+                    (Source<LexicalToken> source, int start, int len) =>
+                    {
+                        var trivia = source.Peek(start).Trivia;
+                        var text = SyntaxParsers.GetCombinedTokenText(source, start, len);
+                        var valueText = options.AllowNonAdjacentWildcardParts
+                            ? SyntaxParsers.GetCombinedTokenText(source, start, len, includeInnerTrivia: false)
+                            : text;
+                        return SyntaxToken.Identifier(trivia, text, valueText);
+                    })
                 .WithTag("<wildcard>");
 
             this.WildcardedNameReference =
-                Convert(
-                    ScanWildcard.Hide(),
-                    (IReadOnlyList<LexicalToken> list) => (Expression)
-                        new NameReference(
-                            new WildcardedName(
-                                SyntaxToken.Identifier(list[0].Trivia, string.Concat(list.Select(t => t.Text))))))
+                Rule(
+                    WildcardedIdentifier,
+                    (token) => (Expression)new NameReference(new WildcardedName(token)))
                 .WithTag("<wildcard>");
 
             var ScanBracketedWildcardName =
