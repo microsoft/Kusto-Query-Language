@@ -214,10 +214,10 @@ namespace Kusto.Language.Editor
                 if (recursive)
                 {
                     // look for any additional functions in the inlined function body and add them to the work load.
-                    changeAction.Changes.GetChangeRange(out var changeStart, out var changeLength);
-                    changeLength -= 1; // subtract one so to not include any reference immediately adjacent to end of range
+                    var range = changeAction.Changes.GetChangeRange();
+                    // subtract one from length so to not include any reference immediately adjacent to end of range
                     var additionalFunctions = 
-                        GetDatabaseFunctionsReferencedInRange(code, changeStart, changeLength)
+                        GetDatabaseFunctionsReferencedInRange(code, range.Start, range.Length - 1)
                         .Where(f => !alreadyInlined.Contains(f))
                         .ToList();
                     remaining.AddRange(additionalFunctions);
