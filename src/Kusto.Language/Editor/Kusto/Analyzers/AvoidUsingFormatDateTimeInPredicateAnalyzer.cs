@@ -108,8 +108,8 @@ namespace Kusto.Language.Editor
                 && fc.ArgumentList.Expressions.Count == 2)
             {
                 return new FixResult(fc.Name.TextStart,
-                    StringEdit.Replacement(fc.Name.TextStart, fc.Name.Width, alternateFunctionName),
-                    StringEdit.Deletion(fc.ArgumentList.Expressions[0].Element.End, fc.ArgumentList.CloseParen.TextStart - fc.ArgumentList.Expressions[0].Element.End));
+                    TextEdit.Replacement(fc.Name.TextStart, fc.Name.Width, alternateFunctionName),
+                    TextEdit.Deletion(fc.ArgumentList.Expressions[0].Element.End, fc.ArgumentList.CloseParen.TextStart - fc.ArgumentList.Expressions[0].Element.End));
             }
 
             return new FixResult(cursorPosition);

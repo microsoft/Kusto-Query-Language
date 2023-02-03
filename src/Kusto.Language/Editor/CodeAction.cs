@@ -260,13 +260,14 @@ namespace Kusto.Language.Editor
     /// </summary>
     public sealed class ChangeTextAction : ResultAction
     {
-        public EditString Changes { get; }
+        /// <summary>
+        /// The changed text as an <see cref="EditString"/>
+        /// </summary>
+        public EditString ChangedText { get; }
 
-        public string NewText => this.Changes;
-
-        public ChangeTextAction(EditString changes)
+        public ChangeTextAction(EditString changedText)
         {
-            this.Changes = changes;
+            this.ChangedText = changedText;
         }
     }
 
@@ -328,13 +329,13 @@ namespace Kusto.Language.Editor
         {
         }
 
-        public CodeActionResult(EditString newText)
-            : this(new ResultAction[] { new ChangeTextAction(newText) })
+        public CodeActionResult(EditString changedText)
+            : this(new ResultAction[] { new ChangeTextAction(changedText) })
         {
         }
 
-        public CodeActionResult(EditString newText, int newCaretPosition)
-            : this(new ResultAction[] { new ChangeTextAction(newText), new MoveCaretAction(newCaretPosition) })
+        public CodeActionResult(EditString changedText, int newCaretPosition)
+            : this(new ResultAction[] { new ChangeTextAction(changedText), new MoveCaretAction(newCaretPosition) })
         {
         }
 

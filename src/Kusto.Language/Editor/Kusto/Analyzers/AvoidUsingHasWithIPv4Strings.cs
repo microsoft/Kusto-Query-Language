@@ -150,17 +150,17 @@ namespace Kusto.Language.Editor
                     {
                         return new FixEdits(
                             hax.TextStart,
-                            StringEdit.Replacement(hax.Operator.TriviaStart, hax.Right.OpenParen.End - hax.Operator.TriviaStart, ", "),
-                            StringEdit.Insertion(hax.TextStart, newName + "(")
+                            TextEdit.Replacement(hax.Operator.TriviaStart, hax.Right.OpenParen.End - hax.Operator.TriviaStart, ", "),
+                            TextEdit.Insertion(hax.TextStart, newName + "(")
                             );
                     }
                     else if (node is BinaryExpression bx)
                     {
                         return new FixEdits(
                             node.TextStart,
-                            StringEdit.Insertion(bx.End, ")"),
-                            StringEdit.Replacement(bx.Operator.TriviaStart, bx.Right.TextStart - bx.Operator.TriviaStart, ", "),
-                            StringEdit.Insertion(node.TextStart, newName + "(")
+                            TextEdit.Insertion(bx.End, ")"),
+                            TextEdit.Replacement(bx.Operator.TriviaStart, bx.Right.TextStart - bx.Operator.TriviaStart, ", "),
+                            TextEdit.Insertion(node.TextStart, newName + "(")
                             );
                     }
                 }

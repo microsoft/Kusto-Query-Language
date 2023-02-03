@@ -76,7 +76,7 @@ namespace Kusto.Language.Editor
                 var newOpName = action.Data[1];
                 return new FixEdits(
                     opToken.TextStart,
-                    StringEdit.Replacement(opToken.TextStart, opToken.Width, newOpName));
+                    TextEdit.Replacement(opToken.TextStart, opToken.Width, newOpName));
             }
             else
             {

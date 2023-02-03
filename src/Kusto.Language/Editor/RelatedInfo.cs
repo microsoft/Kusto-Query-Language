@@ -73,8 +73,28 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// An element of the text that is related in some way to another element.
     /// </summary>
-    public class RelatedElement : TextRange
+    public class RelatedElement
     {
+        /// <summary>
+        /// The text range of the <see cref="RelatedElement"/>
+        /// </summary>
+        public TextRange Range { get; }
+
+        /// <summary>
+        /// The starting text position of the <see cref="RelatedElement"/>
+        /// </summary>
+        public int Start => Range.Start;
+
+        /// <summary>
+        /// The text length of the <see cref="RelatedElement"/>
+        /// </summary>
+        public int Length => Range.Length;
+
+        /// <summary>
+        /// The text position after the end of the <see cref="RelatedElement"/>
+        /// </summary>
+        public int End => this.Range.End;
+
         /// <summary>
         /// The kind of related element.
         /// </summary>
@@ -90,16 +110,26 @@ namespace Kusto.Language.Editor
         /// </summary>
         public int CursorRight { get; }
 
-        public RelatedElement(int start, int length, RelatedElementKind kind, int cursorLeft, int cursorRight)
-            : base(start, length)
+        public RelatedElement(TextRange range, RelatedElementKind kind, int cursorLeft, int cursorRight)
         {
+            this.Range = range;
             this.Kind = kind;
             this.CursorLeft = cursorLeft;
             this.CursorRight = cursorRight;
         }
 
+        public RelatedElement(TextRange range, RelatedElementKind kind)
+            : this(range, kind, range.Start, range.End)
+        {
+        }
+
+        public RelatedElement(int start, int length, RelatedElementKind kind, int cursorLeft, int cursorRight)
+            : this(new TextRange(start, length), kind, cursorLeft, cursorRight) 
+        { 
+        }
+
         public RelatedElement(int start, int length, RelatedElementKind kind)
-            : this(start, length, kind, start, start + length)
+            : this(new TextRange(start, length), kind, start, start + length)
         {
         }
     }

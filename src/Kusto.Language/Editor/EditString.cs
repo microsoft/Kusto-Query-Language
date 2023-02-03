@@ -3,38 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Kusto.Language.Utils
+namespace Kusto.Language.Editor
 {
     using Parsing;
+    using Utils;
 
     /// <summary>
-    /// A string that remembers it edits.
+    /// An immutable string-like type that remembers the changes made to construct its current form.
     /// </summary>
     public class EditString
     {
         /// <summary>
-        /// The text before the edits
+        /// The text before any changes.
         /// </summary>
         public string OriginalText { get; }
 
         /// <summary>
-        /// The text after the edits
+        /// The text after all the changes.
         /// </summary>
         public string CurrentText { get; }
 
         /// <summary>
         /// The list of in order, non-overlapping edits, each relative the the original text.
         /// </summary>
-        private IReadOnlyList<Edit> _edits;
+        private IReadOnlyList<Edit> _changes;
 
         /// <summary>
         /// Constructs a new <see cref="EditString"/>.
         /// </summary>
-        private EditString(string originalText, string currentText, IReadOnlyList<Edit> edits)
+        private EditString(string originalText, string currentText, IReadOnlyList<Edit> changes)
         {
             this.OriginalText = originalText ?? "";
             this.CurrentText = currentText ?? "";
-            _edits = edits;
+            _changes = changes;
         }
 
         /// <summary>
@@ -77,39 +78,44 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Returns a list of changes between the original and current text
+        /// Returns a list of collective changes between the original and current text
         /// such that if applied to the original text (via ApplyAll) would produce the current text.
-        /// This list of changes is not guaranteed to match the exact sequence of edits originally applied.
+        /// This list of changes is not guaranteed to match the exact sequence of edits originally made
+        /// to create the current text.
         /// </summary>
-        public IReadOnlyList<StringEdit> GetChanges()
+        public IReadOnlyList<TextEdit> GetChanges()
         {
-            var result = new List<StringEdit>();
+            var textChanges = new List<TextEdit>();
 
             var delta = 0;
-            foreach (var edit in _edits)
+            foreach (var edit in _changes)
             {
-                result.Add(StringEdit.Replacement(edit.Start, edit.DeleteLength, this.CurrentText.Substring(edit.Start + delta, edit.InsertLength)));
+                textChanges.Add(TextEdit.Replacement(edit.Start, edit.DeleteLength, this.CurrentText.Substring(edit.Start + delta, edit.InsertLength)));
                 delta = delta - edit.DeleteLength + edit.InsertLength;
             }
 
-            return result;
+            return textChanges;
         }
 
         /// <summary>
-        /// Convert a list of changes to a cummulative list, that can be applied one by one (via Apply)
+        /// Convert a list of collective changes to a list of sequential changes.
+        /// Collective changes are a set of edits each specified at a position in the original text.
+        /// Sequential changes are a set of edits each specified at positions in the logical text emerging after applying the prior edits.
+        /// Collective changes can be used in a call to <see cref="ApplyAll"/>.
+        /// Sequential changes can be used in a series of calls to <see cref="Apply"/>, one after the other.
         /// </summary>
-        public static IReadOnlyList<StringEdit> ConvertToCummulativeChanges(IReadOnlyList<StringEdit> changes)
+        public static IReadOnlyList<TextEdit> ConvertToSequentialChanges(IReadOnlyList<TextEdit> collectiveChanges)
         {
-            var result = new List<StringEdit>();
+            var sequentialChanges = new List<TextEdit>();
 
             var delta = 0;
-            foreach (var edit in changes)
+            foreach (var edit in collectiveChanges)
             {
-                result.Add(StringEdit.Replacement(edit.Start + delta, edit.DeleteLength, edit.InsertText));
+                sequentialChanges.Add(TextEdit.Replacement(edit.Start + delta, edit.DeleteLength, edit.InsertText));
                 delta = delta - edit.DeleteLength + edit.InsertText.Length;
             }
 
-            return result;
+            return sequentialChanges;
         }
 
         /// <summary>
@@ -118,15 +124,15 @@ namespace Kusto.Language.Utils
         public override string ToString() => this.CurrentText;
 
         /// <summary>
-        /// Replace the range of characters with the specified text.
+        /// Returns a new <see cref="EditString"/> with the range of characters replaced with the specified text.
         /// </summary>
         public EditString ReplaceAt(int start, int length, string text)
         {
-            return Apply(StringEdit.Replacement(start, length, text));
+            return Apply(TextEdit.Replacement(start, length, text));
         }
 
         /// <summary>
-        /// Inserts the text at the specified position.
+        /// Returns a new <see cref="EditString"/> with the text inserted as the position.
         /// </summary>
         public EditString Insert(int position, string text)
         {
@@ -134,7 +140,7 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Appends the text to the end of the <see cref="EditString"/>
+        /// Returns a new <see cref="EditString"/> with the text appended to the end.
         /// </summary>
         public EditString Append(string text)
         {
@@ -142,7 +148,7 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Prepends the text at the start of the <see cref="EditString"/>
+        /// Returns a new <see cref="EditString"/> with the text prepending to the start.
         /// </summary>
         public EditString Prepend(string text)
         {
@@ -150,7 +156,7 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Removes the specified range of characters.
+        /// Returns a new <see cref="EditString"/> with the range of characters removed.
         /// </summary>
         public EditString Remove(int start, int length)
         {
@@ -158,7 +164,7 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Gets the substring at the specified range.
+        /// Returns a new <see cref="EditString"/> containing only the range of characters.
         /// </summary>
         public EditString Substring(int start, int length)
         {
@@ -185,20 +191,20 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Replaces all occurrances of <see cref="p:oldValue"/> with <see cref="p:newValue"/>
+        /// Returns a new <see cref="EditString"/> with all occurrances of the old text replaced with the new text.
         /// </summary>
-        public EditString Replace(string oldValue, string newValue)
+        public EditString Replace(string oldText, string newText)
         {
-            if (oldValue == null)
-                throw new ArgumentNullException(nameof(oldValue));
+            if (oldText == null)
+                throw new ArgumentNullException(nameof(oldText));
 
-            if (newValue == null)
-                throw new ArgumentNullException(nameof(newValue));
+            if (newText == null)
+                throw new ArgumentNullException(nameof(newText));
 
-            var newText = this.CurrentText.Replace(oldValue, newValue);
+            var newCurrentText = this.CurrentText.Replace(oldText, newText);
 
             // if nothing changed, return same EditString
-            if (newText == this.CurrentText)
+            if (newCurrentText == this.CurrentText)
                 return this;
 
             int startIndex = 0;
@@ -206,22 +212,22 @@ namespace Kusto.Language.Utils
 
             while (true)
             {
-                int oldValueStart = this.CurrentText.IndexOf(oldValue, startIndex);
+                int oldValueStart = this.CurrentText.IndexOf(oldText, startIndex);
                 if (oldValueStart < startIndex)
                     break;
 
-                newEdits.Add(new Edit(oldValueStart, oldValue.Length, newValue.Length));
+                newEdits.Add(new Edit(oldValueStart, oldText.Length, newText.Length));
 
-                startIndex = oldValueStart + oldValue.Length;
+                startIndex = oldValueStart + oldText.Length;
             }
 
-            return ApplyEdits(newText, newEdits);
+            return ApplyEdits(newCurrentText, newEdits);
         }
 
         /// <summary>
         /// Returns a new <see cref="EditString"/> with the single edit applied.
         /// </summary>
-        public EditString Apply(StringEdit edit)
+        public EditString Apply(TextEdit edit)
         {
             if (edit.Start < 0 || edit.Start > this.Length + 1)
                 throw new ArgumentOutOfRangeException(nameof(edit.Start));
@@ -249,18 +255,20 @@ namespace Kusto.Language.Utils
             }
             else
             {
-                return new EditString(this.OriginalText, newText, _edits);
+                return new EditString(this.OriginalText, newText, _changes);
             }
         }
 
         /// <summary>
         /// Returns a new <see cref="EditString"/> with all the edits applied.
-        /// Each edit is specified against positions in the current text, must be in order and non-overlapping.
+        /// Each edit is specified against positions in the current text and must be non-overlapping with other edits.
         /// </summary>
-        public EditString ApplyAll(IReadOnlyList<StringEdit> edits)
+        public EditString ApplyAll(IReadOnlyList<TextEdit> edits)
         {
             if (edits == null)
                 return this;
+
+            edits = GetOrderedEdits(edits);
 
             if (!CanApplyAll(edits))
                 throw new InvalidOperationException("An edit occurs out of order, overlaps a prior edit or is specified out of bounds of the current text.");
@@ -273,10 +281,13 @@ namespace Kusto.Language.Utils
 
         /// <summary>
         /// Return true if the list of edits can be applied via ApplyAll.
-        /// Returns false if the edits are not in order, overlapping and out of bounds of the current text.
+        /// Returns false if the edits are overlapping or out of bounds of the current text.
         /// </summary>
-        public bool CanApplyAll(IReadOnlyList<StringEdit> edits)
+        public bool CanApplyAll(IReadOnlyList<TextEdit> edits)
         {
+            edits = GetOrderedEdits(edits);
+
+            // check for overlapping or out of bounds
             var priorEnd = 0;
 
             foreach (var edit in edits)
@@ -294,9 +305,41 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Apply edits to text to get new text.
+        /// Returns the list of edits in order of start position.
         /// </summary>
-        private static string GetNewText(string text, IEnumerable<StringEdit> edits)
+        private static IReadOnlyList<TextEdit> GetOrderedEdits(IReadOnlyList<TextEdit> edits)
+        {
+            if (!IsInOrder(edits))
+            {
+                // OrderBy is a stable sort
+                edits = edits.OrderBy(e => e.Start).ToArray();
+            }
+
+            return edits;
+        }
+
+        /// <summary>
+        /// Returns true if the list of edits is already in order.
+        /// </summary>
+        private static bool IsInOrder(IReadOnlyList<TextEdit> edits)
+        {
+            var lastStart = 0;
+            
+            foreach (var edit in edits)
+            {
+                if (edit.Start < lastStart)
+                    return false;
+
+                lastStart = edit.Start;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets the new text with the edits applied.
+        /// </summary>
+        private static string GetNewText(string text, IEnumerable<TextEdit> edits)
         {
             var builder = new StringBuilder();
 
@@ -334,12 +377,12 @@ namespace Kusto.Language.Utils
         /// </summary>
         private EditString ApplyEdits(string newText, IReadOnlyList<Edit> newEdits)
         {
-            var combinedEdits = CombineEdits(_edits, newEdits);
+            var combinedEdits = CombineEdits(_changes, newEdits);
             return new EditString(this.OriginalText, newText, combinedEdits);
         }
 
         /// <summary>
-        /// Combines a list of parallel old edits with a list of parallel new edits.
+        /// Combines a list of old edits with a list of new edits.
         /// The new edits' positions are relative to after the old edits have been applied.
         /// </summary>
         private static IReadOnlyList<Edit> CombineEdits(IReadOnlyList<Edit> oldEdits, IReadOnlyList<Edit> newEdits)
@@ -554,9 +597,9 @@ namespace Kusto.Language.Utils
             int currentPosition = originalPosition;
             int delta = 0;
 
-            for (int i = 0; i < _edits.Count; i++)
+            for (int i = 0; i < _changes.Count; i++)
             {
-                var edit = _edits[i];
+                var edit = _changes[i];
 
                 if (currentPosition < edit.Start + delta)
                     break;
@@ -584,9 +627,9 @@ namespace Kusto.Language.Utils
             int originalPosition = currentPosition;
             int delta = 0;
 
-            for (int i = 0; i < _edits.Count; i++)
+            for (int i = 0; i < _changes.Count; i++)
             {
-                var edit = _edits[i];
+                var edit = _changes[i];
 
                 if (originalPosition < edit.Start + delta)
                     break;
@@ -639,54 +682,29 @@ namespace Kusto.Language.Utils
         /// <summary>
         /// Gets the smallest range within the current text encompassing all of the changes.
         /// </summary>
-        public EditRange GetChangeRange()
+        public TextRange GetChangeRange()
         {
-            if (_edits.Count > 0)
+            if (_changes.Count > 0)
             {
-                var firstStart = GetCurrentPosition(_edits[0].Start, PositionBias.Left);
-                var lastEnd = GetCurrentPosition(_edits[_edits.Count - 1].Start, PositionBias.Right);
-                return EditRange.FromBounds(firstStart, lastEnd);
+                var firstStart = GetCurrentPosition(_changes[0].Start, PositionBias.Left);
+                var lastEnd = GetCurrentPosition(_changes[_changes.Count - 1].Start, PositionBias.Right);
+                return TextRange.FromBounds(firstStart, lastEnd);
             }
             else
             {
-                return EditRange.Empty;
+                return TextRange.Empty;
             }
         }
 
-#if false
         /// <summary>
-        /// Gets all the change ranges within the current text.
-        /// </summary>
-        public IReadOnlyList<EditRange> GetChangeRanges()
-        {
-            if (_edits.Count > 0)
-            {
-                var ranges = new List<EditRange>(_edits.Count);
-                for (int i = 0; i < _edits.Count; i++)
-                {
-                    var edit = _edits[i];
-                    var start = GetCurrentPosition(edit.Start, PositionBias.Left, i);
-                    var end = GetCurrentPosition(edit.Start + edit.InsertText.Length - edit.DeleteLength, PositionBias.Right, i);
-                    ranges.Add(EditRange.FromBounds(start, end));
-                }
-                return ranges.ToReadOnly();
-            }
-            else
-            {
-                return EmptyReadOnlyList<EditRange>.Instance;
-            }
-        }
-#endif
-
-        /// <summary>
-        /// Removes the blank lines from the text.
+        /// Returns a new <see cref="EditString"/> with the blank lines removed.
         /// </summary>
         public EditString RemoveBlankLines()
         {
             var pos = 0;
             var text = this.CurrentText;
 
-            List<StringEdit> edits = null;
+            List<TextEdit> edits = null;
 
             while (pos < text.Length)
             {
@@ -695,8 +713,8 @@ namespace Kusto.Language.Utils
                 if (TextFacts.IsBlankLine(text, pos))
                 {
                     if (edits == null)
-                        edits = new List<StringEdit>();
-                    edits.Add(StringEdit.Deletion(pos, len));
+                        edits = new List<TextEdit>();
+                    edits.Add(TextEdit.Deletion(pos, len));
                 }
 
                 pos += len;
@@ -706,7 +724,7 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Replaces all line breaks in the text with the specied value.
+        /// Returns a new <see cref="EditString"/> with all the line breaks replaced with the specied value.
         /// </summary>
         public EditString ReplaceLineBreaks(string newValue)
         {
@@ -714,7 +732,7 @@ namespace Kusto.Language.Utils
                 throw new ArgumentNullException(nameof(newValue));
 
             var text = this.CurrentText;
-            List<StringEdit> edits = null;
+            List<TextEdit> edits = null;
 
             for (int i = 0; i < text.Length; i++)
             {
@@ -726,8 +744,8 @@ namespace Kusto.Language.Utils
                     if (len != newValue.Length || string.Compare(text, i, newValue, 0, len) != 0)
                     {
                         if (edits == null)
-                            edits = new List<StringEdit>();
-                        edits.Add(StringEdit.Replacement(i, len, newValue));
+                            edits = new List<TextEdit>();
+                        edits.Add(TextEdit.Replacement(i, len, newValue));
                     }
 
                     // add one less because for-loop will add one back
@@ -737,84 +755,5 @@ namespace Kusto.Language.Utils
 
             return this.ApplyAll(edits);
         }
-    }
-
-    [System.Diagnostics.DebuggerDisplay("Start: {Start}, Delete: {DeleteLength}, Insert: {InsertText}")]
-    public struct StringEdit
-    {
-        /// <summary>
-        /// The text position of the start of the edit.
-        /// </summary>
-        public int Start { get; }
-
-        /// <summary>
-        /// The number of characters to delete starting at the start position.
-        /// </summary>
-        public int DeleteLength { get; }
-
-        /// <summary>
-        /// The number of characters to insert at the start position, (after any deletion).
-        /// </summary>
-        public string InsertText { get; }
-
-        public StringEdit(int start, int deleteLength, string insertText)
-        {
-            if (insertText == null)
-                throw new ArgumentNullException(nameof(insertText));
-
-            this.Start = start;
-            this.DeleteLength = deleteLength;
-            this.InsertText = insertText;
-        }
-
-        public static StringEdit Replacement(int start, int deleteLength, string insertText)
-        {
-            return new StringEdit(start, deleteLength, insertText);
-        }
-
-        public static StringEdit Deletion(int start, int deleteLength)
-        {
-            return new StringEdit(start, deleteLength, "");
-        }
-
-        public static StringEdit Insertion(int start, string text)
-        {
-            return new StringEdit(start, 0, text);
-        }
-    }
-
-    public enum PositionBias
-    {
-        /// <summary>
-        /// Translate positions to the left on insertion boundaries
-        /// </summary>
-        Left,
-
-        /// <summary>
-        /// Translate positions to the right on insertion boundaries.
-        /// </summary>
-        Right
-    }
-
-    public struct EditRange
-    {
-        public int Start { get; }
-        public int Length { get; }
-        public int End => Start + Length;
-
-        public EditRange(int start, int length)
-        {
-            this.Start = start;
-            this.Length = length;
-        }
-
-        public static EditRange FromBounds(int start, int end)
-        {
-            var trueStart = Math.Min(start, end);
-            var trueEnd = Math.Max(start, end);
-            return new EditRange(trueStart, trueEnd - trueStart);
-        }
-
-        public static EditRange Empty = new EditRange(0, 0);
     }
 }

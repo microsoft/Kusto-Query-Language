@@ -5,7 +5,7 @@ namespace Kusto.Language.Editor
     /// <summary>
     /// A range of text.
     /// </summary>
-    public class TextRange
+    public struct TextRange
     {
         /// <summary>
         /// The starting position of the range in the text.
@@ -28,12 +28,19 @@ namespace Kusto.Language.Editor
             this.Length = length;
         }
 
+        public static TextRange FromBounds(int start, int end)
+        {
+            return new TextRange(start, end - start);
+        }
+
+        public static readonly TextRange Empty = new TextRange(0, 0);
+
         /// <summary>
         /// True if this text range overlaps the other text range.
         /// </summary>
         public bool Overlaps(TextRange other)
         {
-            return other != null && Overlaps(this.Start, this.Length, other.Start, other.Length);
+            return Overlaps(this.Start, this.Length, other.Start, other.Length);
         }
 
         /// <summary>

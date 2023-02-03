@@ -209,12 +209,12 @@ namespace Kusto.Language.Editor
                 var changeAction = resultAction.Actions.OfType<ChangeTextAction>().First();
                 var moveAction = resultAction.Actions.OfType<MoveCaretAction>().First();
                 caretPosition = moveAction.NewCaretPosition;
-                code = KustoCode.ParseAndAnalyze(changeAction.NewText, code.Globals);
+                code = KustoCode.ParseAndAnalyze(changeAction.ChangedText, code.Globals);
 
                 if (recursive)
                 {
                     // look for any additional functions in the inlined function body and add them to the work load.
-                    var range = changeAction.Changes.GetChangeRange();
+                    var range = changeAction.ChangedText.GetChangeRange();
                     // subtract one from length so to not include any reference immediately adjacent to end of range
                     var additionalFunctions = 
                         GetDatabaseFunctionsReferencedInRange(code, range.Start, range.Length - 1)

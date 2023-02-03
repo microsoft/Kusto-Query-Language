@@ -134,7 +134,7 @@ namespace Kusto.Language.Editor
             var suggestedCaretPosition = caretPosition;
             var suggestedCaretBias = PositionBias.Left;
 
-            var edits = new List<StringEdit>();
+            var edits = new List<TextEdit>();
             foreach (var action in actions)
             {
                 var result = GetFixEdits(code, action, caretPosition, options, cancellationToken);
@@ -147,13 +147,16 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            // put in sorted order
-            edits.Sort((a, b) => a.Start - b.Start);
+            var startingText = new EditString(code.Text);
 
-            if (edits.Count > 0
-                && AreNonOverlapping(edits))
+            if (edits.Count > 0)
             {
-                var newText = new EditString(code.Text).ApplyAll(edits);
+                if (!startingText.CanApplyAll(edits))
+                {
+                    return CodeActionResult.Failure("Invalid fix changes");
+                }
+
+                var newText = startingText.ApplyAll(edits);
                 var newCursorPosition = newText.GetCurrentPosition(suggestedCaretPosition, suggestedCaretBias);
                 return new CodeActionResult(newText, newCursorPosition);
             }
@@ -161,7 +164,7 @@ namespace Kusto.Language.Editor
             return CodeActionResult.Nothing;
         }
 
-        private static bool EditContainsPosition(IReadOnlyList<StringEdit> edits, int position)
+        private static bool EditContainsPosition(IReadOnlyList<TextEdit> edits, int position)
         {
             if (edits.Count > 0)
             {
@@ -174,20 +177,6 @@ namespace Kusto.Language.Editor
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Determine if the set of ordered edits do not overlap.
-        /// </summary>
-        private bool AreNonOverlapping(IReadOnlyList<StringEdit> orderedEdits)
-        {
-            for (int i = 1; i < orderedEdits.Count; i++)
-            {
-                if (orderedEdits[i].Start < orderedEdits[i - 1].Start + orderedEdits[i - 1].DeleteLength)
-                    return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -214,7 +203,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// One or more edits to be applied to the text of the query.
         /// </summary>
-        public IReadOnlyList<StringEdit> Edits { get; }
+        public IReadOnlyList<TextEdit> Edits { get; }
 
         /// <summary>
         /// The new position of the caret after the edits are applied.
@@ -233,11 +222,11 @@ namespace Kusto.Language.Editor
         /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
         /// <param name="bias">The bias to use when computing the new cursor position in post-edit units.</param>
         /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-        public FixEdits(int newCaretPosition, PositionBias bias, IReadOnlyList<StringEdit> edits)
+        public FixEdits(int newCaretPosition, PositionBias bias, IReadOnlyList<TextEdit> edits)
         {
             this.NewCaretPosition = newCaretPosition;
             this.Bias = bias;
-            this.Edits = edits ?? EmptyReadOnlyList<StringEdit>.Instance;
+            this.Edits = edits ?? EmptyReadOnlyList<TextEdit>.Instance;
         }
 
         /// <summary>
@@ -245,7 +234,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
         /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-        public FixEdits(int newCaretPosition, IReadOnlyList<StringEdit> edits)
+        public FixEdits(int newCaretPosition, IReadOnlyList<TextEdit> edits)
             : this(newCaretPosition, PositionBias.Left, edits)
         {
         }
@@ -256,8 +245,8 @@ namespace Kusto.Language.Editor
         /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
         /// <param name="bias">The bias to use when computing the new cursor position in post-edit units.</param>
         /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-        public FixEdits(int newCaretPosition, PositionBias bias, params StringEdit[] edits)
-            : this(newCaretPosition, bias, (IReadOnlyList<StringEdit>)edits)
+        public FixEdits(int newCaretPosition, PositionBias bias, params TextEdit[] edits)
+            : this(newCaretPosition, bias, (IReadOnlyList<TextEdit>)edits)
         {
         }
 
@@ -266,8 +255,8 @@ namespace Kusto.Language.Editor
         /// </summary>
         /// <param name="newCaretPosition">The new position of the cursor in pre-edit units.</param>
         /// <param name="edits">A list of non-overlapping edits in pre-edit units.</param>
-        public FixEdits(int newCaretPosition, params StringEdit[] edits)
-            : this(newCaretPosition, PositionBias.Left, (IReadOnlyList<StringEdit>)edits)
+        public FixEdits(int newCaretPosition, params TextEdit[] edits)
+            : this(newCaretPosition, PositionBias.Left, (IReadOnlyList<TextEdit>)edits)
         {
         }
     }

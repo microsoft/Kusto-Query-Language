@@ -93,7 +93,7 @@ namespace Kusto.Language.Editor
                 var newFnName = action.Data[2];
                 return new FixEdits(
                     fnNameStart,
-                    StringEdit.Replacement(fnNameStart, fnNameLength, newFnName));
+                    TextEdit.Replacement(fnNameStart, fnNameLength, newFnName));
             }
 
             return new FixEdits(caretPosition);
