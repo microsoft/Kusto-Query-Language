@@ -164,8 +164,14 @@ namespace Kusto.Language
         public static readonly CommandSymbol CreateDatabaseIngestionMapping =
             new CommandSymbol("CreateDatabaseIngestionMapping", _schema8);
 
+        public static readonly CommandSymbol CreateOrAlterDatabaseIngestionMapping =
+            new CommandSymbol("CreateOrAlterDatabaseIngestionMapping", _schema8);
+
         public static readonly CommandSymbol AlterDatabaseIngestionMapping =
             new CommandSymbol("AlterDatabaseIngestionMapping", _schema8);
+
+        public static readonly CommandSymbol AlterMergeDatabaseIngestionMapping =
+            new CommandSymbol("AlterMergeDatabaseIngestionMapping", _schema8);
 
         public static readonly CommandSymbol ShowDatabaseIngestionMappings =
             new CommandSymbol("ShowDatabaseIngestionMappings", _schema8);
@@ -249,8 +255,14 @@ namespace Kusto.Language
         public static readonly CommandSymbol CreateTableIngestionMapping =
             new CommandSymbol("CreateTableIngestionMapping", _schema13);
 
+        public static readonly CommandSymbol CreateOrAlterTableIngestionMapping =
+            new CommandSymbol("CreateOrAlterTableIngestionMapping", _schema13);
+
         public static readonly CommandSymbol AlterTableIngestionMapping =
             new CommandSymbol("AlterTableIngestionMapping", _schema13);
+
+        public static readonly CommandSymbol AlterMergeTableIngestionMapping =
+            new CommandSymbol("AlterMergeTableIngestionMapping", _schema13);
 
         public static readonly CommandSymbol ShowTableIngestionMappings =
             new CommandSymbol("ShowTableIngestionMappings", _schema13);
@@ -1802,7 +1814,9 @@ namespace Kusto.Language
             ShowDatabasesSchema,
             ShowDatabasesSchemaAsJson,
             CreateDatabaseIngestionMapping,
+            CreateOrAlterDatabaseIngestionMapping,
             AlterDatabaseIngestionMapping,
+            AlterMergeDatabaseIngestionMapping,
             ShowDatabaseIngestionMappings,
             ShowIngestionMappings,
             DropDatabaseIngestionMapping,
@@ -1829,7 +1843,9 @@ namespace Kusto.Language
             UndoDropTable,
             DropTables,
             CreateTableIngestionMapping,
+            CreateOrAlterTableIngestionMapping,
             AlterTableIngestionMapping,
+            AlterMergeTableIngestionMapping,
             ShowTableIngestionMappings,
             ShowTableIngestionMapping,
             DropTableIngestionMapping,
