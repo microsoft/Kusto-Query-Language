@@ -341,81 +341,83 @@ namespace Kusto.Language.Binding
                         _pathScope.GetMembers(name, match, list);
                     }
                 }
-
-                // check binding against any columns in the row scope
-                // note: the row scope is the scope containing the columns from the left that are in scope on the right of a pipe operator.
-                if (list.Count == 0 && _rowScope != null && includeRowScope)
+                else
                 {
-                    _rowScope.GetMembers(name, match, list);
-
-                    if (list.Count == 1 && _rightRowScope != null && _commonColumnsOnly)
+                    // check binding against any columns in the row scope
+                    // note: the row scope is the scope containing the columns from the left that are in scope on the right of a pipe operator.
+                    if (list.Count == 0 && _rowScope != null && includeRowScope)
                     {
-                        _rightRowScope.GetMembers(name, match, list);
+                        _rowScope.GetMembers(name, match, list);
 
-                        if (list.Count == 2)
+                        if (list.Count == 1 && _rightRowScope != null && _commonColumnsOnly)
                         {
-                            // combine these matching columns into a common column
-                            var left = (ColumnSymbol)list[0];
-                            var right = (ColumnSymbol)list[1];
-                            var commonColumn = new ColumnSymbol(left.Name, left.Type, left.Description, originalColumns: new[] { left, right });
-                            list.Clear();
-                            list.Add(commonColumn);
+                            _rightRowScope.GetMembers(name, match, list);
+
+                            if (list.Count == 2)
+                            {
+                                // combine these matching columns into a common column
+                                var left = (ColumnSymbol)list[0];
+                                var right = (ColumnSymbol)list[1];
+                                var commonColumn = new ColumnSymbol(left.Name, left.Type, left.Description, originalColumns: new[] { left, right });
+                                list.Clear();
+                                list.Add(commonColumn);
+                            }
                         }
                     }
-                }
 
-                // try secondary right-side row scope (used in join operator)
-                if (list.Count == 0 && _rightRowScope != null)
-                {
-                    _rightRowScope.GetMembers(name, match, list);
-                }
+                    // try secondary right-side row scope (used in join operator)
+                    if (list.Count == 0 && _rightRowScope != null)
+                    {
+                        _rightRowScope.GetMembers(name, match, list);
+                    }
 
-                // try local variables (includes any user-defined functions)
-                // these are defined by a previous let statement
-                if (list.Count == 0)
-                {
-                    _localScope.GetSymbols(name, match, list);
+                    // try local variables (includes any user-defined functions)
+                    // these are defined by a previous let statement
+                    if (list.Count == 0)
+                    {
+                        _localScope.GetSymbols(name, match, list);
 
-                    // user defined functions do not require argument list if it has no arguments
-                    allowZeroArgumentInvocation = list.Count > 0;
-                }
+                        // user defined functions do not require argument list if it has no arguments
+                        allowZeroArgumentInvocation = list.Count > 0;
+                    }
 
-                // look for zero-argument database functions
-                if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location)
-                    && (match & SymbolMatch.Function) != 0)
-                {
-                    // database functions only (locally defined functions are already handled above)
-                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
-                    RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
+                    // look for zero-argument database functions
+                    if (list.Count == 0 && IsPossibleInvocableFunctionWithoutArgumentList(location)
+                        && (match & SymbolMatch.Function) != 0)
+                    {
+                        // database functions only (locally defined functions are already handled above)
+                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
+                        RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
 
-                    // database functions do not require argument list if it has zero arguments.
-                    allowZeroArgumentInvocation = list.Count > 0;
-                }
+                        // database functions do not require argument list if it has zero arguments.
+                        allowZeroArgumentInvocation = list.Count > 0;
+                    }
 
-                // other items in database (tables, etc)
-                if (list.Count == 0 && _currentDatabase != null)
-                {
-                    _currentDatabase.GetMembers(name, match, list);
-                }
+                    // other items in database (tables, etc)
+                    if (list.Count == 0 && _currentDatabase != null)
+                    {
+                        _currentDatabase.GetMembers(name, match, list);
+                    }
 
-                // databases can be directly referenced in commands
-                if (list.Count == 0 && _currentCluster != null && (match & SymbolMatch.Database) != 0)
-                {
-                    _currentCluster.GetMembers(name, match, list);
-                }
+                    // databases can be directly referenced in commands
+                    if (list.Count == 0 && _currentCluster != null && (match & SymbolMatch.Database) != 0)
+                    {
+                        _currentCluster.GetMembers(name, match, list);
+                    }
 
-                // look for any built-in functions with matching name (even with those with parameters)
-                if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
-                {
-                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
-                }
+                    // look for any built-in functions with matching name (even with those with parameters)
+                    if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
+                    {
+                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
+                    }
 
-                // infer column for this otherwise unbound reference?
-                if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0
-                    && includeRowScope && inferColumns)
-                {
-                    // row scope table has open definition, so create an inferred column for the otherwise unbound name
-                    list.Add(GetOpenTableInferredColumn(name, _rowScope));
+                    // infer column for this otherwise unbound reference?
+                    if (list.Count == 0 && _rowScope != null && _rowScope.IsOpen && (match & SymbolMatch.Column) != 0
+                        && includeRowScope && inferColumns)
+                    {
+                        // row scope table has open definition, so create an inferred column for the otherwise unbound name
+                        list.Add(GetOpenTableInferredColumn(name, _rowScope));
+                    }
                 }
             }
 

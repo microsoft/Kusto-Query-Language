@@ -43,7 +43,7 @@ namespace Kusto.Language.Binding
             }
             else
             {
-                return null;
+                return ErrorInfo;
             }
         }
 

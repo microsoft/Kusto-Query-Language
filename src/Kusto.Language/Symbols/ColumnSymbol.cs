@@ -51,7 +51,7 @@ namespace Kusto.Language.Symbols
             IReadOnlyList<string> examples = null)
             : base(name)
         {
-            this.Type = type ?? throw new ArgumentNullException(nameof(type));
+            this.Type = type == null || type.IsError ? ScalarTypes.Unknown : type;
             this.Description = description ?? "";
 
             if (originalColumns != null && originalColumns.Count > 0)
