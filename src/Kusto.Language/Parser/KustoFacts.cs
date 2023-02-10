@@ -333,6 +333,37 @@ namespace Kusto.Language
             "__get_scalar",
         };
 
+        public static readonly IReadOnlyList<string> DateTimeParts = new string[]
+        {
+            "year", 
+            "quarter", 
+            "month", 
+            "week_of_year", 
+            "day", 
+            "dayofyear", 
+            "hour", 
+            "minute", 
+            "second", 
+            "millisecond", 
+            "microsecond", 
+            "nanosecond" 
+        };
+
+        public static readonly IReadOnlyList<string> DateDiffParts = new[] 
+        { 
+            "year", 
+            "quarter", 
+            "month", 
+            "week", 
+            "day", 
+            "hour", 
+            "minute", 
+            "second", 
+            "millisecond", 
+            "microsecond", 
+            "nanosecond" 
+        };
+
         /// <summary>
         /// Keywords that can always be used as identifiers
         /// </summary>

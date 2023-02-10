@@ -789,16 +789,16 @@ namespace Kusto.Language.Editor
             return this.Text;
         }
 
-        public override FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public override FormattedText GetFormattedText(FormattingOptions options = null, int caretPosition = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code)
                 && CanBeAnalyzed(code))
             {
-                return KustoFormatter.GetFormattedText(code.Syntax, options, cursorPosition);
+                return KustoFormatter.GetFormattedText(code.Syntax, options, caretPosition);
             }
             else
             {
-                return new FormattedText(this.Text, cursorPosition);
+                return new FormattedText(this.Text, caretPosition);
             }
         }
     }

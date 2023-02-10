@@ -876,24 +876,6 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
-            public override void VisitInExpression(InExpression node)
-            {
-                node?.Left.Accept(this);
-
-                var oldScope = _binder._rowScope;
-                _binder._rowScope = null;
-                try
-                {
-                    node?.Right.Accept(this);
-                }
-                finally
-                {
-                    _binder._rowScope = oldScope;
-                }
-
-                BindNode(node);
-            }
-
             public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
             {
                 node.Table?.Accept(this);

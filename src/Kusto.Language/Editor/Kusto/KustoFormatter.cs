@@ -14,8 +14,8 @@ namespace Kusto.Language.Editor
     {
         private readonly FormattingOptions _options;
         private readonly StringBuilder _builder;
-        private readonly int _cursorPosition;
-        private int _newCursorPosition;
+        private readonly int _caretPosition;
+        private int _newCaretPosition;
         private int _currentLineStart;
 
         private readonly Dictionary<SyntaxElement, SpacingRule> _spacingRules =
@@ -30,11 +30,11 @@ namespace Kusto.Language.Editor
         private readonly Dictionary<SyntaxElement, int> _elementLineOffsets =
             new Dictionary<SyntaxElement, int>();
 
-        internal KustoFormatter(int cursorPosition, FormattingOptions options)
+        internal KustoFormatter(int caretPosition, FormattingOptions options)
         {
             _currentLineStart = 0;
-            _cursorPosition = cursorPosition;
-            _newCursorPosition = -1;
+            _caretPosition = caretPosition;
+            _newCaretPosition = -1;
             _options = options;
             _builder = new StringBuilder();
         }
@@ -42,11 +42,11 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the formatted text for the node.
         /// </summary>
-        public static FormattedText GetFormattedText(SyntaxNode node, FormattingOptions options, int cursorPosition)
+        public static FormattedText GetFormattedText(SyntaxNode node, FormattingOptions options, int caretPosition)
         {
-            var formatter = new KustoFormatter(cursorPosition, options ?? FormattingOptions.Default);
+            var formatter = new KustoFormatter(caretPosition, options ?? FormattingOptions.Default);
             formatter.Format(node);
-            return new FormattedText(formatter._builder.ToString(), formatter._newCursorPosition);
+            return new FormattedText(formatter._builder.ToString(), formatter._newCaretPosition);
         }
 
         private void Format(SyntaxNode node)
@@ -59,23 +59,23 @@ namespace Kusto.Language.Editor
 
             // adjust cursor position if not already chosen,
             // as it may need to move if it was inside the formatted area.
-            if (_newCursorPosition == -1)
+            if (_newCaretPosition == -1)
             {
-                if (_cursorPosition <= 0)
+                if (_caretPosition <= 0)
                 {
                     // position was logically before this text, leave it alone
-                    _newCursorPosition = _cursorPosition;
+                    _newCaretPosition = _caretPosition;
                 }
-                else if (_cursorPosition <= node.End)
+                else if (_caretPosition <= node.End)
                 {
                     // position with within this text, but not already recomputed?
                     // put it at the new end position
-                    _newCursorPosition = _builder.Length;
+                    _newCaretPosition = _builder.Length;
                 }
                 else
                 {
                     // position was logically somewhere after this text, so adjust based on change delta
-                    _newCursorPosition = _cursorPosition + (_builder.Length - node.Width);
+                    _newCaretPosition = _caretPosition + (_builder.Length - node.Width);
                 }
             }
         }
@@ -167,15 +167,15 @@ namespace Kusto.Language.Editor
                 WriteTrivia(token, indentation, spacingKind, token.Kind != SyntaxKind.EndOfTextToken);
             }
 
-            if (_newCursorPosition == -1)
+            if (_newCaretPosition == -1)
             {
-                if (_cursorPosition >= token.TextStart && _cursorPosition <= token.End)
+                if (_caretPosition >= token.TextStart && _caretPosition <= token.End)
                 {
-                    _newCursorPosition = _builder.Length + (_cursorPosition - token.TextStart);
+                    _newCaretPosition = _builder.Length + (_caretPosition - token.TextStart);
                 }
-                else if (_cursorPosition < token.TextStart)
+                else if (_caretPosition < token.TextStart)
                 {
-                    _newCursorPosition = _builder.Length;
+                    _newCaretPosition = _builder.Length;
                 }
             }
 
@@ -202,7 +202,7 @@ namespace Kusto.Language.Editor
         private void WriteTrivia(SyntaxToken token, int indentation, SpacingKind spacingKind, bool hasFollowingToken)
         {
             var trivia = token.Trivia;
-            var cursorInTrivia = _cursorPosition >= token.TriviaStart && _cursorPosition < token.TextStart;
+            var cursorInTrivia = _caretPosition >= token.TriviaStart && _caretPosition < token.TextStart;
 
             switch (spacingKind)
             {

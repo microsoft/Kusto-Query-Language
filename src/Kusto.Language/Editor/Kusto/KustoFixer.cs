@@ -157,8 +157,8 @@ namespace Kusto.Language.Editor
                 }
 
                 var newText = startingText.ApplyAll(edits);
-                var newCursorPosition = newText.GetCurrentPosition(suggestedCaretPosition, suggestedCaretBias);
-                return new CodeActionResult(newText, newCursorPosition);
+                var newCaretPosition = newText.GetCurrentPosition(suggestedCaretPosition, suggestedCaretBias);
+                return CodeActionResult.ChangeAndMove(newText, newCaretPosition);
             }
 
             return CodeActionResult.Nothing;
@@ -186,11 +186,11 @@ namespace Kusto.Language.Editor
         protected virtual FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
-            int cursorPosition,
+            int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            return new FixEdits(cursorPosition, null);
+            return new FixEdits(caretPosition, null);
         }
     }
 

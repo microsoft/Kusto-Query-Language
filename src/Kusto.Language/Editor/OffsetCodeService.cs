@@ -181,18 +181,18 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(
             ApplyAction codeAction, 
-            int cursorPosition,
+            int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)
         {
-            cursorPosition -= _offset;
-            var result = _service.ApplyCodeAction(codeAction, cursorPosition, options, cancellationToken);
+            caretPosition -= _offset;
+            var result = _service.ApplyCodeAction(codeAction, caretPosition, options, cancellationToken);
             return result.WithAdjustedPosition(_offset);
         }
 
-        public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
+        public override FormattedText GetFormattedText(FormattingOptions options, int caretPosition, CancellationToken cancellationToken)
         {
-            var result = _service.GetFormattedText(options, cursorPosition - _offset, cancellationToken);
+            var result = _service.GetFormattedText(options, caretPosition - _offset, cancellationToken);
             if (_offset > 0)
             {
                 return new FormattedText(result.Text, result.Position + _offset);

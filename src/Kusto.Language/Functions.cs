@@ -791,15 +791,9 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
-        private static readonly string[] s_dateDiffLiteralValues =
-            new[] { "year", "quarter", "month", "week", "day", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond" };
-
-        private static readonly string[] s_datePartLiteralValues =
-            new[] { "year", "quarter", "month", "week_of_year", "day", "dayOfYear", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond" };
-
         public static readonly FunctionSymbol DatetimeAdd =
             new FunctionSymbol("datetime_add", ScalarTypes.DateTime,
-                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, s_dateDiffLiteralValues),
+                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, KustoFacts.DateDiffParts),
                 new Parameter("value", ParameterTypeKind.Integer),
                 new Parameter("datetime", ScalarTypes.DateTime))
             .ConstantFoldable()
@@ -807,7 +801,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DatetimeDiff =
             new FunctionSymbol("datetime_diff", ScalarTypes.Long,
-                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, s_dateDiffLiteralValues),
+                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, KustoFacts.DateDiffParts),
                 new Parameter("datetime1", ScalarTypes.DateTime),
                 new Parameter("datetime2", ScalarTypes.DateTime))
             .ConstantFoldable()
@@ -929,7 +923,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DatePart =
             new FunctionSymbol("datepart", ScalarTypes.Int,
-                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, s_datePartLiteralValues),
+                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, KustoFacts.DateTimeParts),
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
@@ -938,7 +932,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol DatetimePart =
             new FunctionSymbol("datetime_part", ScalarTypes.Int,
-                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, s_datePartLiteralValues),
+                new Parameter("part", ScalarTypes.String, ArgumentKind.Literal, KustoFacts.DateTimeParts),
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);

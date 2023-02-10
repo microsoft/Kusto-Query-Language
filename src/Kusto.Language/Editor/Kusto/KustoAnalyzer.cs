@@ -100,9 +100,9 @@ namespace Kusto.Language.Editor
                 _analyzer.GetFixAction(code, dx, options, actions, cancellationToken);
             }
 
-            protected override FixEdits GetFixEdits(KustoCode code, ApplyAction action, int cursorPosition, CodeActionOptions options, CancellationToken cancellationToken)
+            protected override FixEdits GetFixEdits(KustoCode code, ApplyAction action, int caretPosition, CodeActionOptions options, CancellationToken cancellationToken)
             {
-                return _analyzer.GetFixEdits(code, action, cursorPosition, options, cancellationToken);
+                return _analyzer.GetFixEdits(code, action, caretPosition, options, cancellationToken);
             }
         }
 
@@ -124,11 +124,11 @@ namespace Kusto.Language.Editor
         protected virtual FixEdits GetFixEdits(
             KustoCode code,
             ApplyAction action,
-            int cursorPosition,
+            int caretPosition,
             CodeActionOptions options,
             CancellationToken cancellationToken)
         {
-            return new FixEdits(cursorPosition, null);
+            return new FixEdits(caretPosition, null);
         }
     }
 }

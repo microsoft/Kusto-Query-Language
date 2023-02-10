@@ -2,9 +2,7 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
-    using System;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using Utils;
 
     /// <summary>
@@ -75,9 +73,9 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the set of code actions available at the specified position.
         /// </summary>
-        /// <param name="position">The position to get code actions for.</param>
-        /// <param name="selectionStart">The start of the selection range.</param>
-        /// <param name="selectionLength">The length of the selection range (or zero if no selection).</param>
+        /// <param name="position">The text position to get code actions for.</param>
+        /// <param name="selectionStart">The start of the text selection range.</param>
+        /// <param name="selectionLength">The length of the text selection range (or zero if no selection).</param>
         /// <param name="options">An optional set of options.</param>
         /// <param name="waitForAnalysis">If false only cached diagnostics will be considered.</param>
         /// <param name="actorName">An optional actor's name to get actions from. If null, actions are obtains from all known actors.</param>
@@ -95,7 +93,7 @@ namespace Kusto.Language.Editor
         /// Applies the code action at ths specified position.
         /// </summary>
         /// <param name="action">The action to apply.</param>
-        /// <param name="caretPosition">The position of the caret before the action is applied.</param>
+        /// <param name="caretPosition">The text position of the caret before the action is applied.</param>
         /// <param name="options">An optional set of options.</param>
         /// <param name="cancellationToken">an optional cancellation token.</param>
         public abstract CodeActionResult ApplyCodeAction(
@@ -123,7 +121,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Determines if a completion list should be shown automatically during typing.
         /// </summary>
-        /// <param name="position">The text position of the caret.</param>
+        /// <param name="position">The text position in question.</param>
         /// <param name="key">The last key typed.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken));
@@ -131,7 +129,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the completion items for the position within the text.
         /// </summary>
-        /// <param name="position">The text position of the caret.</param>
+        /// <param name="position">The text position to get completion items for.</param>
         /// <param name="options">Optional options.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract CompletionInfo GetCompletionItems(int position, CompletionOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
@@ -139,7 +137,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the <see cref="QuickInfo"/> associated with the position within the text.
         /// </summary>
-        /// <param name="position">The text position of the caret.</param>
+        /// <param name="position">The text position to get quick info for.</param>
         /// <param name="options">Any options specified for quick info.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract QuickInfo GetQuickInfo(int position, QuickInfoOptions options = null, CancellationToken cancellationToken = default(CancellationToken));
@@ -147,14 +145,14 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the <see cref="TextRange"/> of the syntax element at or adjacent to the text position.
         /// </summary>
-        /// <param name="position">The text position of the caret.</param>
+        /// <param name="position">The text position to get the corresponding element of.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract TextRange GetElement(int position, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a list of all the syntax elements related to the syntax element at or adjacent to the text position.
         /// </summary>
-        /// <param name="position">The text position of the caret.</param>
+        /// <param name="position">The text position of the corresponding element to get the related elements of.</param>
         /// <param name="options">Optional options</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         public abstract RelatedInfo GetRelatedElements(int position, FindRelatedOptions options = FindRelatedOptions.None, CancellationToken cancellationToken = default(CancellationToken));
@@ -184,9 +182,9 @@ namespace Kusto.Language.Editor
         /// Gets the text with all the whitespace/trivia formatted using the specified options.
         /// </summary>
         /// <param name="options">Optional options.</param>
-        /// <param name="cursorPosition">The text position of the caret before formatting.</param>
+        /// <param name="caretPosition">The text position of the caret before formatting.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
-        public abstract FormattedText GetFormattedText(FormattingOptions options = null, int cursorPosition = 0, CancellationToken cancellationToken = default(CancellationToken));
+        public abstract FormattedText GetFormattedText(FormattingOptions options = null, int caretPosition = 0, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the client parameter references embedded in the text.

@@ -214,7 +214,7 @@ namespace Kusto.Language.Editor
                 if (recursive)
                 {
                     // look for any additional functions in the inlined function body and add them to the work load.
-                    var range = changeAction.ChangedText.GetChangeRange();
+                    var range = new EditString(code.Text).ApplyAll(changeAction.Changes).GetChangeRange();
                     // subtract one from length so to not include any reference immediately adjacent to end of range
                     var additionalFunctions = 
                         GetDatabaseFunctionsReferencedInRange(code, range.Start, range.Length - 1)
@@ -248,8 +248,8 @@ namespace Kusto.Language.Editor
                         var declaration = GetLetStatement(function, requalifiedBody);
                         var requalifiedQuery = GetQueryWithDatabaseQualifiersRemoved(code.Syntax, function, code.Globals);
                         var newText = requalifiedQuery.Insert(insertPosition, declaration + "\n");
-                        var newCursorPosition = newText.GetCurrentPosition(caretPosition);
-                        return new CodeActionResult(newText, newCursorPosition);
+                        var newCaretPosition = newText.GetCurrentPosition(caretPosition);
+                        return CodeActionResult.ChangeAndMove(newText, newCaretPosition);
                     }
                     else
                     {

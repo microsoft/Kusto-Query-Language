@@ -6,6 +6,7 @@ namespace Kusto.Language.Editor
 {
     using Syntax;
     using Utils;
+    using static AnalyzerUtilities;
 
     internal class AvoidUsingFormatDateTimeInPredicateAnalyzer : KustoAnalyzer
     {
@@ -63,34 +64,59 @@ namespace Kusto.Language.Editor
             }
         }
 
-#if false
         protected override void GetFixAction(KustoCode code, Diagnostic dx, CodeActionOptions options, List<CodeAction> actions, CancellationToken cancellationToken)
         {
             if (code.Syntax.GetNodeAt(dx.Start, dx.Length) is FunctionCallExpression fc)
             {
                 if (fc.ArgumentList.Expressions.Count == 2
-                    && fc.ArgumentList.Expressions[1].Element.ConstantValue is string format
-                    && GetAlternativeFunctionName(format) is string alternateFunctionName)
+                    && fc.ArgumentList.Expressions[1].Element.ConstantValue is string format)
                 {
-                    actions.Add(new CodeAction(
-                        $"Change to '{alternateFunctionName}'",
-                        $"Change use of function 'format_datetime' to function '{alternateFunctionName}'",
-                        dx.Start.ToString(),
-                        dx.Length.ToString(),
-                        alternateFunctionName));
+                    if (GetAlternativeFunctionOrDateTimePart(format) is string altFunctionOrPart)
+                    {
+                        var fn = KustoFacts.DateTimeParts.Contains(altFunctionOrPart)
+                            ? $"datetime_part('{altFunctionOrPart}',)"
+                            : altFunctionOrPart;
+
+                        actions.Add(CodeAction.Create(
+                            kind: "convert_format_datetime",
+                            title: $"Change to '{fn}'",
+                            description: $"Change use of function 'format_datetime' to function '{fn}'",
+                            data: new string[] {
+                            dx.Start.ToString(),
+                            dx.Length.ToString(),
+                            altFunctionOrPart }));
+                    }
                 }
             }
         }
 
-        private static string GetAlternativeFunctionName(string format)
+        private static string GetAlternativeFunctionOrDateTimePart(string format)
         {
             switch (format)
             {
-                case "Y":
+                case "d":
+                case "dd":
+                    return "dayofmonth";
+                case "fff":
+                case "FFF":
+                    return "millisecond";
+                case "ffffff":
+                case "FFFFFF":
+                    return "microsecond";
+                case "H":
+                case "HH":
+                    return "hourofday";
+                case "m":
+                case "mm":
+                    return "minute";
+                case "M":
+                case "MM":
+                    return "monthofyear";
+                case "s":
+                case "ss":
+                    return "second";
                 case "y":
-                case "YY":
                 case "yy":
-                case "YYYY":
                 case "yyyy":
                     return "getyear";
                 default:
@@ -98,22 +124,47 @@ namespace Kusto.Language.Editor
             }
         }
 
-        protected override FixResult GetFixEdits(KustoCode code, CodeAction action, int cursorPosition, CodeActionOptions options, CancellationToken cancellationToken)
+        protected override FixEdits GetFixEdits(KustoCode code, ApplyAction action, int cursorPosition, CodeActionOptions options, CancellationToken cancellationToken)
         {
             if (action.Data.Count == 3
                 && Int32.TryParse(action.Data[0], out var start)
                 && Int32.TryParse(action.Data[1], out var length)
-                && action.Data[2] is string alternateFunctionName
+                && action.Data[2] is string altFunctionOrPart
                 && code.Syntax.GetNodeAt(start, length) is FunctionCallExpression fc
                 && fc.ArgumentList.Expressions.Count == 2)
             {
-                return new FixResult(fc.Name.TextStart,
-                    TextEdit.Replacement(fc.Name.TextStart, fc.Name.Width, alternateFunctionName),
-                    TextEdit.Deletion(fc.ArgumentList.Expressions[0].Element.End, fc.ArgumentList.CloseParen.TextStart - fc.ArgumentList.Expressions[0].Element.End));
+                var edits = new List<TextEdit>();
+
+                if (KustoFacts.DateTimeParts.Contains(altFunctionOrPart))
+                {
+                    // change function name
+                    edits.AddRenameEdits(fc.Name.Name, "datetime_part");
+
+                    // insert new first argument
+                    edits.AddInsertArgumentEdits(fc, 0, $"'{altFunctionOrPart}'");
+                }
+                else
+                {
+                    // change function name
+                    edits.AddRenameEdits(fc.Name.Name, altFunctionOrPart);
+                }
+
+                // remove format argument
+                if (fc.ArgumentList.Expressions.Count > 1)
+                    edits.AddRemoveArgumentEdits(fc.ArgumentList.Expressions[1].Element);
+
+                if (GetFunctionCall(fc) is FunctionCallExpression outerFc 
+                    && (outerFc.Name.SimpleName == Functions.ToLong.Name
+                        || outerFc.Name.SimpleName == Functions.ToInt.Name))
+                {
+                    // remove outer tolong/toint function call
+                    edits.AddRemoveOuterFunctionCallEdits(outerFc, fc);
+                }
+
+                return new FixEdits(fc.Name.TextStart, edits);
             }
 
-            return new FixResult(cursorPosition);
+            return new FixEdits(cursorPosition);
         }
-#endif
     }
 }

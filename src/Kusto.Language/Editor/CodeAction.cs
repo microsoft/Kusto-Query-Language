@@ -261,12 +261,18 @@ namespace Kusto.Language.Editor
     public sealed class ChangeTextAction : ResultAction
     {
         /// <summary>
-        /// The changed text as an <see cref="EditString"/>
+        /// A set of in order, non-overlapping edits, each relative to the original text.
         /// </summary>
-        public EditString ChangedText { get; }
+        public IReadOnlyList<TextEdit> Changes { get; }
 
-        public ChangeTextAction(EditString changedText)
+        /// <summary>
+        /// The text after the edits are applied.
+        /// </summary>
+        public string ChangedText { get; }
+
+        public ChangeTextAction(IReadOnlyList<TextEdit> changes, string changedText)
         {
+            this.Changes = changes;
             this.ChangedText = changedText;
         }
     }
@@ -329,14 +335,26 @@ namespace Kusto.Language.Editor
         {
         }
 
-        public CodeActionResult(EditString changedText)
-            : this(new ResultAction[] { new ChangeTextAction(changedText) })
+        public static CodeActionResult Change(IReadOnlyList<TextEdit> changes, string changedText)
         {
+            return new CodeActionResult(new ChangeTextAction(changes, changedText));
         }
 
-        public CodeActionResult(EditString changedText, int newCaretPosition)
-            : this(new ResultAction[] { new ChangeTextAction(changedText), new MoveCaretAction(newCaretPosition) })
+        public static CodeActionResult Change(EditString changedText)
         {
+            return Change(changedText.GetChanges(), changedText.CurrentText);
+        }
+
+        public static CodeActionResult ChangeAndMove(IReadOnlyList<TextEdit> changes, string changedText, int newCaretPosition)
+        {
+            return new CodeActionResult(
+                new ChangeTextAction(changes, changedText),
+                new MoveCaretAction(newCaretPosition));
+        }
+
+        public static CodeActionResult ChangeAndMove(EditString changedText, int newCaretPosition)
+        {
+            return ChangeAndMove(changedText.GetChanges(), changedText.CurrentText, newCaretPosition);
         }
 
         public static CodeActionResult Failure(string failureReason)

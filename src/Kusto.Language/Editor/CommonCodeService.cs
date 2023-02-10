@@ -57,7 +57,7 @@ namespace Kusto.Language.Editor
         }
 
         public override CodeActionInfo GetCodeActions(
-            int cursorPosition,
+            int position,
             int selectionStart,
             int selectionLength,
             CodeActionOptions options, 
@@ -70,7 +70,7 @@ namespace Kusto.Language.Editor
 
         public override CodeActionResult ApplyCodeAction(
             ApplyAction codeAction, 
-            int cursorPosition,
+            int caretPosition,
             CodeActionOptions options, 
             CancellationToken cancellationToken)
         {
@@ -304,9 +304,9 @@ namespace Kusto.Language.Editor
             return list.ToString(KustoCodeService.GetIncludeTrivia(kind));
         }
 
-        public override FormattedText GetFormattedText(FormattingOptions options, int cursorPosition, CancellationToken cancellationToken)
+        public override FormattedText GetFormattedText(FormattingOptions options, int caretPosition, CancellationToken cancellationToken)
         {
-            return new FormattedText(this.Text, cursorPosition);
+            return new FormattedText(this.Text, caretPosition);
         }
 
         private IReadOnlyList<ClientParameter> _clientParameters;

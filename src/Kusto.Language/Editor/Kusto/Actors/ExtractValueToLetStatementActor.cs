@@ -186,10 +186,8 @@ namespace Kusto.Language.Editor
                         .Insert(insertionPosition, letStatement);
                     var newPosition = insertionPosition + indentation.Length + 4; // start of name in let statement
 
-                    return new CodeActionResult(
-                        new ChangeTextAction(newText),
-                        new MoveCaretAction(newPosition),
-                        RenameAction.Instance);
+                    return CodeActionResult.ChangeAndMove(newText, newPosition)
+                        .WithAction(RenameAction.Instance);
                 }
                 else
                 {
@@ -238,10 +236,8 @@ namespace Kusto.Language.Editor
                     .Insert(insertionPosition, letStatement);
                 var newPosition = insertionPosition + indentation.Length + 4; // start of name in let statement
 
-                return new CodeActionResult(
-                    new ChangeTextAction(newText),
-                    new MoveCaretAction(newPosition),
-                    RenameAction.Instance);
+                return CodeActionResult.ChangeAndMove(newText, newPosition)
+                    .WithAction(RenameAction.Instance);
             }
 
             return CodeActionResult.Failure("No insertion location available.");
@@ -274,10 +270,8 @@ namespace Kusto.Language.Editor
                     .Insert(insertionPosition, letStatement);
                 var newPosition = insertionPosition + lineIndentation.Length + 4; // start of name in let statement
 
-                return new CodeActionResult(
-                    new ChangeTextAction(newText),
-                    new MoveCaretAction(newPosition),
-                    RenameAction.Instance);
+                return CodeActionResult.ChangeAndMove(newText, newPosition)
+                    .WithAction(RenameAction.Instance);
             }
 
             return CodeActionResult.Failure("No insertion location available.");

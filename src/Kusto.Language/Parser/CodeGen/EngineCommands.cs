@@ -1669,10 +1669,14 @@ namespace Kusto.Language
             new CommandSymbol("DropRowStore", _schema18);
 
         public static readonly CommandSymbol ShowRowStore =
-            new CommandSymbol("ShowRowStore", _schema18);
+            new CommandSymbol(
+                "ShowRowStore",
+                "(RowStoreName:string,RowStoreId:guid,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long, LocalStorageSize:long,LocalStorageStartOffset:long,Status:int,StatusLastUpdatedOn:datetime,DatabaseName:string,TableName:string,AssignedToNode:string,LatestIngestionTime:datetime)");
 
         public static readonly CommandSymbol ShowRowStores =
-            new CommandSymbol("ShowRowStores", _schema18);
+            new CommandSymbol(
+                "ShowRowStores",
+                "(RowStoreName:string,RowStoreId:guid,WriteAheadLogStorage:string,PersistentStorage:string,IsActive:bool,AssignedToNode:string,NumberOfKeys:long,WriteAheadLogSize:long, WriteAheadLogStartOffset:long,LocalStorageSize:long,WriteAheadDistanceToSizeRatioThreshold:real,InsertsConcurrencyLimit:long,KeyInsertsConcurrencyLimit:long,UnsealedSizePerKeyLimit:long, NodeInsertsConcurrencyLimit:long,Status:string,StatusLastUpdatedOn:datetime,UsageTags:string,IsEmpty:bool,IsDataAvailableForQuery:bool)");
 
         public static readonly CommandSymbol ShowRowStoreTransactions =
             new CommandSymbol("ShowRowStoreTransactions", _schema18);
@@ -1687,10 +1691,14 @@ namespace Kusto.Language
             new CommandSymbol("ShowCallStacks", _schema18);
 
         public static readonly CommandSymbol ShowStreamingIngestionFailures =
-            new CommandSymbol("ShowStreamingIngestionFailures", _schema18);
+            new CommandSymbol(
+                "ShowStreamingIngestionFailures",
+                "(Database: string, Table: string, Principal: string, RootActivityId: guid, IngestionProperties: dynamic, Count: long, FirstFailureOn: datetime, LastFailureOn: datetime, FailureKind: string, ErrorCode: string, Details: string)");
 
         public static readonly CommandSymbol ShowStreamingIngestionStatistics =
-            new CommandSymbol("ShowStreamingIngestionStatistics", _schema18);
+            new CommandSymbol(
+                "ShowStreamingIngestionStatistics",
+                "(Database:string, Table:string, StartTime:datetime, EndTime:datetime, Count:long, MinDuration:timespan, MaxDuration:timespan, AvgDuration:timespan, TotalDataSize:long, MinDataSize:long, MaxDataSize:long, TotalRowCount:long, MinRowCount:long, MaxRowCount:long, IngestionStatus:string, NumOfRowStoresReferences:int, Principal:string, NodeId:string, IngestionProperties:dynamic)");
 
         public static readonly CommandSymbol AlterTableRowStoreReferencesDropKey =
             new CommandSymbol("AlterTableRowStoreReferencesDropKey", _schema18);
@@ -1714,7 +1722,9 @@ namespace Kusto.Language
             new CommandSymbol("SetTableRowStoreReferences", _schema18);
 
         public static readonly CommandSymbol ShowTableRowStoreReferences =
-            new CommandSymbol("ShowTableRowStoreReferences", _schema18);
+            new CommandSymbol(
+                "ShowTableRowStoreReferences",
+                "(DatabaseName:string, TableName:string, RowstoreReferenceKey:string, RowStoreName:string, EnabledForIngestion:bool)");
 
         public static readonly CommandSymbol AlterTableColumnStatistics =
             new CommandSymbol("AlterTableColumnStatistics", _schema18);
@@ -1738,7 +1748,9 @@ namespace Kusto.Language
             new CommandSymbol("ShowTableColumnsClassification", _schema18);
 
         public static readonly CommandSymbol ShowTableRowStores =
-            new CommandSymbol("ShowTableRowStores", _schema18);
+            new CommandSymbol(
+                "ShowTableRowStores",
+                "(DatabaseName:string,TableName:string,ExtentId:guid,IsSealed:bool,RowStoreName:string,RowStoreId:string,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,WriteAheadLogSize:long,LocalStorageSize:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long)");
 
         public static readonly CommandSymbol ShowTableRowStoreSealInfo =
             new CommandSymbol("ShowTableRowStoreSealInfo", _schema18);

@@ -620,8 +620,11 @@ namespace Kusto.Language.Editor
 
                     var fdisplay = f.Display;
 
-                    if (f.Signatures.Max(s => s.Parameters.Count) == 0)
+                    if (f.Signatures
+                         .Where(s => !s.IsHidden && !s.IsObsolete)
+                         .Max(s => s.Parameters.Count) == 0)
                     {
+                        // function does not have parameters (does not count obsolete forms)
                         if (builtIn)
                         {
                             editName = editName + "()";
@@ -638,6 +641,7 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
+                        // function has parameters
                         var isInvoke = IsInvokeFunctionContext(contextNode);
 
                         if (this.options.EnableParameterInjection && f.MaxArgumentCount == 1 && !builtIn && !isInvoke)

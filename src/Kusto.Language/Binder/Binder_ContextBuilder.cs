@@ -434,16 +434,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            public override void VisitInExpression(InExpression node)
-            {
-                base.VisitInExpression(node);
-
-                if (_position >= node.Operator.End)
-                {
-                    _binder._rowScope = null;
-                }
-            }
-
             public override void VisitToScalarExpression(ToScalarExpression node)
             {
                 base.VisitToScalarExpression(node);
