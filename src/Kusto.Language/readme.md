@@ -94,7 +94,57 @@ Not all diagnostics are errors. Check the `Severity` property to see if it is an
 &nbsp;
 ## Finding all the database table columns referenced in a query
 
-You can use the parsed query to discover all the columns explicitly referenced by the query that originate from a database table.
+You can find all the columns referenced in a query by walking over the syntax nodes of the parsed-and-analyzed query 
+and checking each node if the symbol it references is a column.
+
+```csharp
+    var isAColumn = node.ReferencedSymbol is ColumnSymbol;
+```
+
+But that by itself will not tell you if the column being referenced is a database table column.
+Even though most columns you will find will have originated from the table schema you provided to the `ParseAndAnalyze` method,
+some will have been introduced explicitly by the query author adding or renaming columns 
+or implicitly by the query operators themselves.
+
+It is easy to determine if a column originated from the schema by checking if the `GlobalState` instance knows about it.
+
+```chsarp
+    var isDatabaseTableColumn = globals.GetTable(column) != null;
+```
+
+However, some `ColumnSymbol` instances may not be recognized by the `GlobalState` even when they represent columns from the schema.
+This may be due to columns being renamed in the query or by `ColumnSymbol` instances that represent columns from multiple sources
+such as columns that are the result of union operations.
+
+If a new `ColumnSymbol` has been introduced during analysis because it represents one or more other columns,
+you will be able to find the columns it represents in the `OriginalColumns` property.
+
+To simplify things, you can define some methods that will help you collect all the database table columns.
+
+```csharp
+    public static bool IsDatabaseTableColumn(ColumnSymbol column, GlobalState globals)
+    {
+        return globals.GetTable(column) != null;
+    }
+
+    public static void AddDatabaseTableColumns(ColumnSymbol column, GlobalState globals, HashSet<ColumnSymbol> columns)
+    {
+        if (IsDatabaseTableColumn(column, globals))
+        {
+            columns.Add(column);
+        }
+        else if (column.OriginalColumns.Count > 0)
+        {
+            foreach (var originalColumn in column.OriginalColumns)
+            {
+                AddDatabaseTableColumns(originalColumn, globals, columns);
+            }
+        }
+    }
+```
+
+Now you can make a method that finds all the database table columns using the `SyntaxElement.WalkNodes` method.
+This method does a stack safe, lexical order, top down traversal of the syntax nodes.
 
 ```csharp
     public static HashSet<ColumnSymbol> GetDatabaseTableColumns(KustoCode code)
@@ -104,20 +154,15 @@ You can use the parsed query to discover all the columns explicitly referenced b
         SyntaxElement.WalkNodes(code.Syntax,
             n =>
             {
-                if (n.ReferencedSymbol is ColumnSymbol c
-                    && code.Globals.GetTable(c) != null)
+                if (n.ReferencedSymbol is ColumnSymbol c)
                 {
-                    columns.Add(c);
+                    AddDatabaseTableColumns(c, code.Globals, columns);
                 }
             });
 
         return columns;
     }
 ```
-
-This function uses the `SyntaxElement.WalkNodes` method to traverse all the nodes in the syntax tree in lexical order, top down.
-It checks each node to see if it references a `ColumnSymbol` and then uses the `GetTable` method on the `GlobalState`
-object to check if the column is a member of a known database table.
 
 The following examples shows using the `GetDatabaseTableColumns` function on a simple query.
 
@@ -134,12 +179,19 @@ The following examples shows using the `GetDatabaseTableColumns` function on a s
 ```
 
 The result `dbColumns` contains the column symbols for the `width` and `id` columns, because these
-are the only columns explicitly referenced within the body of the query.
+are the columns explicitly referenced within the body of the query.
 
-However, since the query is actually over the function `TallShapes` instead of the `Shapes` table directly,
-this naive approach to finding column references does not include any additional columns referenced by the called function.
+You might be wondering about the `height` column, since it was referenced too.
+It was not included because it was referenced inside the body of the database function `TallShapes`.
+Therefore, it did not appear in any of the syntax nodes that were traversed.
 
-You can improve on this approach with a somewhat more elaborate function that recursively analyzes the called function bodies too.
+You probably wanted to find all the columns referenced, even the ones referenced inside database functions.
+To do this you will also need to examine the bodies of any functions called by the query.
+You can do this using the `GetCalledFunctionBody()` method available on syntax nodes.
+It will return the root of a different syntax tree defining the body of the function.
+You can use it to recursively drill down into any function call, even function calls within function calls.
+
+Here is the improved version.
 
 ```csharp
     public static HashSet<ColumnSymbol> GetDatabaseTableColumns(KustoCode code)
@@ -153,10 +205,9 @@ You can improve on this approach with a somewhat more elaborate function that re
             SyntaxElement.WalkNodes(root,
                 fnBefore: n =>
                 {
-                    if (n.ReferencedSymbol is ColumnSymbol c
-                        && code.Globals.GetTable(c) != null)
+                    if (n.ReferencedSymbol is ColumnSymbol c)
                     {
-                        columns.Add(c);
+                        AddDatabaseTableColumns(c, code.Globals, columns);
                     }
                     else if (n.GetCalledFunctionBody() is SyntaxNode body)
                     {
@@ -171,19 +222,11 @@ You can improve on this approach with a somewhat more elaborate function that re
     }
 ```
 
-This advanced function uses the `GetCalledFunctionBody` method found on syntax nodes.
-For nodes that refer to user or database functions (like a function call node), 
-it will return the root node of the function body.
-
-You can analyze this separate function body for additional column references
-by recursively calling the `GatherColumns` method.
-
-The function also supplies the `fnDescend` delegate to the `SyntaxElemenet.WalkNodes` method,
-using it to skip over the bodies of any let statement declared functions inside the query.
-This will avoid duplicating work now handled by the recursion.
-
 Now when the function is used to find all the columns referenced by the query, 
-it will include the column `height` referenced by the `TallShapes` function itself.
+it will include the column `height` referenced inside the `TallShapes` function.
+
+*Note: This functionality and others can be found in the **Kusto.Toolkit** library availble on nuget:*  
+https://www.nuget.org/packages/Kusto.Toolkit/
 
 &nbsp;
 ## Finding all the database tables referenced in a query
@@ -216,14 +259,14 @@ you can find all the database tables too.
     }
 ```
 
-This simple approach checks for all tables explicitly named in the query and any table
+This approach checks for all tables explicitly named in the query and any table
 that might be indirectly introduced into the query via a function call 
 by checking the result type of expressions.
 
-However, like with columns, this approach is naive and will not discover that
-the `TallShapes` function references the `Shapes` table on your behalf.
+However, like with columns, this approach does not consider tables referenced inside the body of called functions.
+Since the `TallShapes` function references the `Shapes` table, you probably want to include it.
 
-You can improve upon it by using the same recursive technique used to find the columns.
+You can improve upon it by using the same recursive technique used to find columns.
 
 ```csharp
     public static HashSet<TableSymbol> GetDatabaseTables(KustoCode code)
@@ -260,6 +303,10 @@ You can improve upon it by using the same recursive technique used to find the c
         }
     }
 ```
+  
+*Note: This functionality and others can be found in the **Kusto.Toolkit** library availble on nuget:*  
+https://www.nuget.org/packages/Kusto.Toolkit/
+
 
 &nbsp;
 ## Finding the table for a column
@@ -353,10 +400,10 @@ It is possible to construct all the necessary symbols by using Kusto itself to q
 
 Unfortunately, there are no API's provided in the library to do this for you.
 
-There is, however, a library available on nuget that includes the necessary API's to load the symbols:
+There is, however, a library available on nuget that includes the necessary API's to load the symbols:  
 https://www.nuget.org/packages/Kusto.Toolkit/
 
-The source code to this library is available at:
+The source code to this library is available at:  
 https://github.com/mattwar/Kusto.Toolkit
 
 
