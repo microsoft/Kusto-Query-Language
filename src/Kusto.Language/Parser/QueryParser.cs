@@ -1044,16 +1044,19 @@ namespace Kusto.Language.Parsing
                     case SyntaxKind.CloseBracketToken:
                     case SyntaxKind.CloseBraceToken:
                     case SyntaxKind.DotToken:
-                    case SyntaxKind.OpenBracketToken:
                     case SyntaxKind.CommaToken:
-
-                    // this could be start of parenthesized expression after a keyword starting a clause
-                    //case SyntaxKind.OpenParentToken:
 
                     // not really related to expressions but do indicate preceeding keyword was likely meant as a name
                     case SyntaxKind.ColonToken:
                     case SyntaxKind.BarToken:
                         return true;
+
+                    // this could be start of parenthesized expression after a keyword starting a clause
+                    case SyntaxKind.OpenParenToken:
+
+                    // this could be start of bracketted name after keyword
+                    case SyntaxKind.OpenBracketToken:
+                        return false;
                 }
             }
 
@@ -4053,8 +4056,26 @@ namespace Kusto.Language.Parsing
         private static readonly IReadOnlyList<SyntaxKind> s_mvApplyExpressionListEnd =
             new[] { SyntaxKind.LimitKeyword, SyntaxKind.IdKeyword, SyntaxKind.OnKeyword };
 
+        private bool ScanMvApplyExpressionListEnd()
+        {
+            // don't allow use of one of the expected sub-clause keywords as a expression name
+            // unless it is is obvious it is part of the expression
+            if (ScanCustomListEnd(s_mvApplyExpressionListEnd))
+            {
+                if (PeekToken(1) is LexicalToken nextToken
+                   && nextToken.Kind != SyntaxKind.CommaToken
+                   && nextToken.Kind != SyntaxKind.ToKeyword
+                   && nextToken.Kind != SyntaxKind.EqualToken)
+                {
+                    return true;
+                }
+            }
+
+            return ScanCommonListEnd();
+        }
+
         private static readonly Func<QueryParser, bool> FnScanMvApplyExpressionListEnd =
-            qp => qp.ScanCustomListEnd(s_mvApplyExpressionListEnd);
+            qp => qp.ScanMvApplyExpressionListEnd();
 
         private SyntaxList<SeparatedElement<MvApplyExpression>> ParseMvApplyExpressionList()
         {
