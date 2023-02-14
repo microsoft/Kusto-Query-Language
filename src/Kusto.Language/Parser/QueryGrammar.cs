@@ -960,7 +960,7 @@ namespace Kusto.Language.Parsing
                             expressionHint: CompletionHint.Column);
                     case QueryOperatorParameterValueKind.ColumnList:
                         var allParameterNames = allParameters.Select(p => p.Name).ToList();
-                        var nameRule = If(Not(Token(allParameterNames)), ExtendedNameReference.Cast<NameReference>());
+                        var nameRule = If(Not(And(Token(allParameterNames), Token(SyntaxKind.EqualToken))), ExtendedNameReference.Cast<NameReference>());
                         var nameList = NameReferenceList(nameRule);
                         return QParameter(
                             QueryParameterName(parameter), 

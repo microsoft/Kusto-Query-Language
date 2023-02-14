@@ -2846,7 +2846,7 @@ namespace Kusto.Language.Parsing
             }
             else
             {
-                return ScanKnownQueryOperatorParameterName(equalasNeeded: false) > 0
+                return ScanKnownQueryOperatorParameterName(equalasNeeded: true) > 0
                     || ScanCommonListEnd();
             }
         }
@@ -3105,7 +3105,7 @@ namespace Kusto.Language.Parsing
 
         private NameReference ParseNameReferenceListName()
         {
-            return ScanSpecificQueryOperatorParameterName(equalsNeeded: false)
+            return ScanSpecificQueryOperatorParameterName(equalsNeeded: true)
                 ? null // don't consume other known query operator parameter names as names in the name list
                 : ParseExtendedNameReference();
         }
