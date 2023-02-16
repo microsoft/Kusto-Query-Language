@@ -695,6 +695,16 @@ namespace Kusto.Language
                  new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
                  new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0));
 
+        public static readonly FunctionSymbol PostgreSqlRequest =
+           new FunctionSymbol("postgresql_request",
+               context => new TableSymbol().WithIsOpen(true), // the schema comes from the database at runtime
+               Tabularity.Tabular,
+               new Parameter("connection_string", ScalarTypes.String),
+               new Parameter("sql_query", ScalarTypes.String),
+               new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
+               new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
+            .Hide(); // Open once service rollout completes
+
         public static readonly FunctionSymbol CosmosdbSqlRequest =
              new FunctionSymbol("cosmosdb_sql_request",
                  context => new TableSymbol().WithIsOpen(true), // the schema comes from the cosmos database at runtime
@@ -753,6 +763,7 @@ namespace Kusto.Language
             SlidingWindowCounts,
             SqlRequest,
             MySqlRequest,
+            PostgreSqlRequest,
         };
 
         private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;
