@@ -3644,7 +3644,8 @@ namespace Kusto.Language.Parsing
             ParsePipeExpression();
 
         private QueryOperator ParseForkPipeQueryOperator() =>
-            ParseQueryOperator();
+            ParsePipedQueryOperator()
+            ?? ParseUnpipedQueryOperator(); // not legal, but let semantic analyzer flag the error.
 
 #endregion
 
@@ -5339,7 +5340,36 @@ namespace Kusto.Language.Parsing
 #endregion
 
 #region Query Expressions
-        private QueryOperator ParseQueryOperator()
+
+        /// <summary>
+        /// Query operators that can occur at the start of a query
+        /// </summary>
+        private QueryOperator ParseUnpipedQueryOperator()
+        {
+            switch (PeekToken().Kind)
+            {
+                case SyntaxKind.EvaluateKeyword:        // can be identifier
+                    return ParseEvaluateOperator();
+                case SyntaxKind.FindKeyword:
+                    return ParseFindOperator();
+                case SyntaxKind.MacroExpandKeyword:
+                    return ParseMacroExpand();
+                case SyntaxKind.PrintKeyword:
+                    return ParsePrintOperator();
+                case SyntaxKind.SearchKeyword:
+                    return ParseSearchOperator();
+                case SyntaxKind.UnionKeyword:
+                    return ParseUnionOperator();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Query operators that occur after a pipe
+        /// </summary>
+        /// <returns></returns>
+        private QueryOperator ParsePipedQueryOperator()
         {
             switch (PeekToken().Kind)
             {
@@ -5352,19 +5382,19 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.DistinctKeyword:
                     return ParseDistinctOperator();
                 case SyntaxKind.EvaluateKeyword:
-                    return ParseEvaluateOperator();
+                    return ParseEvaluateOperator();         // can be identifier
                 case SyntaxKind.ExecuteAndCacheKeyword:
                     return ParseExecuteAndCacheOperator();
                 case SyntaxKind.ExtendKeyword:
                     return ParseExtendOperator();
-                case SyntaxKind.FacetKeyword:
+                case SyntaxKind.FacetKeyword:               // can be identifier
                     return ParseFacetOperator();
                 case SyntaxKind.FilterKeyword:
                 case SyntaxKind.WhereKeyword:
                     return ParseFilterOperator();
                 case SyntaxKind.FindKeyword:
                     return ParseFindOperator();
-                case SyntaxKind.ForkKeyword:
+                case SyntaxKind.ForkKeyword:                // can be identifier
                     return ParseForkOperator();
                 case SyntaxKind.GetSchemaKeyword:
                     return ParseGetSchemaOperator();
@@ -5372,7 +5402,7 @@ namespace Kusto.Language.Parsing
                     return ParseInvokeOperator();
                 case SyntaxKind.JoinKeyword:
                     return ParseJoinOperator();
-                case SyntaxKind.LookupKeyword:
+                case SyntaxKind.LookupKeyword:              // can be identifier
                     return ParseLookupOperator();
                 case SyntaxKind.MakeSeriesKeyword:
                     return ParseMakeSeriesOperator();
@@ -5388,12 +5418,10 @@ namespace Kusto.Language.Parsing
                     return ParseParseWhereOperator();
                 case SyntaxKind.ParseKvKeyword:
                     return ParseParseKvOperator();
-                case SyntaxKind.PartitionByKeyword:
+                case SyntaxKind.PartitionByKeyword:         // can be identifier
                     return ParsePartitionByOperator();
-                case SyntaxKind.PartitionKeyword:
+                case SyntaxKind.PartitionKeyword:           // can be identifier
                     return ParsePartitionOperator();
-                case SyntaxKind.PrintKeyword:
-                    return ParsePrintOperator();
                 case SyntaxKind.ProjectKeyword:
                     return ParseProjectOperator();
                 case SyntaxKind.ProjectAwayKeyword:
@@ -5404,11 +5432,11 @@ namespace Kusto.Language.Parsing
                     return ParseProjectRenameOperator();
                 case SyntaxKind.ProjectReorderKeyword:
                     return ParseProjectReorderOperator();
-                case SyntaxKind.RangeKeyword:
+                case SyntaxKind.RangeKeyword:               // can be identifier
                     return ParseRangeOperator();
-                case SyntaxKind.ReduceKeyword:
+                case SyntaxKind.ReduceKeyword:              // can be identifier
                     return ParseReduceByOperator();
-                case SyntaxKind.RenderKeyword:
+                case SyntaxKind.RenderKeyword:              // can be identifier
                     return ParseRenderOperator();
                 case SyntaxKind.SampleKeyword:
                     return ParseSampleOperator();
@@ -5436,8 +5464,6 @@ namespace Kusto.Language.Parsing
                     return ParseTopNestedOperator();
                 case SyntaxKind.UnionKeyword:
                     return ParseUnionOperator();
-                case SyntaxKind.MacroExpandKeyword:
-                    return ParseMacroExpand();
                 case SyntaxKind.MakeGraphKeyword:
                     return ParseMakeGraphOperator();
                 case SyntaxKind.GraphMergeKeyword:
@@ -5448,6 +5474,104 @@ namespace Kusto.Language.Parsing
                     return ParseAssertSchemaOperator();
                 default:
                     return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if it looks like it is a query operator
+        /// </summary>
+        private bool ScanPossibleQueryOperator()
+        {
+            int nameLen;
+
+            switch (PeekToken().Kind)
+            {
+                // keywords can be identifier so might not actually be query operators
+                case SyntaxKind.EvaluateKeyword:
+                    // evaluate <parameter-name> ...  or evaluate <plugin-name> ...
+                    return ScanName(1) > 0
+                        || ScanQueryOperatorParameterName(AllowedNameKind.KnownOnly, equalsNeeded: false, 1) > 0;
+
+                case SyntaxKind.FacetKeyword:
+                    // facet by
+                    return PeekToken(1).Kind == SyntaxKind.ByKeyword;
+
+                case SyntaxKind.PartitionKeyword:
+                    // partition by  or  partition <parameter-name>
+                    return PeekToken(1).Kind == SyntaxKind.ByKeyword
+                        || ScanQueryOperatorParameterName(AllowedNameKind.KnownOnly, equalsNeeded: false, 1) > 0;
+
+                case SyntaxKind.RangeKeyword:
+                    // range <name> from ...
+                    return (nameLen = ScanName(1)) > 0
+                        && PeekToken(1 + nameLen).Kind == SyntaxKind.FromKeyword;
+
+                case SyntaxKind.ReduceKeyword:
+                    // reduce by  or  reduce xxx
+                    return PeekToken(1).Kind == SyntaxKind.ByKeyword
+                        || ScanQueryOperatorParameterName(AllowedNameKind.KnownOnly, equalsNeeded: false, 1) > 0;
+
+                case SyntaxKind.RenderKeyword:
+                    // render <chart-type>
+                    return ScanToken(KustoFacts.ChartTypes, 1) > 0
+                        || ScanIdentifierOrKeywordAsIdentifier(1); // other unknown chart type?
+
+                case SyntaxKind.ForkKeyword:
+                case SyntaxKind.LookupKeyword:
+                case SyntaxKind.PartitionByKeyword:
+                    // can be identifier but too complex for look ahead
+                    return false;
+
+                case SyntaxKind.AsKeyword:
+                case SyntaxKind.AssertSchemaKeyword:
+                case SyntaxKind.ConsumeKeyword:
+                case SyntaxKind.CountKeyword:
+                case SyntaxKind.DistinctKeyword:
+                case SyntaxKind.ExecuteAndCacheKeyword:
+                case SyntaxKind.ExtendKeyword:
+                case SyntaxKind.FilterKeyword:
+                case SyntaxKind.FindKeyword:
+                case SyntaxKind.GetSchemaKeyword:
+                case SyntaxKind.GraphMatchKeyword:
+                case SyntaxKind.GraphMergeKeyword:
+                case SyntaxKind.InvokeKeyword:
+                case SyntaxKind.JoinKeyword:
+                case SyntaxKind.LimitKeyword:
+                case SyntaxKind.MacroExpandKeyword:
+                case SyntaxKind.MakeGraphKeyword:
+                case SyntaxKind.MakeSeriesKeyword:
+                case SyntaxKind.MvApplyKeyword:
+                case SyntaxKind.MvDashApplyKeyword:
+                case SyntaxKind.MvExpandKeyword:
+                case SyntaxKind.MvDashExpandKeyword:
+                case SyntaxKind.OrderKeyword:
+                case SyntaxKind.ParseKeyword:
+                case SyntaxKind.ParseWhereKeyword:
+                case SyntaxKind.ParseKvKeyword:
+                case SyntaxKind.PrintKeyword:
+                case SyntaxKind.ProjectKeyword:
+                case SyntaxKind.ProjectAwayKeyword:
+                case SyntaxKind.ProjectKeepKeyword:
+                case SyntaxKind.ProjectRenameKeyword:
+                case SyntaxKind.ProjectReorderKeyword:
+                case SyntaxKind.SampleKeyword:
+                case SyntaxKind.SampleDistinctKeyword:
+                case SyntaxKind.ScanKeyword:
+                case SyntaxKind.SearchKeyword:
+                case SyntaxKind.SerializeKeyword:
+                case SyntaxKind.SortKeyword:
+                case SyntaxKind.SummarizeKeyword:
+                case SyntaxKind.TakeKeyword:
+                case SyntaxKind.TopKeyword:
+                case SyntaxKind.TopHittersKeyword:
+                case SyntaxKind.TopNestedKeyword:
+                case SyntaxKind.UnionKeyword:
+                case SyntaxKind.WhereKeyword:
+                    // cannot be identifier so must be query operator
+                    return true;
+
+                default:
+                    return false;
             }
         }
 
@@ -5462,21 +5586,28 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        private QueryOperator ParseRequiredQueryOperator()
+        {
+            return ParsePipedQueryOperator()
+                ?? ParseUnpipedQueryOperator() // allow unpiped to parse here and deal with errors during semantic analysis
+                ?? ParseBadQueryOperator() // not a query operator after a pipe, parse anyway?
+                ?? CreateMissingQueryOperator();
+        }
+
         private Expression ParsePipeExpression()
         {
-            Expression expr = ParseQueryOperator();
-
-            if (expr == null)
-                expr = ParseUnnamedExpression();
+            Expression expr =
+                ScanPossibleQueryOperator()
+                    ? (ParseUnpipedQueryOperator() ?? ParsePipedQueryOperator() ?? ParseUnnamedExpression())
+                    : (ParseUnnamedExpression() ?? ParseUnpipedQueryOperator() ?? ParsePipedQueryOperator());
 
             if (expr != null)
             {
                 while (PeekToken().Kind == SyntaxKind.BarToken)
                 {
-                    expr = new PipeExpression(
-                        expr,
-                        ParseToken(),
-                        ParseQueryOperator() ?? ParseBadQueryOperator() ?? CreateMissingQueryOperator());
+                    var pipe = ParseToken();
+                    var pipedOperator = ParseRequiredQueryOperator();
+                    expr = new PipeExpression(expr, pipe, pipedOperator);
                 }
             }
 
@@ -5485,20 +5616,37 @@ namespace Kusto.Language.Parsing
 
         private Expression ParsePipeSubExpression()
         {
-            // allow all query operators to farse successfully and cache in semantic analysis
-            return ParsePipeExpression();
+            Expression expr = ParseRequiredQueryOperator();
+
+            if (expr != null)
+            {
+                while (PeekToken().Kind == SyntaxKind.BarToken)
+                {
+                    var pipe = ParseToken();
+                    var pipedOperator = ParseRequiredQueryOperator();
+                    expr = new PipeExpression(expr, pipe, pipedOperator);
+                }
+            }
+
+            return expr;
         }
 
-        private QueryOperator ParseFollowingPipeQueryOperator()
-        {
-            // allow all query operators to farse successfully and cache in semantic analysis
-            return ParseQueryOperator();
-        }
-
-        // todo: check if this should just be normal PipeExpression too
         private Expression ParseContextualSubExpression()
         {
-            return ParsePipeSubExpression();
+            var expr = (Expression)ParseContextualDataTableExpression()
+                ?? ParseRequiredQueryOperator();
+
+            if (expr != null)
+            {
+                while (PeekToken().Kind == SyntaxKind.BarToken)
+                {
+                    var pipe = ParseToken();
+                    var pipedOperator = ParseRequiredQueryOperator();
+                    expr = new PipeExpression(expr, pipe, pipedOperator);
+                }
+            }
+
+            return expr;
         }
 
         private Expression ParseExpression()
@@ -5949,28 +6097,61 @@ namespace Kusto.Language.Parsing
 
         private Statement ParseQueryBlockStatement()
         {
+            if (ScanPossibleStatement())
+            {
+                switch (PeekToken().Kind)
+                {
+                    case SyntaxKind.AliasKeyword:
+                        return ParseAliasStatement();
+                    case SyntaxKind.LetKeyword:
+                        return ParseLetStatement();
+                    case SyntaxKind.SetKeyword:
+                        return ParseSetOptionStatement();
+                    case SyntaxKind.DeclareKeyword:
+                        if (PeekToken(1).Kind == SyntaxKind.PatternKeyword)
+                            return ParsePatternStatement();
+                        else
+                            return ParseQueryParametersStatement();
+                    case SyntaxKind.RestrictKeyword:
+                        return ParseRestrictStatement();
+                }
+            }
+
+            var expr = ParseExpression();
+            if (expr != null)
+                return new ExpressionStatement(expr);
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true if it looks like it is a statement
+        /// </summary>
+        private bool ScanPossibleStatement()
+        {
             switch (PeekToken().Kind)
             {
                 case SyntaxKind.AliasKeyword:
-                    return ParseAliasStatement();
+                    return PeekToken(1).Kind == SyntaxKind.DatabaseKeyword;
+
                 case SyntaxKind.LetKeyword:
-                    return ParseLetStatement();
-                case SyntaxKind.SetKeyword:
-                    return ParseSetOptionStatement();
+                    return ScanName(1) > 0;
+
                 case SyntaxKind.DeclareKeyword:
-                    if (PeekToken(1).Kind == SyntaxKind.PatternKeyword)
-                        return ParsePatternStatement();
-                    else
-                        return ParseQueryParametersStatement();
+                    return PeekToken(1).Kind == SyntaxKind.PatternKeyword
+                        || PeekToken(1).Kind == SyntaxKind.QueryParametersKeyword;
+
                 case SyntaxKind.RestrictKeyword:
-                    return ParseRestrictStatement();
+                    return PeekToken(1).Kind == SyntaxKind.AccessKeyword;
+
+                case SyntaxKind.SetKeyword:
+                    // cannot be identifier, must be set statement.
+                    return true;
+
                 default:
-                    var expr = ParseExpression();
-                    if (expr != null)
-                        return new ExpressionStatement(expr);
-                    return null;
+                    return false;
             }
         }
+
 
         private SyntaxList<SeparatedElement<Statement>> ParseQueryBlockStatementList()
         {

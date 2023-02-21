@@ -6880,7 +6880,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.None;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.Function;
                 case 3: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }

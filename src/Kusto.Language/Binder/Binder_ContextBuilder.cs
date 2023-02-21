@@ -113,7 +113,11 @@ namespace Kusto.Language.Binding
             public override void VisitEvaluateOperator(EvaluateOperator node)
             {
                 base.VisitEvaluateOperator(node);
-                _binder._scopeKind = ScopeKind.PlugIn;
+
+                if (_position >= node.Parameters.End)
+                {
+                    _binder._scopeKind = ScopeKind.PlugIn;
+                }
             }
 
             public override void VisitSummarizeOperator(SummarizeOperator node)
@@ -142,7 +146,12 @@ namespace Kusto.Language.Binding
             public override void VisitNamedParameter(NamedParameter node)
             {
                 base.VisitNamedParameter(node);
-                _binder._scopeKind = ScopeKind.Normal;
+
+                if (_position >= node.EqualToken.End
+                    && (node.Expression.IsMissing || _position < node.End))
+                {
+                    _binder._scopeKind = ScopeKind.Normal;
+                }
             }
 
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)

@@ -1874,7 +1874,9 @@ namespace Kusto.Language.Binding
             private static void CheckQueryOperator(QueryOperator queryOperator, IReadOnlyList<SyntaxKind> validQueryOperators, List<Diagnostic> diagnostics)
             {
                 var keyword = queryOperator.GetFirstToken();
-                if (keyword != null && !validQueryOperators.Contains(queryOperator.Kind))
+                if (keyword != null 
+                    && !validQueryOperators.Contains(queryOperator.Kind)
+                    && !queryOperator.ContainsSyntaxDiagnostics)
                 {
                     diagnostics.Add(DiagnosticFacts.GetQueryOperatorNotAllowedInContext(keyword.Text).WithLocation(keyword));
                 }
