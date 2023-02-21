@@ -58,6 +58,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer PreferUsingOptimizedAlternative =
             new PreferUsingOptimizedAlternative();
 
+        public static readonly KustoAnalyzer AvoidStrlenWithDynamic =
+            new AvoidStrlenWithDynamicAnalyzer();
+
         /// <summary>
         /// The set of all known kusto analyzers
         /// </summary>
@@ -79,6 +82,7 @@ namespace Kusto.Language.Editor
                  CalledFunctionHasErrors,
                  AvoidUsingHasWithIPv4Strings,
                  PreferUsingOptimizedAlternative,
+                 AvoidStrlenWithDynamic
              }
              .ToReadOnly();
     }
