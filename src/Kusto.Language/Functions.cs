@@ -1606,6 +1606,13 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol BagZip =
+            new FunctionSymbol("bag_zip", ScalarTypes.Dynamic,
+                new Parameter("keys", ScalarTypes.Dynamic),
+                new Parameter("values", ScalarTypes.Dynamic))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable().Hide();
+
         public static readonly FunctionSymbol JaccardIndex =
             new FunctionSymbol("jaccard_index", ScalarTypes.Dynamic,
                 new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 2))
@@ -3154,6 +3161,7 @@ namespace Kusto.Language
             BagHasKey,
             JaccardIndex,
             BagSetKey,
+            BagZip,
 #endregion
 
 #region digest / series functions
