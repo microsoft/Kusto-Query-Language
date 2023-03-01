@@ -187,6 +187,7 @@
         PatternKeyword,
         PieChartKeyword,
         PivotChartKeyword,
+        PlotlyKeyword,
         PrintKeyword,
         ProjectKeyword,
         ProjectAwayKeyword,

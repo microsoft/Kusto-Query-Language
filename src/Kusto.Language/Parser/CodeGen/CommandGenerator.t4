@@ -13,6 +13,7 @@
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarGraph.cs" #>
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarParser.cs" #>
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarReorderer.cs" #>
+<#@ include file="..\..\..\Kusto.Language.Generators\GrammarDisambiguator.cs" #>
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarRequirer.cs" #>
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarRewriter.cs" #>
 <#@ include file="..\..\..\Kusto.Language.Generators\GrammarSimplifier.cs" #>

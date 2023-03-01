@@ -102,7 +102,7 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<string> ChartTypes = new string[]
         {
             "table", "list", "barchart", "piechart", "ladderchart", "timechart", "linechart", "anomalychart", "pivotchart", "areachart",
-            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card", "treemap"
+            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card", "treemap", "plotly"
         };
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Kusto.Language
         /// </summary>
         public static readonly IReadOnlyList<string> HiddenChartTypes = new string[]
         {
-            "3Dchart"
+            "3Dchart", "plotly"
         };
 
         /// <summary>
@@ -400,6 +400,7 @@ namespace Kusto.Language
                     SyntaxKind.MdmKeyword,
                     SyntaxKind.OfKeyword,
                     SyntaxKind.ParseKeyword,
+                    SyntaxKind.PlotlyKeyword,
                     SyntaxKind.PrintKeyword,
                     SyntaxKind.SampleKeyword,
                     SyntaxKind.SampleDistinctKeyword,
