@@ -6557,12 +6557,14 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             Custom(
-                                rules.DatabaseNameReference,
-                                shape2),
-                            fnMissingElement: rules.MissingNameReference),
-                        missing31),
+                                First(
+                                    rules.WildcardedNameDeclaration,
+                                    rules.DatabaseNameReference),
+                                shape10),
+                            fnMissingElement: rules.MissingNameDeclaration),
+                        missing27),
                     RequiredToken(")"),
-                    new [] {CD(), CD(), CD(), CD(), CD(CompletionHint.Database), CD()}));
+                    new [] {CD(), CD(), CD(), CD(), CD(CompletionHint.None), CD()}));
 
             var ShowClusterDatabasesDataStats = Command("ShowClusterDatabasesDataStats", 
                 Custom(
@@ -6950,6 +6952,28 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     shape114));
 
+            var ShowClusterDatabases3 = Command("ShowClusterDatabases", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("databases"),
+                    RequiredToken("("),
+                    Required(rules.WildcardedNameDeclaration, rules.MissingNameDeclaration),
+                    Optional(
+                        Custom(
+                            Token(","),
+                            Required(
+                                OneOrMoreCommaList(
+                                    Custom(
+                                        First(
+                                            rules.WildcardedNameDeclaration,
+                                            rules.DatabaseNameReference),
+                                        shape10),
+                                    fnMissingElement: rules.MissingNameDeclaration),
+                                missing27),
+                            new [] {CD(), CD(CompletionHint.None)})),
+                    RequiredToken(")"),
+                    new [] {CD(), CD(), CD(), CD("DatabaseName", CompletionHint.None), CD(isOptional: true), CD()}));
+
             var ShowDatabaseExtentsMetadata = Command("ShowDatabaseExtentsMetadata", 
                 Custom(
                     new Parser<LexicalToken>[] {
@@ -7060,7 +7084,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("schema"),
                     new [] {CD(), CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD()}));
 
-            var ShowClusterDatabases3 = Command("ShowClusterDatabases", 
+            var ShowClusterDatabases4 = Command("ShowClusterDatabases", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("databases"),
@@ -7220,7 +7244,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("schema"),
                     new [] {CD(), CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(CompletionHint.Database), CD(), CD()}));
 
-            var ShowClusterDatabases4 = Command("ShowClusterDatabases", 
+            var ShowClusterDatabases5 = Command("ShowClusterDatabases", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("databases"),
@@ -7230,12 +7254,14 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             Custom(
-                                rules.DatabaseNameReference,
-                                shape2),
-                            fnMissingElement: rules.MissingNameReference),
-                        missing31),
+                                First(
+                                    rules.WildcardedNameDeclaration,
+                                    rules.DatabaseNameReference),
+                                shape10),
+                            fnMissingElement: rules.MissingNameDeclaration),
+                        missing27),
                     RequiredToken(")"),
-                    new [] {CD(), CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(CompletionHint.Database), CD()}));
+                    new [] {CD(), CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(CompletionHint.None), CD()}));
 
             var ShowDatabasesSchemaAsJson3 = Command("ShowDatabasesSchemaAsJson", 
                 Custom(
@@ -7321,7 +7347,7 @@ namespace Kusto.Language.Parsing
                     Token("databases"),
                     Token("policies")));
 
-            var ShowClusterDatabases5 = Command("ShowClusterDatabases", 
+            var ShowClusterDatabases6 = Command("ShowClusterDatabases", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("databases")));
@@ -10446,6 +10472,7 @@ namespace Kusto.Language.Parsing
                 ShowContinuousExportExportedArtifacts,
                 ShowContinuousExportFailures,
                 ShowContinuousExport,
+                ShowClusterDatabases3,
                 ShowDatabaseExtentsMetadata,
                 ShowDatabaseExtents,
                 ShowDatabaseExtents2,
@@ -10453,7 +10480,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabasesSchemaAsJson,
                 ShowDatabasesSchema,
                 ShowDatabasesSchema2,
-                ShowClusterDatabases3,
+                ShowClusterDatabases4,
                 ShowDatabaseExtentsMetadata2,
                 ShowDatabaseExtents4,
                 ShowDatabaseExtents5,
@@ -10461,7 +10488,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabasesSchemaAsJson2,
                 ShowDatabasesSchema3,
                 ShowDatabasesSchema4,
-                ShowClusterDatabases4,
+                ShowClusterDatabases5,
                 ShowDatabasesSchemaAsJson3,
                 ShowDatabasesSchema5,
                 ShowDatabasesSchema6,
@@ -10470,7 +10497,7 @@ namespace Kusto.Language.Parsing
                 ShowClusterDatabasesIdentity2,
                 ShowDatabasesManagementGroups,
                 ShowClusterDatabasesPolicies2,
-                ShowClusterDatabases5,
+                ShowClusterDatabases6,
                 ShowDatabasePolicyCaching,
                 ShowDatabasePolicyExtentTagsRetention,
                 ShowDatabasePolicyIngestionBatching,
