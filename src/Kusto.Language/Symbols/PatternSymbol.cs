@@ -28,9 +28,9 @@ namespace Kusto.Language.Symbols
             IReadOnlyList<PatternSignature> signatures = null)
             : base(name)
         {
-            this.Parameters = parameters ?? EmptyReadOnlyList<Parameter>.Instance;
+            this.Parameters = (parameters ?? EmptyReadOnlyList<Parameter>.Instance).CheckArgumentNullOrElementNull(nameof(parameters));
             this.PathParameter = pathParameter;
-            this.Signatures = signatures ?? EmptyReadOnlyList<PatternSignature>.Instance;
+            this.Signatures = (signatures ?? EmptyReadOnlyList<PatternSignature>.Instance).CheckArgumentNullOrElementNull(nameof(signatures));
 
             foreach (var sig in this.Signatures)
             {

@@ -109,31 +109,34 @@ namespace Kusto.Language.Binding
                             // single name assigned from multi-value tuple just assigns the first value. equivalant to (name) = tuple
                             if (n.Expression.RawResultType is TupleSymbol tu)
                             {
-                                // first column has declared name so it uses declared name add/replace rule
-                                var firstCol = tu.Columns[0];
-                                col = new ColumnSymbol(n.Name.SimpleName, columnType ?? firstCol.Type, originalColumns: new[] { firstCol }, source: firstCol.Source);
-                                builder.Declare(col, diagnostics, n.Name, replace: true);
-                                SetSemanticInfo(n.Name, CreateSemanticInfo(col));
-
-                                if (doNotRepeat)
+                                if (tu.Columns.Count > 0)
                                 {
-                                    builder.DoNotAdd(tu.Columns[0]);
-                                }
+                                    // first column has declared name so it uses declared name add/replace rule
+                                    var firstCol = tu.Columns[0];
+                                    col = new ColumnSymbol(n.Name.SimpleName, columnType ?? firstCol.Type, originalColumns: new[] { firstCol }, source: firstCol.Source);
+                                    builder.Declare(col, diagnostics, n.Name, replace: true);
+                                    SetSemanticInfo(n.Name, CreateSemanticInfo(col));
 
-                                // don't add unnamed tuple columns if print style
-                                if (style == ProjectionStyle.Print)
-                                    break;
-
-                                // all other columns are not declared, so they must be unique
-                                for (int i = 1; i < tu.Members.Count; i++)
-                                {
-                                    if (GetReferencedSymbol(n.Expression) is FunctionSymbol fs1)
+                                    if (doNotRepeat)
                                     {
-                                        AddFunctionTupleResultColumn(fs1, tu.Columns[i], builder, doNotRepeat, style == ProjectionStyle.Summarize);
+                                        builder.DoNotAdd(tu.Columns[0]);
                                     }
-                                    else
+
+                                    // don't add unnamed tuple columns if print style
+                                    if (style == ProjectionStyle.Print)
+                                        break;
+
+                                    // all other columns are not declared, so they must be unique
+                                    for (int i = 1; i < tu.Members.Count; i++)
                                     {
-                                        builder.Add(tu.Columns[i], doNotRepeat: doNotRepeat);
+                                        if (GetReferencedSymbol(n.Expression) is FunctionSymbol fs1)
+                                        {
+                                            AddFunctionTupleResultColumn(fs1, tu.Columns[i], builder, doNotRepeat, style == ProjectionStyle.Summarize);
+                                        }
+                                        else
+                                        {
+                                            builder.Add(tu.Columns[i], doNotRepeat: doNotRepeat);
+                                        }
                                     }
                                 }
                             }

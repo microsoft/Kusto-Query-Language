@@ -35,7 +35,7 @@ namespace Kusto.Language.Symbols
             : base(name)
         {
             _alternateName = alternateName ?? "";
-            _members = members.ToReadOnly();
+            _members = members.ToReadOnly().CheckArgumentNullOrElementNull(nameof(members));
             this.IsOpen = isOpen;
         }
 
@@ -258,6 +258,6 @@ namespace Kusto.Language.Symbols
         protected override string GetDisplay() =>
             $"database({this.Name})";
 
-        public static readonly DatabaseSymbol Unknown = new DatabaseSymbol(null, members: null, isOpen: true);
+        public static readonly DatabaseSymbol Unknown = new DatabaseSymbol("", members: null, isOpen: true);
     }
 }

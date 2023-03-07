@@ -2,6 +2,8 @@
 
 namespace Kusto.Language.Symbols
 {
+    using Utils;
+
     /// <summary>
     /// A symbol representing an entity group element.
     /// </summary>
@@ -12,7 +14,7 @@ namespace Kusto.Language.Symbols
         public EntityGroupElementSymbol(string name, TypeSymbol underlyingSymbol)
             : base(name)
         {
-            this.UnderlyingSymbol = underlyingSymbol;
+            this.UnderlyingSymbol = underlyingSymbol.CheckArgumentNull(nameof(underlyingSymbol));
         }
 
         public override IReadOnlyList<Symbol> Members => SpecialMembers;

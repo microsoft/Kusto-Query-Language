@@ -70,7 +70,7 @@ namespace Kusto.Language.Symbols
             {
                 if (signature.AllowsNamedArguments && arguments != null && arguments[i] is SimpleNamedExpression sn)
                 {
-                    argumentParameters.Add(signature.GetParameter(sn.Name.SimpleName));
+                    argumentParameters.Add(signature.GetParameter(sn.Name.SimpleName) ?? Signature.UnknownParameter);
                 }
                 else if (i < signature.Parameters.Count)
                 {
@@ -477,6 +477,13 @@ namespace Kusto.Language.Symbols
         public override void GetArgumentParameters(Signature signature, IReadOnlyList<Expression> arguments, List<Parameter> argumentParameters)
         {
             _builder(signature, arguments, argumentParameters);
+
+            // replace any nulls with UnknownParameter
+            for (int i = 0; i < argumentParameters.Count; i++)
+            {
+                if (argumentParameters[i] == null)
+                    argumentParameters[i] = Signature.UnknownParameter;
+            }
 
             // fill out any parameters left unspecified
             while (argumentParameters.Count < arguments.Count)

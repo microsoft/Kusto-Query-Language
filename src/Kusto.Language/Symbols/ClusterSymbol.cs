@@ -24,7 +24,7 @@ namespace Kusto.Language.Symbols
         private ClusterSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
             : base(name)
         {
-            _members = members.ToReadOnly();
+            _members = members.ToReadOnly().CheckArgumentNullOrElementNull(nameof(members));
             this.IsOpen = isOpen;
         }
 

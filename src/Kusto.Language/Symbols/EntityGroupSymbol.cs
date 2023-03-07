@@ -33,7 +33,7 @@ namespace Kusto.Language.Symbols
         {
             this.Definition = null;
             this.Description = description ?? "";
-            _members = members.ToReadOnly();
+            _members = members.ToReadOnly().CheckArgumentNullOrElementNull(nameof(members));
             this.Signature = new Signature(this);
             this.Signature.Symbol = this;
         }

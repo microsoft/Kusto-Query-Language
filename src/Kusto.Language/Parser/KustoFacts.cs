@@ -938,15 +938,19 @@ namespace Kusto.Language
         public static string GetHostName(string clusterUriOrName)
         {
             int start = 0;
-            int end = clusterUriOrName.Length;
 
             int hostNamePrefixStart = clusterUriOrName.IndexOf(HostNamePrefix);
             if (hostNamePrefixStart > 0)
             {
                 start = hostNamePrefixStart + HostNamePrefix.Length;
-                int colon = clusterUriOrName.IndexOf(':', start);
-                if (colon >= 0)
-                    end = colon;
+            }
+
+            // extract only permitted host name or IP value characters
+            var end = start;
+            while (end < clusterUriOrName.Length &&
+                IsHostNameChar(clusterUriOrName[end]))
+            {
+                end++;
             }
 
             if (start == 0 && end == clusterUriOrName.Length)
@@ -957,6 +961,14 @@ namespace Kusto.Language
             {
                 return clusterUriOrName.Substring(start, end - start);
             }
+        }
+
+        /// <summary>
+        /// Returns true if the character is a legal part of a host name or IP address.
+        /// </summary>
+        private static bool IsHostNameChar(char ch)
+        {
+            return char.IsLetter(ch) || char.IsDigit(ch) || ch == '-' || ch == '.' || ch == '_';
         }
 
         /// <summary>

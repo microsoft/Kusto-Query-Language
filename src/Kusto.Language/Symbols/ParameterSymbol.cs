@@ -20,7 +20,7 @@ namespace Kusto.Language.Symbols
         public ParameterSymbol(string name, TypeSymbol type, string description = null)
             : base(name)
         {
-            this.Type = type;
+            this.Type = type.CheckArgumentNull(nameof(type));
             this.Description = description ?? "";
         }
 

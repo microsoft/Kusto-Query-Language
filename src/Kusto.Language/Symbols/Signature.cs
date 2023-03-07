@@ -238,7 +238,7 @@ namespace Kusto.Language.Symbols
             this.Declaration = declaration;
             this.CustomReturnType = customReturnType;
             this._tabularity = tabularity;
-            this.Parameters = parameters.ToReadOnly();
+            this.Parameters = parameters.ToReadOnly().CheckArgumentNullOrElementNull(nameof(parameters));
             this.IsHidden = isHidden;
             this.Alternative = alternative;
 

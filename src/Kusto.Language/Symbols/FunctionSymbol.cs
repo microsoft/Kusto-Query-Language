@@ -133,7 +133,7 @@ namespace Kusto.Language.Symbols
             string optimizedAlternative)
             : base(name)
         {
-            this.Signatures = signatures.ToReadOnly();
+            this.Signatures = signatures.ToReadOnly().CheckArgumentNullOrEmptyOrElementNull(nameof(signatures));
             this.Description = description ?? "";
 
             foreach (var signature in this.Signatures)

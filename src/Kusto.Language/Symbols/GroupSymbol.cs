@@ -21,7 +21,7 @@ namespace Kusto.Language.Symbols
         public GroupSymbol(IEnumerable<Symbol> symbols)
             : base("group")
         {
-            this.members = symbols.ToReadOnly();
+            this.members = symbols.ToReadOnly().CheckArgumentNullOrElementNull(nameof(symbols));
         }
 
         public GroupSymbol(params Symbol[] symbols)

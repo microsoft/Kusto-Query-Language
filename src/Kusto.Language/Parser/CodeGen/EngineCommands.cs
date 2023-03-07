@@ -1415,6 +1415,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCertificates =
             new CommandSymbol("ShowCertificates", _schema18);
 
+        public static readonly CommandSymbol ShowCloudSettings =
+            new CommandSymbol("ShowCloudSettings", _schema18);
+
         public static readonly CommandSymbol ShowCommConcurrency =
             new CommandSymbol("ShowCommConcurrency", _schema18);
 
@@ -2225,6 +2228,7 @@ namespace Kusto.Language
             StoredQueryResultDrop,
             StoredQueryResultsDrop,
             ShowCertificates,
+            ShowCloudSettings,
             ShowCommConcurrency,
             ShowCommPools,
             ShowFabricCache,

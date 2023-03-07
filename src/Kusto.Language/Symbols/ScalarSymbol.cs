@@ -24,9 +24,9 @@ namespace Kusto.Language.Symbols
         public ScalarSymbol(string name, string[] aliases = null, ScalarFlags flags = ScalarFlags.None, ScalarSymbol[] widerThan = null)
             : base(name)
         {
-            this.Aliases = aliases.ToReadOnly();
+            this.Aliases = aliases.ToReadOnly().CheckArgumentNullOrElementNull(nameof(aliases));
             this.Flags = flags;
-            this.WiderThan = widerThan.ToReadOnly();
+            this.WiderThan = widerThan.ToReadOnly().CheckArgumentNullOrElementNull(nameof(widerThan));
         }
 
         /// <summary>

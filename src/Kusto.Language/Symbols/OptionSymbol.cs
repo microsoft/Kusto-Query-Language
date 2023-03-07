@@ -34,7 +34,7 @@ namespace Kusto.Language.Symbols
             string description, 
             ScalarSymbol type, 
             IReadOnlyList<string> examples = null)
-            : this(name, description, new[] { type }, examples)
+            : this(name, description, new[] { type.CheckArgumentNull(nameof(type)) }, examples)
         {
         }
 

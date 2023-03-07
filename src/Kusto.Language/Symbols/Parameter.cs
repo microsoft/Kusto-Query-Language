@@ -103,19 +103,15 @@ namespace Kusto.Language.Symbols
         {
             if (typeKind == ParameterTypeKind.Declared)
             {
-                if (types == null)
-                {
-                    throw new ArgumentNullException(nameof(types));
-                }
-                else if (types.Length == 0)
-                {
-                    throw new ArgumentException("Must have at least one declared type.", nameof(types));
-                }
+                this.DeclaredTypes = types.CheckArgumentNullOrEmptyOrElementNull(nameof(types)).ToReadOnly();
+            }
+            else
+            {
+                this.DeclaredTypes = EmptyReadOnlyList<TypeSymbol>.Instance;
             }
 
             this.Name = name;
             this.TypeKind = typeKind;
-            this.DeclaredTypes = types.ToReadOnly();
             this.ArgumentKind = argumentKind;
             this.Values = values != null ? values.ToReadOnly() : NoValues;
             this.Examples = examples != null ? examples.ToReadOnly() : NoExamples;
@@ -170,7 +166,7 @@ namespace Kusto.Language.Symbols
             : this(
                   name, 
                   ParameterTypeKind.Declared, 
-                  new[] { type }, 
+                  new[] { type.CheckArgumentNull(nameof(type)) }, 
                   argumentKind, 
                   values, 
                   examples, 

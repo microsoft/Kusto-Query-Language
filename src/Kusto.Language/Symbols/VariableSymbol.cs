@@ -39,7 +39,7 @@ namespace Kusto.Language.Symbols
         public VariableSymbol(string name, TypeSymbol type, bool isConstant = false, object constantValue = null, Expression source = null)
             : base(name)
         {
-            this.Type = type;
+            this.Type = type.CheckArgumentNull(nameof(type));
             this.IsConstant = isConstant;
             this.ConstantValue = constantValue;
             this.Source = source;

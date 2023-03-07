@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Symbols
 {
+    using Utils;
+
     /// <summary>
     /// A symbol representing a graph
     /// </summary>
@@ -14,20 +16,14 @@ namespace Kusto.Language.Symbols
         public GraphSymbol(string name, TableSymbol edgeShape, TableSymbol nodeShape = null)
             : base(name)
         {
-            if (edgeShape == null)
-                throw new ArgumentNullException(nameof(edgeShape));
-
-            this.EdgeShape = edgeShape;
+            this.EdgeShape = edgeShape.CheckArgumentNull(nameof(edgeShape));
             this.NodeShape = nodeShape;
         }
 
         public GraphSymbol(string name, TableSymbol edgeShape, IReadOnlyList<TableSymbol> nodeShapes)
             : base(name)
         {
-            if (edgeShape == null)
-                throw new ArgumentNullException(nameof(edgeShape));
-
-            this.EdgeShape = edgeShape;
+            this.EdgeShape = edgeShape.CheckArgumentNull(nameof(EdgeShape));
             this.NodeShape = nodeShapes != null && nodeShapes.Count > 0 ? TableSymbol.Combine(CombineKind.UnifySameName, nodeShapes) : null;
         }
 

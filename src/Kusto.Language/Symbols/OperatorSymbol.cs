@@ -25,8 +25,7 @@ namespace Kusto.Language.Symbols
             : base(kind.ToString())
         {
             this.OperatorKind = kind;
-
-            this.Signatures = signatures.ToReadOnly();
+            this.Signatures = signatures.ToReadOnly().CheckArgumentNullOrElementNull(nameof(signatures));
 
             foreach (var signature in this.Signatures)
             {
@@ -39,8 +38,8 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        public OperatorSymbol(OperatorKind kind, TypeSymbol result)
-            : this(kind, new[] { new Signature(result) })
+        public OperatorSymbol(OperatorKind kind, TypeSymbol resultType)
+            : this(kind, new[] { new Signature(resultType.CheckArgumentNull(nameof(resultType))) })
         {
         }
     }

@@ -41,7 +41,7 @@ namespace Kusto.Language.Symbols
             : base(name)
         {
             this.state = state;
-            this.Columns = columns.ToReadOnly();
+            this.Columns = columns.ToReadOnly().CheckArgumentNullOrElementNull(nameof(columns));
             this.Description = description ?? "";
         }
 

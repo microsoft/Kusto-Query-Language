@@ -22,7 +22,7 @@ namespace Kusto.Language.Symbols
         public TupleSymbol(IEnumerable<ColumnSymbol> columns, TableSymbol relatedTable = null)
             : base("tuple")
         {
-            this.Columns = columns.ToReadOnly();
+            this.Columns = columns.ToReadOnly().CheckArgumentNullOrElementNull(nameof(columns));
             this.RelatedTable = relatedTable;
         }
 
