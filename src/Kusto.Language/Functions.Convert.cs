@@ -35,11 +35,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertAngle =
             new FunctionSymbol("convert_angle", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_angleLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_angleLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_angleLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_angleLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_energyLiteralValues = new[] {
@@ -85,11 +84,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertEnergy =
             new FunctionSymbol("convert_energy", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_energyLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_energyLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_energyLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_energyLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_forceLiteralValues = new[] {
@@ -114,11 +112,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertForce =
             new FunctionSymbol("convert_force", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_forceLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_forceLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_forceLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_forceLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_lengthLiteralValues = new[] {
@@ -164,11 +161,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertLength =
             new FunctionSymbol("convert_length", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_lengthLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_lengthLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_lengthLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_lengthLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_massLiteralValues = new[] {
@@ -203,11 +199,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertMass =
             new FunctionSymbol("convert_mass", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_massLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_massLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_massLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_massLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_speedLiteralValues = new[] {
@@ -249,11 +244,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertSpeed =
             new FunctionSymbol("convert_speed", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_speedLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_speedLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_speedLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_speedLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_temperatureLiteralValues = new[] {
@@ -273,11 +267,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertTemperature =
             new FunctionSymbol("convert_temperature", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_temperatureLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_temperatureLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_temperatureLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_temperatureLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
 
         private static readonly string[] s_volumeLiteralValues = new[] {
@@ -339,11 +332,10 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ConvertVolume =
             new FunctionSymbol("convert_volume", ScalarTypes.Real,
                 new Parameter("value", ScalarTypes.Real),
-                new Parameter("from", ScalarTypes.String, ArgumentKind.Literal, s_volumeLiteralValues),
-                new Parameter("to", ScalarTypes.String, ArgumentKind.Literal, s_volumeLiteralValues))
+                new Parameter("from", ScalarTypes.String, ArgumentKind.Expression, s_volumeLiteralValues),
+                new Parameter("to", ScalarTypes.String, ArgumentKind.Expression, s_volumeLiteralValues))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // to be removed after service deployment
+            .WithResultNameKind(ResultNameKind.None);
 
         #endregion
     }
