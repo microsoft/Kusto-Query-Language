@@ -43,21 +43,21 @@ namespace Kusto.Language.Parsing
             var shape0 = CD(CompletionHint.Literal);
             var shape1 = new [] {CD(), CD(), CD("Role"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD(CompletionHint.Literal, isOptional: true)};
             var shape2 = CD(CompletionHint.Database);
-            var shape3 = new [] {CD(), CD(), CD(), CD(), CD("Policy", CompletionHint.Literal)};
-            var shape4 = new [] {CD(), CD(), CD(), CD(), CD("policy", CompletionHint.Literal)};
-            var shape5 = new [] {CD(), CD(), CD("RecoverabilityValue")};
-            var shape6 = new [] {CD(), CD(CompletionHint.Tabular)};
-            var shape7 = CD(CompletionHint.MaterializedView);
-            var shape8 = new [] {CD(), CD(), CD("SoftDeleteValue", CompletionHint.Literal), CD(isOptional: true)};
-            var shape9 = CD(CompletionHint.Table);
-            var shape10 = CD(CompletionHint.None);
-            var shape11 = new [] {CD("PartitionFunction"), CD(), CD("DateTimeColumn", CompletionHint.None), CD()};
-            var shape12 = new [] {CD("PartitionType"), CD(isOptional: true)};
-            var shape13 = new [] {CD("PropertyName", CompletionHint.None), CD(), CD("Value", CompletionHint.Literal)};
-            var shape14 = new [] {CD(), CD(), CD(CompletionHint.None), CD()};
-            var shape15 = CD(CompletionHint.Column);
+            var shape3 = CD(CompletionHint.Table);
+            var shape4 = new [] {CD(), CD(), CD(), CD(), CD("Policy", CompletionHint.Literal)};
+            var shape5 = new [] {CD(), CD(), CD(), CD(), CD("policy", CompletionHint.Literal)};
+            var shape6 = CD(CompletionHint.None);
+            var shape7 = new [] {CD("PropertyName", CompletionHint.None), CD(), CD("Value", CompletionHint.Literal)};
+            var shape8 = new [] {CD(), CD(), CD(CompletionHint.None), CD()};
+            var shape9 = new [] {CD(), CD(), CD("RecoverabilityValue")};
+            var shape10 = CD(CompletionHint.MaterializedView);
+            var shape11 = new [] {CD(), CD(), CD("SoftDeleteValue", CompletionHint.Literal), CD(isOptional: true)};
+            var shape12 = new [] {CD("PartitionFunction"), CD(), CD("DateTimeColumn", CompletionHint.None), CD()};
+            var shape13 = new [] {CD("PartitionType"), CD(isOptional: true)};
+            var shape14 = CD(CompletionHint.Column);
+            var shape15 = new [] {CD(), CD(CompletionHint.Tabular)};
             var shape16 = new [] {CD("PropertyName", CompletionHint.None), CD(), CD("PropertyValue", CompletionHint.Literal)};
-            var shape17 = new [] {CD(), CD(), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD("csl")};
+            var shape17 = new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD("csl")};
             var shape18 = new [] {CD(), CD(), CD(), CD(), CD("PolicyName", CompletionHint.Literal)};
             var shape19 = new [] {CD(), CD(), CD(), CD(), CD("RowStorePolicy", CompletionHint.Literal)};
             var shape20 = CD(CompletionHint.Tabular);
@@ -76,51 +76,51 @@ namespace Kusto.Language.Parsing
             var shape33 = CD(CompletionHint.EntityGroup);
             var shape34 = new [] {CD(), CD(), CD("clusterName", CompletionHint.Literal), CD(), CD(), CD(), CD(), CD("databaseName", CompletionHint.Literal), CD()};
             var shape35 = new [] {CD(), CD(), CD("databaseName", CompletionHint.Literal), CD()};
-            var shape36 = new [] {CD(), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD("csl")};
-            var shape37 = new [] {CD("ColumnName", CompletionHint.None), CD(), CD("ColumnType")};
-            var shape38 = new [] {CD("PartitionFunction"), CD(), CD("DateTimeColumn", CompletionHint.None), CD(), CD("BinValue", CompletionHint.Literal), CD()};
-            var shape39 = new [] {CD("PartitionType"), CD(), CD("PartitionFunction"), CD(), CD("StringColumn", CompletionHint.None), CD(), CD("HashMod", CompletionHint.Literal), CD()};
-            var shape40 = new [] {CD(), CD("StringColumn", CompletionHint.None)};
-            var shape41 = new [] {CD("PartitionName", CompletionHint.None), CD(), CD()};
-            var shape42 = new [] {CD(), CD(), CD("DateTimeFormat", CompletionHint.Literal), CD(), CD("PartitionName", CompletionHint.None), CD()};
-            var shape43 = new [] {CD(), CD(CompletionHint.Literal, isOptional: true)};
-            var shape44 = new [] {CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true), CD(), CD()};
-            var shape45 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD(isOptional: true)};
-            var shape46 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD("TableKind"), CD(isOptional: true), CD(), CD(), CD("DataFormatKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
-            var shape47 = CD(CompletionHint.ExternalTable);
-            var shape48 = new [] {CD(), CD(), CD("modificationKind")};
-            var shape49 = new [] {CD(), CD("leaderClusterMetadataPath", CompletionHint.Literal)};
-            var shape50 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD("entityListKind"), CD("operationName"), CD(), CD(CompletionHint.None), CD()};
-            var shape51 = new [] {CD(), CD(), CD("hotDataToken", CompletionHint.Literal), CD(), CD(), CD("hotIndexToken", CompletionHint.Literal)};
-            var shape52 = new [] {CD(), CD(), CD("hotToken", CompletionHint.Literal)};
-            var shape53 = new [] {CD("d1", CompletionHint.Literal), CD(), CD("d2", CompletionHint.Literal)};
-            var shape54 = new [] {CD(), CD(), CD("p", CompletionHint.Literal)};
-            var shape55 = new [] {CD(isOptional: true), CD()};
-            var shape56 = CD(isOptional: true);
-            var shape57 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD(), CD("modificationKind")};
-            var shape58 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD(), CD("hotWindows", isOptional: true)};
-            var shape59 = CD(CompletionHint.Function);
-            var shape60 = new [] {CD("PropertyName"), CD(), CD("PropertyValue", CompletionHint.Literal)};
-            var shape61 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(), CD()};
-            var shape62 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(), CD("Policy", CompletionHint.Literal)};
-            var shape63 = new [] {CD(), CD(), CD(), CD(CompletionHint.Table), CD(), CD(), CD(), CD()};
-            var shape64 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD()};
-            var shape65 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("EncodingPolicy", CompletionHint.Literal)};
-            var shape66 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("MergePolicy", CompletionHint.Literal)};
-            var shape67 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD()};
-            var shape68 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true), CD(), CD(), CD("DataFormatKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
-            var shape69 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("Policy", CompletionHint.Literal)};
-            var shape70 = new [] {CD("ColumnName", CompletionHint.Column), CD()};
-            var shape71 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Column), CD()};
-            var shape72 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("ShardingPolicy", CompletionHint.Literal)};
-            var shape73 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("UpdatePolicy", CompletionHint.Literal)};
-            var shape74 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)};
-            var shape75 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreKey", CompletionHint.Literal), CD(isOptional: true)};
-            var shape76 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreName", CompletionHint.None), CD(isOptional: true)};
-            var shape77 = new [] {CD(), CD(CompletionHint.None), CD()};
-            var shape78 = new [] {CD(), CD(), CD(CompletionHint.Table), CD(), CD(isOptional: true)};
-            var shape79 = new [] {CD("ColumnName", CompletionHint.Column), CD(), CD("DocString", CompletionHint.Literal)};
-            var shape80 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(CompletionHint.Column), CD()};
+            var shape36 = new [] {CD("ColumnName", CompletionHint.None), CD(), CD("ColumnType")};
+            var shape37 = new [] {CD("PartitionFunction"), CD(), CD("DateTimeColumn", CompletionHint.None), CD(), CD("BinValue", CompletionHint.Literal), CD()};
+            var shape38 = new [] {CD("PartitionType"), CD(), CD("PartitionFunction"), CD(), CD("StringColumn", CompletionHint.None), CD(), CD("HashMod", CompletionHint.Literal), CD()};
+            var shape39 = new [] {CD(), CD("StringColumn", CompletionHint.None)};
+            var shape40 = new [] {CD("PartitionName", CompletionHint.None), CD(), CD()};
+            var shape41 = new [] {CD(), CD(), CD("DateTimeFormat", CompletionHint.Literal), CD(), CD("PartitionName", CompletionHint.None), CD()};
+            var shape42 = new [] {CD(), CD(CompletionHint.Literal, isOptional: true)};
+            var shape43 = new [] {CD(), CD(), CD(), CD(CompletionHint.Literal, isOptional: true), CD(), CD()};
+            var shape44 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD(isOptional: true)};
+            var shape45 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD("TableKind"), CD(isOptional: true), CD(), CD(), CD("DataFormatKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
+            var shape46 = CD(CompletionHint.ExternalTable);
+            var shape47 = new [] {CD(), CD(), CD("modificationKind")};
+            var shape48 = new [] {CD(), CD("leaderClusterMetadataPath", CompletionHint.Literal)};
+            var shape49 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD("entityListKind"), CD("operationName"), CD(), CD(CompletionHint.None), CD()};
+            var shape50 = new [] {CD(), CD(), CD("hotDataToken", CompletionHint.Literal), CD(), CD(), CD("hotIndexToken", CompletionHint.Literal)};
+            var shape51 = new [] {CD(), CD(), CD("hotToken", CompletionHint.Literal)};
+            var shape52 = new [] {CD("d1", CompletionHint.Literal), CD(), CD("d2", CompletionHint.Literal)};
+            var shape53 = new [] {CD(), CD(), CD("p", CompletionHint.Literal)};
+            var shape54 = new [] {CD(isOptional: true), CD()};
+            var shape55 = CD(isOptional: true);
+            var shape56 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD(), CD("modificationKind")};
+            var shape57 = new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD(), CD("hotWindows", isOptional: true)};
+            var shape58 = CD(CompletionHint.Function);
+            var shape59 = new [] {CD("PropertyName"), CD(), CD("PropertyValue", CompletionHint.Literal)};
+            var shape60 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(), CD()};
+            var shape61 = new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(), CD("Policy", CompletionHint.Literal)};
+            var shape62 = new [] {CD(), CD(), CD(), CD(CompletionHint.Table), CD(), CD(), CD(), CD()};
+            var shape63 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD()};
+            var shape64 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("EncodingPolicy", CompletionHint.Literal)};
+            var shape65 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("MergePolicy", CompletionHint.Literal)};
+            var shape66 = new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD()};
+            var shape67 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true), CD(), CD(), CD("DataFormatKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
+            var shape68 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("Policy", CompletionHint.Literal)};
+            var shape69 = new [] {CD("ColumnName", CompletionHint.Column), CD()};
+            var shape70 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Column), CD()};
+            var shape71 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("ShardingPolicy", CompletionHint.Literal)};
+            var shape72 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD("UpdatePolicy", CompletionHint.Literal)};
+            var shape73 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)};
+            var shape74 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreKey", CompletionHint.Literal), CD(isOptional: true)};
+            var shape75 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreName", CompletionHint.None), CD(isOptional: true)};
+            var shape76 = new [] {CD(), CD(CompletionHint.None), CD()};
+            var shape77 = new [] {CD(), CD(), CD(CompletionHint.Table), CD(), CD(isOptional: true)};
+            var shape78 = new [] {CD("ColumnName", CompletionHint.Column), CD(), CD("DocString", CompletionHint.Literal)};
+            var shape79 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(CompletionHint.Column), CD()};
+            var shape80 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD("csl")};
             var shape81 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD(), CD("MappingName", CompletionHint.Literal), CD("MappingFormat", CompletionHint.Literal)};
             var shape82 = new [] {CD(), CD(), CD("TableName", CompletionHint.Database), CD(), CD(), CD("Policy", CompletionHint.Literal)};
             var shape83 = new [] {CD("BlobContainerUrl", CompletionHint.Literal), CD(), CD("StorageAccountKey", CompletionHint.Literal)};
@@ -194,17 +194,17 @@ namespace Kusto.Language.Parsing
             var shape151 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
 
             Func<Source<LexicalToken>, int, SyntaxElement> missing0 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start)));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing1 = (source, start) => (SyntaxElement)new CustomNode(shape6, CreateMissingToken("<|"), rules.MissingExpression(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing2 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape13, rules.MissingNameDeclaration(source, start), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing3 = (source, start) => (SyntaxElement)new CustomNode(shape5, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("disabled", "enabled"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing1 = (source, start) => (SyntaxElement)new CustomNode(shape15, CreateMissingToken("<|"), rules.MissingExpression(source, start));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing2 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape7, rules.MissingNameDeclaration(source, start), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing3 = (source, start) => (SyntaxElement)new CustomNode(shape9, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("disabled", "enabled"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing4 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape34, CreateMissingToken("cluster"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")"), CreateMissingToken("."), CreateMissingToken("database"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing5 = (source, start) => (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing6 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing7 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing8 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape70, rules.MissingNameReference(source, start), CreateMissingToken("asc", "desc"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing9 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape37, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing10 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing11 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape79, rules.MissingNameReference(source, start), CreateMissingToken(":"), rules.MissingStringLiteral(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing5 = (source, start) => (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing6 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing7 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing8 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape69, rules.MissingNameReference(source, start), CreateMissingToken("asc", "desc"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing9 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape36, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing10 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("docstring"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing11 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape78, rules.MissingNameReference(source, start), CreateMissingToken(":"), rules.MissingStringLiteral(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing12 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape16, rules.MissingNameDeclaration(source, start), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing13 = (source, start) => CreateMissingToken("*");
             Func<Source<LexicalToken>, int, SyntaxElement> missing14 = (source, start) => (SyntaxElement)new CustomNode(shape21, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(source, start), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue(source, start));
@@ -212,39 +212,39 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing16 = (source, start) => CreateMissingToken("disable");
             Func<Source<LexicalToken>, int, SyntaxElement> missing17 = (source, start) => (SyntaxElement)new CustomNode(new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape34, CreateMissingToken("cluster"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")"), CreateMissingToken("."), CreateMissingToken("database"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")")))), CreateMissingToken(")"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing18 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD("hours", CompletionHint.Literal), CD()}, CreateMissingToken("older"), rules.MissingValue(source, start), CreateMissingToken("hours"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing19 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing20 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing21 = (source, start) => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape43, (SyntaxElement)new CustomNode(shape42, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(","), rules.MissingNameDeclaration(source, start), CreateMissingToken(")")), rules.MissingStringLiteral(source, start)));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing22 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing23 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing24 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing25 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing19 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing20 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing21 = (source, start) => new SyntaxList<SyntaxElement>((SyntaxElement)new CustomNode(shape42, (SyntaxElement)new CustomNode(shape41, CreateMissingToken("datetime_pattern"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(","), rules.MissingNameDeclaration(source, start), CreateMissingToken(")")), rules.MissingStringLiteral(source, start)));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing22 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing23 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing24 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing25 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing26 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD(), CD("databaseNamePrefix", CompletionHint.None)}, CreateMissingToken("database-name-prefix"), CreateMissingToken("="), rules.MissingNameDeclaration(source, start));
             Func<Source<LexicalToken>, int, SyntaxElement> missing27 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameDeclaration(source, start)));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing28 = (source, start) => (SyntaxElement)new CustomNode(shape51, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(source, start), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing29 = (source, start) => (SyntaxElement)new CustomNode(shape53, rules.MissingValue(source, start), CreateMissingToken(".."), rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing30 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("dimensionTables"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing28 = (source, start) => (SyntaxElement)new CustomNode(shape50, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(source, start), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue(source, start));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing29 = (source, start) => (SyntaxElement)new CustomNode(shape52, rules.MissingValue(source, start), CreateMissingToken(".."), rules.MissingValue(source, start));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing30 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("dimensionTables"), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing31 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing32 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(new [] {CD("ColumnName", CompletionHint.None), CD()}, rules.MissingNameDeclaration(source, start), CreateMissingToken("asc", "desc"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing33 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing34 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing35 = (source, start) => (SyntaxElement)new CustomNode(shape77, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape37, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing36 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing33 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing34 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing35 = (source, start) => (SyntaxElement)new CustomNode(shape76, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape36, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing36 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing37 = (source, start) => new SyntaxList<SyntaxElement>(rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing38 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape90, rules.MissingNameDeclaration(source, start), (SyntaxElement)new CustomNode(shape77, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape37, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")")))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing39 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing40 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing41 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing42 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing43 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing44 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing45 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing46 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing47 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing49 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing50 = (source, start) => (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing51 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape41, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape12, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape38, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing38 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape90, rules.MissingNameDeclaration(source, start), (SyntaxElement)new CustomNode(shape76, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape36, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")")))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing39 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing40 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing41 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing42 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing43 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing44 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing45 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing46 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing47 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing49 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing50 = (source, start) => (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing51 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape40, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape13, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape37, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing52 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing53 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing54 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
@@ -258,42 +258,50 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing62 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape121, CreateMissingToken("tags"), CreateMissingToken("!contains", "!has", "contains", "has"), rules.MissingStringLiteral(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing63 = (source, start) => CreateMissingToken("roles");
             Func<Source<LexicalToken>, int, SyntaxElement> missing64 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape126, rules.MissingNameReference(source, start), (SyntaxElement)new CustomNode(shape125, CreateMissingToken("if_later_than"), rules.MissingStringLiteral(source, start)))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing65 = (source, start) => (SyntaxElement)new CustomNode(shape43, CreateMissingToken("operations"), rules.MissingValue(source, start));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing65 = (source, start) => (SyntaxElement)new CustomNode(shape42, CreateMissingToken("operations"), rules.MissingValue(source, start));
             Func<Source<LexicalToken>, int, SyntaxElement> missing66 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing67 = (source, start) => (SyntaxElement)new CustomNode(shape120, CreateMissingToken("databases"), (SyntaxElement)new CustomNode(shape143, CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")")));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing68 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape60, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing68 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing69 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
 
             var fragment0 = Custom(
+                    rules.NameDeclaration,
+                    RequiredToken("="),
+                    Required(rules.Value, rules.MissingValue),
+                    shape7);
+            var fragment1 = Custom(
                     Token("recoverability"),
                     RequiredToken("="),
                     RequiredToken("disabled", "enabled"),
-                    shape5);
-            var fragment1 = Custom(
-                    Token("<|"),
-                    Required(rules.QueryInput, rules.MissingExpression),
-                    shape6);
+                    shape9);
             var fragment2 = Custom(
                     Token("softdelete"),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
                     Optional(
-                        fragment0),
-                    shape8);
+                        fragment1),
+                    shape11);
             var fragment3 = Custom(
                     Token("with"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            Custom(
-                                rules.NameDeclaration,
-                                RequiredToken("="),
-                                Required(rules.Value, rules.MissingValue),
-                                shape13)),
+                            fragment0),
                         missing2),
                     RequiredToken(")"),
-                    shape14);
+                    shape8);
             var fragment4 = Custom(
+                    Token("with"),
+                    RequiredToken("("),
+                    ZeroOrMoreCommaList(
+                        fragment0),
+                    RequiredToken(")"),
+                    shape8);
+            var fragment5 = Custom(
+                    Token("<|"),
+                    Required(rules.QueryInput, rules.MissingExpression),
+                    shape15);
+            var fragment6 = Custom(
                     Token("hotdata"),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
@@ -301,12 +309,12 @@ namespace Kusto.Language.Parsing
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
                     shape21);
-            var fragment5 = Custom(
+            var fragment7 = Custom(
                     Token("hot"),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
                     shape22);
-            var fragment6 = Custom(
+            var fragment8 = Custom(
                     Token("cluster"),
                     RequiredToken("("),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
@@ -317,18 +325,18 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     RequiredToken(")"),
                     shape34);
-            var fragment7 = Custom(
+            var fragment9 = Custom(
                     Token("database"),
                     RequiredToken("("),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     RequiredToken(")"),
                     shape35);
-            var fragment8 = Custom(
+            var fragment10 = Custom(
                     rules.NameDeclaration,
                     RequiredToken(":"),
                     Required(rules.Type, rules.MissingType),
-                    shape37);
-            var fragment9 = Custom(
+                    shape36);
+            var fragment11 = Custom(
                     rules.NameDeclaration,
                     RequiredToken(":"),
                     Required(
@@ -347,33 +355,33 @@ namespace Kusto.Language.Parsing
                                                     RequiredToken(","),
                                                     Required(rules.Value, rules.MissingValue),
                                                     RequiredToken(")"),
-                                                    shape38),
+                                                    shape37),
                                                 Custom(
                                                     Token("startofday"),
                                                     RequiredToken("("),
                                                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                                                     RequiredToken(")"),
-                                                    shape11),
+                                                    shape12),
                                                 Custom(
                                                     Token("startofmonth"),
                                                     RequiredToken("("),
                                                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                                                     RequiredToken(")"),
-                                                    shape11),
+                                                    shape12),
                                                 Custom(
                                                     Token("startofweek"),
                                                     RequiredToken("("),
                                                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                                                     RequiredToken(")"),
-                                                    shape11),
+                                                    shape12),
                                                 Custom(
                                                     Token("startofyear"),
                                                     RequiredToken("("),
                                                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                                                     RequiredToken(")"),
-                                                    shape11)),
+                                                    shape12)),
                                             missing5))),
-                                shape12),
+                                shape13),
                             Custom(
                                 Token("long"),
                                 RequiredToken("="),
@@ -383,24 +391,24 @@ namespace Kusto.Language.Parsing
                                 RequiredToken(","),
                                 Required(rules.Value, rules.MissingValue),
                                 RequiredToken(")"),
-                                shape39),
+                                shape38),
                             Custom(
                                 Token("string"),
                                 Optional(
                                     Custom(
                                         Token("="),
                                         Required(rules.NameDeclaration, rules.MissingNameDeclaration),
-                                        shape40)),
-                                shape12)),
+                                        shape39)),
+                                shape13)),
                         missing19),
-                    shape41);
-            var fragment10 = Custom(
+                    shape40);
+            var fragment12 = Custom(
                     Token("partition"),
                     RequiredToken("by"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment9),
+                            fragment11),
                         missing23),
                     RequiredToken(")"),
                     Optional(
@@ -423,28 +431,28 @@ namespace Kusto.Language.Parsing
                                                 RequiredToken(","),
                                                 Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                                                 RequiredToken(")"),
-                                                shape42),
+                                                shape41),
                                             Custom(
                                                 If(Not(Token("datetime_pattern")), rules.NameDeclaration),
-                                                shape10)),
+                                                shape6)),
                                         Optional(
                                             Custom(
                                                 rules.StringLiteral,
                                                 shape0)),
-                                        shape43)),
+                                        shape42)),
                                 missing21),
                             RequiredToken(")"),
-                            shape44)),
-                    shape45);
-            var fragment11 = Custom(
+                            shape43)),
+                    shape44);
+            var fragment13 = Custom(
                     Token("from"),
                     rules.StringLiteral,
-                    shape49);
-            var fragment12 = Custom(
+                    shape48);
+            var fragment14 = Custom(
                     Token("from"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape49);
-            var fragment13 = Custom(
+                    shape48);
+            var fragment15 = Custom(
                     Optional(Token(",")),
                     OneOrMoreCommaList(
                         Custom(
@@ -455,46 +463,41 @@ namespace Kusto.Language.Parsing
                                     rules.Value,
                                     RequiredToken(".."),
                                     Required(rules.Value, rules.MissingValue),
-                                    shape53),
+                                    shape52),
                                 missing29),
-                            shape54)),
-                    shape55);
-            var fragment14 = Custom(
-                    rules.NameDeclaration,
-                    RequiredToken("="),
-                    Required(rules.Value, rules.MissingValue),
-                    shape13);
-            var fragment15 = Custom(
+                            shape53)),
+                    shape54);
+            var fragment16 = Custom(
                     First(
                         Token("dimensionTables"),
                         Token("lookback"),
                         If(Not(And(Token("dimensionTables", "lookback"))), rules.NameDeclaration)),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
-                    shape60);
-            var fragment16 = Custom(
+                    shape59);
+            var fragment17 = Custom(
                     Token("partition"),
                     RequiredToken("by"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment9),
+                            fragment11),
                         missing34),
                     RequiredToken(")"),
-                    shape67);
-            var fragment17 = Custom(
+                    shape66);
+            var fragment18 = Custom(
                     rules.ColumnNameReference,
                     RequiredToken("asc", "desc"),
-                    shape70);
-            var fragment18 = Custom(
+                    shape69);
+            var fragment19 = Custom(
                     Token("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment8),
+                            fragment10),
                         missing9),
                     RequiredToken(")"),
-                    shape77);
-            var fragment19 = Custom(
+                    shape76);
+            var fragment20 = Custom(
                     Token("with"),
                     RequiredToken("("),
                     Required(
@@ -506,25 +509,25 @@ namespace Kusto.Language.Parsing
                                     If(Not(And(Token("docstring", "folder"))), rules.NameDeclaration)),
                                 RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                shape60)),
+                                shape59)),
                         missing10),
                     RequiredToken(")"));
-            var fragment20 = Custom(
+            var fragment21 = Custom(
                     rules.ColumnNameReference,
                     RequiredToken(":"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape79);
-            var fragment21 = Custom(
+                    shape78);
+            var fragment22 = Custom(
                     rules.StringLiteral,
                     Token(";"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     shape83);
-            var fragment22 = Custom(
+            var fragment23 = Custom(
                     Token("into"),
                     RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     shape84);
-            var fragment23 = Custom(
+            var fragment24 = Custom(
                     Token("with"),
                     RequiredToken("("),
                     Required(
@@ -542,20 +545,13 @@ namespace Kusto.Language.Parsing
                                     If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclaration)),
                                 RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                shape60)),
+                                shape59)),
                         missing45),
                     RequiredToken(")"));
-            var fragment24 = Custom(
-                    Token("with"),
-                    RequiredToken("("),
-                    ZeroOrMoreCommaList(
-                        fragment14),
-                    RequiredToken(")"),
-                    shape14);
             var fragment25 = Custom(
                     rules.NameDeclaration,
                     Required(
-                        fragment18,
+                        fragment19,
                         missing35),
                     shape90);
             var fragment26 = Custom(
@@ -610,7 +606,7 @@ namespace Kusto.Language.Parsing
                                     If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclaration)),
                                 RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
-                                shape60)),
+                                shape59)),
                         missing36),
                     RequiredToken(")"));
             var fragment33 = Custom(
@@ -634,7 +630,7 @@ namespace Kusto.Language.Parsing
                         If(Not(And(Token("creationTime", "distributed", "docstring", "extend_schema", "folder", "format", "ignoreFirstRecord", "ingestIfNotExists", "ingestionMappingReference", "ingestionMapping", "persistDetails", "policy_ingestionTime", "recreate_schema", "tags", "validationPolicy", "zipPattern"))), rules.NameDeclaration)),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
-                    shape60);
+                    shape59);
             var fragment34 = Custom(
                     Token("("),
                     Required(
@@ -1059,7 +1055,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("database"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         Optional(
-                            fragment12),
+                            fragment14),
                         RequiredToken("admins", "monitors", "unrestrictedviewers", "users", "viewers"),
                         RequiredToken("("),
                         Required(
@@ -1148,22 +1144,28 @@ namespace Kusto.Language.Parsing
 
             var AlterMergeExtentTagsFromQuery = Command("AlterMergeExtentTagsFromQuery", 
                 Custom(
-                    Token("alter-merge", CompletionKind.CommandPrefix),
-                    Token("async"),
-                    RequiredToken("extent"),
-                    RequiredToken("tags"),
-                    RequiredToken("("),
-                    Required(
-                        OneOrMoreCommaList(
-                            Custom(
-                                rules.StringLiteral,
-                                shape0),
-                            fnMissingElement: rules.MissingStringLiteral),
-                        missing0),
-                    RequiredToken(")"),
-                    Required(
-                        fragment1,
-                        missing1),
+                    new Parser<LexicalToken>[] {
+                        Token("alter-merge", CompletionKind.CommandPrefix),
+                        Token("async"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.StringLiteral,
+                                    shape0),
+                                fnMissingElement: rules.MissingStringLiteral),
+                            missing0),
+                        RequiredToken(")"),
+                        Optional(
+                            fragment4),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
                     shape17));
 
             var AlterMergeClusterPolicyCallout = Command("AlterMergeClusterPolicyCallout", 
@@ -1173,7 +1175,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("callout"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterMergeClusterPolicyCapacity = Command("AlterMergeClusterPolicyCapacity", 
                 Custom(
@@ -1182,7 +1184,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("capacity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterMergeClusterPolicyDiagnostics = Command("AlterMergeClusterPolicyDiagnostics", 
                 Custom(
@@ -1200,7 +1202,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("multidatabaseadmins"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterMergeClusterPolicyQueryWeakConsistency = Command("AlterMergeClusterPolicyQueryWeakConsistency", 
                 Custom(
@@ -1209,7 +1211,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("query_weak_consistency"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterMergeClusterPolicyRequestClassification = Command("AlterMergeClusterPolicyRequestClassification", 
                 Custom(
@@ -1218,7 +1220,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("request_classification"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterMergeClusterPolicyRowStore = Command("AlterMergeClusterPolicyRowStore", 
                 Custom(
@@ -1236,7 +1238,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape4));
+                    shape5));
 
             var AlterMergeClusterPolicyStreamingIngestion = Command("AlterMergeClusterPolicyStreamingIngestion", 
                 Custom(
@@ -1245,7 +1247,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("policy"),
                     RequiredToken("streamingingestion"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape4));
+                    shape5));
 
             var AlterMergeColumnPolicyEncoding = Command("AlterMergeColumnPolicyEncoding", 
                 Custom(
@@ -1343,7 +1345,7 @@ namespace Kusto.Language.Parsing
                     Token("retention"),
                     Required(
                         First(
-                            fragment0,
+                            fragment1,
                             fragment2,
                             Custom(
                                 rules.StringLiteral,
@@ -1390,30 +1392,11 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             First(
-                                fragment6,
-                                fragment7)),
+                                fragment8,
+                                fragment9)),
                         missing4),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("EntityGroupName", CompletionHint.EntityGroup), CD(), CD(), CD()}));
-
-            var AlterMergeExtentTagsFromQuery2 = Command("AlterMergeExtentTagsFromQuery", 
-                Custom(
-                    Token("alter-merge", CompletionKind.CommandPrefix),
-                    Token("extent"),
-                    RequiredToken("tags"),
-                    RequiredToken("("),
-                    Required(
-                        OneOrMoreCommaList(
-                            Custom(
-                                rules.StringLiteral,
-                                shape0),
-                            fnMissingElement: rules.MissingStringLiteral),
-                        missing0),
-                    RequiredToken(")"),
-                    Required(
-                        fragment1,
-                        missing1),
-                    shape36));
 
             var AlterMergeMaterializedViewPolicyMerge = Command("AlterMergeMaterializedViewPolicyMerge", 
                 Custom(
@@ -1433,7 +1416,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape62));
+                    shape61));
 
             var AlterMergeMaterializedViewPolicyRetention = Command("AlterMergeMaterializedViewPolicyRetention", 
                 Custom(
@@ -1444,13 +1427,13 @@ namespace Kusto.Language.Parsing
                     RequiredToken("retention"),
                     Required(
                         First(
-                            fragment0,
+                            fragment1,
                             fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
                         missing3),
-                    shape61));
+                    shape60));
 
             var AlterMergeTablePolicyEncoding = Command("AlterMergeTablePolicyEncoding", 
                 Custom(
@@ -1460,7 +1443,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape65));
+                    shape64));
 
             var AlterMergeTablePolicyMerge = Command("AlterMergeTablePolicyMerge", 
                 Custom(
@@ -1470,7 +1453,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape66));
+                    shape65));
 
             var AlterMergeTablePolicyMirroring = Command("AlterMergeTablePolicyMirroring", 
                 Custom(
@@ -1481,7 +1464,7 @@ namespace Kusto.Language.Parsing
                         Token("policy"),
                         Token("mirroring"),
                         Optional(
-                            fragment16),
+                            fragment17),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -1497,7 +1480,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape68));
+                    shape67));
 
             var AlterMergeTablePolicyPartitioning = Command("AlterMergeTablePolicyPartitioning", 
                 Custom(
@@ -1507,7 +1490,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape69));
+                    shape68));
 
             var AlterMergeTablePolicyRetention = Command("AlterMergeTablePolicyRetention", 
                 Custom(
@@ -1518,13 +1501,13 @@ namespace Kusto.Language.Parsing
                     Token("retention"),
                     Required(
                         First(
-                            fragment0,
+                            fragment1,
                             fragment2,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
                         missing3),
-                    shape64));
+                    shape63));
 
             var AlterMergeTablePolicyRowOrder = Command("AlterMergeTablePolicyRowOrder", 
                 Custom(
@@ -1536,10 +1519,10 @@ namespace Kusto.Language.Parsing
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment17),
+                            fragment18),
                         missing8),
                     RequiredToken(")"),
-                    shape71));
+                    shape70));
 
             var AlterMergeTablePolicySharding = Command("AlterMergeTablePolicySharding", 
                 Custom(
@@ -1549,7 +1532,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape72));
+                    shape71));
 
             var AlterMergeTablePolicyStreamingIngestion = Command("AlterMergeTablePolicyStreamingIngestion", 
                 Custom(
@@ -1569,17 +1552,17 @@ namespace Kusto.Language.Parsing
                     RequiredToken("policy"),
                     RequiredToken("update"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape73));
+                    shape72));
 
             var AlterMergeTable = Command("AlterMergeTable", 
                 Custom(
                     Token("alter-merge", CompletionKind.CommandPrefix),
                     Token("table"),
                     rules.TableNameReference,
-                    fragment18,
+                    fragment19,
                     Optional(
-                        fragment19),
-                    shape78));
+                        fragment20),
+                    shape77));
 
             var AlterMergeTableColumnDocStrings = Command("AlterMergeTableColumnDocStrings", 
                 Custom(
@@ -1590,9 +1573,34 @@ namespace Kusto.Language.Parsing
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment20),
+                            fragment21),
                         missing11),
                     RequiredToken(")"),
+                    shape79));
+
+            var AlterMergeExtentTagsFromQuery2 = Command("AlterMergeExtentTagsFromQuery", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("alter-merge", CompletionKind.CommandPrefix),
+                        Token("table"),
+                        rules.TableNameReference,
+                        Token("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.StringLiteral,
+                                    shape0),
+                                fnMissingElement: rules.MissingStringLiteral),
+                            missing0),
+                        RequiredToken(")"),
+                        Optional(
+                            fragment4),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
                     shape80));
 
             var AlterMergeTableIngestionMapping = Command("AlterMergeTableIngestionMapping", 
@@ -1654,22 +1662,28 @@ namespace Kusto.Language.Parsing
 
             var AlterExtentTagsFromQuery = Command("AlterExtentTagsFromQuery", 
                 Custom(
-                    Token("alter", CompletionKind.CommandPrefix),
-                    Token("async"),
-                    RequiredToken("extent"),
-                    RequiredToken("tags"),
-                    RequiredToken("("),
-                    Required(
-                        OneOrMoreCommaList(
-                            Custom(
-                                rules.StringLiteral,
-                                shape0),
-                            fnMissingElement: rules.MissingStringLiteral),
-                        missing0),
-                    RequiredToken(")"),
-                    Required(
-                        fragment1,
-                        missing1),
+                    new Parser<LexicalToken>[] {
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("async"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.StringLiteral,
+                                    shape0),
+                                fnMissingElement: rules.MissingStringLiteral),
+                            missing0),
+                        RequiredToken(")"),
+                        Optional(
+                            fragment4),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
                     shape17));
 
             var AlterCache = Command("AlterCache", 
@@ -1695,8 +1709,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14)));
 
             var AlterClusterPolicyCallout = Command("AlterClusterPolicyCallout", 
@@ -1706,7 +1720,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("callout"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterClusterPolicyCapacity = Command("AlterClusterPolicyCapacity", 
                 Custom(
@@ -1715,7 +1729,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("capacity"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterClusterPolicyDiagnostics = Command("AlterClusterPolicyDiagnostics", 
                 Custom(
@@ -1751,7 +1765,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("multidatabaseadmins"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterClusterPolicyQueryWeakConsistency = Command("AlterClusterPolicyQueryWeakConsistency", 
                 Custom(
@@ -1760,7 +1774,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("query_weak_consistency"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape3));
+                    shape4));
 
             var AlterClusterPolicyRequestClassification = Command("AlterClusterPolicyRequestClassification", 
                 Custom(
@@ -1798,7 +1812,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape4));
+                    shape5));
 
             var AlterClusterPolicyStreamingIngestion = Command("AlterClusterPolicyStreamingIngestion", 
                 Custom(
@@ -1841,8 +1855,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14),
                     new [] {CD(), CD(), CD("ColumnName", CompletionHint.Column), CD(), CD(), CD()}));
 
@@ -1899,7 +1913,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("metadata"),
                     Required(
                         First(
-                            fragment21,
+                            fragment22,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -1915,8 +1929,8 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14),
                     shape25));
 
@@ -2096,8 +2110,8 @@ namespace Kusto.Language.Parsing
                         Custom(
                             OneOrMoreCommaList(
                                 First(
-                                    fragment6,
-                                    fragment7)),
+                                    fragment8,
+                                    fragment9)),
                             RequiredToken(")")),
                         missing17),
                     new [] {CD(), CD(), CD("EntityGroupName", CompletionHint.EntityGroup), CD(), CD()}));
@@ -2163,25 +2177,6 @@ namespace Kusto.Language.Parsing
                     RequiredToken("readonly", "readwrite"),
                     new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD("container", CompletionHint.Literal), CD(), CD()}));
 
-            var AlterExtentTagsFromQuery2 = Command("AlterExtentTagsFromQuery", 
-                Custom(
-                    Token("alter", CompletionKind.CommandPrefix),
-                    Token("extent"),
-                    RequiredToken("tags"),
-                    RequiredToken("("),
-                    Required(
-                        OneOrMoreCommaList(
-                            Custom(
-                                rules.StringLiteral,
-                                shape0),
-                            fnMissingElement: rules.MissingStringLiteral),
-                        missing0),
-                    RequiredToken(")"),
-                    Required(
-                        fragment1,
-                        missing1),
-                    shape36));
-
             var AlterStorageExternalTable = Command("AlterStorageExternalTable", 
                 Custom(
                     new Parser<LexicalToken>[] {
@@ -2192,14 +2187,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("adl").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -2215,7 +2210,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var AlterStorageExternalTable2 = Command("AlterStorageExternalTable", 
                 Custom(
@@ -2227,14 +2222,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("blob").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -2250,7 +2245,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var AlterSqlExternalTable = Command("AlterSqlExternalTable", 
                 Custom(
@@ -2261,7 +2256,7 @@ namespace Kusto.Language.Parsing
                         rules.NameDeclaration,
                         Token("("),
                         OneOrMoreCommaList(
-                            fragment8),
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -2287,14 +2282,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("storage"),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -2310,7 +2305,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var AlterExternalTableDocString = Command("AlterExternalTableDocString", 
                 Custom(
@@ -2362,12 +2357,12 @@ namespace Kusto.Language.Parsing
                                 Token("default-caching-policies-modification-kind"),
                                 RequiredToken("="),
                                 RequiredToken("none", "replace", "union"),
-                                shape48),
+                                shape47),
                             Custom(
                                 Token("default-principals-modification-kind"),
                                 RequiredToken("="),
                                 RequiredToken("none", "replace", "union"),
-                                shape48),
+                                shape47),
                             Custom(
                                 Token("follow-authorized-principals"),
                                 RequiredToken("="),
@@ -2383,11 +2378,11 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("caching-policies-modification-kind"),
                     RequiredToken("="),
                     RequiredToken("none", "replace", "union"),
-                    shape57));
+                    shape56));
 
             var AlterFollowerDatabaseConfiguration2 = Command("AlterFollowerDatabaseConfiguration", 
                 Custom(
@@ -2396,7 +2391,7 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("database-name-override"),
                     RequiredToken("="),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
@@ -2410,7 +2405,7 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         Optional(
-                            fragment11),
+                            fragment13),
                         Token("external"),
                         RequiredToken("tables"),
                         RequiredToken("exclude", "include"),
@@ -2420,7 +2415,7 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.WildcardedNameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")")}
@@ -2435,14 +2430,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("database"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         Optional(
-                            fragment12),
+                            fragment14),
                         RequiredToken("materialized-views"),
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.NameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")"),
@@ -2450,13 +2445,13 @@ namespace Kusto.Language.Parsing
                         RequiredToken("caching"),
                         Required(
                             First(
-                                fragment4,
-                                fragment5),
+                                fragment6,
+                                fragment7),
                             missing28),
                         Optional(
-                            fragment13)}
+                            fragment15)}
                     ,
-                    shape58));
+                    shape57));
 
             var AlterFollowerDatabaseChildEntities2 = Command("AlterFollowerDatabaseChildEntities", 
                 Custom(
@@ -2466,7 +2461,7 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         Optional(
-                            fragment11),
+                            fragment13),
                         Token("materialized-views"),
                         RequiredToken("exclude"),
                         RequiredToken("add", "drop"),
@@ -2475,12 +2470,12 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.WildcardedNameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")")}
                     ,
-                    shape50));
+                    shape49));
 
             var AlterFollowerDatabaseChildEntities3 = Command("AlterFollowerDatabaseChildEntities", 
                 Custom(
@@ -2490,7 +2485,7 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         Optional(
-                            fragment11),
+                            fragment13),
                         Token("materialized-views"),
                         RequiredToken("include"),
                         RequiredToken("add", "drop"),
@@ -2499,12 +2494,12 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.WildcardedNameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")")}
                     ,
-                    shape50));
+                    shape49));
 
             var AlterFollowerTablesPolicyCaching2 = Command("AlterFollowerTablesPolicyCaching", 
                 Custom(
@@ -2514,18 +2509,18 @@ namespace Kusto.Language.Parsing
                         RequiredToken("database"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         Optional(
-                            fragment12),
+                            fragment14),
                         RequiredToken("materialized-view"),
                         Required(rules.MaterializedViewNameReference, rules.MissingNameReference),
                         RequiredToken("policy"),
                         RequiredToken("caching"),
                         Required(
                             First(
-                                fragment4,
-                                fragment5),
+                                fragment6,
+                                fragment7),
                             missing28),
                         Optional(
-                            fragment13)}
+                            fragment15)}
                     ,
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD("name", CompletionHint.MaterializedView), CD(), CD(), CD(), CD("hotWindows", isOptional: true)}));
 
@@ -2536,7 +2531,7 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("metadata"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD("serializedDatabaseMetadataOverride", CompletionHint.Literal)}));
@@ -2548,16 +2543,16 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("policy"),
                     RequiredToken("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing28),
                     Optional(
-                        fragment13),
+                        fragment15),
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD(), CD(), CD("hotWindows", isOptional: true)}));
 
             var AlterFollowerDatabaseConfiguration4 = Command("AlterFollowerDatabaseConfiguration", 
@@ -2567,7 +2562,7 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("prefetch-extents"),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
@@ -2580,11 +2575,11 @@ namespace Kusto.Language.Parsing
                     Token("database"),
                     rules.DatabaseNameReference,
                     Optional(
-                        fragment11),
+                        fragment13),
                     Token("principals-modification-kind"),
                     RequiredToken("="),
                     RequiredToken("none", "replace", "union"),
-                    shape57));
+                    shape56));
 
             var AlterFollowerTablesPolicyCaching3 = Command("AlterFollowerTablesPolicyCaching", 
                 Custom(
@@ -2594,14 +2589,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("database"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         Optional(
-                            fragment12),
+                            fragment14),
                         RequiredToken("tables"),
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.NameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")"),
@@ -2609,13 +2604,13 @@ namespace Kusto.Language.Parsing
                         RequiredToken("caching"),
                         Required(
                             First(
-                                fragment4,
-                                fragment5),
+                                fragment6,
+                                fragment7),
                             missing28),
                         Optional(
-                            fragment13)}
+                            fragment15)}
                     ,
-                    shape58));
+                    shape57));
 
             var AlterFollowerDatabaseChildEntities4 = Command("AlterFollowerDatabaseChildEntities", 
                 Custom(
@@ -2625,7 +2620,7 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         Optional(
-                            fragment11),
+                            fragment13),
                         Token("tables"),
                         RequiredToken("exclude"),
                         RequiredToken("add", "drop"),
@@ -2634,12 +2629,12 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.WildcardedNameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")")}
                     ,
-                    shape50));
+                    shape49));
 
             var AlterFollowerDatabaseChildEntities5 = Command("AlterFollowerDatabaseChildEntities", 
                 Custom(
@@ -2649,7 +2644,7 @@ namespace Kusto.Language.Parsing
                         Token("database"),
                         rules.DatabaseNameReference,
                         Optional(
-                            fragment11),
+                            fragment13),
                         Token("tables"),
                         RequiredToken("include"),
                         RequiredToken("add", "drop"),
@@ -2658,12 +2653,12 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.WildcardedNameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")")}
                     ,
-                    shape50));
+                    shape49));
 
             var AlterFollowerTablesPolicyCaching4 = Command("AlterFollowerTablesPolicyCaching", 
                 Custom(
@@ -2673,18 +2668,18 @@ namespace Kusto.Language.Parsing
                         RequiredToken("database"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         Optional(
-                            fragment12),
+                            fragment14),
                         RequiredToken("table"),
                         Required(rules.TableNameReference, rules.MissingNameReference),
                         RequiredToken("policy"),
                         RequiredToken("caching"),
                         Required(
                             First(
-                                fragment4,
-                                fragment5),
+                                fragment6,
+                                fragment7),
                             missing28),
                         Optional(
-                            fragment13)}
+                            fragment15)}
                     ,
                     new [] {CD(), CD(), CD(), CD("dbName", CompletionHint.Database), CD(isOptional: true), CD(), CD("name", CompletionHint.Table), CD(), CD(), CD(), CD("hotWindows", isOptional: true)}));
 
@@ -2696,7 +2691,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment14),
+                            fragment0),
                         missing2),
                     RequiredToken(")"),
                     Required(If(Not(Token("with")), rules.DatabaseFunctionNameReference), rules.MissingNameReference),
@@ -2738,7 +2733,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment15),
+                                fragment16),
                             missing30),
                         RequiredToken(")"),
                         Required(If(Not(Token("with")), rules.MaterializedViewNameReference), rules.MissingNameReference),
@@ -2758,7 +2753,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment15),
+                                fragment16),
                             missing30),
                         RequiredToken(")"),
                         Required(If(Not(Token("with")), rules.MaterializedViewNameReference), rules.MissingNameReference),
@@ -2836,10 +2831,10 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14),
-                    shape61));
+                    shape60));
 
             var AlterMaterializedViewPolicyPartitioning = Command("AlterMaterializedViewPolicyPartitioning", 
                 Custom(
@@ -2849,7 +2844,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape62));
+                    shape61));
 
             var AlterMaterializedViewPolicyRetention = Command("AlterMaterializedViewPolicyRetention", 
                 Custom(
@@ -2890,18 +2885,18 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14),
                     Optional(
-                        fragment13),
+                        fragment15),
                     new [] {CD(), CD(), CD(), CD(CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)}));
 
             var AlterTablesPolicyIngestionBatching = Command("AlterTablesPolicyIngestionBatching", 
@@ -2912,7 +2907,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
@@ -2928,13 +2923,13 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("ingestiontime"),
                     RequiredToken("true"),
-                    shape63));
+                    shape62));
 
             var AlterTablesPolicyMerge = Command("AlterTablesPolicyMerge", 
                 Custom(
@@ -2944,7 +2939,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
@@ -2960,13 +2955,13 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
                     Token("restricted_view_access"),
                     RequiredToken("false", "true"),
-                    shape63));
+                    shape62));
 
             var AlterTablesPolicyRetention = Command("AlterTablesPolicyRetention", 
                 Custom(
@@ -2976,7 +2971,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("policy"),
@@ -2994,7 +2989,7 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.TableNameReference,
-                                    shape9),
+                                    shape3),
                                 fnMissingElement: rules.MissingNameReference),
                             missing31),
                         RequiredToken(")"),
@@ -3043,10 +3038,10 @@ namespace Kusto.Language.Parsing
                     Token("caching"),
                     Required(
                         First(
-                            fragment4,
-                            fragment5),
+                            fragment6,
+                            fragment7),
                         missing14),
-                    shape64));
+                    shape63));
 
             var AlterTablePolicyEncoding = Command("AlterTablePolicyEncoding", 
                 Custom(
@@ -3056,7 +3051,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("encoding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape65));
+                    shape64));
 
             var AlterTablePolicyExtentTagsRetention = Command("AlterTablePolicyExtentTagsRetention", 
                 Custom(
@@ -3086,7 +3081,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("merge"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape66));
+                    shape65));
 
             var AlterTablePolicyMirroring = Command("AlterTablePolicyMirroring", 
                 Custom(
@@ -3097,7 +3092,7 @@ namespace Kusto.Language.Parsing
                         Token("policy"),
                         Token("mirroring"),
                         Optional(
-                            fragment16),
+                            fragment17),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -3113,7 +3108,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape68));
+                    shape67));
 
             var AlterTablePolicyPartitioning = Command("AlterTablePolicyPartitioning", 
                 Custom(
@@ -3123,7 +3118,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("partitioning"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape69));
+                    shape68));
 
             var AlterTablePolicyRestrictedViewAccess = Command("AlterTablePolicyRestrictedViewAccess", 
                 Custom(
@@ -3133,7 +3128,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("restricted_view_access"),
                     RequiredToken("false", "true"),
-                    shape64));
+                    shape63));
 
             var AlterTablePolicyRetention = Command("AlterTablePolicyRetention", 
                 Custom(
@@ -3155,10 +3150,10 @@ namespace Kusto.Language.Parsing
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment17),
+                            fragment18),
                         missing8),
                     RequiredToken(")"),
-                    shape71));
+                    shape70));
 
             var AlterTablePolicySharding = Command("AlterTablePolicySharding", 
                 Custom(
@@ -3168,7 +3163,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("sharding"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape72));
+                    shape71));
 
             var AlterTablePolicyStreamingIngestion = Command("AlterTablePolicyStreamingIngestion", 
                 Custom(
@@ -3187,7 +3182,7 @@ namespace Kusto.Language.Parsing
                                 rules.StringLiteral,
                                 shape0)),
                         missing16),
-                    shape64));
+                    shape63));
 
             var AlterTablePolicyUpdate = Command("AlterTablePolicyUpdate", 
                 Custom(
@@ -3197,7 +3192,7 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     RequiredToken("update"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    shape73));
+                    shape72));
 
             var AlterTableRowStoreReferencesDisableBlockedKeys = Command("AlterTableRowStoreReferencesDisableBlockedKeys", 
                 Custom(
@@ -3210,7 +3205,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("keys"),
                     Optional(
                         fragment3),
-                    shape74));
+                    shape73));
 
             var AlterTableRowStoreReferencesDisableKey = Command("AlterTableRowStoreReferencesDisableKey", 
                 Custom(
@@ -3223,7 +3218,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         fragment3),
-                    shape75));
+                    shape74));
 
             var AlterTableRowStoreReferencesDisableRowStore = Command("AlterTableRowStoreReferencesDisableRowStore", 
                 Custom(
@@ -3236,7 +3231,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     Optional(
                         fragment3),
-                    shape76));
+                    shape75));
 
             var AlterTableRowStoreReferencesDropBlockedKeys = Command("AlterTableRowStoreReferencesDropBlockedKeys", 
                 Custom(
@@ -3249,7 +3244,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("keys"),
                     Optional(
                         fragment3),
-                    shape74));
+                    shape73));
 
             var AlterTableRowStoreReferencesDropKey = Command("AlterTableRowStoreReferencesDropKey", 
                 Custom(
@@ -3262,7 +3257,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     Optional(
                         fragment3),
-                    shape75));
+                    shape74));
 
             var AlterTableRowStoreReferencesDropRowStore = Command("AlterTableRowStoreReferencesDropRowStore", 
                 Custom(
@@ -3275,17 +3270,17 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     Optional(
                         fragment3),
-                    shape76));
+                    shape75));
 
             var AlterTable = Command("AlterTable", 
                 Custom(
                     Token("alter", CompletionKind.CommandPrefix),
                     Token("table"),
                     rules.TableNameReference,
-                    fragment18,
+                    fragment19,
                     Optional(
-                        fragment19),
-                    shape78));
+                        fragment20),
+                    shape77));
 
             var AlterTableColumnDocStrings = Command("AlterTableColumnDocStrings", 
                 Custom(
@@ -3296,10 +3291,10 @@ namespace Kusto.Language.Parsing
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
-                            fragment20),
+                            fragment21),
                         missing11),
                     RequiredToken(")"),
-                    shape80));
+                    shape79));
 
             var AlterTableColumnsPolicyEncoding = Command("AlterTableColumnsPolicyEncoding", 
                 Custom(
@@ -3335,6 +3330,31 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("Documentation", CompletionHint.Literal)}));
 
+            var AlterExtentTagsFromQuery2 = Command("AlterExtentTagsFromQuery", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("alter", CompletionKind.CommandPrefix),
+                        Token("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.StringLiteral,
+                                    shape0),
+                                fnMissingElement: rules.MissingStringLiteral),
+                            missing0),
+                        RequiredToken(")"),
+                        Optional(
+                            fragment4),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
+                    shape80));
+
             var AlterTableFolder = Command("AlterTableFolder", 
                 Custom(
                     Token("alter", CompletionKind.CommandPrefix),
@@ -3364,7 +3384,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("policy"),
                     RequiredToken("ingestiontime"),
                     RequiredToken("true"),
-                    shape64));
+                    shape63));
 
             var AlterTablePolicyMirroringWithJson = Command("AlterTablePolicyMirroringWithJson", 
                 Custom(
@@ -3385,7 +3405,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("row_level_security"),
                     RequiredToken("disable", "enable"),
                     Optional(
-                        fragment24),
+                        fragment4),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(isOptional: true), CD("Query", CompletionHint.Literal)}));
 
@@ -3406,11 +3426,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("async"),
                     RequiredToken("extents"),
                     ZeroOrMoreList(
-                        fragment22),
+                        fragment23),
                     RequiredToken("by"),
                     RequiredToken("metadata"),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD("csl")}));
 
@@ -3423,7 +3443,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("from"),
                     Required(
                         First(
-                            fragment21,
+                            fragment22,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -3438,7 +3458,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("from"),
                     Required(
                         First(
-                            fragment21,
+                            fragment22,
                             Custom(
                                 rules.StringLiteral,
                                 shape0)),
@@ -3452,7 +3472,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("by"),
                     RequiredToken("metadata"),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD(), CD("csl")}));
 
@@ -3482,11 +3502,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
                     ZeroOrMoreList(
-                        fragment22),
+                        fragment23),
                     RequiredToken("by"),
                     RequiredToken("metadata"),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD("csl")}));
 
@@ -3589,7 +3609,7 @@ namespace Kusto.Language.Parsing
                     Token("cache"),
                     RequiredToken("streamingingestion"),
                     RequiredToken("schema"),
-                    shape64));
+                    shape63));
 
             var ClearTableData2 = Command("ClearTableData", 
                 Custom(
@@ -3617,10 +3637,10 @@ namespace Kusto.Language.Parsing
                     RequiredToken("table"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     Required(
-                        fragment18,
+                        fragment19,
                         missing35),
                     Optional(
-                        fragment19),
+                        fragment20),
                     shape92));
 
             var CreateOrAlterContinuousExport = Command("CreateOrAlterContinuousExport", 
@@ -3637,11 +3657,11 @@ namespace Kusto.Language.Parsing
                                     OneOrMoreCommaList(
                                         Custom(
                                             rules.NameDeclaration,
-                                            shape10),
+                                            shape6),
                                         fnMissingElement: rules.MissingNameDeclaration),
                                     missing27),
                                 RequiredToken(")"),
-                                shape14)),
+                                shape8)),
                         RequiredToken("to"),
                         RequiredToken("table"),
                         Required(rules.ExternalTableNameReference, rules.MissingNameReference),
@@ -3674,14 +3694,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("adl").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -3697,7 +3717,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateOrAlterStorageExternalTable2 = Command("CreateOrAlterStorageExternalTable", 
                 Custom(
@@ -3709,14 +3729,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("blob").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -3732,7 +3752,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateOrAlterSqlExternalTable = Command("CreateOrAlterSqlExternalTable", 
                 Custom(
@@ -3743,7 +3763,7 @@ namespace Kusto.Language.Parsing
                         rules.NameDeclaration,
                         Token("("),
                         OneOrMoreCommaList(
-                            fragment8),
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -3769,14 +3789,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("storage"),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -3792,7 +3812,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateOrAlterFunction = Command("CreateOrAlterFunction", 
                 Custom(
@@ -3809,7 +3829,7 @@ namespace Kusto.Language.Parsing
                     Token("create-or-alter", CompletionKind.CommandPrefix),
                     Token("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     If(Not(Token("with")), rules.MaterializedViewNameReference),
                     Token("on"),
                     Token("materialized-view"),
@@ -3822,7 +3842,7 @@ namespace Kusto.Language.Parsing
                     Token("create-or-alter", CompletionKind.CommandPrefix),
                     Token("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     Required(If(Not(Token("with")), rules.MaterializedViewNameReference), rules.MissingNameReference),
                     RequiredToken("on"),
                     RequiredToken("table"),
@@ -3858,7 +3878,7 @@ namespace Kusto.Language.Parsing
                         Optional(Token("ifnotexists")),
                         Token("materialized-view"),
                         Optional(
-                            fragment23),
+                            fragment24),
                         If(Not(Token("with")), rules.NameDeclaration),
                         Token("on"),
                         Token("materialized-view"),
@@ -3875,7 +3895,7 @@ namespace Kusto.Language.Parsing
                         Optional(Token("ifnotexists")),
                         RequiredToken("materialized-view"),
                         Optional(
-                            fragment23),
+                            fragment24),
                         Required(If(Not(Token("with")), rules.NameDeclaration), rules.MissingNameDeclaration),
                         RequiredToken("on"),
                         RequiredToken("table"),
@@ -3945,8 +3965,8 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             First(
-                                fragment6,
-                                fragment7)),
+                                fragment8,
+                                fragment9)),
                         missing4),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("EntityGroupName", CompletionHint.None), CD(), CD(), CD()}));
@@ -3961,14 +3981,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("adl").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -3984,7 +4004,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateStorageExternalTable2 = Command("CreateStorageExternalTable", 
                 Custom(
@@ -3996,14 +4016,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("blob").Hide(),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -4019,7 +4039,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateSqlExternalTable = Command("CreateSqlExternalTable", 
                 Custom(
@@ -4030,7 +4050,7 @@ namespace Kusto.Language.Parsing
                         rules.NameDeclaration,
                         Token("("),
                         OneOrMoreCommaList(
-                            fragment8),
+                            fragment10),
                         Token(")"),
                         Token("kind"),
                         RequiredToken("="),
@@ -4056,14 +4076,14 @@ namespace Kusto.Language.Parsing
                         RequiredToken("("),
                         Required(
                             OneOrMoreCommaList(
-                                fragment8),
+                                fragment10),
                             missing9),
                         RequiredToken(")"),
                         RequiredToken("kind"),
                         RequiredToken("="),
                         RequiredToken("storage"),
                         Optional(
-                            fragment10),
+                            fragment12),
                         RequiredToken("dataformat"),
                         RequiredToken("="),
                         RequiredToken("apacheavro", "avro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsve", "tsv", "txt", "w3clogfile"),
@@ -4079,7 +4099,7 @@ namespace Kusto.Language.Parsing
                         Optional(
                             fragment3)}
                     ,
-                    shape46));
+                    shape45));
 
             var CreateExternalTableMapping = Command("CreateExternalTableMapping", 
                 Custom(
@@ -4098,7 +4118,7 @@ namespace Kusto.Language.Parsing
                     Token("function"),
                     Optional(Token("ifnotexists")),
                     Optional(
-                        fragment24),
+                        fragment4),
                     Required(If(Not(And(Token("ifnotexists", "with"))), rules.NameDeclaration), rules.MissingNameDeclaration),
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration),
                     new [] {CD(), CD(), CD(isOptional: true), CD(isOptional: true), CD("FunctionName", CompletionHint.None), CD()}));
@@ -4109,7 +4129,7 @@ namespace Kusto.Language.Parsing
                     Token("ifnotexists"),
                     Token("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     If(Not(Token("with")), rules.NameDeclaration),
                     Token("on"),
                     Token("materialized-view"),
@@ -4123,7 +4143,7 @@ namespace Kusto.Language.Parsing
                     Token("ifnotexists"),
                     RequiredToken("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     Required(If(Not(Token("with")), rules.NameDeclaration), rules.MissingNameDeclaration),
                     RequiredToken("on"),
                     RequiredToken("table"),
@@ -4136,7 +4156,7 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     If(Not(Token("with")), rules.NameDeclaration),
                     Token("on"),
                     Token("materialized-view"),
@@ -4149,7 +4169,7 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("materialized-view"),
                     Optional(
-                        fragment23),
+                        fragment24),
                     Required(If(Not(Token("with")), rules.NameDeclaration), rules.MissingNameDeclaration),
                     RequiredToken("on"),
                     RequiredToken("table"),
@@ -4190,9 +4210,9 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("table"),
                     rules.NameDeclaration,
-                    fragment18,
+                    fragment19,
                     Optional(
-                        fragment19),
+                        fragment20),
                     shape92));
 
             var CreateTableBasedOnAnother = Command("CreateTableBasedOnAnother", 
@@ -4203,7 +4223,7 @@ namespace Kusto.Language.Parsing
                     Token("based-on"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     Optional(
-                        fragment19),
+                        fragment20),
                     new [] {CD(), CD(), CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.None), CD(isOptional: true)}));
 
             var CreateTableIngestionMapping = Command("CreateTableIngestionMapping", 
@@ -4241,10 +4261,10 @@ namespace Kusto.Language.Parsing
                     RequiredToken("table"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     Required(
-                        fragment18,
+                        fragment19,
                         missing35),
                     Optional(
-                        fragment19),
+                        fragment20),
                     shape92));
 
             var DeleteMaterializedViewRecords = Command("DeleteMaterializedViewRecords", 
@@ -4257,7 +4277,7 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment3),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true), CD("csl")}));
 
@@ -4271,7 +4291,7 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment3),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true), CD("csl")}));
 
@@ -4470,7 +4490,7 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.NameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")"),
@@ -4514,7 +4534,7 @@ namespace Kusto.Language.Parsing
                             OneOrMoreCommaList(
                                 Custom(
                                     rules.NameDeclaration,
-                                    shape10),
+                                    shape6),
                                 fnMissingElement: rules.MissingNameDeclaration),
                             missing27),
                         RequiredToken(")"),
@@ -4571,7 +4591,7 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment3),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD("MaterializedViewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true), CD("csl")}));
 
@@ -4745,7 +4765,7 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment3),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true), CD("csl")}));
 
@@ -4819,7 +4839,7 @@ namespace Kusto.Language.Parsing
                             fragment28,
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
-                                shape9)),
+                                shape3)),
                         missing52),
                     Optional(
                         fragment29),
@@ -4832,7 +4852,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("drop", CompletionKind.CommandPrefix),
                         Token("async"),
-                        RequiredToken("empty"),
+                        Token("empty"),
                         RequiredToken("extentcontainers"),
                         Required(rules.DatabaseNameReference, rules.MissingNameReference),
                         RequiredToken("until"),
@@ -4843,6 +4863,62 @@ namespace Kusto.Language.Parsing
                             fragment3)}
                     ,
                     new [] {CD(), CD(), CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD("d", CompletionHint.Literal), CD(isOptional: true), CD(isOptional: true)}));
+
+            var DropExtentTagsFromTable = Command("DropExtentTagsFromTable", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("drop", CompletionKind.CommandPrefix),
+                        Token("async"),
+                        Token("table"),
+                        rules.TableNameReference,
+                        Token("extent"),
+                        Token("tags"),
+                        Token("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.StringLiteral,
+                                    shape0),
+                                fnMissingElement: rules.MissingStringLiteral),
+                            missing0),
+                        RequiredToken(")"),
+                        Optional(
+                            fragment4)}
+                    ,
+                    new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)}));
+
+            var DropExtentTagsFromQuery = Command("DropExtentTagsFromQuery", 
+                Custom(
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("async"),
+                    RequiredToken("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    RequiredToken("extent"),
+                    RequiredToken("tags"),
+                    Required(
+                        fragment5,
+                        missing1),
+                    new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD("csl")}));
+
+            var DropExtentTagsFromQuery2 = Command("DropExtentTagsFromQuery", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("drop", CompletionKind.CommandPrefix),
+                        Token("async"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("with"),
+                        RequiredToken("("),
+                        ZeroOrMoreCommaList(
+                            fragment0),
+                        RequiredToken(")"),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
+                    new [] {CD(), CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD("csl")}));
 
             var DropBasicAuthUser = Command("DropBasicAuthUser", 
                 Custom(
@@ -5304,7 +5380,7 @@ namespace Kusto.Language.Parsing
                             fragment28,
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
-                                shape9)),
+                                shape3)),
                         missing54),
                     Optional(
                         fragment29),
@@ -5325,7 +5401,7 @@ namespace Kusto.Language.Parsing
                             fragment28,
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
-                                shape9)),
+                                shape3)),
                         missing55),
                     Optional(
                         fragment29),
@@ -5352,7 +5428,7 @@ namespace Kusto.Language.Parsing
                             RequiredToken(")"),
                             new [] {CD(), CD(), CD("d1", CompletionHint.Literal), CD(), CD("d2", CompletionHint.Literal), CD()})),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(isOptional: true), CD("csl")}));
 
@@ -5450,7 +5526,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     RequiredToken("admins"),
                     Optional(
-                        fragment12),
+                        fragment14),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5480,7 +5556,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     RequiredToken("monitors"),
                     Optional(
-                        fragment12),
+                        fragment14),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5500,7 +5576,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     RequiredToken("unrestrictedviewers"),
                     Optional(
-                        fragment12),
+                        fragment14),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5520,7 +5596,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     RequiredToken("users"),
                     Optional(
-                        fragment12),
+                        fragment14),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5540,7 +5616,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.DatabaseNameReference, rules.MissingNameReference),
                     RequiredToken("viewers"),
                     Optional(
-                        fragment12),
+                        fragment14),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5561,7 +5637,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.DatabaseFunctionNameReference,
-                                shape59),
+                                shape58),
                             fnMissingElement: rules.MissingNameReference),
                         missing31),
                     RequiredToken(")"),
@@ -5681,7 +5757,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.TableNameReference,
-                                shape9),
+                                shape3),
                             fnMissingElement: rules.MissingNameReference),
                         missing31),
                     RequiredToken(")"),
@@ -5723,11 +5799,62 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.ColumnNameReference,
-                                shape15),
+                                shape14),
                             fnMissingElement: rules.MissingNameReference),
                         missing31),
                     RequiredToken(")"),
-                    shape80));
+                    shape79));
+
+            var DropExtentTagsFromTable2 = Command("DropExtentTagsFromTable", 
+                Custom(
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    rules.TableNameReference,
+                    Token("extent"),
+                    Token("tags"),
+                    Token("("),
+                    Required(
+                        OneOrMoreCommaList(
+                            Custom(
+                                rules.StringLiteral,
+                                shape0),
+                            fnMissingElement: rules.MissingStringLiteral),
+                        missing0),
+                    RequiredToken(")"),
+                    Optional(
+                        fragment4),
+                    new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)}));
+
+            var DropExtentTagsFromQuery3 = Command("DropExtentTagsFromQuery", 
+                Custom(
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    RequiredToken("extent"),
+                    RequiredToken("tags"),
+                    Required(
+                        fragment5,
+                        missing1),
+                    new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD("csl")}));
+
+            var DropExtentTagsFromQuery4 = Command("DropExtentTagsFromQuery", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("drop", CompletionKind.CommandPrefix),
+                        Token("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("extent"),
+                        RequiredToken("tags"),
+                        RequiredToken("with"),
+                        RequiredToken("("),
+                        ZeroOrMoreCommaList(
+                            fragment0),
+                        RequiredToken(")"),
+                        Required(
+                            fragment5,
+                            missing1)}
+                    ,
+                    new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(CompletionHint.None), CD(), CD("csl")}));
 
             var DropTable = Command("DropTable", 
                 Custom(
@@ -6123,30 +6250,6 @@ namespace Kusto.Language.Parsing
                         Token("move", CompletionKind.CommandPrefix),
                         Optional(Token("async")),
                         Token("extents"),
-                        Token("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.AnyGuidLiteralOrString,
-                                    shape0),
-                                fnMissingElement: rules.MissingValue),
-                            missing53),
-                        RequiredToken(")"),
-                        RequiredToken("from"),
-                        RequiredToken("table"),
-                        Required(rules.TableNameReference, rules.MissingNameReference),
-                        RequiredToken("to"),
-                        RequiredToken("table"),
-                        Required(rules.TableNameReference, rules.MissingNameReference)}
-                    ,
-                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(), CD(), CD("SourceTableName", CompletionHint.Table), CD(), CD(), CD("DestinationTableName", CompletionHint.Table)}));
-
-            var MoveExtentsFrom2 = Command("MoveExtentsFrom", 
-                Custom(
-                    new Parser<LexicalToken>[] {
-                        Token("move", CompletionKind.CommandPrefix),
-                        Optional(Token("async")),
-                        Token("extents"),
                         Token("all"),
                         RequiredToken("from"),
                         RequiredToken("table"),
@@ -6157,6 +6260,32 @@ namespace Kusto.Language.Parsing
                     ,
                     new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD(), CD("SourceTableName", CompletionHint.Table), CD(), CD(), CD("DestinationTableName", CompletionHint.Table)}));
 
+            var MoveExtentsFrom2 = Command("MoveExtentsFrom", 
+                Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("move", CompletionKind.CommandPrefix),
+                        Optional(Token("async")),
+                        Token("extents"),
+                        Token("from"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("to"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        Optional(
+                            fragment4),
+                        RequiredToken("("),
+                        Required(
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.AnyGuidLiteralOrString,
+                                    shape0),
+                                fnMissingElement: rules.MissingValue),
+                            missing53),
+                        RequiredToken(")")}
+                    ,
+                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("SourceTableName", CompletionHint.Table), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(isOptional: true), CD(), CD(CompletionHint.Literal), CD()}));
+
             var MoveExtentsQuery = Command("MoveExtentsQuery", 
                 Custom(
                     Token("move", CompletionKind.CommandPrefix),
@@ -6165,9 +6294,11 @@ namespace Kusto.Language.Parsing
                     RequiredToken("to"),
                     RequiredToken("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
+                    Optional(
+                        fragment4),
                     RequiredToken("<|"),
                     Required(rules.QueryInput, rules.MissingExpression),
-                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(), CD("Query", CompletionHint.Tabular)}));
+                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(isOptional: true), CD(), CD("Query", CompletionHint.Tabular)}));
 
             var PatchExtentCorruptedDatetime = Command("PatchExtentCorruptedDatetime", 
                 Custom(
@@ -6246,6 +6377,8 @@ namespace Kusto.Language.Parsing
                         RequiredToken("in"),
                         RequiredToken("table"),
                         Required(rules.TableNameReference, rules.MissingNameReference),
+                        Optional(
+                            fragment4),
                         RequiredToken("<|"),
                         RequiredToken("{"),
                         Required(rules.QueryInput, rules.MissingExpression),
@@ -6255,7 +6388,7 @@ namespace Kusto.Language.Parsing
                         Required(rules.QueryInput, rules.MissingExpression),
                         RequiredToken("}")}
                     ,
-                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(), CD(), CD("ExtentsToDropQuery", CompletionHint.Tabular), CD(), CD(), CD(), CD("ExtentsToMoveQuery", CompletionHint.Tabular), CD()}));
+                    new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(isOptional: true), CD(), CD(), CD("ExtentsToDropQuery", CompletionHint.Tabular), CD(), CD(), CD(), CD("ExtentsToMoveQuery", CompletionHint.Tabular), CD()}));
 
             var SetOrAppendTable = Command("SetOrAppendTable", 
                 Custom(
@@ -8217,7 +8350,7 @@ namespace Kusto.Language.Parsing
                                     Custom(
                                         rules.AnyGuidLiteralOrString,
                                         shape0)),
-                                shape43),
+                                shape42),
                             Custom(
                                 Token("operation"),
                                 Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
@@ -8583,7 +8716,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("as"),
                     RequiredToken("json"),
                     Optional(
-                        fragment24),
+                        fragment4),
                     new [] {CD(), CD(), CD("functionName", CompletionHint.Function), CD(), CD(), CD(), CD(isOptional: true)}));
 
             var ShowFunction = Command("ShowFunction", 
@@ -8594,7 +8727,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("with"),
                     RequiredToken("("),
                     ZeroOrMoreCommaList(
-                        fragment14),
+                        fragment0),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(), CD(), CD(CompletionHint.None), CD()}));
 
@@ -8724,7 +8857,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.MaterializedViewNameReference,
-                                shape7),
+                                shape10),
                             fnMissingElement: rules.MissingNameReference),
                         missing31),
                     RequiredToken(")"),
@@ -8848,7 +8981,7 @@ namespace Kusto.Language.Parsing
                     Token("schema"),
                     RequiredToken("as"),
                     RequiredToken("json"),
-                    shape61));
+                    shape60));
 
             var ShowMaterializedViewStatistics = Command("ShowMaterializedViewStatistics", 
                 Custom(
@@ -8943,7 +9076,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("queryexecution"),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD("queryText")}));
 
@@ -8963,7 +9096,7 @@ namespace Kusto.Language.Parsing
                                             If(Not(Token("reconstructCsl")), rules.NameDeclaration)),
                                         RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
-                                        shape60)),
+                                        shape59)),
                                 missing68),
                             RequiredToken(")"))),
                     RequiredToken("<|"),
@@ -8976,7 +9109,7 @@ namespace Kusto.Language.Parsing
                     Token("query"),
                     RequiredToken("call-tree"),
                     Required(
-                        fragment1,
+                        fragment5,
                         missing1),
                     new [] {CD(), CD(), CD(), CD("queryText")}));
 
@@ -9050,7 +9183,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("stored_query_results"),
                     Optional(
-                        fragment24),
+                        fragment4),
                     shape89));
 
             var StoredQueryResultShowSchema = Command("StoredQueryResultShowSchema", 
@@ -9081,7 +9214,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("details"),
@@ -9096,7 +9229,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.TableNameReference,
-                                shape9),
+                                shape3),
                             fnMissingElement: rules.MissingNameReference),
                         Token(")"),
                         Token("extents"),
@@ -9120,7 +9253,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.TableNameReference,
-                                shape9),
+                                shape3),
                             fnMissingElement: rules.MissingNameReference),
                         Token(")"),
                         Token("extents"),
@@ -9147,7 +9280,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.TableNameReference,
-                                shape9),
+                                shape3),
                             fnMissingElement: rules.MissingNameReference),
                         Token(")"),
                         Token("extents"),
@@ -9171,7 +9304,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("extents"),
@@ -9188,7 +9321,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreCommaList(
                         Custom(
                             rules.TableNameReference,
-                            shape9),
+                            shape3),
                         fnMissingElement: rules.MissingNameReference),
                     Token(")"),
                     Token("shard-groups").Hide(),
@@ -9204,7 +9337,7 @@ namespace Kusto.Language.Parsing
                         OneOrMoreCommaList(
                             Custom(
                                 rules.TableNameReference,
-                                shape9),
+                                shape3),
                             fnMissingElement: rules.MissingNameReference),
                         missing31),
                     RequiredToken(")"),
@@ -9686,7 +9819,7 @@ namespace Kusto.Language.Parsing
                         missing62),
                     Optional(
                         fragment39),
-                    shape74));
+                    shape73));
 
             var ShowTableExtents8 = Command("ShowTableExtents", 
                 Custom(
@@ -9800,7 +9933,7 @@ namespace Kusto.Language.Parsing
                     Token("mirroring"),
                     RequiredToken("operations"),
                     RequiredToken("status"),
-                    shape64));
+                    shape63));
 
             var ShowTablePolicyIngestionTime = Command("ShowTablePolicyIngestionTime", 
                 Custom(
@@ -9851,7 +9984,7 @@ namespace Kusto.Language.Parsing
                     Token("schema"),
                     RequiredToken("as"),
                     RequiredToken("json"),
-                    shape64));
+                    shape63));
 
             var TableShardGroupsStatisticsShow = Command("TableShardGroupsStatisticsShow", 
                 Custom(
@@ -9941,7 +10074,7 @@ namespace Kusto.Language.Parsing
                             rules.AnyGuidLiteralOrString,
                             shape0)),
                     Optional(
-                        fragment24),
+                        fragment4),
                     new [] {CD(), CD("tableName", CompletionHint.None), CD(), CD(), CD(CompletionHint.Literal, isOptional: true), CD(isOptional: true)}));
 
             var ShowExtentDetails2 = Command("ShowExtentDetails", 
@@ -9952,7 +10085,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("with"),
                     RequiredToken("("),
                     ZeroOrMoreCommaList(
-                        fragment14),
+                        fragment0),
                     RequiredToken(")"),
                     new [] {CD(), CD("tableName", CompletionHint.None), CD(), CD(), CD(), CD(CompletionHint.None), CD()}));
 
@@ -9977,7 +10110,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken("with"),
                     RequiredToken("("),
                     ZeroOrMoreCommaList(
-                        fragment14),
+                        fragment0),
                     RequiredToken(")"),
                     new [] {CD(), CD("tableName", CompletionHint.None), CD(), CD("eid", CompletionHint.Literal), CD(), CD(), CD(CompletionHint.None), CD()}));
 
@@ -10053,7 +10186,6 @@ namespace Kusto.Language.Parsing
                 AlterMergeDatabasePolicyShardsGrouping,
                 AlterMergeDatabasePolicyStreamingIngestion,
                 AlterMergeEntityGroup,
-                AlterMergeExtentTagsFromQuery2,
                 AlterMergeMaterializedViewPolicyMerge,
                 AlterMergeMaterializedViewPolicyPartitioning,
                 AlterMergeMaterializedViewPolicyRetention,
@@ -10068,6 +10200,7 @@ namespace Kusto.Language.Parsing
                 AlterMergeTablePolicyUpdate,
                 AlterMergeTable,
                 AlterMergeTableColumnDocStrings,
+                AlterMergeExtentTagsFromQuery2,
                 AlterMergeTableIngestionMapping,
                 AlterMergeTablePolicyMirroringWithJson,
                 AlterMergeWorkloadGroup,
@@ -10116,7 +10249,6 @@ namespace Kusto.Language.Parsing
                 AlterExtentContainersDrop,
                 AlterExtentContainersRecycle,
                 AlterExtentContainersSet,
-                AlterExtentTagsFromQuery2,
                 AlterStorageExternalTable,
                 AlterStorageExternalTable2,
                 AlterSqlExternalTable,
@@ -10190,6 +10322,7 @@ namespace Kusto.Language.Parsing
                 AlterTableColumnsPolicyEncoding,
                 AlterTableColumnStatistics,
                 AlterTableDocString,
+                AlterExtentTagsFromQuery2,
                 AlterTableFolder,
                 AlterTableIngestionMapping,
                 AlterTablePolicyIngestionTime,
@@ -10313,6 +10446,9 @@ namespace Kusto.Language.Parsing
                 DisablePlugin,
                 DropPretendExtentsByProperties,
                 DropEmptyExtentContainers,
+                DropExtentTagsFromTable,
+                DropExtentTagsFromQuery,
+                DropExtentTagsFromQuery2,
                 DropBasicAuthUser,
                 DropClusterRole,
                 DropClusterRole2,
@@ -10367,6 +10503,9 @@ namespace Kusto.Language.Parsing
                 DropTables,
                 DropTableRole,
                 DropTableColumns,
+                DropExtentTagsFromTable2,
+                DropExtentTagsFromQuery3,
+                DropExtentTagsFromQuery4,
                 DropTable,
                 DropTableIngestionMapping,
                 DropTableRole2,

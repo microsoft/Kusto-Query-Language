@@ -1567,6 +1567,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterMergeExtentTagsFromQuery =
             new CommandSymbol("AlterMergeExtentTagsFromQuery", _schema18);
 
+        public static readonly CommandSymbol DropExtentTagsFromQuery =
+            new CommandSymbol("DropExtentTagsFromQuery", _schema18);
+
+        public static readonly CommandSymbol DropExtentTagsFromTable =
+            new CommandSymbol("DropExtentTagsFromTable", _schema18);
+
         public static readonly CommandSymbol DropExtentTagsRetention =
             new CommandSymbol("DropExtentTagsRetention", _schema18);
 
@@ -2278,6 +2284,8 @@ namespace Kusto.Language
             AttachExtentsIntoTableByMetadata,
             AlterExtentTagsFromQuery,
             AlterMergeExtentTagsFromQuery,
+            DropExtentTagsFromQuery,
+            DropExtentTagsFromTable,
             DropExtentTagsRetention,
             MergeDatabaseShardGroups,
             AlterFollowerClusterConfiguration,
