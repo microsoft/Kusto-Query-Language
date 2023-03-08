@@ -1514,7 +1514,6 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.FloatKeyword:
                 case SyntaxKind.Int16Keyword:
                 case SyntaxKind.Int32Keyword:
-                case SyntaxKind.SingleKeyword:
                 case SyntaxKind.UIntKeyword:
                 case SyntaxKind.UInt16Keyword:
                 case SyntaxKind.UInt32Keyword:

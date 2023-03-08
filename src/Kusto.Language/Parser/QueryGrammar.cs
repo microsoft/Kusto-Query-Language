@@ -410,7 +410,6 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
                     Token(SyntaxKind.RealKeyword, CompletionKind.ScalarType),
                     Token(SyntaxKind.DecimalKeyword, CompletionKind.ScalarType),
-                    Token(SyntaxKind.SingleKeyword).Hide(),
                     Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType),
                     Token(SyntaxKind.TimeKeyword).Hide(),
                     Token(SyntaxKind.TimespanKeyword, CompletionKind.ScalarType),

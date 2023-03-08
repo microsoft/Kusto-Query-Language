@@ -52,7 +52,7 @@ namespace Kusto.Language
             "long",
             "real",
             "decimal",
-            "single",
+            "string",
             "time",
             "timespan",
             "uint",

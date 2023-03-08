@@ -866,7 +866,8 @@ namespace Kusto.Language.Parsing
                     }
                 }
                 else if (ch == quote
-                    || TextFacts.IsLineBreakStart(ch))
+                    || ch == '\r'       // string only sees \r & \n as line breaks
+                    || ch == '\n')
                 {
                     break;
                 }

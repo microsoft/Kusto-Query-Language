@@ -323,7 +323,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.LongKeyword, "long", isType: true),
                 new SyntaxData(SyntaxKind.RealKeyword, "real", isType: true),
                 new SyntaxData(SyntaxKind.DecimalKeyword, "decimal", isType: true),
-                new SyntaxData(SyntaxKind.SingleKeyword, "single", isType: true),
                 new SyntaxData(SyntaxKind.StringKeyword, "string", isType: true),
                 new SyntaxData(SyntaxKind.TimeKeyword, "time", isType: true),
                 new SyntaxData(SyntaxKind.TimespanKeyword, "timespan", isType: true),

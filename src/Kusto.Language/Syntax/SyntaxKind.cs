@@ -290,7 +290,6 @@
         Int64Keyword,
         ULongKeyword,
         UInt64Keyword,
-        SingleKeyword,
         FloatKeyword,
         RealKeyword,
         DecimalKeyword,
