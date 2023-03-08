@@ -56,15 +56,17 @@ namespace Kusto.Language
         private static readonly string _schema26 = "(Name: string, SourceTable: string, Query: string, MaterializedTo: datetime, LastRun: datetime, LastRunResult: string, IsHealthy: bool, IsEnabled: bool, Folder: string, DocString: string, AutoUpdateSchema: bool, EffectiveDateTime: datetime, Lookback:timespan)";
         private static readonly string _schema27 = "(MaterializedViewName: string, DatabaseName: string, Folder: string, DocString: string, TotalExtents: long, TotalExtentSize: real, TotalOriginalSize: real, TotalRowCount: long, HotExtents: long, HotExtentSize: real, HotOriginalSize: real, HotRowCount: long, AuthorizedPrincipals: string, RetentionPolicy: string, CachingPolicy: string, ShardingPolicy: string, MergePolicy: string, MinExtentsCreationTime: datetime, MaxExtentsCreationTime: datetime)";
         private static readonly string _schema28 = "(TableName: string, IsEnabled: bool, ExportProperties: string, ManagedIdentityIdentifier: string, IsExportRunning: bool, LastExportStartTime: datetime, LastExportResult: string, LastExportedDataTime: datetime)";
-        private static readonly string _schema29 = "(Event: string, EventTimestamp: datetime, Database: string, EntityName: string, UpdatedEntityName: string, EntityVersion: string, EntityContainerName: string, OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, User: string, OriginalEntityVersion: string)";
-        private static readonly string _schema30 = "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)";
-        private static readonly string _schema31 = "(ExtentId: guid, DatabaseName: string, TableName: string, ExtentMetadata: string)";
-        private static readonly string _schema32 = "(TableId: guid, long ShardGroupCount: long, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long)";
-        private static readonly string _schema33 = "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
-        private static readonly string _schema34 = "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
-        private static readonly string _schema35 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
-        private static readonly string _schema36 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
-        private static readonly string _schema37 = "(Name: string, Entities: string)";
+        private static readonly string _schema29 = "(Timestamp: datetime, ExternalTableName: string, Path: string, NumRecords: long)";
+        private static readonly string _schema30 = "(Timestamp: datetime, OperationId: string, Name: string, LastSuccessRun: datetime, FailureKind: string, Details: string)";
+        private static readonly string _schema31 = "(Event: string, EventTimestamp: datetime, Database: string, EntityName: string, UpdatedEntityName: string, EntityVersion: string, EntityContainerName: string, OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, User: string, OriginalEntityVersion: string)";
+        private static readonly string _schema32 = "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)";
+        private static readonly string _schema33 = "(ExtentId: guid, DatabaseName: string, TableName: string, ExtentMetadata: string)";
+        private static readonly string _schema34 = "(TableId: guid, long ShardGroupCount: long, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long)";
+        private static readonly string _schema35 = "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
+        private static readonly string _schema36 = "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
+        private static readonly string _schema37 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
+        private static readonly string _schema38 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
+        private static readonly string _schema39 = "(Name: string, Entities: string)";
 
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol("ShowDatabase", _schema0);
@@ -1108,14 +1110,10 @@ namespace Kusto.Language
             new CommandSymbol("ShowClusterPendingContinuousExports", _schema25);
 
         public static readonly CommandSymbol ShowContinuousExportExportedArtifacts =
-            new CommandSymbol(
-                "ShowContinuousExportExportedArtifacts",
-                "(Timestamp: datetime, ExternalTableName: string, Path: string, NumRecords: long)");
+            new CommandSymbol("ShowContinuousExportExportedArtifacts", _schema29);
 
         public static readonly CommandSymbol ShowContinuousExportFailures =
-            new CommandSymbol(
-                "ShowContinuousExportFailures",
-                "(Timestamp: datetime, OperationId: string, Name: string, LastSuccessRun: datetime, FailureKind: string, Details: string)");
+            new CommandSymbol("ShowContinuousExportFailures", _schema30);
 
         public static readonly CommandSymbol SetContinuousExportCursor =
             new CommandSymbol("SetContinuousExportCursor", _schema18);
@@ -1160,7 +1158,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowMaterializedViewPolicyPartitioning", _schema20);
 
         public static readonly CommandSymbol ShowMaterializedViewExtents =
-            new CommandSymbol("ShowMaterializedViewExtents", _schema30);
+            new CommandSymbol("ShowMaterializedViewExtents", _schema32);
 
         public static readonly CommandSymbol AlterMaterializedView =
             new CommandSymbol("AlterMaterializedView", _schema26);
@@ -1202,7 +1200,7 @@ namespace Kusto.Language
             new CommandSymbol("AlterMaterializedViewAutoUpdateSchema", _schema26);
 
         public static readonly CommandSymbol ClearMaterializedViewData =
-            new CommandSymbol("ClearMaterializedViewData", _schema35);
+            new CommandSymbol("ClearMaterializedViewData", _schema37);
 
         public static readonly CommandSymbol SetMaterializedViewCursor =
             new CommandSymbol("SetMaterializedViewCursor", _schema18);
@@ -1212,6 +1210,12 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowDatabaseMirroringOperationsStatus =
             new CommandSymbol("ShowDatabaseMirroringOperationsStatus", _schema28);
+
+        public static readonly CommandSymbol ShowTableMirroringOperationsExportedArtifacts =
+            new CommandSymbol("ShowTableMirroringOperationsExportedArtifacts", _schema29);
+
+        public static readonly CommandSymbol ShowTableMirroringOperationsFailures =
+            new CommandSymbol("ShowTableMirroringOperationsFailures", _schema30);
 
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol(
@@ -1242,13 +1246,13 @@ namespace Kusto.Language
             new CommandSymbol("ShowOperationDetails", _schema18);
 
         public static readonly CommandSymbol ShowJournal =
-            new CommandSymbol("ShowJournal", _schema29);
+            new CommandSymbol("ShowJournal", _schema31);
 
         public static readonly CommandSymbol ShowDatabaseJournal =
-            new CommandSymbol("ShowDatabaseJournal", _schema29);
+            new CommandSymbol("ShowDatabaseJournal", _schema31);
 
         public static readonly CommandSymbol ShowClusterJournal =
-            new CommandSymbol("ShowClusterJournal", _schema29);
+            new CommandSymbol("ShowClusterJournal", _schema31);
 
         public static readonly CommandSymbol ShowQueries =
             new CommandSymbol(
@@ -1303,16 +1307,16 @@ namespace Kusto.Language
                 "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
 
         public static readonly CommandSymbol ShowClusterExtents =
-            new CommandSymbol("ShowClusterExtents", _schema30);
+            new CommandSymbol("ShowClusterExtents", _schema32);
 
         public static readonly CommandSymbol ShowClusterExtentsMetadata =
-            new CommandSymbol("ShowClusterExtentsMetadata", _schema31);
+            new CommandSymbol("ShowClusterExtentsMetadata", _schema33);
 
         public static readonly CommandSymbol ShowDatabaseExtents =
-            new CommandSymbol("ShowDatabaseExtents", _schema30);
+            new CommandSymbol("ShowDatabaseExtents", _schema32);
 
         public static readonly CommandSymbol ShowDatabaseExtentsMetadata =
-            new CommandSymbol("ShowDatabaseExtentsMetadata", _schema31);
+            new CommandSymbol("ShowDatabaseExtentsMetadata", _schema33);
 
         public static readonly CommandSymbol ShowDatabaseExtentTagsStatistics =
             new CommandSymbol(
@@ -1325,16 +1329,16 @@ namespace Kusto.Language
                 "(TableName: string, PartitioningPolicy: dynamic, TotalRowCount: long, PartitionedRowCount: long, PartitionedRowsPercentage: double)");
 
         public static readonly CommandSymbol ShowTableExtents =
-            new CommandSymbol("ShowTableExtents", _schema30);
+            new CommandSymbol("ShowTableExtents", _schema32);
 
         public static readonly CommandSymbol ShowTableExtentsMetadata =
-            new CommandSymbol("ShowTableExtentsMetadata", _schema31);
+            new CommandSymbol("ShowTableExtentsMetadata", _schema33);
 
         public static readonly CommandSymbol TableShardsGroupShow =
-            new CommandSymbol("TableShardsGroupShow", _schema30);
+            new CommandSymbol("TableShardsGroupShow", _schema32);
 
         public static readonly CommandSymbol TableShardsGroupMetadataShow =
-            new CommandSymbol("TableShardsGroupMetadataShow", _schema31);
+            new CommandSymbol("TableShardsGroupMetadataShow", _schema33);
 
         public static readonly CommandSymbol TableShardGroupsShow =
             new CommandSymbol(
@@ -1342,40 +1346,40 @@ namespace Kusto.Language
                 "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
 
         public static readonly CommandSymbol TableShardGroupsStatisticsShow =
-            new CommandSymbol("TableShardGroupsStatisticsShow", _schema32);
+            new CommandSymbol("TableShardGroupsStatisticsShow", _schema34);
 
         public static readonly CommandSymbol TablesShardGroupsStatisticsShow =
-            new CommandSymbol("TablesShardGroupsStatisticsShow", _schema32);
+            new CommandSymbol("TablesShardGroupsStatisticsShow", _schema34);
 
         public static readonly CommandSymbol DatabaseShardGroupsStatisticsShow =
-            new CommandSymbol("DatabaseShardGroupsStatisticsShow", _schema32);
+            new CommandSymbol("DatabaseShardGroupsStatisticsShow", _schema34);
 
         public static readonly CommandSymbol MergeExtents =
-            new CommandSymbol("MergeExtents", _schema33);
+            new CommandSymbol("MergeExtents", _schema35);
 
         public static readonly CommandSymbol MergeExtentsDryrun =
-            new CommandSymbol("MergeExtentsDryrun", _schema33);
+            new CommandSymbol("MergeExtentsDryrun", _schema35);
 
         public static readonly CommandSymbol MoveExtentsFrom =
-            new CommandSymbol("MoveExtentsFrom", _schema34);
+            new CommandSymbol("MoveExtentsFrom", _schema36);
 
         public static readonly CommandSymbol MoveExtentsQuery =
-            new CommandSymbol("MoveExtentsQuery", _schema34);
+            new CommandSymbol("MoveExtentsQuery", _schema36);
 
         public static readonly CommandSymbol ReplaceExtents =
-            new CommandSymbol("ReplaceExtents", _schema34);
+            new CommandSymbol("ReplaceExtents", _schema36);
 
         public static readonly CommandSymbol DropExtent =
-            new CommandSymbol("DropExtent", _schema35);
+            new CommandSymbol("DropExtent", _schema37);
 
         public static readonly CommandSymbol DropExtents =
-            new CommandSymbol("DropExtents", _schema35);
+            new CommandSymbol("DropExtents", _schema37);
 
         public static readonly CommandSymbol DropExtentsPartitionMetadata =
             new CommandSymbol("DropExtentsPartitionMetadata", _schema18);
 
         public static readonly CommandSymbol DropPretendExtentsByProperties =
-            new CommandSymbol("DropPretendExtentsByProperties", _schema35);
+            new CommandSymbol("DropPretendExtentsByProperties", _schema37);
 
         public static readonly CommandSymbol ShowVersion =
             new CommandSymbol(
@@ -1399,7 +1403,7 @@ namespace Kusto.Language
             new CommandSymbol("StoredQueryResultSetOrReplace", _schema18);
 
         public static readonly CommandSymbol StoredQueryResultsShow =
-            new CommandSymbol("StoredQueryResultsShow", _schema36);
+            new CommandSymbol("StoredQueryResultsShow", _schema38);
 
         public static readonly CommandSymbol StoredQueryResultShowSchema =
             new CommandSymbol(
@@ -1407,10 +1411,10 @@ namespace Kusto.Language
                 "(StoredQueryResult:string, Schema:string)");
 
         public static readonly CommandSymbol StoredQueryResultDrop =
-            new CommandSymbol("StoredQueryResultDrop", _schema36);
+            new CommandSymbol("StoredQueryResultDrop", _schema38);
 
         public static readonly CommandSymbol StoredQueryResultsDrop =
-            new CommandSymbol("StoredQueryResultsDrop", _schema36);
+            new CommandSymbol("StoredQueryResultsDrop", _schema38);
 
         public static readonly CommandSymbol ShowCertificates =
             new CommandSymbol("ShowCertificates", _schema18);
@@ -1487,22 +1491,22 @@ namespace Kusto.Language
             new CommandSymbol("ShowClusterStorageKeysHash", _schema18);
 
         public static readonly CommandSymbol CreateEntityGroupCommand =
-            new CommandSymbol("CreateEntityGroupCommand", _schema37);
+            new CommandSymbol("CreateEntityGroupCommand", _schema39);
 
         public static readonly CommandSymbol AlterEntityGroup =
-            new CommandSymbol("AlterEntityGroup", _schema37);
+            new CommandSymbol("AlterEntityGroup", _schema39);
 
         public static readonly CommandSymbol AlterMergeEntityGroup =
-            new CommandSymbol("AlterMergeEntityGroup", _schema37);
+            new CommandSymbol("AlterMergeEntityGroup", _schema39);
 
         public static readonly CommandSymbol DropEntityGroup =
-            new CommandSymbol("DropEntityGroup", _schema37);
+            new CommandSymbol("DropEntityGroup", _schema39);
 
         public static readonly CommandSymbol ShowEntityGroup =
-            new CommandSymbol("ShowEntityGroup", _schema37);
+            new CommandSymbol("ShowEntityGroup", _schema39);
 
         public static readonly CommandSymbol ShowEntityGroups =
-            new CommandSymbol("ShowEntityGroups", _schema37);
+            new CommandSymbol("ShowEntityGroups", _schema39);
 
         public static readonly CommandSymbol AlterExtentContainersAdd =
             new CommandSymbol("AlterExtentContainersAdd", _schema18);
@@ -2180,6 +2184,8 @@ namespace Kusto.Language
             SetMaterializedViewCursor,
             ShowTableMirroringOperationsStatus,
             ShowDatabaseMirroringOperationsStatus,
+            ShowTableMirroringOperationsExportedArtifacts,
+            ShowTableMirroringOperationsFailures,
             ShowCluster,
             ShowClusterDetails,
             ShowDiagnostics,

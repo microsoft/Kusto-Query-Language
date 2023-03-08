@@ -5795,20 +5795,26 @@ namespace Kusto.Language.Parsing
 
         private bool ScanFunctionDeclarationStart(int offset = 0)
         {
-            switch (PeekToken(offset).Kind)
+            // optional view keyword
+            var token = PeekToken(offset);
+            if (token.Kind == SyntaxKind.ViewKeyword)
             {
-                case SyntaxKind.ViewKeyword:
-                    return true;
-                case SyntaxKind.OpenParenToken:
-                    var nextKind = PeekToken(offset + 1).Kind;
-                    if (nextKind == SyntaxKind.CloseParenToken
-                        || nextKind == SyntaxKind.AsteriskToken)
-                        return true;
-                    var nameLen = ScanExtendedName(offset + 1);
-                    return nameLen > 0 && PeekToken(offset + 1 + nameLen).Kind == SyntaxKind.ColonToken;
-                default:
-                    return false;
+                offset++;
+                token = PeekToken(offset);
             }
+
+            // if this looks like parameter list then it must be a function declaration
+            if (token.Kind == SyntaxKind.OpenParenToken)
+            {
+                var nextKind = PeekToken(offset + 1).Kind;
+                if (nextKind == SyntaxKind.CloseParenToken
+                    || nextKind == SyntaxKind.AsteriskToken)
+                    return true;
+                var nameLen = ScanExtendedName(offset + 1);
+                return nameLen > 0 && PeekToken(offset + 1 + nameLen).Kind == SyntaxKind.ColonToken;
+            }
+
+            return false;
         }
 
         private static FunctionParameters CreateMissingFunctionParameters() =>

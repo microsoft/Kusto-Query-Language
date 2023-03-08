@@ -6698,7 +6698,7 @@ namespace Kusto.Language.Parsing
                                 First(
                                     rules.WildcardedNameDeclaration,
                                     rules.DatabaseNameReference),
-                                shape10),
+                                shape6),
                             fnMissingElement: rules.MissingNameDeclaration),
                         missing27),
                     RequiredToken(")"),
@@ -7105,7 +7105,7 @@ namespace Kusto.Language.Parsing
                                         First(
                                             rules.WildcardedNameDeclaration,
                                             rules.DatabaseNameReference),
-                                        shape10),
+                                        shape6),
                                     fnMissingElement: rules.MissingNameDeclaration),
                                 missing27),
                             new [] {CD(), CD(CompletionHint.None)})),
@@ -7395,7 +7395,7 @@ namespace Kusto.Language.Parsing
                                 First(
                                     rules.WildcardedNameDeclaration,
                                     rules.DatabaseNameReference),
-                                shape10),
+                                shape6),
                             fnMissingElement: rules.MissingNameDeclaration),
                         missing27),
                     RequiredToken(")"),
@@ -9925,6 +9925,26 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true), CD(), CD("MappingName", CompletionHint.Literal)}));
 
+            var ShowTableMirroringOperationsExportedArtifacts = Command("ShowTableMirroringOperationsExportedArtifacts", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("mirroring"),
+                    Token("operations"),
+                    Token("exported-artifacts"),
+                    shape63));
+
+            var ShowTableMirroringOperationsFailures = Command("ShowTableMirroringOperationsFailures", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("mirroring"),
+                    Token("operations"),
+                    Token("failures"),
+                    shape63));
+
             var ShowTableMirroringOperationsStatus = Command("ShowTableMirroringOperationsStatus", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -10868,6 +10888,8 @@ namespace Kusto.Language.Parsing
                 ShowTableExtents12,
                 ShowTableIngestionMappings,
                 ShowTableIngestionMapping,
+                ShowTableMirroringOperationsExportedArtifacts,
+                ShowTableMirroringOperationsFailures,
                 ShowTableMirroringOperationsStatus,
                 ShowTablePolicyIngestionTime,
                 ShowTablePolicyRowLevelSecurity,
