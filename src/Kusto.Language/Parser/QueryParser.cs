@@ -5046,9 +5046,10 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var leadingComma = ParseToken(SyntaxKind.CommaToken); // optional
                 var props = ParseQueryOperatorParameterCommaList(s_renderOperatorWithPropertiesMap, namesAllowed: AllowedNameKind.DeclaredOnly);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new RenderWithClause(keyword, open, props, close);
+                return new RenderWithClause(keyword, open, leadingComma, props, close);
             }
 
             return null;

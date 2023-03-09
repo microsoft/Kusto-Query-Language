@@ -10770,6 +10770,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OpenParen { get; }
         
+        public SyntaxToken LeadingComma { get; }
+        
         public SyntaxList<SeparatedElement<NamedParameter>> Properties { get; }
         
         public SyntaxToken CloseParen { get; }
@@ -10777,16 +10779,17 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="RenderWithClause"/>.
         /// </summary>
-        internal RenderWithClause(SyntaxToken withKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<NamedParameter>> properties, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal RenderWithClause(SyntaxToken withKeyword, SyntaxToken openParen, SyntaxToken leadingComma, SyntaxList<SeparatedElement<NamedParameter>> properties, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.WithKeyword = Attach(withKeyword);
             this.OpenParen = Attach(openParen);
+            this.LeadingComma = Attach(leadingComma, optional: true);
             this.Properties = Attach(properties);
             this.CloseParen = Attach(closeParen);
             this.Init();
         }
         
-        public override int ChildCount => 4;
+        public override int ChildCount => 5;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -10794,8 +10797,9 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return WithKeyword;
                 case 1: return OpenParen;
-                case 2: return Properties;
-                case 3: return CloseParen;
+                case 2: return LeadingComma;
+                case 3: return Properties;
+                case 4: return CloseParen;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10806,9 +10810,21 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return nameof(WithKeyword);
                 case 1: return nameof(OpenParen);
-                case 2: return nameof(Properties);
-                case 3: return nameof(CloseParen);
+                case 2: return nameof(LeadingComma);
+                case 3: return nameof(Properties);
+                case 4: return nameof(CloseParen);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 2:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -10818,8 +10834,9 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.None;
-                case 3: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.None;
+                case 4: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10835,7 +10852,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RenderWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new RenderWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxToken)LeadingComma?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RenderWithClause */

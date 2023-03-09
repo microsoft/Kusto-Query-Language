@@ -2549,11 +2549,12 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.WithKeyword).Hide(),
                     RequiredToken(SyntaxKind.OpenParenToken),
+                    Optional(Token(SyntaxKind.CommaToken)),
                     QueryParameterCommaList(QueryOperatorParameters.RenderWithProperties),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
-                    (withKeyword, openParen, properties, closeParen) =>
-                        new RenderWithClause(withKeyword, openParen, properties, closeParen));
+                    (withKeyword, openParen, leadingComma, properties, closeParen) =>
+                        new RenderWithClause(withKeyword, openParen, leadingComma, properties, closeParen));
 
             var RenderChartType =
                 First(
