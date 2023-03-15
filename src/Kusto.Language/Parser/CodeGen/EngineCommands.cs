@@ -1772,6 +1772,11 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTablesColumnStatistics =
             new CommandSymbol("ShowTablesColumnStatistics", _schema18);
 
+        public static readonly CommandSymbol ShowTableDataStatistics =
+            new CommandSymbol(
+                "ShowTableDataStatistics",
+                "(ColumnName: string, ColumnType: string, ColumnId: guid, OriginalSize: long, ExtentSize: long, CompressionRatio: real, DataCompressionSize: long, SharedIndexSize: long, IndexSize: long, IndexSizePercent: real,StorageEngineVersion: string, PresentRowCount: long, DeletedRowCount: long, SamplePercent: real, IncludeColdData: bool)");
+
         public static readonly CommandSymbol ShowTableUsageStatistics =
             new CommandSymbol("ShowTableUsageStatistics", _schema18);
 
@@ -2353,6 +2358,7 @@ namespace Kusto.Language
             ShowTableRowStores,
             ShowTableRowStoreSealInfo,
             ShowTablesColumnStatistics,
+            ShowTableDataStatistics,
             ShowTableUsageStatistics,
             ShowTableUsageStatisticsDetails,
             CreateTempStorage,

@@ -191,7 +191,8 @@ namespace Kusto.Language.Parsing
             var shape148 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD(), CD(isOptional: true)};
             var shape149 = new [] {CD(), CD(), CD("viewName", CompletionHint.MaterializedView), CD()};
             var shape150 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
-            var shape151 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
+            var shape151 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)};
+            var shape152 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
 
             Func<Source<LexicalToken>, int, SyntaxElement> missing0 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing1 = (source, start) => (SyntaxElement)new CustomNode(shape15, CreateMissingToken("<|"), rules.MissingExpression(source, start));
@@ -262,7 +263,8 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing66 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing67 = (source, start) => (SyntaxElement)new CustomNode(shape120, CreateMissingToken("databases"), (SyntaxElement)new CustomNode(shape143, CreateMissingToken("("), SyntaxList<SeparatedElement<SyntaxElement>>.Empty(), CreateMissingToken(")")));
             Func<Source<LexicalToken>, int, SyntaxElement> missing68 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("reconstructCsl"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing69 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing69 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape59, CreateMissingToken("from"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing70 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("corrupted"), CreateMissingToken("datetime"));
 
             var fragment0 = Custom(
                     rules.NameDeclaration,
@@ -5904,7 +5906,7 @@ namespace Kusto.Language.Parsing
                     Token("drop", CompletionKind.CommandPrefix),
                     Token("table"),
                     Required(rules.TableNameReference, rules.MissingNameReference),
-                    shape151));
+                    shape152));
 
             var DropTempStorage = Command("DropTempStorage", 
                 Custom(
@@ -9668,6 +9670,33 @@ namespace Kusto.Language.Parsing
                     Token("cslschema"),
                     shape113));
 
+            var ShowTableDataStatistics = Command("ShowTableDataStatistics", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
+                    Token("data"),
+                    RequiredToken("statistics"),
+                    Optional(
+                        Custom(
+                            Token("with"),
+                            RequiredToken("("),
+                            Required(
+                                OneOrMoreCommaList(
+                                    Custom(
+                                        First(
+                                            Token("from"),
+                                            Token("samplepercent"),
+                                            Token("scope"),
+                                            Token("to"),
+                                            If(Not(And(Token("from", "samplepercent", "scope", "to"))), rules.NameDeclaration)),
+                                        RequiredToken("="),
+                                        Required(rules.Value, rules.MissingValue),
+                                        shape59)),
+                                missing69),
+                            RequiredToken(")"))),
+                    shape151));
+
             var ShowTableDetails = Command("ShowTableDetails", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -9787,7 +9816,7 @@ namespace Kusto.Language.Parsing
                     Token("extents"),
                     Required(
                         fragment51,
-                        missing69).Hide(),
+                        missing70).Hide(),
                     new [] {CD(), CD(), CD(CompletionHint.Table), CD(), CD()}));
 
             var ShowTableExtentsMetadata3 = Command("ShowTableExtentsMetadata", 
@@ -9994,7 +10023,7 @@ namespace Kusto.Language.Parsing
                         missing63),
                     Optional(
                         fragment3),
-                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)}));
+                    shape151));
 
             var ShowTableSchemaAsJson = Command("ShowTableSchemaAsJson", 
                 Custom(
@@ -10049,7 +10078,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
                     Required(If(Not(And(Token("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
-                    shape151));
+                    shape152));
 
             var ShowTcpConnections = Command("ShowTcpConnections", 
                 Custom(
@@ -10871,6 +10900,7 @@ namespace Kusto.Language.Parsing
                 ShowTableColumnsClassification,
                 ShowTableColumnStatitics,
                 ShowTableCslSchema,
+                ShowTableDataStatistics,
                 ShowTableDetails,
                 ShowTableDimensions,
                 ShowTableExtentsMetadata2,
