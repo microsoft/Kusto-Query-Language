@@ -330,16 +330,6 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
-
-        public static readonly FunctionSymbol DateTimeToLocaleString =
-            new FunctionSymbol("datetime_to_locale_string",
-                ScalarTypes.String,
-                new Parameter("date", ScalarTypes.DateTime),
-                new Parameter("culture", ScalarTypes.String),
-                new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.FirstArgument)
-            .ConstantFoldable()
-            .Hide();
         #endregion
 
         #region type conversion functions
@@ -1622,7 +1612,7 @@ namespace Kusto.Language
                 new Parameter("keys", ScalarTypes.Dynamic),
                 new Parameter("values", ScalarTypes.Dynamic))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable().Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol JaccardIndex =
             new FunctionSymbol("jaccard_index", ScalarTypes.Dynamic,
@@ -1685,13 +1675,15 @@ namespace Kusto.Language
             new FunctionSymbol("tdigest_isvalid", ScalarTypes.Bool,
                 new Parameter("digest", ScalarTypes.Dynamic),
                 new Parameter("value", ParameterTypeKind.Scalar))
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
 
         public static readonly FunctionSymbol HllIsValid =
             new FunctionSymbol("hll_isvalid", ScalarTypes.Bool,
                 new Parameter("hll", ScalarTypes.Dynamic),
                 new Parameter("value", ParameterTypeKind.Scalar))
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
 
         public static readonly FunctionSymbol TDigestMerge =
             new FunctionSymbol("tdigest_merge", ScalarTypes.Dynamic,
@@ -2985,7 +2977,6 @@ namespace Kusto.Language
             Translate,
             MakeString_Deprecated,
             UnicodeCodepointsToString,
-            DateTimeToLocaleString,
             DatetimeLocalToUtc,
             DatetimeUtcToLocal,
             DateTimeListTimezones,
