@@ -1563,8 +1563,7 @@ namespace Kusto.Language
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat, argumentKind: ArgumentKind.Column))
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol PackAll =
             new FunctionSymbol("pack_all", ScalarTypes.Dynamic,
