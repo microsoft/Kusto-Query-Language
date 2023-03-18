@@ -133,6 +133,7 @@
         LookupKeyword,
 
         MacroExpandKeyword,
+        MacroExpandScopeReferenceName,
         MakeGraphKeyword,
         MakeSeriesKeyword,
         MatchesRegexKeyword,

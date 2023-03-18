@@ -579,6 +579,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.LookupOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.JoinOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.JoinOnClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MacroExpandScopeReferenceName, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.JoinWhereClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.MacroExpandOperator, "", SyntaxCategory.Node),

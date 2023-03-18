@@ -8398,6 +8398,73 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class SummarizeOperator */
     
+    #region class MacroExpandScopeReferenceName
+    public sealed partial class MacroExpandScopeReferenceName : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MacroExpandScopeReferenceName;
+        
+        public SyntaxToken AsKeyword { get; }
+        
+        public Name EntityGroupReferenceName { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MacroExpandScopeReferenceName"/>.
+        /// </summary>
+        internal MacroExpandScopeReferenceName(SyntaxToken asKeyword, Name entityGroupReferenceName, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.AsKeyword = Attach(asKeyword);
+            this.EntityGroupReferenceName = Attach(entityGroupReferenceName);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return AsKeyword;
+                case 1: return EntityGroupReferenceName;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(AsKeyword);
+                case 1: return nameof(EntityGroupReferenceName);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMacroExpandScopeReferenceName(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMacroExpandScopeReferenceName(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MacroExpandScopeReferenceName((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (Name)EntityGroupReferenceName?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MacroExpandScopeReferenceName */
+    
     #region class MacroExpandOperator
     public sealed partial class MacroExpandOperator : QueryOperator
     {
@@ -8409,9 +8476,7 @@ namespace Kusto.Language.Syntax
         
         public Expression EntityGroup { get; }
         
-        public SyntaxToken AsKeyword { get; }
-        
-        public Name EntityGroupReferenceName { get; }
+        public MacroExpandScopeReferenceName ScopeReferenceName { get; }
         
         public SyntaxToken OpenParen { get; }
         
@@ -8422,20 +8487,19 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="MacroExpandOperator"/>.
         /// </summary>
-        internal MacroExpandOperator(SyntaxToken macroExpandKeyword, SyntaxList<NamedParameter> parameters, Expression entityGroup, SyntaxToken asKeyword, Name entityGroupReferenceName, SyntaxToken openParen, SyntaxList<SeparatedElement<Statement>> statementList, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal MacroExpandOperator(SyntaxToken macroExpandKeyword, SyntaxList<NamedParameter> parameters, Expression entityGroup, MacroExpandScopeReferenceName scopeReferenceName, SyntaxToken openParen, SyntaxList<SeparatedElement<Statement>> statementList, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.MacroExpandKeyword = Attach(macroExpandKeyword);
             this.Parameters = Attach(parameters);
             this.EntityGroup = Attach(entityGroup);
-            this.AsKeyword = Attach(asKeyword);
-            this.EntityGroupReferenceName = Attach(entityGroupReferenceName);
+            this.ScopeReferenceName = Attach(scopeReferenceName, optional: true);
             this.OpenParen = Attach(openParen);
             this.StatementList = Attach(statementList);
             this.CloseParen = Attach(closeParen);
             this.Init();
         }
         
-        public override int ChildCount => 8;
+        public override int ChildCount => 7;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -8444,11 +8508,10 @@ namespace Kusto.Language.Syntax
                 case 0: return MacroExpandKeyword;
                 case 1: return Parameters;
                 case 2: return EntityGroup;
-                case 3: return AsKeyword;
-                case 4: return EntityGroupReferenceName;
-                case 5: return OpenParen;
-                case 6: return StatementList;
-                case 7: return CloseParen;
+                case 3: return ScopeReferenceName;
+                case 4: return OpenParen;
+                case 5: return StatementList;
+                case 6: return CloseParen;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -8460,12 +8523,22 @@ namespace Kusto.Language.Syntax
                 case 0: return nameof(MacroExpandKeyword);
                 case 1: return nameof(Parameters);
                 case 2: return nameof(EntityGroup);
-                case 3: return nameof(AsKeyword);
-                case 4: return nameof(EntityGroupReferenceName);
-                case 5: return nameof(OpenParen);
-                case 6: return nameof(StatementList);
-                case 7: return nameof(CloseParen);
+                case 3: return nameof(ScopeReferenceName);
+                case 4: return nameof(OpenParen);
+                case 5: return nameof(StatementList);
+                case 6: return nameof(CloseParen);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -8476,11 +8549,10 @@ namespace Kusto.Language.Syntax
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.None;
                 case 2: return CompletionHint.EntityGroup;
-                case 3: return CompletionHint.Keyword;
-                case 4: return CompletionHint.None;
-                case 5: return CompletionHint.Keyword;
-                case 6: return CompletionHint.Tabular;
-                case 7: return CompletionHint.Keyword;
+                case 3: return CompletionHint.None;
+                case 4: return CompletionHint.Keyword;
+                case 5: return CompletionHint.Tabular;
+                case 6: return CompletionHint.Keyword;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -8496,7 +8568,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MacroExpandOperator((SyntaxToken)MacroExpandKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)EntityGroup?.Clone(includeDiagnostics), (SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (Name)EntityGroupReferenceName?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Statement>>)StatementList?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new MacroExpandOperator((SyntaxToken)MacroExpandKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (Expression)EntityGroup?.Clone(includeDiagnostics), (MacroExpandScopeReferenceName)ScopeReferenceName?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Statement>>)StatementList?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MacroExpandOperator */
@@ -14888,6 +14960,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitReduceByOperator(ReduceByOperator node);
         public abstract void VisitReduceByWithClause(ReduceByWithClause node);
         public abstract void VisitSummarizeOperator(SummarizeOperator node);
+        public abstract void VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node);
         public abstract void VisitMacroExpandOperator(MacroExpandOperator node);
         public abstract void VisitSummarizeByClause(SummarizeByClause node);
         public abstract void VisitDistinctOperator(DistinctOperator node);
@@ -15396,6 +15469,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitMacroExpandOperator(MacroExpandOperator node)
         {
             this.DefaultVisit(node);
@@ -15824,6 +15901,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitReduceByOperator(ReduceByOperator node);
         public abstract TResult VisitReduceByWithClause(ReduceByWithClause node);
         public abstract TResult VisitSummarizeOperator(SummarizeOperator node);
+        public abstract TResult VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node);
         public abstract TResult VisitMacroExpandOperator(MacroExpandOperator node);
         public abstract TResult VisitSummarizeByClause(SummarizeByClause node);
         public abstract TResult VisitDistinctOperator(DistinctOperator node);
@@ -16329,6 +16407,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitSummarizeOperator(SummarizeOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node)
         {
             return this.DefaultVisit(node);
         }

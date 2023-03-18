@@ -5109,8 +5109,25 @@ namespace Kusto.Language.Parsing
 #region MacroExpand
         private Expression ParseEntityGroupReference()
         {
-            return ParseEntityGroup()
-                ?? ParseUnnamedExpression();
+            var explicitEntityGroup = ParseEntityGroup();
+            if (explicitEntityGroup != null)
+            {
+                return explicitEntityGroup;
+            }
+
+            return ParseNameReference();
+        }
+
+        private MacroExpandScopeReferenceName OptionalParseMacroExpandScopeReferenceName()
+        {
+            var asKeyword = ParseToken(SyntaxKind.AsKeyword);
+            if (asKeyword != null)
+            {
+                var scopeReferenceName = ParseIdentifierName();
+                return new MacroExpandScopeReferenceName(asKeyword, scopeReferenceName);
+            }
+
+            return null;
         }
 
         private MacroExpandOperator ParseMacroExpand()
@@ -5120,12 +5137,11 @@ namespace Kusto.Language.Parsing
             {
                 var parameters = ParseQueryOperatorParameterList(s_unionOperatorParameterMap, equalsNeeded: true);
                 var entityGroupExpression = ParseEntityGroupReference() ?? CreateMissingExpression();
-                var asKeyword = ParseRequiredToken(SyntaxKind.AsKeyword);
-                var entityGroupReferenceName = ParseIdentifierName() ?? CreateMissingIdentifierName();
+                var macroExpandScopeReferenceName = OptionalParseMacroExpandScopeReferenceName();
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
                 var queryBlocksStatementList = ParseQueryBlockStatementList();
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new MacroExpandOperator(keyword, parameters, entityGroupExpression, asKeyword, entityGroupReferenceName, open, queryBlocksStatementList, close);
+                return new MacroExpandOperator(keyword, parameters, entityGroupExpression, macroExpandScopeReferenceName, open, queryBlocksStatementList, close);
             }
 
             return null;

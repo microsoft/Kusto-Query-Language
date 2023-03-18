@@ -242,11 +242,21 @@ namespace Kusto.Language.Binding
                 node.Parameters.Accept(this);
                 node.EntityGroup.Accept(this);
 
-                if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol
-                    && !string.IsNullOrEmpty(node.EntityGroupReferenceName.SimpleName))
+                if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol)
                 {
-                    var scopeSymbol = GetMacroExpandScope(node.EntityGroupReferenceName.SimpleName, egSymbol);
-                    _binder._localScope.AddSymbol(new VariableSymbol(node.EntityGroupReferenceName.SimpleName, scopeSymbol));
+                    if (node.ScopeReferenceName != null
+                        && !string.IsNullOrEmpty(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName))
+                    {
+                        var scopeSymbol = GetMacroExpandScope(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName, egSymbol);
+                        _binder._localScope.AddSymbol(new VariableSymbol(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName, scopeSymbol));
+                    }
+                    else if (node.EntityGroup is NameReference entityGroupName)
+                    {
+                        // it is an implicit syntax of macro-expand
+                        var egName = entityGroupName.SimpleName;
+                        var scopeSymbol = GetMacroExpandScope(egName, egSymbol);
+                        _binder._localScope.AddSymbol(new VariableSymbol(egName, scopeSymbol));
+                    }
                 }
 
                 node.StatementList.Accept(this);

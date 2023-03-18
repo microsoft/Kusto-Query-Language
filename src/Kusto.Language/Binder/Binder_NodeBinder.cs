@@ -3313,6 +3313,11 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitMacroExpandOperator(MacroExpandOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();

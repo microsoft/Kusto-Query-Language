@@ -2612,18 +2612,23 @@ namespace Kusto.Language.Parsing
                 (keyword, open, entitiesList, close) =>
                     (Expression)(new EntityGroup(keyword, open, entitiesList, close)));
 
+            var macroExpandScopeReferenceName =
+                Rule(
+                    RequiredToken(SyntaxKind.AsKeyword),
+                    First(IdentifierName),
+                    (asKeyword, macroReferenceName) => new MacroExpandScopeReferenceName(asKeyword, macroReferenceName));
+
             var MacroExpandOperator =
                 Rule(
                     Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
-                    First(EntityGroup, UnnamedExpression),
-                    RequiredToken(SyntaxKind.AsKeyword),
-                    First(IdentifierName),
+                    First(EntityGroup, SimpleNameReference),
+                    Optional(macroExpandScopeReferenceName),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     MacroExpandSubQuery,
                     RequiredToken(SyntaxKind.CloseParenToken),
-                    (macroExpandKeyword, parameters, entitygroup, asKeyword, identifierName, openParen, statementList, closeParen) =>
-                        (QueryOperator)new MacroExpandOperator(macroExpandKeyword, parameters, entitygroup, asKeyword, identifierName, openParen, statementList, closeParen))
+                    (macroExpandKeyword, parameters, entitygroup, scopeReferenceName, openParen, statementList, closeParen) =>
+                        (QueryOperator)new MacroExpandOperator(macroExpandKeyword, parameters, entitygroup, scopeReferenceName, openParen, statementList, closeParen))
                 .WithTag("<macro-expand>");
 
             var MakeGraphTableAndKeyClause =
