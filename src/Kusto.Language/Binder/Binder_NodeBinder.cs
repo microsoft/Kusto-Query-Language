@@ -3504,9 +3504,104 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
-#endregion
+            public override SemanticInfo VisitGraphToTableOperator(GraphToTableOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
 
-#region clauses 
+                    TypeSymbol symbol = null;
+
+                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    if (leftGraph == null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphToTableKeyword));
+                    }
+
+                    if (node.OutputClause.Count == 1)
+                    {
+                        var clause = node.OutputClause[0].Element;
+                        if (clause.EntityKeyword.Kind == SyntaxKind.GraphEdgesKeyword)
+                        {
+                            symbol = VisitGraphToTableEdgesClause(clause, leftGraph);
+                        }
+                        else if (clause.EntityKeyword.Kind == SyntaxKind.NodesKeyword)
+                        {
+                            symbol = VisitGraphToTableNodesClause(clause, leftGraph);
+                        }
+                        
+                        return new SemanticInfo(symbol, diagnostics);
+                    }
+                    else if (node.OutputClause.Count == 2)
+                    {
+
+                        var nodesTableClause = node.OutputClause.FirstOrDefault(oc => oc.Element.EntityKeyword.Kind == SyntaxKind.NodesKeyword)?.Element;
+                        var edgesTableClause = node.OutputClause.FirstOrDefault(oc => oc.Element.EntityKeyword.Kind == SyntaxKind.GraphEdgesKeyword)?.Element;
+                        if (nodesTableClause == null || edgesTableClause == null)
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetMissingGraphEntityType().WithLocation(node.OutputClause));
+                            return new SemanticInfo(diagnostics);
+                        }
+
+                        var nodesTable = VisitGraphToTableEdgesClause(nodesTableClause, leftGraph);
+                        var edgesTable = VisitGraphToTableEdgesClause(edgesTableClause, leftGraph);
+                        return new SemanticInfo(new GroupSymbol(nodesTable, edgesTable), diagnostics);
+                    }
+
+                    diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities().WithLocation(node.OutputClause));
+                    return new SemanticInfo(diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            private TableSymbol VisitGraphToTableEdgesClause(GraphToTableOutputClause node, GraphSymbol graph)
+            {
+                var edgeShape = graph.EdgeShape.WithName(node.AsClause?.Name?.SimpleName);
+                var withSourceId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithSourceId);
+                if (!string.IsNullOrEmpty(withSourceId))
+                {
+                    edgeShape.AddColumns(new ColumnSymbol(withSourceId, ScalarTypes.Long));
+                }
+
+                var withTargetId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithTargetId);
+                if (!string.IsNullOrEmpty(withTargetId))
+                {
+                    edgeShape.AddColumns(new ColumnSymbol(withTargetId, ScalarTypes.Long));
+                }
+
+                return edgeShape;
+            }
+
+            private TableSymbol VisitGraphToTableNodesClause(GraphToTableOutputClause node, GraphSymbol graph)
+            {
+                var nodesShape = graph.NodeShape.WithName(node.AsClause?.Name?.SimpleName);
+                var withNodeId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithNodeId);
+                if (!string.IsNullOrEmpty(withNodeId))
+                {
+                    nodesShape.AddColumns(new ColumnSymbol(withNodeId, ScalarTypes.Long));
+                }
+
+                return nodesShape;
+            }
+
+            public override SemanticInfo VisitGraphToTableOutputClause(GraphToTableOutputClause node)
+            {
+                // handled by containing node
+                return null;
+            }
+
+            public override SemanticInfo VisitGraphToTableAsClause(GraphToTableAsClause node)
+            {
+                // handled by containing node
+                return null;
+            }
+            #endregion
+
+            #region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
             // typically handled by the parent node's visit method.
 

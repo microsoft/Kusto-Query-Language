@@ -94,6 +94,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DescKeyword, "desc"),
                 new SyntaxData(SyntaxKind.DistinctKeyword, "distinct"),
 
+                new SyntaxData(SyntaxKind.GraphEdgesKeyword, "edges", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.EarliestKeyword, "earliest"),
                 new SyntaxData(SyntaxKind.EndsWithKeyword, "endswith", opKind: OperatorKind.EndsWith),
                 new SyntaxData(SyntaxKind.EndsWithCsKeyword, "endswith_cs", opKind: OperatorKind.EndsWithCs),
@@ -120,6 +121,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GrannyDescKeyword, "granny-desc"),
                 new SyntaxData(SyntaxKind.GraphMatchKeyword, "graph-match"),
                 new SyntaxData(SyntaxKind.GraphMergeKeyword, "graph-merge"),
+                new SyntaxData(SyntaxKind.GraphToTableKeyword, "graph-to-table"),
 
                 new SyntaxData(SyntaxKind.HardDeleteKeyword, "harddelete"),
                 new SyntaxData(SyntaxKind.HardRetentionKeyword, "hardretention"),
@@ -178,6 +180,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MvDashExpandKeyword, "mv-expand"),
                 new SyntaxData(SyntaxKind.MvExpandKeyword, "mvexpand"),
 
+                new SyntaxData(SyntaxKind.NodesKeyword, "nodes", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.NoOptimizationKeyword, "nooptimization"),
                 new SyntaxData(SyntaxKind.NotBetweenKeyword, "!between", opKind: OperatorKind.NotBetween),
                 new SyntaxData(SyntaxKind.NotContainsKeyword, "notcontains", opKind: OperatorKind.NotContains),
@@ -573,6 +576,10 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdgeRange, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.GraphMergeOperator, "", SyntaxCategory.Node),
+
+                new SyntaxData(SyntaxKind.GraphToTableOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphToTableOutputClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphToTableAsClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.InvokeOperator, "", SyntaxCategory.Node),
 

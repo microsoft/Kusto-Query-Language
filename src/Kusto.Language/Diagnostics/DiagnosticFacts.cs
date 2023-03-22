@@ -841,6 +841,16 @@ namespace Kusto.Language
             return new Diagnostic("KS228", $"The name '{name}' needs to be bracketed as {KustoFacts.GetBracketedName(name)} to be used in this context.");
         }
 
+        public static Diagnostic GetMissingGraphEntityType()
+        {
+            return new Diagnostic("KS229", "Missing graph entity type, Expected values [nodes, edges].");
+        }
+
+        public static Diagnostic GetIncorrectNumberOfOutputGraphEntities()
+        {
+            return new Diagnostic("KS230", "The operator support exactly one or two entities.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

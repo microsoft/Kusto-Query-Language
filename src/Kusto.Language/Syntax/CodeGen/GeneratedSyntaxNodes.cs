@@ -10289,6 +10289,225 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class GraphMergeOperator */
     
+    #region class GraphToTableOperator
+    public sealed partial class GraphToTableOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphToTableOperator;
+        
+        public SyntaxToken GraphToTableKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<GraphToTableOutputClause>> OutputClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphToTableOperator"/>.
+        /// </summary>
+        internal GraphToTableOperator(SyntaxToken graphToTableKeyword, SyntaxList<SeparatedElement<GraphToTableOutputClause>> outputClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphToTableKeyword = Attach(graphToTableKeyword);
+            this.OutputClause = Attach(outputClause);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphToTableKeyword;
+                case 1: return OutputClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphToTableKeyword);
+                case 1: return nameof(OutputClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphToTableOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphToTableOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphToTableOperator((SyntaxToken)GraphToTableKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<GraphToTableOutputClause>>)OutputClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphToTableOperator */
+    
+    #region class GraphToTableOutputClause
+    public sealed partial class GraphToTableOutputClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphToTableOutputClause;
+        
+        public SyntaxToken EntityKeyword { get; }
+        
+        public GraphToTableAsClause AsClause { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphToTableOutputClause"/>.
+        /// </summary>
+        internal GraphToTableOutputClause(SyntaxToken entityKeyword, GraphToTableAsClause asClause, SyntaxList<NamedParameter> parameters, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.EntityKeyword = Attach(entityKeyword);
+            this.AsClause = Attach(asClause, optional: true);
+            this.Parameters = Attach(parameters, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return EntityKeyword;
+                case 1: return AsClause;
+                case 2: return Parameters;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(EntityKeyword);
+                case 1: return nameof(AsClause);
+                case 2: return nameof(Parameters);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                case 2:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.None;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphToTableOutputClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphToTableOutputClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphToTableOutputClause((SyntaxToken)EntityKeyword?.Clone(includeDiagnostics), (GraphToTableAsClause)AsClause?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphToTableOutputClause */
+    
+    #region class GraphToTableAsClause
+    public sealed partial class GraphToTableAsClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphToTableAsClause;
+        
+        public SyntaxToken AsKeyword { get; }
+        
+        public NameDeclaration Name { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphToTableAsClause"/>.
+        /// </summary>
+        internal GraphToTableAsClause(SyntaxToken asKeyword, NameDeclaration name, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.AsKeyword = Attach(asKeyword);
+            this.Name = Attach(name);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return AsKeyword;
+                case 1: return Name;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(AsKeyword);
+                case 1: return nameof(Name);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Declaration;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphToTableAsClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphToTableAsClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphToTableAsClause((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphToTableAsClause */
+    
     #region class GraphMatchOperator
     public sealed partial class GraphMatchOperator : QueryOperator
     {
@@ -14984,6 +15203,9 @@ namespace Kusto.Language.Syntax
         public abstract void VisitMakeGraphWithClause(MakeGraphWithClause node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract void VisitGraphMergeOperator(GraphMergeOperator node);
+        public abstract void VisitGraphToTableOperator(GraphToTableOperator node);
+        public abstract void VisitGraphToTableOutputClause(GraphToTableOutputClause node);
+        public abstract void VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract void VisitGraphMatchOperator(GraphMatchOperator node);
         public abstract void VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract void VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
@@ -15565,6 +15787,18 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitGraphToTableOperator(GraphToTableOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphToTableOutputClause(GraphToTableOutputClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphToTableAsClause(GraphToTableAsClause node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitGraphMatchOperator(GraphMatchOperator node)
         {
             this.DefaultVisit(node);
@@ -15925,6 +16159,9 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitMakeGraphWithClause(MakeGraphWithClause node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract TResult VisitGraphMergeOperator(GraphMergeOperator node);
+        public abstract TResult VisitGraphToTableOperator(GraphToTableOperator node);
+        public abstract TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node);
+        public abstract TResult VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract TResult VisitGraphMatchOperator(GraphMatchOperator node);
         public abstract TResult VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract TResult VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
@@ -16503,6 +16740,18 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitGraphMergeOperator(GraphMergeOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphToTableOperator(GraphToTableOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphToTableAsClause(GraphToTableAsClause node)
         {
             return this.DefaultVisit(node);
         }

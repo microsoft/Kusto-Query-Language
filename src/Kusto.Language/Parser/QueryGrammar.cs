@@ -2674,6 +2674,42 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new GraphMergeOperator(keyword, graph, onClause))
                 .WithTag("<graph-merge>");
 
+            var GraphToTableAsClause =
+                Rule(
+                    Token(SyntaxKind.AsKeyword, CompletionKind.Keyword, CompletionPriority.Low),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
+                    (keyword, name) => new GraphToTableAsClause(keyword, name))
+                .WithTag("<graph-to-table-as-clause>");
+
+            var GraphToTableNodesClause =
+                Rule(
+                    Token(SyntaxKind.NodesKeyword, CompletionKind.Keyword),
+                    Optional(GraphToTableAsClause),
+                    QueryParameterList(QueryOperatorParameters.GraphToTableNodesParameters, equalsNeeded: true),
+                    (keyword, asClause, parameters) => new GraphToTableOutputClause(keyword, asClause, parameters))
+                .WithTag("graph-to-table-output-nodes-clause");
+    
+            var GraphToTableEdgesClause =
+                Rule(
+                     Token(SyntaxKind.GraphEdgesKeyword, CompletionKind.Keyword),
+                     Optional(GraphToTableAsClause),
+                     QueryParameterList(QueryOperatorParameters.GraphToTableEdgesParameters, equalsNeeded: true),
+                     (keyword, asClause, parameters) => new GraphToTableOutputClause(keyword, asClause, parameters))
+                .WithTag("graph-to-table-output-edges-clause");
+
+            var GraphToTableOutputClause =
+                First(
+                    GraphToTableNodesClause,
+                    GraphToTableEdgesClause
+                ).WithTag("<graph-to-table-output-clause>");
+
+            var GraphToTableOperator =
+                Rule(
+                    Token(SyntaxKind.GraphToTableKeyword).Hide(),
+                    CommaList(GraphToTableOutputClause, CreateMissingGraphToTableOutputClause, oneOrMore: true),
+                    (keyword, outputClause) => (QueryOperator)new GraphToTableOperator(keyword, outputClause))
+                .WithTag("<graph-to-table>");
+                
             var WhereClause =
                 Rule(
                     Token(SyntaxKind.WhereKeyword),
@@ -2774,6 +2810,7 @@ namespace Kusto.Language.Parsing
                     GetSchemaOperator,
                     GraphMatchOperator,
                     GraphMergeOperaor,
+                    GraphToTableOperator,
                     InvokeOperator,
                     JoinOperator,
                     LookupOperator,
@@ -3480,6 +3517,12 @@ namespace Kusto.Language.Parsing
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
+
+        private static GraphToTableOutputClause CreateMissingGraphToTableOutputClause(Source<LexicalToken> source, int start) =>
+            new GraphToTableOutputClause(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                new GraphToTableAsClause(SyntaxToken.Missing(SyntaxKind.OpenParenToken), CreateMissingNameDeclaration()),
+                null);
 
         private static TopNestedClause CreateMissingTopNestedClause(Source<LexicalToken> source = null, int start = 0) =>
             new TopNestedClause(

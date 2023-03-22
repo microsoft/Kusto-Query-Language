@@ -256,6 +256,21 @@ namespace Kusto.Language
             new QueryOperatorParameter("characters", QueryOperatorParameterValueKind.StringLiteral)
         }.ToReadOnly();
 
+        public static readonly QueryOperatorParameter WithSourceId = new QueryOperatorParameter("with_source_id", QueryOperatorParameterValueKind.NameDeclaration);
+        public static readonly QueryOperatorParameter WithTargetId = new QueryOperatorParameter("with_target_id", QueryOperatorParameterValueKind.NameDeclaration);
+        public static readonly QueryOperatorParameter WithNodeId = new QueryOperatorParameter("with_node_id", QueryOperatorParameterValueKind.NameDeclaration);
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphToTableEdgesParameters = new[]
+        {
+            WithSourceId,
+            WithTargetId
+        }.ToReadOnly();
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphToTableNodesParameters = new[]
+        {
+            WithNodeId
+        }.ToReadOnly();
+
         public static readonly QueryOperatorParameter RenderKind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartKinds);
 

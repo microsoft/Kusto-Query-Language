@@ -5233,10 +5233,10 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-#endregion
+        #endregion
 
 
-#region GraphMergeOperator
+#region GraphMatchOperator
         private GraphMatchOperator ParseGraphMatchOperator()
         {
             if (ParseToken(SyntaxKind.GraphMatchKeyword) is SyntaxToken keyword)
@@ -5351,11 +5351,73 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
+        #endregion
+
+#region GraphToTableOperator
+        private GraphToTableOperator ParseGraphToTableOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphToTableKeyword) is SyntaxToken keyword)
+            {
+                var outputClause = ParseCommaList(FnParseGraphToTableOutputClause, CreateGraphToTableOutputClause, oneOrMore: true);
+                return new GraphToTableOperator(keyword, outputClause);
+            }
+
+            return null;
+        }
+
+        private static Func<GraphToTableOutputClause> CreateGraphToTableOutputClause = () =>
+            new GraphToTableOutputClause(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                new GraphToTableAsClause(
+                    SyntaxToken.Missing(SyntaxKind.OpenParenToken), 
+                    new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken))
+                ),
+                null,
+                new Diagnostic[] { DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities() }
+            );
+
+        private static Func<QueryParser, GraphToTableOutputClause> FnParseGraphToTableOutputClause =
+            qp => qp.ParseGraphToTableOutputClause();
+
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphToTableOperatorEdgesParameterMap =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphToTableEdgesParameters);
+
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphToTableOperatorNodesParameterMap =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphToTableNodesParameters);
+
+        private GraphToTableOutputClause ParseGraphToTableOutputClause()
+        {
+            var keywordToken = ParseToken(SyntaxKind.NodesKeyword) ?? ParseToken(SyntaxKind.GraphEdgesKeyword);
+            if (!(keywordToken is SyntaxToken keyword))
+            {
+                return null;
+            }
+
+            var queryParams = keyword.Kind == SyntaxKind.NodesKeyword
+                ? s_graphToTableOperatorNodesParameterMap
+                : s_graphToTableOperatorEdgesParameterMap;
+            
+            var asClause = ParseGraphToTableAsClause();
+            var parameters = ParseQueryOperatorParameterList(queryParams, equalsNeeded: true);
+            
+            return new GraphToTableOutputClause(keyword, asClause, parameters);
+        }
+
+        private GraphToTableAsClause ParseGraphToTableAsClause()
+        {
+            if (ParseToken(SyntaxKind.AsKeyword) is SyntaxToken keyword)
+            {
+                var name = ParseNameDeclaration() ?? CreateMissingNameDeclaration();
+                return new GraphToTableAsClause(keyword, name);
+            }
+
+            return null;
+        }
 #endregion
 
-#endregion
+        #endregion
 
-#region Query Expressions
+        #region Query Expressions
 
         /// <summary>
         /// Query operators that can occur at the start of a query
@@ -5486,6 +5548,8 @@ namespace Kusto.Language.Parsing
                     return ParseGraphMergeOperator();
                 case SyntaxKind.GraphMatchKeyword:
                     return ParseGraphMatchOperator();
+                case SyntaxKind.GraphToTableKeyword: 
+                    return ParseGraphToTableOperator();
                 case SyntaxKind.AssertSchemaKeyword:
                     return ParseAssertSchemaOperator();
                 default:
@@ -5550,6 +5614,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.GetSchemaKeyword:
                 case SyntaxKind.GraphMatchKeyword:
                 case SyntaxKind.GraphMergeKeyword:
+                case SyntaxKind.GraphToTableKeyword:
                 case SyntaxKind.InvokeKeyword:
                 case SyntaxKind.JoinKeyword:
                 case SyntaxKind.LimitKeyword:

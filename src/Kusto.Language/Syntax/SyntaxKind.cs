@@ -88,6 +88,8 @@
         GrannyDescKeyword,
         GraphMatchKeyword,
         GraphMergeKeyword,
+        GraphToTableKeyword,
+        GraphEdgesKeyword,
 
         HardDeleteKeyword,
         HardRetentionKeyword,
@@ -147,6 +149,7 @@
         MvDashExpandKeyword,
         MvExpandKeyword,
 
+        NodesKeyword,
         NoOptimizationKeyword,
         NotBetweenKeyword,
         NotContainsKeyword,
@@ -540,6 +543,9 @@
         GraphMatchPatternEdge,
         GraphMatchPatternEdgeRange,
         GraphMergeOperator,
+        GraphToTableOperator,
+        GraphToTableOutputClause,
+        GraphToTableAsClause,
 
         InvokeOperator,
 
