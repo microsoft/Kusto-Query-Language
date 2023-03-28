@@ -166,7 +166,7 @@ namespace Kusto.Language.Symbols
             : this(
                   name, 
                   ParameterTypeKind.Declared, 
-                  new[] { type.CheckArgumentNull(nameof(type)) }, 
+                  new[] { type ?? ScalarTypes.Unknown }, 
                   argumentKind, 
                   values, 
                   examples, 
@@ -208,7 +208,7 @@ namespace Kusto.Language.Symbols
         }
 
         public Parameter(string name, TypeSymbol type)
-            : this(name, ParameterTypeKind.Declared, new[] { type }, ArgumentKind.Expression, null, null, false, null, 1, 1, null, null)
+            : this(name, ParameterTypeKind.Declared, new[] { type ?? ScalarTypes.Unknown }, ArgumentKind.Expression, null, null, false, null, 1, 1, null, null)
         {
         }
 
