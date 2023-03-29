@@ -1816,6 +1816,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol PatchExtentCorruptedDatetime =
             new CommandSymbol("PatchExtentCorruptedDatetime", _schema18);
 
+        public static readonly CommandSymbol ClearClusterCredStoreCache =
+            new CommandSymbol("ClearClusterCredStoreCache", _schema18);
+
         public static readonly IReadOnlyList<CommandSymbol> All = new CommandSymbol[]
         {
             ShowDatabase,
@@ -2371,7 +2374,8 @@ namespace Kusto.Language
             DisableDatabaseStreamingIngestionMaintenanceMode,
             ShowQueryCallTree,
             ShowExtentCorruptedDatetime,
-            PatchExtentCorruptedDatetime
+            PatchExtentCorruptedDatetime,
+            ClearClusterCredStoreCache
         };
     }
 }

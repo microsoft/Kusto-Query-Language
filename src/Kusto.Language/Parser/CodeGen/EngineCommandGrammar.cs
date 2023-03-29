@@ -3620,6 +3620,13 @@ namespace Kusto.Language.Parsing
                     ,
                     new [] {CD(), CD(), CD(), CD(), CD(), CD("clusterName", CompletionHint.Literal), CD(), CD(), CD(), CD(), CD("databaseName", CompletionHint.Literal), CD()}));
 
+            var ClearClusterCredStoreCache = Command("ClearClusterCredStoreCache", 
+                Custom(
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("cache"),
+                    RequiredToken("credstore")));
+
             var ClearDatabaseCacheQueryResults = Command("ClearDatabaseCacheQueryResults", 
                 Custom(
                     Token("clear", CompletionKind.CommandPrefix),
@@ -10570,6 +10577,7 @@ namespace Kusto.Language.Parsing
                 CleanDatabaseExtentContainers,
                 ClearTableData,
                 ClearRemoteClusterDatabaseSchema,
+                ClearClusterCredStoreCache,
                 ClearDatabaseCacheQueryResults,
                 ClearDatabaseCacheQueryWeakConsistency,
                 ClearDatabaseCacheStreamingIngestionSchema,
