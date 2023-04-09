@@ -1306,6 +1306,11 @@ namespace Kusto.Language
                 "ShowIngestionFailures",
                 "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
 
+        public static readonly CommandSymbol ShowDatabaseKeyVaultSecrets =
+            new CommandSymbol(
+                "ShowDatabaseKeyVaultSecrets",
+                "(KeyVaultSecretId: string)");
+
         public static readonly CommandSymbol ShowClusterExtents =
             new CommandSymbol("ShowClusterExtents", _schema32);
 
@@ -2215,6 +2220,7 @@ namespace Kusto.Language
             ShowCommands,
             ShowCommandsAndQueries,
             ShowIngestionFailures,
+            ShowDatabaseKeyVaultSecrets,
             ShowClusterExtents,
             ShowClusterExtentsMetadata,
             ShowDatabaseExtents,

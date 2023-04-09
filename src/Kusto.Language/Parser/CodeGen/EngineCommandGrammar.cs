@@ -8011,6 +8011,13 @@ namespace Kusto.Language.Parsing
                         fragment3),
                     new [] {CD(), CD(), CD(), CD(isOptional: true), CD(), CD(CompletionHint.Literal, isOptional: true), CD(isOptional: true)}));
 
+            var ShowDatabaseKeyVaultSecrets = Command("ShowDatabaseKeyVaultSecrets", 
+                Custom(
+                    Token("show"),
+                    Token("database"),
+                    Token("keyvault"),
+                    RequiredToken("secrets")).Hide());
+
             var ShowDatabaseCslSchema2 = Command("ShowDatabaseCslSchema", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -8140,7 +8147,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("cslschema"),
                     Optional(Token("script")),
                     Optional(
@@ -8151,7 +8158,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extentcontainers"),
                     RequiredToken("clean"),
                     RequiredToken("operations"),
@@ -8166,7 +8173,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("extents"),
                         Token("("),
                         OneOrMoreCommaList(
@@ -8189,7 +8196,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("extents"),
                         RequiredToken("("),
                         Required(
@@ -8217,7 +8224,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("extents"),
                         RequiredToken("("),
                         Required(
@@ -8242,7 +8249,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     RequiredToken("("),
                     Required(
@@ -8260,7 +8267,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     Token("hot"),
                     Token("metadata"),
@@ -8274,7 +8281,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     RequiredToken("hot"),
                     RequiredToken("where"),
@@ -8292,7 +8299,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("extents"),
                         RequiredToken("hot"),
                         RequiredToken("with"),
@@ -8308,7 +8315,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     RequiredToken("hot"),
                     shape96));
@@ -8317,7 +8324,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     Token("metadata"),
                     Optional(
@@ -8330,7 +8337,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     Token("partitioning"),
                     RequiredToken("statistics"),
@@ -8340,7 +8347,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     RequiredToken("where"),
                     Required(
@@ -8357,7 +8364,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("extents"),
                         RequiredToken("with"),
                         RequiredToken("("),
@@ -8372,7 +8379,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("extents"),
                     shape103));
 
@@ -8380,7 +8387,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("ingestion"),
                     Optional(
                         Custom(
@@ -8398,7 +8405,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("journal"),
                     shape103));
 
@@ -8406,7 +8413,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("kqlschema"),
                     Optional(Token("script")),
                     Optional(
@@ -8417,7 +8424,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("mirroring"),
                     RequiredToken("operations"),
                     RequiredToken("status"),
@@ -8427,7 +8434,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("caching"),
                     shape96));
@@ -8436,7 +8443,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("diagnostics"),
                     shape96));
@@ -8445,7 +8452,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("encoding"),
                     shape96));
@@ -8454,7 +8461,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("extent_tags_retention"),
                     shape96));
@@ -8463,7 +8470,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("hardretention"),
                     RequiredToken("violations"),
@@ -8473,7 +8480,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("ingestionbatching"),
                     shape96));
@@ -8482,7 +8489,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("managed_identity"),
                     shape96));
@@ -8491,7 +8498,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("merge"),
                     shape96));
@@ -8500,7 +8507,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("mirroring"),
                     shape96));
@@ -8509,7 +8516,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("retention"),
                     shape96));
@@ -8518,7 +8525,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("sharding"),
                     shape96));
@@ -8527,7 +8534,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     RequiredToken("shards_grouping").Hide(),
                     shape96));
@@ -8536,7 +8543,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     Token("softretention"),
                     RequiredToken("violations"),
@@ -8546,7 +8553,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("policy"),
                     RequiredToken("streamingingestion"),
                     shape96));
@@ -8555,7 +8562,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("principals"),
                     shape103));
 
@@ -8563,7 +8570,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("principal"),
                     Required(
                         First(
@@ -8578,7 +8585,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("purge"),
                     Required(
                         First(
@@ -8600,7 +8607,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     Token("as"),
                     RequiredToken("csl"),
@@ -8613,7 +8620,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     Token("as"),
                     Token("json"),
@@ -8623,7 +8630,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     Token("as"),
                     RequiredToken("kql"),
@@ -8636,7 +8643,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     RequiredToken("details"),
                     Optional(
@@ -8648,7 +8655,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("schema"),
                         Token("if_later_than"),
                         rules.StringLiteral,
@@ -8664,7 +8671,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     Token("if_later_than"),
                     rules.StringLiteral,
@@ -8677,7 +8684,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("database"),
-                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                        If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                         Token("schema"),
                         Token("if_later_than"),
                         rules.StringLiteral,
@@ -8693,7 +8700,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     RequiredToken("if_later_than"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
@@ -8703,7 +8710,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     Token("violations"),
                     shape140));
@@ -8712,7 +8719,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     Token("schema"),
                     new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD()}));
 
@@ -8720,7 +8727,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
                     RequiredToken("shard-groups").Hide(),
                     RequiredToken("statistics").Hide(),
                     shape96));
@@ -11017,6 +11024,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseExtentTagsStatistics,
                 ShowDatabaseIdentity,
                 ShowDatabaseIngestionMappings,
+                ShowDatabaseKeyVaultSecrets,
                 ShowDatabaseCslSchema2,
                 ShowDatabasePolicies,
                 ShowDatabasePrincipals,
