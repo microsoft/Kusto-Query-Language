@@ -986,13 +986,13 @@ namespace Kusto.Language
             new FunctionSymbol("punycode_to_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol PunycodeEncode =
             new FunctionSymbol("punycode_from_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None);
 
         #endregion
 
