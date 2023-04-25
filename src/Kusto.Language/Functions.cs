@@ -2495,6 +2495,34 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoPointBuffer =
+            new FunctionSymbol("geo_point_buffer", ScalarTypes.Dynamic,
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("radius", ParameterTypeKind.Number),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineBuffer =
+            new FunctionSymbol("geo_line_buffer", ScalarTypes.Dynamic,
+                new Parameter("lineString", ScalarTypes.Dynamic),
+                new Parameter("radius", ParameterTypeKind.Number),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoPolygonBuffer =
+            new FunctionSymbol("geo_polygon_buffer", ScalarTypes.Dynamic,
+                new Parameter("polygon", ScalarTypes.Dynamic),
+                new Parameter("radius", ParameterTypeKind.Number),
+                new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoIntersects2Lines =
             new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
                 new Parameter("lineString1", ScalarTypes.Dynamic),
@@ -3286,11 +3314,13 @@ namespace Kusto.Language
             GeoPolygonToS2Cells,
             GeoPolygonDensify,
             GeoPolygonArea,
+            GeoPolygonBuffer,
             GeoPolygonCentroid,
             GeoPolygonValidate,
             GeoPolygonPerimeter,
             GeoPolygonSimplify,
             GeoLineLength,
+            GeoLineBuffer,
             GeoLineCentroid,
             GeoLineDensify,
             GeoLineSimplify,
@@ -3299,6 +3329,7 @@ namespace Kusto.Language
             GeohashToCentralPoint,
             GeohashToPolygon,
             GeohashNeighbors,
+            GeoPointBuffer,
             GeoPointToS2Cell,
             GeoS2CellToCentralPoint,
             GeoS2CellToPolygon,
