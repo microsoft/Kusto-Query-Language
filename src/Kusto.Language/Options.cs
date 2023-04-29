@@ -44,7 +44,7 @@ namespace Kusto.Language
             new OptionSymbol("maxoutputcolumns", "Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
 
         public static readonly OptionSymbol NoRequestTimeout =
-            new OptionSymbol("norequesttimeout", "Enables setting the request timeout to its maximum value.", ScalarTypes.Bool);
+            new OptionSymbol("norequesttimeout", "Enables setting the request timeout to its maximum value. This option cannot be set via a set-statement.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol NoTruncation =
             new OptionSymbol("notruncation", "Enables suppressing truncation of the query results returned to the caller.", ScalarTypes.Bool);
@@ -162,7 +162,7 @@ namespace Kusto.Language
             new OptionSymbol("results_progressive_enabled", "If set, enables the progressive query stream");
 
         public static readonly OptionSymbol ServerTimeout =
-            new OptionSymbol("servertimeout", "Overrides the default request timeout.", ScalarTypes.TimeSpan);
+            new OptionSymbol("servertimeout", "Overrides the default request timeout. This option cannot be set via a set-statement.", ScalarTypes.TimeSpan);
 
         public static readonly OptionSymbol TakeMaxRecords =
             new OptionSymbol("query_take_max_records", "Enables limiting query results to this number of records.", ScalarTypes.Long);
