@@ -666,6 +666,14 @@ namespace Kusto.Language
                 new Parameter("ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol Ipv4RangeToCidrList =
+            new FunctionSymbol("ipv4_range_to_cidr_list", ScalarTypes.Dynamic,
+                new Parameter("start_ip", ScalarTypes.String),
+                new Parameter("end_ip", ScalarTypes.String))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region IPv6 functions
@@ -3393,6 +3401,7 @@ namespace Kusto.Language
             HasIpv4Prefix,
             HasAnyIpv4,
             HasAnyIpv4Prefix,
+            Ipv4RangeToCidrList,
             RowNumber,
             RowCumSum,
             RowRank,
