@@ -3,7 +3,7 @@ title: geo_point_to_s2cell() - Azure Data Explorer
 description: Learn how to use the geo_point_to_s2cell() function to calculate the S2 cell token string value of a geographic location.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_point_to_s2cell()
 
@@ -18,13 +18,15 @@ Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierar
 
 ## Syntax
 
-`geo_point_to_s2cell(`*longitude*`,`*latitude*`,`*level*`)`
+`geo_point_to_s2cell(`*longitude*`,` *latitude*`,` [ *level* ]`)`
 
-## Arguments
+## Parameters
 
-* *longitude*: Longitude value of a geographic location. Longitude *x* will be considered valid if *x* is a real number and *x* is in the range [-180, +180].
-* *latitude*: Latitude value of a geographic location. Latitude y will be considered valid if y is a real number and y in the range [-90, +90].
-* *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *longitude* | real | &check; | Geospatial coordinate, longitude value in degrees. Valid value is a real number and in the range [-180, +180].|
+| *latitude* | real | &check; | Geospatial coordinate, latitude value in degrees. Valid value is a real number and in the range [-90, +90].|
+| *level* | int | | Defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.|
 
 ## Returns
 
@@ -78,7 +80,6 @@ For comparison with other available grid systems, see [geospatial clustering wit
 
 :::image type="content" source="images/geo-point-to-s2cell-function/s2cell.png" alt-text="US s2cell.":::
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 StormEvents
 | project BeginLon, BeginLat
@@ -87,7 +88,9 @@ StormEvents
 | render scatterchart with (kind=map)
 ```
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSg2Sk7NyVGwVUhPzY8vyAcKxZfkx0NENXQtDPQMLU0tjCx1FIxM9SwMjIwMTXUULDQBug9pJTwAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 ```
@@ -102,7 +105,9 @@ print s2cell = geo_point_to_s2cell(-80.195829, 25.802215, 8)
 
 The following example finds groups of coordinates. Every pair of coordinates in the group resides in the S2 cell with a maximum area of 1632.45 km².
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42QzWrDMAyA73kK0VMCpj9J/1boYdtjlGLcRE3FHCvYymFjD1+3Zml32qyD0Yf0CakxEuNkMbdcGyF2mppdEE+uVWDZtSRDgzuPxsY8VoxpkR0ygMnrRMFiPl2U1VLBqlI39pZYtdq8jOw9sfV2WSZ2zL4hDF1nPH0h1Dw4gX3680LBP99sBiTYBejRQ+t56JMiey762S3EAZ35QG0pyPPGxR9yciAXTP5f5tMnhLJGa6O5RdY9kxMtrBPNxws+jqdgW9zMoYR7I58f7itUpqIvjwEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(location_id:string, longitude:real, latitude:real)
 [
@@ -126,7 +131,9 @@ datatable(location_id:string, longitude:real, latitude:real)
 
 The following example produces an empty result because of the invalid coordinate input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSg2Sk7NyVGwVUhPzY8vyAcKxZfkx0NENYwNDHQMdSw0AU8vTgcrAAAA" target="_blank">Run the query</a>
+
 ```kusto
 print s2cell = geo_point_to_s2cell(300,1,8)
 ```
@@ -139,7 +146,9 @@ print s2cell = geo_point_to_s2cell(300,1,8)
 
 The following example produces an empty result because of the invalid level input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSg2Sk7NyVGwVUhPzY8vyAcKxZfkx0NENQx1DHWMTTUB9oFeACoAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print s2cell = geo_point_to_s2cell(1,1,35)
 ```
@@ -152,7 +161,9 @@ print s2cell = geo_point_to_s2cell(1,1,35)
 
 The following example produces an empty result because of the invalid level input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSg2Sk7NyVGwVUhPzY8vyAcKxZfkx0NENQx1DHWAIhp5pTk5mpoAYUJIkTEAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print s2cell = geo_point_to_s2cell(1,1,int(null))
 ```

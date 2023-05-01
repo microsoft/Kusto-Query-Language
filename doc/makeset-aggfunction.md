@@ -3,11 +3,11 @@ title: make_set() (aggregation function) - Azure Data Explorer
 description: Learn how to use the make_set() function to return a JSON array of the distinct values that the expression takes in the group. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 03/12/2023
 ---
 # make_set() (aggregation function)
 
-Creates a `dynamic` JSON array of the set of distinct values that *Expr* takes in the group.
+Creates a `dynamic` array of the set of distinct values that *expr* takes in the group.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -15,21 +15,21 @@ Creates a `dynamic` JSON array of the set of distinct values that *Expr* takes i
 
 ## Syntax
 
- `make_set` `(`*Expr* [`,` *MaxSize*]`)`
+ `make_set(`*expr* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression used for the aggregation calculation. |
-| *MaxSize* |  |  | Integer limit on the maximum number of elements returned. *MaxSize* value can't exceed 1048576. The default is *1048576*. |
+| *expr* | string | &check; | The expression used for the aggregation calculation. |
+| *maxSize* | int |  | The maximum number of elements returned. The default and max value is 1048576. |
 
 > [!NOTE]
-> The deprecated version has a default *MaxSize* limit of 128.
+> The deprecated version has a default *maxSize* limit of 128.
 
 ## Returns
 
-Returns a `dynamic` JSON array of the set of distinct values that *Expr* takes in the group.
+Returns a `dynamic` array of the set of distinct values that *expr* takes in the group.
 The array's sort order is undefined.
 
 > [!TIP]
@@ -37,10 +37,12 @@ The array's sort order is undefined.
 
 ## Example
 
-This example shows the set of States grouped with the same amount of crop damage.
+### Set from a scalar column
+
+The following example shows the set of states grouped with the same amount of crop damage.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/kvc6bc487453a064d3c9de.northeurope/databases/NewDatabase1?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoLs3NTSzKrEpVKC5JLEktts1NzE6NL04t0QgG8TUVkioVXBJzE9NTnYvyC4oBmxrbeD8AAAA=" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoLs3NTSzKrEpVKC5JLEktts1NzE6NL04t0QgG8TUVkioVXBJzE9NTnYvyC4oBmxrbeD8AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents 
@@ -61,6 +63,28 @@ The results table shown includes only the first 10 rows.
 | 18000 | ["WASHINGTON","WISCONSIN"] |
 | 107900000 | ["CALIFORNIA"] |
 | 28900000 | ["CALIFORNIA"] |
+
+### Set from array column
+
+The following example shows the set of elements in an array.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUBY2wxBwrhcy8Eh0Fx6IiQyuFlMq8xNzMZE2uaC4FIDDUgYloRKs7GqrrKKg7GoFJY/VYTR0FsCJTFEVgaWdDkDRY1hxZ1hlJM6ZeqCxIL1esAleNQnFpbm5iUWZVqgLQnfHFqSW2uYnZqSAGyOGaEEejioNENAHdRSJ74QAAAA==" target="_blank">Run the query</a>
+
+```kusto
+datatable (Val: int, Arr1: dynamic)
+[
+    1, dynamic(['A1', 'A2', 'A3']), 
+    5, dynamic(['A2', 'C1']),
+    7, dynamic(['C2', 'A3']),
+    5, dynamic(['C2', 'A1'])
+] 
+| summarize Val_set=make_set(Val), Arr1_set=make_set(Arr1)
+```
+
+| Val_set | Arr1_set |
+|--|--|
+| [1,5,7] | ["A1","A2","A3","C1","C2"] |
 
 ## See also
 

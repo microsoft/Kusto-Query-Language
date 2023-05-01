@@ -1,9 +1,9 @@
 ---
 title: series_floor() - Azure Data Explorer
-description: This article describes series_floor() in Azure Data Explorer.
+description: Learn how to use the series_floor() function to calculate the element-wise floor function of the numeric series input.
 ms.reviewer: afridman
 ms.topic: reference
-ms.date: 11/07/2022
+ms.date: 01/29/2023
 ---
 # series_floor()
 
@@ -13,9 +13,11 @@ Calculates the element-wise floor function of the numeric series input.
 
 `series_floor(`*series*`)`
 
-## Arguments
+## Parameters
 
-* *series*: Input numeric array, on which the floor function is applied. The argument must be a dynamic array.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series* | dynamic | &check; | An array of numeric values on which the floor function is applied.|
 
 ## Returns
 
@@ -23,7 +25,9 @@ Dynamic array of the calculated floor function. Any non-numeric element yields a
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShWsFVIqcxLzM1M1ojWNdQz1THUMdIzjdXkqlFIrShJzUtRKI5Py8nPLwIqLE4tykyFcjWKNQFIrQOdQgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print s = dynamic([-1.5,1,2.5])
 | extend s_floor = series_floor(s)

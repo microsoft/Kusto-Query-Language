@@ -1,9 +1,9 @@
 ---
 title: set_intersect() - Azure Data Explorer
-description: This article describes set_intersect() in Azure Data Explorer.
+description: Learn how to use the set_intersect() function to create a set of the distinct values that are in all the array inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 06/02/2019
+ms.date: 01/30/2023
 ---
 # set_intersect()
 
@@ -11,19 +11,23 @@ Returns a `dynamic` array of the set of all distinct values that are in all arra
 
 ## Syntax
 
-`set_intersect(`*arr1*`, `*arr2*`[`,` *arr3*, ...])`
+`set_intersect(`*set1*`,` *set2* [`,` *set3*, ...]`)`
 
-## Arguments
+## Parameters
 
-* *arr1...arrN*: Input arrays to create an intersect set (at least two arrays). All arguments must be dynamic arrays. For more information, see [pack_array](packarrayfunction.md). 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *set1...setN* | dynamic | &check; | Arrays used to create an intersect set. A minimum of 2 arrays are required. See [pack_array](packarrayfunction.md).|
 
 ## Returns
 
-Returns a dynamic array of the set of all distinct values that are in all arrays. See [`set_union()`](setunionfunction.md) and [`set_difference()`](setdifferencefunction.md).
+Returns a dynamic array of the set of all distinct values that are in all arrays.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA13MsQ7CMAwE0J2vuLFBWdLOfEtlFYMAkUSOpSYVH48zoTDeO/uE4p1RcZP0RoAmLCjKGeH0AVfleEXDxS7OmH90GLWRdqNjJApmmbbXSiLUpuqbr/5wHjT/N2idl5F3X53NZUlP3hSFdX1EZSmWJgp9pz+5L5hXyQHGAAAA" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
@@ -41,7 +45,9 @@ range x from 1 to 3 step 1
 |[2]|
 |[3]|
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKlKwVShOLYkH8lKLilOTSzRSKvMSczOTNaINdRSMdBSMYzV1FOBiJjqmsZqaAI3W9uo9AAAA" target="_blank">Run the query</a>
+
 ```kusto
 print arr = set_intersect(dynamic([1, 2, 3]), dynamic([4,5]))
 ```
@@ -51,3 +57,8 @@ print arr = set_intersect(dynamic([1, 2, 3]), dynamic([4,5]))
 |arr|
 |---|
 |[]|
+
+## See also
+
+* [`set_union()`](setunionfunction.md)
+* [`set_difference()`](setdifferencefunction.md)

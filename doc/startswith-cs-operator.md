@@ -1,6 +1,6 @@
 ---
 title: The case-sensitive startswith string operator - Azure Data Explorer
-description: This article describes the case-sensitive startswith string operator in Azure Data Explorer.
+description: Learn how to use the startswith string operator to filter a record set with a case-sensitive string starting sequence.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 09/19/2021
@@ -9,38 +9,23 @@ ms.date: 09/19/2021
 
 Filters a record set for data with a case-sensitive string starting sequence.
 
-The following table provides a comparison of the `startswith` operators:
-
-|Operator   |Description   |Case-Sensitive  |Example (yields `true`)  |
-|-----------|--------------|----------------|-------------------------|
-|[`startswith`](startswith-operator.md) |RHS is an initial subsequence of LHS |No |`"Fabrikam" startswith "fab"`|
-|[`!startswith`](not-startswith-operator.md) |RHS isn't an initial subsequence of LHS |No |`"Fabrikam" !startswith "kam"`|
-|[`startswith_cs`](startswith-cs-operator.md)  |RHS is an initial subsequence of LHS |Yes |`"Fabrikam" startswith_cs "Fab"`|
-|[`!startswith_cs`](not-startswith-cs-operator.md) |RHS isn't an initial subsequence of LHS |Yes |`"Fabrikam" !startswith_cs "fab"`|
-
-> [!NOTE]
-> The following abbreviations are used in the table above:
->
-> * RHS = right hand side of the expression
-> * LHS = left hand side of the expression
-
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+[!INCLUDE [startswith-operator-comparison](../../includes/startswith-operator-comparison.md)]
 
 ## Performance tips
 
 [!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator. For example, use `hassuffix_cs` instead of `hassuffix`.
-
 ## Syntax
 
 *T* `|` `where` *col* `startswith_cs` `(`*expression*`)`  
 
-## Arguments
+## Parameters
 
-* *T* - The tabular input whose records are to be filtered.
-* *col* - The column to filter.
-* *expression* - Scalar or literal expression.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check; | The tabular input to filter.|
+| *col* | string | &check; | The column used to filter.|
+| *expression* | string | &check; | The expression by which to filter.|
 
 ## Returns
 
@@ -48,13 +33,15 @@ Rows in *T* for which the predicate is `true`.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVUgFCcUn55fmldiCSQ1NhaRKheCSxJJUoMLyjNSiVAhPobgksaikuDyzJCM+uVhByVMJLo9kiIKdgpGBgQFQqqAoPys1uQSiWQdZDQCj4hmWjAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
-    | summarize event_count=count() by State
-    | where State startswith_cs "I"
-    | where event_count > 2000
-    | project State, event_count
+| summarize event_count=count() by State
+| where State startswith_cs "I"
+| where event_count > 2000
+| project State, event_count
 ```
 
 **Output**

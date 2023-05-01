@@ -1,9 +1,9 @@
 ---
 title: row_cumsum() - Azure Data Explorer
-description: This article describes row_cumsum() in Azure Data Explorer.
+description: Learn how to use the row_cumsum() function to calculate the cumulative sum of a column in a serialized row set.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/19/2023
 ---
 # row_cumsum()
 
@@ -11,15 +11,14 @@ Calculates the cumulative sum of a column in a [serialized row set](./windowsfun
 
 ## Syntax
 
-`row_cumsum` `(` *Term* [`,` *Restart*] `)`
+`row_cumsum(` *term* [`,` *restart*] `)`
 
-* *Term* is an expression indicating the value to be summed.
-  The expression must be a scalar of one of the following types:
-  `decimal`, `int`, `long`, or `real`. Null *Term* values do not affect the
-  sum.
-* *Restart* is an optional argument of type `bool` that indicates when the
-  accumulation operation should be restarted (set back to 0). It can be
-  used to indicate partitions of the data; see the second example below.
+## Parameters
+
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *term*| int, long, or real | &check; | The expression indicating the value to be summed.|
+| *restart*| bool | | Indicates when the accumulation operation should be restarted, or set back to 0. It can be used to indicate partitions in the data.|
 
 ## Returns
 
@@ -29,6 +28,9 @@ The function returns the cumulative sum of its argument.
 
 The following example shows how to calculate the cumulative sum of the first
 few even integers.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAw3ITQqDMBBA4X1O8TYFhVmo1f5BTlJKGXVohaiQVITSwzfv271RP1kfjEJvhHV5ldwduVpohKPQCp1wEs7CRbgKdeUe7sf+tmgoBxq8p8orWZw0TF9jSD6u+3PY5rTNhZZ/2Wk/Y2kAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 datatable (a:long) [
@@ -48,6 +50,9 @@ a    | cs
 
 This example shows how to calculate the cumulative sum (here, of `salary`)
 when the data is partitioned (here, by `name`):
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2WPSw6CQAxA95yisoJkFuBnIQkLvYYxZgYaJJmPmSkqiYe3A7qBtovm9TVpW0mcSiNkVhqsAvnedgKMs3SveksCgtTSj5V2tsuTSwIc6Un3DaYCSq6iKMRMz04xgwX9u1uutcu0PB6W7o7pfuVONLrX5APOt+hBjRDvBhma39Gx5TG+CW0L5Ejq2rvXrRlMGEw2fyPmrU0ND4/P6fU8/wKEiBU0DAEAAA==" target="_blank">Run the query</a>
 
 ```kusto
 datatable (name:string, month:int, salary:long)

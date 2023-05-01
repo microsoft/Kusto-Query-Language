@@ -7,7 +7,7 @@ ms.date: 11/27/2022
 ---
 # cos()
 
-Returns the cosine function.
+Returns the cosine function value of the specified angle. The angle is specified in radians.
 
 ## Syntax
 
@@ -17,11 +17,11 @@ Returns the cosine function.
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *number* | real | &check; | The value for which to calculate the cosine. |
+| *number* | real | &check; | The value in radians for which to calculate the cosine. |
 
 ## Returns
 
-The cosine of *number*.
+The cosine of *number* of radians.
 
 ## Example
 

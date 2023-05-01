@@ -1,13 +1,13 @@
 ---
 title: project-away operator - Azure Data Explorer
-description: This article describes project-away operator in Azure Data Explorer.
+description: Learn how to use the project-away operator to select columns from the input table to exclude from the output table.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 01/12/2023
 ---
 # project-away operator
 
-Select what columns from the input to exclude from the output.
+Select what columns from the input table to exclude from the output table.
 
 ## Syntax
 
@@ -17,12 +17,12 @@ Select what columns from the input to exclude from the output.
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *T* | string | &check; | Tabular input from which to remove columns. |
-| *ColumnNameOrPattern* | string | &check; | Name of the column or column wildcard-pattern to be removed from the output.|
+| *T* | string | &check; | The tabular input from which to remove columns. |
+| *ColumnNameOrPattern* | string | &check; | One or more column names or column wildcard-patterns to be removed from the output.|
 
 ## Returns
 
-A table with columns that were not named as arguments. Contains same number of rows as the input table.
+A table with columns that weren't named as arguments. Contains same number of rows as the input table.
 
 > [!TIP]
 > You can `project-away` any columns that are present in the original table or that were computed as part of the query.
@@ -77,12 +77,12 @@ The following table shows only the first 10 results.
 |PASS Summit 2019| Avner Aharoni| |<https://www.eventbrite.com/e/near-real-time-interact-analytics-on-big-data-using-azure-data-explorer-fg-tickets-77532775619>| |2019-11-07T19:15:00Z|  |Thu, Nov 7, 11:15 AM-12:15 PM PST |Focused|
 |PASS Summit| Rohan Kumar| Ariel Pisetzky|<https://www.pass.org/summit/2018/Learn/Keynotes.aspx>| |2018-11-07T08:15:00Z| 90 |Wed, Nov 7, 8:15-9:45 am |Mention|
 |Intelligent Cloud 2019| Rohan Kumar| Henning Rauch| | |2019-04-09T09:00:00Z| 90| Tue, Apr 9, 9:00-10:30 AM |Mention|
-|Ignite 2019| Jie Feng|   |<https://myignite.techcommunity.microsoft.com/sessions/83940>| 100| 2019-11-06T14:35:00Z| 20 |Wed, Nov 6, 9:35 AM - 9:55 AM| Mention|
-|Ignite 2019| Bernhard Rode| Le Hai Dang, Ricardo Niepel |<https://myignite.techcommunity.microsoft.com/sessions/81596>| 200 |2019-11-06T16:45:00Z| 45| Wed, Nov 6, 11:45 AM-12:30 PM |Mention|
-|Ignite 2019| Tzvia Gitlin| Troyna| <https://myignite.techcommunity.microsoft.com/sessions/83933>|  400 |2019-11-06T17:30:00Z| 75| Wed, Nov 6, 12:30 PM-1:30 PM |Focused|
-|Ignite 2019| Jie Feng |  <https://myignite.techcommunity.microsoft.com/sessions/81057>| 300| 2019-11-06T20:30:00Z| 45 |Wed, Nov 6, 3:30 PM-4:15 PM |Mention|
-|Ignite 2019| Manoj Raheja|  |<https://myignite.techcommunity.microsoft.com/sessions/83939>| 300| 2019-11-07T18:15:00Z| 20 |Thu, Nov 7, 1:15 PM-1:35 PM|  Focused|
-|Ignite 2019| Uri Barash|  |<https://myignite.techcommunity.microsoft.com/sessions/81060>|  300| 2019-11-08T17:30:00Z| 45 |Fri, Nov8,  10:30 AM-11:15 AM|  Focused|
+|Ignite 2019| Jie Feng|   | `https://myignite.techcommunity.microsoft.com/sessions/83940` | 100| 2019-11-06T14:35:00Z| 20 |Wed, Nov 6, 9:35 AM - 9:55 AM| Mention|
+|Ignite 2019| Bernhard Rode| Le Hai Dang, Ricardo Niepel |`https://myignite.techcommunity.microsoft.com/sessions/81596` | 200 |2019-11-06T16:45:00Z| 45| Wed, Nov 6, 11:45 AM-12:30 PM |Mention|
+|Ignite 2019| Tzvia Gitlin| Troyna| `https://myignite.techcommunity.microsoft.com/sessions/83933` |  400 |2019-11-06T17:30:00Z| 75| Wed, Nov 6, 12:30 PM-1:30 PM |Focused|
+|Ignite 2019| Jie Feng | `https://myignite.techcommunity.microsoft.com/sessions/81057` | 300| 2019-11-06T20:30:00Z| 45 |Wed, Nov 6, 3:30 PM-4:15 PM |Mention|
+|Ignite 2019| Manoj Raheja|  | `https://myignite.techcommunity.microsoft.com/sessions/83939` | 300| 2019-11-07T18:15:00Z| 20 |Thu, Nov 7, 1:15 PM-1:35 PM|  Focused|
+|Ignite 2019| Uri Barash|  | `https://myignite.techcommunity.microsoft.com/sessions/81060` |  300| 2019-11-08T17:30:00Z| 45 |Fri, Nov8,  10:30 AM-11:15 AM|  Focused|
 |Ignite 2018| Manoj Raheja|  |<https://azure.microsoft.com/resources/videos/ignite-2018-azure-data-explorer-%E2%80%93-query-billions-of-records-in-seconds/>| 200|  |20|  |Focused|
 |...|...|...|...|...|...|...|...|...|
 

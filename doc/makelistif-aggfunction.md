@@ -7,25 +7,25 @@ ms.date: 11/16/2022
 ---
 # make_list_if() (aggregation function)
 
-Creates a `dynamic` JSON object (array) of *Expr* values in the group for which *Predicate* evaluates to `true`.
+Creates a `dynamic` array of *expr* values in the group for which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`make_list_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
+`make_list_if(`*expr*`,` *predicate* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression that will be used for aggregation calculation. |
-| *Predicate* | string | &check; | Predicate that has to evaluate to `true`, in order for *Expr* to be added to the result. |
-| *MaxSize* | integer |  | The limit on the maximum number of elements returned. The default is *1048576* and can't exceed *1048576*. |
+| *expr* | string | &check; | The expression used for the aggregation calculation. |
+| *predicate* | string | &check; | A predicate that has to evaluate to `true` in order for *expr* to be added to the result. |
+| *maxSize* | integer |  | The maximum number of elements returned. The default and max value is 1048576. |
 
 ## Returns
 
-Returns a `dynamic` JSON object (array) of *Expr* vlaues in the group for which *Predicate* evaluates to `true`.
+Returns a `dynamic` array of *expr* vlaues in the group for which *predicate* evaluates to `true`.
 If the input to the `summarize` operator is not sorted, the order of elements in the resulting array is undefined.
 If the input to the `summarize` operator is sorted, the order of elements in the resulting array tracks that of the input.
 
@@ -34,7 +34,7 @@ If the input to the `summarize` operator is sorted, the order of elements in the
 The following example shows a list of names with more than 4 letters.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyXNMQvCMBCG4T2/4uhkIIuiqJW6Ck4i3URCitc0eEkgSQfFH++RctPzDvcRFuihg5cpfAPhKhiPbS7JBas4f3Qc9eBSmVqKwUrxEADQXOMUGgVHVXUzM7HWh4UXjMkih81uCXd+Ftl78TyJXvwgz96b5L4I3rxRk8tFu7FuK+BxwlAh4Qxb+Qd6P2/WpQAAAA==" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy2OsQrCMBRF90D+4dHJQhZFUSu6Ck4i3URCiq9p8CWBJB0UP95HLXc6Z7gcwgItHOFpCq8jXATjsckluWAV67eOve5cKkNDMdhairsUAFBd4hAqBXv1x6sZiXG5m/mMMVlks9rM5saPkcVWisdBilaKL+TRe5PcB8GbF2pyuWjXTw0KOIIwTFDDCdb1D5O20PKtAAAA" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(name:string, day_of_birth:long)
@@ -48,7 +48,7 @@ T
 | summarize make_list_if(name, strlen(name) > 4)
 ```
 
-**Results**
+**Output**
 
 |list_name|
 |----|

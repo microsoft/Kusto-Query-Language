@@ -1,9 +1,9 @@
 ---
 title: series_multiply() - Azure Data Explorer
-description: This article describes series_multiply() in Azure Data Explorer.
+description: Learn how to use the series_multiply() function to calculate the element-wise multiplication of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/30/2023
 ---
 # series_multiply()
 
@@ -13,9 +13,11 @@ Calculates the element-wise multiplication of two numeric series inputs.
 
 `series_multiply(`*series1*`,` *series2*`)`
 
-## Arguments
+## Parameters
 
-* *series1, series2*: Input numeric arrays, to be element-wise multiplied into a dynamic array result. All arguments must be dynamic arrays. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series1*, *series2* | dynamic | &check; | The arrays of numeric values to be element-wise multiplied.|
 
 ## Returns
 
@@ -23,7 +25,9 @@ Dynamic array of calculated element-wise multiplication operation between the tw
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1XMQQrCMBBG4b2n+JeNZJO69iwh1FGqbRNmImRCD28sxeL24/E4LA9CwZ3jDIcccYFkSnCnFVQyLTcorq04oz+oNtKdEscnDRniGqYwvHxgDtoVq7YaC+n/vVqoRTHHTZyf31Me06R+q4V4JPlhJ+67MR/3UM9mrQAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
@@ -34,8 +38,8 @@ range x from 1 to 3 step 1
 
 **Output**
 
-|s1	        |s2|	    s1_multiply_s2|
-|---|---|---|
-|[1,2,4]	|[4,2,1]|	[4,4,4]|
-|[2,4,8]	|[8,4,2]|	[16,16,16]|
-|[3,6,12]	|[12,6,3]|	[36,36,36]|
+|s1 |s2 |s1_multiply_s2|
+|--|--|--|
+|[1,2,4] |[4,2,1]| [4,4,4]|
+|[2,4,8] |[8,4,2]| [16,16,16]|
+|[3,6,12] |[12,6,3]| [36,36,36]|

@@ -1,9 +1,9 @@
 ---
 title: Scalar Functions - Azure Data Explorer 
-description: This article describes Scalar Functions in Azure Data Explorer.
+description: Learn how to use scalar functions to perform calculations that return a single value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/10/2022
+ms.date: 01/23/2023
 ---
 # Scalar function types at a glance
 
@@ -25,9 +25,9 @@ This article lists all available scalar functions grouped by type. For aggregati
 
 |Function Name     |Description                                          |
 |-------------------------|--------------------------------------------------------|
-|[tobool()](toboolfunction.md)|Converts input to boolean (signed 8-bit) representation.|
+|[tobool()](toboolfunction.md)|Convert inputs to boolean (signed 8-bit) representation.|
 |[todatetime()](todatetimefunction.md)|Converts input to datetime scalar.|
-|[todouble()/toreal()](todoublefunction.md)|Converts the input to a value of type real. (todouble() and toreal() are synonyms.)|
+|[todouble()](todoublefunction.md)|Converts the input to a value of type real.|
 |[tostring()](tostringfunction.md)|Converts input to a string representation.|
 |[totimespan()](totimespanfunction.md)|Converts input to timespan scalar.|
 
@@ -50,12 +50,11 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[endofyear()](endofyearfunction.md)|Returns the end of the year containing the date, shifted by an offset, if provided.|
 |[format_datetime()](format-datetimefunction.md)|Formats a datetime parameter based on the format pattern parameter.|
 |[format_timespan()](format-timespanfunction.md)|Formats a format-timespan parameter based on the format pattern parameter.|
-|[getmonth()](getmonthfunction.md)|Get the month number (1-12) from a datetime.|
 |[getyear()](getyearfunction.md)|Returns the year part of the datetime argument.|
 |[hourofday()](hourofdayfunction.md)|Returns the integer number representing the hour number of the given date.|
 |[make_datetime()](make-datetimefunction.md)|Creates a datetime scalar value from the specified date and time.|
 |[make_timespan()](make-timespanfunction.md)|Creates a timespan scalar value from the specified time period.|
-|[monthofyear()](monthofyearfunction.md)|Returns the integer number represents the month number of the given year.|
+|[monthofyear()](monthofyearfunction.md)|Returns the integer number that represents the month number of the given year.|
 |[now()](nowfunction.md)|Returns the current UTC clock time, optionally offset by a given timespan.|
 |[startofday()](startofdayfunction.md)|Returns the start of the day containing the date, shifted by an offset, if provided.|
 |[startofmonth()](startofmonthfunction.md)|Returns the start of the month containing the date, shifted by an offset, if provided.|
@@ -74,7 +73,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |Function Name     |Description                                          |
 |-------------------------|--------------------------------------------------------|
 |[array_concat()](arrayconcatfunction.md)|Concatenates a number of dynamic arrays to a single array.|
-|[array_iif()](arrayifffunction.md)|Applies element-wise iif function on arrays.|
+|[array_iff()](arrayifffunction.md)|Applies element-wise iif function on arrays.|
 |[array_index_of()](arrayindexoffunction.md)|Searches the array for the specified item, and returns its position.|
 |[array_length()](arraylengthfunction.md)|Calculates the number of elements in a dynamic array.|
 |[array_reverse()](array-reverse-function.md)|Reverses the order of the elements in a dynamic array.|
@@ -91,7 +90,9 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[bag_keys()](bagkeysfunction.md)|Enumerates all the root keys in a dynamic property-bag object.|
 |[bag_merge()](bag-merge-function.md)|Merges dynamic property-bags into a dynamic property-bag with all properties merged.|
 |[bag_pack()](packfunction.md)|Creates a dynamic object (property bag) from a list of names and values.|
+|[bag_pack_columns()](bag-pack-columns-function.md)|Creates a dynamic object (property bag) from a list of columns.|
 |[bag_remove_keys()](bag-remove-keys-function.md)|Removes keys and associated values from a dynamic property-bag.|
+|[bag_set_key()](bag-set-key-function.md)|Sets a given key to a given value in a dynamic property-bag.|
 |[jaccard_index()](jaccard-index-function.md)|Computes the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of two sets.|
 |[pack_all()](packallfunction.md)|Creates a dynamic object (property bag) from all the columns of the tabular expression.|
 |[pack_array()](packarrayfunction.md)|Packs all input values into a dynamic array.|
@@ -111,7 +112,8 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[prev()](prevfunction.md)|For the serialized row set, returns a value of a specified column from the earlier row according to the offset.|
 |[row_cumsum()](rowcumsumfunction.md)|Calculates the cumulative sum of a column.|
 |[row_number()](rownumberfunction.md)|Returns a row's number in the serialized row set - consecutive numbers starting from a given index or from 1 by default.|
-|[row_rank()](rowrankfunction.md)|Returns a row's rank in the serialized row set.|
+|[row_rank_dense()](rowrankdensefunction.md)|Returns a row's dense rank in the serialized row set.|
+|[row_rank_min()](rowrankminfunction.md)|Returns a row's minimal rank in the serialized row set.|
 
 ## Flow control functions
 
@@ -181,7 +183,6 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[bin()](binfunction.md)|Rounds values down to an integer multiple of a given bin size.|
 |[bin_at()](binatfunction.md)|Rounds values down to a fixed-size "bin", with control over the bin's starting point. (See also bin function.)|
 |[ceiling()](ceilingfunction.md)|Calculates the smallest integer greater than, or equal to, the specified numeric expression.|
-|[floor()](floorfunction.md)|Rounds values down to an integer multiple of a given bin size.|
 
 ## Conditional functions
 
@@ -189,7 +190,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |-------------------------|--------------------------------------------------------|
 |[case()](casefunction.md)|Evaluates a list of predicates and returns the first result expression whose predicate is satisfied.|
 |[coalesce()](coalescefunction.md)|Evaluates a list of expressions and returns the first non-null (or non-empty for string) expression.|
-|[iif()/iff()](iiffunction.md)|Evaluates the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to true (second) or false (third).|
+|[iff()](./ifffunction.md)|Evaluate the first argument (the predicate), and returns the value of either the second or third arguments, depending on whether the predicate evaluated to true (second) or false (third).|
 |[max_of()](max-offunction.md)|Returns the maximum value of several evaluated numeric expressions.|
 |[min_of()](min-offunction.md)|Returns the minimum value of several evaluated numeric expressions.|
 
@@ -261,7 +262,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[countof()](countoffunction.md)|Counts occurrences of a substring in a string. Plain string matches may overlap; regex matches don't.|
 |[extract()](extractfunction.md)|Get a match for a regular expression from a text string.|
 |[extract_all()](extractallfunction.md)|Get all matches for a regular expression from a text string.|
-|[extractjson()](extractjsonfunction.md)|Get a specified element out of a JSON text using a path expression.|
+|[extract_json()](extractjsonfunction.md)|Get a specified element out of a JSON text using a path expression.|
 |[has_any_index()](has-any-index-function.md)|Searches the string for items specified in the array and returns the position of the first item found in the string.|
 |[indexof()](indexoffunction.md)|Function reports the zero-based index of the first occurrence of a specified string within input string.|
 |[isempty()](isemptyfunction.md)|Returns true if the argument is an empty string or is null.|
@@ -279,6 +280,8 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[parse_urlquery()](parseurlqueryfunction.md)|Parses a url query string and returns a dynamic object contains the Query parameters.|
 |[parse_version()](parse-versionfunction.md)|Converts input string representation of version to a comparable decimal number.|
 |[replace_regex()](replace-regex-function.md)|Replace all regex matches with another string.|
+|[punycode_from_string()](punycode-from-string.md)| Encodes domain name to Punycode form.|
+|[punycode_to_string()](punycode-to-string.md)| Decodes domain name from Punycode form.|
 |[reverse()](reversefunction.md)|Function makes reverse of input string.|
 |[split()](splitfunction.md)|Splits a given string according to a given delimiter and returns a string array with the contained substrings.|
 |[strcat()](strcatfunction.md)|Concatenates between 1 and 64 arguments.|
@@ -337,11 +340,11 @@ This article lists all available scalar functions grouped by type. For aggregati
 |-------------------------|--------------------------------------------------------|
 |[dcount_hll()](dcount-hllfunction.md)|Calculates the dcount from hll results (which was generated by hll or hll-merge).|
 |[hll_merge()](hllmergefunction.md)|Merges hll results (scalar version of the aggregate version hll-merge()).|
-|[percentile_tdigest()](percentile-tdigestfunction.md)|Calculates the percentile result from tdigest results (which was generated by tdigest or merge-tdigests).|
-|[percentile_array_tdigest()](percentile-array-tdigestfunction.md)|Calculates the percentile array result from tdigest results (which was generated by tdigest or merge-tdigests).|
+|[percentile_tdigest()](percentile-tdigestfunction.md)|Calculates the percentile result from tdigest results (which was generated by tdigest or merge_tdigest).|
+|[percentile_array_tdigest()](percentile-array-tdigestfunction.md)|Calculates the percentile array result from tdigest results (which was generated by tdigest or merge_tdigest).|
 |[percentrank_tdigest()](percentrank-tdigestfunction.md)|Calculates the percentage ranking of a value in a dataset.|
 |[rank_tdigest()](rank-tdigest.md)|Calculates relative rank of a value in a set.|
-|[tdigest_merge()](tdigest-mergefunction.md)|Merges tdigest results (scalar version of the aggregate version tdigest-merge()).|
+|[merge_tdigest()](merge-tdigest-function.md)|Merge tdigest results (scalar version of the aggregate version tdigest-merge()).|
 
 ## Geospatial functions
 

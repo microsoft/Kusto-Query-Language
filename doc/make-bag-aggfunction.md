@@ -1,34 +1,33 @@
 ---
 title: make_bag() (aggregation function) - Azure Data Explorer
-description: This article describes the make_bag() aggregation function in Azure Data Explorer.
+description: Learn how to use the make_bag() aggregation function to create a dynamic JSON property bag.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/24/2022
+ms.date: 01/03/2023
 ---
 # make_bag() (aggregation function)
 
-Creates a `dynamic` JSON property bag (dictionary) of all the values of *`Expr`* in the group.
+Creates a `dynamic` JSON property bag (dictionary) of all the values of *expr* in the group.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
- `make_bag` `(`*Expr* [`,` *MaxSize*]`)`
+ `make_bag` `(`*expr* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | dynamic | &check; | Expression used for aggregation calculations. |
-| *MaxSize* | integer |  | The limit on the maximum number of elements returned. The default is *1048576* and can't exceed *1048576*. |
+| *expr* | dynamic | &check; | The expression used for the aggregation calculation. |
+| *maxSize* | int |  | The limit on the maximum number of elements returned. The default and max value is 1048576. |
 
 > [!NOTE]
-> `make_dictionary()` has been deprecated in favor of `make_bag()`. The legacy version has a default *MaxSize* limit of 128.
+> `make_dictionary()` has been deprecated in favor of `make_bag()`. The legacy version has a default *maxSize* limit of 128.
 
 ## Returns
 
-Returns a `dynamic` JSON property bag (dictionary) of all the values of *`Expr`* in the group, which are property bags.
-Non-dictionary values will be skipped.
+Returns a `dynamic` JSON property bag (dictionary) of all the values of *Expr* in the group, which are property bags. Non-dictionary values will be skipped.
 If a key appears in more than one row, an arbitrary value, out of the possible values for this key, will be selected.
 
 ## Example
@@ -36,7 +35,7 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 The following example shows a packed JSON property bag.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEIUbBVSEksAcKknFSNgqL8AqvikqLMvHQdhbLEnNJUKE+TK5pLAQiUQCoMDJV0FJSA0vGJSjpIwkYw4SQUYWOYcDJQONaaK4SrRiG1oiQ1L0WhAGh7QWJyNthiqI2aQOni0tzcxKLMqlSFlMzkEtvcxOzU+KTEdI0CTQBPpqLVtAAAAA==" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WNzQrDIAyA7z5F8FTBw35uG32L3saQqKFItRNrxyh9+GWjhS055csHX6QKHbTgsfLaSE0uj3yZagljr+GJcabtUuImgEd+jMNRapD8Nij1Dz7t2P7h844d4/tVdGIFelUaPWSuW+xNRjd841tVsTLNKWEJC4EPrrYJBzLsNlm9AS6AdnS4AAAA" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string)
@@ -46,11 +45,11 @@ let T = datatable(prop:string, value:string)
     "prop03", "val_c",
 ];
 T
-| extend p = pack(prop, value)
+| extend p = bag_pack(prop, value)
 | summarize dict=make_bag(p)
 ```
 
-**Results**
+**Output**
 
 |dict|
 |----|
@@ -59,7 +58,7 @@ T
 Use the [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag() output into columns.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WNvQrDMAyEdz+F8BSDh/5sLXmLbKUYOREhxHZNYpdS+vCVTQKttJy+O3GOEnTQwoCJ1zpq4vKIlzUtUxg1PNFl2i4lbgJ4ZEkcjlKDZNug1D/4tGP7h8877hnfr6ITH6BXojBA5PaI/VyLt0bF9pq9x2V6E1gcW48zGRZNLB6VFKZqmRzqO0v1BTGl9vXOAAAA" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WNvQrDMAyEdz+F8BSDh/5sLXmLbKUYOREhxHZNYpdS+vCVTQKttJy+O3GOEnTQwoCJ1zpq4vKIlzUtUxg1PNFl2i4lbgJ4ZEkcjlKDZNug1D/4tGP7h8877hnfr6ITH6BXojBA5HaLo4nYz7V8a1UcWbP3uExvKonW40yGRROLRyWFqVomh/rOUn0B38wbbdIAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string)
@@ -69,12 +68,12 @@ let T = datatable(prop:string, value:string)
     "prop03", "val_c",
 ];
 T
-| extend p = pack(prop, value)
+| extend p = bag_pack(prop, value)
 | summarize bag=make_bag(p)
 | evaluate bag_unpack(bag)
 ```
 
-**Results**
+**Output**
 
 |prop01|prop02|prop03|
 |---|---|---|
@@ -82,4 +81,4 @@ T
 
 ## See also
 
-[bag_unpack()](bag-unpackplugin.md)
+[bag_unpack()](bag-unpackplugin.md).

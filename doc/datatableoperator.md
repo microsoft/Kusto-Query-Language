@@ -24,7 +24,7 @@ Returns a table whose schema and values are defined in the query itself.
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *ColumnName*:*ColumnType* | string | &check; | The name of column and type of data in that column. These arguments define the schema of the table.|
+| *ColumnName*:*ColumnType* | string | &check; | The name of column and type of data in that column that define the schema of the table.|
 | *ScalarValue* | scalar | &check; | The value to insert into the table. The number of values must be an integer multiple of the columns in the table. The *n*'th value must have a type that corresponds to column *n* % *NumColumns*. |
 
 ::: zone-end
@@ -33,7 +33,7 @@ Returns a table whose schema and values are defined in the query itself.
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *ColumnName*: *ColumnType* | string | &check; | The name of column and type of data in that column. These arguments define the schema of the table.|
+| *ColumnName*: *ColumnType* | string | &check; | The name of column and type of data in that column that define the schema of the table.|
 | *ScalarValue* | scalar | &check; | The value to insert into the table. The number of values must be an integer multiple of the columns in the table. The *n*'th value must have a type that corresponds to column *n* % *NumColumns*. |
 
 ::: zone-end

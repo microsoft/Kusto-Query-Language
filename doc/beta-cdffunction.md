@@ -3,15 +3,11 @@ title: beta_cdf() - Azure Data Explorer
 description: Learn how to use the beta_cdf() function to return a standard beta cumulative distribution function.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/07/2022
+ms.date: 03/09/2023
 ---
 # beta_cdf()
 
 Returns the standard cumulative beta distribution function.
-
-```kusto
-beta_cdf(0.2, 10.0, 50.0)
-```
 
 If *probability* = `beta_cdf(`*x*,...`)`, then `beta_inv(`*probability*,...`)` = *x*.
 
@@ -21,28 +17,30 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 `beta_cdf(`*x*`,` *alpha*`,` *beta*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A value at which to evaluate the function.
-* *alpha*: A parameter of the distribution.
-* *beta*: A parameter of the distribution.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *x* | int, long, or real | &check;| A value at which to evaluate the function.|
+| *alpha* | int, long, or real | &check;| A parameter of the distribution.|
+| *beta* | int, long, or real | &check;| A parameter of the distribution.|
 
 ## Returns
 
-* The [cumulative beta distribution function](https://en.wikipedia.org/wiki/Beta_distribution#Cumulative_distribution_function).
+The [cumulative beta distribution function](https://en.wikipedia.org/wiki/Beta_distribution#Cumulative_distribution_function).
 
-**Notes**
-If any argument is nonnumeric, beta_cdf() returns null value.
-
-If x < 0 or x > 1, beta_cdf() returns NaN value.
-
-If alpha ≤ 0 or alpha > 10000, beta_cdf() returns the NaN value.
-
-If beta ≤ 0 or beta > 10000, beta_cdf() returns the NaN value.
+> [!NOTE]
+>
+> * If any argument is nonnumeric, the function returns `null`.
+> * If `x < 0` or `x > 1`, the function returns `NaN`.
+> * If `alpha ≤ 0` or `alpha > 10000`, the function returns `NaN`.
+> * If `beta ≤ 0` or `beta > 10000`, the function returns `NaN`.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22PwQrCMBBE7/mKoacWYkgFDxb1E3r0IiJpEzWQpsWmEMGPN6algnUXlh2Yt8tI4UJXRqW+kO0QFgphuruYVaXcV9Rt0yjrit49tL1l5EQQirMtRc4Zp1jHmRyF0RLadoNLaPTkbPPj8Tggp3hqZWSPUpSTc/yVrnKeLYgd+B+Cs3BnxtiHm4gYBbpfgORMXlDeKStRYR9TXmp5Tf2UfwyevQFA2/Y/IAEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(x:double, alpha:double, beta:double, comment:string)
 [

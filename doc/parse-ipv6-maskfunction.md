@@ -1,32 +1,26 @@
 ---
 title: parse_ipv6_mask() - Azure Data Explorer
-description: This article describes parse_ipv6_mask() function in Azure Data Explorer.
+description: Learn how to use the parse_ipv6_mask() function to convert IPv6 or IPv4 strings and netmask to a canonical IPv6 string representation.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/24/2020
+ms.date: 01/08/2023
 ---
 # parse_ipv6_mask()
- 
-Converts IPv6/IPv4 string and netmask to a canonical IPv6 string representation.
 
-```kusto
-parse_ipv6_mask("127.0.0.1", 24) == '0000:0000:0000:0000:0000:ffff:7f00:0000'
-parse_ipv6_mask(":fe80::85d:e82c:9446:7994", 120) == 'fe80:0000:0000:0000:085d:e82c:9446:7900'
-```
+Converts IPv6/IPv4 string and netmask to a canonical IPv6 string representation.
 
 ## Syntax
 
-`parse_ipv6_mask(`*`Expr`*`, `*`PrefixMask`*`)`
+`parse_ipv6_mask(`*ip*`,` *prefix*`)`
 
-## Arguments
+## Parameters
 
-* *`Expr`*: String expression representing IPv6/IPv4 network address that will be converted to canonical IPv6 representation. String may include net-mask using [IP-prefix notation](#ip-prefix-notation).
-* *`PrefixMask`*: An integer from 0 to 128 representing the number of most-significant bits that are taken into account.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ip*| string | | The IPv6/IPv4 network address to convert to canonical IPv6 representation. The value may include net-mask using [IP-prefix notation](#ip-prefix-notation).|
+| *prefix*| int | | An integer from 0 to 128 representing the number of most-significant bits that are taken into account.|
 
-## IP-prefix notation
-
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -35,20 +29,22 @@ If conversion isn't successful, the result will be `null`.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA61S0U7DIBR971fct7qkriuhSEn8AN98N6Zh5TqJFUhh0wc/XtqOmenmfBBCIMA599x7rpIhznWPV9q1PgzabATMewEGw6v0LwJ6azaL7CGDOMoS7u53FKRSA3qPfrrNq4YsK8aXpK7HlRdQkVUxfY+H67UOiQ60h61HdRJXEjpB6a/QAqQ/UgHKojd5GF9h6xwOwCEC9+L25EfieIrAz4qbU2XfU31CvhKC10ogJ51oKGXipmnogRYuMp/lKGPGqQAXSpfUvenwPBfD2GimtmYOIcQpT/6Q9k9kcoX/lyuP2Qfge0CjQDvWdtJYozvZwy04OXhstduxdiT/6stDPy4+ATm+kta1AgAA" target="_blank">Run the query</a>
+
 ```kusto
-datatable(ip_string:string, netmask:long)
+datatable(ip_string: string, netmask: long)
 [
- // IPv4 addresses
- '192.168.255.255',     120,  // 120-bit netmask is used
- '192.168.255.255/24',  124,  // 120-bit netmask is used, as IPv4 address doesn't use upper 8 bits
- '255.255.255.255', 128,  // 128-bit netmask is used
- // IPv6 addresses
- 'fe80::85d:e82c:9446:7994', 128,     // 128-bit netmask is used
- 'fe80::85d:e82c:9446:7994/120', 124, // 120-bit netmask is used
- // IPv6 with IPv4 notation
- '::192.168.255.255',    128,  // 128-bit netmask is used
- '::192.168.255.255/24', 128,  // 120-bit netmask is used, as IPv4 address doesn't use upper 8 bits
+    // IPv4 addresses
+    '192.168.255.255', 120,  // 120-bit netmask is used
+    '192.168.255.255/24', 124,  // 120-bit netmask is used, as IPv4 address doesn't use upper 8 bits
+    '255.255.255.255', 128,  // 128-bit netmask is used
+    // IPv6 addresses
+    'fe80::85d:e82c:9446:7994', 128,     // 128-bit netmask is used
+    'fe80::85d:e82c:9446:7994/120', 124, // 120-bit netmask is used
+    // IPv6 with IPv4 notation
+    '::192.168.255.255', 128,  // 128-bit netmask is used
+    '::192.168.255.255/24', 128,  // 120-bit netmask is used, as IPv4 address doesn't use upper 8 bits
 ]
 | extend ip6_canonical = parse_ipv6_mask(ip_string, netmask)
 ```
@@ -64,4 +60,3 @@ datatable(ip_string:string, netmask:long)
 |fe80::85d:e82c:9446:7994/120|124|fe80:0000:0000:0000:085d:e82c:9446:7900|
 |::192.168.255.255|128|0000:0000:0000:0000:0000:ffff:c0a8:ffff|
 |::192.168.255.255/24|128|0000:0000:0000:0000:0000:ffff:c0a8:ff00|
-

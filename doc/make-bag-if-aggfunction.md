@@ -3,30 +3,29 @@ title: make_bag_if() (aggregation function) - Azure Data Explorer
 description: Learn how to use the make_bag_if() function to create a dynamic JSON property bag of expression values where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 01/03/2023
 ---
 # make_bag_if() (aggregation function)
 
-Creates a `dynamic` JSON property bag (dictionary) of *Expr* values in records for which *Predicate* evaluates to `true`.
+Creates a `dynamic` JSON property bag (dictionary) of *expr* values in records for which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`make_bag_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
+`make_bag_if(`*expr*`,` *predicate* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | dynamic | &check; | Expression used for aggregation calculation. |
-| *Predicate* | boolean | &check; | Predicate that evaluates to `true`, in order for *'Expr'* to be added to the result. |
-| *MaxSize* | integer |  | Limit on the maximum number of elements returned. The default value is *1048576* and can't exceed 1048576. |
+| *expr* | dynamic | &check; | The expression used for the aggregation calculation. |
+| *predicate* | bool | &check; | The predicate that evaluates to `true`, in order for *expr* to be added to the result. |
+| *maxSize* | int |  | The limit on the maximum number of elements returned. The default and max value is 1048576. |
 
 ## Returns
 
-Returns a `dynamic` JSON property bag (dictionary) of *Expr* values in records for which *Predicate* evaluates to `true`.
-Non-dictionary values will be skipped.
+Returns a `dynamic` JSON property bag (dictionary) of *expr* values in records for which *predicate* evaluates to `true`. Non-dictionary values will be skipped.
 If a key appears in more than one row, an arbitrary value, out of the possible values for this key, will be selected.
 
 > [!NOTE]
@@ -37,7 +36,7 @@ If a key appears in more than one row, an arbitrary value, out of the possible v
 The following example shows a packed JSON property bag.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOTQuDMAyG7/0VwZNCD/u4OfwX3saQtEYpVi1tHGPsxy8bOlxyecOTFx5PDDVU0CLLGk95iHMoE0c39Rru6Bf6XSFS6ywylWaefaGuCmSyT+NwzDRk8t6gBI4L6R08bdBI6NCnP3reqF2r6nZRtXoBPZimFoL4BbTDV211KgSnZRwxuieBWHE14kCNwb5xXR52ssUbsXCntuQAAAA=" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOywqDQAxF9/MVwZXCLPrYWfwLd0Uko1EGRx1mYimlH99YtNhkc8O5geOIoYQCWmRZ4yj1YfZ55GCnXsMD3UK/ywdqbYNMuZlnl6m7Aplk/TidEw2J1GuUwGEhfYCXHRoJHbr4R687bbZXVd1Uqd5AT6apBS9+BvvaYzN89TavTCpxGUcM9kUgZlyMOFC9dm2X+oNw9gEXEDu16AAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)
@@ -47,11 +46,11 @@ let T = datatable(prop:string, value:string, predicate:bool)
     "prop03", "val_c", true
 ];
 T
-| extend p = pack(prop, value)
+| extend p = bag_pack(prop, value)
 | summarize dict=make_bag_if(p, predicate)
 ```
 
-**Results**
+**Output**
 
 |dict|
 |----|
@@ -60,7 +59,7 @@ T
 Use [bag_unpack()](bag-unpackplugin.md) plugin for transforming the bag keys in the make_bag_if() output into columns.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOywqDMBBF9/mKwZWCiz52Fv/CXSlhoqMEo4Y8Sin9+E5Ei002J5x7wzUUoIEaOgx8laHcusVWPjg9DyU80UT6vayjTrcYqFLLYgpxF8AnS43TOSsh47hEhuAilQd52aVi6NH4P3vdbbtVxeMmGvEBegWaO7C8z2I7rtO2TQVrH6cJnX4TKBzqCUeSDFL3uT1sTUlKHeYUlHFeP2MsvmCOilb+AAAA" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOzQqDMBCE73mKxZNCDv25WXwLb6XIxqwSjBpiUkrpw3cjWuzuZZb5ZhlLAWqoQGPgVZZy52dXLsGbqZfwRBvpdzlP2rQYqFTzbAtxF8CTpcTpnEnIGG+QRfCR5MG87KZi0aFd/tzr7rZbVDxuohYfoFegSYPjfgr7xmE7rPW2XgUjSxxH9OZNiahGHKhJqOlyd+ibSEoZ1uurOK3PWBZfye97QAIBAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let T = datatable(prop:string, value:string, predicate:bool)
@@ -70,12 +69,12 @@ let T = datatable(prop:string, value:string, predicate:bool)
     "prop03", "val_c", true
 ];
 T
-| extend p = pack(prop, value)
+| extend p = bag_pack(prop, value)
 | summarize bag=make_bag_if(p, predicate)
 | evaluate bag_unpack(bag)
 ```
 
-**Results**
+**Output**
 
 |prop01|prop03|
 |---|---|

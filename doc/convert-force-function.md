@@ -41,7 +41,7 @@ Convert a force value from one unit to another.
 
 ## Returns
 
-Returns the input value converted from one force unit to another.
+ Returns the input value converted from one force unit to another. Invalid units return `null`.
 
 ## Example
 

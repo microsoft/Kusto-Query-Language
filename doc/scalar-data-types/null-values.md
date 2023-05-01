@@ -61,7 +61,7 @@ Results:
 
 ## Null values and the where query operator
 
-The [where operator](../whereoperator.md) uses Boolean expressions to determine
+The [where operator](../whereoperator.md) use Boolean expressions to determine
 if to emit each input record to the output. This operator treats null values as if
 they're `bool(false)`. Records for which the predicate returns the null value are dropped and don't appear in the output.
 

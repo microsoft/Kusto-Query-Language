@@ -1,9 +1,9 @@
 ---
 title: series_add() - Azure Data Explorer
-description: This article describes series_add() in Azure Data Explorer.
+description: Learn how to use the series_add() function to calculate the element-wise addition of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/22/2023
 ---
 # series_add()
 
@@ -13,9 +13,11 @@ Calculates the element-wise addition of two numeric series inputs.
 
 `series_add(`*series1*`,` *series2*`)`
 
-## Arguments
+## Parameters
 
-* *series1, series2*: Input numeric arrays to be element-wise added into a dynamic array result. All arguments must be dynamic arrays. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series1, series2* | dynamic | &check; | The numeric arrays to be element-wise added into a dynamic array result. |
 
 ## Returns
 
@@ -23,7 +25,9 @@ Dynamic array of calculated element-wise add operation between the two inputs. A
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1XMwQrCMBAE0LtfMcdGctl69lvC0qyiYhN2c0iCH99UhOJxHjOjvN4FFTdNbxBKwgVWJINOH0gtskY0XEfjjPmgPqj9KGt6ylJgNDDz8gqsym2qvvnuPGz+9+7RPKo73owCxxi+RRN9iO15MtrHbgM/wNkBowAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

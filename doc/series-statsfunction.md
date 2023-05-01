@@ -1,68 +1,51 @@
 ---
 title: series_stats() - Azure Data Explorer
-description: This article describes series_stats() in Azure Data Explorer.
+description: Learn how to use the series_stats() function to calculate the statistics for a numerical series using multiple columns.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/27/2021
+ms.date: 03/29/2023
 ---
 # series_stats()
 
-`series_stats()` returns statistics for a numerical series using multiple columns.  
+Returns statistics for a numerical series in a table with a column for each statistic.
 
-The `series_stats()` function takes an expression returning a dynamical numerical array as input, and calculates the following statistics:
-
-Statistic | Description
----|---
- `min` | Minimum value in the input array.
- `min_idx`| The first position of the minimum value in the input array.
-`max` | Maximum value in the input array.
-`max_idx`| First position of the maximum value in the input array.
-`avg`| Average value of the input array.
- `variance` | Sample variance of input array.
- `stdev`| Sample standard deviation of the input array.
-
-> [!NOTE] 
-> This function returns multiple values, so it can't be used as the input for another function.
-> Consider using [series_stats_dynamic](./series-stats-dynamicfunction.md) if you only need a single value, such as "average".
+> [!NOTE]
+> This function returns multiple values. If you only need a single value, such as the average, consider using [series_stats_dynamic](./series-stats-dynamicfunction.md).
 
 ## Syntax
 
-`...` `|` `extend` `series_stats` `(` *Expr* [`,` *IgnoreNonFinite*] `)`
+`...` `|` `extend` `(` *Name*`,` ... `)` `=` `series_stats` `(` *series* [`,` *ignore_nonfinite*] `)`
 
-`...` `|` `extend` `(` *Name1* [`,` *Name2*...] `)` `=` `series_stats` `(` *Expr* [`,` *IgnoreNonFinite*] `)`
+## Parameters
 
-## Arguments
-
-* *Expr*: An expression that returns a value of type `dynamic`, holding
-  an array of numeric values. Numeric values are values for which arithmetic
-  operators are defined.
-  
-* *IgnoreNonFinite*: A Boolean expression that specifies whether to calculate the
-  statistics while ignoring non-finite values of *Expr* (`null`, `NaN`, `inf`, and so on).
-  If `false`, a single item in *Expr* with this value will result in
-  a value of `null` generated for all statistics values. The default value is `false`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *Name* | string | | The column labels for the output table. If not provided, the system will generate them. If you provide a limited number of names, the table will show only those columns.|
+| *series* | dynamic | &check; | An array of numeric values.|
+| *ignore_nonfinite* | bool | | Determines if the calculation includes non-finite values like `null`, `NaN`, `inf`, and so on. The default is `false`, which will result in `null` if non-finite values are present.|
 
 ## Returns
 
-### Syntax 1
+A table with a column for each of the statistics displayed in the following table.
 
-The following syntax results in the following new columns being added where *Expr* is the column reference `x`: `series_stats_x_min`, `series_stats_x_idx`, and so on.
-
-`...` `|` `extend` `series_stats` `(` *Expr* [`,` *IgnoreNonFinite*] `)`
-
-### Syntax 2
-
-The following syntax results in columns named `Name1`, `Name2`, and so on, containing these values in order.
-
-`...` `|` `extend` `(` *Name1* [`,` *Name2*...] `)` `=` `series_stats` `(` *Expr* [`,` *IgnoreNonFinite*] `)`
+|Statistic | Description|
+|--|--|
+| `min` | The minimum value in the input array.|
+| `min_idx`| The first position of the minimum value in the input array.|
+| `max` | The maximum value in the input array.|
+| `max_idx`| The first position of the maximum value in the input array.|
+| `avg`| The average value of the input array.|
+| `variance` | The sample variance of input array.|
+| `stdev`| The sample standard deviation of the input array.|
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
-```kusto
-print x=dynamic([23,46,23,87,4,8,3,75,2,56,13,75,32,16,29]) 
-| project series_stats(x)
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUaiwTanMS8zNTNaINjLWUTAx01EA0RbmQDaQ0lEAcsxNgYI6CqZAOUMo1xjINwSptYzVVOCqUSgoys9KTS5RKE4tykwtji8uSSwp1qjQBADbRN1SZAAAAA==" target="_blank">Run the query</a>
 
+```kusto
+print x=dynamic([23, 46, 23, 87, 4, 8, 3, 75, 2, 56, 13, 75, 32, 16, 29]) 
+| project series_stats(x)
 ```
 
 **Output**

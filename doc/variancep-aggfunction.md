@@ -1,13 +1,13 @@
 ---
 title: variancep() (aggregation function) - Azure Data Explorer
-description: Learn how to use the variancep() aggregation function to calculate the variance of an expression as a population in Azure Data Explorer.
+description: Learn how to use the variancep() aggregation function to calculate the population variance of an expression across the group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 03/02/2023
 ---
 # variancep() (aggregation function)
 
-Calculates the variance of *Expr* across the group, considering the group as a [population](https://en.wikipedia.org/wiki/Statistical_population).
+Calculates the variance of *expr* across the group, considering the group as a [population](https://en.wikipedia.org/wiki/Statistical_population).
 
 The following formula is used:
 
@@ -17,17 +17,17 @@ The following formula is used:
 
 ## Syntax
 
-`variancep` `(`*Expr*`)`
+`variancep(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*Expr* | string | &check; | Expression that will be used for aggregation calculation.|
+|*expr* | string | &check; | The expression to use for the variance calculation.|
 
 ## Returns
 
-Returns the variance value of *Expr* across the group.
+Returns the variance value of *expr* across the group.
 
 ## Example
 
@@ -39,7 +39,7 @@ range x from 1 to 5 step 1
 | summarize make_list(x), variancep(x) 
 ```
 
-**Results**
+**Output**
 
 |list_x|variance_x|
 |---|---|

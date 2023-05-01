@@ -3,7 +3,7 @@ title: evaluate plugin operator - Azure Data Explorer
 description: Learn how to use the evaluate plugin operator to invoke plugins.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/11/2022
+ms.date: 03/09/2023
 ---
 # evaluate plugin operator
 
@@ -15,22 +15,22 @@ The `evaluate` operator is a tabular operator that allows you to invoke query la
 >
 > * Syntactically, `evaluate` behaves similarly to the [invoke operator](./invokeoperator.md), which invokes tabular functions.
 > * Plugins provided through the evaluate operator aren't bound by the regular rules of query execution or argument evaluation.
-> * Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data (for example, [bag_unpack plugin](./bag-unpackplugin.md) and [pivot plugin](./pivotplugin.md)) can't be used when performing cross-cluster queries.
+> * Specific plugins may have specific restrictions. For example, plugins whose output schema depends on the data. For example, [bag_unpack plugin](./bag-unpackplugin.md) and [pivot plugin](./pivotplugin.md) can't be used when performing cross-cluster queries.
 
 ## Syntax
 
-[*T* `|`] `evaluate` [ *evaluateParameters* ] *PluginName* `(` [*PluginArg1* [`,` *PluginArg2*]... `)`
-
-## Arguments
-
-* *T* is an optional tabular input to the plugin. (Some plugins don't take
-  any input, and act as a tabular data source.)
-* *PluginName* is the mandatory name of the plugin being invoked.
-* *PluginArg1*, ... are the optional arguments to the plugin.
-* *evaluateParameters*: Zero or more (space-separated) parameters in the form of
-  *Name* `=` *Value* that control the behavior of the evaluate operation and execution plan. Each plugin may decide differently how to handle each parameter. Refer to each plugin's documentation for specific behavior.  
+[*T* `|`] `evaluate` [ *evaluateParameters* ] *PluginName* `(`[ *PluginArgs* ]`)`
 
 ## Parameters
+
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *T* | string | | A tabular input to the plugin. Some plugins don't take any input and act as a tabular data source.|
+| *evaluateParameters* | string | | Zero or more space-separated [evaluate parameters](#evaluate-parameters) in the form of *Name* `=` *Value* that control the behavior of the evaluate operation and execution plan. Each plugin may decide differently how to handle each parameter. Refer to each plugin's documentation for specific behavior.|
+| *PluginName* | string | &check; | The mandatory name of the plugin being invoked. |
+| *PluginArgs* | string | | Zero or more comma-separated arguments to provide to the plugin.|
+
+### Evaluate parameters
 
 The following parameters are supported:
 
@@ -62,7 +62,7 @@ The following plugins are supported:
 * [rolling-percentile plugin](rolling-percentile-plugin.md)
 * [rows-near plugin](rows-near-plugin.md)
 * [schema-merge plugin](schemamergeplugin.md)
-* [sql-request plugin](mysqlrequest-plugin.md)
+* [sql-request plugin](sqlrequestplugin.md)
 * [sequence-detect plugin](sequence-detect-plugin.md)
 
 ## Distribution hints

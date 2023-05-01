@@ -1,9 +1,9 @@
 ---
 title: Query statements - Azure Data Explorer
-description: This article describes Query statements in Azure Data Explorer.
+description: This article lists the types of query statements.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/30/2021
+ms.date: 04/11/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---

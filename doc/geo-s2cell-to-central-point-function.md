@@ -15,9 +15,11 @@ Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierar
 
 `geo_s2cell_to_central_point(`*s2cell*`)`
 
-## Arguments
+## Parameters
 
-*s2cell*: S2 cell token string value as it was calculated by [geo_point_to_s2cell()](geo-point-to-s2cell-function.md). The S2 cell token maximum string length is 16 characters.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *s2cell* | string | &check; | S2 cell token value as it was calculated by [geo_point_to_s2cell()](geo-point-to-s2cell-function.md). The S2 cell token maximum string length is 16 characters.|
 
 ## Returns
 
@@ -28,7 +30,9 @@ The geospatial coordinate values in [GeoJSON Format](https://tools.ietf.org/html
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSjIB5G2Cump+fHFRsmpOTnxJfnxyal5JUWJOfFgWQ0lQyNjE1MzcyVNrhqF1IqS1LwUheT8/KKUzLzEktRioG6wOj0kMYTCnPy89MyS0pRUoDIkBdEGsToKOYkl2KQMYwEypEkCnAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print point = geo_s2cell_to_central_point("1234567")
 | extend coordinates = point.coordinates
@@ -43,7 +47,9 @@ print point = geo_s2cell_to_central_point("1234567")
 
 The following example returns a null result because of the invalid S2 cell token input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSjIB5G2Cump+fHFRsmpOTnxJfnxyal5JUWJOfFgWQ2lRCVNADb75CkuAAAA" target="_blank">Run the query</a>
+
 ```kusto
 print point = geo_s2cell_to_central_point("a")
 ```

@@ -1,17 +1,13 @@
 ---
 title: pivot plugin - Azure Data Explorer
-description: This article describes pivot plugin in Azure Data Explorer.
+description: Learn how to use the pivot plugin to rotate a table with specified columns and aggregates the remaining columns.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/12/2023
 ---
 # pivot plugin
 
 Rotates a table by turning the unique values from one column in the input table into multiple columns in the output table and performs aggregations as required on any remaining column values that will appear in the final output.
-
-```kusto
-T | evaluate pivot(PivotColumn)
-```
 
 > [!NOTE]
 > If the OutputSchema is not specified, the output schema of the `pivot` plugin is based on the input data. Therefore, multiple executions of the plugin using different data inputs, may produce different output schema. This also means that the query that is referencing unpacked columns may become 'broken' at any time. For this reason, we do not recommend using this plugin for automation jobs without specifying the OutputSchema function.
@@ -20,13 +16,13 @@ T | evaluate pivot(PivotColumn)
 
 `T | evaluate pivot(`*pivotColumn*`[, `*aggregationFunction*`] [,`*column1* `[,`*column2* ... `]])` [`:` *OutputSchema*]
 
-## Arguments
+## Parameters
 
-| Name | Type | Required| Description |
-|---|---|---|---|
+| Name | Type | Required | Description |
+|--|--|--|--|
 | *pivotColumn* | string | &check; | The column to rotate. Each unique value from this column will be a column in the output table.|
-| *aggregationFunction* | aggregation function |  | Aggregates multiple rows in the input table to a single row in the output table. Currently supported functions: `min()`, `max()`, `take_any()`, `sum()`, `dcount()`, `avg()`, `stdev()`, `variance()`, `make_list()`, `make_bag()`, `make_set()`, `count()` (default is `count()`). |
-| *column1*, *column2*, ... | string | | Column names. The output table will contain an additional column per each specified column. Default: all columns other than the pivoted column and the aggregation column. |
+| *aggregationFunction* | string |  | An aggregation function used to aggregate multiple rows in the input table to a single row in the output table. Currently supported functions: `min()`, `max()`, `take_any()`, `sum()`, `dcount()`, `avg()`, `stdev()`, `variance()`, `make_list()`, `make_bag()`, `make_set()`, `count()`. The default is `count()`. |
+| *column1*, *column2*, ... | string | | A column name or comma-separated list of column names. The output table will contain an additional column per each specified column. The default is all columns other than the pivoted column and the aggregation column. |
 | *OutputSchema* | | | The names and types for the expected columns of the `pivot` plugin output.<br /><br />**Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`<br /><br />Specifying the expected schema optimizes query execution by not having to first run the actual query to explore the schema. An error is raised if the run-time schema doesn't match the *OutputSchema* schema. |
 
 ## Returns
@@ -39,7 +35,9 @@ Pivot returns the rotated table with specified columns (*column1*, *column2*, ..
 
 For each EventType and State starting with 'AL', count the number of events of this type in this state.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKCjKz0pNLlEILkksSdVRAIuHVBakAqXKM1KLUiESCsUliUUlxeWZJRkKSo4+SnBZuHqFjMRiBaXwzLwUkGRqWWJOKUhfQWZZfokG2AxNABd5uxJ5AAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | project State, EventType
@@ -61,7 +59,9 @@ StormEvents
 
 For each EventType and State starting with 'AR', display the total number of direct deaths.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVKC5JLCopLs8syVBQcgxSAsoWFOVnpSaXQOR1FMC6QioLgEyX1MSSjGKXzCKgNNwYZEEFOwUDoERqWWJOKcjwgsyy/BINqEHFpbkayIo1NQH4o/xAlgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | where State startswith "AR"
@@ -85,7 +85,9 @@ StormEvents
 
 Result is identical to previous example.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVKC5JLCopLs8syVBQcgxSAsoWFOVnpSaXQOR1FMC6QioLgEyX1MSSjGKXzCKgNNwYZEEFOwUDoERqWWJOKcjwgsyy/BINqEHFpbkayIo1kczWBAB7xf6goQAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | where State startswith "AR"
@@ -109,7 +111,9 @@ StormEvents
 
 For each event type, source, and state, sum the number of direct deaths.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03NOwqAMBCE4d5TLFYKFp5AEPQCxgsEWUhAjexOIoKH91GI9Tc/YxBk6ROv0Oyk3bEwGVgwKaxAdw9HeTvkn3Zs4bTzwhOoofoGTnaOT7P5FFC8fUUal+I/Lit6j8Zju9WEKBOXFzKrwnaAAAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | where State startswith "AR"
@@ -134,6 +138,9 @@ StormEvents
 
 The following example selects specific columns in the StormEvents table.
 It uses an explicit schema definition that allows various optimizations to be evaluated before running the actual query.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKCjKz0pNLlEILkksSdVRAIuHVBakAqXKM1KLUhEiChmJxQpK4Zl5KUpAydSyxJxSoBaFgsyy/BINsHZNKwUNuHKr4pKizLx0HQVHH0cnR19Hq5x8KC/YG8LRBADkMGe5igAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents

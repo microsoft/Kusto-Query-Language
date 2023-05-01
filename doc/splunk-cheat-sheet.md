@@ -1,8 +1,8 @@
 ---
 title: Splunk to Kusto map for Azure Data Explorer and Azure Monitor
-description: Concept mapping for users who are familiar with Splunk to learn the Kusto Query Language to write log queries.
+description: Learn how to write log queries in Kusto Query Language by comparing Splunk and Kusto Query Language concept mappings.
 ms.topic: conceptual
-ms.date: 09/07/2022
+ms.date: 01/31/2023
 ---
 
 # Splunk to Kusto Query Language map
@@ -15,7 +15,7 @@ The following table compares concepts and data structures between Splunk and Kus
 
  | Concept | Splunk | Kusto |  Comment |
  |:---|:---|:---|:---|
- | deployment unit  | cluster |  cluster |  Kusto allows arbitrary cross-cluster queries. Splunk does not. |
+ | deployment unit  | cluster |  cluster |  Kusto allows arbitrary cross-cluster queries. Splunk doesn't. |
  | data caches |  buckets  |  caching and retention policies |  Controls the period and caching level for the data. This setting directly affects the performance of queries and the cost of the deployment. |
  | logical partition of data  |  index  |  database  |  Allows logical separation of the data. Both implementations allow unions and joining across these partitions. |
  | structured event metadata | N/A | table |  Splunk doesn't expose the concept of event metadata to the search language. Kusto logs have the concept of a table, which has columns. Each event instance is mapped to a row. |
@@ -36,7 +36,7 @@ The following table specifies functions in Kusto that are equivalent to Splunk f
 | `if`     | `iff()`   | (1) |
 | `tonumber` | `todouble()`<br />`tolong()`<br />`toint()` | (1) |
 | `upper`<br />`lower` |`toupper()`<br />`tolower()`|(1) |
-| `replace` | `replace_string()` or `replace_regex()` | (1)<br />Note that although replace functions take three parameters in both products, the parameters are different. |
+| `replace` | `replace_string()` or `replace_regex()` | (1)<br />Although `replace` functions take three parameters in both products, the parameters are different. |
 | `substr` | `substring()` | (1)<br />Also note that Splunk uses one-based indices. Kusto notes zero-based indices. |
 | `tolower` |  `tolower()` | (1) |
 | `toupper` | `toupper()` | (1) |
@@ -99,7 +99,7 @@ Splunk has an `eval` function, but it's not comparable to the `eval` operator in
 | Product | Operator | Example |
 |:---|:---|:---|
 | Splunk | `eval` |  `Event.Rule=330009.2`<br />&#124; `eval state= if(Data.Exception = "0", "success", "error")` |
-| Kusto | `extend` | `Office_Hub_OHubBGTaskError`<br />&#124; `extend state = iif(Data_Exception == 0,"success" ,"error")` |
+| Kusto | `extend` | `Office_Hub_OHubBGTaskError`<br />&#124; `extend state = iff(Data_Exception == 0,"success" ,"error")` |
 
 ### Rename
 
@@ -182,4 +182,4 @@ In Kusto, you can use `summarize arg_min()` to reverse the order of which record
 
 ## Next steps
 
-- Walk through a tutorial on the [Kusto Query Language](tutorial.md?pivots=azuremonitor).
+- Walk through a tutorial on the [Kusto Query Language](/azure/data-explorer/kusto/query/tutorials/learn-common-operators?pivots=azuremonitor).

@@ -24,7 +24,7 @@ being referenced will be the same across all uses.
 
 ## Returns
 
-`now() - a_timespan`
+A [datetime](./scalar-data-types/datetime.md) value `now() - a_timespan`
 
 ## Example
 

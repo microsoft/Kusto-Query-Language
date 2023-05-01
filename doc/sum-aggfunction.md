@@ -1,29 +1,29 @@
 ---
 title: sum() (aggregation function) - Azure Data Explorer
-description: This article describes sum() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the sum() (aggregation function) function to calculate the sum of an expression across the group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/05/2022
+ms.date: 02/05/2023
 ---
 # sum() (aggregation function)
 
-Calculates the sum of *Expr* across the group.
+Calculates the sum of *expr* across the group.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`sum` `(`*Expr*`)`
+`sum(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr*  string | &check; | Expression used for aggregation calculation. |
+| *expr*  string | &check; | The expression used for the aggregation calculation. |
 
 ## Returns
 
-Returns the sum value of *Expr* across the group.
+Returns the sum value of *expr* across the group.
 
 ## Example
 
@@ -38,7 +38,7 @@ StormEvents
 | sort by TotalDeathCases
 ```
 
-**Results**
+**Output**
 
 The results table shown includes only the first 10 rows.
 

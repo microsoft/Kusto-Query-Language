@@ -3,7 +3,7 @@ title: join operator - Azure Data Explorer
 description: Learn how to use the join operator to merge the rows of two tables. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/22/2022
+ms.date: 03/12/2023
 ms.localizationpriority: high 
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
@@ -12,61 +12,57 @@ zone_pivot_groups: kql-flavors
 
 Merge the rows of two tables to form a new table by matching values of the specified columns from each table.
 
-```kusto
-Table1 | join (Table2) on CommonColumn, $left.Col1 == $right.Col2
-```
-
 ## Syntax
 
-*LeftTable* `|` `join` [*JoinParameters*] `(` *RightTable* `)` `on` *Attributes*
+*LeftTable* `|` `join` [ *JoinParameters* ] `(`*RightTable*`)` `on` *Attributes*
 
-## Arguments
+## Parameters
 
-* *LeftTable*: The **left** table or tabular expression, sometimes called **outer** table, whose rows are to be merged. Denoted as `$left`.
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*LeftTable*|string|&check;|The left table or tabular expression, sometimes called the outer table, whose rows are to be merged. Denoted as `$left`.|
+|*RightTable*|string|&check;|The right table or tabular expression, sometimes called the inner table, whose rows are to be merged. Denoted as `$right`.|
+|*Attributes*|string|&check;|One or more comma-separated rules that describe how rows from *LeftTable* are matched to rows from *RightTable*. Multiple rules are evaluated using the `and` logical operator. See [Rules](#rules).|
+|*JoinParameters*|string||Zero or more space-separated parameters in the form of *Name* `=` *Value* that control the behavior of the row-match operation and execution plan. See [Supported parameters](#supported-parameters).
 
-* *RightTable*: The **right** table or tabular expression, sometimes called **inner** table, whose rows are to be merged. Denoted as `$right`.
+### Rules
 
-* *Attributes*: One or more comma-separated **rules** that describe how rows from
-  *LeftTable* are matched to rows from *RightTable*. Multiple rules are evaluated using the `and` logical operator.
+| Rule kind | Syntax | Predicate |
+|---|---|---|
+| Equality by name | *ColumnName* | `where` *LeftTable*.*ColumnName* `==` *RightTable*.*ColumnName* |
+| Equality by value | `$left.`*LeftColumn* `==` `$right.`*RightColumn* | `where` `$left.`*LeftColumn* `==` `$right.`*RightColumn* |
 
-  A **rule** can be one of:
+> [!NOTE]
+> For 'equality by value', the column names *must* be qualified with the applicable owner table denoted by `$left` and `$right` notations.
 
-  |Rule kind        |Syntax          |Predicate    |
-  |-----------------|--------------|-------------------------|
-  |Equality by name |*ColumnName*    |`where` *LeftTable*.*ColumnName* `==` *RightTable*.*ColumnName*|
-  |Equality by value|`$left.`*LeftColumn* `==` `$right.`*RightColumn*|`where` `$left.`*LeftColumn* `==` `$right.`*RightColumn*       |
+### Supported parameters
 
-    > [!NOTE]
-    > For 'equality by value', the column names *must* be qualified with the applicable owner table denoted by `$left` and `$right` notations.
+::: zone pivot="azuredataexplorer"
 
-* *JoinParameters*: Zero or more space-separated parameters in the form of *Name* `=` *Value* that control the behavior of the row-match operation and execution plan. The following parameters are supported:
+|Parameters name |Values |Description  |
+|---|---|---|
+|`kind`|Join flavors|See [Join Flavors](#join-flavors)|
+|`hint.remote`  |`auto`, `left`, `local`, `right` |See [Cross-Cluster Join](joincrosscluster.md)|
+|`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
+|`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
+|`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
 
-    ::: zone pivot="azuredataexplorer"
+::: zone-end
 
-    |Parameters name |Values |Description  |
-    |---|---|---|
-    |`kind`|Join flavors|See [Join Flavors](#join-flavors)|
-    |`hint.remote`  |`auto`, `left`, `local`, `right` |See [Cross-Cluster Join](joincrosscluster.md)|
-    |`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
-    |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
-    |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
+::: zone pivot="azuremonitor"
 
-    ::: zone-end
+|Name |Values |Description |
+|---|---|---|
+|`kind`         |Join flavors|See [Join Flavors](#join-flavors)|
+|`hint.remote`  |`auto`, `left`, `local`, `right`   | |
+|`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
+|`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
+|`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
 
-    ::: zone pivot="azuremonitor"
+::: zone-end
 
-    |Name |Values |Description |
-    |---|---|---|
-    |`kind`         |Join flavors|See [Join Flavors](#join-flavors)|
-    |`hint.remote`  |`auto`, `left`, `local`, `right`   | |
-    |`hint.strategy=broadcast` |Specifies the way to share the query load on cluster nodes. |See [broadcast join](broadcastjoin.md) |
-    |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. |See [shuffle query](shufflequery.md) |
-    |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. |See [shuffle query](shufflequery.md)  |
-
-    ::: zone-end
-
-> [!WARNING]
-> If `kind` isn't specified, the default join flavor is `innerunique`. This is different than some other analytics products that have `inner` as the default flavor.  See [join-flavors](#join-flavors) to understand the differences and make sure  the query yields the intended results.
+> [!NOTE]
+> If `kind` isn't specified, the default join flavor is `innerunique`. This is different than some other analytics products that have `inner` as the default flavor. See [join-flavors](#join-flavors) to understand the differences and make sure the query yields the intended results.
 
 ## Returns
 

@@ -1,9 +1,9 @@
 ---
 title: acos() - Azure Data Explorer
-description: Learn how to use the function acos() to calculate the angle of the cosine input.
+description: Learn how to use the acos() function to calculate the angle of the cosine input.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/20/2022
+ms.date: 04/11/2023
 ---
 # acos()
 
@@ -16,7 +16,7 @@ Calculates the angle whose cosine is the specified number. Inverse operation of 
 ## Parameters
 
 | Name | Type | Required | Description |
-| -- | -- | -- | -- |
+|--|--|--|--|
 | *x* | real | &check; | The value used to calculate the arc cosine. |
 
 ## Returns

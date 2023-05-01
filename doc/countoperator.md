@@ -11,7 +11,7 @@ Returns the number of records in the input record set.
 
 ## Syntax
 
-`T | count`
+*T* `|` `count`
 
 ## Parameters
 

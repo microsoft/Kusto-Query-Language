@@ -1,9 +1,9 @@
 ---
 title: tdigest() (aggregation function) - Azure Data Explorer
-description: This article describes tdigest() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the tdigest() (aggregation function) function to calculate the intermediate results of the weighted percentiles of expressions across the group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 08/14/2022
+ms.date: 02/20/2023
 ---
 # tdigest() (aggregation function)
 
@@ -15,18 +15,18 @@ For more information, see the [underlying algorithm (T-Digest) and the estimated
 
 ## Syntax
 
- `tdigest` `(`*Expr* [`,` *WeightExpr*]`)`
+`tdigest(`*expr* [`,` *weight*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression used for the aggregation calculation. |
-| *WeightExpr* | string | &check; | Expression used as the weight of the values for the aggregation calculation. |
+| *expr* | string | &check; | The expression used for the aggregation calculation. |
+| *weight* | string | | The weights of the values for the aggregation calculation. |
 
 ## Returns
 
-The Intermediate results of weighted percentiles of `*Expr*` across the group.
+The Intermediate results of weighted percentiles of `*expr*` across the group.
 
 > [!TIP]
 >

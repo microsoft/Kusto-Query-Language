@@ -1,83 +1,56 @@
 ---
 title: search operator - Azure Data Explorer
-description: This article describes search operators in Azure Data Explorer.
+description: Learn how to use the search operator to search for a text pattern in multiple tables and columns.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
-zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+ms.date: 03/15/2023
 ---
 # search operator
 
 Searches a text pattern in multiple tables and columns.
 
-::: zone pivot="azuredataexplorer"
-
-::: zone-end
-
-::: zone pivot="azuremonitor"
-
 > [!NOTE]
-> `search` operator is substantially less efficient than table-specific and column-specific text filtering. Whenever the tables or columns are known, it is recommended to use the [union operator](unionoperator.md) and [where operator](whereoperator.md). Search will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
-
-::: zone-end
+> If you know the specific tables and columns you want to search, it's more performant to use the [union](unionoperator.md) and [where](whereoperator.md) operators. The `search` operator can be slow when searching across a large number of tables and columns.
 
 ## Syntax
 
-* [*TabularSource* `|`] `search` [`kind=`*CaseSensitivity*] [`in` `(`*TableSources*`)`] *SearchPredicate*
+[*T* `|`] `search` [`kind=` *CaseSensitivity* ] [`in` `(`*TableSources*`)`] *SearchPredicate*
 
-## Arguments
+## Parameters
 
-* *TabularSource*: An optional tabular expression that acts as a data source to be searched over,
-  such as a table name, a [union operator](unionoperator.md), the results
-  of a tabular query, etc. Cannot appear together with the optional phrase that includes *TableSources*.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | | The tabular data source to be searched over, such as a table name, a [union operator](unionoperator.md), or the results of a tabular query. Cannot appear together with *TableSources*.|
+| *CaseSensitivity* | string | | A flag that controls the behavior of all `string` scalar operators, such as `has`, with respect to case sensitivity. Valid values are `default`, `case_insensitive`, `case_sensitive`. The options `default` and `case_insensitive` are synonymous, since the default behavior is case insensitive.|
+| *TableSources* | string | | A comma-separated list of "wildcarded" table names to take part in the search. The list has the same syntax as the list of the [union operator](unionoperator.md). Cannot appear together with *TabularSource*.|
+| *SearchPredicate* | string | &check; | A boolean expression to be evaluated for every record in the input. If it returns `true`, the record is outputted. See [Search predicate syntax](#search-predicate-syntax).|
 
-* *CaseSensitivity*: An optional flag that controls the behavior of all `string` scalar operators
-  with respect to case sensitivity. Valid values are the two synonyms `default` and `case_insensitive`
-  (which is the default for operators such as `has`, namely being case-insensitive) and `case_sensitive`
-  (which forces all such operators into case-sensitive matching mode).
+### Search predicate syntax
 
-* *TableSources*: An optional comma-separated list of "wildcarded" table names to take part in the search.
-  The list has the same syntax as the list of the [union operator](unionoperator.md).
-  Cannot appear together with the optional *TabularSource*.
+The *SearchPredicate* allows you to search for specific terms in all columns of a table. The operator that will be applied to a search term depends on the presence and placement of a wildcard asterisk (`*`) in the term, as shown in the following table.
 
-* *SearchPredicate*: A mandatory predicate that defines what to search for (in other words,
-  a Boolean expression that is evaluated for every record in the input and that, if it returns
-  `true`, the record is outputted.)
-  The syntax for *SearchPredicate* extends and modifies the normal Kusto syntax for Boolean expressions:
+|Literal   |Operator   |
+|----------|-----------|
+|`billg`   |`has`      |
+|`*billg`  |`hassuffix`|
+|`billg*`  |`hasprefix`|
+|`*billg*` |`contains` |
+|`bi*lg`   |`matches regex`|
 
-  **String matching extensions**: String literals that appear as terms in the *SearchPredicate* indicate a term
-    match between all columns and the literal using `has`, `hasprefix`, `hassuffix`, and the inverted (`!`)
-    or case-sensitive (`cs`) versions of these operators. The decision whether to apply `has`, `hasprefix`,
-    or `hassuffix` depends on whether the literal starts or ends (or both) by an asterisk (`*`). Asterisks
-    inside the literal are not allowed.
+You can also restrict the search to a specific column, look for an exact match instead of a term match, or search by regular expression. The syntax for each of these cases is shown in the following table.
 
-    |Literal   |Operator   |
-    |----------|-----------|
-    |`billg`   |`has`      |
-    |`*billg`  |`hassuffix`|
-    |`billg*`  |`hasprefix`|
-    |`*billg*` |`contains` |
-    |`bi*lg`   |`matches regex`|
+|Syntax|Explanation|
+|--|--|
+|*ColumnName*`:`*StringLiteral* | This syntax can be used to restrict the search to a specific column. The default behavior is to search all columns. |
+|*ColumnName*`==`*StringLiteral* | This syntax can be used to search for exact matches of a column against a string value. The default behavior is to look for a term-match.|
+| *Column* `matches regex` *StringLiteral* | This syntax indicates regular expression matching, in which *StringLiteral* is the regex pattern.|
 
-  **Column restriction**: By default, string matching extensions attempt to match against all columns
-    of the data set. It is possible to restrict this matching to a particular column by using
-    the following syntax: *ColumnName*`:`*StringLiteral*.
+Use boolean expressions to combine conditions and create more complex searches. For example, `"error" and x==123` would result in a search for records that have the term `error` in any columns and the value `123` in the `x` column.
 
-  **String equality**: Exact matches of a column against a string value (instead of a term-match)
-    can be done using the syntax *ColumnName*`==`*StringLiteral*.
+> [!NOTE]
+> If both *TabularSource* and *TableSources* are omitted, the search is carried over all unrestricted tables and views of the database in scope.
 
-  **Other Boolean expressions**: All regular Kusto Boolean expressions are supported by the syntax.
-    For example, `"error" and x==123` means: search for records that have the term `error` in any
-    of their columns, and have the value `123` in the `x` column."
-
-  **Regex match**: Regular expression matching is indicated using *Column* `matches regex` *StringLiteral*
-    syntax, where *StringLiteral* is the regex pattern.
-
-Note that if both *TabularSource* and *TableSources* are omitted, the search is carried over all unrestricted tables
-and views of the database in scope.
-
-## Summary of string matching extensions
+### Search predicate syntax examples
 
   |# |Syntax                                 |Meaning (equivalent `where`)           |Comments|
   |--|---------------------------------------|---------------------------------------|--------|
@@ -97,44 +70,86 @@ and views of the database in scope.
 
 ## Remarks
 
-**Unlike** the [find operator](findoperator.md), the `search` operator does not support the following:
+Unlike the [find operator](findoperator.md), the `search` operator does not support the following:
 
 1. `withsource=`: The output will always include a column called `$table` of type `string` whose value
    is the table name from which each record was retrieved (or some system-generated name if the source
-   is not a table but a composite expression).
+   isn't a table but a composite expression).
 2. `project=`, `project-smart`: The output schema is equivalent to `project-smart` output schema.
 
 ## Examples
 
+### Global term search
+
+Search for a term over all unrestricted tables and views of the database in scope.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlBQci9KTc1TAgAhG1rADgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
-// 1. Simple term search over all unrestricted tables and views of the database in scope
-search "billg"
+search "Green"
+```
 
-// 2. Like (1), but looking only for records that match both terms
-search "billg" and ("steveb" or "satyan")
+The output contains records from the `Customers`, `Products`, and `SalesTable` tables. The `Customers` records shows all customers with the last name "Green", and the `Products` and `SalesTable` records shows products with some mention of "Green".
 
-// 3. Like (1), but looking only in the TraceEvent table
-search in (TraceEvent) "billg"
+### Conditional global term search
 
-// 4. Like (2), but performing a case-sensitive match of all terms
-search kind=case_sensitive "BillB" and ("SteveB" or "SatyaN")
+Search for records that match both terms over all unrestricted tables and views of the database in scope.
 
-// 5. Like (1), but restricting the match to some columns
-search CEO:"billg" or CSA:"billg"
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlBQci9KTc1TUkjMS1HQUHJJzSmtSFVSyC9SUAooyi9OLU8sSlXSBADUfdV9LAAAAA==" target="_blank">Run the query</a>
 
-// 6. Like (1), but only for some specific time limit
-search "billg" and Timestamp >= datetime(1981-01-01)
+```kusto
+search "Green" and ("Deluxe" or "Proseware")
+```
 
-// 7. Searches over all the higher-ups
-search in (C*, TF) "billg" or "davec" or "steveb"
+### Search a specific table
 
-// 8. A different way to say (7). Prefer to use (7) when possible
-union C*, TF | search "billg" or "davec" or "steveb"
+Search only in the `Customers` table.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlDIzFPQCCjKTylNLinWVFByL0pNzVMCAAJBkngcAAAA" target="_blank">Run the query</a>
+
+```kusto
+search in (Products) "Green"
+```
+
+### Case-sensitive search
+
+Search for records that match both case-sensitive terms over all unrestricted tables and views of the database in scope.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlDIzsxLsU1OLE6NL07NK84sySxLVVBKyilNVQIAA9DDEiEAAAA=" target="_blank">Run the query</a>
+
+```kusto
+search kind=case_sensitive "blue"
+```
+
+### Search specific columns
+
+Search for a term in the "FirstName" and "LastName" columns over all unrestricted tables and views of the database in scope.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlBwyywqLvFLzE21UnJMLMrPU1LIL1LwSYSJeZSmZ6QWKwEA/CSSXi0AAAA=" target="_blank">Run the query</a>
+
+```kusto
+search FirstName:"Aaron" or LastName:"Hughes"
+```
+
+### Limit search by timestamp
+
+Search for a term over all unrestricted tables and views of the database in scope if the term appears in a record with a date greater than the given date.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAAytOTSxKzlBQ8ihNz0gtVlJIzEtRcEksSfVOrVSwU0gBskoyc1M11I0MDCx1DQyBSF0TAMIgQA00AAAA" target="_blank">Run the query</a>
+
+```kusto
+search "Hughes" and DateKey > datetime('2009-01-01')
 ```
 
 ## Performance Tips
 
-  |# |Tip                                                                                  |Prefer                                        |Over                                                                    |
-  |--|-------------------------------------------------------------------------------------|----------------------------------------------|------------------------------------------------------------------------|
-  | 1| Prefer to use a single `search` operator over several consecutive `search` operators|`search "billg" and ("steveb" or "satyan")`   |<code>search "billg" &#124; search "steveb" or "satyan"<code>           |
-  | 2| Prefer to filter inside the `search` operator                                       |`search "billg" and "steveb"`                 |<code>search * &#124; where * has "billg" and * has "steveb"<code>      |
+|#|Tip|Prefer|Over|
+|--|--|--|--|
+| 1| Prefer to use a single `search` operator over several consecutive `search` operators|`search "billg" and ("steveb" or "satyan")` |<code>search "billg" &#124; search "steveb" or "satyan"<code>|
+| 2| Prefer to filter inside the `search` operator |`search "billg" and "steveb"` |<code>search * &#124; where * has "billg" and * has "steveb"<code> |

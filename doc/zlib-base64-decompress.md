@@ -3,7 +3,7 @@ title: zlib_decompress_from_base64_string() - Azure Data Explorer
 description: This article describes the zlib_decompress_from_base64_string() command in Azure Data Explorer.
 ms.reviewer: elgevork
 ms.topic: reference
-ms.date: 09/29/2020
+ms.date: 02/15/2023
 ---
 # zlib_decompress_from_base64_string()
 
@@ -14,11 +14,13 @@ Decodes the input string from base64 and performs zlib decompression.
 
 ## Syntax
 
-`zlib_decompress_from_base64_string('input_string')`
+`zlib_decompress_from_base64_string(`*string*`)`
 
-## Arguments
+## Parameters
 
-*input_string*: Input `string` that was compressed with zlib and then base64-encoded. The function accepts one string argument.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *string* | string | &check; | The string to decode. The string should have been compressed with zlib and then base64-encoded.|
 
 ## Returns
 
@@ -28,21 +30,34 @@ Decodes the input string from base64 and performs zlib decompression.
 
 ## Examples
 
+### Valid input
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUahKzs8tULBVqMrJTIpPSQXxilKLi+PTivJz45MSi1PNTOKLS4BK0zWUUr3KfYKDDUpDg9NLvZOLfIMNk8v9XDzdHZ0rCp0CTWyVNAGxo0NZVAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print zcomp = zlib_decompress_from_base64_string("eJwLSS0uUSguKcrMS1cwNDIGACxqBQ4=")
 ```
 
-**Output:**
+**Output**
 
+|zcomp|
+|--|
 |Test string 123|
 
-Example of invalid input:
+### Invalid input
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUahKzs8tULBVqMrJTIpPSQXxilKLi+PTivJz45MSi1PNTOKLS4BK0zWUKgxAUEkTAB50Ccs6AAAA" target="_blank">Run the query</a>
 
 ```kusto
 print zcomp = zlib_decompress_from_base64_string("x0x0x0")
 ```
 
-**Output:**
+**Output**
+
+|zcomp|
+|--|
 ||
 
 ## Next steps

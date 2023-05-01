@@ -3,7 +3,7 @@ title: find operator - Azure Data Explorer
 description: Learn how to use the find operator to find rows that match a predicate across a set of tables.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/12/2022
+ms.date: 03/14/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -32,29 +32,26 @@ find in (Table1, Table2, Table3) where Fruit=="apple"
 ```
 
 > [!NOTE]
-> `find` operator is substentially less efficient than column-specific text filtering. Whenever the columns are known, it is recommended to use the [where operator](whereoperator.md). Find will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
+> `find` operator is substantially less efficient than column-specific text filtering. Whenever the columns are known, we recommend using the [where operator](whereoperator.md). `find` will not function well when the workspace contains large number of tables and columns and the data volume that is being scanned is high and the time range of the query is high.
 
 ::: zone-end
 
 ## Syntax
 
-* `find` [`withsource`=*ColumnName*] [`in` `(`*Table* [`,` *Table*, ...]`)`] `where` *Predicate* [`project-smart` | `project` *ColumnName* [`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...][`,` `pack_all()`]] 
+* `find` [`withsource`= *ColumnName*] [`in` `(`*Tables*`)`] `where` *Predicate* [`project-smart` | `project` *ColumnName*[`:` *ColumnType* `,` ... ] [`,` `pack_all()`]]
 
-* `find` *Predicate* [`project-smart` | `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...] [`, pack_all()`]]
+* `find` *Predicate* [`project-smart` | `project` *ColumnName*[`:` *ColumnType* `,` ... ] [`,` `pack_all()`]]
 
-## Arguments
+## Parameters
 
 ::: zone pivot="azuredataexplorer"
 
-* `withsource=`*ColumnName*: Optional. By default, the output will include a column called *source_* whose values indicate which source table has contributed each row. If specified, *ColumnName* will be used instead of *source_*.
-After wildcard matching, if the query references tables from more than one database (including the default database), the value of this column will have a table name qualified with the database. Similarly *cluster* and *database* qualifications will be present in the value if more than one cluster is referenced.
-* *Predicate*: A `boolean` [expression](./scalar-data-types/bool.md) over the columns of the input tables *Table* [`,` *Table*, ...]. It's evaluated for each row in each input table. For more information, see  [predicate-syntax details](./findoperator.md#predicate-syntax).
-* `Table`: Optional. By default, *find* will look in all the tables in the current database, for:
-
-  * The name of a table, such as `Events`
-  * A query expression, such as `(Events | where id==42)`
-  * A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin with `E`.
-* `project-smart` | `project`: If not specified, `project-smart` will be used by default. For more information, see [output-schema details](./findoperator.md#output-schema).
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*ColumnName*| string | | By default, the output will include a column called *source_* whose values indicate which source table has contributed each row. If specified, *ColumnName* will be used instead of *source_*. After wildcard matching, if the query references tables from more than one database including the default database, the value of this column will have a table name qualified with the database. Similarly *cluster* and *database* qualifications will be present in the value if more than one cluster is referenced.|
+| *Predicate* | bool | &check; | This boolean expression is evaluated for each row in each input table. For more information, see [predicate-syntax details](./findoperator.md#predicate-syntax).|
+| *Tables* | string | | Zero or more comma-separated table references. By default, `find` will look in all the tables in the current database. You can use:<br/>1. The name of a table, such as `Events`<br/>2. A query expression, such as `(Events | where id==42)`<br/>3. A set of tables specified with a wildcard. For example, `E*` would form the union of all the tables in the database whose names begin with `E`.|
+| `project-smart` or `project` | string | | If not specified, `project-smart` will be used by default. For more information, see [output-schema details](./findoperator.md#output-schema).|
 
 ::: zone-end
 
@@ -62,7 +59,7 @@ After wildcard matching, if the query references tables from more than one datab
 
 * `withsource=`*ColumnName*: Optional. By default, the output will include a column called *source_* whose values indicate which source table contributed each row. If specified, *ColumnName* will be used instead of *source_*.
 * *Predicate*: A `boolean` [expression](./scalar-data-types/bool.md) over the columns of the input tables *Table* [`,` *Table*, ...]. It's evaluated for each row in each input table. For more information, see  [predicate-syntax details](./findoperator.md#predicate-syntax).
-* `Table`: Optional. By default *find* will search all tables for:
+* *Tables*: Optional. Zero or more comma-separated table references. By default *find* will search all tables for:
 
   * The name of a table, such as `Events`
   * A query expression, such as `(Events | where id==42)`
@@ -90,10 +87,11 @@ When you use `project-smart`, the columns that will appear in the output will be
 * Columns that appear explicitly in the predicate.
 * Columns that are common to all the filtered tables.
 
-The rest of the columns will be packed into a property bag and will appear in an additional `pack_` column.
+The rest of the columns will be packed into a property bag and will appear in an additional `pack` column.
 A column that is referenced explicitly by the predicate and appears in multiple tables with multiple types, will have a different column in the result schema for each such type. Each of the column names will be constructed from the original column name and type, separated by an underscore.
 
-When using `project` *ColumnName*[`:`*ColumnType*] [`,` *ColumnName*[`:`*ColumnType*], ...][`,` `pack_all()`]:
+When using `project` *ColumnName*[`:` *ColumnType* `,` ... ] [`,` `pack_all()`]:
+
 * The result table will include the columns specified in the list. If a source table doesn't contain a certain column, the values in the corresponding rows will be null.
 * When specifying a *ColumnType* with a *ColumnName*, this column in the "result" will have the given type, and the values will be cast to that type if needed. The casting won't have an effect on the column type when evaluating the *Predicate*.
 * When `pack_all()` is used, all the columns, including the projected columns, are packed into a property bag and appear in an additional column, by default 'column1'. In the property bag, the source column name serves as the property name and the column's value serves as the property value.
@@ -127,20 +125,24 @@ For example, see [examples of cases where find will act as a union](./findoperat
 
 ### Term lookup across all tables in current database
 
-The query finds all rows from all tables in the current database in which any column includes the word `Kusto`.
-The resulting records are transformed according to the [output schema](#output-schema).
+The query finds all rows from all tables in the current database in which any column includes the word `Hernandez`. The resulting records are transformed according to the [output schema](#output-schema). The output includes rows from the `Customers` table and the `SalesTable` table of the `ContosoSales` database.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAA0vLzEtRUPJILcpLzEtJrVICAAv0zUwQAAAA" target="_blank">Run the query</a>
 
 ```kusto
-find "Kusto"
+find "Hernandez"
 ```
 
-## Term lookup across all tables matching a name pattern in the current database
+### Term lookup across all tables matching a name pattern in the current database
 
-The query finds all rows from all tables in the current database whose name starts with `K`, and in which any column includes the word `Kusto`.
-The resulting records are transformed according to the [output schema](#output-schema).
+The query finds all rows from all tables in the current database whose name starts with `C`, and in which any column includes the word `Hernandez`. The resulting records are transformed according to the [output schema](#output-schema). Now, the output only contains records from the `Customers` table.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/ContosoSales?query=H4sIAAAAAAAAA0vLzEtRyMxT0HDW0lQoz0gtSlXQUshILFZQ8kgtykvMS0mtUgIA+50LFCQAAAA=" target="_blank">Run the query</a>
 
 ```kusto
-find in (K*) where * has "Kusto"
+find in (C*) where * has "Hernandez"
 ```
 
 ### Term lookup across all tables in all databases in the cluster
@@ -149,8 +151,11 @@ The query finds all rows from all tables in all databases in which any column in
 This query is a [cross-database](./cross-cluster-or-database-queries.md) query.
 The resulting records are transformed according to the [output schema](#output-schema).
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0vLzEtRyMxT0EhJLElMSixO1VDXUtfU09JUKM9ILUpV0FLISCxWUPIuLS7JVwIAAccP5C0AAAA=" target="_blank">Run the query</a>
+
 ```kusto
-find in (database('*').*) "Kusto"
+find in (database('*').*) where * has "Kusto"
 ```
 
 ### Term lookup across all tables and databases matching a name pattern in the cluster
@@ -158,8 +163,11 @@ find in (database('*').*) "Kusto"
 The query finds all rows from all tables whose name starts with `K` in all databases whose name start with `B` and in which any column includes the word `Kusto`.
 The resulting records are transformed according to the [output schema](#output-schema).
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0vLzEtRyMxT0EhJLElMSixO1VAK1lLS1HPW0lQoz0gtSlXQUshILFZQ8i4tLslXAgCcXznPLwAAAA==" target="_blank">Run the query</a>
+
 ```kusto
-find in (database("B*").K*) where * has "Kusto"
+find in (database("S*").C*) where * has "Kusto"
 ```
 
 ### Term lookup in several clusters

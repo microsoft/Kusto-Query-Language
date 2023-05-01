@@ -3,7 +3,7 @@ title: geo_point_to_h3cell() - Azure Data Explorer
 description: Learn how to use the geo_point_to_h3cell() function to calculate the H3 Cell token string value of a geographic location.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_point_to_h3cell()
 
@@ -13,13 +13,15 @@ Read more about [H3 Cell](https://eng.uber.com/h3/).
 
 ## Syntax
 
-`geo_point_to_h3cell(`*longitude*`,`*latitude*`,`*resolution*`)`
+`geo_point_to_h3cell(`*longitude*`,` *latitude*`,` [ *resolution* ]`)`
 
-## Arguments
+## Parameters
 
-* *longitude*: Longitude value of a geographic location. Longitude *x* will be considered valid if *x* is a real number and *x* is in the range [-180, +180].
-* *latitude*: Latitude value of a geographic location. Latitude *y* will be considered valid if y is a real number and y in the range [-90, +90].
-* *resolution*: An optional `int` that defines the requested cell resolution. Supported values are in the range [0, 15]. If unspecified, the default value `6` is used.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *longitude* | real | &check; | Geospatial coordinate, longitude value in degrees. Valid value is a real number and in the range [-180, +180].|
+| *latitude* | real | &check; | Geospatial coordinate, latitude value in degrees. Valid value is a real number and in the range [-90, +90].|
+| *resolution* | int | | Defines the requested cell resolution. Supported values are in the range [0, 15]. If unspecified, the default value `6` is used.|
 
 ## Returns
 
@@ -67,7 +69,9 @@ For comparison with other available grid systems. see [geospatial clustering wit
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUcgwTk7NyVGwVUhPzY8vyAcKxZfkx0NENXTNTfQMTExMgdjMwNjSwtxER8HEQM/MwtLI1MDC1NLY0MQSJGamCQB924YeTQAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print h3cell = geo_point_to_h3cell(-74.04450446039874, 40.689250859314974, 6)
 ```
@@ -80,7 +84,9 @@ print h3cell = geo_point_to_h3cell(-74.04450446039874, 40.689250859314974, 6)
 
 The following example finds groups of coordinates. Every pair of coordinates in the group resides in the H3 Cell with average hexagon area of 253 km².
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA42QsU7DMBCGdz/FqVMimTbBaexUYoAu8AwIWWlypBaOHdnOAOLhMTVpywTnwTp/5++kv29DPAeNmbZdG5Q1UvU7H5wyAwVtzaDC3OPOYatjHyfObU6eCcRa3a8o3HC2brZ1LRiFqliLgjcFp4k/LLysRd0kXgpWVj98v3DRlJU4cV6xW84oeSGf4OdxbJ36QOjsbALcpTvLKfy3Nht4Cjh6mNDB4Ow8JQe5HloC8HHD2L6h1MqH61jyv+zKQDhiWvBLfXiHI+tQ66ge0MrJKhNksDK9ZuecLxFT2OYn9SOD/fdP+3qRfwFmTm29tgEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(location_id:string, longitude:real, latitude:real)
 [
@@ -102,7 +108,9 @@ datatable(location_id:string, longitude:real, latitude:real)
 
 The following example produces an empty result because of the invalid coordinate input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUcgwTk7NyVGwVUhPzY8vyAcKxZfkx0NENYwNDHQMdSw0Ab7tXHErAAAA" target="_blank">Run the query</a>
+
 ```kusto
 print h3cell = geo_point_to_h3cell(300,1,8)
 ```
@@ -115,7 +123,9 @@ print h3cell = geo_point_to_h3cell(300,1,8)
 
 The following example produces an empty result because of the invalid level input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUcgwTk7NyVGwVUhPzY8vyAcKxZfkx0NENQx1gNBMEwAbZ3TmKgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print h3cell = geo_point_to_h3cell(1,1,16)
 ```
@@ -128,7 +138,9 @@ print h3cell = geo_point_to_h3cell(1,1,16)
 
 The following example produces an empty result because of the invalid level input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUcgwTk7NyVGwVUhPzY8vyAcKxZfkx0NENQx1DHWAIhp5pTk5mpoAkLg/djEAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print h3cell = geo_point_to_h3cell(1,1,int(null))
 ```

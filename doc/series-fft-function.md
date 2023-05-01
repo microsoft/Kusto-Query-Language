@@ -1,9 +1,9 @@
 ---
 title: series_fft() - Azure Data Explorer
-description: This article describes series_fft() function in Azure Data Explorer.
+description: Learn how to use the series_fft() function to apply the Fast Fourier Transform (FFT) on a series.
 ms.reviewer: adieldar
 ms.topic: reference
-ms.date: 08/13/2020
+ms.date: 01/22/2023
 ---
 # series_fft()
 
@@ -15,10 +15,12 @@ The series_fft() function takes a series of complex numbers in the time/spatial 
 
 `series_fft(`*x_real* [`,` *x_imaginary*]`)`
 
-## Arguments
+## Parameters
 
-* *x_real*: Dynamic array of numeric values representing the real component of the series to transform.
-* *x_imaginary*: A similar dynamic array representing the imaginary component of the series. This parameter is optional and should be specified only if the input series contains complex numbers.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *x_real* | dynamic | &check; | A numeric array representing the real component of the series to transform.|
+| *x_imaginary* | dynamic | | A similar array representing the imaginary component of the series. This parameter should only be specified if the input series contains complex numbers.|
 
 ## Returns
 
@@ -28,7 +30,9 @@ The function returns the complex inverse fft in two series. The first series for
 
 * Generate a complex series, where the real and imaginary components are pure sine waves in different frequencies. Use FFT to transform it to the frequency domain:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
+    > [!div class="nextstepaction"]
+    > <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WP3XKDIBCF732KcwmtjZreZJrhWRxaV2WK6ABpsD/v3jXGJt0bOIfvLLuWIoJxdNYfpER6QTOeXi3lmMibsbnpThu3KVXtSiZ6HejPKnelxFcGrgXFw9JW7PmcjJAorg1Zi4THNSxl9pMdM8szOFXtD0dcqijA4c5pC0uui33mtesICa0fB5SIIxyeUCFEmlBl36AUyTWYvdqWESnHQeaYzT/reS8ZD6dh0N58ck816HeqrQlRpAWvPWl7Z87+4ppBd/eukbdfRdvGeg3mWO8LLqEQeGkKNZtiA66PHPccJg/L47312kecTezFHCZropq0IxvkLxVC14SgAQAA" target="_blank">Run the query</a>
+
     ```kusto
     let sinewave=(x:double, period:double, gain:double=1.0, phase:double=0.0)
     {
@@ -41,14 +45,16 @@ The function returns the complex inverse fft in two series. The first series for
     | extend (fft_y_real, fft_y_imag) = series_fft(y_real, y_imag)
     | render linechart with(ysplit=panels)
     ```
-    
+
     This query returns *fft_y_real* and *fft_y_imag*:  
-    
+
     :::image type="content" source="images/series-fft-function/series-fft.png" alt-text="Series fft." border="false":::
-    
+
 * Transform a series to the frequency domain, and then apply the inverse transform to get back the original series:
 
-    <!-- csl: https://help.kusto.windows.net/Samples -->
+    > [!div class="nextstepaction"]
+    > <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3VQ23KDIBB99yvOI7QmUfuSaYZvcWiyKi2CA6TRXv69GLWxnXZfYM+NZTUFeGXoIl9JsP4RJ3t+0pSiI6fs6dbXUpmlE/k2i4pGevqGsm3G8Z4g1ijF3RjLinh2inHs5sDYsx73k5nz5DM5JDrOYERe7A+41m6HaK6N1NBk6tAkTpqa0KNytkWGYGGwQQ4fqEOefID6QOaEwYnlM6xPsecpBvUDeih4lPtz20qn3mKmaOULlVr5wPpRXjqSegUO7oqqVtZrVPHbq6yqQjkZU0z3Uc4h4OOnyZcRZItgJlf2iSkWioqVU43Wf/JjROfsMx3DRl7kgL9l80KDtWilGeZgVNZBx8UcG+kCLio06KQh7WOqi2PRb5oNvtMqiEnFvwD5H9DbOQIAAA==" target="_blank">Run the query</a>
+
     ```kusto
     let sinewave=(x:double, period:double, gain:double=1.0, phase:double=0.0)
     {
@@ -63,8 +69,7 @@ The function returns the complex inverse fft in two series. The first series for
     | project-away fft_y_real, fft_y_imag   //  too many series for linechart with panels
     | render linechart with(ysplit=panels)
     ```
-    
+
     This query returns *y_real2* and *y_imag2, which are the same as *y_real* and *y_imag*:  
-    
+
     :::image type="content" source="images/series-fft-function/series-ifft.png" alt-text="Series ifft." border="false":::
-    

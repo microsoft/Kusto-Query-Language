@@ -56,8 +56,6 @@ The results table displays only the first 10 rows.
 | TEXAS                | 36.4607  | DARROUZETT           |
 | ...             | ...    | ...            |
 
-Find the first time an event with a direct death happened in each state showing all the columns.
-
 Find the last time an event with a direct death happened in each state showing all the columns.
 
 > [!div class="nextstepaction"]

@@ -1,9 +1,9 @@
 ---
 title: set_has_element() - Azure Data Explorer
-description: This article describes set_has_element() in Azure Data Explorer.
+description: Learn how to use the set_has_element() function to determine if the input set contains the specified value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/23/2020
+ms.date: 01/30/2023
 ---
 # set_has_element()
 
@@ -11,20 +11,24 @@ Determines whether the specified set contains the specified element.
 
 ## Syntax
 
-`set_has_element(`*array*,*value*`)`
+`set_has_element(`*set*`,` *value*`)`
 
-## Arguments
+## Parameters
 
-* *array*: Input array to search.
-* *value*: Value to search for. The value should be of type `long`, `integer`, `double`, `datetime`, `timespan`, `decimal`, `string`, `guid`, or `boolean`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *set* | dynamic | &check; | The input array to search.|
+| *value* | | &check; | The value for which to search. The value should be of type `long`, `int`, `double`, `datetime`, `timespan`, `decimal`, `string`, `guid`, or `bool`.|
 
 ## Returns
 
-True or false depending on if the value exists in the array.
+`true` or `false` depending on if the value exists in the array.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKrJNqcxLzM1M1ohWKsnILFbSUVCCkIl5IDK1IjG3ICdVKVZTgatGoaAoPys1uUQhKLW4NKfEtji1JD4jsTg+NSc1NzWvRANoHJIWTQCSW+h8ZAAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 print arr=dynamic(["this", "is", "an", "example"]) 
 | project Result=set_has_element(arr, "example")
@@ -34,7 +38,7 @@ print arr=dynamic(["this", "is", "an", "example"])
 
 |Result|
 |---|
-|1|
+|true|
 
 ## See also
 

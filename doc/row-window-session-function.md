@@ -1,13 +1,13 @@
 ---
 title: row_window_session() - Azure Data Explorer
-description: This article describes row_window_session() in Azure Data Explorer.
+description: Learn how to use the row_window_session() function to calculate session start values of a column in a serialized row set.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/18/2023
 ---
 # row_window_session()
 
-`row_window_session()` calculates session start values of a column in a [serialized row set](./windowsfunctions.md#serialized-row-set).
+Calculates session start values of a column in a [serialized row set](./windowsfunctions.md#serialized-row-set).
 
 ## Syntax
 
@@ -20,11 +20,11 @@ ms.date: 02/13/2020
 * *`MaxDistanceFromFirst`* establishes one criterion for starting a new session:
   The maximum distance between the current value of *`Expr`* and the value of
   *`Expr`* at the beginning of the session.
-  It is a scalar constant of type `timespan`.
+  It's a scalar constant of type `timespan`.
 
 * *`MaxDistanceBetweenNeighbors`* establishes a second criterion for starting a new session:
   The maximum distance from one value of *`Expr`* to the next.
-  It is a scalar constant of type `timespan`.
+  It's a scalar constant of type `timespan`.
 
 * *Restart* is an optional scalar expression of type `boolean`. If specified,
   every value that evaluates to `true` will immediately restart the session.
@@ -33,28 +33,23 @@ ms.date: 02/13/2020
 
 The function returns the values at the beginning of each session.
 
-**Notes**
-
 The function has the following conceptual calculation model:
 
-1. Go over the input sequence of values *`Expr`* in order.
+1. Goes over the input sequence of *`Expr`* values in order.
 
-1. For every value, determine if it establishes a new session.
+1. For every value, determines if it establishes a new session.
 
-1. If it establishes a new session, emit the value of *`Expr`*. Otherwise, emit the previous value of *`Expr`*.
+1. If it establishes a new session, it emits the value of *`Expr`*. Otherwise, emits the previous value of *`Expr`*.
 
-The condition that determines if the value represents a new session is
-a logical OR one of the following conditions:
-
-* If there was no previous session value, or the previous session value was null.
-
-* If the value of *`Expr`* equals or exceeds the previous session value plus
+>[!NOTE]
+>The condition that determines if the value represents a new session is a logical OR one of the following conditions:
+>
+>* If there was no previous session value, or the previous session value was null.
+>* If the value of *`Expr`* equals or exceeds the previous session value plus
   *`MaxDistanceFromFirst`*.
-
-* If the value of *`Expr`* equals or exceeds the previous value of *`Expr`*
+>* If the value of *`Expr`* equals or exceeds the previous value of *`Expr`*
   plus *`MaxDistanceBetweenNeighbors`*.
-
-* If *`Restart`* condition is specified and evaluates to `true`. 
+>* If *`Restart`* condition is specified and evaluates to `true`.
 
 ## Examples
 

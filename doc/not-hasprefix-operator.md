@@ -1,15 +1,15 @@
 ---
-title: "The case-insensitive !hasprefix string operator - Azure Data Explorer"
-description: "This article describes the case-insensitive !hasprefix operator in Azure Data Explorer."
+title: The case-insensitive !hasprefix string operator - Azure Data Explorer
+description: Learn how to use the !hasprefix operator to filter records for data that doesn't include a case-insensitive prefix.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/25/2022
+ms.date: 01/09/2023
 ---
 # !hasprefix operators
 
-Filters a record set for data that does not include a case-insensitive starting string.
+Filters a record set for data that doesn't include a case-insensitive starting string.
 
-For best performance, use strings of three characters or more. `has` searches for indexed terms, where a [term](datatypes-string-operators.md#what-is-a-term) is three or more characters. If your term is fewer than three characters, the query scans the values in the column, which is slower than looking up the term in the term index.
+For best performance, use strings of three characters or more. `!hasprefix` searches for indexed terms, where an indexed [term](datatypes-string-operators.md#what-is-a-term) is three or more characters. If your term is fewer than three characters, the query scans the values in the column, which is slower than looking up the term in the term index.
 
 [!INCLUDE [has-prefix-operator-comparison](../../includes/has-prefix-operator-comparison.md)]
 
@@ -17,9 +17,7 @@ For best performance, use strings of three characters or more. `has` searches fo
 
 [!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator. For example, use `hasprefix_cs` instead of `hasprefix`.
-
-If you're testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters at the start or end of a field, for faster results use `has` or `in`.
+When possible, use the case-sensitive [!hasprefix_cs](not-hasprefix-cs-operator.md).
 
 ## Syntax
 

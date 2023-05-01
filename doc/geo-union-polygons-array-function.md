@@ -3,7 +3,7 @@ title: geo_union_polygons_array() - Azure Data Explorer
 description: Learn how to use the geo_union_polygons_array() function to calculate the union of polygons or multipolygons on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_union_polygons_array()
 
@@ -13,9 +13,11 @@ Calculates the union of polygons or multipolygons on Earth.
 
 `geo_union_polygons_array(`*polygons*`)`
 
-## Arguments
+## Parameters
 
-* *polygons*: An array of polygons or multipolygons in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *polygons* | dynamic | &check; | An array of polygons or multipolygons in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
 
 ## Returns
 
@@ -23,7 +25,7 @@ A polygon or a multipolygon in [GeoJSON Format](https://tools.ietf.org/html/rfc7
 
 > [!NOTE]
 >
-> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used for measurements on Earth is a sphere. Polygon edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input polygon edges are straight cartesian lines, consider using [geo_polygon_densify()](geo-polygon-densify-function.md) to convert planar edges to geodesics.
 
@@ -45,7 +47,9 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 
 The following example performs geospatial union on polygon rows.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52Ry26DMBBF93yF5RVINDJ+jUHKP2SPEHLBimjBRkAW9PHvJXVw6Tb2xnN0fXVnptXLdl97E4+uX6/OzkW7Wj10TRKVEdrOo4w/8bKOBhf44oU4xY1zU9tZvZgZF2VZvgA75TwXKScnyGVepR4JReDOFCFS7VBRkv0KpaJih8Ay8JCLAI+OVfWdpM/lkpR6G8pDMqmUekBFQ1zwGUAF3f/Pz4cAxnwvQIHv5jmTvmfJSBhEBn46QorDdI6/7ymiKvpC820Y9NR9GLTvsNbThM5o0O+m7rt5CctNNvk4uTfTLH/im+2c3eRX4/y7PvroNT6WyQ/35ucGMgIAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(polygons:dynamic)
 [
@@ -65,7 +69,9 @@ datatable(polygons:dynamic)
 
 The following example performs geospatial union on polygon columns.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WQTQ6CMBCF95yi6QqSakqFdiDxDu4JIRUagz8tAVwQ9e6ChaqJG9vNzJeZNy+vkv3492flN+Y8HIwO02rQ8lKXBM2ELSTwMg+Nb279G+6HRuEU7+wgJrg0pq1qLXvV4TTLspXYrJMoiUlE1yLhSU4sioGKiQGlHBYIjIavQQ4sXqDYhMLCKHbwUzHPHwH53xNnzEqwyLniADBDYM6qsPcFuLnv5cmAl3t31LTmqMp+ya0rZNuiLWpkeZpKObiM39kGv/auujZ63DwoY+viU/Kt82qDJ6h5+jHDAQAA" target="_blank">Run the query</a>
+
 ```kusto
 datatable(polygon1:dynamic, polygon2:dynamic)
 [
@@ -83,7 +89,9 @@ datatable(polygon1:dynamic, polygon2:dynamic)
 
 The following example returns True because one of the polygons is invalid.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52QzYqDMBRG9z5FyMqALTH+JAp9h+5FJKOhZCYmksSCbefdxzZjcd17V/dw+Lh8A/frfikRT0YtF6NdPSyaj7JHUROBdf7P+A79MglYw3MQYQJ7Y+wgNffCwbppmgPNjlVeFUmOj7QqqzYJqGCYPhnDuGQbZASnL7FkpNggzVIaYF684T6xbX9R8tlfJSEhhuQhJ2qjB3DzOHIrbwJsBXTcWnACI/8RnZLOv5tBqz5Z8y16D6S+ciWHbtbS6NWWTs9KxRdhAur2aXyJ9ydCf8U93vV2AQAA" target="_blank">Run the query</a>
+
 ```kusto
 datatable(polygons:dynamic)
 [

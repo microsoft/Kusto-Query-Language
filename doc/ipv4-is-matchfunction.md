@@ -3,33 +3,24 @@ title: ipv4_is_match() - Azure Data Explorer
 description: Learn how to use the ipv4_is_match() function to match two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2022
+ms.date: 01/01/2023
 ---
 # ipv4_is_match()
 
-Matches two IPv4 strings. The two IPv4 strings are parsed and compared while accounting for the combined IP-prefix mask calculated from argument prefixes, and the optional `PrefixMask` argument.
-
-```kusto
-ipv4_is_match("127.0.0.1", "127.0.0.1") == true
-ipv4_is_match('192.168.1.1', '192.168.1.255') == false
-ipv4_is_match('192.168.1.1/24', '192.168.1.255/24') == true
-ipv4_is_match('192.168.1.1', '192.168.1.255', 24) == true
-```
+Matches two IPv4 strings. The two IPv4 strings are parsed and compared while accounting for the combined IP-prefix mask calculated from argument prefixes, and the optional `prefix` argument.
 
 ## Syntax
 
-`ipv4_is_match(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
+`ipv4_is_match(`*ip1*`,`*ip2*`[ ,`*prefix*`])`
 
-## Arguments
+## Parameters
 
-* *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
-* *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ip1*, *ip2*| string | &check; | An expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).|
+| *prefix*| int | | An integer from 0 to 32 representing the number of most-significant bits that are taken into account.|
 
-## IP-prefix notation
-
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
-
-For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -44,7 +35,9 @@ For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24
 
 ### IPv4 comparison equality - IP-prefix notation specified inside the IPv4 strings
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA51Quw6CQBDs+YrtkAQ57gSjJpYWdvbGkAMO3YTHeXcYCj/eTbCAUOlssclkZ3YypXQ0ea1WqHlmncH2fhhXCKjFnAq8qwc+34uIb3cRj2I/BMKSITAGp2cvazhf7EzEmUjoasKINP3KSCQSyNGRaq2NqnAAtNBbVULVGSi6RkuDtmvnloscZDm++duSbeJFyt8tb94b1OBUW4JRtq8dHKnWV5KhzRrpisek92nhwQew+y1lmQEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string)
 [
@@ -60,14 +53,16 @@ datatable(ip1_string:string, ip2_string:string)
 
 |ip1_string|ip2_string|result|
 |---|---|---|
-|192.168.1.0|192.168.1.0|1|
-|192.168.1.1/24|192.168.1.255|1|
-|192.168.1.1|192.168.1.255/24|1|
-|192.168.1.1/30|192.168.1.255/24|1|
+|192.168.1.0|192.168.1.0|true|
+|192.168.1.1/24|192.168.1.255|true|
+|192.168.1.1|192.168.1.255/24|true|
+|192.168.1.1/30|192.168.1.255/24|true|
 
 ### IPv4 comparison equality - IP-prefix notation specified inside the IPv4 strings and an additional argument of the `ipv4_is_match()` function
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52QvQrCMBCA9z7FbbVQWxNT0YIP4OYuUvqT1oM2CUkqHXx4g1WIOundcPANH8fXlNZt1fMFKlIYq1F0+XxiQEU/kdK8xSnvpeii4BRASHY0IZttQhISxuDGI6sHWZMY0tQdqNDC4bicHYAGRsMbaKWGWg6q1GikeFemlDmHR2iWOfBUUvaH8uvLWUnZT8pzcAM+WS4a0NyMvYW9y3VlBZpiKG198Xr6IV8FozvG3oupeQEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string, prefix:long)
 [
@@ -82,6 +77,6 @@ datatable(ip1_string:string, ip2_string:string, prefix:long)
 
 |ip1_string|ip2_string|prefix|result|
 |---|---|---|---|
-|192.168.1.1|192.168.1.0|31|1|
-|192.168.1.1/24|192.168.1.255|31|1|
-|192.168.1.1|192.168.1.255|24|1|
+|192.168.1.1|192.168.1.0|31|true|
+|192.168.1.1/24|192.168.1.255|31|true|
+|192.168.1.1|192.168.1.255|24|true|

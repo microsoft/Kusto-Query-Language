@@ -10,6 +10,8 @@ ms.date: 12/28/2022
 Returns the value of *then* if *if* evaluates to `true`,
 or the value of *else* otherwise.
 
+> The `iff()` and `iif()` functions are equivalent
+
 ## Syntax
 
 `iff(`*if*`,` *then*`,` *else*`)`

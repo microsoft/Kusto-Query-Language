@@ -13,11 +13,17 @@ The runtime type may be different than the nominal (static) type for expressions
 
 ## Syntax
 
-`gettype(`*Expr*`)`
+`gettype(`*value*`)`
+
+## Parameters
+
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *value* | scalar | &check; | The value for which to find the type. |
 
 ## Returns
 
-A string representing the runtime type of its single argument.
+A string representing the runtime type of *value*.
 
 ## Examples
 

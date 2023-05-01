@@ -3,7 +3,7 @@ title: geo_intersection_line_with_polygon() - Azure Data Explorer
 description: Learn how to use the geo_intersection_line_with_polygon() function to calculate the intersection of a line string or a multiline string with a polygon or a multipolygon.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_intersection_line_with_polygon()
 
@@ -13,10 +13,12 @@ Calculates the intersection of a line or a multiline with a polygon or a multipo
 
 `geo_intersection_line_with_polygon(`*lineString*`,`*polygon*`)`
 
-## Arguments
+## Parameters
 
-* *lineString*: LineString or MultiLineString in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
-* *polygon*: Polygon or MultiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *lineString* | dynamic | &check; | A LineString or MultiLineString in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
+| *polygon* | dynamic | &check; | A Polygon or MultiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
 
 ## Returns
 
@@ -24,7 +26,7 @@ Intersection in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [
 
 > [!NOTE]
 >
-> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line or a polygon edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) or a [geo_polygon_densify()](geo-polygon-densify-function.md) in order to convert planar edges to geodesics.
 
@@ -61,7 +63,9 @@ dynamic({"type": "MultiPolygon","coordinates": [[LinearRingShell, LinearRingHole
 
 The following example calculates intersection between line and polygon. In this case, the result is a line.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA32Qy2rDMBBF9/0Ko1UCbtBrHk7oH3RR6DIYExzhClzJOIJgSv+9bhQnhZYuZnNnmDNzepeK3gf3mkYfuuKpOE7h8O7b1YdI0+DEVjzfuqIUbYzj0YdDciex3e8fyWwqBlVBaeWGmDVBXeaYLIC+xFQRqrr+XO8e+hk3xH7qYviL9ZJbv0HXlUpXEpgNcZWBwBJQKWRCWsAspQWjGKVZDgBNyMayNAj3A6WURul5gyLMcwwa0YABRHsb+x+a/xpmP6mYy40n1yZ/ea9zsfkZNd+im7NPb83Vwequvly8rL8Ayu2maJMBAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let lineString = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788275],[-73.974552,40.779761]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9712905883789,40.78580561168767],[-73.98004531860352,40.775276834803655],[-73.97000312805176,40.77852663535664],[-73.9712905883789,40.78580561168767]]]});
@@ -76,7 +80,9 @@ print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 
 The following example calculates intersection between line and polygon. In this case, the result is a multiline.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA21Qy2rDMBC89yuETgkoi6SVIiklf9BDoUdjTHCEI3Al4wiCKf332lZfoT3sZXZmdmd6n0kfon/JY4gdOZLzFE+vod280TwNnh7o0/eWMtqmNJ5DPGV/pYeq2gnBQUvJCDoQztas2jkBSlpGFAdreV2/bx8f+vnKkPqpS/G/E89l9dd/duMg98hwDwZXe8ElcCWY0iCNKogDRL1wtDTrC3eiGVlIHNAhUwIM10WGINAxtODkijgDWlu2RBFYKHeikmWYq8hkHj9efZvDGqnzqfkNNUunzS3kS/OZe/PTMvvqYvsBzDzDun4BAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let lineString = dynamic({"type":"LineString","coordinates":[[-110.522, 39.198],[-91.428, 40.880]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[[[-90.263,36.738],[-102.041,45.274],[-109.335,36.527],[-90.263,36.738]],[[-100.393,41.705],[-103.139,38.925],[-97.558,39.113],[-100.393,41.705]]]});
@@ -91,7 +97,9 @@ print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 
 The following line and polygon don't intersect.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA32QwWrDMBBE7/0KoVMCalhJ3tU6oX/QQ6FHY0xwhCtwJeMIgin997p2kxZaetjLzmOGmd5n0Yfon/MYYicexGmKx9fQbt5kngYv9/Lxpkol25TGU4jH7M9yX1VaCV2ryihh6vp9e7jrZ7sh9VOX4l9eT6v026i6d3ZXOm1KQGbruFQF7BwjA5LWxI7cHLRQDFCg1Uxg0SyYQ+OIbcFgCfHKOQCw2swO2tHKMRoiixaJihv2f+jaa5j7ZzGfH8++zWGp1/nU/Hw1n0M2l5Bfmq8NNt/Tqusu2w865byEcwEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 let lineString = dynamic({"type":"LineString","coordinates":[[1, 1],[2, 2]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.9712905883789,40.78580561168767],[-73.98004531860352,40.775276834803655],[-73.97000312805176,40.77852663535664],[-73.9712905883789,40.78580561168767]]]});
@@ -106,7 +114,6 @@ print intersection = geo_intersection_line_with_polygon(lineString, polygon)
 
 The following example finds all roads in the NYC GeoJSON roads table that intersects with the area of interest literal polygon.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let area_of_interest = dynamic({"type":"Polygon","coordinates":[[[-73.95768642425537,40.80065354924362],[-73.9582872390747,40.80089719667298],[-73.95869493484497,40.80050736035672],[-73.9580512046814,40.80019873831593],[-73.95768642425537,40.80065354924362]]]});
 NY_Manhattan_Roads
@@ -126,7 +133,9 @@ NY_Manhattan_Roads
 
 The following example finds all counties in the USA that intersect with area of interest literal LineString.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12QwWrDMBBE7/kKVScbXCPbkSWl5FBKb20voacQhHE2toojGVkhmLb/3nXTFBPddng7mp0OAqk8VNodtLEBPAyBrMl+tNXR1NEnDWMPdEVfjIVN8MY2NKG1c35vbBVgoKvt9l4UqRIZV0wpLqTkIlmyVKglz4qikEIyqfguuXClKCTPVc54kecXLhdc4iszKXj5z6nJaXJgf35SCRQzWbKMM77bfccPi/eNfnInGwwMiy/Se/cBdSCYHfCIA1ThhAelqPfgJyh9e3x9Tkg97YxzpAF3hODHG5eE/JYy4GycxQXk9FzSHRajzya0unfd2Dgb3dZ5/S5G73OLEhbuq1F3YJvQRnO3awxMGpO7NWE/FmJxj58BAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let area_of_interest = dynamic({"type":"LineString","coordinates":[[-73.97159099578857,40.794513338780895],[-73.96738529205322,40.792758888618756],[-73.96978855133057,40.789769718601505]]});
 US_Counties
@@ -143,7 +152,9 @@ US_Counties
 
 The following example will return a null result because the LineString is invalid.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA4WRy2rDMBBF9/0Ko5UNbtBjRhql9A+6KHQZTDCOMAJVMrZaMKX/XgfH8aKFbuceDjN3gstF8NG95dHHvnguLnNs331XfrE8D44d2cs9ZTXrUhovPrbZTex4Oj0adbCEwmIN/GCIpMGm+a6eHsLiHVKY+xT/kr6u0W/jqkSjSYMEiajMVU2ca1QIVoLSsqlvGEkyUlluYKPIGmG1NtLSTmkLVgEB2A1DbpTmChdwxzgKyUGTgBslLBlFSqBVd+qfzdbrh6WuXPjp7ONnG/xlqcBP8SOEsndpGWY3Tq7LPsWzvLY/lfsP6q23qvoB4Uu5gZ0BAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let lineString = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788275]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[[[-73.95768642425537,40.80065354924362],[-73.9582872390747,40.80089719667298],[-73.95869493484497,40.80050736035672],[-73.9580512046814,40.80019873831593],[-73.95768642425537,40.80065354924362]]]});
@@ -158,7 +169,9 @@ print is_invalid = isnull(geo_intersection_2lines(lineString, polygon))
 
 The following example will return a null result because the polygon is invalid.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA21Qy2rDMBC89yuMTja4QY+sd5WSP+ih0GMwwdjCCBTJWGrAlP575bpND8keZ2ZnZ8eZVDjrzXuarR+LYzEsvrvYvvxkaZkMO7DXG8tq1ocwD9Z3yUR2OJ2eUe00CtBca0AiwHrPd6j3IJRShMRJQ1tvugYVgdSSg5Jy00kEytMIQmhuOr06rQ781480ZlBQwwVwaNuv6uXJ5eBTcMsY/KPUbxt1F/lnd8rfpMLGs/XXztkhG9joP5wrRxMymMwcTZ9s8Ge5lhPL/4rqv6tV9Q1G11oPPAEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 let lineString = dynamic({"type":"LineString","coordinates":[[-73.97159099578857,40.794513338780895],[-73.96738529205322,40.792758888618756],[-73.96978855133057,40.789769718601505]]});
 let polygon = dynamic({"type":"Polygon","coordinates":[]});

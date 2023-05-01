@@ -1,11 +1,11 @@
 ---
-title: tdigest_merge() (aggregation function) - Azure Data Explorer
-description: Learn how to use the tdigest_merge() aggregation function to merge tdigest results in Azure Data Explorer.
+title: tdigest_merge() (aggregation functions) - Azure Data Explorer
+description: Learn how to use the tdigest_merge() aggregation function to merge tdigest results across the group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 02/20/2023
 ---
-# tdigest_merge() (aggregation function)
+# tdigest_merge() (aggregation functions)
 
 Merges tdigest results across the group.
 
@@ -13,30 +13,21 @@ Merges tdigest results across the group.
 
 For more information about the underlying algorithm (T-Digest) and the estimated error, see [estimation error in percentiles](percentiles-aggfunction.md#estimation-error-in-percentiles).
 
+> The `tdigest_merge()` and `merge_tdigest()` functions are equivalent
+
 ## Syntax
 
-`tdigest_merge` `(`*Expr*`)`
+`tdigest_merge(`*expr*`)`
 
-`merge_tdigests` `(`*Expr*`)`
-
-> [!NOTE]
-> `merge-tdigests` is an alias of `tdigest_merge`.
-
-`merge_tdigest` `(`*Expr*`)`
-
-> [!NOTE]
-> `merge_tdigest` is an alias of `tdigest_merge`.
-
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*Expr* | string | &check; | Expression that will be used for aggregation calculation.
-
+|*expr* | string | &check; | The expression used for the aggregation calculation.|
 
 ## Returns
 
-Returns the merged tdigest values of *Expr* across the group.
+Returns the merged tdigest values of *expr* across the group.
 
 > [!NOTE]
 >

@@ -1,9 +1,9 @@
 ---
 title: Logical (binary) operators - Azure Data Explorer
-description: This article describes Logical (binary) operators in Azure Data Explorer.
+description: Learn how to use Logical (binary) operators to return a Boolean result.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/14/2018
+ms.date: 12/26/2022
 ---
 # Logical (binary) operators
 
@@ -17,7 +17,7 @@ type:
 |Operator name|Syntax|Meaning|
 |-------------|------|-------|
 |Equality     |`==`  |Yields `true` if both operands are non-null and equal to each other. Otherwise, `false`.|
-|Inequality   |`!=`  |Yields `true` if any of the operands are null, or if the operands are not equal to each other. Otherwise, `false`.|
+|Inequality   |`!=`  |Yields `true` if any of the operands are null, or if the operands aren't equal to each other. Otherwise, `false`.|
 |Logical and  |`and` |Yields `true` if both operands are `true`.|
 |Logical or   |`or`  |Yields `true` if one of the operands is `true`, regardless of the other operand.|
 

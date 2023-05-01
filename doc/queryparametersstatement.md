@@ -1,9 +1,9 @@
 ---
 title: Query parameters declaration statement - Azure Data Explorer
-description: This article describes Query parameters declaration statement in Azure Data Explorer.
+description: Learn how to use the query parameters declaration statement to parameterize queries and protect against injection attacks.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2021
+ms.date: 03/14/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -28,33 +28,42 @@ To reference query parameters, the query text, or functions it uses, must first 
 
 `declare` `query_parameters` `(` *Name1* `:` *Type1* [`=` *DefaultValue1*] [`,`...] `);`
 
-* *Name1*: The name of a query parameter used in the query.
-* *Type1*: The corresponding type, such as `string` or `datetime`.
-  The values provided by the user are encoded as strings, to Kusto will
-  apply the appropriate parse method to the query parameter to get
-  a strongly-typed value.
-* *DefaultValue1*: An optional default value for the parameter. This value must be
-  a literal of the appropriate scalar type.
+## Parameters
+
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*Name1*|string|&check;|The name of a query parameter used in the query.|
+|*Type1*|string|&check;|The corresponding type, such as `string` or `datetime`. The values provided by the user are encoded as strings. The appropriate parse method is applied to the query parameter to get a strongly-typed value.|
+|*DefaultValue1*|string||A default value for the parameter. This value must be a literal of the appropriate scalar type.|
 
 > [!NOTE]
 >
 > * Like [user defined functions](functions/user-defined-functions.md), query parameters of type `dynamic` cannot have default values.
 > * Let, set, and tabular statements are strung together/separated by a semicolon, otherwise they will not be considered part of the same query.
 
+## Example
 
-## Examples
-
-```kusto
-declare query_parameters(UserName:string, Password:string);
-print n=UserName, p=hash(Password)
-```
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA4WNuw7CMBAE+0j5hytBpKAFBBUpXEOPrHgFjvzifAEi8fEkQUBJO9qZNWicZtC1A/enpFl7CDjPvH6o0HYMs3YxnGlLq+V8UxYHiezrG4JkKosn3S8Y9GlqkfeW0QgtvkAF80Y7+hVHL3FsR14nm6OBMhVN1WOfUJFE0e7TGL7/9l+H314eyAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
-declare query_parameters(percentage:long = 90);
-T | where Likelihood > percentage
+declare query_parameters(maxInjured:long = 90);
+StormEvents 
+| where InjuriesDirect + InjuriesIndirect > maxInjured
+| project EpisodeId, EventType, totalInjuries = InjuriesDirect + InjuriesIndirect
 ```
 
-## Specifying query parameters in a client application
+**Output**
+
+| EpisodeId | EventType | totalInjuries |
+|---|---|---|
+| 12459 | Winter Weather | 137 |
+| 10477 | Excessive Heat | 200 |
+| 10391 | Heat | 187 |
+| 10217 | Excessive Heat | 422 |
+| 10217 | Excessive Heat | 519 |
+
+## Specify query parameters in a client application
 
 The names and values of query parameters are provided as `string` values
 by the application making the query. No name may repeat.

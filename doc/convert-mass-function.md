@@ -51,7 +51,7 @@ Convert a mass value from one unit to another.
 
 ## Returns
 
- Returns the input value converted from one mass unit to another.
+ Returns the input value converted from one mass unit to another. Invalid units return `null`.
 
 ## Example
 

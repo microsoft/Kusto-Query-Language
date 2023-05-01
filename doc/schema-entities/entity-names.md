@@ -61,17 +61,17 @@ require quoting when they're referenced directly by a query:
 
 ## Naming your entities to avoid collisions with Kusto language keywords
 
-As the Kusto query language includes a number of keywords that have the same
+As the Kusto Query Language includes a number of keywords that have the same
 naming rules as identifiers, it's possible to have entity names that are actually
 keywords, but then referring to these names becomes difficult (one must quote them).
 
 Alternatively, one might want to choose entity names that are guaranteed to never
 "collide" with a Kusto keyword. The following guarantees are made:
 
-1. The Kusto query language won't define a keyword that starts with a capital letter (`A` to `Z`).
-2. The Kusto query language won't define a keyword that starts with a single underscore (`_`).
-3. The Kusto query language won't define a keyword that ends with a single underscore (`_`).
+1. The Kusto Query Language won't define a keyword that starts with a capital letter (`A` to `Z`).
+2. The Kusto Query Language won't define a keyword that starts with a single underscore (`_`).
+3. The Kusto Query Language won't define a keyword that ends with a single underscore (`_`).
 
-The Kusto query language reserves all identifiers that start or end with a
+The Kusto Query Language reserves all identifiers that start or end with a
 sequence of two underscore characters (`__`); users can't define such names
 for their own use.

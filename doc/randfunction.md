@@ -1,9 +1,9 @@
 ---
 title: rand() - Azure Data Explorer
-description: This article describes rand() in Azure Data Explorer.
+description: Learn how to use the rand() function to return a random number.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/12/2023
 ---
 # rand()
 

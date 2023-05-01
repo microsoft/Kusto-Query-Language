@@ -3,7 +3,7 @@ title: database() (scope function) - Azure Data Explorer
 description: Learn how to use the database() function to change the reference of the query to a specific database within the cluster scope.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 03/09/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -13,27 +13,27 @@ zone_pivot_groups: kql-flavors
 
 Changes the reference of the query to a specific database within the cluster scope.
 
-```kusto
-database('Sample').StormEvents
-cluster('help').database('Sample').StormEvents
-```
-
 > [!NOTE]
-
+>
 > * For more information, see [cross-database and cross-cluster queries](cross-cluster-or-database-queries.md).
 > * For accessing remote cluster and remote database, see [`cluster()`](clusterfunction.md) scope function.
 
 ## Syntax
 
-`database(`*stringConstant*`)`
+`database(`*databaseName*`)`
 
-## Arguments
+## Parameters
 
-* *stringConstant*: Name of the database that is referenced. Database identified can be either `DatabaseName` or `PrettyName`. The argument must be a *constant* value and can't come from a subquery evaluation.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *databaseName* | string | The name of the database to reference. The *databaseName* can be either the `DatabaseName` or `PrettyName`. The argument must be a constant value and can't come from a subquery evaluation.|
 
 ## Examples
 
 ### Use database() to access table of other database
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLElMSixO1VAPTswtyEktVtfUCy7JL8p1LUvNKylWqFFIzi/NKwEAS+mhvycAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 database('Samples').StormEvents | count
@@ -47,7 +47,7 @@ database('Samples').StormEvents | count
 
 ### Use database() inside let statements
 
-The same query as above can be rewritten to use inline function (let statement) that
+The query above can be rewritten as a query-defined function (let statement) that
 receives a parameter `dbName` - which is passed into the database() function.
 
 ```kusto

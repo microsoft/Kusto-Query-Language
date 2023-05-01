@@ -36,7 +36,7 @@ Convert a temperature value from one unit to another.
 
 ## Returns
 
- Returns the input value converted from one temperature unit to another.
+ Returns the input value converted from one temperature unit to another. Invalid units return `null`.
 
 ## Example
 

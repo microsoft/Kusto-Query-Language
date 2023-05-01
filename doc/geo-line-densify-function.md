@@ -3,7 +3,7 @@ title: geo_line_densify() - Azure Data Explorer
 description: Learn how to use the geo_line_densify() function to convert planar lines or multiline edges to geodesics.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_line_densify()
 
@@ -11,15 +11,15 @@ Converts planar lines or multiline edges to geodesics by adding intermediate poi
 
 ## Syntax
 
-`geo_line_densify(`*lineString*`,`*tolerance*`)`
+`geo_line_densify(`*lineString*`,` *tolerance*`,` [ *preserve_crossing* ]`)`
 
-`geo_line_densify(`*lineString*`,`*tolerance*`,`*preserve_crossing*`)`
+## Parameters
 
-## Arguments
-
-* *lineString*: Line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
-* *tolerance*: An optional numeric that defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value `10` is used.
-* *preserve_crossing*: An optional boolean that preserves edge crossing over antimeridian. If unspecified, the default value `False` is used.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *lineString* | dynamic | &check; | A LineString or MultiLineString in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
+| *tolerance* | int, long, or real | | Defines maximum distance in meters between the original planar edge and the converted geodesic edge chain. Supported values are in the range [0.1, 10000]. If unspecified, the default value `10` is used.|
+| *preserve_crossing* | bool | | If `true`, preserves edge crossing over antimeridian. If unspecified, the default value `false` is used.
 
 ## Returns
 
@@ -27,7 +27,7 @@ Densified line in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and 
 
 > [!NOTE]
 >
-> The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84) coordinate reference system.
 
 **LineString definition**
 
@@ -53,6 +53,9 @@ dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]
 
 The following example densifies a road in Manhattan island. The edge is short and the distance between the planar edge and its geodesic counterpart is less than the distance specified by tolerance. As such, the result remains unchanged.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3K0QqDIBSA4VeRc6XgwqXoDPYGu9tlSESehbA00hsZe/dF7fb7/3ULsRCPMYdXQD+8Q0RyJyXlspeZzpgOG86lUl/juISJfqDUFaGDx16fxwwcppQ2H+JYMEPX9xcjG6tsqwwnSjTG6psWjp9upLj+XSvZSue+jLEf+uHlO5EAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","coordinates":[[-73.949247, 40.796860],[-73.973017, 40.764323]]})))
 ```
@@ -64,6 +67,9 @@ print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","c
 |{"type":"LineString","coordinates":[[-73.949247, 40.796860], [-73.973017, 40.764323]]}|
 
 The following example densifies an edge of ~130-km length
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWKMQqEMBAAv7JslUAKLdII9wM7yxBEzJ4s6EbMNuG4vxu0G2bmvFgUEknhL1OadxaCD2gu2spmNsqPm9+lmlRlOXg1P9R6Eg44tjo9Mzpcc74Sy6JUcAjBdw58Fx0E3zfqY/xba28ARL6/dAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","coordinates":[[50, 50], [51, 51]]})))
@@ -77,6 +83,9 @@ print densified_line = tostring(geo_line_densify(dynamic({"type":"LineString","c
 
 The following example returns a null result because of the invalid coordinate input.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUhJzSvOTMtMTYnPycxLVbBVSE/NBzPjITKVGimVeYm5mcka1UollQWpSlZKPkDZ4BKg7nQlHaXk/PyilMy8xJLUYiWr6GhjAwMdw1idaEMgGVurqQkAeUICdmUAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print densified_line = geo_line_densify(dynamic({"type":"LineString","coordinates":[[300,1],[1,1]]}))
 ```
@@ -88,6 +97,9 @@ print densified_line = geo_line_densify(dynamic({"type":"LineString","coordinate
 ||
 
 The following example returns a null result because of the invalid tolerance input.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUhJzSvOTMtMTYnPycxLVbBVSE/NBzPjITKVGimVeYm5mcka1UollQWpSlZKPkDZ4BKg7nQlHaXk/PyilMy8xJLUYiWr6GhDHcNYnWgjHaPY2FpNHQUDTQAqaEHvZgAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print densified_line = geo_line_densify(dynamic({"type":"LineString","coordinates":[[1,1],[2,2]]}), 0)

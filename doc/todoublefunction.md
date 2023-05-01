@@ -1,31 +1,35 @@
 ---
-title: todouble()/toreal() - Azure Data Explorer
-description: This article describes todouble()/toreal() in Azure Data Explorer.
+title: todouble() - Azure Data Explorer
+description: Learn how to use the todouble() function to convert the input expression to a value of type `real`.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 02/20/2023
 ---
-# todouble(), toreal()
+# todouble()
 
-Converts the input to a value of type `real`. (`todouble()` and `toreal()` are synonyms.)
+Converts the input expression to a value of type `real`.
 
-```kusto
-toreal("123.4") == 123.4
-```
-
-> [!NOTE]
-> Prefer using [double() or real()](./scalar-data-types/real.md) when possible.
+> The `todouble()` and `toreal()` functions are equivalent
 
 ## Syntax
 
-`toreal(`*Expr*`)`
 `todouble(`*Expr*`)`
 
-## Arguments
+## Parameters
 
-* *Expr*: An expression whose value will be converted to a value of type `real`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *value* | scalar | &check; | The value to convert to [real](scalar-data-types/real.md).|
 
 ## Returns
 
-If conversion is successful, the result is a value of type `real`.
-If conversion is not successful, the result is the value `real(null)`.
+If conversion is successful, the result is a value of type `real`. Otherwise, the returned value will be `real(null)`.
+
+## Example
+
+```kusto
+todouble("123.4") == 123.4
+```
+
+> [!NOTE]
+> Use [double() or real()](./scalar-data-types/real.md) when possible.

@@ -1,9 +1,9 @@
 ---
 title: series_seasonal() - Azure Data Explorer
-description: This article describes series_seasonal() in Azure Data Explorer.
+description: Learn how to use the series_seasonal() function to calculate the seasonal component of a series according to the detected seasonal period.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/30/2023
 ---
 # series_seasonal()
 
@@ -11,32 +11,33 @@ Calculates the seasonal component of a series, according to the detected or give
 
 ## Syntax
 
-`series_seasonal(`*series* `[,` *period*`])`
+`series_seasonal(`*series* [`,` *period* ]`)`
 
-## Arguments
+## Parameters
 
-* *series*: Input numeric dynamic array
-* *period* (optional): Integer number of bins in each seasonal period, possible values:
-    *  -1 (default): Autodetects the period by using [series_periods_detect()](series-periods-detectfunction.md) with a threshold of *0.7*. Returns zeroes if seasonality isn't detected
-    * Positive integer: Used as the period for the seasonal component
-    * Any other value: Ignores seasonality and returns a series of zeroes
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series* | dynamic | &check; | An array of numeric values.|
+| *period* | int | | The number of bins for each seasonal period. This value can be any positive integer. By default, the value is set to -1, which automatically detects the period using the [series_periods_detect()](series-periods-detectfunction.md) with a threshold of *0.7*. If seasonality is not detected, the function returns zeros. If a different value is set, it ignores seasonality and returns a series of zeros.|
 
 ## Returns
 
-Dynamic array of the same length as the *series* input that contains the calculated seasonal component of the series. The seasonal component is calculated as the *median* of all the values that correspond to the location of the bin, across the periods.
+A dynamic array of the same length as the *series* input that contains the calculated seasonal component of the series. The seasonal component is calculated as the *median* of all the values that correspond to the location of the bin, across the periods.
 
 ## Examples
 
 ### Auto detect the period
 
-In the following example, the series' period is automatically detected. The first series' period is detected to be six bins and the second five bins. The third series' period is too short to be detected and returns a series of zeroes. 
+In the following example, the series' period is automatically detected. The first series' period is detected to be six bins and the second five bins. The third series' period is too short to be detected and returns a series of zeroes.
 See the next example on [how to force the period](#force-a-period).
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSi2TanMS8zNTNaINtJRMNVRMNZRMAGTQK4hmCRZJFaTq0ahNC8zP09BowDdFgugApAiEyhtAMVkicVq4rPKEOwiU7CjgFrMwI5FEYHoT60oSc1LUSiOL05NLM7PS8xRsFUoTi3KTEWIaBRrAgCrZVUQMAEAAA==" target="_blank">Run the query</a>
+
 ```kusto
-print s=dynamic([2,5,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1])
-| union (print s=dynamic([8,12,14,12,10,10,12,14,12,10,10,12,14,12,10,10,12,14,12,10]))
-| union (print s=dynamic([1,3,5,2,4,6,1,3,5,2,4,6]))
+print s=dynamic([2, 5, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1])
+| union (print s=dynamic([8, 12, 14, 12, 10, 10, 12, 14, 12, 10, 10, 12, 14, 12, 10, 10, 12, 14, 12, 10]))
+| union (print s=dynamic([1, 3, 5, 2, 4, 6, 1, 3, 5, 2, 4, 6]))
 | extend s_seasonal = series_seasonal(s)
 ```
 
@@ -52,11 +53,13 @@ print s=dynamic([2,5,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,3,4,3,2,1])
 
 In this example, the series' period is too short to be detected by [series_periods_detect()](series-periods-detectfunction.md), so we explicitly force the period to get the seasonal pattern.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSi2TanMS8zNTNaINtRRMNZRMNVRgDOMdBRMdBTMYjUVuGoUSvMy8/MUNApwaoOqxqZfE6g/taIkNS9FoTi+ODWxOD8vMUfBVqE4tSgzFSGiUQzUqQkAj46UZJkAAAA=" target="_blank">Run the query</a>
+
 ```kusto
-print s=dynamic([1,3,5,1,3,5,2,4,6]) 
-| union (print s=dynamic([1,3,5,2,4,6,1,3,5,2,4,6]))
-| extend s_seasonal = series_seasonal(s,3)
+print s=dynamic([1, 3, 5, 1, 3, 5, 2, 4, 6]) 
+| union (print s=dynamic([1, 3, 5, 2, 4, 6, 1, 3, 5, 2, 4, 6]))
+| extend s_seasonal = series_seasonal(s, 3)
 ```
 
 **Output**
@@ -66,7 +69,7 @@ print s=dynamic([1,3,5,1,3,5,2,4,6])
 |[1,3,5,1,3,5,2,4,6]|[1.0,3.0,5.0,1.0,3.0,5.0,1.0,3.0,5.0]|
 |[1,3,5,2,4,6,1,3,5,2,4,6]|[1.5,3.5,5.5,1.5,3.5,5.5,1.5,3.5,5.5,1.5,3.5,5.5]|
  
-## Next steps
+## See also
 
 * [series_periods_detect()](series-periods-detectfunction.md)
 * [series_periods_validate()](series-periods-validatefunction.md)

@@ -1,15 +1,16 @@
 ---
 title: Timezone - Azure Data Explorer
-description: This article gives a list of timezones in Azure Data Explorer.
+description: This article is about the timezones supported by the Internet Assigned Numbers Authority Time Zone Database (IANA) in Azure Data Explorer.
 ms.reviewer: elgevork
 ms.topic: reference
-ms.date: 07/12/2022
+ms.date: 02/20/2023
 ---
 # Timezones
 
 The following is a list of timezones supported by the [Internet Assigned Numbers Authority (IANA) Time Zone Database](https://www.iana.org/time-zones).
 
 Related functions:
+
 * [datetime_local_to_utc()](datetime-local-to-utc-function.md)
 * [datetime_utc_to_local()](datetime-utc-to-local-function.md)
 
@@ -587,7 +588,7 @@ Related functions:
 | Portugal                         |
 | ROK                              |
 | Singapore                        |
-| Turkey                           |
+| Türkiye                          |
 | UCT                              |
 | US/Alaska                        |
 | US/Aleutian                      |

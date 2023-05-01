@@ -3,11 +3,11 @@ title: The case-insensitive has string operator - Azure Data Explorer
 description: Learn how to use the has operator to filter data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/18/2022
+ms.date: 12/28/2022
 ---
 # has operator
 
-Filters a record set for data with a case-insensitive string. `has` searches for indexed terms, where a [term](datatypes-string-operators.md#what-is-a-term) is three or more characters. If your term is fewer than three characters, the query scans the values in the column, which is slower than looking up the term in the term index.
+Filters a record set for data with a case-insensitive string. `has` searches for indexed terms, where an indexed [term](datatypes-string-operators.md#what-is-a-term) is three or more characters. If your term is fewer than three characters, the query scans the values in the column, which is slower than looking up the term in the term index.
 
 [!INCLUDE [has-operator-comparison](../../includes/has-operator-comparison.md)]
 
@@ -15,7 +15,7 @@ Filters a record set for data with a case-insensitive string. `has` searches for
 
 [!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator. For example, `has_cs` instead of `has`.
+When possible, use the case-sensitive [has_cs](has-cs-operator.md).
 
 ## Syntax
 
@@ -26,8 +26,8 @@ For faster results, use the case-sensitive version of an operator. For example, 
 | Name | Type | Required | Description |
 |--|--|--|--|
 | *T* | string | &check; | The tabular input whose records are to be filtered.|
-| *Column* | string | &check; | The column to filter.|
-| *Expression* | scalar or tabular | &check; | An expression for which to search.|
+| *Column* | string | &check; | The column used to filter the records.|
+| *Expression* | scalar or tabular | &check; | An expression for which to search. If the value is a tabular expression and has multiple columns, the first column is used.|
 
 ## Returns
 

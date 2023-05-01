@@ -14,10 +14,6 @@ Using the plugin, you can query across data in both Azure Digital Twins and any 
 
 For more information about the plugin, see [Azure Digital Twins query plugin for Azure Data Explorer](/azure/digital-twins/concepts-data-explorer-plugin#using-the-plugin).
 
-## Authentication and authorization
-
-The `azure_digital_twins_query_request` plugin uses the Azure AD account of the user running the query to authenticate. To run a query, a user must at least be granted the **Azure Digital Twins Data Reader** role. Information on how to assign this role can be found in [**Security for Azure Digital Twins solutions**](/azure/digital-twins/concepts-security#authorization-azure-roles-for-azure-digital-twins).
-
 ## Syntax
 
 `evaluate` `azure_digital_twins_query_request` `(` *AdtInstanceEndpoint* `,` *AdtQuery* `)`
@@ -28,6 +24,10 @@ The `azure_digital_twins_query_request` plugin uses the Azure AD account of the 
 |--|--|--|--|
 | *AdtInstanceEndpoint* | string | &check; | The Azure Digital Twins instance endpoint to be queried. |
 | *AdtQuery* | string | &check; | The query to run against the Azure Digital Twins endpoint. This query is written in a custom SQL-like query language for Azure Digital Twins, called the Azure Digital Twins query language. For more information, see [Query language for Azure Digital Twins](/azure/digital-twins/concepts-query-language).|
+
+## Authentication and authorization
+
+The `azure_digital_twins_query_request` plugin uses the Azure AD account of the user running the query to authenticate. To run a query, a user must at least be granted the **Azure Digital Twins Data Reader** role. Information on how to assign this role can be found in [Security for Azure Digital Twins solutions](/azure/digital-twins/concepts-security#authorization-azure-roles-for-azure-digital-twins).
 
 ## Examples
 

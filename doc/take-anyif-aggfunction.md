@@ -3,11 +3,11 @@ title: take_anyif() (aggregation function) - Azure Data Explorer
 description: Learn how to use the take_anyif() function to return the value of an arbitrarily selected record for which the predicate is 'true'.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/20/2022
+ms.date: 02/05/2023
 ---
 # take_anyif() (aggregation function)
 
-Arbitrarily selects one record for each group in a [summarize operator](summarizeoperator.md) in records for which the *Predicate*
+Arbitrarily selects one record for each group in a [summarize operator](summarizeoperator.md) in records for which the *predicate*
 is 'true'. The function returns the value of an expression over each such record.
 
 This function is useful when you want to get a sample value of one column per value of the compound group key, subject to some predicate that is *true*. If such a value is present, the function attempts to return a non-null/non-empty value.
@@ -19,19 +19,19 @@ This function is useful when you want to get a sample value of one column per va
 
 ## Syntax
 
-`take_anyif` `(` *Expr*`,` *Predicate* `)`
+`take_anyif(` *expr*`,` *predicate* `)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression used for selecting a record. |
-| *Predicate* | string | &check; | Indicates which records may be considered for evaluation. |
+| *expr* | string | &check; | The expression used for selecting a record. |
+| *predicate* | string | &check; | Indicates which records may be considered for evaluation. |
 
 ## Returns
 
 The `take_anyif` aggregation function returns the value of the expression calculated
-for each of the records randomly selected from each group of the summarize operator. Only records for which *Predicate* returns 'true' may be selected. If the predicate doesn't return 'true', a null value is produced.
+for each of the records randomly selected from each group of the summarize operator. Only records for which *predicate* returns 'true' may be selected. If the predicate doesn't return 'true', a null value is produced.
 
 ## Examples
 

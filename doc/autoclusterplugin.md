@@ -3,7 +3,7 @@ title: autocluster plugin - Azure Data Explorer
 description: Learn how to use the autocluster plugin to find common patterns in data. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/07/2022
+ms.date: 03/09/2023
 ---
 # autocluster plugin
 
@@ -14,16 +14,13 @@ ms.date: 11/07/2022
 
 ## Syntax
 
-*Table* | `evaluate` `autocluster` `(`[*SizeWeight*, *WeightColumn*, *NumSeeds*, *CustomWildcard*, *CustomWildcard*, ...]`)`
+*Table* `|` `evaluate` `autocluster` `(`[*SizeWeight*, *WeightColumn*, *NumSeeds*, *CustomWildcard*, *CustomWildcard*, ...]`)`
 
-## Arguments
+## Parameters
 
-> [!NOTE]
-> All arguments are optional.
+The parameters must be ordered as specified in the [syntax](#syntax). To indicate that the default value should be used, put the string tilde value `~`. For more information, see the "Example" column of the following table.
 
-All arguments are optional, but they must be ordered as above. To indicate that the default value should be used, put the string tilde value '~' (see the "Example" column in the table).
-
-|Argument  | Type, range, default  |Description | Example   |
+|Name  | Type, range, default  |Description | Example   |
 |----------------|-----------------------------------|---------------------------|------------------------------------------------|
 | SizeWeight     | 0 < *double* < 1 [default: 0.5]   | Gives you some control over the balance between generic (high coverage) and informative (many shared) values. If you increase the value, it usually reduces the number of patterns, and each pattern tends to cover a larger percentage coverage. If you decrease the value, it usually produces more specific patterns with more shared values, and a smaller percentage coverage. The under-the-hood formula is a weighted geometric mean, between the normalized generic score and the informative score with weights `SizeWeight` and `1-SizeWeight`    | `T | evaluate autocluster(0.8)`                |
 |WeightColumn    | *column_name*     | Considers each row in the input according to the specified weight (by default each row has a weight of '1'). The argument must be a name of a numeric column (such as int, long, real). A common usage of a weight column is to take into account sampling or bucketing/aggregation of the data that is already embedded into each row.   | `T | evaluate autocluster('~', sample_Count)` |
@@ -53,7 +50,9 @@ T | evaluate autocluster()
 
 ### Using autocluster
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy1OPQ+CMBDd/RUvTBCNYdENF2VVk7I4NngIhrbkONAm/nhbcbr3lfdOiWNTzmRlXH3waokJxllpXeNJc6pEs1SdoQxFgV3I0FvI3nHSRj8IBbqmSRdyZDeMWP+ta2DE4nFAjg2SW6mSeM+XJAs1A7sn1YIwIBT03w+VHyJeCuLWrPsp+noSV/fTKMRpvt1nX4BZevm3AAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | where monthofyear(StartTime) == 5
@@ -72,7 +71,9 @@ StormEvents
 
 ### Using custom wildcards
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAzVOMQ6CQBDsfcWEBlBiiIklNkqrJtBYXnARDMeRZUFJjG/3TrTZ2ZnZzGwmhnU6Uiv94oVHRUzQppXKlBMpDjJRLHmtKUSSYGtv6CnUXnFQWt0ICeqyDGayZ9P1WP2ss2XEMmGHGBG8S5p5Do8nL7QxHZs7FQJbIGT17w/51Ll9DnBdo2oG56tBTNEMvRAH8XoTwX/7/7H0ww9RvGz7xgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | where monthofyear(StartTime) == 5

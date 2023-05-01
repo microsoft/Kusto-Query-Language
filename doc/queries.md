@@ -1,9 +1,9 @@
 ---
 title: Queries - Azure Data Explorer
-description: This article describes Queries in Azure Data Explorer.
+description: Learn how to use queries to explore and process data in the context of databases. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 04/16/2023
 ---
 # Query operators
 
@@ -15,7 +15,9 @@ The language syntax is that of a data flow, where "data" means "tabular data" (d
 
 For example:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuDlqlEoz0gtSlUILkksSVWwtVVQd/PxD/J0cVRXSMxLAQkXlYRk5qYq2CmkAFWUAJkaRgYGBroGhkCkCTIgOb80rwQATWE/B1YAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents 
 | where State == 'FLORIDA' and StartTime > datetime(2000-01-01)

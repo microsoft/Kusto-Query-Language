@@ -20,13 +20,11 @@ The following table provides a comparison of the `==` (equals) operators:
 
 For more information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md).
 
-Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
-
 ## Performance tips
 
 [!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator. For example, use `==` instead of `=~`.
+When possible, use [==](equals-cs-operator.md) - a case-sensitive version of the operator.
 
 ## Syntax
 

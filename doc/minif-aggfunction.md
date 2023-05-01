@@ -3,7 +3,7 @@ title: minif() (aggregation function) - Azure Data Explorer
 description: Learn how to use the minif() function to return the minimum value of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 03/12/2023
 ---
 # minif() (aggregation function)
 
@@ -17,7 +17,7 @@ See also - [min()](min-aggfunction.md) function, which returns the minimum value
 
  `minif` `(`*Expr*`,`*Predicate*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
@@ -42,7 +42,7 @@ StormEvents
 | where MinDamageWithCasualties >0 and isnotnull(MinDamageWithCasualties)
 ```
 
-**Results**
+**Output**
 
 The results table shown includes only the first 10 rows.
 

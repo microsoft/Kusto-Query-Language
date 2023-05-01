@@ -3,7 +3,7 @@ title: geo_geohash_to_polygon() - Azure Data Explorer
 description: Learn how to use the geo_geohash_to_polygon() function to calculate the polygon that represents the geohash rectangular area. 
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_geohash_to_polygon()
 
@@ -14,10 +14,11 @@ Read more about [geohash](https://en.wikipedia.org/wiki/Geohash).
 ## Syntax
 
 `geo_geohash_to_polygon(`*geohash*`)`
+## Parameters
 
-## Arguments
-
-*geohash*: Geohash string value as it was calculated by [geo_point_to_geohash()](geo-point-to-geohash-function.md). The geohash string must be between 1 and 18 characters.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *geohash* | string | &check; | A geohash value as it was calculated by [geo_point_to_geohash()](geo-point-to-geohash-function.md). The geohash string must be between 1 and 18 characters.|
 
 ## Returns
 
@@ -28,7 +29,9 @@ Polygon in [GeoJSON Format](https://tools.ietf.org/html/rfc7946) and of a [dynam
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUXBPzc9ILM4IyM+pTM/PU7BVSE/Nj0+HCMaX5McXQCQ0lFKKTItKlTStAWzxQVs3AAAA" target="_blank">Run the query</a>
+
 ```kusto
 print GeohashPolygon = geo_geohash_to_polygon("dr5ru");
 ```
@@ -41,7 +44,9 @@ print GeohashPolygon = geo_geohash_to_polygon("dr5ru");
 
 The following example assembles GeoJSON geometry collection of geohash polygons.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA21RPW+DMBTc+RUWE0huEj4CplKnSo3UoR06VpXl0CdCYzCyXwaq/vgaMASltQc/3707n+3tlhxAnYQ5Devz2+sLKZWUUGKtWu9ToJ1HCYFsq3sNQlIiBY5V6L17xI67PNkU+T6OYkrS3SZnRbZj9EpFGcuKkWIRS6J0RbEiStmkSpM4T6j34f2QTqsvez6pXK6HoeKdqlvkqLiDh0RjGEr24V+V7Zd9pVqnnlFUMxE4aNCaS9MIXX/DrZpLg9ahEWfgsjYY3PDrg4+i4p0oz8F4Px/7DnxK/CcQeNG2nGBr0ADq3lKLYOk9OPJx+YEBdZIajN39EzB01jZIBxqnvqt5K5rZfHxOpzSrf/bD8Bc5oFVdCAIAAA==" target="_blank">Run the query</a>
+
 ```kusto
 // Geohash GeoJSON collection
 datatable(lng:real, lat:real)
@@ -53,10 +58,10 @@ datatable(lng:real, lat:real)
 | project geohash = geo_point_to_geohash(lng, lat, 5)
 | project geohash_polygon = geo_geohash_to_polygon(geohash)
 | summarize geohash_polygon_lst = make_list(geohash_polygon)
-| project pack(
+| project bag_pack(
     "type", "Feature",
-    "geometry", pack("type", "GeometryCollection", "geometries", geohash_polygon_lst),
-    "properties", pack("name", "Geohash polygons collection"))
+    "geometry", bag_pack("type", "GeometryCollection", "geometries", geohash_polygon_lst),
+    "properties", bag_pack("name", "Geohash polygons collection"))
 ```
 
 **Output**
@@ -67,7 +72,9 @@ datatable(lng:real, lat:real)
 
 The following example returns a null result because of the invalid geohash input.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUXBPzc9ILM4IyM+pTM/PU7BVSE/Nj0+HCMaX5McXQCQ0lBKVNK0B6T62yDMAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print GeohashPolygon = geo_geohash_to_polygon("a");
 ```

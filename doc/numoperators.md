@@ -1,9 +1,9 @@
 ---
 title: Numerical operators - Azure Data Explorer
-description: This article describes Numerical operators in Azure Data Explorer.
+description: Learn how to use Numerical operators to calculate a value from two or more numbers.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/05/2023
 ---
 # Numerical operators
 

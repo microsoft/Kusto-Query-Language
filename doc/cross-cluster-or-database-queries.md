@@ -114,7 +114,7 @@ Scalar function in `OtherDb`.
 In default database.
 
 ```kusto
-database("OtherDb").MyView("exception") | extend CalCol=database("OtherDb").MyCalc(Col1, Col2, Col3) | limit 10
+database("OtherDb").MyView("exception") | extend CalCol=database("OtherDb").MyCalc(Col1, Col2, Col3) | take 10
 ```
 
 ## Limitations of cross-cluster function calls
@@ -122,7 +122,7 @@ database("OtherDb").MyView("exception") | extend CalCol=database("OtherDb").MyCa
 Tabular functions or views can be referenced across clusters. The following limitations apply:
 
 * Remote functions must return tabular schema. Scalar functions can only be accessed in the same cluster.
-* Remote functions can accept only scalar parameters. Functions that get one or more table arguments can only be accessed in the same cluster.
+* Remote functions can accept only scalar arguments. Functions that get one or more table arguments can only be accessed in the same cluster.
 * Remote functions' result schema must be fixed (known in advance without executing parts of the query).
   This precludes the use of query constructs such as the `pivot` plugin. (Note that some plugins,
   such as the `bag_unpack` plugin, supports a way to indicate the result schema statically,
@@ -139,7 +139,7 @@ The following query calls a remote scalar function `MyCalc`.
 This call violates rule #1, so it's not valid.
 
 ```kusto
-MyTable | extend CalCol=cluster("OtherCluster").database("OtherDb").MyCalc(Col1, Col2, Col3) | limit 10
+MyTable | extend CalCol=cluster("OtherCluster").database("OtherDb").MyCalc(Col1, Col2, Col3) | take 10
 ```
 
 The following query calls remote function `MyCalc` and provides a tabular parameter.

@@ -1,9 +1,9 @@
 ---
 title: Regular expressions library - Azure Data Explorer
-description: This article describes Regular expressions library in Azure Data Explorer.
+description: This article lists the regular expression syntax accepted by RE2.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/03/2021
+ms.date: 04/11/2023
 ---
 # RE2 library
 
@@ -69,7 +69,7 @@ It also lists some syntax accepted by PCRE, PERL, and VIM.
 | `x{-n}`   | (≡ `x{n}?`) (NOT SUPPORTED) VIM             |
 | `x=`      | (≡ `x?`) (NOT SUPPORTED) VIM                |
 
-Implementation restriction: The counting forms x{n,m}, x{n,}, and x{n} reject forms that create a minimum or maximum repetition count above 1000. Unlimited repetitions are not subject to this restriction.
+Implementation restriction: The counting forms x{n,m}, x{n,}, and x{n} reject forms that create a minimum or maximum repetition count above 1000. Unlimited repetitions aren't subject to this restriction.
 
 ### Possessive repetitions
 

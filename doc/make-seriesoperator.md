@@ -1,44 +1,46 @@
 ---
 title: make-series operator - Azure Data Explorer
-description: This article describes make-series operator in Azure Data Explorer.
+description: Learn how to use the make-series operator to create a series of specified aggregated values along a specified axis. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/30/2021
+ms.date: 01/03/2023
 ms.localizationpriority: high
 ---
 # make-series operator
 
 Create series of specified aggregated values along a specified axis.
 
-```kusto
-T | make-series sum(amount) default=0, avg(price) default=0 on timestamp from datetime(2016-01-01) to datetime(2016-01-10) step 1d by fruit, supplier
-```
-
 ## Syntax
 
 *T* `| make-series` [*MakeSeriesParameters*]
       [*Column* `=`] *Aggregation* [`default` `=` *DefaultValue*] [`,` ...]
-    `on` *AxisColumn* [`from` *start*] [`to` *end*] `step` *step* 
+    `on` *AxisColumn* [`from` *start*] [`to` *end*] `step` *step*
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
-## Arguments
+## Parameters
 
-* *Column:* Optional name for a result column. Defaults to a name derived from the expression.
-* *DefaultValue:* Default value that will be used instead of absent values. If there is no row with specific values of *AxisColumn* and *GroupExpression*, then in the results the corresponding element of the array will be assigned a *DefaultValue*. If *DefaultValue* is omitted, then 0 is assumed. 
-* *Aggregation:* A call to an [aggregation function](make-seriesoperator.md#list-of-aggregation-functions) such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](make-seriesoperator.md#list-of-aggregation-functions). Only aggregation functions that return numeric results can be used with the `make-series` operator.
-* AxisColumn: A column on which the series will be ordered, usually of type `datetime` or `timespan`, but all numeric types are also accepted.
-* *start*: (optional) The low bound value of the *AxisColumn* for each of the series to be built. *start*, *end*, and *step* are used to build an array of *AxisColumn* values within a given range and using specified *step*. All *Aggregation* values are ordered respectively to this array. This *AxisColumn* array is also the last output column in the output that has the same name as *AxisColumn*. If a *start* value is not specified, the start is the first bin (step) which has data in each series.
-* *end*: (optional) The high bound (non-inclusive) value of the *AxisColumn*. The last index of the time series is smaller than this value (and will be *start* plus integer multiple of *step* that is smaller than *end*). If *end* value is not provided, it will be the upper bound of the last bin (step) which has data per each series.
-* *step*: The difference between two consecutive elements of the *AxisColumn* array (that is, the bin size). For a list of possible time intervals, see [timespan](./scalar-data-types/timespan.md). 
-* *GroupExpression:* An expression over the columns that provides a set of distinct values. Typically it's a column name that already provides a restricted set of values. 
-* *MakeSeriesParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value*
-	that control the behavior. The following parameters are supported: 
-  
-  |Name  |Description  |
-  |---|---|
-  |`kind` |Produces default result when the input of make-series operator is empty. Value: `nonempty`|  
-  |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |  
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*Column*| string | | The name for the result column. Defaults to a name derived from the expression.|
+|*DefaultValue* | scalar | | A default value to use instead of absent values. If there's no row with specific values of *AxisColumn* and *GroupExpression*, then the corresponding element of the array will be assigned a *DefaultValue*. Default is 0.|
+|*Aggregation*| string | &check; | A call to an [aggregation function](make-seriesoperator.md#list-of-aggregation-functions), such as `count()` or `avg()`, with column names as arguments. See the [list of aggregation functions](make-seriesoperator.md#list-of-aggregation-functions). Only aggregation functions that return numeric results can be used with the `make-series` operator.|
+|*AxisColumn*| string | &check; | The column by which the series will be ordered. Usually the column values will be of type `datetime` or `timespan` but all numeric types are accepted.|
+|*start* | scalar | &check; | The low bound value of the *AxisColumn* for each of the series to be built. If *start* is not specified, it will be the first bin, or step, that has data in each series.|
+|*end*| scalar| &check; | The high bound non-inclusive value of the *AxisColumn*. The last index of the time series is smaller than this value and will be *start* plus integer multiple of *step* that is smaller than *end*. If *end* is not specified, it will be the upper bound of the last bin, or step, that has data per each series.|
+|*step*| scalar | &check; | The difference, or bin size, between two consecutive elements of the *AxisColumn* array. For a list of possible time intervals, see [timespan](./scalar-data-types/timespan.md).|
+|*GroupExpression* | | |An expression over the columns that provides a set of distinct values. Typically it's a column name that already provides a restricted set of values. |
+|*MakeSeriesParameters*| | | Zero or more space-separated parameters in the form of *Name* `=` *Value* that control the behavior. See [supported make series parameters](#supported-make-series-parameters).|
+
+> [!NOTE]
+> The *start*, *end*, and *step* parameters are used to build an array of *AxisColumn* values. The array consists of values between *start* and *end*, with the *step* value representing the difference between one array element to the next. All *Aggregation* values are ordered respectively to this array.
+
+### Supported make series parameters
+
+|Name|Description|
+|--|--|
+|`kind` |Produces default result when the input of make-series operator is empty. Value: `nonempty`|   
+|`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |  
 
 > [!NOTE]
 >
@@ -57,15 +59,15 @@ The generated series from the alternate syntax differs from the main syntax in t
 * The *stop* value is inclusive.
 * Binning the index axis is generated with bin() and not bin_at(), which means that *start* may not be included in the generated series.
 
-It is recommended to use the main syntax of make-series and not the alternate syntax.
+It's recommended to use the main syntax of make-series and not the alternate syntax.
 
 ## Returns
 
-The input rows are arranged into groups having the same values of the `by` expressions and the `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` expression. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns, *AxisColumn* column and also at least one column for each computed aggregate. (Aggregations over multiple columns or non-numeric results are not supported.)
+The input rows are arranged into groups having the same values of the `by` expressions and the `bin_at(`*AxisColumn*`,`*step*`,`*start*`)` expression. Then the specified aggregation functions are computed over each group, producing a row for each group. The result contains the `by` columns, *AxisColumn* column and also at least one column for each computed aggregate. (Aggregations over multiple columns or non-numeric results aren't supported.)
 
-This intermediate result has as many rows as there are distinct combinations of `by` and `bin_at(`*AxisColumn*`, `*step*`, `*start*`)` values.
+This intermediate result has as many rows as there are distinct combinations of `by` and `bin_at(`*AxisColumn*`,`*step*`,`*start*`)` values.
 
-Finally the rows from the intermediate result arranged into groups having the same values of the `by` expressions and all aggregated values are arranged into arrays (values of `dynamic` type). For each aggregation, there is one column containing its array with the same name. The last column is an array containing the values of *AxisColumn* binned according to the specified *step*.
+Finally the rows from the intermediate result arranged into groups having the same values of the `by` expressions and all aggregated values are arranged into arrays (values of `dynamic` type). For each aggregation, there's one column containing its array with the same name. The last column is an array containing the values of *AxisColumn* binned according to the specified *step*.
 
 > [!NOTE]
 >
@@ -108,7 +110,7 @@ Finally the rows from the intermediate result arranged into groups having the sa
 |[series_stats_dynamic()](series-stats-dynamicfunction.md)|Return multiple columns with the common statistics (min/max/variance/stdev/average)|
 |[series_stats()](series-statsfunction.md)|Generates a dynamic value with the common statistics (min/max/variance/stdev/average)|
 
-For a complete list of series analysis functions see: [Series processing functions](scalarfunctions.md#series-processing-functions)
+For a complete list of series analysis functions, see: [Series processing functions](scalarfunctions.md#series-processing-functions)
 
 ## List of series interpolation functions
 
@@ -119,7 +121,7 @@ For a complete list of series analysis functions see: [Series processing functio
 |[series_fill_forward()](series-fill-forwardfunction.md)|Performs forward fill interpolation of missing values in a series|
 |[series_fill_linear()](series-fill-linearfunction.md)|Performs linear interpolation of missing values in a series|
 
-* Note: Interpolation functions by default assume `null` as a missing value. Therefore specify `default=`*double*(`null`) in `make-series` if you intend to use interpolation functions for the series. 
+* Note: Interpolation functions by default assume `null` as a missing value. Therefore specify `default=`*double*(`null`) in `make-series` if you intend to use interpolation functions for the series.
 
 ## Examples
   
@@ -132,7 +134,9 @@ on Purchase from datetime(2016-09-10) to datetime(2016-09-13) step 1d by Supplie
 
 :::image type="content" source="images/make-seriesoperator/makeseries.png" alt-text="Three tables. The first lists raw data, the second has only distinct supplier-fruit-date combinations, and the third contains the make-series results.":::  
 
-<!-- csl: https://help.kusto.windows.net/Samples --> 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WSwW7DIAyG73kKHxMpkWxo0jRT34JbtQNbvSkaNBWgnvbwBZH1MIGEkOzvN7+FbTjAVQd9TlfQH4bbsFr2Qdv7EnOcoh4sB7d+LuBYm665NAB/rBVI00BikKRwWhC7Hkbs/ymOA1I8kR3KSEQky0jWq6RCmS2nsmCMaK4gRXI5pFqqGE9142O93bluOStBud2K4BSRqCBFItcSFRWECsf9//vm/a0xcbTrLbB7aANnoGtO+VQV49J4soJrCsKoSIvS/ILVPzx4dit70I/vNm9IB9sNXgsEX26zu2HY9nd94Purryf8i1rafwIAAA==" target="_blank">Run the query</a>
+
 ```kusto
 let data=datatable(timestamp:datetime, metric: real)
 [
@@ -162,10 +166,11 @@ data
 |---|---|
 |[ 4.0, 3.0, 5.0, 0.0, 10.5, 4.0, 3.0, 8.0, 6.5 ]|[ "2017-01-01T00:00:00.0000000Z", "2017-01-02T00:00:00.0000000Z", "2017-01-03T00:00:00.0000000Z", "2017-01-04T00:00:00.0000000Z", "2017-01-05T00:00:00.0000000Z", "2017-01-06T00:00:00.0000000Z", "2017-01-07T00:00:00.0000000Z", "2017-01-08T00:00:00.0000000Z", "2017-01-09T00:00:00.0000000Z" ]|  
 
+When the input to `make-series` is empty, the default behavior of `make-series` produces an empty result.
 
-When the input to `make-series` is empty, the default behavior of `make-series` produces an empty result as well.
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WSwW6DMAyG7zyFjyDBZCeFMibeIrdph6y4E1oCFbg97eEXFLZJE5GiKPb3O7+V2LHAYMX22yb23XEuo+dVrL91IcdbVIJnWcZLBwtbV2SvGcAPyxVSU5GqNBlsOsSihBrLf4pzhRRWYKdjpALSx0inq7RBHS2bY0EdUJtAhnR32mopYdykjc/pdtu0ZWsUxXYTgueAVAIZUrGW6FBBaLDe37/M3l4yF752nISXh3XQAw0xtW5VIT76nqjglIIwKLZByb7AjX4UwHDy9pOrlZeRV7CPjzzOSgEDX+3dSU9PCPMEv2MF12X2exsy726r8O2v23DrZb5P8g2FvL+MngIAAA==" target="_blank">Run the query</a>
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
 ```kusto
 let data=datatable(timestamp:datetime, metric: real)
 [
@@ -188,7 +193,7 @@ let interval = 1d;
 let stime = datetime(2017-01-01);
 let etime = datetime(2017-01-10);
 data
-| limit 0
+| take 0
 | make-series avg(metric) default=1.0 on timestamp from stime to etime step interval 
 | count 
 ```
@@ -201,7 +206,9 @@ data
 
 Using `kind=nonempty` in `make-series` will produce a non-empty result of the default values:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WSwWqEMBCG7z7FHFfQMmNW11p8i9xKD2mdLWETFZ0uFPrwjcTuoRgIITPfP/xDZhwLDEZMv11i3h2fxHpexfi5CzneogI8y2I/OljYuDx7zQD+2KlCakqqSkUamw4xL6DG4p/iUiKFE9j5GFUBqWOk0lVKo4qWzbGgDqhNIE2qO2+1lDBu0saXdLtt2rLVFcV2E4LngKoE0lTFWqJDBaHGev//Int7yVwYrR2Fl7tx0AMNMbVuVSE+Gk9UcEpBGBTbomQ/4Ky3Ahhe3ty4XHmxvMLNjkM/TiP7Wb7B3D9PcXNyGPhqvpz09IQwjfBYMrguk9+bkmn3XoXnR++/5AUDOqMCAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let data=datatable(timestamp:datetime, metric: real)
 [
@@ -224,7 +231,7 @@ let interval = 1d;
 let stime = datetime(2017-01-01);
 let etime = datetime(2017-01-10);
 data
-| limit 0
+| take 0
 | make-series kind=nonempty avg(metric) default=1.0 on timestamp from stime to etime step interval 
 ```
 

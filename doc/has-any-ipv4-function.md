@@ -16,26 +16,69 @@ IP address entrances in a text must be properly delimited with non-alphanumeric 
 
 ## Syntax
 
-`has_any_ipv4(`*text* `,` *ip_address* [ `,` *ip_address* ...] `)`
+`has_any_ipv4(`*source* `,` *ip_address* [`,` *ip_address_2*`,` ...] `)`
 
-`has_any_ipv4(`*text* `,` *ip_addresses* `)`
+## Parameters
 
-## Arguments
-
-* *text*: The value containing the text to search in.
-* *ip_address*: String value containing the IP address to look for.
-* *ip_addresses*: Dynamic array containing the list of IP addresses to look for.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *source*| string | &check; | The value to search.|
+| *ip_address*| string or dynamic | &check; | An IP address, or an array of IP addresses, for which to search.|
 
 ## Returns
 
-`true` if one of specified IP addresses is a valid IPv4 address, and it was found in *text*. Otherwise, the function returns `false`.
+`true` if one of specified IP addresses is a valid IPv4 address, and it was found in *source*. Otherwise, the function returns `false`.
 
 ## Examples
 
+### IP addresses as list of strings
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOT8yrjM8sKDPRUDcwtTIwsTI1UTA0MtczAEJDBXfXEAX9tMSyzOT8PD0goWBiYKKuo6AOV4HMMVLXBAATwSNyXgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
-has_any_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1', '127.0.0.2') // true
-
-has_any_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', dynamic(["127.0.0.256", "192.168.1.1"])) // false, invalid IPv4 address
-
-has_any_ipv4('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.0.1', '192.168.1.1') // false, improperly delimited IP address
+print result=has_any_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', '127.0.0.1', '127.0.0.2')
 ```
+
+|result|
+|--|
+|true|
+
+### IP addresses as dynamic array
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOT8yrjM8sKDPRUDcwtTIwsTI1UTA0MtczAEJDBXfXEAX9tMSyzOT8PD0goWBiYKKuo5BSmZeYm5msEa0OVwoUhXOM1GM1NQHScYQ8aQAAAA==" target="_blank">Run the query</a>
+
+```kusto
+print result=has_any_ipv4('05:04:54 127.0.0.1 GET /favicon.ico 404', dynamic(['127.0.0.1', '127.0.0.2']))
+```
+
+|result|
+|--|
+|true|
+
+### Invalid IPv4 address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShKLS7NKbHNSCyOT8yrjM8sKDPRUDcwtTIwsTI1UTA0MtczAEIjUzMFd9cQBf20xLLM5Pw8PSChYGJgoq6jkFKZl5ibmawRrYSkWElHQcnQ0kjP0MxCz1DPUClWUxMAIDlcGW8AAAA=" target="_blank">Run the query</a>
+
+```kusto
+print result=has_any_ipv4('05:04:54 127.0.0.256 GET /favicon.ico 404', dynamic(["127.0.0.256", "192.168.1.1"]))
+```
+
+|result|
+|--|
+|false|
+
+### Improperly deliminated IP address
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAz2NywrCMBQFf+XsYqHkUVIfBZdF3LlwX4JJ8UKahiQW+vcGFzJwYODAxEShILn88eX6NnkyYZ8obvrAZD9IPfRadScuKwq38Qkxm41ea+B1oKVmLdj/8ZNLx9XxzFXVBkJgNj67FrTEtEaX/A7rPC1UnMX9AWNtzecvfjhaaIkAAAA=" target="_blank">Run the query</a>
+
+```kusto
+print result=has_any_ipv4('05:04:54127.0.0.1 GET /favicon.ico 404', '127.0.0.1', '192.168.1.1') // false, improperly delimited IP address
+```
+
+|result|
+|--|
+|false|

@@ -9,12 +9,6 @@ ms.date: 12/21/2022
 
 Checks whether an IPv6 string address is in any of the specified IPv6 address ranges.
 
-```kusto
-ipv6_is_in_any_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", dynamic(["a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd/112", "0:0:0:0:0:ffff:c0a8:ac/60"])) == true
-ipv6_is_in_any_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd/112", "0:0:0:0:0:ffff:c0a8:ac/60") == true
-ipv6_is_in_any_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd/120", "0:0:0:0:0:ffff:c0a8:ac/60") == false
-```
-
 ## Syntax
 
 `ipv6_is_in_any_range(`*Ipv6Address* `,` *Ipv6Range* [ `,` *Ipv6Range* ...] `)`
@@ -25,16 +19,14 @@ ipv6_is_in_any_range("a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd", "a5e:f127:8a9d:14
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Ipv6Address* | string | &check; | An expression representing an IPv6 address.
-| *Ipv6Range* | string | &check; | An expression representing an IPv6 range using [IP-prefix notation](#ip-prefix-notation).
-| *Ipv6Ranges* | dynamic array | &check; | An array containing IPv6 ranges using [IP-prefix notation](#ip-prefix-notation).
+| *Ipv6Address* | string | &check; | An expression representing an IPv6 address.|
+| *Ipv6Range* | string | &check; | An expression representing an IPv6 range using [IP-prefix notation](#ip-prefix-notation).|
+| *Ipv6Ranges* | dynamic | &check; | An array containing IPv6 ranges using [IP-prefix notation](#ip-prefix-notation).|
 
-## IP-prefix notation
+> [!NOTE]
+> Either one or more *IPv6Range* strings or an *IPv6Ranges* dynamic array is required.
 
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
-
-For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -44,7 +36,9 @@ For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA5WQzQqCQBSF9/MUg6sEQcdyshs+gBDRPkSu8yNDNoYO/UAP31S4aGfnbL/Lx7mdcnTXC+z2yt364TQW8mHxbMTiSKhPgJkCzdI15LiRwFZcgmJJCk0mlyDWWQaaCxkzlgbR9yKBqdoHRII5oIh5EpAq3JLOG8uD96DzbTq1KA8wusHYNqSzpdgIOQln0eovWs+luacl83S1JX4VeVJ1d8pKWo6ftxbmcuW1GWtja7SPekDbvhdHv18PX7mD2cSIAQAA" target="_blank">Run the query</a>
+
 ```kusto
 let LocalNetworks=dynamic([
     "a5e:f127:8a9d:146d:e102:b5d3:c755:f6cd/112",

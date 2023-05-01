@@ -1,15 +1,15 @@
 ---
 title: Window functions - Azure Data Explorer
-description: This article describes Window functions in Azure Data Explorer.
+description: Learn how to use window functions on rows in a serialized set.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/20/2019
+ms.date: 03/02/2023
 ---
 # Window functions overview
 
 Window functions operate on multiple rows (records) in a row set at a time. Unlike aggregation functions, window functions require that the rows in the row set be serialized (have a specific order to them). Window functions may depend on the order to determine the result.
 
-Window functions can only be used on serialized sets. The easiest way to serialize a row set is to use the [serialize operator](./serializeoperator.md). This operator "freezes" the order of rows in an arbitrary manner. If the order of serialized rows is semantically important, use the [sort operator](./sortoperator.md) to force a particular order.
+Window functions can only be used on serialized sets. The easiest way to serialize a row set is to use the [serialize operator](./serializeoperator.md). This operator "freezes" the order of rows in an arbitrary manner. If the order of serialized rows is semantically important, use the [sort operator](./sort-operator.md) to force a particular order.
 
 The serialization process has a non-trivial cost associated with it. For example, it might prevent query parallelism in many scenarios. Therefore, don't apply serialization unnecessarily. If necessary, rearrange the query to perform serialization on the smallest row set possible.
 
@@ -26,8 +26,7 @@ Many tabular operators serialize output whenever the input is already serialized
 
 ## Operators that emit serialized row sets by sorting
 
-* [order operator](./orderoperator.md)
-* [sort operator](./sortoperator.md)
+* [sort operator](./sort-operator.md)
 * [top operator](./topoperator.md)
 * [top-hitters operator](./tophittersoperator.md)
 

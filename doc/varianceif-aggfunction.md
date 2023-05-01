@@ -3,28 +3,28 @@ title: varianceif() (aggregation function) - Azure Data Explorer
 description: Learn how to use the varianceif() function to calculate the variance in an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 02/15/2023
 ---
 # varianceif() (aggregation function)
 
-Calculates the [variance](variance-aggfunction.md) of *Expr* in records for which *Predicate* evaluates to `true`.
+Calculates the [variance](variance-aggfunction.md) of *expr* in records for which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`varianceif` `(`*Expr*`,` *Predicate*`)`
+`varianceif(`*expr*`,` *predicate*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*Expr* | string | &check; | Expression that will be used for aggregation calculation.|
-|*Predicate*| string | &check; | Predicate that if true, the *Expr* calculated value will be added to the variance.
+|*expr* | string | &check; | The expression to use for the variance calculation.|
+|*predicate*| string | &check; | If *predicate* evaluates to `true`, the *expr* calculated value will be added to the variance.|
 
 ## Returns
 
-Returns the variance value of *Expr* in records for which *Predicate* evaluates to `true`.
+Returns the variance value of *expr* in records for which *predicate* evaluates to `true`.
 
 ## Example
 
@@ -36,7 +36,7 @@ range x from 1 to 100 step 1
 | summarize varianceif(x, x%2 == 0)
 ```
 
-**Results**
+**Output**
 
 |varianceif_x|
 |---|

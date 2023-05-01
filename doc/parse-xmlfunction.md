@@ -1,30 +1,32 @@
 ---
 title: parse_xml() - Azure Data Explorer
-description: This article describes parse_xml() in Azure Data Explorer.
+description: Learn how to use the parse_xml() function to return a dynamic object that is determined by the value of XML.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/08/2023
 ---
 # parse_xml()
 
-Interprets a `string` as a XML value, converts the value to a JSON and returns the value as `dynamic`.
+Interprets a `string` as an XML value, converts the value to a JSON, and returns the value as `dynamic`.
 
 ## Syntax
 
 `parse_xml(`*xml*`)`
 
-## Arguments
+## Parameters
 
-* *xml*: An expression of type `string`, representing a XML-formatted value.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *xml*| string | &check; | The XML-formatted string value to parse.|
 
 ## Returns
 
 An object of type [dynamic](./scalar-data-types/dynamic.md) that is determined by the value of *xml*, or null, if the XML format is invalid.
 
-The conversion is done as following:
+The conversion is done as follows:
 
 XML                                |JSON                                            |Access
------------------------------------|------------------------------------------------|--------------         
+-----------------------------------|------------------------------------------------|--------------
 `<e/>`                             | { "e": null }                                  | o.e
 `<e>text</e>`	                   | { "e": "text" }	                            | o.e
 `<e name="value" />`               | { "e":{"@name": "value"} }	                    | o.e["@name"]
@@ -33,15 +35,14 @@ XML                                |JSON                                        
 `<e> <a>text</a> <a>text</a> </e>` | { "e": { "a": ["text", "text"] } }	            | o.e.a[0] o.e.a[1]
 `<e> text <a>text</a> </e>`        | { "e": { "#text": "text", "a": "text" } }	    | 1`o.e["#text"] o.e.a
 
-**Notes**
+> [!NOTE]
+>
+> * Maximal input `string` length for `parse_xml` is 1 MB (1,048,576 bytes). Longer strings interpretation will result in a null object.
+> * Only element nodes, attributes and text nodes will be translated. Everything else will be skipped.
 
-* Maximal input `string` length for `parse_xml` is 1MB (1,048,576 bytes). Longer strings interpretation will result in a null object
-* Only element nodes, attributes and text nodes will be translated. Everything else will be skipped
- 
 ## Example
 
-In the following example, when `context_custom_metrics` is a `string`
-that looks like this: 
+In the following example, when `context_custom_metrics` is a `string` that looks like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

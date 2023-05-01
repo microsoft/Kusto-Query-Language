@@ -15,4 +15,9 @@ as .NET's `System.Data.SqlTypes.SqlDecimal`.
 `decimal(1.0)`, `decimal(0.1)`, and `decimal(1e5)` are all literals of type `decimal`.
 
 There are several special literal forms:
-* `decimal(null)`: The is the [null value](null-values.md).
+* `decimal(null)`: This is the [null value](null-values.md).
+
+> [!CAUTION]
+> Arithmetic operations involving `decimal` values are significantly slower than operations on [real](real.md) data type.
+> If your use case doesn't require very high precision, it's advised to switch to `real`.
+

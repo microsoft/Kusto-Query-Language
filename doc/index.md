@@ -3,7 +3,7 @@ title: Kusto Query Language (KQL) overview- Azure Data Explorer
 description: Learn about how to use Kusto Query Language to explore data.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/19/2022
+ms.date: 03/16/2023
 adobe-target: true
 ---
 # Kusto Query Language (KQL) overview
@@ -33,6 +33,9 @@ It's like a funnel, where you start out with an entire data table. Each time the
 
 Let's look at an example query.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuCqUSjPSC1KVQguSSwqCcnMTVVISi0pT03NU9BISSxJLQGKaBgZGJjrGhrqGhhqKujpKaCJG4HENZENKklVsLVVUHLz8Q/ydHFUUgDZkpxfmlcCAIItD6l6AAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents 
 | where StartTime between (datetime(2007-11-01) .. datetime(2007-12-01))
@@ -40,19 +43,16 @@ StormEvents
 | count 
 ```
 
+|Count|
+|-----|
+|   28|
+
 > [!NOTE]
 > KQL is case-sensitive for everything – table names, table column names, operators, functions, and so on.
 
 This query has a single tabular expression statement. The statement begins with a reference to a table called *StormEvents* and contains several operators, [`where`](whereoperator.md) and [`count`](countoperator.md), each separated by a pipe. The data rows for the source table are filtered by the value of the *StartTime* column and then filtered by the value of the *State* column. In the last line, the query returns a table with a single column and a single row containing the count of the remaining rows.
 
-> [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVuCqUSjPSC1KVQguSSwqCcnMTVVISi0pT03NU9BISSxJLQGKaBgZGJjrGhrqGhhqKujpKaCJG4HENZENKklVsLVVUHLz8Q/ydHFUUgDZkpxfmlcCAIItD6l6AAAA" target="_blank">Run the query</a>
-
-|Count|
-|-----|
-|   28|
-
-To try out some more Kusto queries, see [Tutorial: Use Kusto queries](tutorial.md).
+To try out some more Kusto queries, see [Tutorial: Write Kusto queries](tutorial.md).
 
 ## Control commands
 
@@ -71,8 +71,9 @@ For more information on control commands, see [Management (control commands) ove
 
 ## Next steps
 
-* [Tutorial: Use Kusto queries](tutorial.md)
-* [Samples for Kusto Queries](samples.md)
+* [Tutorial: Learn common operators](tutorials/learn-common-operators.md)
+* [Tutorial: Use aggregation functions](tutorials/use-aggregation-functions.md)
 * [KQL quick reference](../../kql-quick-reference.md)
 * [SQL to Kusto cheat sheet](sqlcheatsheet.md)
 * [Query best practices](best-practices.md)
+* [Query data with T-SQL](/azure/data-explorer/t-sql)

@@ -1,9 +1,9 @@
 ---
 title: Restrict statement - Azure Data Explorer
-description: This article describes Restrict statement in Azure Data Explorer.
+description: Learn how to use the restrict statement to limit tabular views that are visible to subsequent query statements.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2021
+ms.date: 03/12/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -22,57 +22,64 @@ The middle-tier application can prefix the user's query with a **logical model**
 
 ## Syntax
 
-`restrict` `access` `to` `(` [*EntitySpecifier* [`,` ...]] `)`
+`restrict` `access` `to` `(`*EntitySpecifiers*`)`
 
-Where *EntitySpecifier* is one of:
-* An identifier defined by a let statement as a tabular view.
-* A table reference (similar to one used by a union statement).
-* A pattern defined by a pattern declaration.
+## Parameters
 
-All tables, tabular views, or patterns that are not specified by the restrict statement become "invisible" to the rest of the query. 
-Let, set, and tabular statements are strung together/separated by a semicolon, otherwise they will not be considered part of the same query.
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*EntitySpecifiers*|string|&check;|One or more comma-separated entity specifiers. The possible values are:<br/>- An identifier defined by a let statement as a tabular view<br/>- A table or function reference, similar to one used by a union statement<br/>- A pattern defined by a pattern declaration<br/>|
 
-## Arguments
-
-The restrict statement can get one or more parameters that define the permissive restriction during name resolution of the entity. 
-The entity can be:
-* [let statement](./letstatement.md) appearing before `restrict` statement. 
-
-  ```kusto
-  // Limit access to 'Test' let statement only
-  let Test = () { print x=1 };
-  restrict access to (Test);
-  ```
-
-* [Tables](../management/tables.md) or [functions](../management/functions.md) that are defined in the database metadata.
-
-    ```kusto
-    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata, 
-    // and other database 'DB2' has Table2 defined in the metadata
-    
-    restrict access to (database().Table1, database().Func1, database('DB2').Table2);
-    ```
-
-* Wildcard patterns that can match multiples of [let statements](./letstatement.md) or tables/functions  
-
-    ```kusto
-    let Test1 = () { print x=1 };
-    let Test2 = () { print y=1 };
-    restrict access to (*);
-    // Now access is restricted to Test1, Test2 and no tables/functions are accessible.
-
-    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
-    // Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
-    restricts access to (database().*);
-    // Now access is restricted to all tables/functions of the current database ('DB2' is not accessible).
-
-    // Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
-    // Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
-    restricts access to (database('DB2').*);
-    // Now access is restricted to all tables/functions of the database 'DB2'
-    ```
+> [!NOTE]
+>
+> * All tables, tabular views, or patterns that aren't specified by the restrict statement become "invisible" to the rest of the query.
+> * Let, set, and tabular statements are strung together/separated by a semicolon, otherwise they won't be considered part of the same query.
 
 ## Examples
+
+### Let statement
+
+The following example uses a [let statement](./letstatement.md) appearing before `restrict` statement.
+
+```kusto
+// Limit access to 'Test' let statement only
+let Test = () { print x=1 };
+restrict access to (Test);
+```
+
+### Tables or functions
+
+The following example uses references to [tables](../management/tables.md) or [functions](../management/functions.md) that are defined in the database metadata.
+
+```kusto
+// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata, 
+// and other database 'DB2' has Table2 defined in the metadata
+
+restrict access to (database().Table1, database().Func1, database('DB2').Table2);
+```
+
+### Patterns
+
+The following example uses wildcard patterns that can match multiples of [let statements](./letstatement.md) or tables/functions.
+
+```kusto
+let Test1 = () { print x=1 };
+let Test2 = () { print y=1 };
+restrict access to (*);
+// Now access is restricted to Test1, Test2 and no tables/functions are accessible.
+
+// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
+// Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
+restrict access to (database().*);
+// Now access is restricted to all tables/functions of the current database ('DB2' is not accessible).
+
+// Assuming the database that the query uses has table Table1 and Func1 defined in the metadata.
+// Assuming that database 'DB2' has table Table2 and Func2 defined in the metadata
+restrict access to (database('DB2').*);
+// Now access is restricted to all tables/functions of the database 'DB2'
+```
+
+### Prevent user from querying other user data
 
 The following example shows how a middle-tier application can prepend a user's query
 with a logical model that prevents the user from querying any other user's data.

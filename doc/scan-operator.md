@@ -1,9 +1,9 @@
 ---
 title: scan operator - Azure Data Explorer
-description: This article describes the scan operator in Azure Data Explorer.
+description: Learn how to use the scan operator to scan data, match, and build sequences based on the predicates.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/25/2022
+ms.date: 01/22/2023
 ---
 # scan operator
 
@@ -37,14 +37,16 @@ T
 
 `step` *StepName* [ `output` = `all` | `last` | `none`] `:` *Condition* [ `=>` *Column* `=` *Assignment* [`,` ... ] ] `;`
 
-## Arguments
+## Parameters
 
-* *MatchIdColumnName*:  Indicates the name of a column of type `long` that is appended to the output as part of the scan execution. Indicates the 0-based index of the match for the row. (Optional)
-* *ColumnDeclarations*: Declares an extension to the schema of the operator’s source. Additional columns are assigned in the steps or *DefaultValue* if not assigned. *DefaultValue* is `null` if not specified. (Optional)
-* *StepName*: Used to reference values in the state of scan for conditions and assignments. The step name must be unique.
-* *Condition*: A Boolean expression that defines which records from the input matches the step. A record matches the step when the condition is true with the step’s state or with the previous step’s state.
-* *Assignment*: A scalar expression that is assigned to the corresponding column when a record matches a step.
-* `output`: Controls the output logic of the step on repeated matches. `all` (default) outputs all records matching the step, `last` outputs only the last record in a series of repeating matches for the step, `none` does not output records matching the step.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *MatchIdColumnName* | string | |  The name of a column of type `long` that is appended to the output as part of the scan execution. Indicates the 0-based index of the match for the row. |
+| *ColumnDeclarations* | string | | Declares an extension to the schema of the operator’s source. Additional columns are assigned in the steps or *DefaultValue* if not assigned. *DefaultValue* is `null` if not specified. |
+| *StepName* | string | &check; | Used to reference values in the state of scan for conditions and assignments. The step name must be unique.|
+| *Condition* | string | &check; | An expression that evaluates to a `bool`, `true` or `false`, that defines which records from the input matches the step. A record matches the step when the condition is `true` with the step’s state or with the previous step’s state.|
+| *Assignment* | string | | A scalar expression that is assigned to the corresponding column when a record matches a step.|
+| `output` | string | | Controls the output logic of the step on repeated matches. `all` outputs all records matching the step, `last` outputs only the last record in a series of repeating matches for the step, and `none` does not output records matching the step. The default is `all`.|
 
 ## Returns
 
@@ -55,6 +57,9 @@ A record for each match of a record from the input to a step. The schema of the 
 ### Cumulative sum
 
 Calculate the cumulative sum for an input column. The result of this example is equivalent to using [row_cumsum()](rowcumsumfunction.md).
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA02NOwqAMBBE+5xiSkUQLWyUeBUJcf1ATCTZaAoPb7ByqmEej/HKroSExbsDLdihQ2A6cxcPglYWM2mjPKHQ8YhG8X7RlHrj7CqbEvfOG0QhkPOJoe3BPhLkiL8BmW+qjOv/OojyBSZSTeODAAAA" target="_blank">Run the query</a>
 
 ```kusto
 range x from 1 to 5 step 1 
@@ -78,6 +83,9 @@ range x from 1 to 5 step 1
 
 Calculate the cumulative sum for two input column, reset the sum value to the current row value whenever the cumulative sum reached 10 or more.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22OQQrCMBBF9znFXzZaxAhuKulVJLSTWmhTSdKagIc3FIVo/fzVG+bNWGU6QoC20wgBP+EM5+kOwZ6g4Mm0iJA4YYeQkGuUQUvNoCyhaOZxHpTvF7qGaphMJ48lMhjfkOPR+xtYwZCy+p2o4O1MkHW+EdKtXuvCicMXrSVEcodU7PEz5SVW8Sb5K3/F8SOOqRtx5BfGX1hK/bgiAQAA" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 5 step 1
 | extend y = 2 * x
@@ -98,26 +106,29 @@ range x from 1 to 5 step 1
 |4|8|10|8|
 |5|10|5|18|
 
-
 ### Fill forward a column
 
 Fill forward a string column. Each empty value is assigned the last seen non-empty value.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA01Qy2rDMBC86ysGnSwwoW5DCAkuNI8/yK2EoNjrViC7xrtNCPTjK8sOaPcyo50dRutJcLxRJ4wStZXQV0/ITryBuJa4t10+KTZgGVz3ZfCpEOqlzaE/dB5JMZIZv454N5O3ZLBM8GrE+5msk0ERrQ5PFs20OqutmnKqP/DPILg+cGJYrsaHynaoqfJ2CNmj7tI476l+hi61Nrg7+YbKojEL9eAi/HL4JZTvSLfCLVzTZI6p7eUxGZo8yBepar6L2SrzD0ocTu9HAQAA" target="_blank">Run the query</a>
+
 ```kusto
-let Events = datatable ( Ts: timespan, Event: string ) 
-[   0m, "A",
-1m, "",
-2m, "B",
-3m, "",
-4m, "",
-6m, "C",
-8m, "",
-11m, "D",
-12m, ""  ]
+let Events = datatable (Ts: timespan, Event: string) [
+    0m, "A",
+    1m, "",
+    2m, "B",
+    3m, "",
+    4m, "",
+    6m, "C",
+    8m, "",
+    11m, "D",
+    12m, ""
+]
 ;
 Events
 | sort by Ts asc
-| scan declare (Event_filled:string="") with 
+| scan declare (Event_filled: string="") with 
 (
     step s1: true => Event_filled = iff(isempty(Event), s1.Event_filled, Event);
 )
@@ -137,25 +148,29 @@ Events
 |00:11:00|D|D|
 |00:12:00||D|
 
-### Sessions tagging 
+### Sessions tagging
 
 Divide the input into sessions: a session ends 30 minutes after the first event of the session, after which a new session starts. Note the use of `with_match_id` flag which assigns a unique value for each distinct match (session) of *scan*. Also note the special use of two *steps* in this example, `inSession` has `true` as condition so it captures and outputs all the records from the input while `endSession` captures records that happen more than 30m from the `sessionStart` value for the current match. The `endSession` step has `output=none` meaning it doesn't produce output records. The `endSession` step is used to advance the state of the current match from `inSession` to `endSession`, allowing a new match (session) to begin, starting from the current record.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WQy2rDMBBF9/qKS1Y2qCVt+sLGgT7yBcmulKDYSiOQZaMZtxT68ZVsp3EWkTY6M/fOQ1YzVl/aMaFApTjcndVINpSBTa2pVU4OigzE3rjPFO8C4cxridnzTPZwM4XbCC8jLCK8HeE89RDp9UhPU+VdX3E10uP9UF98iFwM84pfUOMZux9sCIrKGCiVw7fhw7ZWXB62pipIE5nGhScqXVrlw3JjbM3K82nNtHdCJH1HYt3CuPUgDSrfaRRLTL3hy8x+nxhynbXJv/h6qkllGE/iQjI/9dKuGiVoOm47LlzjdBaXu7pgxxKLeZ2L9A9Yk5hPxgEAAA==" target="_blank">Run the query</a>
+
 ```kusto
-let Events = datatable ( Ts: timespan, Event: string ) 
-[   0m, "A",
-1m, "A",
-2m, "B",
-3m, "D",
-32m, "B",
-36m, "C",
-38m, "D",
-41m, "E",
-75m, "A"  ]
+let Events = datatable (Ts: timespan, Event: string) [
+    0m, "A",
+    1m, "A",
+    2m, "B",
+    3m, "D",
+    32m, "B",
+    36m, "C",
+    38m, "D",
+    41m, "E",
+    75m, "A"
+]
 ;
 Events
 | sort by Ts asc
-| scan with_match_id=session_id declare (sessionStart:timespan) with 
+| scan with_match_id=session_id declare (sessionStart: timespan) with 
 (
     step inSession: true => sessionStart = iff(isnull(inSession.sessionStart), Ts, inSession.sessionStart);
     step endSession output=none: Ts - inSession.sessionStart > 30m;
@@ -178,19 +193,23 @@ Events
 
 ### Events between Start and Stop
 
-Find all sequences of events between the event `Start` and the event `Stop` that occur within 5 minutes. Assign a match ID for each sequence. 
+Find all sequences of events between the event `Start` and the event `Stop` that occur within 5 minutes. Assign a match ID for each sequence.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WPYWvCMBCGv+dXvPOTQidr3cZozYc5/QX6TYbENsxCE0vvcAj+eJM0FR0sgRzPe3fvXRrNWJ20ZYJEpdjdfaMx3lAOro2mVtmkr8hB3NX2Z4KtgDsvJsHoc5QESD2sWXUchcwLiwgzD8sIr33psY387vkrwsdfnzQ4rwbKbs3iWxSiX11cQMeOsT9jQ1BUeqFUFr81H3ZGcXnY1ZU07gkSxDi4EesWlOb9/yDlMLq4S2dD+umWhrLVg+jWCZqb/uwMpy7OJd7Mvc/sccz/LZMrJ20JNJQBAAA=" target="_blank">Run the query</a>
 
 ```kusto
-let Events = datatable ( Ts: timespan, Event: string ) 
-[   0m, "A",
-1m, "Start",
-2m, "B",
-3m, "D",
-4m, "Stop",
-6m, "C",
-8m, "Start",
-11m, "E",
-12m, "Stop"  ]
+let Events = datatable (Ts: timespan, Event: string) [
+    0m, "A",
+    1m, "Start",
+    2m, "B",
+    3m, "D",
+    4m, "Stop",
+    6m, "C",
+    8m, "Start",
+    11m, "E",
+    12m, "Stop"
+]
 ;
 Events
 | sort by Ts asc
@@ -198,7 +217,7 @@ Events
 (
     step s1: Event == "Start";
     step s2: Event != "Start" and Event != "Stop" and Ts - s1.Ts <= 5m;
-    step s3: Event == "Stop"  and Ts - s1.Ts <= 5m;
+    step s3: Event == "Stop" and Ts - s1.Ts <= 5m;
 )
 ```
 
@@ -218,10 +237,13 @@ Events
 
 Calculate a funnel completion of the sequence  `Hail` -> `Tornado` -> `Thunderstorm Wind` by `State` with custom thresholds on the times between the events (`Tornado` within `1h` and `Thunderstorm Wind` within `2h`). This example is similar to the [funnel_sequence_completion plugin](funnel-sequence-completion-plugin.md), but allows greater flexibility.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA2VQsa7CMBDb+QqrEwwgPUZ4HZHYqcR8NNHLSfRSJVeeivh40lBBgQw32D774oP60OwuVjTObmgpKCt7gWPRVdRAav/6Ukj5YnHqcdCEYIb05nlGH3QkglbcWFCsM3NDrEnwz+qmC3lJbQtHfN4gZ1d9a1GWKPYJK7bvunShkPGf0uoBFyAxk/Rl9l29gN8SP+7T0nVibIjD548s5st7wmMQfKeMV70HrcegxThTBV3TUOCrhal9JzrPBS6Gxp6RdzkEW8CEAQAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | partition hint.strategy=native by State 
-(
+    (
     sort by StartTime asc
     | scan with 
     (
@@ -229,7 +251,7 @@ StormEvents
         step tornado: EventType == "Tornado" and StartTime - hail.StartTime <= 1h;
         step thunderstormWind: EventType == "Thunderstorm Wind" and StartTime - tornado.StartTime <= 2h;
     )
-)
+    )
 | summarize dcount(State) by EventType
 ```
 
@@ -257,7 +279,7 @@ Referencing a value in the state is done in the form *StepName*.*ColumnName*. Fo
 
 Each record from the input is evaluated against all of scan’s steps, starting from last to first. When a record *r* is considered against some step *s_k*, the following logic is applied:
 
-* If the state of the previous step is not empty and the record *r* satisfies the condition of *s_k* using the state of the previous step *s_(k-1)*, then the following happens:
+* If the state of the previous step isn't empty and the record *r* satisfies the condition of *s_k* using the state of the previous step *s_(k-1)*, then the following happens:
     1. The state of *s_k* is deleted.
     1. The state of *s_(k-1)* becomes ("promoted" to be) the state of *s_k*, and the state of *s_(k-1)* becomes empty.
     1. All the assignments of *s_k* are calculated and extend *r*.

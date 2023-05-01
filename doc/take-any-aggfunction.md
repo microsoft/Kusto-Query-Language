@@ -1,9 +1,9 @@
 ---
 title: take_any() (aggregation function) - Azure Data Explorer
-description: This article describes take_any() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the take_any() (aggregation function) to return the value of an arbitrarily selected record.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 02/20/2023
 ---
 # take_any() (aggregation function)
 
@@ -17,14 +17,15 @@ and returns the value of one or more expressions over each such record.
 
 ## Syntax
 
-`take_any` `(` (*Expr* [`,` *Expr2* ...]) | *\** `)`
+`take_any(`*expr_1* [`,` *expr_2* ...]`)`
 
-## Arguments
+`take_any(`*`)`
+
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression used for selecting a record. |
-| *Expr2* | string |  | Additional expressions. |
+| *expr_N* | string | &check; | The expression used for selecting a record. If the wildcard value (`*`) is given in place of an expression, all records will be selected.|
 
 ## Returns
 

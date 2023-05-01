@@ -3,7 +3,7 @@ title: String operators - Azure Data Explorer
 description: Learn about query operators for searching string data types.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 04/16/2023
 ---
 # String operators
 
@@ -15,7 +15,8 @@ Kusto indexes all columns, including columns of type `string`. Multiple indexes 
 
 ### What is a term?
 
-By default, each `string` value is broken into maximal sequences of ASCII alphanumeric characters, and each of those sequences is made into a term.
+By default, each `string` value is broken into maximal sequences of alphanumeric characters, and each of those sequences is made into a term.
+
 For example, in the following `string`, the terms are `Kusto`, `KustoExplorerQueryRun`, and the following substrings: `ad67d136`, `c1db`, `4f9f`, `88ef`, `d94f3b6b0b5a`.
 
 ```kusto
@@ -35,9 +36,6 @@ The following abbreviations are used in this article:
 * LHS = left hand side of the expression
 
 Operators with an `_cs` suffix are case sensitive.
-
-> [!NOTE]
-> Case-insensitive operators are currently supported only for ASCII-text. For non-ASCII comparison, use the [tolower()](tolowerfunction.md) function.
 
 |Operator   |Description   |Case-Sensitive  |Example (yields `true`)  |
 |-----------|--------------|----------------|-------------------------|
@@ -71,7 +69,7 @@ Operators with an `_cs` suffix are case sensitive.
 |[`!in`](not-in-cs-operator.md) |Not equals to any of the elements |Yes | `"bca" !in ("123", "345", "abc")` |
 |[`in~`](inoperator.md) |Equals to any of the elements |No | `"Abc" in~ ("123", "345", "abc")` |
 |[`!in~`](not-in-operator.md) |Not equals to any of the elements |No | `"bCa" !in~ ("123", "345", "ABC")` |
-|[`matches regex`](regex-operator.md) |LHS contains a match for RHS |Yes |`"Fabrikam" matches regex "b.*k"`|
+|[`matches regex`](matches-regex-operator.md) |LHS contains a match for RHS |Yes |`"Fabrikam" matches regex "b.*k"`|
 |[`startswith`](startswith-operator.md) |RHS is an initial subsequence of LHS |No |`"Fabrikam" startswith "fab"`|
 |[`!startswith`](not-startswith-operator.md) |RHS isn't an initial subsequence of LHS |No |`"Fabrikam" !startswith "kam"`|
 |[`startswith_cs`](startswith-cs-operator.md)  |RHS is an initial subsequence of LHS |Yes |`"Fabrikam" startswith_cs "Fab"`|
@@ -95,7 +93,9 @@ For more information, see [Query best practices](best-practices.md).
 
 For example, the first of these queries will run faster:
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSspVqhRKM9ILUpVCC5JLElVyEgsVlDyyy8qyVACyiTnl+aVWPNyBeNUn5yfV5KYmQfUlJdfBNcCAHN0g3JgAAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents | where State has "North" | count;
 StormEvents | where State contains "nor" | count

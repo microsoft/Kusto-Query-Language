@@ -21,14 +21,11 @@ Checks group membership or principal identity of the current principal running t
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *group* | dynamic | &check; | An array of string literals in which each literal represents an Azure AD principal. See [examples for Azure AD principals](../management/access-control/principals-and-identity-providers.md#azure-ad-tenants).|
+| *group* | dynamic | &check; | An array of string literals in which each literal represents an Azure Active Directory (Azure AD) principal. See [examples for Azure AD principals](../management/access-control/referencing-security-principals.md).|
 
 ## Returns
-  
-The function returns:
 
-* `true`: if the current principal running the query was successfully matched for at least one input argument.
-* `false`: otherwise
+The function returns `true` if the current principal running the query is successfully matched for at least one input argument. If not, the function returns `false`.
 
 ## Examples
 
@@ -52,7 +49,7 @@ print result=current_principal_is_member_of(
 Using dynamic array instead of multiple arguments:
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywrCMBRE935Fd23BSPMgaZCA/yESbl4SbNqQNgv/3tqFC2dxYIbD5BLnrSl+rdOmbC3Fz5vO+2hjhknHVSefjC96Cd2p2ePeM6Rou/vRWgBXV1/UF/gWwJT4gnSxS2rPzU95lqVmdfBf+jmQs+IcHKaUIAqSIQZcIhmAICwEJWGQlHN2FSTIcTQBjTxgxDAEJDEYRJywbsDYGSba4/bR9x8D/i004AAAAA==)
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA12MywrCMBRE935Fd23BSPMgaZCA/yESbl4SbNqQNgv/3tqFC2dxYIbD5BLnrSl+rdOmbC3Fz5vO+2hjhknHVSefjC96Cd2p2ePeM6Rou/vRWgBXV1/UF/gWwJT4gnSxS2rPzU95lqVmdfBf+jmQs+IcHKaUIAqSIQZcIhmAICwEJWGQlHN2FSTIcTQBjTxgxDAEJDEYRJywbsDYGSba4/bR9x8D/i004AAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print result=current_principal_is_member_of(

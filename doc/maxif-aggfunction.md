@@ -3,11 +3,11 @@ title: maxif() (aggregation function) - Azure Data Explorer
 description: Learn how to use the maxif() function to calculate the maximum value of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 03/12/2023
 ---
 # maxif() (aggregation function)
 
-Calculates the maximum value of *Expr* in records for which *Predicate* evaluates to `true`.
+Calculates the maximum value of *expr* in records for which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -15,33 +15,33 @@ See also - [max()](max-aggfunction.md) function, which returns the maximum value
 
 ## Syntax
 
-`maxif` `(`*Expr*`,`*Predicate*`)`
+`maxif(`*expr*`,`*predicate*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression that will be used for aggregation calculation. |
-| *Predicate* | string | &check; | Expression that will be used to filter rows. |
+| *expr* | string | &check; | The expression used for the aggregation calculation. |
+| *predicate* | string | &check; | The expression used to filter rows. |
 
 ## Returns
 
-Returns the maximum value of *Expr* in records for which *Predicate* evaluates to `true`.
+Returns the maximum value of *expr* in records for which *predicate* evaluates to `true`.
 
 ## Example
 
 This example shows the maximum damage for events with no casualties.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAyWMMQ7CQAwEe17hkigp+ICrHAUFCCkvMImBk7g7ZDvRBfF4IlztjFa7gxVJx4Wz6e4LXI3zBIESPRg9eilvbZ2vG7PY2kFgsqeiR4jCo7Uupzz9dbvTOSWS+GE4U/WHS+lJZ3pZZMVENd73XnS+BsRDA7cVBiPjH/V0dHmeAAAA" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAzWMPQ7CMAxGdyTu4BEEAxfw1DAwgJB6AkMNRMIJsl2UIg4PbWB6+n70Ws8q2ycnt/nsDVycUweBhK6MFY3mh8HqVx6/idWHNQQmvxlWhKh89vE1xV3qpmJ0Wi9CGl8MeypVcsgNWU93j2woVOJlUYe/FRBhs4TTAK2T8wcBsgcBpgAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 StormEvents
-| extend Damage=DamageCrops+DamageProperty, Deaths=DeathsDirect+DeathsIndirect
-| summarize MaxDamageNoCasualties=maxif(Damage,Deaths ==0) by State
+| extend Damage=DamageCrops + DamageProperty, Deaths=DeathsDirect + DeathsIndirect
+| summarize MaxDamageNoCasualties=maxif(Damage, Deaths == 0) by State
 ```
 
-**Results**
+**Output**
 
 The results table shown includes only the first 10 rows.
 

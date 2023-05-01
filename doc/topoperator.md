@@ -1,9 +1,9 @@
 ---
 title: top operator - Azure Data Explorer
-description: This article describes top operator in Azure Data Explorer.
+description: Learn how to use the top operator to return the first specified number of records sorted by the specified columns.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 02/23/2023
 ---
 # top operator
 
@@ -17,9 +17,9 @@ Returns the first *N* records sorted by the specified columns.
 
 |Name|Type|Required|Description|
 |--|--|--|--|
-| *T* | tabular | &check; | Input to sort. |
+| *T* | string | &check; | The tabular input to sort. |
 | *NumberOfRows* | int | &check; | The number of rows of *T* to return.|
-| *Expression* | string | &check; | Scalar expression by which to sort. The type of the values must be numeric, date, time or string.
+| *Expression* | string | &check; | The scalar expression by which to sort.|
 | `asc` or `desc` | string | | Controls whether the selection is from the "bottom" or "top" of the range. Default `desc`.
 | `nulls first` or `nulls last`  | string | | Controls whether null values appear at the "bottom" or "top" of the range. Default for `asc` is `nulls first`. Default for `desc` is `nulls last`.|
 
@@ -28,7 +28,7 @@ Returns the first *N* records sorted by the specified columns.
 
 ## Example
 
-Show top 3 storms with most direct injuries.
+Show top three storms with most direct injuries.
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjJL1AwVkiqVPDMyyotykwtdsksSk0uAQCehD//JgAAAA==" target="_blank">Run the query</a>

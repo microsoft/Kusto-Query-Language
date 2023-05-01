@@ -3,7 +3,7 @@ title: diffpatterns plugin - Azure Data Explorer
 description: Learn how to use the diffpatterns plugin to compare two data sets of the same structure to find the differences between the two data sets. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/11/2022
+ms.date: 03/12/2023
 ---
 # diffpatterns plugin
 
@@ -16,56 +16,19 @@ Compares two data sets of the same structure and finds patterns of discrete attr
 
 ## Syntax
 
-`T | evaluate diffpatterns(SplitColumn, SplitValueA, SplitValueB [, WeightColumn, Threshold, MaxDimensions, CustomWildcard, ...])`
+`T | evaluate diffpatterns(`*SplitColumn*`,` *SplitValueA*`,` *SplitValueB* [`,` *WeightColumn*`,`*Threshold*`,` *MaxDimensions*`,` *CustomWildcard*`,` ...]`)`
 
-## Arguments
+## Parameters
 
-### Required arguments
-
-* SplitColumn - *column_name*
-
-    Tells the algorithm how to split the query into data sets. According to the specified values for the SplitValueA and SplitValueB arguments (see below), the algorithm splits the query into two data sets, “A” and “B”, and analyze the differences between them. As such, the split column must have at least two distinct values.
-
-* SplitValueA - *string*
-
-    A string representation of one of the values in the SplitColumn that was specified. All the rows that have this value in their SplitColumn considered as data set “A”.
-
-* SplitValueB - *string*
-
-    A string representation of one of the values in the SplitColumn that was specified. All the rows that have this value in their SplitColumn considered as data set  “B”.
-
-    Example: `T | extend splitColumn=iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure")`
-
-### Optional arguments
-
-All other arguments are optional, but they must be ordered as below. To indicate that the default value should be used, put the string tilde value - '~' (see examples below).
-
-* WeightColumn - *column_name*
-
-    Considers each row in the input according to the specified weight (by default each row has a weight of '1'). The argument must be a name of a numeric column (for example, `int`, `long`, `real`).
-    A common usage of a weight column is to take into account sampling or bucketing/aggregation of the data that is already embedded into each row.
-
-    Example: `T | extend splitColumn= iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", sample_Count)`
-
-* Threshold - 0.015 < *double* < 1 [default: 0.05]
-
-    Sets the minimal pattern (ratio) difference between the two sets.
-
-    Example:  `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", 0.04)`
-
-* MaxDimensions  - 0 < *int* [default: unlimited]
-
-    Sets the maximum number of uncorrelated dimensions per result pattern. By specifying a limit, you decrease the query runtime.
-
-    Example:  `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", "~", 3)`
-
-* CustomWildcard - *"any-value-per-type"*
-
-    Sets the wildcard value for a specific type in the result table that will indicate that the current pattern doesn't have a restriction on this column.
-    Default is null, for string default is an empty string. If the default is a viable value in the data, a different wildcard value should be used (for example, `*`).
-    See an example below.
-
-    Example: `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", "~", "~", int(-1), double(-1), long(0), datetime(1900-1-1))`
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*SplitColumn*|string|&check;|The column name that tells the algorithm how to split the query into data sets. According to the specified values for the *SplitValueA* and *SplitValueB* arguments, the algorithm splits the query into two data sets, “A” and “B”, and analyzes the differences between them. As such, the split column must have at least two distinct values.|
+|*SplitValueA*|string|&check;|A string representation of one of the values in the *SplitColumn* that was specified. All the rows that have this value in their *SplitColumn* considered as data set “A”.|
+|*SplitValueB*|string|&check;|A string representation of one of the values in the *SplitColumn* that was specified. All the rows that have this value in their *SplitColumn* considered as data set “B”.|
+|*WeightColumn*|string||The column used to consider each row in the input according to the specified weight. Must be a name of a numeric column, such as `int`, `long`, `real`. By default each row has a weight of '1'. To use the default value, input the tilde: `~`. A common usage of a weight column is to take into account sampling or bucketing/aggregation of the data that is already embedded into each row.<br/><br/>Example: `T | extend splitColumn= iff(request_responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", sample_Count)`|
+|*Threshold*|long||A long in the range of 0.015 to 1. This value sets the minimal pattern ratio difference between the two sets. The default is 0.05. To use the default value, input the tilde: `~`.<br/><br/>Example:  `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", 0.04)`|
+|*MaxDimensions*|int||Sets the maximum number of uncorrelated dimensions per result pattern. By specifying a limit, you decrease the query runtime. The default is unlimited. To use the default value, input the tilde: `~`.<br/><br/>Example:  `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", "~", 3)`|
+|*CustomWildcard*|string||Sets the wildcard value for a specific type in the result table that will indicate that the current pattern doesn't have a restriction on this column. The default is null, except for string columns for which the default is an empty string. If the default is a viable value in the data, a different wildcard value should be used. For example, `*`. To use the default value, input the tilde: `~`.<br/><br/>Example: `T | extend splitColumn = iff(request-responseCode == 200, "Success" , "Failure") | evaluate diffpatterns(splitColumn, "Success","Failure", "~", "~", "~", int(-1), double(-1), long(0), datetime(1900-1-1))`|
 
 ## Returns
 
@@ -98,7 +61,9 @@ For each pattern, columns that aren't set in the pattern (that is, without restr
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAzVNvQ6CYAzcfYoLE0QHGBxxUXcTeIEvUATj95NSUBIf3n6gQ9u79npXiWd7ncnJiN0Hr56YYL2T3ncLGU4rMSz1YClDWeKoGnoLuRYXY82dUGLounQjZ/ZhxP53uikjlgUn5Dig0Moz/Q/sH9QI1FlIl2t6vYSIKz9xE8Fm8Z+rcYyezXOKX62GBiNC7Mb0r03yRFuRIPsCQuCK6dYAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents 
 | where monthofyear(StartTime) == 5

@@ -1,29 +1,35 @@
 ---
 title: strcat() - Azure Data Explorer
-description: This article describes strcat() in Azure Data Explorer.
+description: Learn how to use the strcat() function to concatenate between 1 and 64 arguments.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/31/2023
 ---
 # strcat()
 
 Concatenates between 1 and 64 arguments.
 
-* If the arguments aren't of string type, they'll be forcibly converted to string.
-
 ## Syntax
 
-`strcat(`*argument1*, *argument2*[, *argumentN*]`)`
+`strcat(`*argument1*`,` *argument2* [`,` *argument3* ... ]`)`
 
-## Arguments
+## Parameters
 
-* *argument1* ... *argumentN*: Expressions to be concatenated.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *argument1* ... *argumentN* | scalar | &check; | The expressions to concatenate.|
+
+> [!NOTE]
+> If the arguments aren't of string type, they'll be forcibly converted to string.
 
 ## Returns
 
-Arguments, concatenated to a single string.
+The arguments concatenated to a single string.
 
 ## Examples
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSguKVKwBZHJiSUaShmpOTn5SjoKSgogojy/KCdFSRMA4dg7JykAAAA=" target="_blank">Run the query</a>
   
 ```kusto
 print str = strcat("hello", " ", "world")

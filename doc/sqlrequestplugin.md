@@ -1,9 +1,9 @@
 ---
 title: sql_request plugin - Azure Data Explorer
-description: This article describes sql_request plugin in Azure Data Explorer.
+description: Learn how to use the sql_request plugin to send an SQL query to an SQL server network endpoint. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 05/19/2022
+ms.date: 03/08/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -17,28 +17,36 @@ The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 
 ## Syntax
 
-  `evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)` [`:` *OutputSchema*]
+`evaluate` `sql_request` `(` *ConnectionString* `,` *SqlQuery* [`,` *SqlParameters* [`,` *Options*]] `)` [`:` *OutputSchema*]
 
-## Arguments
+## Parameters
 
 | Name | Type | Required| Description |
 |---|---|---|---|
-| *ConnectionString* | string | &check; | Indicates the connection string that points at the SQL Server network endpoint. See [valid methods of authentication](#authentication) and how to specify the [network endpoint](#specify-the-network-endpoint). |
-| *SqlQuery* | string | &check; | Indicates the query that is to be executed against the SQL endpoint. Must return one or more row sets, but only the first one is made available for the rest of the Kusto query. |
-| *SqlParameters* | dynamic | | Holds key-value pairs to pass as parameters along with the query. |
-|*Options* | dynamic | |Holds more advanced settings as key-value pairs. Currently, only `token` can be set, to pass a caller-provided Azure AD access token that is forwarded to the SQL endpoint for authentication.
-| *OutputSchema* | | | The names and types for the expected columns of the `sql_request` plugin output.|
+| *ConnectionString* | string | &check; | The connection string that points at the SQL Server network endpoint. See [valid methods of authentication](#authentication-and-authorization) and how to specify the [network endpoint](#specify-the-network-endpoint). |
+| *SqlQuery* | string | &check; | The query that is to be executed against the SQL endpoint. The query must return one or more row sets, but only the first one is made available for the rest of the Kusto query. |
+| *SqlParameters* | dynamic | | A property bag of key-value pairs to pass as parameters along with the query. |
+|*Options* | dynamic | | A property bag of key-value pairs to pass more advanced settings along with the query. Currently, only `token` can be set, to pass a caller-provided Azure AD access token that is forwarded to the SQL endpoint for authentication.|
+| *OutputSchema* | string | | The names and types for the expected columns of the `sql_request` plugin output. Use the following syntax: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`.|
 
-The optional *OutputSchema* argument has the following syntax:
+> [!NOTE]
+>
+> * Specifying the *OutputSchema* is highly recommended, as it allows the plugin to be used in scenarios that might otherwise not work without it, such as a cross-cluster query. The *OutputSchema* can also enable multiple query optimizations.
+> * An error is raised if the run-time schema of the first row set returned by the SQL network endpoint doesn't match the *OutputSchema* schema.
 
-`(` *ColumnName* `:` *ColumnType* [`,` ...] `)`
+## Authentication and authorization
 
-Specifying this argument allows the plugin to be used
-in scenarios (such as a cross-cluster query) which would otherwise prevent it from running,
-and enables multiple query optimizations.
-It is therefore recommended to always specify it.
-An error is raised if the run-time schema of the first rowset returned by the SQL network endpoint
-doesn't match the *OutputSchema* schema.
+The sql_request plugin supports the following three methods of authentication to the
+SQL Server endpoint.
+
+|Authentication method|Syntax|How|Description|
+|--|--|--|
+|Azure AD-integrated|`Authentication="Active Directory Integrated"`|Add to the *ConnectionString* parameter.|This is the preferred authentication method. The user or application authenticates via Azure AD to Azure Data Explorer, and the same token is used to access the SQL Server network endpoint.<br/>The principal must have the appropriate permissions on the SQL resource to perform the requested action. For example, to read from the database the principal needs table SELECT permissions, and to write to an existing table the principal needs UPDATE and INSERT permissions. To write to a new table, CREATE permissions are also required.|
+|Username and password|`User ID=...; Password=...;`|Add to the *ConnectionString* parameter.|When possible, avoid this method as secret information is sent through Azure Data Explorer.|
+|Azure AD access token|`dynamic({'token': h"eyJ0..."})`|Add in the *Options* parameter.|The access token is passed as `token` property in the *Options* argument of the plugin.|
+
+> [!NOTE]
+> Connection strings and queries that include confidential information or information that should be guarded should be obfuscated to be omitted from any Kusto tracing. For more information, see [obfuscated string literals](scalar-data-types/string.md#obfuscated-string-literals).
 
 ## Examples
 
@@ -112,33 +120,6 @@ evaluate sql_request(
 | where Id > 0
 | project Name
 ```
-
-## Authentication
-
-The sql_request plugin supports three methods of authentication to the
-SQL Server endpoint:
-
-### Azure AD-integrated authentication
-
-`Authentication="Active Directory Integrated"`
-
-  Azure AD-integrated authentication is the preferred method. This method has the user or application authenticate via Azure AD to Kusto. The same token is then used to access the SQL Server network endpoint.
-
-### Username/Password authentication
-
-`User ID=...; Password=...;`
-
-  Username and password authentication support is provided when Azure AD-integrated authentication can't be done. Avoid this method, when possible, as secret information is sent through Kusto.
-
-### Azure AD access token
-
-`dynamic({'token': h"eyJ0..."})`
-
-   With the Azure AD access token authentication method, the caller generates the access token, which is forwarded by Kusto to the SQL endpoint. The connection string shouldn't include authentication information like `Authentication`, `User ID`, or `Password`. Instead, the access token is passed as `token` property in the `Options` argument of the sql_request plugin.
-
-> [!WARNING]
-> Connection strings and queries that include confidential information or information that should be guarded should be obfuscated to be omitted from any Kusto tracing.
-> For more informations, see [obfuscated string literals](scalar-data-types/string.md#obfuscated-string-literals).
 
 ## Encryption and server validation
 

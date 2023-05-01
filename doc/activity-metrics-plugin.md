@@ -93,7 +93,7 @@ range _day from _start to _end  step 1d
 | extend d = tolong((_day - _start)/1d)
 | extend r = rand()+1
 | extend _users=range(tolong(d*50*r), tolong(d*50*r+200*r-1), 1)
-| mv-expand id=_users to typeof(long) limit 1000000
+| mv-expand id=_users to typeof(long) take 1000000
 //
 | evaluate activity_metrics(['id'], _day, _start, _end, 7d)
 | project _day, retention_rate, churn_rate
@@ -144,7 +144,7 @@ range _day from _start to _end  step 1d
 | extend d = tolong((_day - _start)/1d)
 | extend r = rand()+1
 | extend _users=range(tolong(d*50*r), tolong(d*50*r+200*r-1), 1)
-| mv-expand id=_users to typeof(long) limit 1000000
+| mv-expand id=_users to typeof(long) take 1000000
 //
 | evaluate activity_metrics(['id'], _day, _start, _end, 7d)
 | project _day, dcount_values, dcount_newvalues

@@ -160,7 +160,7 @@ Cast functions are:
 
 Several functions enable you to create new `dynamic` objects:
 
-* [pack()](../packfunction.md) creates a property bag from name/value pairs.
+* [bag_pack()](../packfunction.md) creates a property bag from name/value pairs.
 * [pack_array()](../packarrayfunction.md) creates an array from name/value pairs.
 * [range()](../rangefunction.md) creates an array with an arithmetic series of numbers.
 * [zip()](../zipfunction.md) pairs "parallel" values from two arrays into a single array.
@@ -190,7 +190,8 @@ For a complete list of scalar dynamic/array functions, see [dynamic/array functi
 |[`bag_has_key(`bag`,`key`)`](../bag-has-key-function.md)| Checks whether a dynamic bag column contains a given key.
 |[`bag_keys(`bag`)`](../bagkeysfunction.md)| Enumerates all the root keys in a dynamic property-bag object.
 |[`bag_merge(`bag1,...,bagN`)`](../bag-merge-function.md)| Merges dynamic property-bags into a dynamic property-bag with all properties merged.
-|[`extractjson(`path,object`)`](../extractjsonfunction.md)|Uses path to navigate into object.
+|[`bag_set_key(`bag,key,value`)`](../bag-set-key-function.md)| Sets a given key to a given value in a dynamic property-bag.
+|[`extract_json`(path,object), `extract_json(`path,object`)`](../extractjsonfunction.md)|Use path to navigate into object.
 |[`parse_json(`source`)`](../parsejsonfunction.md)| Turns a JSON string into a dynamic object.
 |[`range(`from,to,step`)`](../rangefunction.md)| An array of values
 |[`mv-expand` listColumn](../mvexpandoperator.md) | Replicates a row for each value in a list in a specified cell.
@@ -207,3 +208,7 @@ For a complete list of scalar dynamic/array functions, see [dynamic/array functi
 Every field is indexed during data ingestion. The scope of the index is a single data shard. 
 
 To index dynamic columns, the ingestion process enumerates all “atomic” elements within the dynamic value (property names, values, array elements) and forwards them to the index builder. Otherwise, dynamic fields have the same inverted term index as string fields.
+
+## Next steps
+
+* To see an example query using dynamic objects and object accessors, see [Map values from one set to another](../tutorials/learn-common-operators.md#map-values-from-one-set-to-another).

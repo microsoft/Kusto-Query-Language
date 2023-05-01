@@ -1,13 +1,13 @@
 ---
 title: week_of_year() - Azure Data Explorer
-description: This article describes week_of_year() in Azure Data Explorer.
+description: Learn how to use the week_of_year() function to get the integer representation of the week.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/07/2022
+ms.date: 03/02/2023
 ---
 # week_of_year()
 
-Returns an integer which represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday, according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Week_dates).
+Returns an integer that represents the week number. The week number is calculated from the first week of a year, which is the one that includes the first Thursday, according to [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Week_dates).
 
  **Deprecated aliases:** weekofyear()
 
@@ -16,11 +16,13 @@ Returns an integer which represents the week number. The week number is calculat
 
 ## Syntax
 
-`week_of_year(`*a_date*`)`
+`week_of_year(`*date*`)`
 
-## Arguments
+## Parameters
 
-* `a_date`: A `datetime`.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check; | The date for which to return the week of the year.|
 
 ## Returns
 

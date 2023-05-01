@@ -9,17 +9,15 @@ ms.date: 12/18/2022
 
 Produce a table that represents a tabular schema of the input.
 
-```kusto
-T | summarize MyCount=count() by Country | getschema 
-```
-
 ## Syntax
 
 *T* `|` `getschema`
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRSE8tKU7OSM1NBADhHoKkFwAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | getschema

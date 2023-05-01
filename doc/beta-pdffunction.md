@@ -1,17 +1,13 @@
 ---
-title: beta_pdf() - Azure Data Explorer
-description: Learn how to use the beta_pdf() function to return the beta probability density function. 
+title: the function - Azure Data Explorer
+description: Learn how to use the the function function to return the beta probability density function. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/07/2022
+ms.date: 03/09/2023
 ---
-# beta_pdf()
+# the function
 
 Returns the probability density beta function.
-
-```kusto
-beta_pdf(0.2, 10.0, 50.0)
-```
 
 The beta distribution is commonly used to study variation in the percentage of something across samples, such as the fraction of the day people spend watching television.
 
@@ -19,26 +15,29 @@ The beta distribution is commonly used to study variation in the percentage of s
 
 `beta_pdf(`*x*`,` *alpha*`,` *beta*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A value at which to evaluate the function.
-* *alpha*: A parameter of the distribution.
-* *beta*: A parameter of the distribution.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *x* | int, long, or real | &check;| A value at which to evaluate the function.|
+| *alpha* | int, long, or real | &check;| A parameter of the distribution.|
+| *beta* | int, long, or real | &check;| A parameter of the distribution.|
 
 ## Returns
 
-* The [probability beta density function](https://en.wikipedia.org/wiki/Beta_distribution#Probability_density_function).
+The [probability beta density function](https://en.wikipedia.org/wiki/Beta_distribution#Probability_density_function).
 
-**Notes**
-If any argument is nonnumeric, beta_pdf() returns null value.
-
-If x ≤ 0 or 1 ≤ x, beta_pdf() returns NaN value.
-
-If alpha ≤ 0 or beta ≤ 0, beta_pdf() returns the NaN value.
+> [!NOTE]
+>
+> * If any argument is nonnumeric, the function returns `null`.
+> * If `x ≤ 0` or `1 ≤ x`, the function returns `NaN`.
+> * If `alpha ≤ 0` or `beta ≤ 0`, the function returns `NaN`.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22PwQrCMBBE7/mKoacWYkgEL0X9hB69iEhqogbStLQpRPDjjWmph7oLyw7M22WU9LFrq/NQqnaMC4W03VMuqtb+J25t02jny8H3xj0KciaIxdmOQnDGKbZpZidpjYJx3egzmjxi5Qk4QlC8jLZqQCWr2Tn9yjeCFytiD/6H4CzeWTD25WYiRYEZViC5kDd08Nop9DiklNdO3fMw55+CFx9P6bKEIAEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(x:double, alpha:double, beta:double, comment:string)
 [

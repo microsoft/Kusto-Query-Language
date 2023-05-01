@@ -1,14 +1,14 @@
 ---
 title: make_list() (aggregation function) - Azure Data Explorer
-description: This article describes make_list() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the make_list() function to create a dynamic JSON object array of all the values of the expressions in the group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 01/05/2023
 adobe-target: true
 ---
 # make_list() (aggregation function)
 
-Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group.
+Creates a `dynamic` array of all the values of *expr* in the group.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
@@ -16,21 +16,21 @@ Creates a `dynamic` JSON object (array) of all the values of *Expr* in the group
 
 ## Syntax
 
-`make_list` `(`*Expr* [`,` *MaxSize*]`)`
+`make_list(`*expr* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | dynamic | &check; | Expression used for aggregation calculations. |
-| *MaxSize* | integer |  | The limit on the maximum number of elements returned. The default is *1048576* and can't exceed *1048576*. |
+| *expr* | dynamic | &check; | The expression used for the aggregation calculation. |
+| *maxSize* | int |  | The maximum number of elements returned. The default and max value is 1048576. |
 
 > [!NOTE]
-> The deprecated version has a default *MaxSize* limit of 128.
+> The deprecated version has a default *maxSize* limit of 128.
 
 ## Returns
 
-Returns a `dynamic` JSON array of all the values of *Expr* in the group.
+Returns a `dynamic` array of all the values of *expr* in the group.
 If the input to the `summarize` operator isn't sorted, the order of elements in the resulting array is undefined.
 If the input to the `summarize` operator is sorted, the order of elements in the resulting array tracks that of the input.
 
@@ -44,7 +44,7 @@ If the input to the `summarize` operator is sorted, the order of elements in the
 The following example makes a list out of a single column:
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAz3PzwrCMAwG8HufIuzkYAfF/xNPPoaI1C1sxTadbQYqPrydy0wu4Zfv8llkiK3uMMIRas1pbxZhRtphCZGDoaaAaGo8+Z64BEOcq7OCNFn6amosZgUsi5Hio9dhgJVAwIqn0GQdEuvGU6K1UItPkc1fuim0FfLVJDsR8iSyF6mxElnM1eWgxnLqA7F3TgfzRnAvayKnvk7f8Trcv7r5F8QGBpEMAQAA" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0XPzwrCMAwG8Huh7xB2crCD4v+JJx9DROIWtmKbzrYDFR/eTldNLuGX7/JpCuBb7MjDHmoMcS+aYMJoqAQfnOKmAK9qOtieQwmKQy7FUQqIk8U/cqMpK2BejOZvPbpBFkkcVSHFftgRB2wsR1sma+k+0upPXYqtk9kq0SYRWx5pm6imaqTZVIrTTopvUSle4Htj0KkngXlo5UMsb/BK5+H+dM/ff3I+dBkBAAA=" target="_blank">Run the query</a>
 
 ```kusto
 let shapes = datatable (name: string, sideCount: int)
@@ -63,7 +63,7 @@ shapes
 | summarize mylist = make_list(name)
 ```
 
-**Results**
+**Output**
 
 |mylist|
 |---|
@@ -74,7 +74,7 @@ shapes
 The following example runs a query using the `by` clause:
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAz3Py26DMBCF4b2f4ggpUiOxIEnTCxWrKE+QZRVVDoyIVTwmeKhK1YePCQZ7Y30+m78hgb/qljwKVFrCvTSEJ9aWcnjpDNcpvKno4HqWHIZlrT4VwknCr+a6oSTFLp3I33rdjfAcoaNS5tFsLbHo2nGgfaQr/UZ5WaSdR6+RXClukrco7Dhu3qNUVEbZZOr8oaY49Q/fW6s780ewQ2O8hF6rv+lrfD9y17gMMP74Q3yae8NoaccKWxQFsjvUEHjHNAEAAA==" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0XQ3YrCMBAF4PtA3uEgCCv0wp/d9Y9eiU/gpYjEdqjBZlqbVFR8eKPbcSc3w5dzc6akAH80NXmkyE2I71ASvtg4WsCHxnKRwNucVlXLYQHLYaDVVivE6cV/w0VJvQSTpDN/bk3zkm+RhrIgsQ/WxMEUFUf7ETvStaPff6olNhWrMqGZEFfc0Vwop6yj0VCr3VKrv6JaPeBb50xj7wR3K60PsbwzJ9q/9nf3AQ43WL++EG+kfAx9DoE+xkhTDJ/VCjwFQQEAAA==" target="_blank">Run the query</a>
 
 ```kusto
 let shapes = datatable (name: string, sideCount: int)
@@ -93,7 +93,7 @@ shapes
 | summarize mylist = make_list(name) by isEvenSideCount = sideCount % 2 == 0
 ```
 
-**Results**
+**Output**
 
 |isEvenSideCount| mylist|
 |---|---|
@@ -105,7 +105,7 @@ shapes
 The following examples show how to [pack](./packfunction.md) a dynamic object in a column before making it a list.
 
 > [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03PTWrDMBAF4L1OMRgKNniR/qcpXoWeIMtSysQaHBFr5FjjkJQevmMshVoLi09vhF5PAvGAA0VowKLo2vcEJaOnDUQZHXc1RGdpGyaWDTiWynwa0K/QU+Sup6KGx3qheJpwnOEpwUit5FC2gViwC6z0nOhAlyQvNxly6DVRaCUssk7CgVPmLYmlNsn9yny9m6Wc+QW6CLEFqz0HbI9lMVfU2Pyr9eG5YvGvbqVzcfIeR/dD4K+9i6LzHo/0Pe9LW8H+Ci5+nIl3eUoTtxvgDh6gaWD1B75NBjppAQAA" target="_blank">Run the query</a>
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03Pz0rEMBAG8Hsg7zAUhBZ6WP/rSk/iE3gUWabN0A3bTGuTyq748E6ws5ocEn75JvANlCDucaIIDThMstuBoGQMtIWYZs99DdE7eh4XTlvwnCpr3qwBWYW8I/cDFTVc16vFjwXnLDcqM3VJY2eciBP2I4vdqu3puNLdH00au1cbO6UHJR55pUclR91Klxtr3p+s+S1qzTfQMRE7cFK6xX43YXcoi9xZ0vmopYZ2Lv71r/JwXELA2X8RhNPgY5JPAh5ol++lq6A9gY8vn8SvOiaJ8xdwAVfQNLD5ARd0KSV7AQAA" target="_blank">Run the query</a>
 
 ```kusto
 let shapes = datatable (name: string, sideCount: int)
@@ -125,9 +125,9 @@ shapes
 | summarize mylist = make_list(d) by isEvenSideCount = sideCount % 2 == 0
 ```
 
-**Results**
+**Output**
 
-|mylist|isEvenSideCount|
+|isEvenSideCount|mylist|
 |---|---|
 |false|[{"name":"triangle","sideCount":3},{"name":"pentagon","sideCount":5},{"name":"heptagon","sideCount":7},{"name":"nonagon","sideCount":9}]|
 |true|[{"name":"square","sideCount":4},{"name":"rectangle","sideCount":4},{"name":"hexagon","sideCount":6},{"name":"octagon","sideCount":8},{"name":"decagon","sideCount":10}]|

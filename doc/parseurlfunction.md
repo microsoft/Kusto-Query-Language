@@ -1,9 +1,9 @@
 ---
 title: parse_url() - Azure Data Explorer
-description: This article describes parse_url() in Azure Data Explorer.
+description: Learn how to use the parse_url() function to parse a URL string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/09/2022
+ms.date: 01/12/2023
 ---
 # parse_url()
 
@@ -15,9 +15,11 @@ Parses an absolute URL `string` and returns a `dynamic` object contains URL part
 
 `parse_url(`*url*`)`
 
-## Arguments
+## Parameters
 
-* *url*: A string represents a URL or the query part of the URL.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *url* | string | &check; | The URL or the query part of the URL.|
 
 ## Returns
 
@@ -25,21 +27,15 @@ An object of type [dynamic](./scalar-data-types/dynamic.md) that included the UR
 
 ## Example
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAw3GUQpAQBAA0KuIEl/TLl9q4wwuoIlhhbXNzHJ96n28yHvQbCRJp7qILDQlPqtcZk8XdQBJiAP+jSjy3rwM/hbtjG1aUL8L/BAiqu8P4x5THtY9tlgZt4uC5vUH0Z3WuWIAAAA=" target="_blank">Run the query</a>
+
 ```kusto
-T | extend Result = parse_url("scheme://username:password@host:1234/this/is/a/path?k1=v1&k2=v2#fragment")
+print Result=parse_url("scheme://username:password@host:1234/this/is/a/path?k1=v1&k2=v2#fragment")
 ```
 
-will result
+**Output**
 
-```
- {
- 	"Scheme":"scheme",
- 	"Host":"host",
- 	"Port":"1234",
- 	"Path":"this/is/a/path",
- 	"Username":"username",
- 	"Password":"password",
- 	"Query Parameters":"{"k1":"v1", "k2":"v2"}",
- 	"Fragment":"fragment"
- }
-```
+|Result|
+|--|
+|{"Scheme":"scheme", "Host":"host", "Port":"1234", "Path":"this/is/a/path", "Username":"username", "Password":"password", "Query Parameters":"{"k1":"v1", "k2":"v2"}", "Fragment":"fragment"}|

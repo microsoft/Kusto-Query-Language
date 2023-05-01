@@ -1,22 +1,24 @@
 ---
 title: parse_path() - Azure Data Explorer
-description: This article describes parse_path() in Azure Data Explorer.
+description: Learn how to use the parse_path() function to parse a file path.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/12/2023
 ---
 # parse_path()
 
 Parses a file path `string` and returns a [`dynamic`](./scalar-data-types/dynamic.md) object that contains the following parts of the path:
+
 * Scheme
 * RootPath
 * DirectoryPath
 * DirectoryName
-* FileName
+* Filename
 * Extension
 * AlternateDataStreamName
 
 In addition to the simple paths with both types of slashes, the function supports paths with:
+
 * Schemas. For example, "file://..."
 * Shared paths. For example, "\\shareddrive\users..."
 * Long paths. For example, "\\?\C:...""
@@ -26,9 +28,11 @@ In addition to the simple paths with both types of slashes, the function support
 
 `parse_path(`*path*`)`
 
-## Arguments
+## Parameters
 
-* *path*: A string that represents a file path.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *path* | string | &check; | The file path.|
 
 ## Returns
 
@@ -36,7 +40,9 @@ An object of type `dynamic` that included the path components as listed above.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22NQQrDIBBF94J3EFcJFN0LhUKOUUMwOE0Ek4ozASk9fOMiLYHOrOY95n/vaN8xQpMMUg7r1ArO7pyJfW6yM5ZgSfYRIigqJC+H+YtlBUbrzujq9eENPhdQUOD3by3OLoO3G0LGc4uaXt9EvWHWMYznQMlZz9lbQCFYvUiO5iG5TCiu+5ERhoqa1H4A8WAkd+AAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 datatable(p:string) 
 [
@@ -47,7 +53,6 @@ datatable(p:string)
     "/usr/lib/temp/file.txt"
 ]
 | extend path_parts = parse_path(p)
-
 ```
 
 **Output**

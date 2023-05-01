@@ -3,7 +3,7 @@ title: current_principal_details() - Azure Data Explorer
 description: Learn how to use the current_principal_details() function to return the details of the principal running the query. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 04/16/2023
 ---
 # current_principal_details()
 
@@ -19,12 +19,14 @@ The details of the current principal as a `dynamic`.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUixTS4tKkrNK4kvAPKTMwsSc+JTUksSM3OKNTQBdsrI5yMAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print d=current_principal_details()
 ```
 
-**Output**
+**Example output**
 
 |d|
 |---|

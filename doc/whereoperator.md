@@ -1,6 +1,6 @@
 ---
-title: where operator in Kusto query language - Azure Data Explorer
-description: This article describes the where operator in Azure Data Explorer.
+title: where operator - Azure Data Explorer
+description: Learn how to use the where operator to filter a table to the subset of rows that satisfy a predicate.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 11/24/2022
@@ -9,7 +9,7 @@ ms.date: 11/24/2022
 
 Filters a table to the subset of rows that satisfy a predicate.
 
-**Alias** `filter`
+> The `where` and `filter` operators are equivalent
 
 ## Syntax
 
@@ -38,7 +38,7 @@ Rows in *T* for which *Predicate* is `true`.
 
 * **Use simple comparisons** between column names and constants. ('Constant' means constant over the table - so `now()` and `ago()` are OK, and so are scalar values assigned using a [`let` statement](./letstatement.md).)
 
-    For example, prefer `where Timestamp >= ago(1d)` to `where floor(Timestamp, 1d) == ago(1d)`.
+    For example, prefer `where Timestamp >= ago(1d)` to `where bin(Timestamp, 1d) == ago(1d)`.
 
 * **Simplest terms first**: If you have multiple clauses conjoined with `and`, put first the clauses that involve just one column. So `Timestamp > ago(1d) and OpId == EventId` is better than the other way around.
 

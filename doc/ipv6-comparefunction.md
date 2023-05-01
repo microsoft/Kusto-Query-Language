@@ -3,38 +3,27 @@ title: ipv6_compare() - Azure Data Explorer
 description: Learn how to use the ipv6_compare() function to compare two IPv6 or IPv4 network address strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2022
+ms.date: 01/01/2023
 ---
 # ipv6_compare()
 
-Compares two IPv6 or IPv4 network address strings. The two IPv6 strings are parsed and compared while accounting for the combined IP-prefix mask calculated from argument prefixes, and the optional `PrefixMask` argument.
-
-```kusto
-ipv6_compare('::ffff:7f00:1', '127.0.0.1') == 0
-ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995')  < 0
-ipv6_compare('192.168.1.1/24', '192.168.1.255/24') == 0
-ipv6_compare('fe80::85d:e82c:9446:7994/127', 'fe80::85d:e82c:9446:7995/127') == 0
-ipv6_compare('fe80::85d:e82c:9446:7994', 'fe80::85d:e82c:9446:7995', 127) == 0
-```
+Compares two IPv6 or IPv4 network address strings. The two IPv6 strings are parsed and compared while accounting for the combined IP-prefix mask calculated from argument prefixes, and the optional `prefix` argument.
 
 >[!Note]
 > The function can accept and compare arguments representing both IPv6 and IPv4 network addresses. However, if the caller knows that arguments are in IPv4 format, use [ipv4_is_compare()](./ipv4-comparefunction.md) function. This function will result in better runtime performance.
 
 ## Syntax
 
-`ipv6_compare(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
+`ipv6_compare(`*ip1*`,`*ip2*`[ ,`*prefix*`])`
 
-## Arguments
+## Parameters
 
-* *Expr1*, *Expr2*: A string expression representing an IPv6 or IPv4 address. IPv6 and IPv4 strings can be masked using IP-prefix notation (see note).
-* *PrefixMask*: An integer from 0 to 128 representing the number of most significant bits that are taken into account.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *ip1*, *ip2*| string | &check; | An expression representing an IPv6 or IPv4 address. IPv6 and IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).|
+| *prefix*| int | | An integer from 0 to 128 representing the number of most significant bits that are taken into account.|
 
-## IP-prefix notation
-
-It's common practice to define IP addresses with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address, and the number (0 to 128) to the RIGHT of the slash (`/`) is the number of contiguous 1 bits in the netmask.
-
-For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask containing 120 contiguous bits.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -47,7 +36,9 @@ For example, fe80::85d:e82c:9446:7994/120 will have an associated net/subnetmask
 
 ### Compare IPs using the IP-prefix notation specified inside the IPv6/IPv4 strings
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA61UwU6EMBC98xVzWzdZgVbA0sSjBw8m3o3ZdKE1TRCQwoaDH+/s0igKwkIcDk1m5r2Zvg6Tihq/QyavdEn2pq50/sq7Ywe6pD9dW+fZAc+Dh6djAKKSkBRvJZ4pCHNyRiDStJLGSOPAhsTUJRFziUs2O0AbetCQ7v69ERnif4E8GmBWz0PD0MIQRAM46BpRwXVZSaVb0AYag72oorKNaVPkM40gZ1dnPad34w/6XMNplY0gEZ2ASjKfcxamXDKa8DgIIn4bx2dVJmIwruxfCI9Qf4KRfUuOifYu0aw+K3pntpN/rDZ3NxtfVg2zH3WLgdM7QaHs75Cn59cbmzecOM4VGk98wbhPfNJVnZz8AUqpDvU1UrO6jFQdm9OFnBfN/gLOF+cDZFtLVBCXR5PVcIe75xjt7Xrp7ab+Utp+Aj++uYm9BAAA" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string)
 [
@@ -89,7 +80,9 @@ datatable(ip1_string:string, ip2_string:string)
 
 ### Compare IPs using IP-prefix notation specified inside the IPv6/IPv4 strings and as additional argument of the `ipv6_compare()` function
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA61UTW+DMAy98yt86yp1kITwZWk/YIdJu09TRSGpInWACK162I+fC5kEa7uOauFg6Rm9Z7/YKfOOvs1OPZiGr23XmmqLQ1iBacRPqGmVNkfc1dV26b15EATw/HqQkLcKivqjoVhCbk9gDHlZtspaZcGDBc+Ez+PU5z5frIDOCGE9EvLViS/ksDEdMcjHQQ2Mhb0lXl23TsTYuppyBkISyQgRUUSA4xTyHs6zOgdOIWdygrMphiInN0hEq5QhplGJKhUFZlLGmGRZ38KVXDRUA1wkvTxFpx/f7OmaXEAkv0imlOOCOTn2H3LsplwyV47+fjFHSpzMhVq7gazK3vJLU0J3iqjpYMHyFBnXeiL9d2OnNIxfGsH+zuabiDiuO2Rn1EMv8w179z5BHTtFBtF27ncdPNGmH+K129/RSzB+Ar53f/kFFQW7YjMEAAA=" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string, prefix:long)
 [

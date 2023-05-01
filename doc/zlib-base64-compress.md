@@ -3,7 +3,7 @@ title: zlib_compress_to_base64_string - Azure Data Explorer
 description: This article describes the zlib_compress_to_base64_string() command in Azure Data Explorer.
 ms.reviewer: elgevork
 ms.topic: reference
-ms.date: 09/29/2020
+ms.date: 02/15/2023
 ---
 
 # zlib_compress_to_base64_string()
@@ -15,11 +15,13 @@ Performs zlib compression and encodes the result to base64.
 
 ## Syntax
 
-`zlib_compress_to_base64_string('input_string')`
+`zlib_compress_to_base64_string(`*string*`)`
 
-## Arguments
+## Parameters
 
-*input_string*: Input `string`, a string to be compressed and base64 encoded. The function accepts one string argument.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *string* | string | &check; | The string to be compressed and base64 encoded.|
 
 ## Returns
 
@@ -28,18 +30,24 @@ Performs zlib compression and encodes the result to base64.
 
 ## Example
 
-### Using Kusto
+### Using Kusto Query Language
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUahKzs8tULBVqMrJTIoHsYtSi4vjS/LjkxKLU81M4otLgMrSNZQMjYxNTM3MLSwNCstTi0oqSzPzC5Q0Ad0xYSFEAAAA" target="_blank">Run the query</a>
 
 ```kusto
 print zcomp = zlib_compress_to_base64_string("1234567890qwertyuiop")
 ```
 
-**Output:** 
+**Output**
+
+|zcomp|
+|--|
 |"eAEBFADr/zEyMzQ1Njc4OTBxd2VydHl1aW9wOAkGdw=="|
 
 ### Using Python
 
-Compression can be done using other tools, for example Python: 
+Compression can be done using other tools, for example Python.
 
 ```python
 print(base64.b64encode(zlib.compress(b'<original_string>')))

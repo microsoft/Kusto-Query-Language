@@ -1,9 +1,9 @@
 ---
 title: series_subtract() - Azure Data Explorer
-description: This article describes series_subtract() in Azure Data Explorer.
+description: Learn how to use the series_subtract() function to calculate the element-wise subtraction of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/30/2023
 ---
 # series_subtract()
 
@@ -13,17 +13,21 @@ Calculates the element-wise subtraction of two numeric series inputs.
 
 `series_subtract(`*series1*`,` *series2*`)`
 
-## Arguments
+## Parameters
 
-* *series1, series2*: Input numeric arrays, the second to be element-wise subtracted from the first into a dynamic array result. All arguments must be dynamic arrays. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series1*, *series2* | dynamic | &check; | Arrays of numeric values, the second array to be element-wise subtracted from the first array.|
 
 ## Returns
 
-Dynamic array of calculated element-wise subtract operation between the two inputs. Any non-numeric element or non-existing element (arrays of different sizes) yields a `null` element value.
+A dynamic array of calculated element-wise subtract operation between the two inputs. Any non-numeric element or non-existing element, such as in the case of arrays of different sizes, yields a `null` element value.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1XMMQoCMRBG4d5T/OVG0sxae5YQ4ygqbsLMCEnw8EYRF9uPx5O4nBkVJ8l3ECxjBzUuoM0TXI2XIxr2o9hiXqkPal8qkq+cDEoDS0y3EEVim6pvvjsPnf+9ezSP6tabUtDHwSQmC59aWS6sP5yU3hv3Ar+CKt2tAAAA" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

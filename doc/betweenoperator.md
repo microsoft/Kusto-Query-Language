@@ -3,7 +3,7 @@ title: The between operator - Azure Data Explorer
 description: Learn how to use the between operator to return a record set of values in an inclusive range for which the predicate evaluates to true. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/20/2022
+ms.date: 03/12/2023
 ---
 # between operator
 
@@ -15,18 +15,14 @@ Filters a record set for data matching the values in an inclusive range.
 
 *T* `|` `where` *expr* `between` `(`*leftRange*` .. `*rightRange*`)`
 
-If *expr* expression is datetime - another syntactic sugar syntax is provided:
-
-*T* `|` `where` *expr* `between` `(`*leftRangeDateTime*` .. `*rightRangeTimespan*`)`
-
 ## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
 | *T* | string | &check; |  The tabular input whose records are to be matched. For example, the table name. |
-| *expr* | string | &check; |  The expression used to filter. |
-| *leftRange* | string | &check; |  The expression of the left range (inclusive). |
-| *rightRange* | string | &check; |  The expression of the right range (inclusive). |
+| *expr* | scalar | &check; |  The expression used to filter. |
+| *leftRange* | int, long, real, or datetime | &check; | The expression of the left range. The range is inclusive.|
+| *rightRange* | int, long, real, datetime, or timespan | &check; | The expression of the right range. The range is inclusive.<br/><br/>This value can only be of type [timespan](scalar-data-types/timespan.md) if *expr* and *leftRange* are both of type `datetime`. See [example](#filter-datetime-using-a-timespan-range).|
 
 ## Returns
 
@@ -71,6 +67,8 @@ StormEvents
 |Count|
 |---|
 |476|
+
+### Filter datetime using a timespan range
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVQguSSwqCcnMTVVISi0pT03NU9BISSxJLQGKaBgZGJjrApGRuaaCnp6CcYomSF9yfmleCQCGAqjRTAAAAA==" target="_blank">Run the query</a>

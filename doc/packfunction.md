@@ -1,13 +1,13 @@
 ---
 title: bag_pack() - Azure Data Explorer
-description: This article describes bag_pack() function in Azure Data Explorer.
+description: Learn how to use the bag_pack() function to create a dynamic JSON object from a list of keys and values.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/02/2022
+ms.date: 01/08/2023
 ---
 # bag_pack()
 
-Creates a `dynamic` JSON object (property bag) from a list of keys and values.
+Creates a [dynamic](scalar-data-types/dynamic.md) property bag object from a list of keys and values.
 
 > **Deprecated aliases**: pack(), pack_dictionary()
 
@@ -15,19 +15,19 @@ Creates a `dynamic` JSON object (property bag) from a list of keys and values.
 
 `bag_pack(`*key1*`,` *value1*`,` *key2*`,` *value2*`,... )`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*key*| string | &check; | Key name.|
-|*value* | string | &check; | Key value.|
+|*key*| string | &check; | The key name.|
+|*value*| string | &check; | The key value.|
 
 > [!NOTE]
 > The *key* and *value* strings are an alternating list the total length of the list must be even.
 
 ## Returns
 
-Returns a `dynamic` JSON object (property bag) from the listed *key* and *value* inputs.
+Returns a `dynamic` property bag object from the listed *key* and *value* inputs.
 
 ## Examples
 

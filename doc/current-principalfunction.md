@@ -3,7 +3,7 @@ title: current_principal() - Azure Data Explorer
 description: Learn how to use the current_principal() function to return the name of the principal running the query.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/23/2022
+ms.date: 04/16/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -25,12 +25,14 @@ The string format is:
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgrzLNNLi0qSs0riS8AiiRnFiTmaGgCAGK4N8YdAAAA" target="_blank">Run the query</a>
+
 ```kusto
 print fqn=current_principal()
 ```
 
-**Output**
+**Example output**
 
 |fqn|
 |---|

@@ -1,9 +1,9 @@
 ---
 title: top-nested operator - Azure Data Explorer
-description: This article describes top-nested operator in Azure Data Explorer.
+description: Learn how to use the top-nested operator to produce a hierarchical aggregation.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 03/12/2023
 ---
 # top-nested operator
 
@@ -29,46 +29,35 @@ figures, such as country/region, salesperson, and amount sold: what are the top 
 
 Where *TopNestedClause* has the following syntax:
 
-[*N*] `of` [*`ExprName`* `=`] *`Expr`* [`with` `others` `=` *`ConstExpr`*] `by` [*`AggName`* `=`] *`Aggregation`* [`asc` | `desc`]
+[ *N* ] `of` [*ExprName* `=`] *Expr* [`with` `others` `=` *ConstExpr*] `by` [*AggName* `=`] *Aggregation* [`asc` | `desc`]
 
-## Arguments
+## Parameters
 
-For each *TopNestedClause*:
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*T*|string|&check;|The input tabular expression.|
+|*N*|long||The number of top values to return for this hierarchy level. If omitted, all distinct values will be returned.|
+|*ExprName*|string||If specified, sets the name of the output column corresponding to the values of *Expr*.|
+|*Expr*|string|&check;|An expression over the input record indicating which value to return for this hierarchy level. Typically it's a column reference from *T*, or some calculation, such as `bin()`, over such a column.
+|*ConstExpr*|string||If specified, for each hierarchy level, 1 record will be added with the value that is the aggregation over all records that didn't "make it to the top".|
+|*AggName*|string||If specified, this identifier sets the column name in the output for the value of *Aggregation*.|
+|*Aggregation*|string||The aggregation function to apply to all records sharing the same value of *Expr*. The value of this aggregation determines which of the resulting records are "top". For the possible values, see [supported aggregation functions](#supported-aggregation-functions).|
+|`asc` or `desc`|string||Controls whether selection is actually from the "bottom" or "top" of the range of aggregated values. The default is `desc`.|
 
-* *`N`*: A literal of type `long` indicating how many top values to return
-  for this hierarchy level.
-  If omitted, all distinct values will be returned.
+### Supported aggregation functions
 
-* *`ExprName`*: If specified, sets the name of the output column corresponding
-  to the values of *`Expr`*.
+The following aggregation functions are supported:
+* [sum()](sum-aggfunction.md)
+* [count()](count-aggfunction.md)
+* [max()](max-aggfunction.md)
+* [min()](min-aggfunction.md)
+* [dcount()](dcountif-aggfunction.md)
+* [avg()](avg-aggfunction.md)
+* [percentile()](percentiles-aggfunction.md)
+* [percentilew()](percentiles-aggfunction.md)
 
-* *`Expr`*: An expression over the input record indicating which value to return
-  for this hierarchy level.
-  Typically it's a column reference for the tabular input (*T*), or some
-  calculation (such as `bin()`) over such a column.
-
-* *`ConstExpr`*: If specified, for each hierarchy level, 1 record will be added
-  with the value that is the aggregation over all records that didn't
-  "make it to the top".
-
-* *`AggName`*: If specified, this identifier sets the column name
-  in the output for the value of *Aggregation*.
-
-* *`Aggregation`*: A numeric expression indicating the aggregation to apply
-  to all records sharing the same value of *`Expr`*. The value of this aggregation
-  determines which of the resulting records are "top".
-  
-  The following aggregation functions are supported:
-   * [sum()](sum-aggfunction.md),
-   * [count()](count-aggfunction.md),
-   * [max()](max-aggfunction.md),
-   * [min()](min-aggfunction.md),
-   * [dcount()](dcountif-aggfunction.md),
-   * [avg()](avg-aggfunction.md),
-   * [percentile()](percentiles-aggfunction.md), and
-   * [percentilew()](percentiles-aggfunction.md). Any algebraic combination of the aggregations is also supported.
-
-* `asc` or `desc` (the default) may appear to control whether selection is actually from the "bottom" or "top" of the range of aggregated values.
+> [!NOTE]
+> Any algebraic combination of the aggregations is also supported.
 
 ## Returns
 
@@ -100,7 +89,9 @@ cases.
 
 ## Examples
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKMkv0M1LLS5JTVEwUshPUwguSSxJVUiqVCguzdVwSk3PzPNJLNHU4UJSZwxWl19alExAoSFIoWteik9+cmJJZn4ehmoAdn/LsYsAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | top-nested 2 of State       by sum(BeginLat),
@@ -121,7 +112,9 @@ StormEvents
 
 Use the option 'with others':
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKMkv0M1LLS5JTVEwUshPUwguSSxJVSjPLMlQyC/JSC0qVrBVUHLMyVHwB/Eg0sVKCkmVCsWluRpOqemZeT6JJZo6XArIRhmDjcovLUpOJaTUEKTUNS/FJz85sSQzPw+33UBFCjBVWJwAABtuhnPYAAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | top-nested 2 of State with others = "All Other States" by sum(BeginLat),
@@ -151,11 +144,13 @@ StormEvents
 
 The following query shows the same results for the first level used in the example above.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKM9ILUpVCC5JLElVUMzMU9BQD3GNcAxW11FQ93b0CwayNIGqiktzcxOLMqtSQSwNp9T0zDyfxBJNAPC7f85LAAAA" target="_blank">Run the query</a>
+
 ```kusto
- StormEvents
- | where State !in ('TEXAS', 'KANSAS')
- | summarize sum(BeginLat)
+StormEvents
+| where State !in ('TEXAS', 'KANSAS')
+| summarize sum(BeginLat)
 ```
 
 **Output**
@@ -166,7 +161,9 @@ The following query shows the same results for the first level used in the examp
 
 Request another column (EventType) to the top-nested result.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43OMQ6CQBQE0J5TTAmJFNjbmNDR4QW+y9dgsvs3u4NK4uEVKC102nmZTE9Lvr1rYC5eoMU6aKYO2MMu6ClUbDnPyJMvj3odQyesdgW+vU3J6V++WXwbhs6ccLTwy2P1y9HTHHXbp484wMuzbKrP+5jspo61PGTt3mt/gc7cAAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | top-nested 2 of State       by sum(BeginLat),
@@ -193,7 +190,9 @@ StormEvents
 
 Give an index sort order for each value in this level (per group) to sort the result by the last nested level (in this example by EndLocation):
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA4WPwYoCMQyG7z5FjjPQAV326kXw5m0eYIjTbC3aVtKM6OLDm7KrVlzYHNP///K1l8RhfaIoeXYFSccuUhay8AHpC3pBIYDtBfIUmhU5HzcorQGdt2yaeKR/s58lu452k0YUn2IpvDbUI7ElLi8/AuYXbgCdY3K6s0PF0IYSArL/ppqdYQkB9zQcfJamejCwmOu0Sqbntp/Ca+Pva4/y3e+upxp0FgWCj9aPngqNMTpq5qrOjJfhQNHJrnbJLXSwUGj5eDh1dD6iIurEm6V5XLgB1CPS3MABAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | top-nested 2 of State  by sum(BeginLat),    top-nested 2 of Source by sum(BeginLat),    top-nested 4 of EndLocation by  sum(BeginLat)
@@ -230,7 +229,9 @@ Note the use of the `max(1)` (which is then projected away)
 for columns which just require propagation through the operator
 without any selection logic.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22PMQ7CMAxF957CI6BWomVm7NC5XCDEBhUpceRYBSQOTwoFAmL1f0//u1cW147kNRY3UA6Vp6iEwAfo1SjB/grd0bPQeuvMZVEvywJysJlR0d3gMrx+4O/gV0tS6/Fbaf43TGgYIiN1+IE3M5xmB+ETWa3M2bzSVTqzIMkkPB8x0ZbZUKRo7wy+F8H+AAAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | top-nested of State by Ignore0=max(1),
@@ -240,3 +241,43 @@ StormEvents
 | project-away Ignore*
 | order by State asc, StartTime desc
 ```
+
+### Retrieve the latest records per identity
+
+If you have a table with an ID column and a timestamp column, you can use the top-nested operator to query the latest two records for each unique value of ID. The latest records are defined by the highest value of timestamp.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA43QzW4CIRAH8DtPMeG0JmyyYLVq4sV48RlMD2PBigpscIya+PCFZpc2JrYNBAL5/fkYjZTa5mgqq2dwomj9hwCyzpwIXTsDjWTyUkCgnYkrvw3RIdngez4AALZmaQS+wIgHLkqqUo0c1Y1MfSCASy6eu/G3U7+51+xUk92wd8vg8aifw5e/oZxkOPoHnGY45uyN3YFCW/tUK6MhbMFq2NxAn527NXOH1yr/BtgPpDIr5S1afumy/5hKmcfql6jqLkqPaWPYm3eq8YL9K0R3fjerT8+D6uvwAQAA" target="_blank">Run the query</a>
+
+```kusto
+datatable(id: string, timestamp: datetime, otherInformation: string)   
+[
+    "Barak", datetime(2015-01-01), "1",
+    "Barak", datetime(2016-01-01), "2",
+    "Barak", datetime(2017-01-20), "3",
+    "Donald", datetime(2017-01-20), "4",
+    "Donald", datetime(2017-01-18), "5",
+    "Donald", datetime(2017-01-19), "6"
+]
+| top-nested of id by dummy0=max(1),  
+top-nested 2 of timestamp by dummy1=max(timestamp),  
+top-nested of otherInformation by dummy2=max(1)
+| project-away dummy0, dummy1, dummy2 
+```
+
+**Output**
+
+| id | timestamp | otherInformation |
+|---|---|---|
+| Barak | 2016-01-01T00:00:00Z | 2 |
+| Donald | 2017-01-19T00:00:00Z | 6 |
+| Barak | 2017-01-20T00:00:00Z | 3 |
+| Donald | 2017-01-20T00:00:00Z | 4 |
+
+Here's a step-by-step explanation of the query:
+
+1. The `datatable` creates a test dataset.
+1. The first `top-nested` clause returns all distinct values of `id`.
+1. The second `top-nested` clause selects the top two records with the highest `timestamp` for each id.
+1. The third `top-nested` clause adds the `otherInformation` column for each record.
+1. The `project-away` operator removes the dummy columns introduced by the top-nested operator.

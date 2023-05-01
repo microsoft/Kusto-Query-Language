@@ -3,13 +3,13 @@ title: parse_json() function - Azure Data Explorer
 description: Learn how to use the parse_json() function to return an object of type `dynamic`.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/13/2022
+ms.date: 01/08/2023
 ---
 # parse_json()
 
-Interprets a `string` as a JSON value and returns the value as `dynamic`. If possible, the value is converted into relevant [data types](scalar-data-types/index.md).  For strict parsing with no data type conversion, use [extract()](extractfunction.md) or [extractjson()](extractjsonfunction.md) functions.
+Interprets a `string` as a JSON value and returns the value as `dynamic`. If possible, the value is converted into relevant [data types](scalar-data-types/index.md).  For strict parsing with no data type conversion, use [extract()](extractfunction.md) or [extract_json()](extractjsonfunction.md) functions.
 
-This function is better than [extractjson() function](./extractjsonfunction.md) when you need to extract more than one element of a JSON compound object. Prefer using [dynamic()](./scalar-data-types/dynamic.md) when possible.
+It's better to use the parse_json() function over the [extract_json()](./extractjsonfunction.md) function when you need to extract more than one element of a JSON compound object. Use [dynamic()](./scalar-data-types/dynamic.md) when possible.
 
 > **Deprecated aliases:** parsejson(), toobject(), todynamic()
 
@@ -17,9 +17,11 @@ This function is better than [extractjson() function](./extractjsonfunction.md) 
 
 `parse_json(`*json*`)`
 
-## Arguments
+## Parameters
 
-* *json*: An expression of type `string`. It represents a [JSON-formatted value](https://json.org/), or an expression of type [dynamic](./scalar-data-types/dynamic.md), representing the actual `dynamic` value.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *json* | string | &check; | The string in the form of a [JSON-formatted value](https://json.org/) or a [dynamic](./scalar-data-types/dynamic.md) property bag to parse as JSON.|
 
 ## Returns
 
@@ -37,7 +39,7 @@ that looks like this:
 {"duration":{"value":118.0,"count":5.0,"min":100.0,"max":150.0,"stdDev":0.0,"sampledValue":118.0,"sum":118.0}}
 ```
 
-then the following CSL Fragment retrieves the value of the `duration` slot
+then the following query retrieves the value of the `duration` slot
 in the object, and from that it retrieves two slots, `duration.value` and
  `duration.min` (`118.0` and `110.0`, respectively).
 

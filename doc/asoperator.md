@@ -3,7 +3,7 @@ title: as operator - Azure Data Explorer
 description: Learn how to use the as operator to bind a name to the operator's input tabular expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 03/14/2023
 ---
 # as operator
 
@@ -30,7 +30,7 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 
 ## Examples
 
-In the following 2 example the union's generated TableName column will consist of 'T1' and 'T2'
+In the following two examples the union's generated TableName column will consist of 'T1' and 'T2'.
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1UwVCjJVzA0UCguSS0AcrhqFBKLFULAjNK8zPw8hfLMkozi/NKi5FTbkMSknFS/xNxUBY0iPGZAjDDSBAAgKK6faAAAAA==" target="_blank">Run the query</a>
@@ -41,7 +41,7 @@ range x from 1 to 10 step 1
 | union withsource=TableName (range x from 1 to 10 step 1 | as T2)
 ```
 
-Alternatively, you can write the same example, as follows:
+Alternatively, you can write the same example as follows:
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/?query=H4sIAAAAAAAAAyvNy8zPUyjPLMkozi8tSk61DUlMykn1S8xNVdAoSsxLT1WoUEgrys9VMFQoyVcwNFAoLkktAHJqFBKLFUIMNXWIUWakCQB5tG07ZwAAAA==" target="_blank">Run the query</a>

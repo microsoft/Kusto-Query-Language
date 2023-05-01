@@ -1,9 +1,9 @@
 ---
-title: Cross-Cluster Join - Azure Data Explorer
-description: This article describes Cross-Cluster Join in Azure Data Explorer.
+title: Cross-cluster join - Azure Data Explorer
+description: Learn how to perform the Cross-cluster join operation to join datasets residing on different clusters.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 04/11/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -37,7 +37,7 @@ When Kusto encounters a cross-cluster join, it will automatically decide where t
 * Execute join operation on the cluster of the right operand, left operand will be first fetched by this cluster. (join in example **(2)** will be executed on the "SomeCluster2")
 * Execute join operation locally (meaning on the cluster that received the query), both operands will be first fetched by the local cluster.
 
-The actual decision depends on the specific query. The automatic join remoting strategy is (simplified version): 
+The actual decision depends on the specific query. The automatic join remoting strategy is (simplified version):
 "If one of the operands is local, join will be executed locally. If both operands are remote, join will be executed on the cluster of the right operand".
 
 Sometimes the performance of the query can be improved if automatic remoting strategy is not followed. In this case, execute join operation on the cluster of the largest operand.
@@ -50,13 +50,14 @@ This operation can be done by giving Kusto join remoting hint. The syntax is:
 T | ... | join hint.remote=<strategy> (cluster("SomeCluster").database("SomeDB").T2 | ...) on Col1
 ```
 
-Following are legal values for `strategy`
-* `left` - execute join on the cluster of the left operand 
+Following are legal values for `strategy`:
+
+* `left` - execute join on the cluster of the left operand
 * `right` - execute join on the cluster of the right operand
 * `local` - execute join on the cluster of the current cluster
 * `auto` - (default) let Kusto make the automatic remoting decision
 
-> [!Note]
+> [!NOTE]
 > The join remoting hint will be ignored by Kusto if the hinted strategy isn't applicable to the join operation.
 
 ::: zone-end

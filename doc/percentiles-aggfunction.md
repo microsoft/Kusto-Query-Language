@@ -3,55 +3,43 @@ title: percentile(), percentiles() - Azure Data Explorer
 description: Learn how to use the percentile(), percentiles() functions to calculate estimates for nearest rank percentiles in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/21/2022
+ms.date: 03/16/2023
 ---
 # percentile(), percentiles() (aggregation function)
 
-Calculates an estimate for the specified [nearest-rank percentile](#nearest-rank-percentile) of the population defined by `*Expr*`.
+The `percentile()` function calculates an estimate for the specified [nearest-rank percentile](#nearest-rank-percentile) of the population defined by *expr*.
 The accuracy depends on the density of population in the region of the percentile.
+
+`percentiles()` works similarly to `percentile()`. However, `percentiles()` can calculate multiple percentile values at once, which is more efficient than calculating each percentile value separately.
+
+To calculate weighted percentiles, see [percentilesw()](percentilesw-aggfunction.md).
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
-* `percentiles()` is like `percentile()`, but calculates a number of percentile values, which is faster than calculating each percentile individually.
-* `percentilesw()` is like `percentilew()`, but calculates a number of weighted percentile values, which is faster than calculating each percentile individually.
-* `percentilew()` and `percentilesw()` let you calculate weighted percentiles. Weighted percentiles calculate the given percentiles in a "weighted" way, by treating each value as if it was repeated `weight` times, in the input.
-
-To add a percentage calculation to your results, see the [percentages example](tutorial.md#percentages).
-
 ## Syntax
 
-`percentile` `(`*Expr*`,` *Percentile*`)`
+`percentile(`*expr*`,` *percentile*`)`
 
-`percentiles` `(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
+`percentiles(`*expr*`,` *percentiles*`)`
 
-`percentiles_array` `(`*Expr*`,` *Percentile1* [`,` *Percentile2*]`)`
-
-`percentiles_array` `(`*Expr*`,` *Dynamic array*`)`
-
-`percentilew` `(`*Expr*`,` *WeightExpr*`,` *Percentile*`)`
-
-`percentilesw` `(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
-
-`percentilesw_array` `(`*Expr*`,` *WeightExpr*`,` *Percentile1* [`,` *Percentile2*]`)`
-
-`percentilesw_array` `(`*Expr*`,` *WeightExpr*`,` *Dynamic array*`)`
-
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-|*Expr* | string | &check; | Expression that will be used for aggregation calculation.|
-|*WeightExpr*| string | &check; | Expression that will be used as the weight of values for aggregation calculation.|
-|*Percentile*| double | &check;| A constant that specifies the percentile.|
-|*Dynamic array* | dynamic | &check; | A list of percentiles in a dynamic array of integers or floating point numbers.|
+|*expr* | string | &check; | The expression to use for aggregation calculation.|
+|*percentile*| int or long | &check;| A constant that specifies the percentile.|
+|*percentiles* | int or long | &check; | One or more comma-separated percentiles.|
 
 ## Returns
 
-Returns an estimate for `*Expr*` of the specified percentiles in the group.
+Returns a table with the estimates for *expr* of the specified percentiles in the group, each in a separate column.
+
+> [!NOTE]
+> To return the percentiles in a single column, see [Return percentiles as an array](#return-percentiles-as-an-array).
 
 ## Examples
 
-**Example 1**
+### Calculate single percentile
 
 The following example shows the value of `DamageProperty` being larger than 95% of the sample set and smaller than 5% of the sample set.
 
@@ -62,7 +50,7 @@ The following example shows the value of `DamageProperty` being larger than 95% 
 StormEvents | summarize percentile(DamageProperty, 95) by State
 ```
 
-**Results**
+**Output**
 
 The results table shown includes only the first 10 rows.
 
@@ -79,7 +67,7 @@ The results table shown includes only the first 10 rows.
 | MICHIGAN | 49167 |
 | ALABAMA | 50000 |
 
-**Example 2**
+### Calculate multiple percentiles
 
 The following example shows the value of `DamageProperty` simultaneously calculated using 5, 50 (median) and 95.
 
@@ -90,7 +78,7 @@ The following example shows the value of `DamageProperty` simultaneously calcula
 StormEvents | summarize percentiles(DamageProperty, 5, 50, 95) by State
 ```
 
-**Results**
+**Output**
 
 The results table shown includes only the first 10 rows.
 
@@ -108,71 +96,30 @@ The results table shown includes only the first 10 rows.
 | ALABAMA | 0 | 0 | 50000 |
 |...|...|
 
-## Weighted percentiles
+## Return percentiles as an array
 
-Assume you repetitively measure the time (Duration) it takes an action to complete. Instead of recording every value of the measurement, you record each value of Duration, rounded to 100 msec, and how many times the rounded value appeared (BucketSize).
+Instead of returning the values in individual columns, use the `percentiles_array()` function to return the percentiles in a single column of dynamic array type.
 
-Use `summarize percentilesw(Duration, BucketSize, ...)` to calculate the given
-percentiles in a "weighted" way. Treat each value of Duration as if it was repeated
-BucketSize times in the input, without actually needing to materialize those records.
+### Syntax
 
-## Example
+`percentiles_array(`*expr*`,` *percentiles*`)`
 
-The following example shows weighted percentiles.
-Using the following set of latency values in milliseconds:
-`{ 1, 1, 2, 2, 2, 5, 7, 7, 12, 12, 15, 15, 15, 18, 21, 22, 26, 35 }`.
+### Parameters
 
-To reduce bandwidth and storage, do pre-aggregation to the
-following buckets: `{ 10, 20, 30, 40, 50, 100 }`. Count the number of events in each bucket to produce the following table:
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*expr* | string | &check; | The expression to use for aggregation calculation.|
+|*percentiles*| int, long, or dynamic | &check;| One or more comma-separated percentiles or a dynamic array of percentiles. Each percentile can be an integer or long value.|
 
-> [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVHISSxJzUuuDElMyklVsFVISSwBQhBbIyi10Dm/NK/EKic/L11HwQei0Kk0OTsVIqapwBWtwKUABBY6CoYGOhC2mY6CEYxtrKNgDGMb6iiYGChwxVpzIVsJAGDD8KqDAAAA" target="_blank">Run the query</a>
+### Returns
 
-```kusto
-let latencyTable = datatable (ReqCount:long, LatencyBucket:long) 
-[ 
-    8, 10, 
-    6, 20, 
-    3, 30, 
-    1, 40 
-];
-latencyTable
-```
+Returns an estimate for *expr* of the specified percentiles in the group as a single column of dynamic array type.
 
-The table displays:
+### Examples
 
-* Eight events in the 10-ms bucket (corresponding to subset `{ 1, 1, 2, 2, 2, 5, 7, 7 }`)
-* Six events in the 20-ms bucket (corresponding to subset `{ 12, 12, 15, 15, 15, 18 }`)
-* Three events in the 30-ms bucket (corresponding to subset `{ 21, 22, 26 }`)
-* One event  in the 40-ms bucket (corresponding to subset `{ 35 }`)
+#### Comma-separated percentiles
 
-At this point, the original data is no longer available. Only the number of events in each bucket. To compute percentiles from this data, use the `percentilesw()` function.
-For the 50, 75, and 99.9 percentiles, use the following query:
-
-> [!div class="nextstepaction"]
-> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1WOMQvCMBCF9/yKN7ZwSGutGsVFVydxE4cYDymmqbYJovjjjYSA3i0fj8d9Z9jBKMdWP/fqZBgrnJUL++Vsx/dN561bmM5eCNtYXHt95ZjlEAcIhJkTyoIiTwnjxBWhSlwSJgXEcSl+leKNwbet6psX48a9Zusaw8Mj+/MR0jeEOlyc1QQpRzL/AMC/VMrDAAAA" target="_blank">Run the query</a>
-
-```kusto
-let latencyTable = datatable (ReqCount:long, LatencyBucket:long) 
-[ 
-    8, 10, 
-    6, 20, 
-    3, 30, 
-    1, 40 
-];
-latencyTable
-| summarize percentilesw(LatencyBucket, ReqCount, 50, 75, 99.9)
-```
-
-**Results**
-
-| percentile_LatencyBucket_50 | percentile_LatencyBucket_75 | percentile_LatencyBucket_99_9 |
-|--|--|--|
-| 20 | 20 | 40 |
-
-## Getting multiple percentiles in an array
-
-Multiple percentiles can be obtained as an array in a single dynamic column, instead of in multiple columns.
+Multiple percentiles can be obtained as an array in a single dynamic column, instead of in multiple columns as with [percentiles()](percentiles-aggfunction.md).
 
 > [!div class="nextstepaction"]
 > <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleIoTData?query=H4sIAAAAAAAAAwspSswrTssvyk1NCU7NK84vKnZJLEnk5apRKC7NzU0syqxKVShILUpOzSvJzEktjk8sKkqs1AhLzClN1VEw1VEwAmJTAx0FcyBtaaqpo5BYlg6R1lRIqlSAmOmXmJsKANY0tLFpAAAA" target="_blank">Run the query</a>
@@ -182,7 +129,7 @@ TransformedSensorsData
 | summarize percentiles_array(Value, 5, 25, 50, 75, 95), avg(Value) by SensorName
 ```
 
-**Results**
+**Output**
 
 The results table displays only the first 10 rows.
 
@@ -200,19 +147,35 @@ The results table displays only the first 10 rows.
 |sensor-34|["0.049980293859462954","0.25094722564949412","0.50914023067384762","0.75571549713447961","0.95176564809278674"]|0.504309494|
 |...|...|...|
 
-Similarly, weighted percentiles can be returned as a dynamic array using `percentilesw_array`.
+#### Dynamic array of percentiles
 
-Percentiles for `percentiles_array` and `percentilesw_array` can be specified in a dynamic array of integer or floating-point numbers. The array must be constant but doesn't have to be literal.
+Percentiles for `percentiles_array` can be specified in a dynamic array of integer or floating-point numbers. The array must be constant but doesn't have to be literal.
 
-```kusto
-CallDetailRecords 
-| summarize percentiles_array(Duration, dynamic([5, 25, 50, 75, 95])), avg(Duration)
-```
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/SampleIoTData?query=H4sIAAAAAAAAAwspSswrTssvyk1NCU7NK84vKnZJLEnkqlEoLs3NTSzKrEpVKEgtSk7NK8nMSS2OTywqSqzUCEvMKU3VUUipzEvMzUzWiDbVUTACYlMDHQVzIG1pGqupqaOQWJYOUampkFSpADHdLzE3FQAgg+RhcwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 TransformedSensorsData
-| summarize percentiles_array(Value, range(0, 100, 5)), avg(Value) by SensorName
+| summarize percentiles_array(Value, dynamic([5, 25, 50, 75, 95])), avg(Value) by SensorName
 ```
+
+**Output**
+
+The results table displays only the first 10 rows.
+
+|SensorName|percentiles_Value|avg_Value |
+|--|--|--|
+|sensor-82|["0.048141473520867069","0.24407515500271132","0.48974511106780577","0.74160998970950343","0.94587903204190071"]|0.493950914|
+|sensor-130|["0.049200214398937764","0.25735850440187535","0.51206374010048239","0.74182335059053839","0.95210342463616771"]|0.505111463|
+|sensor-56|["0.04857779335488676","0.24709868149337144","0.49668762923789589","0.74458470404241883","0.94889104840865857"]|0.497955018|
+|sensor-24|["0.051507199150534679","0.24803904945640423","0.50397070213183581","0.75653888126010793","0.9518782718727431"]|0.501084379|
+|sensor-47|["0.045991246974755672","0.24644331118208851","0.48089197707088743","0.74475142784472248","0.9518322864959039"]|0.49386228|
+|sensor-135|["0.05132897529660399","0.24204987641954018","0.48470113942206461","0.74275730068433621","0.94784079559229406"]|0.494817619|
+|sensor-74|["0.048914714739047828","0.25160926036445724","0.49832498850160978","0.75257887767110776","0.94932261924236094"]|0.501627252|
+|sensor-173|["0.048333149363009836","0.26084250046756496","0.51288012531934613","0.74964772791583412","0.95156058795294"]|0.505401226|
+|sensor-28|["0.048511161184567046","0.2547387968731824","0.50101318228599656","0.75693845702682039","0.95243122486483989"]|0.502066244|
+|sensor-34|["0.049980293859462954","0.25094722564949412","0.50914023067384762","0.75571549713447961","0.95176564809278674"]|0.504309494|
+|...|...|...|
 
 ## Nearest-rank percentile
 

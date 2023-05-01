@@ -3,25 +3,30 @@ title: isfinite() - Azure Data Explorer
 description: Learn how to use the isfinite() function to check if the input is a finite value.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/26/2022
+ms.date: 01/03/2023
 ---
 # isfinite()
 
-Returns whether the input is a finite value (is neither infinite nor NaN).
+Returns whether the input is a finite value, meaning it's neither infinite nor NaN.
 
 ## Syntax
 
-`isfinite(`*x*`)`
+`isfinite(`*number*`)`
 
-## Arguments
+## Parameters
 
-* *x*: A real number.
+| Name | Type | Required | Description |
+| -- | -- | -- | -- |
+|*number*|real|&check;| The value to check if finite.|
 
 ## Returns
 
-A non-zero value (true) if x is finite; and zero (false) otherwise.
+`true` if x is finite and `false` otherwise.
 
 ## Example
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAytKzEtPVahQSCvKz1XQNVQoyVcwVCguSS1QMOTlqlFIrShJzUtRqFSwVTDQM0ASScksA4oZ6hloVehXIolnFqdl5mWWpNrCGBpAlZoAbqyHpGYAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 range x from -1 to 1 step 1

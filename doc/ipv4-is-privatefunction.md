@@ -3,7 +3,7 @@ title: ipv4_is_private() - Azure Data Explorer
 description: Learn how to use the ipv4_is_private() function to check if the IPv4 string address belongs to a set of private network IPs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/21/2022
+ms.date: 01/01/2023
 ---
 # ipv4_is_private()
 
@@ -30,17 +30,15 @@ ipv4_is_private("127.0.0.1") == false
 
 ## Syntax
 
-`ipv4_is_private(`*Expr*`)`
+`ipv4_is_private(`*ip*`)`
 
-## Arguments
+## Parameters
 
-*Expr*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*ip*| string| &check; | An expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).|
 
-### IP-prefix notation
-
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character. The IP address to the left of the slash (`/`) is the base IP address. The number (0 to 32) to the right of the slash (`/`) is the number of contiguous 1 bit in the netmask.
-
-For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -50,7 +48,9 @@ For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24
 
 ## Example: Check if IPv4 belongs to a private network
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjcyC+OKSosy8dCsIpckVzaWgbmigZ6hnpGesrgPiWBrpGZpZAEUM9Y1MIEJG5noGQGgI5MVy1SikVpSk5qUoFKUWl+aUKNgqZBaUmcRnFscXFGWWJZYg2aIJAAFWRs16AAAA" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip_string:string)
 [
@@ -65,6 +65,6 @@ datatable(ip_string:string)
 
 |ip_string|result|
 |---|---|
-|10.1.2.3|1|
-|192.168.1.1/24|1|
-|127.0.0.1|0|
+|10.1.2.3|true|
+|192.168.1.1/24|true|
+|127.0.0.1|false|

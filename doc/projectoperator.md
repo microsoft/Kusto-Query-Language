@@ -1,9 +1,9 @@
 ---
 title: Project operator - Azure Data Explorer
-description: This article describes Project operator in Azure Data Explorer.
+description: Learn how to use the project operator to select columns to include, rename or drop, and to insert new computed columns in the output table.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 01/12/2023
 ---
 # project operator
 
@@ -23,17 +23,17 @@ or
 
 | Name | Type | Required | Description |
 | -- | -- | -- | -- |
-| *T* | string | &check; | Tabular input for which to project certain columns. |
-| *ColumnName* | string | | Name of column to appear in the output. |
-| *Expression* | string | | Scalar expression to perform over the input. |
+| *T* | string | &check; | The tabular input for which to project certain columns. |
+| *ColumnName* | string | | A column name or comma-separated list of column names to appear in the output. |
+| *Expression* | string | | The scalar expression to perform over the input. |
 
 * Either *ColumnName* or *Expression* must be specified.
-* If there is no *Expression*, then a column of *ColumnName* must appear in the input.
+* If there's no *Expression*, then a column of *ColumnName* must appear in the input.
 * If *ColumnName* is omitted, the output column name of *Expression* will be automatically generated.
-* If *Expression* returns more than one column, a list of column names can be specified in parentheses. If a list of the column names is not specified, all *Expression*'s output columns with generated names will be added to the output.
+* If *Expression* returns more than one column, a list of column names can be specified in parentheses. If a list of the column names isn't specified, all *Expression*'s output columns with generated names will be added to the output.
 
 > [!NOTE]
-> It is possible but not recommended to return a new calculated column with the same name as an existing column in the input.
+> It's not recommended to return a new calculated column with the same name as an existing column in the input.
 
 ## Returns
 

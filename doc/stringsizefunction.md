@@ -1,9 +1,9 @@
 ---
 title: string_size() - Azure Data Explorer
-description: This article describes string_size() in Azure Data Explorer.
+description: Learn how to use the string_size() function to measure the size of the input string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 02/05/2023
 ---
 # string_size()
 
@@ -13,15 +13,22 @@ Returns the size, in bytes, of the input string.
 
 `string_size(`*source*`)`
 
-## Arguments
+## Parameters
 
-* *source*: The source string that will be measured for string size.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *source* | string | &check; | The string for which to return the byte size.|
 
 ## Returns
 
 Returns the length, in bytes, of the input string.
 
 ## Examples
+
+### String of letters
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSjOrEpVsFUoLgHy0uNBPA2ljNScnHwlTQB9vNZzIQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print size = string_size("hello")
@@ -32,6 +39,11 @@ print size = string_size("hello")
 |size|
 |---|
 |5|
+
+### String of letters and symbols
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSjOrEpVsFUoLgHy0uNBPA2lR5OWPZq04dGkdY8mrX80aZWSJgDJzHqdKwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print size = string_size("⒦⒰⒮⒯⒪")

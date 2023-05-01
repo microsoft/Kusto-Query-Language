@@ -1,9 +1,9 @@
 ---
 title: trim_end() - Azure Data Explorer
-description: This article describes trim_end() in Azure Data Explorer.
+description: Learn how to use the trim_end() function to remove the trailing match of the specified regular expression.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 02/27/2023
 ---
 # trim_end()
 
@@ -13,18 +13,23 @@ Removes trailing match of the specified regular expression.
 
 `trim_end(`*regex*`,` *source*`)`
 
-## Arguments
+## Parameters
 
-* *regex*: String or [regular expression](re2.md) to be trimmed from the end of *source*.  
-* *source*: A string.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *regex* | string | &check; | The string or [regular expression](re2.md) to be trimmed from the end of *source*.|
+| *source* | string | &check; | The source string from which to trim *regex*.|
 
 ## Returns
 
 *source* after trimming matches of *regex* found in the end of *source*.
 
-## Example
+## Examples
 
-Statement bellow trims *substring*  from the end of *string_to_trim*:
+The following statement trims *substring*  from the end of *string_to_trim*.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEoLinKzEuPL8mPBzJyFWwVHJSSgAJ6yfm5Sta8XDkgJaVJEFVAWSWYRAFQAItuVAEdEJGbmhIP1w8SiE/NS9GAG6qDqkUTAKQH9A2VAAAA" target="_blank">Run the query</a>
 
 ```kusto
 let string_to_trim = @"bing.com";
@@ -38,7 +43,10 @@ print string_to_trim = string_to_trim,trimmed_string = trim_end(substring,string
 |--------------|--------------|
 |bing.com      |bing          |
 
-Next statement trims all non-word characters from the end of the string:
+The next statement trims all non-word characters from the end of the string.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUSguKVKwBZHJiSUaSroKCko6SiGpQAElHQclfX0FFSVNXq4ahdSKktS8FIWSoszc3NSUeIguEC8eKKzhoBQdF1Meq62kA5TQBADbLZbMWQAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 print str = strcat("-  ","Te st",x,@"// $")

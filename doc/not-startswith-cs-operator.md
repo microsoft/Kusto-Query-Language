@@ -1,48 +1,31 @@
 ---
 title: The case-sensitive !startswith_cs string operator - Azure Data Explorer
-description: This article describes the case-sensitive !startswith_cs string operator in Azure Data Explorer.
+description: Learn how to use the !startswith_cs string operator to filter records for data that doesn't start with a case-sensitive search string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/19/2021
+ms.date: 03/12/2023
 ---
 # !startswith_cs operators
 
-Filters a record set for data that does not start with a case-sensitive search string.
+Filters a record set for data that doesn't start with a case-sensitive search string.
 
-The following table provides a comparison of the `startswith` operators:
-
-|Operator   |Description   |Case-Sensitive  |Example (yields `true`)  |
-|-----------|--------------|----------------|-------------------------|
-|[`startswith`](startswith-operator.md) |RHS is an initial subsequence of LHS |No |`"Fabrikam" startswith "fab"`|
-|[`!startswith`](not-startswith-operator.md) |RHS isn't an initial subsequence of LHS |No |`"Fabrikam" !startswith "kam"`|
-|[`startswith_cs`](startswith-cs-operator.md)  |RHS is an initial subsequence of LHS |Yes |`"Fabrikam" startswith_cs "Fab"`|
-|[`!startswith_cs`](not-startswith-cs-operator.md) |RHS isn't an initial subsequence of LHS |Yes |`"Fabrikam" !startswith_cs "fab"`|
-
-> [!NOTE]
-> The following abbreviations are used in the table above:
->
-> * RHS = right hand side of the expression
-> * LHS = left hand side of the expression
-
-For further information about other operators and to determine which operator is most appropriate for your query, see [datatype string operators](datatypes-string-operators.md). 
+[!INCLUDE [startswith-operator-comparison](../../includes/startswith-operator-comparison.md)]
 
 ## Performance tips
 
 [!INCLUDE [performance-tip-note](../../includes/performance-tip-note.md)]
 
-For faster results, use the case-sensitive version of an operator. For example, use `hassuffix_cs` instead of `hassuffix`.
-
-If you're testing for the presence of a symbol or alphanumeric word that is bound by non-alphanumeric characters at the start or end of a field, for faster results use `has` or `in`.
-
 ## Syntax
 
-*T* `|` `where` *col* `!startswith_cs` `(`*expression*`)`  
+*T* `|` `where` *column* `!startswith_cs` `(`*expression*`)`  
 
-## Arguments
+## Parameters
 
-* *T* - The tabular input whose records are to be filtered.
-* *col* - The column to filter.
-* *expression* - Scalar or literal expression.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check;| The tabular input whose records are to be filtered.|
+| *column* | string | &check;| The column by which to filter.|
+| *expression* | scalar | &check;| The scalar or literal expression for which to search.|
 
 ## Returns
 
@@ -50,13 +33,15 @@ Rows in *T* for which the predicate is `true`.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5qpRKC7NzU0syqxKVUgFCcUn55fmldiCSQ1NhaRKheCSxJJUoMLyjNSiVAhPQbG4JLGopLg8syQjPrlYQclTCa4AyRQFOwUjAwMDoFRBUX5WanIJRLcOshoAsNzTI40AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
-    | summarize event_count=count() by State
-    | where State !startswith_cs "I"
-    | where event_count > 2000
-    | project State, event_count
+| summarize event_count=count() by State
+| where State !startswith_cs "I"
+| where event_count > 2000
+| project State, event_count
 ```
 
 **Output**

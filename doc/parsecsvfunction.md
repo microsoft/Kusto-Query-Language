@@ -1,9 +1,9 @@
 ---
 title: parse_csv() - Azure Data Explorer
-description: This article describes parse_csv() in Azure Data Explorer.
+description: Learn how to use the parse_csv() function to split a given string representing a single record of comma-separated values.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/24/2022
+ms.date: 01/08/2023
 ---
 # parse_csv()
 

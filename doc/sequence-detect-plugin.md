@@ -1,9 +1,9 @@
 ---
 title: sequence_detect plugin - Azure Data Explorer
-description: This article describes sequence_detect plugin in Azure Data Explorer.
+description: Learn how to use the sequence_detect plugin to detect sequence occurrences based on provided predicates.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/24/2022
+ms.date: 01/22/2023
 ---
 # sequence_detect plugin
 
@@ -13,14 +13,16 @@ Detects sequence occurrences based on provided predicates. The plugin is invoked
 
 *T* `| evaluate` `sequence_detect` `(`*TimelineColumn*`,` *MaxSequenceStepWindow*`,` *MaxSequenceSpan*`,` *Expr1*`,` *Expr2*`,` ..., *Dim1*`,` *Dim2*`,` ...`)`
 
-## Arguments
+## Parameters
 
-* *T*: The input tabular expression.
-* *TimelineColumn*: column reference representing timeline, must be present in the source expression
-* *MaxSequenceStepWindow*: scalar constant value of the max allowed timespan between 2 sequential steps in the sequence
-* *MaxSequenceSpan*: scalar constant value of the max span for the sequence to complete all steps
-* *Expr1*, *Expr2*, ...: boolean predicate expressions defining sequence steps
-* *Dim1*, *Dim2*, ...: dimension expressions that are used to correlate sequences
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T*| string | &check; | The input tabular expression.|
+| *TimelineColumn*| string | &check; | The column reference representing timeline, must be present in the source expression.|
+| *MaxSequenceStepWindow*| timespan | &check; | The value of the max allowed timespan between 2 sequential steps in the sequence.|
+| *MaxSequenceSpan*| timespan | &check; | The max timespan for the sequence to complete all steps.|
+| *Expr1*, *Expr2*, ...| string | &check; | The boolean predicate expressions defining sequence steps.|
+| *Dim1*, *Dim2*, ...| string | &check; | The dimension expressions that are used to correlate sequences.|
 
 ## Returns
 
@@ -38,20 +40,23 @@ The following query looks at the table T to search for relevant data from a spec
 T | evaluate sequence_detect(datetime_column, 10m, 1h, e1 = (Col1 == 'Val'), e2 = (Col2 == 'Val2'), Dim1, Dim2)
 ```
 
-### Exploring Storm Events 
+### Exploring Storm Events
 
 The following query looks on the table StormEvents (weather statistics for 2007) and shows cases where sequence of 'Excessive Heat' was followed by 'Wildfire' within 5 days.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA3WPMQuDMBCFd3/F4aJCilPHjEJ3BccSklcaMNaaM7XQH99QXAz1xnvfx7tr+TG7JmBkn30IQQ2LYpDHc8GocTVgaC4z2k/LaubOOog0ORtBVNfkGRM5tZ44UofQVnMI3qFYlr/7uvcEkpLyZtXw3gbQJaZ5JSi1XnYwNzsjMYt+2xd/nPgR7+qrLywAQRgbAQAA" target="_blank">Run the query</a>
+
 ```kusto
 StormEvents
 | evaluate sequence_detect(
-        StartTime,
-        5d,  // step max-time
-        5d,  // sequence max-time
-        heat=(EventType == "Excessive Heat"), 
-        wildfire=(EventType == 'Wildfire'), 
-        State)
+               StartTime,
+               5d,  // step max-time
+               5d,  // sequence max-time
+               heat=(EventType == "Excessive Heat"), 
+               wildfire=(EventType == 'Wildfire'), 
+               State
+           )
 ```
 
 **Output**

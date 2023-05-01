@@ -3,7 +3,7 @@ title: geo_polygon_to_s2cells() - Azure Data Explorer
 description: Learn how to use the geo_polygon_to_s2cells() function to calculate S2 cell tokens that cover a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_polygon_to_s2cells()
 
@@ -13,12 +13,14 @@ Read more about [S2 cell hierarchy](https://s2geometry.io/devguide/s2cell_hierar
 
 ## Syntax
 
-`geo_polygon_to_s2cells(`*polygon*`,`*level*`)`
+`geo_polygon_to_s2cells(`*polygon*`,` *level*`)`
 
-## Arguments
+## Parameters
 
-* *polygon*: Polygon or multiPolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
-* *level*: An optional `int` that defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *polygon* | dynamic | &check; | Polygon or multipolygon in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
+| *level* | int | | Defines the requested cell level. Supported values are in the range [0, 30]. If unspecified, the default value `11` is used.|
 
 ## Returns
 
@@ -94,6 +96,9 @@ This match can be achieved by the following process:
 
 The following example classifies coordinates into polygons.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=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" target="_blank">Run the query</a>
+
 ```kusto
 let Polygons = 
     datatable(description:string, polygon:dynamic)
@@ -155,6 +160,9 @@ EarthAtNight
 
 Count of cells that will be needed in order to cover some polygon with S2 cells of level 5.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy2OwQrDIBBE7/0K8ZSABxvIJSH/0LuIiFlSqd0VNQcp/fcqzWVmeLMLE6CwSKEehGxje0X79m748FIj8IU//hUX3BGl3aMtkPmilJJCatF07naXV+hU6++43mLyWFiejIMQTKEXoHF0NrYxm5KtJgAe5TkcQOZa0M5MnvpDHi4k2DyO6w+pbpZDpgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0,0]]]});
 print s2_cell_token_count = array_length(geo_polygon_to_s2cells(polygon, 5));
@@ -168,6 +176,9 @@ print s2_cell_token_count = array_length(geo_polygon_to_s2cells(polygon, 5));
 
 Covering a large-area polygon with small-area cells returns null.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEoyM+pTM/PU7BVSKnMS8zNTNaoViqpLEhVslIKgEgp6Sgl5+cXpWTmJZakFitZRUdHG+gYxOoASVMQZWgAZYBEY2NrNa25Cooy80oU0lPz46HGx5fkxxcbJafm5BRrQIV0FIwNNK0BZqBOaoMAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0,0]]]});
 print geo_polygon_to_s2cells(polygon, 30);
@@ -180,6 +191,9 @@ print geo_polygon_to_s2cells(polygon, 30);
 ||
 
 Covering a large-area polygon with small-area cells returns null.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA8tJLVEoyM+pTM/PU7BVSKnMS8zNTNaoViqpLEhVslIKgEgp6Sgl5+cXpWTmJZakFitZRUdHG+gYxOoASVMQZWgAZYBEY2NrNa25Cooy80oUMovzSnNyNNJT8+OhtsSX5McXGyWn5uQUa0CFdBSMDTQ1rQE1TEGniwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 let polygon = dynamic({"type":"Polygon","coordinates":[[[0,0],[0,50],[100,50],[0,0]]]});

@@ -1,9 +1,9 @@
 ---
 title: series_ifft() - Azure Data Explorer
-description: This article describes series_ifft() function in Azure Data Explorer.
+description: Learn how to use the series_ifft() function to apply the Inverse Fast Fourier Transform (IFFT) on a series.
 ms.reviewer: adieldar
 ms.topic: reference
-ms.date: 08/13/2020
+ms.date: 01/29/2023
 ---
 # series_ifft()
 
@@ -15,10 +15,12 @@ The series_ifft() function takes a series of complex numbers in the frequency do
 
 `series_ifft(`*fft_real* [`,` *fft_imaginary*]`)`
 
-## Arguments
+## Parameters
 
-* *fft_real*: Dynamic array of numeric values representing the real component of the series to transform.
-* *fft_imaginary*: A similar dynamic array representing the imaginary component of the series. This parameter is optional and should be specified only if the input series contains complex numbers.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *fft_real* | dynamic | &check; | An array of numeric values representing the real component of the series to transform.|
+| *fft_imaginary* | dynamic | | An array of numeric values representing the imaginary component of the series. This parameter should be specified only if the input series contains complex numbers.|
 
 ## Returns
 

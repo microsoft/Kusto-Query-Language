@@ -1,13 +1,13 @@
 ---
 title: unicode_codepoints_from_string() - Azure Data Explorer
-description: This article describes unicode_codepoints_from_string() in Azure Data Explorer.
+description: Learn how to use the unicode_codepoints_from_string() function to return a dynamic array of the Unicode codepoints of the input string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/21/2022
+ms.date: 02/27/2023
 ---
 # unicode_codepoints_from_string()
 
-Returns a dynamic array of the Unicode codepoints of an input string. This function is the inverse operation of [`unicode_codepoints_to_string()`](unicode-codepoints-to-string-function.md) function.
+Returns a dynamic array of the Unicode codepoints of the input string. This function is the inverse operation of [`unicode_codepoints_to_string()`](unicode-codepoints-to-string-function.md) function.
 
 > **Deprecated aliases:** to_utf8()
 

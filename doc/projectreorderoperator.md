@@ -1,32 +1,29 @@
 ---
 title: project-reorder operator - Azure Data Explorer
-description: This article describes project-reorder operator in Azure Data Explorer.
+description: Learn how to use the project-reorder operator to reorder columns in the output table.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/16/2023
 ---
 # project-reorder operator
 
-Reorders columns in the result output.
-
-```kusto
-T | project-reorder Col2, Col1, Col* asc
-```
+Reorders columns in the output table.
 
 ## Syntax
 
 *T* `| project-reorder` *ColumnNameOrPattern* [`asc` | `desc` | `granny-asc` | `granny-desc`] [`,` ...]
 
-## Arguments
+## Parameters
 
-* *T*: The input table.
-* *ColumnNameOrPattern:* The name of the column or column wildcard pattern added to the output.
-* For wildcard patterns: Specifying `asc` or `desc` orders columns using their names in ascending or descending manner.
-  Additionally, `granny-asc` and `granny-desc` keywords indicate ascending or descending order that takes numeric values into account
-  (for example, `a100` comes before `a20` when `granny-asc` is specified.)
-  If no explicit ordering is specified, the order is determined by the matching columns as they appear in the source table.
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *T* | string | &check; | The input tabular data.|
+| *ColumnNameOrPattern* | string | &check; | The name of the column or column wildcard pattern by which to order the columns. |
+| `asc`, `desc`, `granny-asc`, `granny-desc` | string | | Indicates how to order the columns when a wildcard pattern is used. `asc` or `desc` orders columns by column name in ascending or descending manner, respectively. `granny-asc` or `granny-desc` orders by ascending or descending, respectively, while secondarily sorting by the next numeric value. For example, `a100` comes before `a20` when `granny-asc` is specified.|
 
 > [!NOTE]
+>
+> * If no explicit ordering is specified, the order is determined by the matching columns as they appear in the source table.
 > * In ambiguous *ColumnNameOrPattern* matching, the column appears in the first position matching the pattern.
 > * Specifying columns for the `project-reorder` is optional. Columns that aren't specified explicitly appear as the last columns of the output table.
 > * To remove columns, use [`project-away`](projectawayoperator.md).
@@ -41,7 +38,9 @@ A table that contains columns in the order specified by the operator arguments. 
 
 Reorder a table with three columns (a, b, c) so the second column (b) will appear first.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUi0VU9U11FIslVPAlLJturJ6rxcNQoKBUX5WanJJbpFqflFKalFCkkA1H2l7S8AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print a='a', b='b', c='c'
 |  project-reorder b
@@ -55,7 +54,9 @@ print a='a', b='b', c='c'
 
 Reorder columns of a table so that columns starting with `a` will appear before other columns.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUhSsFVQT1LXUUg0slVPNAIxjIEMYxDDEMgwVOflqlFQKCjKz0pNLtEtSs0vSkktUkjUUkgsTgYAJU2yOEMAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print b = 'b', a2='a2', a3='a3', a1='a1'
 |  project-reorder a* asc

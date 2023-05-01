@@ -3,7 +3,7 @@ title: geo_intersects_2lines() - Azure Data Explorer
 description: Learn how to use the geo_intersects_2lines() function to check if two line strings or multiline strings intersect.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 12/14/2022
+ms.date: 03/09/2023
 ---
 # geo_intersects_2lines()
 
@@ -13,10 +13,12 @@ Calculates whether two lines or multilines intersect.
 
 `geo_intersects_2lines(`*lineString1*`,`*lineString2*`)`
 
-## Arguments
+## Parameters
 
-* *lineString1*: Line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
-* *lineString2*: Line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946) and of a [dynamic](./scalar-data-types/dynamic.md) data type.
+|Name|Type|Required|Description|
+|--|--|--|--|
+| *lineString1* | dynamic | &check; | A line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
+| *lineString2* | dynamic | &check; | A line or multiline in the [GeoJSON format](https://tools.ietf.org/html/rfc7946).|
 
 ## Returns
 
@@ -24,7 +26,7 @@ Indicates whether two lines or multilines intersect. If lineString or a multiLin
 
 > [!NOTE]
 >
-> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/GandG/update/index.php?action=home) coordinate reference system.
+> * The geospatial coordinates are interpreted as represented by the [WGS-84](https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84) coordinate reference system.
 > * The [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) used to measure distance on Earth is a sphere. Line edges are [geodesics](https://en.wikipedia.org/wiki/Geodesic) on the sphere.
 > * If input line edges are straight cartesian lines, consider using [geo_line_densify()](geo-line-densify-function.md) in order to convert planar edges to geodesics.
 
@@ -46,7 +48,9 @@ dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]
 
 The following example checks whether some two literal lines intersects.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52QsQqDMBRF935FyKSQij6NL7H0D7p1FBHRIAEbxWSR0n9vWou1a4e3nAv3XN6gHBm0UVc3a9Mn5Ey6xTQ33QZ36pZJ0YJetpgy2o7j3GnTOGVpUZZHTCOJQoJkWRyh4AnnFVuxiGWcrhhySKrqEZ4Ow48P/vJ5i+RrsQDcfJhxDm+MEvOPb/I9jvhTs1Wts17Yq7H+ghpec2ywewLbLwyfFywOhCIBAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let lineString1 = dynamic({"type":"LineString","coordinates":[[-73.978929,40.785155],[-73.980903,40.782621]]});
 let lineString2 = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788275],[-73.974552,40.779761]]});
@@ -81,7 +85,9 @@ NY_Manhattan_Roads
 
 The following example will return a null result because one of lines is invalid.
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52PQQqDMBRE9z1FyCpCKjE2TWLpDbrrUoKIfiQQo5h0IaV3ryVQ7LbLmeHP++MgImc93ONi/VCgK+pX3462I08c1xlwhW/fGFPcTdPSW99GCLiq66Mscy2V5pqeWC6VKIQwNNmKaVYmm595YcwruxzcD4//xdsoWqRixaVIxfN2EJEN/uEcGWBqNglLgC6Ghn+Igex20v0TWfYGvZfHxAYBAAA=" target="_blank">Run the query</a>
+
 ```kusto
 let lineString1 = dynamic({"type":"LineString","coordinates":[[-73.978929,40.785155],[-73.980903,40.782621]]});
 let lineString2 = dynamic({"type":"LineString","coordinates":[[-73.985195,40.788275]]});

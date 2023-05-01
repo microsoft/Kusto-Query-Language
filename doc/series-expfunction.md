@@ -1,9 +1,9 @@
 ---
 title: series_exp() - Azure Data Explorer
-description: This article describes series_exp() in Azure Data Explorer.
+description: Learn how to use the series_exp() function to calculate the element-wise base-e exponential function (e^x) of the numeric series input.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/11/2021
+ms.date: 01/22/2023
 ---
 # series_exp()
 
@@ -13,9 +13,11 @@ Calculates the element-wise base-e exponential function (e^x) of the numeric ser
 
 `series_exp(`*series*`)`
 
-## Arguments
+## Parameters
 
-* *series*: Input numeric array whose elements are applied as the exponent in the exponential function. The argument must be a dynamic array. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series* | dynamic | &check; | An array of numeric values whose elements are applied as the exponent in the exponential function. |
 
 ## Returns
 
@@ -23,7 +25,9 @@ Dynamic array of calculated exponential function. Any non-numeric element yields
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUShWsFVIqcxLzM1M1og21DHSMY7V5KpRSK0oSc1LUSiOT60oAKooTi3KTAVzNIo1ASk3NNg5AAAA" target="_blank">Run the query</a>
+
 ```kusto
 print s = dynamic([1,2,3])
 | extend s_exp = series_exp(s)

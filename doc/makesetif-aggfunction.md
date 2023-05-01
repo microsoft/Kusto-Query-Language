@@ -3,33 +3,32 @@ title: make_set_if() (aggregation function) - Azure Data Explorer
 description: Learn how to use the make_set_if() function to create a dynamic JSON object of a set of distinct values that an expression takes where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 11/16/2022
+ms.date: 01/05/2023
 ---
 # make_set_if() (aggregation function)
 
-Creates a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in records for which *Predicate* evaluates to `true`.
+Creates a `dynamic` array of the set of distinct values that *expr* takes in records for which *predicate* evaluates to `true`.
 
 [!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
 
 ## Syntax
 
-`make_set_if` `(`*Expr*`,` *Predicate* [`,` *MaxSize*]`)`
+`make_set_if(`*expr*`,` *predicate* [`,` *maxSize*]`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression that will be used for aggregation calculation. |
-| *Predicate* | string | &check; | Predicate that has to evaluate to `true`, in order for *Expr* to be added to the result. |
-| *MaxSize* | integer |  | The limit on the maximum number of elements returned. The default is *1048576* and can't exceed *1048576*. |
+| *expr* | string | &check; | The expression used for the aggregation calculation. |
+| *predicate* | string | &check; | A predicate that has to evaluate to `true` in order for *expr* to be added to the result. |
+| *maxSize* | int |  | The maximum number of elements returned. The default and max value is 1048576. |
 
 ## Returns
 
-Returns a `dynamic` JSON object (array) of the set of distinct values that *Expr* takes in records for which *Predicate* evaluates to `true`.
-The array's sort order is undefined.
+Returns a `dynamic` array of the set of distinct values that *expr* takes in records for which *predicate* evaluates to `true`. The array's sort order is undefined.
 
 > [!TIP]
-> To only count the distinct values, use [dcountif()](dcountif-aggfunction.md)
+> To only count the distinct values, use [dcountif()](dcountif-aggfunction.md).
 
 ## See also
 
@@ -54,7 +53,7 @@ T
 | summarize make_set_if(name, strlen(name) > 4)
 ```
 
-**Results**
+**Output**
 
 |set_name|
 |----|

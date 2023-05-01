@@ -1,50 +1,30 @@
 ---
 title: summarize operator - Azure Data Explorer
-description: This article describes summarize operator in Azure Data Explorer.
+description: Learn how to use the summarize operator to produce a table that summarizes the content of the input table.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/27/2022
+ms.date: 03/16/2023
 ms.localizationpriority: high 
 ---
 # summarize operator
 
 Produces a table that aggregates the content of the input table.
 
-```kusto
-Sales | summarize NumTransactions=count(), Total=sum(UnitPrice * NumUnits) by Fruit, StartOfMonth=startofmonth(SellDateTime)
-```
-
-Returns a table with how many sell transactions and the total amount per fruit and sell month.
-The output columns show the count of transactions, transaction worth, fruit, and the datetime of the beginning of the month
-in which the transaction was recorded.
-
-```kusto
-T | summarize count() by price_range=bin(price, 10.0)
-```
-
-A table that shows how many items have prices in each interval  [0,10.0], [10.0,20.0], and so on. This example has a column for the count and one for the price range. All other input columns are ignored.
-
 ## Syntax
 
-*T* `| summarize` [*SummarizeParameters*]
+*T* `| summarize` [ *SummarizeParameters* ]
       [[*Column* `=`] *Aggregation* [`,` ...]]
     [`by`
       [*Column* `=`] *GroupExpression* [`,` ...]]
 
-## Arguments
+## Parameters
 
-* *Column:* Optional name for a result column. Defaults to a name derived from the expression.
-* *Aggregation:* A call to an [aggregation function](aggregation-functions.md) such as `count()` or `avg()`, with column names as arguments.
-* *GroupExpression:* A scalar expression that can reference the input data.
-  The output will have as many records as there are distinct values of all the
-  group expressions.
-* *SummarizeParameters*: Zero or more (space-separated) parameters in the form of *Name* `=` *Value* that control the behavior. The following parameters are supported:
-  
-  |Name  |Description  |
-  |---|---|
-  |`hint.num_partitions` |Specifies the number of partitions used to share the query load on cluster nodes. See [shuffle query](shufflequery.md)  |
-  |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |
-  |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. See [shuffle query](shufflequery.md)  |
+|Name|Type|Required|Description|
+|--|--|--|--|
+|*Column*|string||The name for the result column. Defaults to a name derived from the expression.|
+|*Aggregation*|string|&check;|A call to an [aggregation function](aggregation-functions.md) such as `count()` or `avg()`, with column names as arguments.|
+|*GroupExpression*|scalar|&check;|A scalar expression that can reference the input data. The output will have as many records as there are distinct values of all the group expressions.|
+|*SummarizeParameters*|string||Zero or more space-separated parameters in the form of *Name* `=` *Value* that control the behavior. See [supported parameters](#supported-parameters).
 
 > [!NOTE]
 > When the input table is empty, the output depends on whether *GroupExpression*
@@ -52,6 +32,14 @@ A table that shows how many items have prices in each interval  [0,10.0], [10.0,
 >
 > * If *GroupExpression* is not provided, the output will be a single (empty) row.
 > * If *GroupExpression* is provided, the output will have no rows.
+
+### Supported parameters
+
+  |Name  |Description  |
+  |---|---|
+  |`hint.num_partitions` |Specifies the number of partitions used to share the query load on cluster nodes. See [shuffle query](shufflequery.md)  |
+  |`hint.shufflekey=<key>` |The `shufflekey` query shares the query load on cluster nodes, using a key to partition data. See [shuffle query](shufflequery.md) |
+  |`hint.strategy=shuffle` |The `shuffle` strategy query shares the query load on cluster nodes, where each node will process one partition of the data. See [shuffle query](shufflequery.md)  |
 
 ## Returns
 
@@ -64,6 +52,7 @@ record.
 To summarize over ranges of numeric values, use `bin()` to reduce ranges to discrete values.
 
 > [!NOTE]
+>
 > * Although you can provide arbitrary expressions for both the aggregation and grouping expressions, it's more efficient to use simple column names, or apply `bin()` to a numeric column.
 > * The automatic hourly bins for datetime columns is no longer supported. Use explicit binning instead. For example, `summarize by bin(timestamp, 1h)`.
 
@@ -77,7 +66,7 @@ The following table summarizes the default values of aggregations:
 | `make_bag()`, `make_bag_if()`, `make_list()`, `make_list_if()`, `make_set()`, `make_set_if()` | empty dynamic array              ([]) |
 | All others | null |
 
- When using these aggregates over entities which includes null values, the null values will be ignored and won't participate in the calculation (see examples below).
+ When using these aggregates over entities that includes null values, the null values will be ignored and won't participate in the calculation (see examples below).
 
 ## Examples
 
@@ -85,78 +74,110 @@ The following table summarizes the default values of aggregations:
 
 ### Unique combination
 
-Determine what unique combinations of
-`ActivityType` and `CompletionStatus` there are in a table. There are no aggregation functions, just group-by keys. The output will just show the columns for those results:
+The following query determines what unique combinations of `State` and `EventType` there are for storms that resulted in direct injury. There are no aggregation functions, just group-by keys. The output will just show the columns for those results.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVfDMyyotykwtdsksSk0uUbBTMADJFZfm5iYWZValKiRVKgSXJJak6iiAdYZUFqQCAEZA2i9IAAAA" target="_blank">Run the query</a>
 
 ```kusto
-Activities | summarize by ActivityType, completionStatus
+StormEvents
+| where InjuriesDirect > 0
+| summarize by State, EventType
 ```
 
 **Output**
 
-|`ActivityType`|`completionStatus`
-|---|---
-|`dancing`|`started`
-|`singing`|`started`
-|`dancing`|`abandoned`
-|`singing`|`completed`
+The following table shows only the first 5 rows. To see the full output, run the query.
+
+| State | EventType |
+|---|---|
+| TEXAS | Thunderstorm Wind |
+| TEXAS | Flash Flood |
+| TEXAS | Winter Weather |
+| TEXAS | High Wind |
+| TEXAS | Flood |
+|...|...|
 
 ### Minimum and maximum timestamp
 
-Finds the minimum and maximum timestamp of all records in the Activities table. There's no group-by clause, so there's just one row in the output:
+Finds the minimum and maximum heavy rain storms in Hawaii. There's no group-by clause, so there's just one row in the output.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0WMsQrCQBBEe8F/GK5S0E+4ImDAFGmSgPViFjzh9sJlExPx42VFsRvevJlWU47lzKLjdvPC48aZ0Sopw3u4c3EpqsqBpMfH6tbh2zDNKxoK4mw45HTnq+I0ZdKQBB6l9F2IjKP9ZbVs5jjFSDk8GXUwLQbZ/Vb7A2paDNLyh28u8qFKpAAAAA==" target="_blank">Run the query</a>
 
 ```kusto
-Activities | summarize Min = min(Timestamp), Max = max(Timestamp)
+StormEvents
+| where State == "HAWAII" and EventType == "Heavy Rain"
+| project Duration = EndTime - StartTime
+| summarize Min = min(Duration), Max = max(Duration)
 ```
 
 **Output**
 
-|`Min`|`Max`
-|---|---
-|`1975-06-09 09:21:45` | `2015-12-24 23:45:00`
+| Min | Max |
+|---|---|
+| 01:08:00 | 11:55:00 |
 
 ### Distinct count
 
 Create a row for each continent, showing a count of the cities in which activities occur. Because there are few values for "continent", no grouping function is needed in the 'by' clause:
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSguzc1NLMqsSlUIqSxILfZPCwbJF9umJOeX5pVogBWCZDQVkioVgksSS1LBuvKLSkACKHoALe01bFoAAAA=" target="_blank">Run the query</a>
+
 ```kusto
-Activities | summarize cities=dcount(city) by continent
+StormEvents
+| summarize TypesOfStorms=dcount(EventType) by State
+| sort by TypesOfStorms
 ```
 
 **Output**
 
-|`cities`|`continent`
-|---|---
-|`4290`|`Asia`|
-|`3267`|`Europe`|
-|`2673`|`North America`|
+The following table shows only the first 5 rows. To see the full output, run the query.
+
+| State | TypesOfStorms |
+|---|---|
+| TEXAS | 27 |
+| CALIFORNIA | 26 |
+| PENNSYLVANIA | 25 |
+| GEORGIA | 24 |
+| ILLINOIS | 23 |
+|...|...|
 
 ### Histogram
 
-The following example calculates a histogram for each activity
-type. Because `Duration` has many values, use `bin` to group its values into 10-minute intervals:
+The following example calculates a histogram storm event types that had storms lasting longer than 1 day. Because `Duration` has many values, use `bin()` to group its values into 1-day intervals.
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA02NQQ6CQAxF9ybeoUtIcOEBxo2ycwcXGKCRMZmWlA4GwuG1EKObn+bn9f1KWWI5Iel4PKwwCD+xVdiaeh6wgFsSr4EJHJTU1SEinKBSL2q3Pb16FPxxFzh3Vo8pRi9hwd125UTqWsssh2b+37gjPbR3TaDsqyk+lnzTsKjhO/MGpa0usbAAAAA=" target="_blank">Run the query</a>
 
 ```kusto
-Activities | summarize count() by ActivityType, length=bin(Duration, 10m)
+StormEvents
+| project EventType, Duration = EndTime - StartTime
+| where Duration > 1d
+| summarize EventCount=count() by EventType, Length=bin(Duration, 1d)
+| sort by Length
 ```
 
 **Output**
 
-|`count_`|`ActivityType`|`length`
-|---|---|---
-|`354`| `dancing` | `0:00:00.000`
-|`23`|`singing` | `0:00:00.000`
-|`2717`|`dancing`|`0:10:00.000`
-|`341`|`singing`|`0:10:00.000`
-|`725`|`dancing`|`0:20:00.000`
-|`2876`|`singing`|`0:20:00.000`
-|...
+| EventType | Length | EventCount |
+|---|---|---|
+| Drought | 30.00:00:00 | 1646 |
+| Wildfire | 30.00:00:00 | 11 |
+| Heat | 30.00:00:00 | 14 |
+| Flood | 30.00:00:00 | 20 |
+| Heavy Rain | 29.00:00:00 | 42 |
+| ... | ... | ... |
 
 ### Aggregates default values
 
 When the input of `summarize` operator has at least one empty group-by key, its result is empty, too.
 
 When the input of `summarize` operator doesn't have an empty group-by key, the result is the default values of the aggregates used in the `summarize`:
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAz2PwQ7CIBBE7yb+A0cwHLz0YqI/YkyzBaQbAU3ZNtT48S7EGg4zmTe7WSwQvyE4WU7hmby63va7j8hzjDDh2wlIa1/OBA/Xs5VFaQGT7yMUjn9OFi0OG8C0AUx/sPg2OcwYbDajiyDpadcEEQ27TBOmWlFcagur1nnWl5uMS4T1Ri26jqMxBEZCZ7JuaSU+eFO8114RF3HkgCx6l6nBhb8EyfAe9QXbqS6i+AAAAA==" target="_blank">Run the query</a>
 
 ```kusto
 datatable(x:long)[]
@@ -171,6 +192,9 @@ datatable(x:long)[]
 
 The result of `avg_x(x)` is `NaN` due to dividing by 0.
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjQqrnPy8dM3oWF6uGoXi0tzcxKLMqlQFheT80rwSjQpNHQgrM02jQsFOwUBTQUchBSGXApfUUYDIAwDGwdg7WgAAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(x:long)[]
 | summarize  count(x), countif(x > 0) , dcount(x), dcountif(x, x > 0)
@@ -181,6 +205,9 @@ datatable(x:long)[]
 |count_x|countif_|dcount_x|dcountif_x|
 |---|---|---|---|
 |0|0|0|0|
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA0tJLAHCpJxUjQqrnPy8dM3oWF6uGoXi0tzcxKLMqlQFhdzE7NT44tQSjQpNHQgnJ7MYxAMATGERsTsAAAA=" target="_blank">Run the query</a>
 
 ```kusto
 datatable(x:long)[]
@@ -194,6 +221,9 @@ datatable(x:long)[]
 |[]|[]|
 
 The aggregate avg sums all the non-nulls and counts only those which participated in the calculation (won't take nulls into account).
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy2KSwqAIBgG90F3+JYKbQxaehihXxF8hI/Q6PAptJqBmaSCITToFD0ESsSOXOiCWJcX1AqFEx0SVmvWICXEhkTKsVCd478fnM89V+9Vsg9NY31UdZvBD+MI2XFlAAAA" target="_blank">Run the query</a>
 
 ```kusto
 range x from 1 to 2 step 1
@@ -209,6 +239,9 @@ range x from 1 to 2 step 1
 
 The regular count will count nulls:
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy3KTQqAIBAG0H3QHb6lA20MWnoYqTEEf2JU0OjwEbR7iyc2nYwOJzlCo2asKJUv6Hl6wL1yOjBg4J1THcZALxC2QaUWAv3eiL5eWoxW/M3Yc0tVDXoBSiga018AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 2 step 1
 | extend y = iff(x == 1, real(null), real(5))
@@ -220,6 +253,9 @@ range x from 1 to 2 step 1
 |count_y|
 |---|
 |2|
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA03KSwqAIBRG4XnQHv6hQhODhq4lhK4h+YirgkWLr6BBs3PgYxNXQoPlFKBQEkbkQjtU312gViguOKDhrBUNWkMNYDJexOq9/HqS8uW5hmDYnYRgNpozFXE85Dc305SXFm8AAAA=" target="_blank">Run the query</a>
 
 ```kusto
 range x from 1 to 2 step 1

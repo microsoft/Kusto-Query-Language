@@ -1,35 +1,37 @@
 ---
 title: stdev() (aggregation function) - Azure Data Explorer
-description: Learn how to use the stdev() aggregation function to calculate a standard deviation using Bessel's correction in Azure Data Explorer.
+description: Learn how to use the stdev() aggregation function to calculate the standard deviation of an expression using Bessel's correction.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 09/20/2022
+ms.date: 01/31/2023
 ---
 # stdev() (aggregation function)
 
-Calculates the standard deviation of *Expr* across the group, using [Bessel's correction](https://en.wikipedia.org/wiki/Bessel's_correction) for a small data set that is considered a [sample](https://en.wikipedia.org/wiki/Sample_%28statistics%29).
+Calculates the standard deviation of *expr* across the group, using [Bessel's correction](https://en.wikipedia.org/wiki/Bessel's_correction) for a small data set that is considered a [sample](https://en.wikipedia.org/wiki/Sample_%28statistics%29).
 
 For a large data set that is representative of the population, use [stdevp() (aggregation function)](stdevp-aggfunction.md).
 
-* Used formula:
+[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
+
+## Formula
+
+This function uses the following formula.
 
 :::image type="content" source="images/stdev-aggfunction/stdev-sample.png" alt-text="Image showing a Stdev sample formula.":::
 
-[!INCLUDE [data-explorer-agg-function-summarize-note](../../includes/data-explorer-agg-function-summarize-note.md)]
-
 ## Syntax
 
-`stdev` `(`*Expr*`)`
+`stdev(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr* | string | &check; | Expression that will be used for aggregation calculation. |
+| *expr* | string | &check; | The expression used for the standard deviation aggregation calculation. |
 
 ## Returns
 
-Returns the standard deviation value of *Expr* across the group.
+Returns the standard deviation value of *expr* across the group.
 
 ## Example
 
@@ -43,7 +45,7 @@ range x from 1 to 5 step 1
 | summarize make_list(x), stdev(x)
 ```
 
-**Results**
+**Output**
 
 |list_x|stdev_x|
 |---|---|

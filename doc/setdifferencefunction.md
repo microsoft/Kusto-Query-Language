@@ -1,9 +1,9 @@
 ---
 title: set_difference() - Azure Data Explorer
-description: This article describes set_difference() in Azure Data Explorer.
+description: Learn how to use the set_difference() function to create a difference set of all distinct values in the first array that aren't in the other array inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 06/02/2019
+ms.date: 01/30/2023
 ---
 # set_difference()
 
@@ -11,19 +11,23 @@ Returns a `dynamic` (JSON) array of the set of all distinct values that are in t
 
 ## Syntax
 
-`set_difference(`*arr1*`, `*arr2*`[`,` *arr3*, ...])`
+`set_difference(`*set1*`,` *set2* [`,`*set3*, ...]`)`
 
-## Arguments
+## Parameters
 
-* *arr1...arrN*: Input arrays to create a difference set (at least two arrays). All arguments must be dynamic arrays (see [pack_array](packarrayfunction.md)). 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *set1...setN* | dynamic | &check; | Arrays used to create a difference set. A minimum of 2 arrays are required. See [pack_array](packarrayfunction.md).|
 
 ## Returns
 
-Returns a dynamic array of the set of all distinct values that are in arr1 but aren't in other arrays. See [`set_union()`](setunionfunction.md) and [`set_intersect()`](setintersectfunction.md).
+Returns a dynamic array of the set of all distinct values that are in *set1* but aren't in other arrays.
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA23MsQ7CMAwE0J2vuLFBWdLOfEtltQ4CRBK5kZpE/XicCVWweHi+O6FwZxR4iW845IgJW+YEdznAJXNYUXHTxBXjl5pSPdOu1M5ETi3R8ppJhOpQLKqF3mYsaPx9dp7+dXajq0nik5eMjfO8Prxn4bDwQK6P9ab5AIGKxtfOAAAA" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2
@@ -41,7 +45,9 @@ range x from 1 to 3 step 1
 |[8]|
 |[12]|
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAysoyswrUUgsKlKwVShOLYlPyUxLSy1KzUtO1UipzEvMzUzWiDbUMdIxjtXUUUAX0QQAej8Kqz4AAAA=" target="_blank">Run the query</a>
+
 ```kusto
 print arr = set_difference(dynamic([1,2,3]), dynamic([1,2,3]))
 ```
@@ -51,3 +57,8 @@ print arr = set_difference(dynamic([1,2,3]), dynamic([1,2,3]))
 |arr|
 |---|
 |[]|
+
+## See also
+
+* [`set_union()`](setunionfunction.md)
+* [`set_intersect()`](setintersectfunction.md)

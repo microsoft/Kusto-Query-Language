@@ -1,9 +1,9 @@
 ---
 title: series_divide() - Azure Data Explorer
-description: This article describes series_divide() in Azure Data Explorer.
+description: Learn how to use the series_divide() function to calculate the element-wise division of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 10/23/2018
+ms.date: 01/22/2023
 ---
 # series_divide()
 
@@ -13,9 +13,11 @@ Calculates the element-wise division of two numeric series inputs.
 
 `series_divide(`*series1*`,` *series2*`)`
 
-## Arguments
+## Parameters
 
-* *series1, series2*: Input numeric arrays, the first to be element-wise divided by the second into a dynamic array result. All arguments must be dynamic arrays. 
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *series1, series2* | dynamic | &check; | The numeric arrays over which to calculate the element-wise division. The first array is to be divided by the second. |
 
 ## Returns
 
@@ -25,7 +27,9 @@ Note: the result series is of double type, even if the inputs are integers. Divi
 
 ## Example
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA1XMQQrCMBBG4b2n+JeNzCZ17VlCaEaJYhNmgiShhzdKobj9eDzx651RcZP0gkVJuEALZ9jTBq6F14CG6yjOmA/qg9pOWdKDlwK1A7Nfns6L+DZVatQNQed/74RGqOa4qXUhvmNg92uVJbLuNKn9LswHwOb0BqkAAAA=" target="_blank">Run the query</a>
+
 ```kusto
 range x from 1 to 3 step 1
 | extend y = x * 2

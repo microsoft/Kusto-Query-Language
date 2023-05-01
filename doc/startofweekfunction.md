@@ -1,9 +1,9 @@
 ---
 title: startofweek() - Azure Data Explorer
-description: This article describes startofweek() in Azure Data Explorer.
+description: Learn how to use the startofweek() function to return the start of the week for the given date.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 02/13/2020
+ms.date: 01/31/2023
 ---
 # startofweek()
 
@@ -13,12 +13,14 @@ Start of the week is considered to be a Sunday.
 
 ## Syntax
 
-`startofweek(`*date* [`,`*offset*]`)`
+`startofweek(`*date* [`,` *offset* ]`)`
 
-## Arguments
+## Parameters
 
-* `date`: The input date.
-* `offset`: An optional number of offset weeks from the input date (integer, default - 0).
+| Name | Type | Required | Description |
+|--|--|--|--|
+| *date* | datetime | &check; | The date for which to find the start of week.|
+| *offset* | int | | The number of weeks to offset from the input date. The default is 0.|
 
 ## Returns
 
@@ -26,9 +28,12 @@ A datetime representing the start of the week for the given *date* value, with t
 
 ## Example
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAy2MQQqAMAwE775ijxYUGi8FwVf4gqKpqNSUGvDi421BGFiYhcn+2hgSws2KkCWiJ6iAcCsnUPMiZTl4UTzM56w+K6ZylpVQVbt6Zd0jt4Ml11sqgOxYcab72+YDGdMCYmkAAAA=" target="_blank">Run the query</a>
+
 ```kusto
-  range offset from -1 to 1 step 1
- | project weekStart = startofweek(datetime(2017-01-01 10:10:17), offset) 
+range offset from -1 to 1 step 1
+| project weekStart = startofweek(datetime(2017-01-01 10:10:17), offset) 
 ```
 
 **Output**

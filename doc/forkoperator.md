@@ -3,7 +3,7 @@ title: fork operator - Azure Data Explorer
 description: Learn how to use the fork operator to run multiple consumer operators in parallel.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/12/2022
+ms.date: 03/15/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
@@ -45,7 +45,7 @@ Runs multiple consumer operators in parallel.
 * [`summarize`](summarizeoperator.md)
 * [`top`](topoperator.md)
 * [`top-nested`](topnestedoperator.md)
-* [`sort`](sortoperator.md)
+* [`sort`](./sort-operator.md)
 * [`mv-expand`](mvexpandoperator.md)
 * [`reduce`](reduceoperator.md)
 
@@ -61,35 +61,43 @@ Multiple result tables, one for each of the *subquery* arguments.
 
 ## Examples
 
-In the following example, the result tables will be named "GenericResult",  "GenericResult_2" and "GenericResult_3":
+### Unnamed subqueries
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVQguSSxJVbC1VVBy8/EP8nRxVALJpeUXZfNyKQCBBlSdS2piSUaxS2ZRanKJgjaU65mXAhGwUzDURFXvmZdVWpSZitABE0DRAwCWU8oSkwAAAA==" target="_blank">Run the query</a>
 
 ```kusto
-KustoLogs
-| where Timestamp > ago(1h)
+StormEvents
+| where State == "FLORIDA"
 | fork
-    ( where Level == "Error" | project EventText | limit 100 )
-    ( project Timestamp, EventText | top 1000 by Timestamp desc)
-    ( summarize min(Timestamp), max(Timestamp) by ActivityID )
+    ( where DeathsDirect + DeathsIndirect > 1)
+    ( where InjuriesDirect + InjuriesIndirect > 1)
 ```
 
-In the following examples, the result tables will be named "Errors", "EventsTexts" and "TimeRangePerActivityID":
+### Named subqueries
+
+In the following examples, the result tables will be named "StormsWithDeaths" and "StormsWithInjuries".
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVQguSSxJVbC1VVBy8/EP8nRxVALJpeUXZfNyKQCBBkSZS2piSUaxS2ZRanKJgjaU65mXAhGwUzBUqFFILAaaBrSiODyzJAOiQhPFEM+8rNKizFSEMTABfAbB1GgCAM0zVJu/AAAA" target="_blank">Run the query</a>
 
 ```kusto
-KustoLogs
-| where Timestamp > ago(1h)
+StormEvents
+| where State == "FLORIDA"
 | fork
-    ( where Level == "Error" | project EventText | limit 100 | as Errors )
-    ( project Timestamp, EventText | top 1000 by Timestamp desc | as EventsTexts )
-    ( summarize min(Timestamp), max(Timestamp) by ActivityID | as TimeRangePerActivityID )
+    (where DeathsDirect + DeathsIndirect > 1 | as StormsWithDeaths)
+    (where InjuriesDirect + InjuriesIndirect > 1 | as StormsWithInjuries)
 ```
 
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAAwsuyS/KdS1LzSsp5uWqUSjPSC1KVQguSSxJVbC1VVBy8/EP8nRxVALJpeUXZfNyKQBBMEhTcXhmSYZLamJJRrGCrYIGRCeE75JZlJpcoqAN5XrmpUAE7BQMNdFN8MzLKi3KTEUyAyYCNwUmgGIOAGODP2W5AAAA" target="_blank">Run the query</a>
+
 ```kusto
-KustoLogs
-| where Timestamp > ago(1h)
+StormEvents
+| where State == "FLORIDA"
 | fork
-    Errors = ( where Level == "Error" | project EventText | limit 100 )
-    EventsTexts = ( project Timestamp, EventText | top 1000 by Timestamp desc )
-    TimeRangePerActivityID = ( summarize min(Timestamp), max(Timestamp) by ActivityID )
+    StormsWithDeaths = (where DeathsDirect + DeathsIndirect > 1)
+    StormsWithInjuries = (where InjuriesDirect + InjuriesIndirect > 1)
 ```
 
 ::: zone-end

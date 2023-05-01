@@ -3,34 +3,24 @@ title: ipv4_compare() - Azure Data Explorer
 description: Learn how to use the ipv4_compare() function to compare two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 12/20/2022
+ms.date: 12/28/2022
 ---
 # ipv4_compare()
 
 Compares two IPv4 strings. The two IPv4 strings are parsed and compared while accounting for the combined IP-prefix mask calculated from argument prefixes, and the optional `PrefixMask` argument.
 
-```kusto
-ipv4_compare("127.0.0.1", "127.0.0.1") == 0
-ipv4_compare('192.168.1.1', '192.168.1.255') < 0
-ipv4_compare('192.168.1.1/24', '192.168.1.255/24') == 0
-ipv4_compare('192.168.1.1', '192.168.1.255', 24) == 0
-```
-
 ## Syntax
 
 `ipv4_compare(`*Expr1*`,`*Expr2*`[ ,`*PrefixMask*`])`
 
-## Arguments
+## Parameters
 
-* *Expr1*, *Expr2*: A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
-* *PrefixMask*: An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
+| Name | Type | Required | Description |
+|--|--|--|--|
+|*Expr1*, *Expr2*| string | &check; | A string expression representing an IPv4 address. IPv4 strings can be masked using [IP-prefix notation](#ip-prefix-notation).
+|*PrefixMask*| int | | An integer from 0 to 32 representing the number of most-significant bits that are taken into account.
 
-## IP-prefix notation
-
-IP addresses can be defined with `IP-prefix notation` using a slash (`/`) character.
-The IP address to the LEFT of the slash (`/`) is the base IP address. The number (0 to 32) to the RIGHT of the slash (`/`) is the number of contiguous 1 bit in the netmask.
-
-For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24 contiguous bits or 255.255.255.0 in dotted decimal format.
+[!INCLUDE [ip-prefix-notation](../../includes/ip-prefix-notation.md)]
 
 ## Returns
 
@@ -43,7 +33,9 @@ For example, 192.168.2.0/24 will have an associated net/subnetmask containing 24
 
 ### Compare IPs using the IP-prefix notation specified inside the IPv4 strings
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA51QsQ6CMBDd+YrbkAQprWDUxNHBzd0YAlLIJUhrWwyDH+8ldYAw6d1wyct7715eXTraqpMr1LywzmDfHvyJAbWYQ1FwDSDke5Hw7S7hSRrGQLNEaBiD03MoOzhf7EzEmciINUFEnn9lJBIZVOhItdZGNjgCWhisrKFRBu7qoUuDVvVzy0UOsvRv/rZkm3SR8nfLW/AGOTrZ12CkHToHR6r1lRWeM6192nf0AaIgALOYAQAA" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string)
 [
@@ -66,7 +58,9 @@ datatable(ip1_string:string, ip2_string:string)
 
 ### Compare IPs using IP-prefix notation specified inside the IPv4 strings and as additional argument of the `ipv4_compare()` function
 
-<!-- csl: https://help.kusto.windows.net/Samples -->
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA52QQQrCMBBF9z3F7GqhtiamRQsewJ17kdLatAzUJCSpdOHhDUYh6kpnFh8ew2P4XWPdtiNfoCK1sRrFUPlIARX9RErzHudqlGJIomMEMdnSjJSbjGQkTsFNQFYPsiYp5LkLaNHC/rD0DkADk+Ed9FLDWV5Uo9FI8a7MKXOOgNCicOCppOwP5deXXknZT8pTdAM+Wy460NxMo4Wdq+vKan8T1hn2+CowuQNRhO/LeAEAAA==" target="_blank">Run the query</a>
+
 ```kusto
 datatable(ip1_string:string, ip2_string:string, prefix:long)
 [

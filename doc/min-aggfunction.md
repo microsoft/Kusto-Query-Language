@@ -1,9 +1,9 @@
 ---
 title: min() (aggregation function) - Azure Data Explorer
-description: This article describes min() (aggregation function) in Azure Data Explorer.
+description: Learn how to use the min() function to find the minimum value in a group.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 07/05/2022
+ms.date: 01/08/2023
 ---
 # min() (aggregation function)
 
@@ -13,20 +13,20 @@ Finds the minimum value across the group.
 
 ## Syntax
 
-`min` `(`*Expr*`)`
+`min` `(`*expr*`)`
 
-## Arguments
+## Parameters
 
 | Name | Type | Required | Description |
 |--|--|--|--|
-| *Expr*  string | &check; | Expression used for aggregation calculation. |
+| *expr* | string | &check; | The expression used for the minimum value aggregation calculation. |
 
 ## Returns
 
-Returns the minimum value of *Expr* across the group.
+Returns the minimum value of *expr* across the group.
 
 > [!TIP]
-> This gives you the min on its own. But if you want other columns in the row [arg_min](arg-min-aggfunction.md).
+> This gives you the min on its own. If you want to see other columns in addition to the min, use [arg_min](arg-min-aggfunction.md).
 
 ## Example
 
@@ -40,7 +40,7 @@ StormEvents
 | summarize FirstEvent=min(StartTime)
 ```
 
-**Results**
+**Output**
 
 | FirstEvent |
 |--|
