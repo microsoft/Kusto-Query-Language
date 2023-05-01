@@ -734,6 +734,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol DropDatabaseTableMirroringPolicyTemplates =
             new CommandSymbol("DropDatabaseTableMirroringPolicyTemplates", _schema20);
 
+        public static readonly CommandSymbol ApplyTableMirroringPolicyTemplateToTables =
+            new CommandSymbol("ApplyTableMirroringPolicyTemplateToTables", _schema18);
+
         public static readonly CommandSymbol ShowTablePolicyPartitioning =
             new CommandSymbol("ShowTablePolicyPartitioning", _schema20);
 
@@ -2052,6 +2055,7 @@ namespace Kusto.Language
             AlterMergeDatabaseTableMirroringPolicyTemplates,
             ShowDatabaseTableMirroringPolicyTemplates,
             DropDatabaseTableMirroringPolicyTemplates,
+            ApplyTableMirroringPolicyTemplateToTables,
             ShowTablePolicyPartitioning,
             ShowTableStarPolicyPartitioning,
             AlterTablePolicyPartitioning,
