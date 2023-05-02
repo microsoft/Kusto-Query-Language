@@ -9,6 +9,12 @@ ms.date: 11/03/2022
 
 Checks for a condition. If the condition is false, outputs error messages and fails the query.
 
+> [!NOTE]
+> The `assert` function gets evaluated during the query analysis phase, before optimizations such as constant-folding and predicate short-circuiting get applied.
+
+> [!NOTE]
+> The parameters given to `assert` must be evaluated to constants during the query analysis phase. In other words, it can be constructed from other expressions referencing constants only, and can't be bound to row-context.
+
 ## Syntax
 
 `assert(`*condition*`,`*message*`)`
@@ -19,9 +25,6 @@ Checks for a condition. If the condition is false, outputs error messages and fa
 |--|--|--|--|
 | *condition* | bool | &check; | The conditional expression to evaluate. The condition must be evaluated to constant during the query analysis phase.|
 | *message* | string | &check; | The message used if assertion is evaluated to `false`.|
-
-> [!NOTE]
-> `condition` must be evaluated to constant during the query analysis phase. In other words, it can be constructed from other expressions referencing constants, and can't be bound to row-context.
 
 ## Returns
 
@@ -75,3 +78,12 @@ datatable(input:string)
 |input|
 |---|
 |4567|
+
+The following query will always fail, demonstrating that the `assert` function gets evaluated even though the `where b` operator returns no data when `b` is `false`:
+
+```kusto
+let b=false;
+print x="Hello"
+| where b
+| where assert(b, "Assertion failed")
+```
