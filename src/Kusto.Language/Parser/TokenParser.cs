@@ -87,35 +87,32 @@ namespace Kusto.Language.Parsing
                 if (info != null)
                     return info.GetToken(trivia);
 
-                switch (ch)
+                if (IsStringLiteralStartQuote(ch))
                 {
-                    case '\'':
-                    case '"':
-                    case '`':
+                    tok = ParseStringLiteral(text, pos, trivia);
+                    if (tok != null)
+                        return tok;
+                }
+                else if (ch == '@')
+                {
+                    ch2 = Peek(text, pos + 1);
+                    if (IsStringLiteralStartQuote(ch2))
+                    {
                         tok = ParseStringLiteral(text, pos, trivia);
                         if (tok != null)
                             return tok;
-                        break;
-                    case '@':
-                        ch2 = Peek(text, pos + 1);
-                        if (ch2 == '\'' || ch2 == '"' || ch2 == '`')
-                        {
-                            tok = ParseStringLiteral(text, pos, trivia);
-                            if (tok != null)
-                                return tok;
-                        }
-                        break;
-                    case '#':
-                        var directiveEnd = GetNextLineStart(text, pos);
-                        return new LexicalToken(SyntaxKind.DirectiveToken, trivia, GetSubstring(text, pos, directiveEnd - pos));
-                    default:
-                        if (IsAtEnd(text, pos))
-                        {
-                            if (trivia.Length > 0 || options.AlwaysProduceEndToken)
-                                return new LexicalToken(SyntaxKind.EndOfTextToken, trivia, "");
-                            return null;
-                        }
-                        break;
+                    }
+                }
+                else if (ch == '#')
+                {
+                    var directiveEnd = GetNextLineStart(text, pos);
+                    return new LexicalToken(SyntaxKind.DirectiveToken, trivia, GetSubstring(text, pos, directiveEnd - pos));
+                }
+                else if (IsAtEnd(text, pos))
+                {
+                    if (trivia.Length > 0 || options.AlwaysProduceEndToken)
+                        return new LexicalToken(SyntaxKind.EndOfTextToken, trivia, "");
+                    return null;
                 }
             }
 
@@ -170,7 +167,7 @@ namespace Kusto.Language.Parsing
                 if (idLen == 1 && (ch == 'h' || ch == 'H'))
                 {
                     ch2 = Peek(text, pos + 1);
-                    if (ch2 == '\'' || ch2 == '"' || ch2 == '@' || ch2 == '`')
+                    if (IsStringLiteralStartQuote(ch2) || ch2 == '@')
                     {
                         tok = ParseStringLiteral(text, pos, trivia);
                         if (tok != null)
@@ -202,6 +199,18 @@ namespace Kusto.Language.Parsing
             // this character is not part of the language
             var subtext = GetSubstring(text, pos, 1);
             return new LexicalToken(SyntaxKind.BadToken, trivia, subtext, new[] { DiagnosticFacts.GetUnexpectedCharacter(subtext) });
+        }
+
+        /// <summary>
+        /// Returns true if the character is the starting quote character
+        /// of string literal.
+        /// </summary>
+        private static bool IsStringLiteralStartQuote(char ch)
+        {
+            return ch == '\'' 
+                || ch == '"' 
+                || ch == '`' 
+                || ch == '~';
         }
 
         private LexicalToken ParseStringLiteral(string text, int start, string trivia)
@@ -262,7 +271,7 @@ namespace Kusto.Language.Parsing
             else if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
             {
                 pos += KustoFacts.MultiLineStringQuote.Length;
-                pos += ScanMultiLineStringLiteralContent(text, pos);
+                pos += ScanMultiLineStringLiteralContent(text, pos, KustoFacts.MultiLineStringQuote);
 
                 if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
                 {
@@ -271,6 +280,20 @@ namespace Kusto.Language.Parsing
                 else
                 {
                     dx = DiagnosticFacts.GetMissingText(KustoFacts.MultiLineStringQuote).WithLocationKind(DiagnosticLocationKind.RelativeEnd);
+                }
+            }
+            else if (Matches(text, pos, KustoFacts.AlternateMultiLineStringQuote))
+            {
+                pos += KustoFacts.AlternateMultiLineStringQuote.Length;
+                pos += ScanMultiLineStringLiteralContent(text, pos, KustoFacts.AlternateMultiLineStringQuote);
+
+                if (Matches(text, pos, KustoFacts.AlternateMultiLineStringQuote))
+                {
+                    pos += KustoFacts.AlternateMultiLineStringQuote.Length;
+                }
+                else
+                {
+                    dx = DiagnosticFacts.GetMissingText(KustoFacts.AlternateMultiLineStringQuote).WithLocationKind(DiagnosticLocationKind.RelativeEnd);
                 }
             }
             else
@@ -354,7 +377,7 @@ namespace Kusto.Language.Parsing
                     return CommaTokenInfo;
                 case '@':
                     ch2 = Peek(text, pos + 1);
-                    if (ch2 != '\'' && ch2 != '"' && ch2 != '`')
+                    if (!IsStringLiteralStartQuote(ch2))
                     {
                         return AtTokenInfo;
                     }
@@ -819,11 +842,25 @@ namespace Kusto.Language.Parsing
             else if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
             {
                 pos += KustoFacts.MultiLineStringQuote.Length;
-                pos += ScanMultiLineStringLiteralContent(text, pos);
+                pos += ScanMultiLineStringLiteralContent(text, pos, KustoFacts.MultiLineStringQuote);
 
                 if (Matches(text, pos, KustoFacts.MultiLineStringQuote))
                 {
                     pos += KustoFacts.MultiLineStringQuote.Length;
+                }
+                else if (failWhenMissingEndQuote)
+                {
+                    return -1;
+                }
+            }
+            else if (Matches(text, pos, KustoFacts.AlternateMultiLineStringQuote))
+            {
+                pos += KustoFacts.AlternateMultiLineStringQuote.Length;
+                pos += ScanMultiLineStringLiteralContent(text, pos, KustoFacts.AlternateMultiLineStringQuote);
+
+                if (Matches(text, pos, KustoFacts.AlternateMultiLineStringQuote))
+                {
+                    pos += KustoFacts.AlternateMultiLineStringQuote.Length;
                 }
                 else if (failWhenMissingEndQuote)
                 {
@@ -880,11 +917,11 @@ namespace Kusto.Language.Parsing
             return pos - start;
         }
 
-        private static int ScanMultiLineStringLiteralContent(string text, int start)
+        private static int ScanMultiLineStringLiteralContent(string text, int start, string endQuote)
         {
             var pos = start;
 
-            while (pos < text.Length && !Matches(text, pos, KustoFacts.MultiLineStringQuote))
+            while (pos < text.Length && !Matches(text, pos, endQuote))
             {
                 pos++;
             }

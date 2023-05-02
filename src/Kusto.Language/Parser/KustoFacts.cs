@@ -657,35 +657,44 @@ namespace Kusto.Language
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Gets the column name used for an expression in a projection.
+        /// </summary>
         public static string GetExpressionResultName(Expression expr, string defaultName = "", TableSymbol rowScope = null)
         {
             return Binder.GetExpressionResultName(expr, defaultName, rowScope);
         }
 
+        /// <summary>
+        /// Gets the content value of a string literal
+        /// </summary>
         public static string GetStringLiteralValue(string literal)
         {
             int start = 0;
             int end = literal.Length;
-            bool verbatim = false;
+            var isVerbatim = false;
 
             if (end == 0)
+            {
                 return string.Empty;
+            }
 
             // do not include H prefix in value
             if (literal[0] == 'h' || literal[0] == 'H')
             {
-                literal = literal.Substring(1);
-                end = literal.Length;
+                start++;
             }
-
-            // check for multi-line string
-            if (TryParseMultiLineStringLiteral(literal, out var multiLineLiteral))
-                return multiLineLiteral;
 
             if (start < literal.Length && literal[start] == '@')
             {
-                verbatim = true;
                 start++; // do not include @ prefix in value
+                isVerbatim = true;
+            }
+
+            // check for multi-line string
+            if (TryParseMultiLineStringLiteral(start, literal, out var multiLineLiteral))
+            {
+                return multiLineLiteral;
             }
 
             if (start >= literal.Length)
@@ -704,11 +713,11 @@ namespace Kusto.Language
             {
                 return string.Empty;
             }
-            else if (!verbatim && !bracketed && literal.IndexOf('\\', start) >= start)
+            else if (!isVerbatim && !bracketed && literal.IndexOf('\\', start) >= start)
             {
                 return DecodeEscapes(literal, start, end - start);
             }
-            else if (verbatim && !bracketed && HasInteriorQuote(literal, start, end, endQuote))
+            else if (isVerbatim && !bracketed && HasInteriorQuote(literal, start, end, endQuote))
             {
                 return DecodeDoubleQuotes(literal, start, end - start, endQuote);
             }
@@ -732,26 +741,27 @@ namespace Kusto.Language
         /// </summary>
         public static readonly string AlternateMultiLineStringQuote = "~~~";
 
-        private static bool TryParseMultiLineStringLiteral(string str, out string literal)
+        private static bool TryParseMultiLineStringLiteral(int start, string text, out string literal)
         {
-            return TryParseSimpleStringLiteral(str, MultiLineStringQuote, out literal)
-                || TryParseSimpleStringLiteral(str, AlternateMultiLineStringQuote, out literal);
+            return TryParseMultiLineStringLiteral(start, text, MultiLineStringQuote, out literal)
+                || TryParseMultiLineStringLiteral(start, text, AlternateMultiLineStringQuote, out literal);
         }
 
-        private static bool TryParseSimpleStringLiteral(string str, string quote, out string literal)
+        private static bool TryParseMultiLineStringLiteral(int start, string text, string quote, out string literal)
         {
             // check for multi-line string
-            if (str.StartsWith(quote, StringComparison.Ordinal))
+            if (start + quote.Length < text.Length
+                && string.Compare(text, start, quote, 0, quote.Length, StringComparison.Ordinal) == 0)
             {
                 var twiceQuoteLen = quote.Length << 1;
-                if (str.Length >= twiceQuoteLen && str.EndsWith(quote, StringComparison.Ordinal))
+                if (text.Length - start >= twiceQuoteLen && text.EndsWith(quote, StringComparison.Ordinal))
                 {
-                    literal = str.Substring(quote.Length, str.Length - twiceQuoteLen);
+                    literal = text.Substring(start + quote.Length, text.Length - twiceQuoteLen - start);
                     return true;
                 }
                 else
                 {
-                    literal = str.Substring(quote.Length);
+                    literal = text.Substring(start + quote.Length);
                     return true;
                 }
             }

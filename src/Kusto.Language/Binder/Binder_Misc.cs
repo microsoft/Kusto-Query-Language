@@ -1684,6 +1684,25 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        private bool CheckIsTabularOrGraph(Expression expression, List<Diagnostic> diagnostics, Symbol resultType = null)
+        {
+            resultType = resultType ?? GetResultType(expression);
+            if (resultType != null)
+            {
+                if (resultType.IsTabular || resultType is GraphSymbol)
+                {
+                    return true;
+                }
+
+                if (!resultType.IsError)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetTableOrGraphExpected().WithLocation(expression));
+                }
+            }
+
+            return false;
+        }
+
         private bool CheckIsSingleColumnTable(Expression expression, List<Diagnostic> diagnostics, Symbol resultType = null)
         {
             resultType = resultType ?? GetResultType(expression);

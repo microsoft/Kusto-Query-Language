@@ -851,6 +851,11 @@ namespace Kusto.Language
             return new Diagnostic("KS230", "The operator support exactly one or two entities.");
         }
 
+        public static Diagnostic GetTableOrGraphExpected()
+        {
+            return new Diagnostic("KS231", "Table or graph expected.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -225,7 +225,7 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 try
                 {
-                    _binder.CheckIsTabular(node.Expression, diagnostics);
+                    _binder.CheckIsTabularOrGraph(node.Expression, diagnostics);
                     return new SemanticInfo(GetResultTypeOrError(node.Expression), diagnostics);
                 }
                 finally
