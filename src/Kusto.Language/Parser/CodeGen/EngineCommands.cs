@@ -896,8 +896,14 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterDatabasePolicyManagedIdentity =
             new CommandSymbol("AlterDatabasePolicyManagedIdentity", _schema20);
 
+        public static readonly CommandSymbol AlterMergeDatabasePolicyManagedIdentity =
+            new CommandSymbol("AlterMergeDatabasePolicyManagedIdentity", _schema20);
+
         public static readonly CommandSymbol AlterClusterPolicyManagedIdentity =
             new CommandSymbol("AlterClusterPolicyManagedIdentity", _schema20);
+
+        public static readonly CommandSymbol AlterMergeClusterPolicyManagedIdentity =
+            new CommandSymbol("AlterMergeClusterPolicyManagedIdentity", _schema20);
 
         public static readonly CommandSymbol DeleteDatabasePolicyManagedIdentity =
             new CommandSymbol("DeleteDatabasePolicyManagedIdentity", _schema20);
@@ -2109,7 +2115,9 @@ namespace Kusto.Language
             ShowDatabasePolicyManagedIdentity,
             ShowClusterPolicyManagedIdentity,
             AlterDatabasePolicyManagedIdentity,
+            AlterMergeDatabasePolicyManagedIdentity,
             AlterClusterPolicyManagedIdentity,
+            AlterMergeClusterPolicyManagedIdentity,
             DeleteDatabasePolicyManagedIdentity,
             DeleteClusterPolicyManagedIdentity,
             ShowTablePolicyAutoDelete,
