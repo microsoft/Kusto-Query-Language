@@ -4462,9 +4462,10 @@ namespace Kusto.Language.Parsing
                     rules.NameDeclaration,
                     Token("based-on"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Optional(Token("ifnotexists")),
                     Optional(
                         fragment20),
-                    new [] {CD(), CD(), CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.None), CD(isOptional: true)}));
+                    new [] {CD(), CD(), CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.None), CD(isOptional: true), CD(isOptional: true)}));
 
             var CreateTableIngestionMapping = Command("CreateTableIngestionMapping", 
                 Custom(

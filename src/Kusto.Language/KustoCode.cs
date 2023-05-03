@@ -205,12 +205,12 @@ namespace Kusto.Language
             if (analyze)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                analyzed = true;
 
                 localCache = new LocalBindingCache();
                 if (Binder.TryBind(tree, globals, localCache, null, cancellationToken))
                 {
                     resultType = DetermineResultType(syntax);
+                    analyzed = true;
                 }
             }
 
