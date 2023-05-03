@@ -807,7 +807,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("add", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabaseadmins"),
+                    RequiredToken("alldatabasesadmins"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -830,7 +830,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("add", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabasemonitors"),
+                    RequiredToken("alldatabasesmonitors"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -853,7 +853,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("add", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabaseviewers"),
+                    RequiredToken("alldatabasesviewers"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5205,7 +5205,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("drop", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabaseadmins"),
+                    RequiredToken("alldatabasesadmins"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5228,7 +5228,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("drop", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabasemonitors"),
+                    RequiredToken("alldatabasesmonitors"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -5251,7 +5251,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("drop", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("alldatabaseviewers"),
+                    RequiredToken("alldatabasesviewers"),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -6726,7 +6726,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("set", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("admins", "alldatabaseadmins", "alldatabasemonitors", "alldatabaseviewers", "databasecreators", "monitors", "ops", "users", "viewers"),
+                    RequiredToken("admins", "alldatabasesadmins", "alldatabasesmonitors", "alldatabasesviewers", "databasecreators", "monitors", "ops", "users", "viewers"),
                     Required(
                         First(
                             fragment36,
