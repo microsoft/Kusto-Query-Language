@@ -278,6 +278,15 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol ReplaceStrings =
+           new FunctionSymbol("replace_strings", ScalarTypes.String,
+               new Parameter("text", ScalarTypes.String),
+               new Parameter("lookups", ScalarTypes.Dynamic),
+               new Parameter("rewrites", ScalarTypes.Dynamic))
+           .WithResultNameKind(ResultNameKind.None)
+            .Hide() // Unhide on June-2023
+           .ConstantFoldable();
+
         public static readonly FunctionSymbol TrimStart =
             new FunctionSymbol("trim_start", ScalarTypes.String,
                 new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
@@ -3006,6 +3015,7 @@ namespace Kusto.Language
             Replace,
             ReplaceRegex,
             ReplaceString,
+            ReplaceStrings,
             TrimStart,
             TrimEnd,
             Trim,
