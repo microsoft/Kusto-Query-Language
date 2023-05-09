@@ -2519,8 +2519,7 @@ namespace Kusto.Language
                 new Parameter("radius", ParameterTypeKind.Number),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineBuffer =
             new FunctionSymbol("geo_line_buffer", ScalarTypes.Dynamic,
@@ -2528,8 +2527,7 @@ namespace Kusto.Language
                 new Parameter("radius", ParameterTypeKind.Number),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonBuffer =
             new FunctionSymbol("geo_polygon_buffer", ScalarTypes.Dynamic,
@@ -2537,8 +2535,7 @@ namespace Kusto.Language
                 new Parameter("radius", ParameterTypeKind.Number),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Lines =
             new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
