@@ -241,6 +241,11 @@ namespace Kusto.Language
             "inner", "outer"
         };
 
+        public static readonly IReadOnlyList<string> UniqueKinds = new string[]
+        {
+            "none", "edges", "nodes"
+        };
+
         public static readonly IReadOnlyList<string> UnionHintConcurrencies = HintConcurrencies;
         public static readonly IReadOnlyList<string> UnionHintSpreads = HintSpreads;
 

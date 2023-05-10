@@ -10515,6 +10515,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken GraphMatchKeyword { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public SyntaxList<GraphMatchPatternNotation> Pattern { get; }
         
         public WhereClause WhereClause { get; }
@@ -10524,25 +10526,27 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="GraphMatchOperator"/>.
         /// </summary>
-        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<GraphMatchPatternNotation> pattern, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<GraphMatchPatternNotation> pattern, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.GraphMatchKeyword = Attach(graphMatchKeyword);
+            this.Parameters = Attach(parameters);
             this.Pattern = Attach(pattern);
             this.WhereClause = Attach(whereClause, optional: true);
             this.ProjectClause = Attach(projectClause, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 4;
+        public override int ChildCount => 5;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return GraphMatchKeyword;
-                case 1: return Pattern;
-                case 2: return WhereClause;
-                case 3: return ProjectClause;
+                case 1: return Parameters;
+                case 2: return Pattern;
+                case 3: return WhereClause;
+                case 4: return ProjectClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10552,9 +10556,10 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(GraphMatchKeyword);
-                case 1: return nameof(Pattern);
-                case 2: return nameof(WhereClause);
-                case 3: return nameof(ProjectClause);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Pattern);
+                case 3: return nameof(WhereClause);
+                case 4: return nameof(ProjectClause);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10563,8 +10568,8 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 2:
                 case 3:
+                case 4:
                     return true;
                 default:
                     return false;
@@ -10576,9 +10581,10 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Syntax;
+                case 1: return CompletionHint.None;
                 case 2: return CompletionHint.Syntax;
                 case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10594,7 +10600,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<GraphMatchPatternNotation>)Pattern?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<GraphMatchPatternNotation>)Pattern?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class GraphMatchOperator */

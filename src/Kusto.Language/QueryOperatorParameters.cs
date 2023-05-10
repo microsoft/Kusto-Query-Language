@@ -97,6 +97,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter ForceRemote =
             new QueryOperatorParameter("force_remote", QueryOperatorParameterValueKind.BoolLiteral);
 
+        public static readonly QueryOperatorParameter Unique =
+            new QueryOperatorParameter("unique", QueryOperatorParameterValueKind.Word, values: KustoFacts.UniqueKinds);
+
         /// <summary>
         /// All query operator parameters.
         /// Does not include parameters used for other syntax clauses (like render with properties)
@@ -127,6 +130,7 @@ namespace Kusto.Language
             NoWithSource.Hide(),
             PackedColumn.Hide(),
             SourceColumnIndex.Hide(),
+            Unique.Hide(),
             WithMatchId.Hide(),
             WithItemIndex.Hide(),
             WithSource.Hide(),
@@ -178,6 +182,12 @@ namespace Kusto.Language
         {
             WithSource
         }.ToReadOnly();
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphMatchParameters = new QueryOperatorParameter[]
+        {
+            Unique.WithValues(KustoFacts.UniqueKinds),
+        }.ToReadOnly();
+
 
         public static readonly IReadOnlyList<QueryOperatorParameter> JoinParameters = new QueryOperatorParameter[]
         {

@@ -260,6 +260,7 @@
         TypeOfKeyword,
 
         UnionKeyword,
+        UniqueKeyword,
         UnrestrictedViewersKeyword,
         UuidKeyword,
 

@@ -2770,14 +2770,15 @@ namespace Kusto.Language.Parsing
             var GraphMatchOperator =
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword).Hide(),
+                    QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true),
                     List(GraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, oneOrMore: true)
                         .WithCompletion(
                             new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"),
                             new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
                     Optional(WhereClause),
                     Optional(ProjectClause),
-                    (keyword, pattern, whereClause, projectClause) =>
-                        (QueryOperator)new GraphMatchOperator(keyword, pattern, whereClause, projectClause));
+                    (keyword, parameters, pattern, whereClause, projectClause) =>
+                        (QueryOperator)new GraphMatchOperator(keyword, parameters, pattern, whereClause, projectClause));
 
             var PrePipeQueryOperator =
                 First(

@@ -5241,10 +5241,11 @@ namespace Kusto.Language.Parsing
         {
             if (ParseToken(SyntaxKind.GraphMatchKeyword) is SyntaxToken keyword)
             {
+                var parameters = ParseQueryOperatorParameterList(s_graphMatchParameterMap, equalsNeeded: true);
                 var pattern = ParseList(FnParseGraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, FnScanCommonListEnd, oneOrMore: true);
                 var whereClause = ParseWhereClause();
                 var projectClause = ParseProjectClause();
-                return new GraphMatchOperator(keyword, pattern, whereClause, projectClause);
+                return new GraphMatchOperator(keyword, parameters, pattern, whereClause, projectClause);
             }
 
             return null;
@@ -5378,6 +5379,9 @@ namespace Kusto.Language.Parsing
 
         private static Func<QueryParser, GraphToTableOutputClause> FnParseGraphToTableOutputClause =
             qp => qp.ParseGraphToTableOutputClause();
+
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphMatchParameterMap =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphMatchParameters);
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphToTableOperatorEdgesParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphToTableEdgesParameters);
