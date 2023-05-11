@@ -1846,6 +1846,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ClearClusterCredStoreCache =
             new CommandSymbol("ClearClusterCredStoreCache", _schema18);
 
+        public static readonly CommandSymbol ClearExternalArtifactsCache =
+            new CommandSymbol("ClearExternalArtifactsCache", _schema18);
+
         public static readonly IReadOnlyList<CommandSymbol> All = new CommandSymbol[]
         {
             ShowDatabase,
@@ -2410,7 +2413,8 @@ namespace Kusto.Language
             ShowQueryCallTree,
             ShowExtentCorruptedDatetime,
             PatchExtentCorruptedDatetime,
-            ClearClusterCredStoreCache
+            ClearClusterCredStoreCache,
+            ClearExternalArtifactsCache
         };
     }
 }

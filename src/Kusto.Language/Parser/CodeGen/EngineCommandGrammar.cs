@@ -257,8 +257,8 @@ namespace Kusto.Language.Parsing
             var shape214 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD()};
             var shape215 = new [] {CD(), CD(), CD("ContinuousExportName", CompletionHint.None)};
             var shape216 = new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD(), CD("Query", CompletionHint.Tabular)};
-            var shape217 = CD("Data", CompletionHint.None);
-            var shape218 = new [] {CD(), CD(CompletionHint.Literal), CD()};
+            var shape217 = new [] {CD(), CD(CompletionHint.Literal), CD()};
+            var shape218 = CD("Data", CompletionHint.None);
             var shape219 = CD("GUID", CompletionHint.Literal);
             var shape220 = CD("SourceTableName", CompletionHint.Table);
             var shape221 = CD("DestinationTableName", CompletionHint.Table);
@@ -356,26 +356,26 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing36 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape124, CreateMissingToken("creationTime"), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing37 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD(CompletionHint.Table), CD()}, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference(source, start))), CreateMissingToken(")"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing38 = (source, start) => new SyntaxList<SyntaxElement>(rules.MissingValue(source, start));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing39 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape179, rules.MissingNameDeclaration(source, start), (SyntaxElement)new CustomNode(shape147, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape81, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")")))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing40 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing41 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing42 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing43 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing44 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing45 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing46 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape124, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing47 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing49 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing50 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing51 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing52 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing53 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing54 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue(source, start)));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing55 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing39 = (source, start) => (SyntaxElement)new CustomNode(shape217, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start))), CreateMissingToken(")"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing40 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape179, rules.MissingNameDeclaration(source, start), (SyntaxElement)new CustomNode(shape147, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape81, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")")))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing41 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing42 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing43 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing44 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing45 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing46 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing47 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape124, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue(source, start))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing49 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing50 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing51 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing52 = (source, start) => (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing53 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape88, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape34, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape84, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing54 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing55 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing56 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing57 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape124, CreateMissingToken("ContinueOnErrors"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing58 = (source, start) => (SyntaxElement)new CustomNode(shape218, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start))), CreateMissingToken(")"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing57 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing58 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape124, CreateMissingToken("ContinueOnErrors"), CreateMissingToken("="), rules.MissingValue(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing59 = (source, start) => (SyntaxElement)new CustomNode(new [] {CD(), CD("Data", CompletionHint.None), CD()}, CreateMissingToken("["), rules.MissingInputText(source, start), CreateMissingToken("]"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing60 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(new [] {CD("NewColumnName", CompletionHint.None), CD(), CD("ColumnName", CompletionHint.Column)}, rules.MissingNameDeclaration(source, start), CreateMissingToken("="), rules.MissingNameReference(source, start))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing61 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(new [] {CD("NewTableName", CompletionHint.None), CD(), CD("TableName", CompletionHint.Table)}, rules.MissingNameDeclaration(source, start), CreateMissingToken("="), rules.MissingNameReference(source, start))));
@@ -699,7 +699,7 @@ namespace Kusto.Language.Parsing
                                 RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape124)),
-                        missing46),
+                        missing47),
                     RequiredToken(")"));
             var fragment28 = Custom(
                     rules.NameDeclaration,
@@ -794,7 +794,7 @@ namespace Kusto.Language.Parsing
                             fnMissingElement: rules.MissingStringLiteral),
                         missing0),
                     RequiredToken(")"),
-                    shape218);
+                    shape217);
             var fragment38 = Custom(
                     Token("with"),
                     RequiredToken("("),
@@ -849,9 +849,9 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape201),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
-                    shape218);
+                    shape217);
             var fragment44 = Custom(
                     Token("("),
                     OneOrMoreCommaList(
@@ -860,7 +860,7 @@ namespace Kusto.Language.Parsing
                             shape201),
                         fnMissingElement: rules.MissingValue),
                     Token(")"),
-                    shape218);
+                    shape217);
             var fragment45 = Custom(
                     Token("where"),
                     Required(
@@ -3861,8 +3861,28 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("clear", CompletionKind.CommandPrefix),
                     Token("cluster"),
+                    Token("cache"),
+                    Token("credstore")));
+
+            var ClearExternalArtifactsCache = Command("ClearExternalArtifactsCache", 
+                Custom(
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("cluster"),
                     RequiredToken("cache"),
-                    RequiredToken("credstore")));
+                    RequiredToken("external-artifacts"),
+                    Required(
+                        Custom(
+                            Token("("),
+                            Required(
+                                OneOrMoreCommaList(
+                                    Custom(
+                                        rules.StringLiteral,
+                                        CD("ArtifactUri", CompletionHint.Literal)),
+                                    fnMissingElement: rules.MissingStringLiteral),
+                                missing0),
+                            RequiredToken(")"),
+                            shape217),
+                        missing39)));
 
             var ClearDatabaseCacheQueryResults = Command("ClearDatabaseCacheQueryResults", 
                 Custom(
@@ -3927,7 +3947,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             fragment28),
-                        missing39),
+                        missing40),
                     Optional(
                         fragment6),
                     shape180));
@@ -4609,7 +4629,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             fragment28),
-                        missing39),
+                        missing40),
                     Optional(
                         fragment6),
                     shape180));
@@ -4660,7 +4680,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             fragment28),
-                        missing39),
+                        missing40),
                     Optional(
                         fragment6),
                     shape180));
@@ -5259,7 +5279,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
                                 shape28)),
-                        missing53),
+                        missing54),
                     Optional(
                         fragment32),
                     Optional(
@@ -5790,7 +5810,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape201),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     Optional(
                         fragment34),
@@ -5815,7 +5835,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
                                 shape28)),
-                        missing55),
+                        missing56),
                     Optional(
                         fragment32),
                     Optional(
@@ -5836,7 +5856,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 If(Not(Token("all")), rules.TableNameReference),
                                 shape28)),
-                        missing56),
+                        missing57),
                     Optional(
                         fragment32),
                     Optional(
@@ -6344,7 +6364,7 @@ namespace Kusto.Language.Parsing
                                         RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape124)),
-                                missing57),
+                                missing58),
                             RequiredToken(")"))),
                     RequiredToken("<|"),
                     Required(rules.ScriptInput, rules.MissingStatement),
@@ -6506,7 +6526,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 rules.StringLiteral,
                                 shape161)),
-                        missing58),
+                        missing39),
                     Optional(
                         fragment35),
                     new [] {CD(), CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true)}));
@@ -6555,7 +6575,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 rules.StringLiteral,
                                 shape161)),
-                        missing58),
+                        missing39),
                     Optional(
                         fragment35),
                     new [] {CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true)}));
@@ -6572,7 +6592,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape219),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     Optional(
                         fragment38),
@@ -6596,7 +6616,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape219),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(CompletionHint.Literal), CD()}));
 
@@ -6611,7 +6631,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape219),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     Optional(
                         fragment38),
@@ -6654,7 +6674,7 @@ namespace Kusto.Language.Parsing
                                     rules.AnyGuidLiteralOrString,
                                     shape219),
                                 fnMissingElement: rules.MissingValue),
-                            missing54),
+                            missing55),
                         RequiredToken(")")}
                     ,
                     new [] {CD(), CD(isOptional: true), CD(), CD(), CD(), CD("SourceTableName", CompletionHint.Table), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(isOptional: true), CD(), CD(CompletionHint.Literal), CD()}));
@@ -7992,7 +8012,7 @@ namespace Kusto.Language.Parsing
                                     rules.AnyGuidLiteralOrString,
                                     shape201),
                                 fnMissingElement: rules.MissingValue),
-                            missing54),
+                            missing55),
                         RequiredToken(")"),
                         Optional(Token("hot")),
                         RequiredToken("where"),
@@ -8019,7 +8039,7 @@ namespace Kusto.Language.Parsing
                                     rules.AnyGuidLiteralOrString,
                                     shape201),
                                 fnMissingElement: rules.MissingValue),
-                            missing54),
+                            missing55),
                         RequiredToken(")"),
                         Optional(Token("hot")),
                         RequiredToken("with"),
@@ -8043,7 +8063,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape201),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     Optional(Token("hot")),
                     new [] {CD(), CD(), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)}));
@@ -8390,7 +8410,7 @@ namespace Kusto.Language.Parsing
                                     rules.AnyGuidLiteralOrString,
                                     shape201),
                                 fnMissingElement: rules.MissingValue),
-                            missing54),
+                            missing55),
                         RequiredToken(")"),
                         Optional(Token("hot")),
                         RequiredToken("where"),
@@ -8418,7 +8438,7 @@ namespace Kusto.Language.Parsing
                                     rules.AnyGuidLiteralOrString,
                                     shape201),
                                 fnMissingElement: rules.MissingValue),
-                            missing54),
+                            missing55),
                         RequiredToken(")"),
                         Optional(Token("hot")),
                         RequiredToken("with"),
@@ -8443,7 +8463,7 @@ namespace Kusto.Language.Parsing
                                 rules.AnyGuidLiteralOrString,
                                 shape201),
                             fnMissingElement: rules.MissingValue),
-                        missing54),
+                        missing55),
                     RequiredToken(")"),
                     Optional(Token("hot")),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)}));
@@ -9471,9 +9491,9 @@ namespace Kusto.Language.Parsing
                                             rules.AnyGuidLiteralOrString,
                                             shape268),
                                         fnMissingElement: rules.MissingValue),
-                                    missing54),
+                                    missing55),
                                 RequiredToken(")"),
-                                shape218),
+                                shape217),
                             Custom(
                                 rules.AnyGuidLiteralOrString,
                                 shape268))),
@@ -10711,6 +10731,7 @@ namespace Kusto.Language.Parsing
                 ClearTableData,
                 ClearRemoteClusterDatabaseSchema,
                 ClearClusterCredStoreCache,
+                ClearExternalArtifactsCache,
                 ClearDatabaseCacheQueryResults,
                 ClearDatabaseCacheQueryWeakConsistency,
                 ClearDatabaseCacheStreamingIngestionSchema,
