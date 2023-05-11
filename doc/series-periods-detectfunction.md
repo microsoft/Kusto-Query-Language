@@ -25,8 +25,6 @@ Finds the most significant periods that exist in a time series.
 > [!IMPORTANT]
 >
 > * The algorithm can detect periods containing at least 4 points and at most half of the series length.
->
-> * The algorithm can detect periods containing at least 4 points and at most half of the series length.
 > * Set the *min_period* a little below and *max_period* a little above the periods you expect to find in the time series. For example, if you have an hourly aggregated signal, and you look for both daily and weekly periods (24 and 168 hours respectively), you can set *min_period*=0.8\*24, *max_period*=1.2\*168, and leave 20% margins around these periods.
 > * The input time series must be regular. That is, aggregated in constant bins, which is always the case if it has been created using [make-series](make-seriesoperator.md). Otherwise, the output is meaningless.
 

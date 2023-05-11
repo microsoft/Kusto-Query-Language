@@ -7,7 +7,7 @@ ms.date: 03/06/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors
 ---
-# mysql_request plugin (Preview)
+# mysql_request plugin
 
 ::: zone pivot="azuredataexplorer"
 
@@ -30,7 +30,12 @@ The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 | *ConnectionString* | string | &check; | The connection string that points at the MySQL Server network endpoint. See [authentication](#username-and-password-authentication) and how to specify the [network endpoint](#specify-the-network-endpoint). |
 | *SqlQuery* | string | &check; | The query that is to be executed against the SQL endpoint. Must return one or more row sets. Only the first set is made available for the rest of the query. |
 | *SqlParameters* | dynamic | | A property bag object that holds key-value pairs to pass as parameters along with the query. |
-| *OutputSchema* | | | The names and types for the expected columns of the `mysql_request` plugin output.<br /><br />**Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)`<br /><br />Specifying the expected schema optimizes query execution by not having to first run the actual query to explore the schema. An error is raised if the run-time schema doesn't match the *OutputSchema* schema. |
+| *OutputSchema* | | | The names and types for the expected columns of the `mysql_request` plugin output.<br /><br />**Syntax**: `(` *ColumnName* `:` *ColumnType* [`,` ...] `)` |
+
+> [!NOTE]
+>
+> * Specifying the *OutputSchema* is highly recommended, as it allows the plugin to be used in scenarios that might otherwise not work without it, such as a cross-cluster query. The *OutputSchema* can also enable multiple query optimizations.
+> * An error is raised if the run-time schema of the first row set returned by the SQL network endpoint doesn't match the *OutputSchema* schema.
 
 ## Authentication and authorization
 
@@ -99,7 +104,7 @@ Where:
 The following example sends a SQL query to an Azure MySQL database. It retrieves all records from `[dbo].[Table]`, and then processes the results.
 
 > [!NOTE]
-> This example shouldn't be taken as a recommendation to filter or project data in this manner. SQL queries should be constructed to return the smallest data set possible, since the Kusto optimizer doesn't currently attempt to optimize queries between Kusto and SQL.
+> This example shouldn't be taken as a recommendation to filter or project data in this manner. SQL queries should be constructed to return the smallest data set possible.
 
 ```kusto
 evaluate mysql_request(
@@ -107,22 +112,7 @@ evaluate mysql_request(
     'Database=Fabrikam;'
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;',
-    'select * from [dbo].[Table]')
-| where Id > 0
-| project Name
-```
-
-### Authentication with username and password
-
-The following example is identical to the previous one, but authentication is by username and password. For confidentiality, use obfuscated strings.
-
-```kusto
-evaluate mysql_request(
-    'Server=contoso.mysql.database.azure.com; Port = 3306;'
-    'Database=Fabrikam;'
-    h'UID=USERNAME;'
-    h'Pwd=PASSWORD;',
-    'select * from [dbo].[Table]')
+    'select * from [dbo].[Table]') : (Id: int, Name: string)
 | where Id > 0
 | project Name
 ```
@@ -141,26 +131,25 @@ evaluate mysql_request(
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;',
     'select *, @param0 as dt from [dbo].[Table]',
-    dynamic({'param0': datetime(2020-01-01 16:47:26.7423305)}))
+    dynamic({'param0': datetime(2020-01-01 16:47:26.7423305)})) : (Id:long, Name:string, dt: datetime)
 | where Id > 0
 | project Name
 ```
 
-## SQL query with a query-defined output schema
+### SQL query to an Azure MySQL database without a query-defined output schema
 
-The following example sends a SQL query to an Azure MySQL database
-retrieving all records from `[dbo].[Table]`, while selecting only specific columns.
-It uses an explicit schema definition that allows various optimizations to be evaluated before the actual query against the server is run.
+The following example sends a SQL query to an Azure MySQL database without an output schema. This is not recommended unless the schema is unknown, as it may impact the performance of the query.
 
 ```kusto
 evaluate mysql_request(
-  'Server=contoso.mysql.database.azure.com; Port = 3306;'
-     'Database=Fabrikam;'
+    'Server=contoso.mysql.database.azure.com; Port = 3306;'
+    'Database=Fabrikam;'
     h'UID=USERNAME;'
     h'Pwd=PASSWORD;',
-  'select Id, Name') : (Id:long, Name:string)
+    'select * from [dbo].[Table]')
 | where Id > 0
 | project Name
+```
 
 ::: zone-end
 

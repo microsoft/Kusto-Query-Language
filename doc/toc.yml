@@ -1011,6 +1011,8 @@ items:
     href: geo-intersection-2polygons-function.md
   - name: geo_intersection_line_with_polygon()
     href: geo-intersection-line-with-polygon-function.md
+  - name: geo_line_buffer()
+    href: geo-line-buffer-function.md
   - name: geo_line_centroid()
     href: geo-line-centroid-function.md
   - name: geo_line_densify()
@@ -1021,6 +1023,8 @@ items:
     href: geo-line-simplify-function.md  
   - name: geo_polygon_area()
     href: geo-polygon-area-function.md
+  - name: geo_polygon_buffer()
+    href: geo-polygon-buffer-function.md
   - name: geo_polygon_centroid()
     href: geo-polygon-centroid-function.md
   - name: geo_polygon_densify()
@@ -1031,6 +1035,8 @@ items:
     href: geo-polygon-simplify-function.md  
   - name: geo_polygon_to_s2cells()
     href: geo-polygon-to-s2cells-function.md
+  - name: geo_point_buffer()
+    href: geo-point-buffer-function.md
   - name: geo_point_in_circle()
     href: geo-point-in-circle-function.md
   - name: geo_point_in_polygon()
@@ -1279,6 +1285,8 @@ items:
       href: http-request-post-plugin.md
     - name: mysql_request plugin
       href: mysqlrequest-plugin.md
+    - name: postgresql_request plugin
+      href: postgresql-request-plugin.md
     - name: sql_request plugin
       href: sqlrequestplugin.md
   - name: User and sequence analytics plugins

@@ -25,11 +25,9 @@ Often a metric measuring the traffic of an application is characterized by a wee
 > [!IMPORTANT]
 >
 > * The minimal value for each of the *period* parameters is **4** and the maximal is half of the length of the input series. For a *period* argument outside these bounds, the output score will be **0**.
->
-> * The minimal value for each of the *period* parameters is 4 and the maximal is half of the length of the input series. For a *period* argument outside these bounds, the output score will be 0.
 > * The input time series must be regular, that is, aggregated in constant bins, and is always the case if it has been created using [make-series](make-seriesoperator.md). Otherwise, the output is meaningless.
->
 > * The function accepts up to 16 periods to validate.
+> 
 
 ## Returns
 
