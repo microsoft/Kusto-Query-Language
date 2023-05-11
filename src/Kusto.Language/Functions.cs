@@ -2969,6 +2969,13 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .Hide();
+
+        public static readonly FunctionSymbol IpGeoLocation =
+            new FunctionSymbol("geo_info_from_ip_address", ScalarTypes.Dynamic,
+                new Parameter("ip", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region All
@@ -3421,7 +3428,8 @@ namespace Kusto.Language
             EstimateDataSize,
             NewGuid,
             Invoke,
-            Cast
+            Cast,
+            IpGeoLocation
 #endregion
         };
         #endregion
