@@ -98,7 +98,7 @@ namespace Kusto.Language
             new QueryOperatorParameter("force_remote", QueryOperatorParameterValueKind.BoolLiteral);
 
         public static readonly QueryOperatorParameter Unique =
-            new QueryOperatorParameter("unique", QueryOperatorParameterValueKind.Word, values: KustoFacts.UniqueKinds);
+            new QueryOperatorParameter("__unique", QueryOperatorParameterValueKind.Word, values: KustoFacts.UniqueKinds);
 
         /// <summary>
         /// All query operator parameters.
