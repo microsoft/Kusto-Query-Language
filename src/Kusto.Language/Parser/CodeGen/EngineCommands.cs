@@ -1517,6 +1517,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowClusterStorageKeysHash =
             new CommandSymbol("ShowClusterStorageKeysHash", _schema18);
 
+        public static readonly CommandSymbol AlterFabricServiceAssignmentsCommand =
+            new CommandSymbol("AlterFabricServiceAssignmentsCommand", _schema18);
+
         public static readonly CommandSymbol CreateEntityGroupCommand =
             new CommandSymbol("CreateEntityGroupCommand", _schema40);
 
@@ -2309,6 +2312,7 @@ namespace Kusto.Language
             ShowClusterNetwork,
             AlterClusterStorageKeys,
             ShowClusterStorageKeysHash,
+            AlterFabricServiceAssignmentsCommand,
             CreateEntityGroupCommand,
             AlterEntityGroup,
             AlterMergeEntityGroup,

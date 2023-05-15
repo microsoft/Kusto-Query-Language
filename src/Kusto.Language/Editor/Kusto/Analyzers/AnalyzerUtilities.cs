@@ -27,7 +27,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Returns true if the expression is a short string constant
         /// </summary>
-        public static bool IsShortStringConstant(Expression expr, GlobalState globals, int lengthNotShort = 4) =>
+        public static bool IsShortStringConstant(Expression expr, GlobalState globals, int lengthNotShort = 3) =>
             expr.ConstantValue is string s && s.Length < lengthNotShort;
 
         /// <summary>
