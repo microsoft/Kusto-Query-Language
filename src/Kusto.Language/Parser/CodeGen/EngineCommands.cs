@@ -704,6 +704,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTablePolicyMirroring =
             new CommandSymbol("ShowTablePolicyMirroring", _schema20);
 
+        public static readonly CommandSymbol ShowTableStarPolicyMirroring =
+            new CommandSymbol("ShowTableStarPolicyMirroring", _schema20);
+
         public static readonly CommandSymbol AlterDatabasePolicyMirroring =
             new CommandSymbol("AlterDatabasePolicyMirroring", _schema20);
 
@@ -2057,6 +2060,7 @@ namespace Kusto.Language
             AlterMergeTablePolicyMirroringWithJson,
             DeleteTablePolicyMirroring,
             ShowTablePolicyMirroring,
+            ShowTableStarPolicyMirroring,
             AlterDatabasePolicyMirroring,
             AlterMergeDatabasePolicyMirroring,
             AlterDatabasePolicyMirroringWithJson,

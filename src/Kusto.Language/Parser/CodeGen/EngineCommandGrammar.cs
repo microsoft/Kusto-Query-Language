@@ -9910,6 +9910,14 @@ namespace Kusto.Language.Parsing
                     Token("policy"),
                     Token("merge")));
 
+            var ShowTableStarPolicyMirroring = Command("ShowTableStarPolicyMirroring", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("policy"),
+                    Token("mirroring")));
+
             var ShowTableStarPolicyPartitioning = Command("ShowTableStarPolicyPartitioning", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -11244,6 +11252,7 @@ namespace Kusto.Language.Parsing
                 ShowTableStarPolicyIngestionBatching,
                 ShowTableStarPolicyIngestionTime,
                 ShowTableStarPolicyMerge,
+                ShowTableStarPolicyMirroring,
                 ShowTableStarPolicyPartitioning,
                 ShowTableStarPolicyRestrictedViewAccess,
                 ShowTableStarPolicyRetention,
