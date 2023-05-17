@@ -45,6 +45,30 @@ namespace Kusto.Language.Syntax
         {
             WalkNodes(this, action);
         }
+
+        /// <summary>
+        /// Returns the original <see cref="SyntaxNode"/> in the original <see cref="SyntaxTree"/>
+        /// for a node in a copied tree fragment.
+        /// </summary>
+        public SyntaxNode GetOriginalNode()
+        {
+            var node = this;
+
+            while (node.Tree?.Original != null)
+            {
+                var startInOriginal = node.Tree.OffsetInOriginal + node.TextStart;
+                var locationInOriginal = node.Tree.Original.Root.GetNodeAt(startInOriginal, node.Width);
+
+                if (locationInOriginal != null)
+                {
+                    node = locationInOriginal;
+                    continue;
+                }
+            }
+
+            return node;
+        }
+
     }
 
     public partial class Expression

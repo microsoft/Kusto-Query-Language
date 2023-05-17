@@ -632,7 +632,7 @@ namespace Kusto.Language.Binding
 
             private void FilterVisibleSymbols(SyntaxNode location, IReadOnlyList<Symbol> symbols, List<Symbol> filteredSymbols)
             {
-                bool isInsideDatabaseFunctionDeclaration = _binder.IsInsideDatabaseFunctionDeclaration(location);
+                bool IsInsideCurrentDatabaseFunction = _binder.IsInsideCurrentDatabaseFunctionBody(location);
 
                 var map = s_symbolMapPool.AllocateFromPool();
                 try
@@ -646,7 +646,7 @@ namespace Kusto.Language.Binding
                                 && existingSymbol is FunctionSymbol fs
                                 && fs.MinArgumentCount == 0
                                 && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
-                                && isInsideDatabaseFunctionDeclaration)
+                                && IsInsideCurrentDatabaseFunction)
                             {
                                 // if inside database function declaration choose the table over the function
                                 map[symbol.Name] = tab;
@@ -655,7 +655,7 @@ namespace Kusto.Language.Binding
                                 && fs2.MinArgumentCount == 0
                                 && existingSymbol is TableSymbol tab2
                                 && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
-                                && !isInsideDatabaseFunctionDeclaration)
+                                && !IsInsideCurrentDatabaseFunction)
                             {
                                 // otherwise choose the function over the table
                                 map[symbol.Name] = fs2;

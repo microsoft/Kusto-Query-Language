@@ -83,6 +83,11 @@ namespace Kusto.Language.Binding
         private ScopeKind _scopeKind;
 
         /// <summary>
+        /// The binder for the outer scope
+        /// </summary>
+        private Binder _outerBinder;
+
+        /// <summary>
         /// Any aliased databases.
         /// </summary>
         private readonly Dictionary<string, DatabaseSymbol> _aliasedDatabases =
@@ -113,6 +118,7 @@ namespace Kusto.Language.Binding
             ClusterSymbol currentCluster,
             DatabaseSymbol currentDatabase,
             FunctionSymbol currentFunction,
+            Binder outerBinder,
             LocalScope outerScope,
             GlobalBindingCache globalBindingCache,
             LocalBindingCache localBindingCache,
@@ -123,6 +129,7 @@ namespace Kusto.Language.Binding
             _currentCluster = currentCluster ?? globals.Cluster;
             _currentDatabase = currentDatabase ?? globals.Database;
             _currentFunction = currentFunction;
+            _outerBinder = outerBinder;
             _globalBindingCache = globalBindingCache ?? new GlobalBindingCache();
             _localBindingCache = localBindingCache ?? new LocalBindingCache();
             _localScope = new LocalScope(outerScope);
@@ -155,6 +162,7 @@ namespace Kusto.Language.Binding
                     globals.Cluster,
                     globals.Database,
                     null, // currentFunction
+                    null, // outer binder
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache,
@@ -210,6 +218,7 @@ namespace Kusto.Language.Binding
                 currentCluster ?? outer._currentCluster,
                 currentDatabase ?? outer._currentDatabase,
                 currentFunction,
+                outer,
                 outerScope,
                 outer._globalBindingCache,
                 outer._localBindingCache,
@@ -272,6 +281,7 @@ namespace Kusto.Language.Binding
                     currentCluster,
                     currentDatabase,
                     signature.Symbol as FunctionSymbol, // currentFunction
+                    null, // outer binder
                     GetDefaultOuterScope(globals),
                     bindingCache,
                     localBindingCache: null,
@@ -298,6 +308,7 @@ namespace Kusto.Language.Binding
                         globals.Cluster,
                         globals.Database,
                         null, // currentFunction
+                        null, // outer binder
                         GetDefaultOuterScope(globals),
                         bindingCache,
                         localBindingCache: null,
@@ -332,6 +343,7 @@ namespace Kusto.Language.Binding
                         globals.Cluster,
                         globals.Database,
                         null, // currentFunction
+                        null, // outer binder
                         GetDefaultOuterScope(globals),
                         bindingCache,
                         localBindingCache: null,
@@ -365,6 +377,7 @@ namespace Kusto.Language.Binding
                         globals.Cluster,
                         globals.Database,
                         null, // currentFunction
+                        null, // outer binder
                         GetDefaultOuterScope(globals),
                         bindingCache,
                         localBindingCache: null,
