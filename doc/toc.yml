@@ -646,6 +646,8 @@ items:
     href: ipv4-is-matchfunction.md
   - name: ipv4_is_private()
     href: ipv4-is-privatefunction.md
+  - name: ipv4_range_to_cidr_list()
+    href: ipv4-range-to-cidr-list-function.md
   - name: ipv4_netmask_suffix()
     href: ipv4-netmask-suffix-function.md
   - name: ipv6_compare()
