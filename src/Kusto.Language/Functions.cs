@@ -681,8 +681,7 @@ namespace Kusto.Language
                 new Parameter("start_ip", ScalarTypes.String),
                 new Parameter("end_ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
         #endregion
 
         #region IPv6 functions
