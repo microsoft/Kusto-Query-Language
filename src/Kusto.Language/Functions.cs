@@ -2973,8 +2973,7 @@ namespace Kusto.Language
             new FunctionSymbol("geo_info_from_ip_address", ScalarTypes.Dynamic,
                 new Parameter("ip", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region All
