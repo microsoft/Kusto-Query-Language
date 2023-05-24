@@ -1,5 +1,5 @@
 ---
-title: next() - Azure Data Explorer
+title:  next()
 description: Learn how to use the next() function to return the value of the next column at an offset. 
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: sum() (aggregation function) - Azure Data Explorer
+title:  sum() (aggregation function)
 description: Learn how to use the sum() (aggregation function) function to calculate the sum of an expression across the group.
 ms.reviewer: alexans
 ms.topic: reference

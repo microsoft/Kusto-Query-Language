@@ -1,5 +1,5 @@
 ---
-title: sqrt() - Azure Data Explorer
+title:  sqrt()
 description: Learn how to use the sqrt() function to return the square root of the input,
 ms.reviewer: alexans
 ms.topic: reference

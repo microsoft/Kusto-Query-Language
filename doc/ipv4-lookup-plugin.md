@@ -1,5 +1,5 @@
 ---
-title: ipv4_lookup plugin - Azure Data Explorer
+title:  ipv4_lookup plugin
 description: Learn how to use the ipv4_lookup plugin to look up an IPv4 value in a lookup table.
 ms.reviewer: alexans
 ms.topic: reference

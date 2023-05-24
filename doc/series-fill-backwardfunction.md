@@ -1,5 +1,5 @@
 ---
-title: series_fill_backward() - Azure Data Explorer
+title:  series_fill_backward()
 description: Learn how to use the series_fill_backward() function to perform a backward fill interpolation of missing values in a series.
 ms.reviewer: alexans
 ms.topic: reference

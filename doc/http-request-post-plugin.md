@@ -1,5 +1,5 @@
 ---
-title: http_request_post plugin - Azure Data Explorer
+title:  http_request_post plugin
 description: Learn how to use the http_request_post plugin to send an HTTP request and convert the response into a table.
 services: data-explorer
 ms.reviewer: zivc

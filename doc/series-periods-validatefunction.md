@@ -1,5 +1,5 @@
 ---
-title: series_periods_validate() - Azure Data Explorer
+title:  series_periods_validate()
 description: Learn how to use the series_periods_validate() function to check whether a time series contains periodic patterns of given lengths.
 ms.reviewer: alexans
 ms.topic: reference

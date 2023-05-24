@@ -1,5 +1,5 @@
 ---
-title: Query best practices  - Azure Data Explorer
+title:  Query best practices 
 description: This article describes Query best practices  in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

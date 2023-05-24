@@ -1,15 +1,15 @@
 ---
-title: Cross-database & cross-cluster queries - Azure Data Explorer
+title:  Cross-database & cross-cluster queries
 description: This article describes cross-database and cross-cluster queries in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 02/13/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Cross-database and cross-cluster queries
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Queries execute with one specific database being "in context". This database is used by default
 to check permissions, and every entity reference in the query that has no explicit cluster or database qualification

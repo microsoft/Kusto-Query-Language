@@ -1,5 +1,5 @@
 ---
-title: facet operator - Azure Data Explorer
+title:  facet operator
 description: Learn how to use the facet operator to return a table for each specified column.
 ms.reviewer: alexans
 ms.topic: reference

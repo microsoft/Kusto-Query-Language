@@ -1,5 +1,5 @@
 ---
-title: asin() - Azure Data Explorer
+title:  asin()
 description: Learn how to use the asin() function to calculate the angle from a sine input.
 ms.reviewer: alexans
 ms.topic: reference

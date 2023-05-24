@@ -1,5 +1,5 @@
 ---
-title: row_window_session() - Azure Data Explorer
+title:  row_window_session()
 description: Learn how to use the row_window_session() function to calculate session start values of a column in a serialized row set.
 ms.reviewer: alexans
 ms.topic: reference

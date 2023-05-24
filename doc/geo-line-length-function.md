@@ -1,5 +1,5 @@
 ---
-title: geo_line_length() - Azure Data Explorer
+title:  geo_line_length()
 description: Learn how to use the geo_line_length() function to calculate the total length of a line string or a multiline string on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

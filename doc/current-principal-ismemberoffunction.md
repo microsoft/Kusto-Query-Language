@@ -1,15 +1,15 @@
 ---
-title: current_principal_is_member_of() - Azure Data Explorer
+title:  current_principal_is_member_of()
 description: Learn how to use the current_principal_is_member_of() function to check the identity of the principal running the query.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 11/27/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # current_principal_is_member_of()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Checks group membership or principal identity of the current principal running the query.
 

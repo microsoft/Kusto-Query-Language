@@ -1,5 +1,5 @@
 ---
-title: activity_counts_metrics plugin - Azure Data Explorer
+title:  activity_counts_metrics plugin
 description: Learn how to use the activity_counts_metrics plugin to compare activity metrics in different time windows.
 ms.reviewer: alexans
 ms.topic: reference

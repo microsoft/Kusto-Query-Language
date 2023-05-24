@@ -1,5 +1,5 @@
 ---
-title: base64_encode_fromarray() - Azure Data Explorer
+title:  base64_encode_fromarray()
 description: Learn how to use the base64_encode_fromarray() function to encode a base64 string from a bytes array.
 ms.reviewer: alexans
 ms.topic: reference

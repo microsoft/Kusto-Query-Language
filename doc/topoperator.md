@@ -1,5 +1,5 @@
 ---
-title: top operator - Azure Data Explorer
+title:  top operator
 description: Learn how to use the top operator to return the first specified number of records sorted by the specified columns.
 ms.reviewer: alexans
 ms.topic: reference

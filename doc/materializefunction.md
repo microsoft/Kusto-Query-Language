@@ -1,5 +1,5 @@
 ---
-title: materialize() - Azure Data Explorer
+title:  materialize()
 description: Learn how to use the materialize() function to capture the value of a tabular expression for reuse.
 ms.reviewer: zivc
 ms.topic: reference

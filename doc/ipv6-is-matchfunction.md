@@ -1,5 +1,5 @@
 ---
-title: ipv6_is_match() - Azure Data Explorer
+title:  ipv6_is_match()
 description: Learn how to use the ipv6_is_match() function to match two IPv6 or IPv4 network address strings.
 ms.reviewer: alexans
 ms.topic: reference

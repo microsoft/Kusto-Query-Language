@@ -1,5 +1,5 @@
 ---
-title: Tables - Azure Data Explorer
+title:  Tables
 description: This article describes Tables in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

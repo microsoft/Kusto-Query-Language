@@ -1,5 +1,5 @@
 ---
-title: Broadcast join - Azure Data Explorer
+title:  Broadcast join
 description: Learn how to use the broadcast join execution strategy to distribute the join over cluster nodes.
 ms.reviewer: alexans
 ms.topic: reference

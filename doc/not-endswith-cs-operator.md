@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive !endswith_cs string operator - Azure Data Explorer
+title:  The case-sensitive !endswith_cs string operator
 description: Learn how to use the !endswith_cs string operator to filter data that doesn't contain a case-insensitive string. 
 ms.reviewer: alexans
 ms.topic: reference

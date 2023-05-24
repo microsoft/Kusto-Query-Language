@@ -1,5 +1,5 @@
 ---
-title: geo_intersects_2lines() - Azure Data Explorer
+title:  geo_intersects_2lines()
 description: Learn how to use the geo_intersects_2lines() function to check if two line strings or multiline strings intersect.
 ms.reviewer: mbrichko
 ms.topic: reference

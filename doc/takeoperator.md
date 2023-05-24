@@ -1,5 +1,5 @@
 ---
-title: take operator - Azure Data Explorer
+title:  take operator
 description: Learn how to use the take operator to return a specified number of rows.
 ms.reviewer: alexans
 ms.topic: reference

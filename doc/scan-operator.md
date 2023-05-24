@@ -1,5 +1,5 @@
 ---
-title: scan operator - Azure Data Explorer
+title:  scan operator
 description: Learn how to use the scan operator to scan data, match, and build sequences based on the predicates.
 ms.reviewer: alexans
 ms.topic: reference

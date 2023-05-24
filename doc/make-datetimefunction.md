@@ -1,5 +1,5 @@
 ---
-title: make_datetime() - Azure Data Explorer
+title:  make_datetime()
 description: Learn how to use the make_datetime() function to create a datetime scalar value from the specified date and time.
 ms.reviewer: alexans
 ms.topic: reference

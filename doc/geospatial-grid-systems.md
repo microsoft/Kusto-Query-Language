@@ -1,5 +1,5 @@
 ---
-title: Geospatial grid systems in Azure Data Explorer
+title: Geospatial grid system
 description: Learn how to use geospatial grid systems to cluster geospatial data.
 ms.reviewer: mbrichko
 ms.topic: reference

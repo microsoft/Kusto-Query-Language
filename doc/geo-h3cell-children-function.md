@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_children() - Azure Data Explorer
+title:  geo_h3cell_children()
 description: Learn how to use the geo_h3cell_children() function to calculate the H3 cell children.
 ms.reviewer: mbrichko
 ms.topic: reference

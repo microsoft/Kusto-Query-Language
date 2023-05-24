@@ -1,5 +1,5 @@
 ---
-title: toguid() - Azure Data Explorer
+title:  toguid()
 description: Learn how to use the toguid() function to convert the input string to a `guid` scalar.
 ms.reviewer: alexans
 ms.topic: reference

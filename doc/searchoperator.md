@@ -1,5 +1,5 @@
 ---
-title: search operator - Azure Data Explorer
+title:  search operator
 description: Learn how to use the search operator to search for a text pattern in multiple tables and columns.
 ms.reviewer: alexans
 ms.topic: reference

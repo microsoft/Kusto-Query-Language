@@ -1,5 +1,5 @@
 ---
-title: project-rename operator - Azure Data Explorer
+title:  project-rename operator
 description: Learn how to use the project-rename operator to rename columns in the output table.
 ms.reviewer: alexans
 ms.topic: reference

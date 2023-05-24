@@ -1,5 +1,5 @@
 ---
-title: rolling_percentile plugin - Azure Data Explorer
+title:  rolling_percentile plugin
 description: Learn how to use the rolling_percentile plugin to calculate an estimate of the rolling percentile per bin for the specified value column.
 ms.reviewer: alexans
 ms.topic: reference

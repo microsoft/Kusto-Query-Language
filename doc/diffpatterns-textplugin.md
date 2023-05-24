@@ -1,5 +1,5 @@
 ---
-title: diffpatterns_text plugin - Azure Data Explorer
+title:  diffpatterns_text plugin
 description: Learn how to use the diffpatterns_text plugin to compare two string value data sets to find the differences between the two data sets. 
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: endofweek() - Azure Data Explorer
+title:  endofweek()
 description: Learn how to use the endofweek() function to return a datetime representing the end of the week for the given date value.
 ms.reviewer: alexans
 ms.topic: reference

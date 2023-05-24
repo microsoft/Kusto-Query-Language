@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive in string operator - Azure Data Explorer
+title:  The case-sensitive in string operator
 description: Learn how to use the in operator to filter data with a case-sensitive string.
 ms.reviewer: alexans
 ms.topic: reference

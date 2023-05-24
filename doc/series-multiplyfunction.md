@@ -1,5 +1,5 @@
 ---
-title: series_multiply() - Azure Data Explorer
+title:  series_multiply()
 description: Learn how to use the series_multiply() function to calculate the element-wise multiplication of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

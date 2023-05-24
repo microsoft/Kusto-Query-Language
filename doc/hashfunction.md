@@ -1,5 +1,5 @@
 ---
-title: hash() - Azure Data Explorer
+title:  hash()
 description: Learn how to use the hash() function to return the hash value of the input.
 ms.reviewer: alexans
 ms.topic: reference

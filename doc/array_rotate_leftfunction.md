@@ -1,5 +1,5 @@
 ---
-title: array_rotate_left() - Azure Data Explorer
+title:  array_rotate_left()
 description: Learn how to use the array_rotate_left() function to rotate values inside a dynamic array to the left.
 ms.reviewer: alexans
 ms.topic: reference

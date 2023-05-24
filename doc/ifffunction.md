@@ -1,5 +1,5 @@
 ---
-title: iff() - Azure Data Explorer
+title:  iff()
 description: This article describes iff() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

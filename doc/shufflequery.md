@@ -1,9 +1,9 @@
 ---
-title: Shuffle query - Azure Data Explorer
+title:  Shuffle query
 description: This article describes Shuffle query in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/30/2023
+ms.date: 05/01/2023
 ---
 # shuffle query
 
@@ -317,7 +317,7 @@ In another example, we try the same queries on a larger dataset with the followi
 * Left-side source of the `join` is 150M and the cardinality of the key is 148M.
 * Right-side source of the `join` is 1.5B, and the cardinality of the key is ~100M.
 
-The query with just the `join` operator hits Azure Data Explorer limits and times-out after 4 mins. However, when using `shuffle` strategy with the `join` operator, the query ends after ~34 seconds and the memory usage peak is 1.23 GB.
+The query with just the `join` operator hits limits and times-out after 4 mins. However, when using `shuffle` strategy with the `join` operator, the query ends after ~34 seconds and the memory usage peak is 1.23 GB.
 
 The following example shows the improvement on a cluster that has two cluster nodes, with a table of 60M records, where the cardinality of the `join` key is 2M.
 Running the query without `hint.num_partitions` will use only two partitions (as cluster nodes number) and the following query will take ~1:10 mins:

@@ -1,15 +1,15 @@
 ---
-title: Set statement - Azure Data Explorer
+title:  Set statement
 description: Learn how to use the set statement to set a query option for the duration of the query.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 05/11/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Set statement
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The `set` statement is used to set a query option for the duration of the query.
 

@@ -1,15 +1,15 @@
 ---
-title: extent_id() - Azure Data Explorer
+title:  extent_id()
 description: Learn how to use the extent_id() function to return an identifier of the current record's data shard
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 12/11/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # extent_id()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Returns a unique identifier that identifies the data shard ("extent") that the current record resides in.
 

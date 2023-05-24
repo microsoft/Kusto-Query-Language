@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_neighbors() - Azure Data Explorer
+title:  geo_h3cell_neighbors()
 description: Learn how to use the geo_h3cell_neighbors() function to calculate the H3 cell neighbors.
 ms.reviewer: mbrichko
 ms.topic: reference

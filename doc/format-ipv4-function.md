@@ -1,5 +1,5 @@
 ---
-title: format_ipv4() - Azure Data Explorer
+title:  format_ipv4()
 description: Learn how to use the format_ipv4() function to parse the input with a netmask and return a string representing the IPv4 address.
 ms.reviewer: alexans
 ms.topic: reference

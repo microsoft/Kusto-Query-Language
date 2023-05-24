@@ -1,5 +1,5 @@
 ---
-title: range() - Azure Data Explorer
+title:  range()
 description: Learn how to use the range() function to generate a dynamic array holding a series of equally spaced values.
 ms.reviewer: alexans
 ms.topic: reference

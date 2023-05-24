@@ -1,5 +1,5 @@
 ---
-title: The !between operator - Azure Data Explorer
+title:  The !between operator
 description: Learn how to use the !between operator to match the input that is outside of the inclusive range.
 ms.reviewer: alexans
 ms.topic: reference

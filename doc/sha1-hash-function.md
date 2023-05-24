@@ -1,5 +1,5 @@
 ---
-title: hash_sha1() - Azure Data Explorer
+title:  hash_sha1()
 description: Learn how to use the hash_sha1() function to return a sha1 hash value of the source input.
 ms.reviewer: atefsawaed
 ms.topic: reference

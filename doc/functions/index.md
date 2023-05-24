@@ -1,5 +1,5 @@
 ---
-title: Functions - Azure Data Explorer
+title:  Functions
 description: This article describes Functions in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

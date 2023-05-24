@@ -591,6 +591,8 @@ items:
     href: format-timespanfunction.md
   - name: gamma()
     href: gammafunction.md
+  - name: geo_info_from_ip_address()
+    href: geo-info-from-ip-address-function.md
   - name: gettype()
     href: gettypefunction.md
   - name: getyear()

@@ -1,5 +1,5 @@
 ---
-title: zlib_compress_to_base64_string - Azure Data Explorer 
+title:  zlib_compress_to_base64_string 
 description: This article describes the zlib_compress_to_base64_string() command in Azure Data Explorer.
 ms.reviewer: elgevork
 ms.topic: reference

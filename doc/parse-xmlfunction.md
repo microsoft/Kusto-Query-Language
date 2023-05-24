@@ -1,5 +1,5 @@
 ---
-title: parse_xml() - Azure Data Explorer
+title:  parse_xml()
 description: Learn how to use the parse_xml() function to return a dynamic object that is determined by the value of XML.
 ms.reviewer: alexans
 ms.topic: reference

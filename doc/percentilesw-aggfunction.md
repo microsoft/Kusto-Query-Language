@@ -1,5 +1,5 @@
 ---
-title: percentilew(), percentilesw() - Azure Data Explorer
+title:  percentilew(), percentilesw()
 description: Learn how to use the percentilew(), percentilesw() functions to calculate weighted percentiles in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

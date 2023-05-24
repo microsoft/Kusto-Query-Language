@@ -1,15 +1,15 @@
 ---
-title: Analyze time series data using Azure Data Explorer
-description: Learn how to use Azure Data Explorer to analyze time series data.
+title: Analyze time series data
+description: Learn how to analyze time series data.
 ms.reviewer: adieldar
 ms.topic: how-to
-ms.date: 02/20/2023
+ms.date: 05/01/2023
 ---
-# Time series analysis in Azure Data Explorer
+# Time series analysis
 
-Azure Data Explorer (ADX) performs on-going collection of telemetry data from cloud services or IoT devices. This data can be analyzed for various insights such as monitoring service health, physical production processes, and usage trends. Analysis is done on time series of selected metrics to find a deviation in the pattern compared to its typical baseline pattern.
-ADX contains native support for creation, manipulation, and analysis of multiple time series.
-In this article, learn how Azure Data Explorer is used to create and analyze **thousands of time series in seconds**, enabling near real-time monitoring solutions and workflows.
+Cloud services and IoT devices generate telemetry data that can be used to gain insights such as monitoring service health, physical production processes, and usage trends. Performing time series analysis is one way to identify deviations in the pattern of these metrics compared to their typical baseline pattern.
+
+Kusto Query Language (KQL) contains native support for creation, manipulation, and analysis of multiple time series. In this article, learn how KQL is used to create and analyze thousands of time series in seconds, enabling near real-time monitoring solutions and workflows.
 
 ## Time series creation
 
@@ -66,8 +66,7 @@ In the table above, we have three partitions. We can create a separate time seri
 
 ## Time series analysis functions
 
-In this section, we'll perform typical series processing functions.
-Once a set of time series is created, Azure Data Explorer supports a growing list of functions to process and analyze them. For more information, see [Time series analysis in Azure Data Explorer](time-series-analysis.md). We'll describe a few representative functions for processing and analyzing time series.
+In this section, we'll perform typical series processing functions. Once a set of time series is created, KQL supports a growing list of functions to process and analyze them. We'll describe a few representative functions for processing and analyzing time series.
 
 ### Filtering
 
@@ -284,11 +283,11 @@ demo_many_series1
 | Loc 15 | 37 | 1151 | -102743.910227889 |
 | Loc 13 | 37 | 1249 | -86303.2334644601 |
 
-In less than two minutes, Azure Data Explorer analyzed close to 20,000 time series and detected two abnormal time series in which the read count suddenly dropped.
+In less than two minutes, close to 20,000 time series were analyzed and two abnormal time series in which the read count suddenly dropped were detected.
 
-These advanced capabilities combined with Azure Data Explorer fast performance supply a unique and powerful solution for time series analysis.
+These advanced capabilities combined with fast performance supply a unique and powerful solution for time series analysis.
 
 ## Next steps
 
-- Learn about [Time series anomaly detection and forecasting](./anomaly-detection.md) in Azure Data Explorer.
-- Learn about [Machine learning capabilities](./machine-learning-clustering.md) in Azure Data Explorer.
+- Learn about [Anomaly detection and forecasting](./anomaly-detection.md) with KQL.
+- Learn about [Machine learning capabilities](./machine-learning-clustering.md) with KQL.

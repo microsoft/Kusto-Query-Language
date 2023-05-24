@@ -1,5 +1,5 @@
 ---
-title: where operator - Azure Data Explorer
+title:  where operator
 description: Learn how to use the where operator to filter a table to the subset of rows that satisfy a predicate.
 ms.reviewer: alexans
 ms.topic: reference

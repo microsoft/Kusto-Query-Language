@@ -1,5 +1,5 @@
 ---
-title: make_bag() (aggregation function) - Azure Data Explorer
+title:  make_bag() (aggregation function)
 description: Learn how to use the make_bag() aggregation function to create a dynamic JSON property bag.
 ms.reviewer: alexans
 ms.topic: reference

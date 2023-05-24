@@ -1,5 +1,5 @@
 ---
-title: series_pearson_correlation() - Azure Data Explorer
+title:  series_pearson_correlation()
 description: Learn how to use the series_pearson_correlation() function to calculate the pearson correlation coefficient of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

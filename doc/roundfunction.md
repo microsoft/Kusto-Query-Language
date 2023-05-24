@@ -1,5 +1,5 @@
 ---
-title: round() - Azure Data Explorer
+title:  round()
 description: Learn how to use the round() function to round the number to the specified precision.
 ms.reviewer: alexans
 ms.topic: reference

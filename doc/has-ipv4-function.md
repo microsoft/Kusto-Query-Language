@@ -1,5 +1,5 @@
 ---
-title: has_ipv4() - Azure Data Explorer
+title:  has_ipv4()
 description: Learn how to use the has_ipv4() function to check if a specified IPv4 address appears in the text.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: series_fill_linear() - Azure Data Explorer
+title:  series_fill_linear()
 description: Learn how to use the series_fill_linear() function to linearly interpolate missing values in a series.
 ms.reviewer: alexans
 ms.topic: reference

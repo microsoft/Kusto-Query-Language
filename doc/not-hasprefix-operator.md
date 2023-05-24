@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive !hasprefix string operator - Azure Data Explorer
+title:  The case-insensitive !hasprefix string operator
 description: Learn how to use the !hasprefix operator to filter records for data that doesn't include a case-insensitive prefix.
 ms.reviewer: alexans
 ms.topic: reference

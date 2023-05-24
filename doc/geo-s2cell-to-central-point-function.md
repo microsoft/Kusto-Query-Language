@@ -1,5 +1,5 @@
 ---
-title: geo_s2cell_to_central_point() - Azure Data Explorer
+title:  geo_s2cell_to_central_point()
 description: Learn how to use the geo_s2cell_to_central_point() function to calculate the geospatial coordinates that represent the center of an S2 cell.
 ms.reviewer: mbrichko
 ms.topic: reference

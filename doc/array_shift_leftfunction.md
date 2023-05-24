@@ -1,5 +1,5 @@
 ---
-title: array_shift_left() - Azure Data Explorer
+title:  array_shift_left()
 description: Learn how to use the array_shift_left() function to shift the values inside a dynamic array to the left.
 ms.reviewer: alexans
 ms.topic: reference

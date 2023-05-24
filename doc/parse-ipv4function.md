@@ -1,5 +1,5 @@
 ---
-title: parse_ipv4() - Azure Data Explorer
+title:  parse_ipv4()
 description: Learn how to use the parse_ipv4() function to convert an IPv4 string to a long number in big-endian order.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: count operator - Azure Data Explorer
+title:  count operator
 description: Learn how to use the count operator to return the number of records in the input record set.
 ms.reviewer: alexans
 ms.topic: reference

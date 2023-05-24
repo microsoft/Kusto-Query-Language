@@ -1,5 +1,5 @@
 ---
-title: series_cos() - Azure Data Explorer
+title:  series_cos()
 description: Learn how to use the series_cos() function to calculate the element-wise cosine function of the numeric series input.
 ms.reviewer: alexans
 ms.topic: reference

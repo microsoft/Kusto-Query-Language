@@ -1,5 +1,5 @@
 ---
-title: The decimal data type - Azure Data Explorer
+title:  The decimal data type
 description: This article describes The decimal data type in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

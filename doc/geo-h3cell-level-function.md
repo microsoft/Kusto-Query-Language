@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_level() - Azure Data Explorer
+title:  geo_h3cell_level()
 description: Learn how to use the geo_h3cell_level() function to calculate the H3 cell resolution.
 ms.reviewer: mbrichko
 ms.topic: reference

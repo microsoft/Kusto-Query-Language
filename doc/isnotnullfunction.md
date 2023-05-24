@@ -1,5 +1,5 @@
 ---
-title: isnotnull() - Azure Data Explorer
+title:  isnotnull()
 description: Learn how to use the isnotnull() function to check if the argument isn't null.
 ms.reviewer: alexans
 ms.topic: reference

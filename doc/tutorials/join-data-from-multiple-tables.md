@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial: Join data from multiple tables - Azure Data Explorer'
+title:  'Tutorial: Join data from multiple tables'
 description: This tutorial shows how to join data from multiple tables using the Kusto Query Language.
 ms.topic: tutorial
 ms.date: 03/06/2023

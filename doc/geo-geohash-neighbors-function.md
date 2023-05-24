@@ -1,5 +1,5 @@
 ---
-title: geo_geohash_neighbors() - Azure Data Explorer
+title:  geo_geohash_neighbors()
 description: Learn how to use the geo_geohash_neighbors() function to calculate geohash neighbors.
 ms.reviewer: mbrichko
 ms.topic: reference

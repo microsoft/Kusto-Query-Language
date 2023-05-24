@@ -1,5 +1,5 @@
 ---
-title: User-defined functions - Azure Data Explorer
+title:  User-defined functions
 description: This article describes user-defined functions (scalar and views) in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

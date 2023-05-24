@@ -1,15 +1,15 @@
 ---
-title: fork operator - Azure Data Explorer
+title:  fork operator
 description: Learn how to use the fork operator to run multiple consumer operators in parallel.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 03/15/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # fork operator
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Runs multiple consumer operators in parallel.
 

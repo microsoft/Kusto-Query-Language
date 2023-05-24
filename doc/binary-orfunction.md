@@ -1,5 +1,5 @@
 ---
-title: binary_or() - Azure Data Explorer
+title:  binary_or()
 description: Learn how to use the bianry_or() function to perform a bitwise OR operation of the two values.
 ms.reviewer: alexans
 ms.topic: reference

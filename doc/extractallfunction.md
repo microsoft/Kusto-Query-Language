@@ -1,5 +1,5 @@
 ---
-title: extract_all() - Azure Data Explorer
+title:  extract_all()
 description: Lean how to use the extract_all() to extract all matches for a regular expression from a source string.
 ms.reviewer: alexans
 ms.topic: reference

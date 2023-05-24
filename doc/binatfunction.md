@@ -1,5 +1,5 @@
 ---
-title: bin_at() - Azure Data Explorer
+title:  bin_at()
 description: Learn how to use the bin_at() function to round values down to a fixed-size bin. 
 ms.reviewer: alexans
 ms.topic: reference

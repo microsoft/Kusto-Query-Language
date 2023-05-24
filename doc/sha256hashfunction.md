@@ -1,5 +1,5 @@
 ---
-title: hash_sha256() - Azure Data Explorer
+title:  hash_sha256()
 description: Learn how to use the hash_sha256() function to return a sha256 hash value of the source input.
 ms.reviewer: alexans
 ms.topic: reference

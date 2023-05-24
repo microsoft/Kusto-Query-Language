@@ -1,5 +1,5 @@
 ---
-title: dayofweek() - Azure Data Explorer
+title:  dayofweek()
 description: Learn how to use the dayofweek() function to return the 'timespan' since the preceding Sunday.
 ms.reviewer: alexans
 ms.topic: reference

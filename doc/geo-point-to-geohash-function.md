@@ -1,5 +1,5 @@
 ---
-title: geo_point_to_geohash() - Azure Data Explorer
+title:  geo_point_to_geohash()
 description: Learn how to use the geo_point_to_geohash() function to calculate the geohash string value of a geographic location.
 ms.reviewer: mbrichko
 ms.topic: reference

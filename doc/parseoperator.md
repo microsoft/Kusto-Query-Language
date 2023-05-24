@@ -1,5 +1,5 @@
 ---
-title: parse operator - Azure Data Explorer
+title:  parse operator
 description: Learn how to use the parse operator to parse the value of a string expression into one or more calculated columns.
 ms.reviewer: alexans
 ms.topic: reference

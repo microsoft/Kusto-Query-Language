@@ -1,5 +1,5 @@
 ---
-title: week_of_year() - Azure Data Explorer
+title:  week_of_year()
 description: Learn how to use the week_of_year() function to get the integer representation of the week.
 ms.reviewer: alexans
 ms.topic: reference

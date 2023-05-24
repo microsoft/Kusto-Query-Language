@@ -1,5 +1,5 @@
 ---
-title: series_ifft() - Azure Data Explorer
+title:  series_ifft()
 description: Learn how to use the series_ifft() function to apply the Inverse Fast Fourier Transform (IFFT) on a series.
 ms.reviewer: adieldar
 ms.topic: reference

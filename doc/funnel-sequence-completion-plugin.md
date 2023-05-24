@@ -1,5 +1,5 @@
 ---
-title: funnel_sequence_completion plugin - Azure Data Explorer
+title:  funnel_sequence_completion plugin
 description: Learn how to use the funnel_sequence_completion plugin to calculate a funnel of completed sequence steps while comparing different time periods.
 ms.reviewer: alexans
 ms.topic: reference

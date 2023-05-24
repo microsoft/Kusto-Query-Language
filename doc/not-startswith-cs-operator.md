@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive !startswith_cs string operator - Azure Data Explorer
+title:  The case-sensitive !startswith_cs string operator
 description: Learn how to use the !startswith_cs string operator to filter records for data that doesn't start with a case-sensitive search string.
 ms.reviewer: alexans
 ms.topic: reference

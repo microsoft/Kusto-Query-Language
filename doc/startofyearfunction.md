@@ -1,5 +1,5 @@
 ---
-title: startofyear() - Azure Data Explorer
+title:  startofyear()
 description: Learn how to use the startofyear() function to return the start of the year for the given date.
 ms.reviewer: alexans
 ms.topic: reference

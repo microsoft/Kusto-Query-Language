@@ -1,5 +1,5 @@
 ---
-title: unixtime_milliseconds_todatetime() - Azure Data Explorer
+title:  unixtime_milliseconds_todatetime()
 description: Learn how to use the unixtime_milliseconds_todatetime() function to convert unix-epoch milliseconds to UTC datetime.
 ms.reviewer: alexans
 ms.topic: reference

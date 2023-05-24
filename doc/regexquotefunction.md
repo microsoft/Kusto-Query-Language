@@ -1,5 +1,5 @@
 ---
-title: regex_quote() - Azure Data Explorer
+title:  regex_quote()
 description: Learn how to use the regex_quote() function to return a string that escapes all regular expression characters.
 ms.reviewer: shanisolomon
 ms.topic: reference

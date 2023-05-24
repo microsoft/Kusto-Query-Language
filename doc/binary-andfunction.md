@@ -1,5 +1,5 @@
 ---
-title: binary_and() - Azure Data Explorer
+title:  binary_and()
 description: Learn how to use the binary_and() function to compare bits in corresponding operands. 
 ms.reviewer: alexans
 ms.topic: reference

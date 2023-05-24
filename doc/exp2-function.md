@@ -1,5 +1,5 @@
 ---
-title: exp2() - Azure Data Explorer
+title:  exp2()
 description: Learn how to use the exp2() function to return the base-2 exponential value of x.
 ms.reviewer: alexans
 ms.topic: reference

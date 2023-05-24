@@ -1,5 +1,5 @@
 ---
-title: binary_shift_left() - Azure Data Explorer
+title:  binary_shift_left()
 description: Learn how to use the binary_shift_left() function to perform a binary shift left operation on a pair of numbers. 
 ms.reviewer: alexans
 ms.topic: reference

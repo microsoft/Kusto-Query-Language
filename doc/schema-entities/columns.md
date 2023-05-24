@@ -1,5 +1,5 @@
 ---
-title: Columns - Azure Data Explorer
+title:  Columns
 description: This article describes Columns in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: row_rank_min() - Azure Data Explorer
+title:  row_rank_min()
 description: Learn how to use the row_rank_min() function to return the current row's minimal rank in a serialized row set.
 ms.reviewer: royo
 ms.topic: reference

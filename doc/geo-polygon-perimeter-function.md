@@ -1,5 +1,5 @@
 ---
-title: geo_polygon_perimeter() - Azure Data Explorer
+title:  geo_polygon_perimeter()
 description: Learn how to use the geo_polygon_perimeter() function to calculate the length of the boundary of a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

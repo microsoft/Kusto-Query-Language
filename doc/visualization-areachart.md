@@ -1,11 +1,11 @@
 ---
-title: Area chart visualization - Azure Data Explorer
+title:  Area chart visualization
 description: This article describes the area chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/26/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Area chart
 
@@ -25,7 +25,7 @@ The area chart visual shows a time-series relationship. The first column of the 
 | *T* | string | &check; | Input table name.
 | *propertyName*, *propertyValue* | string | | A comma-separated list of key-value property pairs. See [supported properties](#supported-properties).|
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 ### Supported properties
 

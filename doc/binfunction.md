@@ -1,5 +1,5 @@
 ---
-title: bin() - Azure Data Explorer
+title:  bin()
 description: Learn how to use the bin() function to round values down to an integer multiple of a given bin size. 
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: strlen() - Azure Data Explorer
+title:  strlen()
 description: Learn how to use the strlen() function to measure the length of the input string.
 ms.reviewer: alexans
 ms.topic: reference

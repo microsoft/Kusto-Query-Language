@@ -1,15 +1,15 @@
 ---
-title: Card visualization - Azure Data Explorer
+title:  Card visualization
 description: This article describes the card visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/24/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Card
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The card visual only shows one element. If there are multiple columns and rows in the output, the first result record is treated as set of scalar values and shows as a card.
 

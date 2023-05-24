@@ -1,5 +1,5 @@
 ---
-title: series_greater() - Azure Data Explorer
+title:  series_greater()
 description: Learn how to use the series_greater() function to calculate the element-wise greater (`>`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

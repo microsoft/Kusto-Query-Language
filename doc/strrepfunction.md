@@ -1,5 +1,5 @@
 ---
-title: strrep() - Azure Data Explorer
+title:  strrep()
 description: Learn how to use the strrep() function to repeat the input value.
 ms.reviewer: alexans
 ms.topic: reference

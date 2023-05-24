@@ -1,5 +1,5 @@
 ---
-title: ceiling() - Azure Data Explorer
+title:  ceiling()
 description: Learn how to use the ceiling() function to calculate the smallest integer greater than, or equal to, the specified numeric expression.
 ms.reviewer: alexans
 ms.topic: reference

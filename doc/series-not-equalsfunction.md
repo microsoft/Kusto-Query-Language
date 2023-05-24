@@ -1,5 +1,5 @@
 ---
-title: series_not_equals() - Azure Data Explorer
+title:  series_not_equals()
 description: Learn how to use the series_not_equals() function to calculate the element-wise not equals (`!=`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

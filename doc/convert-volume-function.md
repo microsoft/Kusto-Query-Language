@@ -1,5 +1,5 @@
 ---
-title: convert_volume() - Azure Data Explorer
+title:  convert_volume()
 description: Learn how to use the convert_volume() function to convert a volume input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial: Learn common Kusto Query Language operators - Azure Data Explorer'
+title:  'Tutorial: Learn common Kusto Query Language operators'
 description: This tutorial describes how to write queries using common operators in the Kusto Query Language to meet common query needs.
 ms.topic: tutorial
 ms.date: 03/06/2023

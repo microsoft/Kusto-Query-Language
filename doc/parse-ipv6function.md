@@ -1,5 +1,5 @@
 ---
-title: parse_ipv6() - Azure Data Explorer
+title:  parse_ipv6()
 description: Learn how to use the parse_ipv6() function to convert IPv6 or IPv4 strings to a canonical IPv6 string representation. 
 ms.reviewer: alexans
 ms.topic: reference

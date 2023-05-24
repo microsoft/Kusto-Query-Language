@@ -1,5 +1,5 @@
 ---
-title: materialized_view() (scope function) - Azure Data Explorer
+title:  materialized_view() (scope function)
 description: Learn how to use the materialized_view() function to reference the materialized part of a materialized view.
 ms.reviewer: yifats
 ms.topic: reference

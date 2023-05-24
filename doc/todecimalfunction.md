@@ -1,5 +1,5 @@
 ---
-title: todecimal() - Azure Data Explorer
+title:  todecimal()
 description: Learn how to use the todecimal() function to convert the input expression to a decimal number representation. 
 ms.reviewer: alexans
 ms.topic: reference

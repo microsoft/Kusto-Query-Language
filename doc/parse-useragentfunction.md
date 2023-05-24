@@ -1,5 +1,5 @@
 ---
-title: parse_user_agent() - Azure Data Explorer
+title:  parse_user_agent()
 description: Learn how to use the parse_user_agent() to return a dynamic object that contains information about the user-agent.
 ms.reviewer: alexans
 ms.topic: reference

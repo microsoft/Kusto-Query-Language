@@ -1,5 +1,5 @@
 ---
-title: series_asin() - Azure Data Explorer
+title:  series_asin()
 description: Learn how to use the series_asin() function to calculate the element-wise arcsine function of the numeric series input.
 ms.reviewer: alexans
 ms.topic: reference

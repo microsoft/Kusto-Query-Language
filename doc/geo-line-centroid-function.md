@@ -1,5 +1,5 @@
 ---
-title: geo_line_centroid() - Azure Data Explorer
+title:  geo_line_centroid()
 description: Learn how to use the geo_line_centroid() function to calculate the centroid of a line or a multiline on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: trim_start() - Azure Data Explorer
+title:  trim_start()
 description: Learn how to use the trim_start() function to remove the leading match of the specified regular expression.
 ms.reviewer: alexans
 ms.topic: reference

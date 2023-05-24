@@ -1,5 +1,5 @@
 ---
-title: sample operator - Azure Data Explorer
+title:  sample operator
 description: Learn how to use the sample operator to return up to the specified number of rows from the input table.
 ms.reviewer: alexans
 ms.topic: reference

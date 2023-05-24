@@ -1,5 +1,5 @@
 ---
-title: binary_shift_right() - Azure Data Explorer
+title:  binary_shift_right()
 description: Learn how to use the binary_shift_right() function to perform a binary shift right operation on a pair of numbers.
 ms.reviewer: alexans
 ms.topic: reference

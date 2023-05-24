@@ -1,5 +1,5 @@
 ---
-title: bag_merge() - Azure Data Explorer 
+title:  bag_merge() 
 description: Learn how to use the bag_merge() function to merge property bags.
 ms.reviewer: elgevork
 ms.topic: reference

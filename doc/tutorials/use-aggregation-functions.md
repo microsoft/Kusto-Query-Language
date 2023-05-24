@@ -1,8 +1,8 @@
 ---
-title: 'Tutorial: Use aggregation functions in Kusto Query Language - Azure Data Explorer'
+title:  'Tutorial: Use aggregation functions in Kusto Query Language'
 description: This tutorial describes how to use aggregation functions in the Kusto Query Language.
 ms.topic: tutorial
-ms.date: 03/28/2023
+ms.date: 05/16/2023
 ---
 
 # Tutorial: Use aggregation functions
@@ -226,7 +226,7 @@ StormEvents
 |...|...|...|...|
 
 > [!NOTE]
-> When calculating percentages, convert at least one of the integer values in the division with [todouble() or toreal()](../todoublefunction.md). This will ensure that you don't get truncated results due to integer division.
+> When calculating percentages, convert at least one of the integer values in the division with [todouble() or toreal()](../todoublefunction.md). This will ensure that you don't get truncated results due to integer division. For more information, see [Type rules for arithmetic operations](../numoperators.md#type-rules-for-arithmetic-operations).
 
 ### Calculate percentage based on table size
 

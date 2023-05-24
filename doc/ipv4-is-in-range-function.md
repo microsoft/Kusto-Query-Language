@@ -1,5 +1,5 @@
 ---
-title: ipv4_is_in_range() - Azure Data Explorer
+title:  ipv4_is_in_range()
 description: Learn how to use the ipv4_is_in_range() function to check if the IPv4 string address is in the IPv4-prefix notation range.
 ms.reviewer: alexans
 ms.topic: reference

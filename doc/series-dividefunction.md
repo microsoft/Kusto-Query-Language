@@ -1,5 +1,5 @@
 ---
-title: series_divide() - Azure Data Explorer
+title:  series_divide()
 description: Learn how to use the series_divide() function to calculate the element-wise division of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

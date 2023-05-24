@@ -1,5 +1,5 @@
 ---
-title: min_of() - Azure Data Explorer
+title:  min_of()
 description: Learn how to use the min_of() function to return the minimum value of all argument expressions.
 ms.reviewer: alexans
 ms.topic: reference

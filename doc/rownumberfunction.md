@@ -1,5 +1,5 @@
 ---
-title: row_number() - Azure Data Explorer
+title:  row_number()
 description: Learn how to use the row_number() to return the current row's index in a serialized row set.
 ms.reviewer: alexans
 ms.topic: reference

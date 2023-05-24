@@ -1,5 +1,5 @@
 ---
-title: tdigest_merge() (aggregation functions) - Azure Data Explorer
+title:  tdigest_merge() (aggregation functions)
 description: Learn how to use the tdigest_merge() aggregation function to merge tdigest results across the group.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: countof() - Azure Data Explorer
+title:  countof()
 description: Learn how to use the countof() function to count the occurrences of a substring in a string.
 ms.reviewer: alexans
 ms.topic: reference

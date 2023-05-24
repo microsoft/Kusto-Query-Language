@@ -1,5 +1,5 @@
 ---
-title: hll_merge() - Azure Data Explorer
+title:  hll_merge()
 description: Learn how to use the hll_merge() function toe merge HLL results.
 ms.reviewer: alexans
 ms.topic: reference

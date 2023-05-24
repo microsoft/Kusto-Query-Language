@@ -1,5 +1,5 @@
 ---
-title: log10() - Azure Data Explorer
+title:  log10()
 description: Learn how to use the log10() function to return the common (base-10) logarithm of the input.
 ms.reviewer: alexans
 ms.topic: reference

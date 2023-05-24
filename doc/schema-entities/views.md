@@ -1,5 +1,5 @@
 ---
-title: Views - Azure Data Explorer
+title:  Views
 description: This article describes views in Azure Data Explorer.
 ms.reviewer: zivc
 ms.topic: reference

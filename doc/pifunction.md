@@ -1,5 +1,5 @@
 ---
-title: pi() - Azure Data Explorer
+title:  pi()
 description: Learn how to use the pi() function to return the constant value of Pi.
 ms.reviewer: alexans
 ms.topic: reference

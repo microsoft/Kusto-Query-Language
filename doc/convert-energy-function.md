@@ -1,5 +1,5 @@
 ---
-title: convert_energy() - Azure Data Explorer
+title:  convert_energy()
 description: Learn how to use the convert_energy() function to convert an energy input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference

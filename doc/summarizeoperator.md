@@ -1,5 +1,5 @@
 ---
-title: summarize operator - Azure Data Explorer
+title:  summarize operator
 description: Learn how to use the summarize operator to produce a table that summarizes the content of the input table.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: loggamma() - Azure Data Explorer
+title:  loggamma()
 description: Learn how to use the loggamma() function to compute the log of the absolute value of the gamma function.
 ms.reviewer: alexans
 ms.topic: reference

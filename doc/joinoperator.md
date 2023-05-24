@@ -1,12 +1,12 @@
 ---
-title: join operator - Azure Data Explorer
+title:  join operator
 description: Learn how to use the join operator to merge the rows of two tables. 
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 03/12/2023
 ms.localizationpriority: high 
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # join operator
 
@@ -37,7 +37,7 @@ Merge the rows of two tables to form a new table by matching values of the speci
 
 ### Supported parameters
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |Parameters name |Values |Description  |
 |---|---|---|

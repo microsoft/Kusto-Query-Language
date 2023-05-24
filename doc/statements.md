@@ -1,15 +1,15 @@
 ---
-title: Query statements - Azure Data Explorer
+title:  Query statements
 description: This article lists the types of query statements.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 04/11/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Query statement types
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 A query consists of one or more **query statements**, delimited by a semicolon (`;`).
 At least one of these query statements must be a [tabular expression statement](./tabularexpressionstatements.md).

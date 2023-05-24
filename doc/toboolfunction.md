@@ -1,5 +1,5 @@
 ---
-title: tobool() - Azure Data Explorer
+title:  tobool()
 description: Learn how to use the tobool() function to convert an input to a boolean representation.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: isfinite() - Azure Data Explorer
+title:  isfinite()
 description: Learn how to use the isfinite() function to check if the input is a finite value.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: format_bytes() - Azure Data Explorer
+title:  format_bytes()
 description: Learn how to use the format_bytes() function to format a number as a string representing the data size in bytes.
 ms.reviewer: alexans
 ms.topic: reference

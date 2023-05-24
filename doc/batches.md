@@ -1,5 +1,5 @@
 ---
-title: Batches - Azure Data Explorer
+title:  Batches
 description: This article describes Batches in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

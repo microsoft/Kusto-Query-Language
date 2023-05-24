@@ -1,5 +1,5 @@
 ---
-title: array_sort_asc() - Azure Data Explorer
+title:  array_sort_asc()
 description: Learn how to use the array_sort_asc() function to sort arrays in ascending order.
 ms.reviewer: slneimer
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: activity_metrics plugin - Azure Data Explorer
+title:  activity_metrics plugin
 description: Learn how to use the activity_metrics plugin to calculate activity metrics using the current time window compared to the previous window.
 ms.reviewer: alexans
 ms.topic: reference

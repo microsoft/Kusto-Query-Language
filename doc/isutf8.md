@@ -1,5 +1,5 @@
 ---
-title: isutf8() - Azure Data Explorer
+title:  isutf8()
 description: Learn how to use the isutf8() function to check if the argument is a valid utf8 string.
 ms.reviewer: alexans
 ms.topic: reference

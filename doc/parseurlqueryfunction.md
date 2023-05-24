@@ -1,5 +1,5 @@
 ---
-title: parse_urlquery() - Azure Data Explorer
+title:  parse_urlquery()
 description: Learn how to use the parse_urlquery() function to return a dynamic object that contains the query parameters.
 ms.reviewer: alexans
 ms.topic: reference

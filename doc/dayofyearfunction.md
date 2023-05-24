@@ -1,5 +1,5 @@
 ---
-title: dayofyear() - Azure Data Explorer
+title:  dayofyear()
 description: Learn how to use the dayofyear() function to return the day number of the given year.
 ms.reviewer: alexans
 ms.topic: reference

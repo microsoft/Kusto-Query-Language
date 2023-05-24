@@ -1,15 +1,15 @@
 ---
-title: cursor_current() - Azure Data Explorer
+title:  cursor_current()
 description: Learn how to use the cursor_current() function to return a string type value.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 11/08/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # cursor_current()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Retrieves the current value of the cursor of the database in scope.
 

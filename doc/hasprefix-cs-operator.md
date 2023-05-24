@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive hasprefix_cs string operator - Azure Data Explorer
+title:  The case-sensitive hasprefix_cs string operator
 description: Learn how to use the hasprefix_cs operator to filter data with a case-sensitive prefix string.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,15 +1,15 @@
 ---
-title: cursor_after() - Azure Data Explorer
+title:  cursor_after()
 description: Learn how to use the cursor_after() function to compare the ingestion time of the records of a table against the database cursor time.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 11/27/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # cursor_after()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 A predicate run over the records of a table to compare their ingestion time against a database cursor.
 

@@ -1,5 +1,5 @@
 ---
-title: beta_cdf() - Azure Data Explorer
+title:  beta_cdf()
 description: Learn how to use the beta_cdf() function to return a standard beta cumulative distribution function.
 ms.reviewer: alexans
 ms.topic: reference

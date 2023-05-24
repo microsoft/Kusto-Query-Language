@@ -1,5 +1,5 @@
 ---
-title: row_cumsum() - Azure Data Explorer
+title:  row_cumsum()
 description: Learn how to use the row_cumsum() function to calculate the cumulative sum of a column in a serialized row set.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: cos() - Azure Data Explorer
+title:  cos()
 description: Learn how to use the cos() function to return the cosine of the input value.
 ms.reviewer: alexans
 ms.topic: reference

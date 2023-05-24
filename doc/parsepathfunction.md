@@ -1,5 +1,5 @@
 ---
-title: parse_path() - Azure Data Explorer
+title:  parse_path()
 description: Learn how to use the parse_path() function to parse a file path.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: series_less() - Azure Data Explorer
+title:  series_less()
 description: Learn how to use the series_less() function to calculate the element-wise less (`<`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

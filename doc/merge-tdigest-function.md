@@ -1,5 +1,5 @@
 ---
-title: merge_tdigest() - Azure Data Explorer
+title:  merge_tdigest()
 description: Learn how to use the merge_tdigest() function to merge columns.
 ms.reviewer: alexans
 ms.topic: reference

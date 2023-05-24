@@ -1,5 +1,5 @@
 ---
-title: trim() - Azure Data Explorer
+title:  trim()
 description: Learn how to use the trim() function to remove the leading and trailing match of the specified regular expression.
 ms.reviewer: alexans
 ms.topic: reference

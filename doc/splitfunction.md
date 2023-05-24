@@ -1,5 +1,5 @@
 ---
-title: split() - Azure Data Explorer
+title:  split()
 description: Learn how to use the split() function to split the source string according to a given delimiter.
 ms.reviewer: alexans
 ms.topic: reference

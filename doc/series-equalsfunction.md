@@ -1,5 +1,5 @@
 ---
-title: series_equals() - Azure Data Explorer
+title:  series_equals()
 description: Learn how to use the series_equals() function to calculate the element-wise equals (`==`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

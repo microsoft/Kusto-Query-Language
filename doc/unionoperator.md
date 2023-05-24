@@ -1,11 +1,11 @@
 ---
-title: union operator - Azure Data Explorer
+title:  union operator
 description: This article describes union operator in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 02/13/2020
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # union operator
 
@@ -20,7 +20,7 @@ Takes two or more tables and returns the rows of all of them.
 
 ## Parameters
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |Name|Type|Required|Description|
 |--|--|--|--|

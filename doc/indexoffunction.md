@@ -1,5 +1,5 @@
 ---
-title: indexof() - Azure Data Explorer 
+title:  indexof() 
 description: Learn how to use the indexof() function to report the zero-based index position of the input string.
 ms.reviewer: alexans
 ms.topic: reference

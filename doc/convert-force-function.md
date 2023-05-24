@@ -1,5 +1,5 @@
 ---
-title: convert_force() - Azure Data Explorer
+title:  convert_force()
 description: Learn how to use the convert_force() function to convert a force input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference

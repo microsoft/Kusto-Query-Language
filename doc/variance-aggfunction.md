@@ -1,5 +1,5 @@
 ---
-title: variance() (aggregation function) - Azure Data Explorer
+title:  variance() (aggregation function)
 description: Learn how to use the variance() aggregation function to calculate the sample variance of the expression across the group.
 ms.reviewer: alexans
 ms.topic: reference

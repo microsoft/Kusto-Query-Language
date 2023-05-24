@@ -1,5 +1,5 @@
 ---
-title: schema_merge plugin - Azure Data Explorer
+title:  schema_merge plugin
 description: Learn how to use the schema_merge plugin to merge tabular schema definitions into a unified schema.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: stdevif() (aggregation function) - Azure Data Explorer
+title:  stdevif() (aggregation function)
 description: Learn how to use the stdevif() function to calculate the standard deviation of an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

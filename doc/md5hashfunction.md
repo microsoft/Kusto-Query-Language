@@ -1,5 +1,5 @@
 ---
-title: hash_md5() - Azure Data Explorer
+title:  hash_md5()
 description: Learn how to use the hash_md5() function to return the MD5 hash value of the input.
 ms.reviewer: alexans
 ms.topic: reference

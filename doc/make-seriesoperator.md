@@ -1,5 +1,5 @@
 ---
-title: make-series operator - Azure Data Explorer
+title:  make-series operator
 description: Learn how to use the make-series operator to create a series of specified aggregated values along a specified axis. 
 ms.reviewer: alexans
 ms.topic: reference

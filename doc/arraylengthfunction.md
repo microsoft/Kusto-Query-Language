@@ -1,5 +1,5 @@
 ---
-title: array_length() - Azure Data Explorer
+title:  array_length()
 description: Learn how to use the array_length() function to calculate the number of elements in a dynamic array.
 ms.reviewer: alexans
 ms.topic: reference

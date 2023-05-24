@@ -1,5 +1,5 @@
 ---
-title: bag_keys() - Azure Data Explorer
+title:  bag_keys()
 description: Learn how to use the bag_keys() function to enumerate the root keys in a dynamic property bag object.
 ms.reviewer: alexans
 ms.topic: reference

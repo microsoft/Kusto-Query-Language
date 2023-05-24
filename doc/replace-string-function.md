@@ -1,5 +1,5 @@
 ---
-title: replace_string() - Azure Data Explorer
+title:  replace_string()
 description: Learn how to use the replace_string() function to replace all string matches with another string.
 ms.reviewer: alexans
 ms.topic: reference

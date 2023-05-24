@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_rings() - Azure Data Explorer
+title:  geo_h3cell_rings()
 description: Learn how to use the geo_h3cell_rings() function to calculate the H3 cell rings.
 ms.reviewer: mbrichko
 ms.topic: reference

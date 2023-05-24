@@ -1,5 +1,5 @@
 ---
-title: Scalar Functions - Azure Data Explorer 
+title:  Scalar Functions 
 description: Learn how to use scalar functions to perform calculations that return a single value.
 ms.reviewer: alexans
 ms.topic: reference
@@ -319,6 +319,7 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[format_ipv4_mask()](format-ipv4-mask-function.md)|Parses input with a netmask and returns string representing IPv4 address as CIDR notation.|
 |[ipv6_is_in_range()](ipv6-is-in-range-function.md)|Checks if an IPv6 string address is in IPv6-prefix notation range.|
 |[ipv6_is_in_any_range()](ipv6-is-in-any-range-function.md)|Checks if an IPv6 string address is in any of the IPv6-prefix notation ranges.|
+|[geo_info_from_ip_address()](geo-info-from-ip-address-function.md)|Retrieves geolocation information about IPv4 or IPv6 addresses.|
 
 ## IPv4 text match functions
 
@@ -360,16 +361,19 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[geo_intersection_2lines()](geo-intersection-2lines-function.md)|Calculates the intersection of two lines or multilines.|
 |[geo_intersection_2polygons()](geo-intersection-2polygons-function.md)|Calculates the intersection of two polygons or multipolygons.|
 |[geo_intersection_line_with_polygon()](geo-intersection-line-with-polygon-function.md)|Calculates the intersection of line or multiline with polygon or multipolygon.|
+|[geo_point_buffer()](geo-point-buffer-function.md)|Calculates polygon that contains all points within the given radius of the point on Earth.|
 |[geo_point_in_circle()](geo-point-in-circle-function.md)|Calculates whether the geospatial coordinates are inside a circle on Earth.|
 |[geo_point_in_polygon()](geo-point-in-polygon-function.md)|Calculates whether the geospatial coordinates are inside a polygon or a multipolygon on Earth.|
 |[geo_point_to_geohash()](geo-point-to-geohash-function.md)|Calculates the Geohash string value for a geographic location.|
 |[geo_point_to_s2cell()](geo-point-to-s2cell-function.md)|Calculates the S2 Cell token string value for a geographic location.|
 |[geo_point_to_h3cell()](geo-point-to-h3cell-function.md)|Calculates the H3 Cell token string value for a geographic location.|
+|[geo_line_buffer()](geo-line-buffer-function.md)|Calculates polygon or multipolygon that contains all points within the given radius of the input line or multiline on Earth.|
 |[geo_line_centroid()](geo-line-centroid-function.md)|Calculates the centroid of line or a multiline on Earth.|
 |[geo_line_densify()](geo-line-densify-function.md)|Converts planar line edges to geodesics by adding intermediate points.|
 |[geo_line_length()](geo-line-length-function.md)|Calculates the total length of line or a multiline on Earth.|
 |[geo_line_simplify()](geo-line-simplify-function.md)|Simplifies line or a multiline by replacing nearly straight chains of short edges with a single long edge on Earth.|
 |[geo_polygon_area()](geo-polygon-area-function.md)|Calculates the area of polygon or a multipolygon on Earth.|
+|[geo_polygon_buffer()](geo-polygon-buffer-function.md)|Calculates polygon or multipolygon that contains all points within the given radius of the input polygon or multipolygon on Earth.|
 |[geo_polygon_centroid()](geo-polygon-centroid-function.md)|Calculates the centroid of polygon or a multipolygon on Earth.|
 |[geo_polygon_densify()](geo-polygon-densify-function.md)|Converts polygon or multipolygon planar edges to geodesics by adding intermediate points.|
 |[geo_polygon_perimeter()](geo-polygon-perimeter-function.md)|Calculates the length of the boundary of polygon or a multipolygon on Earth.|

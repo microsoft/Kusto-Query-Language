@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_to_polygon() - Azure Data Explorer
+title:  geo_h3cell_to_polygon()
 description: Learn how to use the geo_h3cell_to_polygon() function to calculate the polygon that represents the H3 Cell rectangular area.
 ms.reviewer: mbrichko
 ms.topic: reference

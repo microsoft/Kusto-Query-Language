@@ -1,5 +1,5 @@
 ---
-title: geo_point_in_circle() - Azure Data Explorer
+title:  geo_point_in_circle()
 description: Learn how to use the geo_point_in_circle() function to check if the geospatial coordinates are inside a circle on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

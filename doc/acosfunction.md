@@ -1,5 +1,5 @@
 ---
-title: acos() - Azure Data Explorer
+title:  acos()
 description: Learn how to use the acos() function to calculate the angle of the cosine input.
 ms.reviewer: alexans
 ms.topic: reference

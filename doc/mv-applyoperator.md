@@ -1,5 +1,5 @@
 ---
-title: mv-apply operator - Azure Data Explorer
+title:  mv-apply operator
 description: Learn how to use the mv-apply operator to apply a subquery to each record and union the results of each subquery.
 ms.reviewer: alexans
 ms.topic: reference

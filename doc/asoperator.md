@@ -1,5 +1,5 @@
 ---
-title: as operator - Azure Data Explorer
+title:  as operator
 description: Learn how to use the as operator to bind a name to the operator's input tabular expression.
 ms.reviewer: alexans
 ms.topic: reference

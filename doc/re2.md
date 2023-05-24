@@ -1,5 +1,5 @@
 ---
-title: Regular expressions - Azure Data Explorer
+title:  Regular expressions
 description: This article lists the KQL functions that use a regular expression to perform matching, selection, and extraction.
 ms.reviewer: alexans
 ms.topic: reference

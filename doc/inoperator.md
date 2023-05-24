@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive in~ string operator - Azure Data Explorer
+title:  The case-insensitive in~ string operator
 description: Learn how to use the in~ operator to filter data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: case() - Azure Data Explorer
+title:  case()
 description: Learn how to use the case() function to evaluate a list of predicates and return the first expression for which the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

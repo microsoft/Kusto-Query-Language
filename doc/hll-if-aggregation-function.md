@@ -1,5 +1,5 @@
 ---
-title: hll_if() (aggregation function) - Azure Data Explorer
+title:  hll_if() (aggregation function)
 description: Learn how to use the hll_if() function to calculate the intermediate results of the dcount() function.
 ms.reviewer: ziham
 ms.topic: reference

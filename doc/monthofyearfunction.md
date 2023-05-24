@@ -1,5 +1,5 @@
 ---
-title: monthofyear() - Azure Data Explorer
+title:  monthofyear()
 description: Learn how to use the monthofyear() function to get the integer representation of the month.
 ms.reviewer: alexans
 ms.topic: reference

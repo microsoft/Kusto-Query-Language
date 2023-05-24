@@ -1,5 +1,5 @@
 ---
-title: set_intersect() - Azure Data Explorer
+title:  set_intersect()
 description: Learn how to use the set_intersect() function to create a set of the distinct values that are in all the array inputs.
 ms.reviewer: alexans
 ms.topic: reference

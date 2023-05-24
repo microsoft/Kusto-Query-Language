@@ -1,5 +1,5 @@
 ---
-title: getyear() - Azure Data Explorer
+title:  getyear()
 description: Learn how tow use the getyear() function to return the year of the `datetime` input.
 ms.reviewer: alexans
 ms.topic: reference

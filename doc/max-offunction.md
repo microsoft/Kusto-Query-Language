@@ -1,5 +1,5 @@
 ---
-title: max_of() - Azure Data Explorer
+title:  max_of()
 description: Learn how to use the max_of() function to return the maximum value of all argument expressions.
 ms.reviewer: alexans
 ms.topic: reference

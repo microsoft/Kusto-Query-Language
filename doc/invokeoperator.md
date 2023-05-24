@@ -1,5 +1,5 @@
 ---
-title: invoke operator - Azure Data Explorer
+title:  invoke operator
 description: Learn how to use the  invoke operator to invoke a lambda expression that receives the source of `invoke` as a tabular parameter argument
 ms.reviewer: alexans
 ms.topic: reference

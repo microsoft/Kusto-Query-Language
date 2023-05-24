@@ -1,5 +1,5 @@
 ---
-title: geo_point_in_polygon() - Azure Data Explorer
+title:  geo_point_in_polygon()
 description: Learn how to use the geo_point_in_polygon() function to check if the geospatial coordinates are inside a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

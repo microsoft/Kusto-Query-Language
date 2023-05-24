@@ -1,5 +1,5 @@
 ---
-title: count() (aggregation function) - Azure Data Explorer
+title:  count() (aggregation function)
 description: Learn how to use the count() function to count the number of records in a group.
 ms.reviewer: alexans
 ms.topic: reference

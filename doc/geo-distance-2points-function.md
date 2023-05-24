@@ -1,5 +1,5 @@
 ---
-title: geo_distance_2points() - Azure Data Explorer
+title:  geo_distance_2points()
 description: Learn how to use the geo_distance_2points() function to calculate the shortest distance between two geospatial coordinates on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

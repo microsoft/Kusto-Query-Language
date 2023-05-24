@@ -1,11 +1,11 @@
 ---
-title: Kusto partition & compose intermediate aggregation results - Azure Data Explorer
+title:  Kusto partition & compose intermediate aggregation results
 description: Learn how to use the hll() and tdigest() functions to partition and compose intermediate results of aggregations.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 03/02/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Using hll() and tdigest()
 
@@ -136,7 +136,7 @@ PageViewsHllTDigest
 
 Kusto limits are reached with datasets that are too large, where you need to run periodic queries over the dataset, but run the regular queries to calculate [`percentile()`](percentiles-aggfunction.md) or [`dcount()`](dcount-aggfunction.md) over large datasets.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 To solve this problem, newly added data may be added to a temp table as `hll` or `tdigest` values using [`hll()`](hll-aggfunction.md) when the required operation is `dcount` or [`tdigest()`](tdigest-aggfunction.md) when the required operation is percentile using [`set/append`](../../ingest-data-overview.md) or [`update policy`](../management/updatepolicy.md). In this case, the intermediate results of `dcount` or `tdigest` are saved into another dataset, which should be smaller than the target large one.
 

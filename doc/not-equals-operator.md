@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive !~ (not equals) string operator - Azure Data Explorer
+title:  The case-insensitive !~ (not equals) string operator
 description: Learn how to use the !~ (not equals) string operator to filter records for data that doesn't match a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference

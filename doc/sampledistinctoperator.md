@@ -1,5 +1,5 @@
 ---
-title: sample-distinct operator - Azure Data Explorer
+title:  sample-distinct operator
 description: Learn how to use the sample-distinct operator to return a column that contains up to the specified number of distinct values of the requested columns.
 ms.reviewer: alexans
 ms.topic: reference

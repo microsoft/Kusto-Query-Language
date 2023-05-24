@@ -1,5 +1,5 @@
 ---
-title: series_fit_2lines_dynamic() - Azure Data Explorer
+title:  series_fit_2lines_dynamic()
 description: Learn how to use the series_fit_2lines_dynamic() function to apply two segments linear regression on a dynamic numerical array.
 ms.reviewer: alexans
 ms.topic: reference

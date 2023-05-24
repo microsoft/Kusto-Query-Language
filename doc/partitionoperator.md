@@ -1,5 +1,5 @@
 ---
-title: partition operator - Azure Data Explorer
+title:  partition operator
 description: Learn how to use the partition operator to partition the records of the input table into multiple subtables.
 ms.reviewer: alexans
 ms.topic: reference

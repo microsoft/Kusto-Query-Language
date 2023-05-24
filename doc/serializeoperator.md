@@ -1,5 +1,5 @@
 ---
-title: serialize operator - Azure Data Explorer
+title:  serialize operator
 description: Learn how to use the serialize operator to mark the input row set as serialized and ready for window functions.
 ms.reviewer: alexans
 ms.topic: reference

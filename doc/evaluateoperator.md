@@ -1,5 +1,5 @@
 ---
-title: evaluate plugin operator - Azure Data Explorer
+title:  evaluate plugin operator
 description: Learn how to use the evaluate plugin operator to invoke plugins.
 ms.reviewer: alexans
 ms.topic: reference

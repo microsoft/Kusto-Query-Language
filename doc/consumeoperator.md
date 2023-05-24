@@ -1,5 +1,5 @@
 ---
-title: consume operator - Azure Data Explorer
+title:  consume operator
 description: Learn how to use the consume operator to consume the tabular data stream handed to the operator.
 ms.reviewer: alexans
 ms.topic: reference

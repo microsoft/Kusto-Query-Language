@@ -1,5 +1,5 @@
 ---
-title: strcat_delim() - Azure Data Explorer
+title:  strcat_delim()
 description: Learn how to use the strcat_delim() function to concatenate between 2 and 64 arguments using a specified delimiter as the first argument.
 ms.reviewer: alexans
 ms.topic: reference

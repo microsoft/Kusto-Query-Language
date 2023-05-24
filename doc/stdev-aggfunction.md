@@ -1,5 +1,5 @@
 ---
-title: stdev() (aggregation function) - Azure Data Explorer
+title:  stdev() (aggregation function)
 description: Learn how to use the stdev() aggregation function to calculate the standard deviation of an expression using Bessel's correction.
 ms.reviewer: alexans
 ms.topic: reference

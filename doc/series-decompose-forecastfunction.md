@@ -1,5 +1,5 @@
 ---
-title: series_decompose_forecast() - Azure Data Explorer
+title:  series_decompose_forecast()
 description: Learn how to use the series_decompose_forecast() function to predict the value of the last trailing points.
 ms.reviewer: alexans
 ms.topic: reference

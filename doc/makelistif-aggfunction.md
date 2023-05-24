@@ -1,5 +1,5 @@
 ---
-title: make_list_if() (aggregation function) - Azure Data Explorer
+title:  make_list_if() (aggregation function)
 description: Learn how to use the make_list_if() aggregation function to create a dynamic JSON object of expression values where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

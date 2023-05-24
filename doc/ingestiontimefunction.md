@@ -1,15 +1,15 @@
 ---
-title: ingestion_time() - Azure Data Explorer
+title:  ingestion_time()
 description: Learn how to use the ingestion_time() function to return the approximate time of the data's ingestion. 
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 12/20/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # ingestion_time()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Returns the approximate time at which the current record was ingested.
 

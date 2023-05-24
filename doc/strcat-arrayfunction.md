@@ -1,5 +1,5 @@
 ---
-title: strcat_array() - Azure Data Explorer
+title:  strcat_array()
 description: Learn how to use the strcat_array() function to create a concatenated string of array values using a specified delimiter. 
 ms.reviewer: alexans
 ms.topic: reference

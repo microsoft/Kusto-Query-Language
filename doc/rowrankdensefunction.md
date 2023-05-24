@@ -1,5 +1,5 @@
 ---
-title: row_rank_dense() - Azure Data Explorer
+title:  row_rank_dense()
 description: Learn how to use the row_rank_dense() function to return the current row's dense rank in a serialized row set.
 ms.reviewer: royo
 ms.topic: reference

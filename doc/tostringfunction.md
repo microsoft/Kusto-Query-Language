@@ -1,5 +1,5 @@
 ---
-title: tostring() - Azure Data Explorer
+title:  tostring()
 description: Learn how to use the tostring() function to convert the input value to a string representation.
 ms.reviewer: alexans
 ms.topic: reference

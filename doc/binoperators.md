@@ -1,5 +1,5 @@
 ---
-title: Bitwise (binary) operators - Azure Data Explorer
+title:  Bitwise (binary) operators
 description: This article lists the bitwise (binary) operators supported in the Kusto Query Language.
 ms.reviewer: alexans
 ms.topic: reference

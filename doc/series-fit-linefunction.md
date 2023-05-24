@@ -1,5 +1,5 @@
 ---
-title: series_fit_line() - Azure Data Explorer
+title:  series_fit_line()
 description: Learn how to use the series_fit_line() function to apply a linear regression on a series to return multiple columns.
 ms.reviewer: alexans
 ms.topic: reference

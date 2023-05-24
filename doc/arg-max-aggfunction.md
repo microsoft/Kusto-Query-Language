@@ -1,5 +1,5 @@
 ---
-title: arg_max() (aggregation function) - Azure Data Explorer
+title:  arg_max() (aggregation function)
 description: Learn how to use the arg_max() aggregation function to find a row in a group that maximizes the input expression.
 ms.reviewer: alexans
 ms.topic: reference

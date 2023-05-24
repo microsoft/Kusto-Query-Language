@@ -1,5 +1,5 @@
 ---
-title: The int data type - Azure Data Explorer
+title:  The int data type
 description: This article describes The int data type in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

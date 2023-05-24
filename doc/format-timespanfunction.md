@@ -1,5 +1,5 @@
 ---
-title: format_timespan() - Azure Data Explorer
+title:  format_timespan()
 description: Learn how to use the format_timespan() function to format a timespan according to the provided format.
 ms.reviewer: alexans
 ms.topic: reference

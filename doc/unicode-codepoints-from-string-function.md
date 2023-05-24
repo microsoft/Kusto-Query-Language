@@ -1,5 +1,5 @@
 ---
-title: unicode_codepoints_from_string() - Azure Data Explorer
+title:  unicode_codepoints_from_string()
 description: Learn how to use the unicode_codepoints_from_string() function to return a dynamic array of the Unicode codepoints of the input string.
 ms.reviewer: alexans
 ms.topic: reference

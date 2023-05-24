@@ -1,5 +1,5 @@
 ---
-title: varianceif() (aggregation function) - Azure Data Explorer
+title:  varianceif() (aggregation function)
 description: Learn how to use the varianceif() function to calculate the variance in an expression where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

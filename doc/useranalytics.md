@@ -1,5 +1,5 @@
 ---
-title: User Analytics - Azure Data Explorer
+title:  User Analytics
 description: This article describes User Analytics in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

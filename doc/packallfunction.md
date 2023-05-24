@@ -1,5 +1,5 @@
 ---
-title: pack_all() - Azure Data Explorer
+title:  pack_all()
 description: Learn how to use the pack_all() function to create a dynamic object from all the columns of the tabular expression.
 ms.reviewer: alexans
 ms.topic: reference

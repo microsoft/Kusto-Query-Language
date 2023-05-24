@@ -1,5 +1,5 @@
 ---
-title: geo_intersection_2lines() - Azure Data Explorer
+title:  geo_intersection_2lines()
 description: Learn how to use the geo_intersection_2lines() function to calculate the intersection of two line strings or multiline strings.
 ms.reviewer: mbrichko
 ms.topic: reference

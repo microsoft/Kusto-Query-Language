@@ -1,5 +1,5 @@
 ---
-title: Let statement - Azure Data Explorer
+title:  Let statement
 description: Learn how to use the Let statement to set a variable name to define an expression or a function.
 ms.reviewer: alexans
 ms.topic: reference

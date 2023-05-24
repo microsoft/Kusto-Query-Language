@@ -1,15 +1,15 @@
 ---
-title: extent_tags() - Azure Data Explorer
+title:  extent_tags()
 description: Learn how to use the extent_tags() function to return a dynamic array of the data shard that the current record is in.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 12/11/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # extent_tags()
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Returns a dynamic array with the [tags](../management/extents-overview.md#extent-tagging) of the data shard ("extent") that the current record is in.
 

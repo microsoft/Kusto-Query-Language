@@ -1,5 +1,5 @@
 ---
-title: format_datetime() - Azure Data Explorer
+title:  format_datetime()
 description: Learn how to use the format_datetime() function to format a datetime according to the provided format.
 ms.reviewer: alexans
 ms.topic: reference

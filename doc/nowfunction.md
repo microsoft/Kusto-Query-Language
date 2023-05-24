@@ -1,5 +1,5 @@
 ---
-title: now() - Azure Data Explorer
+title:  now()
 description: Learn how to use the now() function to return the current UTC time.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: parse_json() function - Azure Data Explorer
+title:  parse_json() function
 description: Learn how to use the parse_json() function to return an object of type `dynamic`.
 ms.reviewer: alexans
 ms.topic: reference

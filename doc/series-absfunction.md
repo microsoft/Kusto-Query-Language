@@ -1,5 +1,5 @@
 ---
-title: series_abs() - Azure Data Explorer
+title:  series_abs()
 description: Learn how to use the series_abs() function to calculate the element-wise absolute value of the numeric series input.
 ms.reviewer: alexans
 ms.topic: reference

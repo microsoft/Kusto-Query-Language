@@ -1,5 +1,5 @@
 ---
-title: zip() - Azure Data Explorer
+title:  zip()
 description: This article describes zip() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

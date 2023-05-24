@@ -1,5 +1,5 @@
 ---
-title: parse_version() - Azure Data Explorer
+title:  parse_version()
 description: Learn how to use the parse_version() function to convert the input string representation of the version to a comparable decimal number,
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: geo_intersects_line_with_polygon() - Azure Data Explorer
+title:  geo_intersects_line_with_polygon()
 description: Learn how to use the geo_intersects_line_with_polygon() function to check if a line string or a multiline string intersect with a polygon or a multipolygon.
 ms.reviewer: mbrichko
 ms.topic: reference

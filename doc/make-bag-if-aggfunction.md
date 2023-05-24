@@ -1,5 +1,5 @@
 ---
-title: make_bag_if() (aggregation function) - Azure Data Explorer
+title:  make_bag_if() (aggregation function)
 description: Learn how to use the make_bag_if() function to create a dynamic JSON property bag of expression values where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

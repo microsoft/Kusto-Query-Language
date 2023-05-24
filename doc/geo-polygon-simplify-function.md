@@ -1,5 +1,5 @@
 ---
-title: geo_polygon_simplify() - Azure Data Explorer
+title:  geo_polygon_simplify()
 description: Learn how to use the geo_polygon_simplify() function to simplify a polygon or a multipolygon.
 ms.reviewer: mbrichko
 ms.topic: reference

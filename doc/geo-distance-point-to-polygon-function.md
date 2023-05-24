@@ -1,5 +1,5 @@
 ---
-title: geo_distance_point_to_polygon() - Azure Data Explorer
+title:  geo_distance_point_to_polygon()
 description: Learn how to use the geo_distance_point_to_polygon() function to calculate the shortest distance between a coordinate and a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

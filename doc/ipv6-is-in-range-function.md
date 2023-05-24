@@ -1,5 +1,5 @@
 ---
-title: ipv6_is_in_range() - Azure Data Explorer
+title:  ipv6_is_in_range()
 description: Learn how to use the ipv6_is_in_range() function to check if an IPv6 string address is in the Ipv6-prefix notation range.
 ms.reviewer: alexans
 ms.topic: reference

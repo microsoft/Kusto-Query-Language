@@ -1,5 +1,5 @@
 ---
-title: array_split() - Azure Data Explorer
+title:  array_split()
 description: Learn how to use the array_split() function to split an array into multiple arrays.
 ms.reviewer: alexans
 ms.topic: reference

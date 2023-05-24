@@ -1,11 +1,11 @@
 ---
-title: Null Values - Azure Data Explorer
+title:  Null Values
 description: This article describes Null Values in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 04/04/2021
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Null Values
 
@@ -143,7 +143,7 @@ For example:
 |&nbsp;|&nbsp;|false    |false     |1        |true     |
 |a     |1     |false    |false     |1        |false    |
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 > [!NOTE]
 > * If you run the above query in Kusto.Explorer, all `true` values will be displayed as `1`, and all `false` values will be displayed as `0`.

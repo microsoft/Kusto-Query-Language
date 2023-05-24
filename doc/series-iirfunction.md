@@ -1,5 +1,5 @@
 ---
-title: series_iir() - Azure Data Explorer
+title:  series_iir()
 description: Learn how to use the series_iir() function to apply an Infinite Impulse Response filter on a series.
 ms.reviewer: alexans
 ms.topic: reference

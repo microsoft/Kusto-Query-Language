@@ -1,5 +1,5 @@
 ---
-title: toscalar() - Azure Data Explorer
+title:  toscalar()
 description: Learn how to use the toscalar() function to return a scalar constant value of the evaluated expression.
 ms.reviewer: alexans
 ms.topic: reference

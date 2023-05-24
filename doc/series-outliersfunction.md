@@ -1,5 +1,5 @@
 ---
-title: series_outliers() - Azure Data Explorer
+title:  series_outliers()
 description: Learn how to use the series_outliers() function to score anomaly points in a series.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,9 +1,9 @@
 ---
-title: Numerical operators - Azure Data Explorer
+title:  Numerical operators
 description: Learn how to use Numerical operators to calculate a value from two or more numbers.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 01/05/2023
+ms.date: 05/16/2023
 ---
 # Numerical operators
 
@@ -29,7 +29,22 @@ Operator       |Description                         |Example
 > [!NOTE]
 > To convert from one numerical type to another, use `to*()` functions. For example, see [`tolong()`](tolongfunction.md) and [`toint()`](tointfunction.md).
 
-**Comment regarding the modulo operator**
+## Type rules for arithmetic operations
+
+The data type of the result of an arithmetic operation is determined by the data types of the operands. If one of the operands is of type `real`, the result will be of type `real`. If both operands are of type `int`, the result will also be of type `int`.
+
+Due to these rules, the result of division operations that only involve integers will be truncated to an integer, which may not always be what you want. To avoid truncation, convert at least one of the `int` values to `real` using the [real() function](scalar-data-types/real.md) before performing the operation.
+
+The following examples illustrate how the operand types affect the result type in division operations.
+
+| Operation | Result | Description |
+|--|--|--|
+| `1.0` `/` `2` | `0.5` | One of the operands is of type `real`, so the result is `real`. |
+| `1` `/` `2.0` | `0.5` | One of the operands is of type `real`, so the result is `real`. |
+| `1` `/` `2` | `0` | Both of the operands are of type `int`, so the result is `int`. Integer division occurs and the decimal is truncated, resulting in `0` instead of `0.5`, as one might expect. |
+| `real(1)` `/` `2` | `0.5` | To avoid truncation due to integer division, one of the `int` operands was first converted to `real` using the `real()` function. |
+
+## Comment about the modulo operator
 
 The modulo of two numbers always returns in Kusto a "small non-negative number".
 Thus, the modulo of two numbers, *N* % *D*, is such that:

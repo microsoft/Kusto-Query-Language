@@ -1,5 +1,5 @@
 ---
-title: max() (aggregation function) - Azure Data Explorer
+title:  max() (aggregation function)
 description: Learn how to use the max() function to find the maximum value of the expression in the group.
 ms.reviewer: alexans
 ms.topic: reference

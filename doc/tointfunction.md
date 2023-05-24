@@ -1,5 +1,5 @@
 ---
-title: toint() - Azure Data Explorer
+title:  toint()
 description: Learn how to use the toint() function to convert the input value to an integer number representation.
 ms.reviewer: alexans
 ms.topic: reference

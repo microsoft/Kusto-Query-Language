@@ -1,5 +1,5 @@
 ---
-title: hll() (aggregation function) - Azure Data Explorer
+title:  hll() (aggregation function)
 description: Learn how to use the hll() function to calculate the results of the dcount() function.
 ms.reviewer: alexans
 ms.topic: reference

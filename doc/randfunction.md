@@ -1,5 +1,5 @@
 ---
-title: rand() - Azure Data Explorer
+title:  rand()
 description: Learn how to use the rand() function to return a random number.
 ms.reviewer: alexans
 ms.topic: reference

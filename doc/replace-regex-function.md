@@ -1,5 +1,5 @@
 ---
-title: replace_regex() - Azure Data Explorer
+title:  replace_regex()
 description: Learn how to use the replace_regex() function to replace all regex matches with another string.
 ms.reviewer: alexans
 ms.topic: reference

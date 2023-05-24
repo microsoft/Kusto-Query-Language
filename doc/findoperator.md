@@ -1,17 +1,17 @@
 ---
-title: find operator - Azure Data Explorer
+title:  find operator
 description: Learn how to use the find operator to find rows that match a predicate across a set of tables.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 03/14/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # find operator
 
 Finds rows that match a predicate across a set of tables.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The scope of the `find` can also be cross-database or cross-cluster.
 
@@ -44,7 +44,7 @@ find in (Table1, Table2, Table3) where Fruit=="apple"
 
 ## Parameters
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |Name|Type|Required|Description|
 |--|--|--|--|
@@ -121,7 +121,7 @@ For example, see [examples of cases where find will act as a union](./findoperat
 
 ## Examples
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 ### Term lookup across all tables in current database
 

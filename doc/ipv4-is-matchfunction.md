@@ -1,5 +1,5 @@
 ---
-title: ipv4_is_match() - Azure Data Explorer
+title:  ipv4_is_match()
 description: Learn how to use the ipv4_is_match() function to match two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference

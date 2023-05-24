@@ -1,5 +1,5 @@
 ---
-title: convert_length() - Azure Data Explorer
+title:  convert_length()
 description: Learn how to use the convert_length() function to convert a length input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference

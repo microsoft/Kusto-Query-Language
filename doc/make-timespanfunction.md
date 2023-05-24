@@ -1,5 +1,5 @@
 ---
-title: make_timespan() - Azure Data Explorer
+title:  make_timespan()
 description: Learn how to use the make_timespan() function to create a timespan scalar value from the specified time period.
 ms.reviewer: alexans
 ms.topic: reference

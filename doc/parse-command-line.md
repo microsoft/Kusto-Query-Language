@@ -1,5 +1,5 @@
 ---
-title: parse_command_line() - Azure Data Explorer
+title:  parse_command_line()
 description: Learn how to use the parse_command_line() function to parse a unicode command-line string.
 ms.reviewer: slneimer
 ms.topic: reference

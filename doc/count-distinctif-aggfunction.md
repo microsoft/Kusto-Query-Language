@@ -1,5 +1,5 @@
 ---
-title: count_distinctif() (aggregation function) - Azure Data Explorer - (preview)
+title:  count_distinctif() (aggregation function) - (preview)
 description: Learn how to use the count_distinctif() function to count unique values of a scalar expression in records for which the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

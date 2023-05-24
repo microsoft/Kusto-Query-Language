@@ -1,5 +1,5 @@
 ---
-title: geo_geohash_to_central_point() - Azure Data Explorer
+title:  geo_geohash_to_central_point()
 description: Learn how to use the geo_geohash_to_central() function to calculate the geospatial coordinates that represent the center of a geohash rectangular area.
 ms.reviewer: mbrichko
 ms.topic: reference

@@ -1,15 +1,15 @@
 ---
-title: Cross-cluster join - Azure Data Explorer
+title:  Cross-cluster join
 description: Learn how to perform the Cross-cluster join operation to join datasets residing on different clusters.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 04/11/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Cross-cluster join
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 For general discussion on cross-cluster queries, see [cross-cluster or cross-database queries](cross-cluster-or-database-queries.md)
 

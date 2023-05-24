@@ -1,5 +1,5 @@
 ---
-title: Geospatial data visualizations in Azure Data Explorer
+title: Geospatial data visualizations
 description: Learn how to visualize geospatial data.
 ms.reviewer: mbrichko
 ms.topic: reference

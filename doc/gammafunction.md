@@ -1,5 +1,5 @@
 ---
-title: gamma() - Azure Data Explorer
+title:  gamma()
 description: Learn how to use the gamma() function to compute the gamma of the input parameter.
 ms.reviewer: alexans
 ms.topic: reference

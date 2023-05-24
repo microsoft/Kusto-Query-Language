@@ -1,5 +1,5 @@
 ---
-title: geo_intersects_2polygons() - Azure Data Explorer
+title:  geo_intersects_2polygons()
 description: Learn how to use the geo_intersects_2polygons() function to calculate whether two polygons or multipolygons intersect
 ms.reviewer: mbrichko
 ms.topic: reference

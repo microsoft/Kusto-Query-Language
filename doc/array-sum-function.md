@@ -1,5 +1,5 @@
 ---
-title: array_sum() - Azure Data Explorer
+title:  array_sum()
 description: Learn how to use the array_sum() function to calculate the sum of elements in a dynamic array.
 
 ms.reviewer: alexans

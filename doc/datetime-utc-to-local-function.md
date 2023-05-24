@@ -1,5 +1,5 @@
 ---
-title: datetime_utc_to_local() - Azure Data Explorer
+title:  datetime_utc_to_local()
 description: This article describes the datetime_utc_to_local function in Azure Data Explorer.
 ms.reviewer: elgevork
 ms.topic: reference

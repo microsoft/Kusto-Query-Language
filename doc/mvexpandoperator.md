@@ -1,5 +1,5 @@
 ---
-title: mv-expand operator - Azure Data Explorer
+title:  mv-expand operator
 description: Learn how to use the mv-expand operator to expand multi-value dynamic arrays or property bags into multiple records.
 ms.reviewer: alexans
 ms.topic: reference

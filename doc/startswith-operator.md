@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive startswith string operator - Azure Data Explorer
+title:  The case-insensitive startswith string operator
 description: Learn how to use the case-insensitive startswith string operator to filter a record set with a case-insensitive string starting sequence.
 ms.reviewer: alexans
 ms.topic: reference

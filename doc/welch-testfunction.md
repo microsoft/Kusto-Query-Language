@@ -1,5 +1,5 @@
 ---
-title: welch_test() - Azure Data Explorer
+title:  welch_test()
 description: Learn how to use the welch_test() function to compute the p_value of the Welch-test.
 ms.reviewer: alexans
 ms.topic: reference

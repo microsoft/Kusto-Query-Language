@@ -1,5 +1,5 @@
 ---
-title: make_list_with_nulls() (aggregation function) - Azure Data Explorer
+title:  make_list_with_nulls() (aggregation function)
 description: Learn how to use the make_list_with_nulls() aggregation function to create a `dynamic` JSON object (array) which includes null values in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

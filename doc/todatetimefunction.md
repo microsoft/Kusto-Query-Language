@@ -1,5 +1,5 @@
 ---
-title: todatetime() - Azure Data Explorer
+title:  todatetime()
 description: Learn how to use the todatetime() function to convert the input expression to a datetime value.
 ms.reviewer: alexans
 ms.topic: reference

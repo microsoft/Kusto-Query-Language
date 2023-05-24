@@ -1,5 +1,5 @@
 ---
-title: geo_point_to_s2cell() - Azure Data Explorer
+title:  geo_point_to_s2cell()
 description: Learn how to use the geo_point_to_s2cell() function to calculate the S2 cell token string value of a geographic location.
 ms.reviewer: mbrichko
 ms.topic: reference

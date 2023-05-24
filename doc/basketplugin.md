@@ -1,5 +1,5 @@
 ---
-title: basket plugin - Azure Data Explorer
+title:  basket plugin
 description: Learn how to use the basket plugin to find frequent patterns in data that exceed a frequency threshold. 
 ms.reviewer: alexans
 ms.topic: reference

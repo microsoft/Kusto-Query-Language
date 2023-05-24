@@ -1,5 +1,5 @@
 ---
-title: reverse() - Azure Data Explorer
+title:  reverse()
 description: Learn how to use the reverse() function to reverse the order of the input string.
 ms.reviewer: alexans
 ms.topic: reference

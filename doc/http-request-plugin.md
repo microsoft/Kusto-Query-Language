@@ -1,16 +1,16 @@
 ---
-title: http_request plugin - Azure Data Explorer
+title:  http_request plugin
 description: Learn how to use the http_request plugin to send an HTTP request and convert the response into a table.
 services: data-explorer
 ms.reviewer: zivc
 ms.topic: reference
 ms.date: 04/03/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # http_request plugin
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The `http_request` plugin sends an HTTP GET request and converts the response into a table.
 

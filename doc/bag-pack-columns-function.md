@@ -1,5 +1,5 @@
 ---
-title: bag_pack_columns() - Azure Data Explorer
+title:  bag_pack_columns()
 description: Learn how to use the bag_pack_columns() function to create a dynamic JSON object from a list of columns.
 ms.reviewer: yifats
 ms.topic: reference

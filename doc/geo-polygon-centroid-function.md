@@ -1,5 +1,5 @@
 ---
-title: geo_polygon_centroid() - Azure Data Explorer
+title:  geo_polygon_centroid()
 description: Learn how to use the geo_polygon_centroid() function to calculate the centroid of a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

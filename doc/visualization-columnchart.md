@@ -1,11 +1,11 @@
 ---
-title: Column chart visualization - Azure Data Explorer
+title:  Column chart visualization
 description: This article describes the column chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 08/03/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Column chart
 
@@ -25,7 +25,7 @@ The column chart visual needs a minimum of two columns in the query result. By d
 | *T* | string | &check; | Input table name.|
 | *propertyName*, *propertyValue* | string | | A comma-separated list of key-value property pairs. See [supported properties](#supported-properties).|
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 ### Supported properties
 

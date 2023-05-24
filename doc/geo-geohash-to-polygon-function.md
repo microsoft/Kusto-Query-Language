@@ -1,5 +1,5 @@
 ---
-title: geo_geohash_to_polygon() - Azure Data Explorer
+title:  geo_geohash_to_polygon()
 description: Learn how to use the geo_geohash_to_polygon() function to calculate the polygon that represents the geohash rectangular area. 
 ms.reviewer: mbrichko
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: Joining within time window - Azure Data Explorer
+title:  Joining within time window
 description: Learn how to perform a time window join operation to match between two large data sets.
 ms.reviewer: alexans
 ms.topic: reference

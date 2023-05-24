@@ -1,5 +1,5 @@
 ---
-title: binary_xor() - Azure Data Explorer
+title:  binary_xor()
 description: Learn how to use the binary_xor() function to perform the bitwise xor operation on a pair of values.
 ms.reviewer: alexans
 ms.topic: reference

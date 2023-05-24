@@ -1,5 +1,5 @@
 ---
-title: geo_intersection_line_with_polygon() - Azure Data Explorer
+title:  geo_intersection_line_with_polygon()
 description: Learn how to use the geo_intersection_line_with_polygon() function to calculate the intersection of a line string or a multiline string with a polygon or a multipolygon.
 ms.reviewer: mbrichko
 ms.topic: reference

@@ -1,13 +1,13 @@
 ---
-title: Regular expressions library - Azure Data Explorer
+title:  Regular expressions library
 description: This article lists the regular expression syntax accepted by RE2.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 04/11/2023
+ms.date: 05/01/2023
 ---
 # RE2 library
 
-For information on the use of regular expressions in Azure Data Explorer, see [RE2 syntax](re2.md).
+For information on the use of regular expressions with Kusto Query Language (KQL), see [RE2 syntax](re2.md).
 
 Regular expressions are a notation for describing sets of character strings. When a particular string is in the set described by a regular expression, we often say that the regular expression matches the string.
 

@@ -1,5 +1,5 @@
 ---
-title: convert_temperature() - Azure Data Explorer
+title:  convert_temperature()
 description: Learn how to use the convert_temperature() function to convert a temperature input value from one unit to another.
 ms.reviewer: itsagui
 ms.topic: reference

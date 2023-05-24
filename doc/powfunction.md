@@ -1,5 +1,5 @@
 ---
-title: pow() - Azure Data Explorer
+title:  pow()
 description: Learn how to use the pow() function to calculate the base raised to the power of the exponent.
 ms.reviewer: alexans
 ms.topic: reference

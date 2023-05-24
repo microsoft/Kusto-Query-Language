@@ -1,5 +1,5 @@
 ---
-title: series_fit_2lines() - Azure Data Explorer
+title:  series_fit_2lines()
 description: Learn how to use the series_fit_2lines() function to apply a two segmented linear regression on a series.
 ms.reviewer: alexans
 ms.topic: reference

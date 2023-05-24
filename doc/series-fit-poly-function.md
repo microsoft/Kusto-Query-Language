@@ -1,5 +1,5 @@
 ---
-title: series_fit_poly() - Azure Data Explorer
+title:  series_fit_poly()
 description: Learn how to use the series_fit_poly() to apply a polynomial regression from an independent variable (x_series) to a dependent variable (y_series).
 ms.reviewer: adieldar
 ms.topic: reference

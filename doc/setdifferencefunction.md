@@ -1,5 +1,5 @@
 ---
-title: set_difference() - Azure Data Explorer
+title:  set_difference()
 description: Learn how to use the set_difference() function to create a difference set of all distinct values in the first array that aren't in the other array inputs.
 ms.reviewer: alexans
 ms.topic: reference

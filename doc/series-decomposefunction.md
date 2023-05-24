@@ -1,5 +1,5 @@
 ---
-title: series_decompose() - Azure Data Explorer
+title:  series_decompose()
 description: Learn how to use the series_decompose() function to apply a decomposition transformation on a series.
 ms.reviewer: alexans
 ms.topic: reference

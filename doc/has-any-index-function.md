@@ -1,5 +1,5 @@
 ---
-title: The has_any_index operator - Azure Data Explorer
+title:  The has_any_index operator
 description: Learn how to use the has_any_index operator to search the input string for items specified in the array.
 ms.reviewer: atefsawaed
 ms.topic: reference

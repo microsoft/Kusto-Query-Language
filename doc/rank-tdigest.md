@@ -1,5 +1,5 @@
 ---
-title: rank_tdigest() - Azure Data Explorer
+title:  rank_tdigest()
 description: Learn how to use the rank_tdigest() function to calculate the approximate rank of the value in a set.
 ms.reviewer: alexans
 ms.topic: reference

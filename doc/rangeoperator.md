@@ -1,5 +1,5 @@
 ---
-title: range operator - Azure Data Explorer
+title:  range operator
 description: Learn how to use the range operator to generate a single-column table of values.
 ms.reviewer: alexans
 ms.topic: reference

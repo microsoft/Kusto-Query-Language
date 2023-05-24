@@ -1,5 +1,5 @@
 ---
-title: binary_not() - Azure Data Explorer
+title:  binary_not()
 description: Learn how to use the binary_not() function to return a bitwise negation of the input value.
 ms.reviewer: alexans
 ms.topic: reference

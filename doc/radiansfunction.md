@@ -1,5 +1,5 @@
 ---
-title: radians() - Azure Data Explorer
+title:  radians()
 description: Learn how to use the radians() function to convert angle values from degrees to radians.
 ms.reviewer: alexans
 ms.topic: reference

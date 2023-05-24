@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive !has_cs string operator - Azure Data Explorer
+title:  The case-sensitive !has_cs string operator
 description: Learn how to use the !has_cs string operator to filter records for data that doesn't have a matching case-sensitive string.
 ms.reviewer: alexans
 ms.topic: reference

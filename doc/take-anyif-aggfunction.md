@@ -1,5 +1,5 @@
 ---
-title: take_anyif() (aggregation function) - Azure Data Explorer
+title:  take_anyif() (aggregation function)
 description: Learn how to use the take_anyif() function to return the value of an arbitrarily selected record for which the predicate is 'true'.
 ms.reviewer: alexans
 ms.topic: reference

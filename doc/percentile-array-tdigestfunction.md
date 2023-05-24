@@ -1,5 +1,5 @@
 ---
-title: percentile_array_tdigest() - Azure Data Explorer
+title:  percentile_array_tdigest()
 description: Learn how to use the percentile_array_tdigest() to calculate the percentile value of an expression.
 ms.reviewer: alexans
 ms.topic: reference

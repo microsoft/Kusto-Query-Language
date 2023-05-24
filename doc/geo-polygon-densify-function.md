@@ -1,9 +1,9 @@
 ---
-title: geo_polygon_densify() - Azure Data Explorer
+title:  geo_polygon_densify()
 description: Learn how to use the geo_polygon_densify() function to convert polygon or multipolygon planar edges to geodesics.
 ms.reviewer: mbrichko
 ms.topic: reference
-ms.date: 03/09/2023
+ms.date: 05/01/2023
 ---
 # geo_polygon_densify()
 
@@ -42,7 +42,7 @@ dynamic({"type": "MultiPolygon","coordinates": [[ LinearRingShell, LinearRingHol
 
 ### Motivation
 
-* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while Azure Data Explorer uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
+* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while `geo_polygon_densify()` uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
 * The decision to use geodesic or planar edges might depend on the dataset and is especially relevant in long edges.
 
 ## Returns

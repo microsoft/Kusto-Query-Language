@@ -1,5 +1,5 @@
 ---
-title: datetime_add() - Azure Data Explorer
+title:  datetime_add()
 description: Learn how to use the datetime_add() function to calculate a new datetime.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: isascii() - Azure Data Explorer
+title:  isascii()
 description: Learn how to use the isascii() to check if the argument is a valid ascii string.
 ms.reviewer: alexans
 ms.topic: reference

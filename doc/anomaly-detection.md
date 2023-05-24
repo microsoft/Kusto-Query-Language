@@ -1,25 +1,27 @@
 ---
-title: Time series anomaly detection & forecasting in Azure Data Explorer
-description: Learn how to analyze time series data for anomaly detection and forecasting using Azure Data Explorer.
+title: Time series anomaly detection & forecasting
+description: Learn how to analyze time series data for anomaly detection and forecasting.
 ms.reviewer: adieldar
 ms.topic: how-to
-ms.date: 04/24/2019
+ms.date: 05/01/2023
 ---
 
-# Anomaly detection and forecasting in Azure Data Explorer
+# Anomaly detection and forecasting
 
-Azure Data Explorer performs on-going collection of telemetry data from cloud services or IoT devices. This data is analyzed for various insights such as monitoring service health, physical production processes, usage trends, and load forecast. The analysis is done on time series of selected metrics to locate a deviation pattern of the metric relative to its typical normal baseline pattern. Azure Data Explorer contains native support for creation, manipulation, and analysis of multiple time series. It can create and analyze thousands of time series in seconds, enabling near real time monitoring solutions and workflows.
+Cloud services and IoT devices generate telemetry data that can be used to gain insights such as monitoring service health, physical production processes, and usage trends. Performing time series analysis is one way to identify deviations in the pattern of these metrics compared to their typical baseline pattern.
 
-This article details the Azure Data Explorer time series anomaly detection and forecasting capabilities. The applicable time series functions are based on a robust well-known decomposition model, where each original time series is decomposed into seasonal, trend, and residual components. Anomalies are detected by outliers on the residual component, while forecasting is done by extrapolating the seasonal and trend components. The Azure Data Explorer implementation significantly enhances the basic decomposition model by automatic seasonality detection, robust outlier analysis, and vectorized implementation to process thousands of time series in seconds.
+Kusto Query Language (KQL) contains native support for creation, manipulation, and analysis of multiple time series. With KQL, you can create and analyze thousands of time series in seconds, enabling near real time monitoring solutions and workflows.
+
+This article details time series anomaly detection and forecasting capabilities of KQL. The applicable time series functions are based on a robust well-known decomposition model, where each original time series is decomposed into seasonal, trend, and residual components. Anomalies are detected by outliers on the residual component, while forecasting is done by extrapolating the seasonal and trend components. The KQL implementation significantly enhances the basic decomposition model by automatic seasonality detection, robust outlier analysis, and vectorized implementation to process thousands of time series in seconds.
 
 ## Prerequisites
 
 * A Microsoft account or an Azure Active Directory user identity. An Azure subscription isn't required.
-* Read [Time series analysis in Azure Data Explorer](time-series-analysis.md) for an overview of time series capabilities.
+* Read [Time series analysis](time-series-analysis.md) for an overview of time series capabilities.
 
 ## Time series decomposition model
 
-Azure Data Explorer native implementation for time series prediction and anomaly detection uses a well-known decomposition model. This model is applied to time series of metrics expected to manifest periodic and trend behavior, such as service traffic, component heartbeats, and IoT periodic measurements to forecast future metric values and detect anomalous ones. The assumption of this regression process is that other than the previously known seasonal and trend behavior, the time series is randomly distributed. You can then forecast future metric values from the seasonal and trend components, collectively named baseline, and ignore the residual part. You can also detect anomalous values based on outlier analysis using only the residual portion.
+The KQL native implementation for time series prediction and anomaly detection uses a well-known decomposition model. This model is applied to time series of metrics expected to manifest periodic and trend behavior, such as service traffic, component heartbeats, and IoT periodic measurements to forecast future metric values and detect anomalous ones. The assumption of this regression process is that other than the previously known seasonal and trend behavior, the time series is randomly distributed. You can then forecast future metric values from the seasonal and trend components, collectively named baseline, and ignore the residual part. You can also detect anomalous values based on outlier analysis using only the residual portion.
 To create a decomposition model, use the function [`series_decompose()`](series-decomposefunction.md). The `series_decompose()` function takes a set of time series and automatically decomposes each time series to its seasonal, trend, residual, and baseline components. 
 
 For example, you can decompose traffic of an internal web service by using the following query:
@@ -102,7 +104,7 @@ demo_make_series2
 
 ## Scalability
 
-Azure Data Explorer query language syntax enables a single call to process multiple time series. Its unique optimized implementation allows for fast performance, which is critical for effective anomaly detection and forecasting when monitoring thousands of counters in near real-time scenarios.
+Kusto Query Language syntax enables a single call to process multiple time series. Its unique optimized implementation allows for fast performance, which is critical for effective anomaly detection and forecasting when monitoring thousands of counters in near real-time scenarios.
 
 The following query shows the processing of three time series simultaneously:
 
@@ -127,8 +129,8 @@ demo_make_series2
 
 ## Summary
 
-This document details native Azure Data Explorer functions for time series anomaly detection and forecasting. Each original time series is decomposed into seasonal, trend and residual components for detecting anomalies and/or forecasting. These functionalities can be used for near real-time monitoring scenarios, such as fault detection, predictive maintenance, and demand and load forecasting.
+This document details native KQL functions for time series anomaly detection and forecasting. Each original time series is decomposed into seasonal, trend and residual components for detecting anomalies and/or forecasting. These functionalities can be used for near real-time monitoring scenarios, such as fault detection, predictive maintenance, and demand and load forecasting.
 
 ## Next steps
 
-Learn about [Machine learning capabilities](./machine-learning-clustering.md) in Azure Data Explorer.
+Learn about [Machine learning capabilities](./machine-learning-clustering.md) with KQL.

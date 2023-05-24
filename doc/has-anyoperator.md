@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive has_any string operator - Azure Data Explorer
+title:  The case-insensitive has_any string operator
 description: Learn how to use the has_any operator to filter data with any set of case-insensitive strings.
 ms.reviewer: alexans
 ms.topic: reference

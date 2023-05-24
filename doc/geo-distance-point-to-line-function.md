@@ -1,5 +1,5 @@
 ---
-title: geo_distance_point_to_line() - Azure Data Explorer
+title:  geo_distance_point_to_line()
 description: Learn how to use the geo_distance_point_to_line() function to calculate the shortest distance between a coordinate and a line or multiline on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

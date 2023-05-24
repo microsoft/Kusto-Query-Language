@@ -1,5 +1,5 @@
 ---
-title: String operators - Azure Data Explorer
+title:  String operators
 description: Learn about query operators for searching string data types.
 ms.reviewer: alexans
 ms.topic: reference

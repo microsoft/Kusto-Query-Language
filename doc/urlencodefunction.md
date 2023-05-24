@@ -1,5 +1,5 @@
 ---
-title: url_encode() - Azure Data Explorer
+title:  url_encode()
 description: Learn how to use the url_encode() function to convert characters of the input URL into a transmittable format.
 ms.reviewer: alexans
 ms.topic: reference

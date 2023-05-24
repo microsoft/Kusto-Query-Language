@@ -1,5 +1,5 @@
 ---
-title: unixtime_seconds_todatetime() - Azure Data Explorer
+title:  unixtime_seconds_todatetime()
 description: Learn how to use the unixtime_seconds_todatetime() function to convert unix-epoch seconds to UTC datetime.
 ms.reviewer: alexans
 ms.topic: reference

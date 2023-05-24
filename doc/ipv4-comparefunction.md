@@ -1,5 +1,5 @@
 ---
-title: ipv4_compare() - Azure Data Explorer
+title:  ipv4_compare()
 description: Learn how to use the ipv4_compare() function to compare two IPv4 strings.
 ms.reviewer: alexans
 ms.topic: reference

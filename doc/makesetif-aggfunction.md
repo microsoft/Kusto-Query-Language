@@ -1,5 +1,5 @@
 ---
-title: make_set_if() (aggregation function) - Azure Data Explorer
+title:  make_set_if() (aggregation function)
 description: Learn how to use the make_set_if() function to create a dynamic JSON object of a set of distinct values that an expression takes where the predicate evaluates to true.
 ms.reviewer: alexans
 ms.topic: reference

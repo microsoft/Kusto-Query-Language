@@ -1,5 +1,5 @@
 ---
-title: log() - Azure Data Explorer
+title:  log()
 description: Learn how to use the log() function to return the natural logarithm of the input.
 ms.reviewer: alexans
 ms.topic: reference

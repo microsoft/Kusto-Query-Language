@@ -1,5 +1,5 @@
 ---
-title: exp10() - Azure Data Explorer
+title:  exp10()
 description: Learn how to use the exp10() function to return the base-10 exponential value of x.
 ms.reviewer: alexans
 ms.topic: reference

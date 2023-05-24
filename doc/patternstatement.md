@@ -1,16 +1,16 @@
 ---
-title: Pattern statement - Azure Data Explorer
+title:  Pattern statement
 description: Learn how to use pattern statements to map string tuples to tabular expressions.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/14/2023
+ms.date: 05/01/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 
 # Pattern statement
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 A **pattern** is a construct that maps string tuples to tabular expressions. Each pattern must *declare* a pattern name and optionally *define* a pattern mapping. Patterns that define a mapping return a tabular expression when invoked. Any two statements must be separated by a semicolon.
 
@@ -113,7 +113,7 @@ union App('a2').Data, App('a1').Metrics
 
 ### Normalization
 
-Azure Data Explorer allows variations of syntax when invoking patterns. For example, the following union returns a single pattern expression since all the invocations are of the same pattern.
+There are syntax variations for invoking patterns. For example, the following union returns a single pattern expression since all the invocations are of the same pattern.
 
 ```kusto
 declare pattern app = (applicationId:string)[eventType:string]
@@ -130,7 +130,7 @@ union
 
 ### No wildcards
 
-Azure Data Explorer does not give special treatment to wildcards in a pattern. For example, the following query returns a single missing pattern invocation.
+There's no special treatment given to wildcards in a pattern. For example, the following query returns a single missing pattern invocation.
 
 ```kusto
 declare pattern app = (applicationId:string)[eventType:string]
@@ -149,7 +149,7 @@ union app("ApplicationX").["*"]
 
 A middle-tier application provides its users with the ability to use KQL and wants to enhance the experience by enriching the query results with augmented data from its internal service.
 
-To this end, the application provides users with a pattern statement that returns tabular data that their users can use in their queries. The pattern's arguments are the keys the application will use to retrieve the enrichment data. When the user runs the query, the application does not parse the query itself but instead plans to leverage the error returned by an empty pattern to retrieve the keys it requires. So it prepends the query with the empty pattern declaration, sends it to Azure Data Explorer for processing, and then parses the returned HTTP header to retrieve the values of missing pattern arguments. The application uses these values to look up the enrichment data and builds a new declaration that defines the appropriate enrichment data mapping. Finally, the application prepends the new definition to the user's query, resends it for processing, and returns the result it receives to the user.
+To this end, the application provides users with a pattern statement that returns tabular data that their users can use in their queries. The pattern's arguments are the keys the application will use to retrieve the enrichment data. When the user runs the query, the application does not parse the query itself but instead plans to leverage the error returned by an empty pattern to retrieve the keys it requires. So it prepends the query with the empty pattern declaration, sends it to the cluster for processing, and then parses the returned HTTP header to retrieve the values of missing pattern arguments. The application uses these values to look up the enrichment data and builds a new declaration that defines the appropriate enrichment data mapping. Finally, the application prepends the new definition to the user's query, resends it for processing, and returns the result it receives to the user.
 
 ### Example
 

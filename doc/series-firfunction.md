@@ -1,5 +1,5 @@
 ---
-title: series_fir() - Azure Data Explorer
+title:  series_fir()
 description: Learn how to use the series_fir() function to apply a Finite Impulse Response (FIR) filter on a series.
 ms.reviewer: alexans
 ms.topic: reference

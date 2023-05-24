@@ -1,5 +1,5 @@
 ---
-title: ipv4_is_in_any_range() - Azure Data Explorer
+title:  ipv4_is_in_any_range()
 description: Learn how to use the ipv4_is_in_any_range() function to check if the IPv4 string address is in any of the IPv4 address ranges.
 ms.reviewer: alexans
 ms.topic: reference

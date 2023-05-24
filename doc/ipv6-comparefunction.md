@@ -1,5 +1,5 @@
 ---
-title: ipv6_compare() - Azure Data Explorer
+title:  ipv6_compare()
 description: Learn how to use the ipv6_compare() function to compare two IPv6 or IPv4 network address strings.
 ms.reviewer: alexans
 ms.topic: reference

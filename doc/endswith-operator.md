@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive endswith string operator - Azure Data Explorer
+title:  The case-insensitive endswith string operator
 description: Learn how to use the endswith operator to filter a record set for data with a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference

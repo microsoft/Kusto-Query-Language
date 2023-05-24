@@ -1,5 +1,5 @@
 ---
-title: narrow plugin - Azure Data Explorer
+title:  narrow plugin
 description: Learn how to use the narrow plugin to display a wide table.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,15 +1,15 @@
 ---
-title: Anomaly chart visualization - Azure Data Explorer
+title:  Anomaly chart visualization
 description: This article describes the anomaly chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/29/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Anomaly chart
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The anomaly chart visualization is similar to a [timechart](visualization-timechart.md), but [highlights anomalies](./samples.md#get-more-from-your-data-by-using-kusto-with-machine-learning) using the [series_decompose_anomalies](./series-decompose-anomaliesfunction.md) function.  
 

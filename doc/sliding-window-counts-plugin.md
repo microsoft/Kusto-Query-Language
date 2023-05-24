@@ -1,5 +1,5 @@
 ---
-title: sliding_window_counts plugin - Azure Data Explorer
+title:  sliding_window_counts plugin
 description: Learn how to use the sliding_window_counts plugin to calculate counts and distinct counts of values in a sliding window over a lookback period.
 ms.reviewer: alexans
 ms.topic: reference

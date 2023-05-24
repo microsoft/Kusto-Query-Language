@@ -1,5 +1,5 @@
 ---
-title: set_union() - Azure Data Explorer
+title:  set_union()
 description: Learn how to use the set_union() function to create a union set of all the  distinct values in all of the array inputs.
 ms.reviewer: alexans
 ms.topic: reference

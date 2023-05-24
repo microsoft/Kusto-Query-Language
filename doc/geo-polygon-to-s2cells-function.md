@@ -1,5 +1,5 @@
 ---
-title: geo_polygon_to_s2cells() - Azure Data Explorer
+title:  geo_polygon_to_s2cells()
 description: Learn how to use the geo_polygon_to_s2cells() function to calculate S2 cell tokens that cover a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

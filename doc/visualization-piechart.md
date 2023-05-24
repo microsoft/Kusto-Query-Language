@@ -1,17 +1,17 @@
 ---
-title: Pie chart visualization - Azure Data Explorer
+title:  Pie chart visualization
 description: This article describes the pie chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/26/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Pie chart
 
 The pie chart visual needs a minimum of two columns in the query result. By default, the first column is used as the color axis. This column can contain text, datetime, or numeric data types. Other columns will be used to determine the size of each slice and contain numeric data types. Pie charts are used for presenting a composition of categories and their proportions out of a total.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The pie chart visual can also be used in the context of [Geospatial visualizations](geospatial-visualizations.md).
 
@@ -36,7 +36,7 @@ The pie chart visual can also be used in the context of [Geospatial visualizatio
 
 All properties are optional.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |*PropertyName*|*PropertyValue*                                                                   |
 |--------------|----------------------------------------------------------------------------------|

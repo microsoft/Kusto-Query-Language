@@ -1,5 +1,5 @@
 ---
-title: geo_h3cell_to_central_point() - Azure Data Explorer
+title:  geo_h3cell_to_central_point()
 description: Learn how to use the geo_h3cell_to_central_point() function to calculate the geospatial coordinates that represent the center of an H3 cell.
 ms.reviewer: mbrichko
 ms.topic: reference

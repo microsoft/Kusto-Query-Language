@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive == (equals) string operator - Azure Data Explorer
+title:  The case-sensitive == (equals) string operator
 description: Learn how to use the == (equals) operator to filter a record set for data matching a case-sensitive string.
 ms.reviewer: alexans
 ms.topic: reference

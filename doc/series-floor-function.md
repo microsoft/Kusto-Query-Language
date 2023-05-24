@@ -1,5 +1,5 @@
 ---
-title: series_floor() - Azure Data Explorer
+title:  series_floor()
 description: Learn how to use the series_floor() function to calculate the element-wise floor function of the numeric series input.
 ms.reviewer: afridman
 ms.topic: reference

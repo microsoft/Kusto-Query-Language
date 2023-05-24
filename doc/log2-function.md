@@ -1,5 +1,5 @@
 ---
-title: log2() - Azure Data Explorer
+title:  log2()
 description: Learn how to use the log2() function to return the base-2 logarithm of the input.
 ms.reviewer: alexans
 ms.topic: reference

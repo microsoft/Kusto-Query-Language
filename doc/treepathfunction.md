@@ -1,5 +1,5 @@
 ---
-title: treepath() - Azure Data Explorer
+title:  treepath()
 description: This article describes treepath() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

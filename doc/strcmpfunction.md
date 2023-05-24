@@ -1,5 +1,5 @@
 ---
-title: strcmp() - Azure Data Explorer
+title:  strcmp()
 description: Learn how to use the strcmp() function to compare two strings.
 ms.reviewer: alexans
 ms.topic: reference

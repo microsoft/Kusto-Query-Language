@@ -1,5 +1,5 @@
 ---
-title: isempty() - Azure Data Explorer
+title:  isempty()
 description: Learn how to use the isempty() function to check if the argument is an empty string.
 ms.reviewer: alexans
 ms.topic: reference

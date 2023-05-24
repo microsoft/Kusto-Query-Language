@@ -1,5 +1,5 @@
 ---
-title: isinf() - Azure Data Explorer
+title:  isinf()
 description: Learn how to use the isinf() function to check if the input is an infinite value.
 ms.reviewer: alexans
 ms.topic: reference

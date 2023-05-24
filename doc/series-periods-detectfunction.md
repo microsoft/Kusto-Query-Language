@@ -1,5 +1,5 @@
 ---
-title: series_periods_detect() - Azure Data Explorer
+title:  series_periods_detect()
 description: Learn how to use the series_periods_detect() function to find the most significant periods that exist in a time series.
 ms.reviewer: alexans
 ms.topic: reference

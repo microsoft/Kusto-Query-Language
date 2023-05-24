@@ -1,5 +1,5 @@
 ---
-title: The guid data type - Azure Data Explorer
+title:  The guid data type
 description: This article describes The guid data type in Azure Data Explorer.
 ms.reviewer: orspodek
 ms.topic: reference

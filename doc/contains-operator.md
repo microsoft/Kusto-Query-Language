@@ -1,5 +1,5 @@
 ---
-title: The case-insensitive contains string operator - Azure Data Explorer
+title:  The case-insensitive contains string operator
 description: Learn how to use the contains operator to filter a record set for data containing a case-insensitive string.
 ms.reviewer: alexans
 ms.topic: reference

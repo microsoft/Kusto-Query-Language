@@ -1,5 +1,5 @@
 ---
-title: distinct operator - Azure Data Explorer
+title:  distinct operator
 description: Learn how to use the distinct operator to create a table with the distinct combination of the columns of the input table.
 ms.reviewer: alexans
 ms.topic: reference

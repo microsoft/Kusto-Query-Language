@@ -1,5 +1,5 @@
 ---
-title: geo_line_densify() - Azure Data Explorer
+title:  geo_line_densify()
 description: Learn how to use the geo_line_densify() function to convert planar lines or multiline edges to geodesics.
 ms.reviewer: mbrichko
 ms.topic: reference
@@ -46,7 +46,7 @@ dynamic({"type": "MultiLineString","coordinates": [[line_1, line_2, ..., line_N]
 
 **Motivation**
 
-* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while Azure Data Explorer uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
+* [GeoJSON format](https://tools.ietf.org/html/rfc7946) defines an edge between two points as a straight cartesian line while `geo_line_densify()` uses [geodesic](https://en.wikipedia.org/wiki/Geodesic).
 * The decision to use geodesic or planar edges might depend on the dataset and is especially relevant in long edges.
 
 ## Examples

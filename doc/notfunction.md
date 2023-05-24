@@ -1,5 +1,5 @@
 ---
-title: not() - Azure Data Explorer
+title:  not()
 description: Learn how to use the not() function to reverse the value of its boolean argument.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: ipv4_is_private() - Azure Data Explorer
+title:  ipv4_is_private()
 description: Learn how to use the ipv4_is_private() function to check if the IPv4 string address belongs to a set of private network IPs.
 ms.reviewer: alexans
 ms.topic: reference

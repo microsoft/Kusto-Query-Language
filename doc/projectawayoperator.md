@@ -1,5 +1,5 @@
 ---
-title: project-away operator - Azure Data Explorer
+title:  project-away operator
 description: Learn how to use the project-away operator to select columns from the input table to exclude from the output table.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: pivot plugin - Azure Data Explorer
+title:  pivot plugin
 description: Learn how to use the pivot plugin to rotate a table with specified columns and aggregates the remaining columns.
 ms.reviewer: alexans
 ms.topic: reference

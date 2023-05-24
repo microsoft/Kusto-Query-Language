@@ -1,5 +1,5 @@
 ---
-title: the function - Azure Data Explorer
+title:  the function
 description: Learn how to use the the function function to return the beta probability density function. 
 ms.reviewer: alexans
 ms.topic: reference

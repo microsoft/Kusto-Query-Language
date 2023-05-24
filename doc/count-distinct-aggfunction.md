@@ -1,5 +1,5 @@
 ---
-title: count_distinct() (aggregation function) - Azure Data Explorer - (preview)
+title:  count_distinct() (aggregation function) - (preview)
 description: Learn how to use the count_distinct() (aggregation function) to count unique values specified by a scalar expression per summary group.
 ms.reviewer: alexans
 ms.topic: reference

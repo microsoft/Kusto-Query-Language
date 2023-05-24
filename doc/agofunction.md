@@ -1,5 +1,5 @@
 ---
-title: ago() - Azure Data Explorer
+title:  ago()
 description: Learn how to use the ago() function to subtract a given timespan from the current UTC clock time.
 ms.reviewer: alexans
 ms.topic: reference

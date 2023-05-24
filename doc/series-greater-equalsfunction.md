@@ -1,5 +1,5 @@
 ---
-title: series_greater_equals() - Azure Data Explorer
+title:  series_greater_equals()
 description: Learn how to use the series_greater_equals() function to calculate the element-wise greater or equals (`>=`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

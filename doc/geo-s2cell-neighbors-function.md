@@ -1,5 +1,5 @@
 ---
-title: geo_s2cell_neighbors() - Azure Data Explorer
+title:  geo_s2cell_neighbors()
 description: Learn how to use the geo_s2cell_neighbors() function to calculate S2 cell neighbors.
 ms.reviewer: mbrichko
 ms.topic: reference

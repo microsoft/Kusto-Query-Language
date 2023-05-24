@@ -1,5 +1,5 @@
 ---
-title: startofday() - Azure Data Explorer
+title:  startofday()
 description: Learn how to use the startofday() function to return the start of the day for the given date.
 ms.reviewer: alexans
 ms.topic: reference

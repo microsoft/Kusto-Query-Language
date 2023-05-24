@@ -1,11 +1,11 @@
 ---
-title: Scatter chart visualization - Azure Data Explorer
+title:  Scatter chart visualization
 description: This article describes the scatter chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/29/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Scatter chart
 
@@ -30,7 +30,7 @@ In a scatter chart visual, the first column is the x-axis and should be a numeri
 
 All properties are optional.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |*PropertyName*|*PropertyValue*                                                                   |
 |--------------|----------------------------------------------------------------------------------|

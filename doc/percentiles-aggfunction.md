@@ -1,5 +1,5 @@
 ---
-title: percentile(), percentiles() - Azure Data Explorer
+title:  percentile(), percentiles()
 description: Learn how to use the percentile(), percentiles() functions to calculate estimates for nearest rank percentiles in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

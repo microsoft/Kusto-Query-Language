@@ -1,5 +1,5 @@
 ---
-title: lookup operator - Azure Data Explorer
+title:  lookup operator
 description: Learn how to use the lookup operator to extend columns of a fact table.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: bitset_count_ones() - Azure Data Explorer
+title:  bitset_count_ones()
 description: Learn how to use the bitset_count_ones() function to return the number of set bits in the binary representation of a number.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: series_stats_dynamic() - Azure Data Explorer
+title:  series_stats_dynamic()
 description: Learn how to use the series_stats_dynamic() function to calculate the statistics for a series in a dynamic object.
 ms.reviewer: alexans
 ms.topic: reference

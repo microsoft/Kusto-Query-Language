@@ -1,5 +1,5 @@
 ---
-title: unixtime_nanoseconds_todatetime() - Azure Data Explorer
+title:  unixtime_nanoseconds_todatetime()
 description: Learn how to use the unixtime_nanoseconds_todatetime() function to convert unix-epoch nanoseconds to UTC datetime.
 ms.reviewer: alexans
 ms.topic: reference

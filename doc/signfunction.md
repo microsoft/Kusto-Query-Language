@@ -1,5 +1,5 @@
 ---
-title: sign() - Azure Data Explorer
+title:  sign()
 description: Learn how to use the sign() function to return the sign of the numeric expression.
 ms.reviewer: alexans
 ms.topic: reference

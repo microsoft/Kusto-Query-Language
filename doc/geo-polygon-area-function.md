@@ -1,5 +1,5 @@
 ---
-title: geo_polygon_area() - Azure Data Explorer
+title:  geo_polygon_area()
 description: Learn how to use the geo_polygon_area() function to calculate the area of a polygon or a multipolygon on Earth.
 ms.reviewer: mbrichko
 ms.topic: reference

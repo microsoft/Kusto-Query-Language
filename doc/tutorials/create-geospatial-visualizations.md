@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial: Create geospatial visualizations - Azure Data Explorer'
+title:  'Tutorial: Create geospatial visualizations'
 description: This tutorial gives examples of geospatial visualizations in the Kusto Query Language.
 ms.topic: tutorial
 ms.date: 01/18/2023

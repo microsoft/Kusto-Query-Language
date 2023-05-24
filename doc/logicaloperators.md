@@ -1,5 +1,5 @@
 ---
-title: Logical (binary) operators - Azure Data Explorer
+title:  Logical (binary) operators
 description: Learn how to use Logical (binary) operators to return a Boolean result.
 ms.reviewer: alexans
 ms.topic: reference

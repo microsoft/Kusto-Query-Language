@@ -1,5 +1,5 @@
 ---
-title: geo_line_simplify() - Azure Data Explorer
+title:  geo_line_simplify()
 description: Learn how to use the geo_line_simplify() function to simplify a line string or a multiline string.
 ms.reviewer: mbrichko
 ms.topic: reference

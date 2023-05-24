@@ -1,5 +1,5 @@
 ---
-title: series_fit_line_dynamic() - Azure Data Explorer
+title:  series_fit_line_dynamic()
 description: Learn how to use the series_fit_line_dynamic() function to apply a linear regression on a series to return a dynamic object.
 ms.reviewer: alexans
 ms.topic: reference

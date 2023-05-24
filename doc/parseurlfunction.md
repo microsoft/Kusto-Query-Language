@@ -1,5 +1,5 @@
 ---
-title: parse_url() - Azure Data Explorer
+title:  parse_url()
 description: Learn how to use the parse_url() function to parse a URL string.
 ms.reviewer: alexans
 ms.topic: reference

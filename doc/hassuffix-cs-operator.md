@@ -1,5 +1,5 @@
 ---
-title: The case-sensitive hassuffix_cs string operator - Azure Data Explorer
+title:  The case-sensitive hassuffix_cs string operator
 description: Learn how to use the hassuffix_cs operator to filter data with a case-sensitive suffix string.
 ms.reviewer: alexans
 ms.topic: reference

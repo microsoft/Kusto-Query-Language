@@ -1,5 +1,5 @@
 ---
-title: diffpatterns plugin - Azure Data Explorer
+title:  diffpatterns plugin
 description: Learn how to use the diffpatterns plugin to compare two data sets of the same structure to find the differences between the two data sets. 
 ms.reviewer: alexans
 ms.topic: reference

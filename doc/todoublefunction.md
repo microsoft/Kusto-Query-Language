@@ -1,5 +1,5 @@
 ---
-title: todouble() - Azure Data Explorer
+title:  todouble()
 description: Learn how to use the todouble() function to convert the input expression to a value of type `real`.
 ms.reviewer: alexans
 ms.topic: reference

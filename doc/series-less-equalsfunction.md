@@ -1,5 +1,5 @@
 ---
-title: series_less_equals() - Azure Data Explorer
+title:  series_less_equals()
 description: Learn how to use the series_less_equals() function to calculate the element-wise less or equal (`<=`) logic operation of two numeric series inputs.
 ms.reviewer: alexans
 ms.topic: reference

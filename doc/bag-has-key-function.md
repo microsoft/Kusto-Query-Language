@@ -1,5 +1,5 @@
 ---
-title: bag_has_key() - Azure Data Explorer
+title:  bag_has_key()
 description: Learn how to use the bag_has_key() function to check if a dynamic property bag object contains a given key. 
 ms.reviewer: afridman
 ms.topic: reference

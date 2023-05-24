@@ -1,5 +1,5 @@
 ---
-title: series_fill_const() - Azure Data Explorer
+title:  series_fill_const()
 description: Learn how to use the series_fill_const() function to replace missing values in a series with a specified constant value.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: sort operator - Azure Data Explorer
+title:  sort operator
 description: Learn how to use the sort operator to sort the rows of the input table by one or more columns.
 ms.reviewer: alexans
 ms.topic: reference

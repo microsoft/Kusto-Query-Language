@@ -1,15 +1,15 @@
 ---
-title: Pivot chart visualization - Azure Data Explorer
+title:  Pivot chart visualization
 description: This article describes the pivot chart visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 08/03/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Pivot chart
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 Displays a pivot table and chart. You can interactively select data, columns, rows and various chart types.
 

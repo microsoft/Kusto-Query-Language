@@ -1,5 +1,5 @@
 ---
-title: min() (aggregation function) - Azure Data Explorer
+title:  min() (aggregation function)
 description: Learn how to use the min() function to find the minimum value in a group.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,15 +1,15 @@
 ---
-title: Time pivot visualization - Azure Data Explorer
+title:  Time pivot visualization
 description: This article describes the time pivot visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 01/26/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Time pivot
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 The time pivot visualization is an interactive navigation over the events time-line pivoting on time axis.
 

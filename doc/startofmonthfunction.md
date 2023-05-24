@@ -1,5 +1,5 @@
 ---
-title: startofmonth() - Azure Data Explorer
+title:  startofmonth()
 description: Learn how to use the startofmonth() function to return the start of the month for the given date.
 ms.reviewer: alexans
 ms.topic: reference

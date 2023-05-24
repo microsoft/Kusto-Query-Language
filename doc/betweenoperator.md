@@ -1,5 +1,5 @@
 ---
-title: The between operator - Azure Data Explorer
+title:  The between operator
 description: Learn how to use the between operator to return a record set of values in an inclusive range for which the predicate evaluates to true. 
 ms.reviewer: alexans
 ms.topic: reference

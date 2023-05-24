@@ -1,5 +1,5 @@
 ---
-title: array_shift_right() - Azure Data Explorer
+title:  array_shift_right()
 description: Learn how to use the array_shift_right() function to shift values inside a dynamic array to the right.
 ms.reviewer: alexans
 ms.topic: reference

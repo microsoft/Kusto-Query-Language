@@ -1,5 +1,5 @@
 ---
-title: bag_set_key() - Azure Data Explorer
+title:  bag_set_key()
 description: Learn how to use the bag_set_key() function to set a given key to a given value in a dynamic property-bag. 
 ms.reviewer: afridman
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: startofweek() - Azure Data Explorer
+title:  startofweek()
 description: Learn how to use the startofweek() function to return the start of the week for the given date.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: top-nested operator - Azure Data Explorer
+title:  top-nested operator
 description: Learn how to use the top-nested operator to produce a hierarchical aggregation.
 ms.reviewer: alexans
 ms.topic: reference

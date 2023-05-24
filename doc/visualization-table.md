@@ -1,11 +1,11 @@
 ---
-title: Table visualization - Azure Data Explorer
+title:  Table visualization
 description: This article describes the table visualization in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 08/03/2022
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
-zone_pivot_groups: kql-flavors
+zone_pivot_groups: kql-flavors-all
 ---
 # Table
 
@@ -29,7 +29,7 @@ Default - results are shown as a table.
 
 All properties are optional.
 
-::: zone pivot="azuredataexplorer"
+::: zone pivot="azuredataexplorer, fabric"
 
 |*PropertyName*|*PropertyValue*                                                                   |
 |--------------|----------------------------------------------------------------------------------|

@@ -1,5 +1,5 @@
 ---
-title: indexof_regex() - Azure Data Explorer
+title:  indexof_regex()
 description: Learn how to use the indexof_regex() function to return the zero-based index position of a `regex` input.
 ms.reviewer: alexans
 ms.topic: reference

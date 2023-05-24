@@ -1,5 +1,5 @@
 ---
-title: extract() - Azure Data Explorer
+title:  extract()
 description: Learn how to use the extract() function to get a match for a regular expression from a source string.
 ms.reviewer: alexans
 ms.topic: reference

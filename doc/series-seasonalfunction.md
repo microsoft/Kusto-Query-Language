@@ -1,5 +1,5 @@
 ---
-title: series_seasonal() - Azure Data Explorer
+title:  series_seasonal()
 description: Learn how to use the series_seasonal() function to calculate the seasonal component of a series according to the detected seasonal period.
 ms.reviewer: alexans
 ms.topic: reference

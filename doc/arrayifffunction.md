@@ -1,5 +1,5 @@
 ---
-title: array_iff() - Azure Data Explorer
+title:  array_iff()
 description: Learn how to use the array_iff() function to scan and evaluate elements in an array.
 ms.reviewer: alexans
 ms.topic: reference

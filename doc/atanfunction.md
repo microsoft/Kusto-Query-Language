@@ -1,5 +1,5 @@
 ---
-title: atan() - Azure Data Explorer
+title:  atan()
 description: Learn how to use the atan() function to return the inverse operation of tan().
 ms.reviewer: alexans
 ms.topic: reference

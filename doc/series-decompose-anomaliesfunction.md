@@ -1,5 +1,5 @@
 ---
-title: series_decompose_anomalies() - Azure Data Explorer
+title:  series_decompose_anomalies()
 description: Learn how to use series_decompose_anomalies() function to extract anomalous points from a dynamic numerical array.
 ms.reviewer: alexans
 ms.topic: reference

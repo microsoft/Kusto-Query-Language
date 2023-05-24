@@ -1,5 +1,5 @@
 ---
-title: beta_inv() - Azure Data Explorer
+title:  beta_inv()
 description: Learn how to use the beta_inv() function to return the inverse of the beta cumulative probability density function.
 ms.reviewer: alexans
 ms.topic: reference

@@ -1,5 +1,5 @@
 ---
-title: array_index_of() - Azure Data Explorer
+title:  array_index_of()
 description: Learn how to use the array_index_of() function to search an array for a specified item, and return its position.
 ms.reviewer: alexans
 ms.topic: reference

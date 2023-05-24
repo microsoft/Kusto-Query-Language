@@ -1,5 +1,5 @@
 ---
-title: base64_encode_tostring() - Azure Data Explorer
+title:  base64_encode_tostring()
 description: This article describes base64_encode_tostring() in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference

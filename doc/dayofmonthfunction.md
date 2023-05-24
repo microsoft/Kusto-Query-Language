@@ -1,5 +1,5 @@
 ---
-title: dayofmonth() - Azure Data Explorer
+title:  dayofmonth()
 description: Learn how to use the dayofmonth() function to return an integer representing the day of the month.
 ms.reviewer: alexans
 ms.topic: reference

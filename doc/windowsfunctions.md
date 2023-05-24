@@ -1,5 +1,5 @@
 ---
-title: Window functions - Azure Data Explorer
+title:  Window functions
 description: Learn how to use window functions on rows in a serialized set.
 ms.reviewer: alexans
 ms.topic: reference

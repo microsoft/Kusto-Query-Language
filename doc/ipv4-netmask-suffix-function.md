@@ -1,5 +1,5 @@
 ---
-title: ipv4_netmask_suffix() - Azure Data Explorer
+title:  ipv4_netmask_suffix()
 description: Learn how to use the ipv4_netmask_suffix() function to return the value of the IPv4 netmask suffix from an IPv4 string address.
 ms.reviewer: alexans
 ms.topic: reference
