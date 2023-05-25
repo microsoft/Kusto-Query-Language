@@ -224,6 +224,7 @@ let X = datatable(Key:string, Value1:long)
     'a',1,
     'b',2,
     'b',3,
+    'k',5,
     'c',4
 ];
 let Y = datatable(Key:string, Value2:long)
@@ -231,7 +232,8 @@ let Y = datatable(Key:string, Value2:long)
     'b',10,
     'c',20,
     'c',30,
-    'd',40
+    'd',40,
+    'k',50
 ];
 X | join kind=inner Y on Key
 ```
@@ -244,11 +246,13 @@ X | join kind=inner Y on Key
 |b|2|b|10|
 |c|4|c|20|
 |c|4|c|30|
+|k|5|k|50|
 
 > [!NOTE]
 >
 > * (b,10) from the right side, was joined twice: with both (b,2) and (b,3) on the left.
 > * (c,4) on the left side, was joined twice: with both (c,20) and (c,30) on the right.
+> * (k,5) from the left and (k, 50) from the right was joined once.
 
 ### Innerunique-join flavor
 

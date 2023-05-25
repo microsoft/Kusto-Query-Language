@@ -9,11 +9,12 @@ zone_pivot_groups: kql-flavors-all
 ---
 # Time pivot
 
-::: zone pivot="azuredataexplorer, fabric"
+::: zone pivot="azuredataexplorer"
 
 The time pivot visualization is an interactive navigation over the events time-line pivoting on time axis.
 
 > [!NOTE]
+>
 > * This visualization can only be used in the context of the [render operator](renderoperator.md).
 > * This visualization can be used in Kusto.Explorer but is not available in the Azure Data Explorer web UI.
 
@@ -47,11 +48,10 @@ All properties are optional.
 |`ycolumns`    |Comma-delimited list of columns that consist of the values provided per value of the x column.|
 |`ytitle`      |The title of the y-axis (of type `string`).                                       |
 
-
 ::: zone-end
 
-::: zone pivot="azuremonitor"
+::: zone pivot="azuremonitor, fabric"
 
-This visualization isn't supported in Azure Monitor.
+This visualization isn't supported.
 
 ::: zone-end

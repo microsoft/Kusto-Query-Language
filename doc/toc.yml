@@ -211,6 +211,8 @@ items:
         href: visualization-timechart.md
       - name: timepivot
         href: visualization-timepivot.md
+      - name: treemap
+        href: visualization-treemap.md
   - name: sample operator
     href: sampleoperator.md
   - name: sample-distinct operator

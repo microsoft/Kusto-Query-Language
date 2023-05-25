@@ -9,7 +9,7 @@ zone_pivot_groups: kql-flavors-all
 ---
 # Ladder chart
 
-::: zone pivot="azuredataexplorer, fabric"
+::: zone pivot="azuredataexplorer"
 
  Last two columns are the x-axis, other columns are y-axis
 
@@ -49,8 +49,8 @@ All properties are optional.
 
 ::: zone-end
 
-::: zone pivot="azuremonitor"
+::: zone pivot="azuremonitor, fabric"
 
-This visualization isn't supported in Azure Monitor.
+This visualization isn't supported.
 
 ::: zone-end
