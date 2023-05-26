@@ -1,11 +1,11 @@
 ---
-title:  the function
-description: Learn how to use the the function function to return the beta probability density function. 
+title:  beta_pdf()
+description: Learn how to use the beta_pdf() function to return the beta probability density function. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/09/2023
+ms.date: 05/25/2023
 ---
-# the function
+# beta_pdf()
 
 Returns the probability density beta function.
 
